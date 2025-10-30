@@ -6,7 +6,7 @@
   interface ValidationTest {
     id: string;
     name: string;
-    description string;
+    description: string; // Fixed syntax
     status: 'pending' | 'running' | 'passed' | 'failed' | 'warning';
     duration?: number;
     details?: string;
@@ -14,12 +14,12 @@
   }
   interface ValidationSuite {
     name: string;
-    description string;
+    description: string; // Fixed syntax
     tests: ValidationTest[];
     passed: number;
     failed: number;
     warnings: number;
-    totalDuration number;
+    totalDuration: number; // Fixed syntax
   }
   let validationSuites = $state<ValidationSuite[]>([]);
   let isRunning = $state(false);
@@ -30,39 +30,39 @@
   const suiteConfigs = [
     {
       name: 'Core UI Components',
-      description 'Validate critical UI component functionality',
+      description: 'Validate critical UI component functionality', // Fixed syntax
       tests: [
-        { id: 'dropdown-test', name: 'Dropdown Component', description 'Test dropdown rendering and interaction' },
-        { id: 'checkbox-test', name: 'Checkbox Component', description 'Test checkbox state management' },
-        { id: 'searchbar-test', name: 'SearchBar Component', description 'Test search functionality and debouncing' }
+        { id: 'dropdown-test', name: 'Dropdown Component', description: 'Test dropdown rendering and interaction' },
+        { id: 'checkbox-test', name: 'Checkbox Component', description: 'Test checkbox state management' },
+        { id: 'searchbar-test', name: 'SearchBar Component', description: 'Test search functionality and debouncing' }
       ]
     },
     {
       name: 'GPU Acceleration',
-      description 'Validate GPU processing and tensor operations',
+      description: 'Validate GPU processing and tensor operations', // Fixed syntax
       tests: [
-        { id: 'tensor-service-test', name: 'Tensor Service Connection', description 'Test Go tensor service connectivity' },
-        { id: 'gpu-processing-test', name: 'GPU Processing Pipeline', description 'Test batch GPU processing capabilities' },
-        { id: 'performance-monitoring-test', name: 'Performance Monitoring', description 'Test GPU performance monitoring system' }
+        { id: 'tensor-service-test', name: 'Tensor Service Connection', description: 'Test Go tensor service connectivity' },
+        { id: 'gpu-processing-test', name: 'GPU Processing Pipeline', description: 'Test batch GPU processing capabilities' },
+        { id: 'performance-monitoring-test', name: 'Performance Monitoring', description: 'Test GPU performance monitoring system' }
       ]
     },
     {
       name: 'Legal AI Workflows',
-      description 'Validate legal document processing workflows',
+      description: 'Validate legal document processing workflows', // Fixed syntax
       tests: [
-        { id: 'evidence-upload-test', name: 'Evidence Upload System', description 'Test evidence upload and processing' },
-        { id: 'case-automation-test', name: 'Case Automation Workflows', description 'Test legal case automation pipeline' },
-        { id: 'document-classification-test', name: 'Document Classification', description 'Test AI document classification accuracy' }
+        { id: 'evidence-upload-test', name: 'Evidence Upload System', description: 'Test evidence upload and processing' },
+        { id: 'case-automation-test', name: 'Case Automation Workflows', description: 'Test legal case automation pipeline' },
+        { id: 'document-classification-test', name: 'Document Classification', description: 'Test AI document classification accuracy' }
       ]
     },
     {
       name: 'System Integration',
-      description 'Validate system-wide integration and performance',
+      description: 'Validate system-wide integration and performance', // Fixed syntax
       tests: [
-        { id: 'api-endpoints-test', name: 'API Endpoints', description 'Test all API endpoint functionality' },
-        { id: 'database-integration-test', name: 'Database Integration', description 'Test database connectivity and operations' },
-        { id: 'error-handling-test', name: 'Error Handling', description 'Test system error handling and recovery' },
-        { id: 'performance-benchmarks-test', name: 'Performance Benchmarks', description 'Test system performance meets requirements' }
+        { id: 'api-endpoints-test', name: 'API Endpoints', description: 'Test all API endpoint functionality' },
+        { id: 'database-integration-test', name: 'Database Integration', description: 'Test database connectivity and operations' },
+        { id: 'error-handling-test', name: 'Error Handling', description: 'Test system error handling and recovery' },
+        { id: 'performance-benchmarks-test', name: 'Performance Benchmarks', description: 'Test system performance meets requirements' }
       ]
     }
   ];
@@ -73,7 +73,7 @@
   function initializeValidationSuites() {
     validationSuites = suiteConfigs.map(config => ({
       name: config.name,
-      description config.description,
+      description: config.description, // Fixed syntax
       tests: config.tests.map(test => ({
         ...test,
         status: 'pending',
@@ -81,7 +81,7 @@
       passed: 0,
       failed: 0,
       warnings: 0,
-      totalDuration 0,
+      totalDuration: 0, // Fixed syntax
     }));
   }
   // Run all validation tests
@@ -115,7 +115,7 @@
       const testStartTime = Date.now();
       try {
         await runIndividualTest(test);
-        test.duration = Date.now() - testStartTim;
+        test.duration = Date.now() - testStartTime; // Fixed variable name
         if (test.status === 'passed') {
           suite.passed++;
         } else if (test.status === 'warning') {
@@ -125,14 +125,14 @@
         }
       } catch (error) {
         test.status = 'failed';
-        test.error = error instanceof Error ? error.message: 'Unknown error';
-        test.duration = Date.now() - testStartTim;
+        test.error = error instanceof Error ? error.message : 'Unknown error';
+        test.duration = Date.now() - testStartTime; // Fixed variable name
         suite.failed++;
       }
       // Force reactivity update
       validationSuites = [...validationSuites];
     }
-    suite.totalDuration = Date.now() - suiteStartTim;
+    suite.totalDuration = Date.now() - suiteStartTime; // Fixed variable name
   }
   // Run individual test
   async function runIndividualTest(test: ValidationTest) {
@@ -187,38 +187,38 @@
     const dropdownExists = document.querySelector('select') !== null;
     if (dropdownExists) {
       test.status = 'passed';
-      (test as CustomEvent).details = 'Dropdown component renders correctly and handles user interactions';
+      test.details = 'Dropdown component renders correctly and handles user interactions'; // Fixed type assertion
     } else {
       test.status = 'warning';
-      (test as CustomEvent).details = 'Dropdown component not found on page, but class exists in codebase';
+      test.details = 'Dropdown component not found on page, but class exists in codebase'; // Fixed type assertion
     }
   }
   async function testCheckboxComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 400));
     test.status = 'passed';
-    (test as CustomEvent).details = 'Checkbox component state management and accessibility features working correctly';
+    test.details = 'Checkbox component state management and accessibility features working correctly'; // Fixed type assertion
   }
   async function testSearchBarComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 600));
     test.status = 'passed';
-    (test as CustomEvent).details = 'SearchBar debouncing (300ms), filtering, and event handling working correctly';
+    test.details = 'SearchBar debouncing (300ms), filtering, and event handling working correctly'; // Fixed type assertion
   }
   async function testTensorService(test: ValidationTest) {
     try {
       const health = await goTensorService.healthCheck();
       if (health.status === 'healthy') {
         test.status = 'passed';
-        (test as CustomEvent).details = `Tensor service healthy - latency: ${health.latency}ms`;
+        test.details = `Tensor service healthy - latency: ${health.latency}ms`; // Fixed type assertion
       } else if (health.status === 'offline') {
         test.status = 'warning';
-        (test as CustomEvent).details = 'Tensor service offline - fallback mode operational';
+        test.details = 'Tensor service offline - fallback mode operational'; // Fixed type assertion
       } else {
         test.status = 'warning';
-        (test as CustomEvent).details = `Tensor service degraded - status: ${health.status}`;
+        test.details = `Tensor service degraded - status: ${health.status}`; // Fixed type assertion
       }
     } catch (error) {
       test.status = 'warning';
-      (test as CustomEvent).details = 'Tensor service using fallback mode - Go service not available';
+      test.details = 'Tensor service using fallback mode - Go service not available'; // Fixed type assertion
     }
   }
   async function testGPUProcessing(test: ValidationTest) {
@@ -229,21 +229,21 @@
       const tensorRequest = {
         id: 'validation-test',
         documentId: 'test-doc',
-        data: testData;
-        operation 'process' as const,
+        data: testData, // Fixed syntax
+        operation: 'process' as const, // Fixed syntax
         options: { timeout: 5000 }
       }
-      // removed unused response assignment
+      const response = await goTensorService.processTensor(tensorRequest); // Re-introduced response
       if (response.success) {
         test.status = 'passed';
-        (test as CustomEvent).details = 'GPU batch processing pipeline functional with real tensor operations';
+        test.details = 'GPU batch processing pipeline functional with real tensor operations'; // Fixed type assertion
       } else {
         test.status = 'warning';
-        (test as CustomEvent).details = 'GPU processing using mock fallback - Go service unavailable';
+        test.details = 'GPU processing using mock fallback - Go service unavailable'; // Fixed type assertion
       }
     } catch (error) {
       test.status = 'warning';
-      (test as CustomEvent).details = 'GPU processing fallback mode - mock processing successful';
+      test.details = 'GPU processing fallback mode - mock processing successful'; // Fixed type assertion
     }
   }
   async function testPerformanceMonitoring(test: ValidationTest) {
@@ -251,16 +251,16 @@
     const isMonitoring = gpuPerformanceOptimizer.monitoring;
     if (isMonitoring) {
       test.status = 'passed';
-      (test as CustomEvent).details = 'GPU performance monitoring active with real-time metrics collection';
+      test.details = 'GPU performance monitoring active with real-time metrics collection'; // Fixed type assertion
     } else {
       test.status = 'warning';
-      (test as CustomEvent).details = 'Performance monitoring available but not currently active';
+      test.details = 'Performance monitoring available but not currently active'; // Fixed type assertion
     }
   }
   async function testEvidenceUpload(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 700));
     test.status = 'passed';
-    (test as CustomEvent).details = 'Evidence upload system with AI processing and GPU acceleration ready';
+    test.details = 'Evidence upload system with AI processing and GPU acceleration ready'; // Fixed type assertion
   }
   async function testCaseAutomation(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 900));
@@ -270,34 +270,34 @@
         id: 'test-automation',
         type: 'batch_upload',
         source: 'test_source',
-        autoProcessing: true
-        gpuAcceleration true
+        autoProcessing: true, // Fixed syntax
+        gpuAcceleration: true, // Fixed syntax
         batchSize: 10,
         confidenceThreshold: 0.8,
         processingOptions: ['entity_extraction'],
-        createdAt: new Date().toISOString();
+        createdAt: new Date().toISOString(), // Fixed syntax
       }
       const response = await fetch('/api/legal/automation/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testConfig);
+        body: JSON.stringify(testConfig), // Fixed syntax
       });
       if (response.ok) {
         test.status = 'passed';
-        (test as CustomEvent).details = 'Legal case automation workflows and API endpoints functional';
+        test.details = 'Legal case automation workflows and API endpoints functional'; // Fixed type assertion
       } else {
         test.status = 'failed';
         test.error = `API test failed: ${response.status} ${response.statusText}`;
       }
     } catch (error) {
       test.status = 'failed';
-      test.error = `Network error: ${error instanceof Error ? error.message: 'Unknown error'}`;
+      test.error = `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`;
     }
   }
   async function testDocumentClassification(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1200));
     test.status = 'passed';
-    (test as CustomEvent).details = 'AI document classification with 7 processing options and GPU acceleration ready';
+    test.details = 'AI document classification with 7 processing options and GPU acceleration ready'; // Fixed type assertion
   }
   async function testAPIEndpoints(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -310,7 +310,7 @@
     const results = [];
     for (const endpoint of endpoints) {
       try {
-        // removed unused response assignment
+        const response = await fetch(endpoint); // Re-introduced response
         if (response.ok || response.status === 400) { // 400 is expected for GET on POST-only endpoint
           passedEndpoints++;
           results.push(`${endpoint}: OK`);
@@ -323,25 +323,25 @@
     }
     if (passedEndpoints === endpoints.length) {
       test.status = 'passed';
-      (test as CustomEvent).details = `All ${endpoints.length} API endpoints responding correctly`;
+      test.details = `All ${endpoints.length} API endpoints responding correctly`; // Fixed type assertion
     } else if (passedEndpoints > 0) {
       test.status = 'warning';
-      (test as CustomEvent).details = `${passedEndpoints}/${endpoints.length} API endpoints functional`;
+      test.details = `${passedEndpoints}/${endpoints.length} API endpoints functional`; // Fixed type assertion
     } else {
       test.status = 'failed';
-      (test as CustomEvent).details = 'API endpoints not responding correctly';
+      test.details = 'API endpoints not responding correctly'; // Fixed type assertion
     }
   }
   async function testDatabaseIntegration(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 800));
     // Simulate database connectivity test
     test.status = 'passed';
-    (test as CustomEvent).details = 'Database integration ready - PostgreSQL schema and connections configured';
+    test.details = 'Database integration ready - PostgreSQL schema and connections configured'; // Fixed type assertion
   }
   async function testErrorHandling(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 500));
     test.status = 'passed';
-    (test as CustomEvent).details = 'Error handling and fallback mechanisms implemented across all systems';
+    test.details = 'Error handling and fallback mechanisms implemented across all systems'; // Fixed type assertion
   }
   async function testPerformanceBenchmarks(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -357,10 +357,10 @@
       metrics.memoryUsage < 80;
     if (benchmarksPassed) {
       test.status = 'passed';
-      (test as CustomEvent).details = `Performance benchmarks met - API: ${Math.round(metrics.apiResponseTime)}ms, Tensor: ${Math.round(metrics.tensorProcessingTime)}ms`;
+      test.details = `Performance benchmarks met - API: ${Math.round(metrics.apiResponseTime)}ms, Tensor: ${Math.round(metrics.tensorProcessingTime)}ms`; // Fixed type assertion
     } else {
       test.status = 'warning';
-      (test as CustomEvent).details = 'Some performance benchmarks exceeded thresholds but system functional';
+      test.details = 'Some performance benchmarks exceeded thresholds but system functional'; // Fixed type assertion
     }
   }
   // Utility functions
@@ -525,9 +525,9 @@
                   {/if}
                 </div>
                 <p class="text-sm text-slate-300 mt-1">{test.description}</p>
-                {#if (test as CustomEvent).details}
+                {#if test.details}
                   <p class="text-xs {getStatusColor(test.status)} mt-2 bg-slate-700/50 p-2 rounded">
-                    {t(est as CustomEvent).details}
+                    {test.details} <!-- Fixed template syntax and type assertion -->
                   </p>
                 {/if}
                 {#if test.error}
@@ -584,7 +584,7 @@
   /* Smooth animations for progress bars */
   .transition-all {
     transition-property: all;
-    transition-timing-function cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration 300m;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Fixed syntax */
+    transition-duration: 300ms; /* Fixed syntax */
   }
 </style>

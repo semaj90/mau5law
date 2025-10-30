@@ -71,6 +71,7 @@
     "svelte:errors:embed": "node ./scripts/embed-svelte-error-index.mjs",
     "mcp:start": "node scripts/mcp-multicore-server.mjs"
   },
+
   "dependencies": {
     "@aws-sdk/client-s3": "^3.920.0",
     "@langchain/community": "^1.0.0",
@@ -102,6 +103,8 @@
     "xstate": "^5.23.0"
   },
   "devDependencies": {
+    "vitest": "^1.0.0",
+    "@types/jest": "^29.5.4",
     "@julr/unocss-preset-forms": "^2.0.0",
     "@playwright/test": "^1.55.0",
     "@sveltejs/enhanced-img": "^0.8.2",

@@ -23,7 +23,7 @@
   interface CaseScore {
     id: string;
     title: string;
-    description string;
+    description: string; // Fixed: added colon
     score: number;
     priority: 'critical' | 'high' | 'medium' | 'low';
     confidence: number;
@@ -37,7 +37,7 @@
     category: string;
     weight: number;
     impact: number;
-    description string;
+    description: string; // Fixed: added colon
     confidence: number;
   }
   interface ScoringRequest {
@@ -52,7 +52,7 @@
       {
         id: 'case-001',
         title: 'Johnson v. Tech Corp - Patent Infringement',
-        description 'Complex patent dispute involving AI technology and trade secrets',
+        description: 'Complex patent dispute involving AI technology and trade secrets', // Fixed: added colon
         score: 87,
         priority: 'critical',
         confidence: 92,
@@ -63,35 +63,35 @@
             category: 'Financial Risk',
             weight: 0.3,
             impact: 0.9,
-            description 'Potential damages exceed $10M',
+            description: 'Potential damages exceed $10M', // Fixed: added colon
             confidence: 95,
           },
           {
             category: 'Legal Precedent',
             weight: 0.25,
             impact: 0.85,
-            description 'Limited favorable precedents',
+            description: 'Limited favorable precedents', // Fixed: added colon
             confidence: 88,
           },
           {
             category: 'Evidence Strength',
             weight: 0.2,
             impact: 0.7,
-            description 'Key documents under dispute',
+            description: 'Key documents under dispute', // Fixed: added colon
             confidence: 82,
           },
           {
             category: 'Timeline Pressure',
             weight: 0.15,
             impact: 0.95,
-            description 'Trial date approaching rapidly',
+            description: 'Trial date approaching rapidly', // Fixed: added colon
             confidence: 100,
           },
           {
             category: 'Public Relations',
             weight: 0.1,
             impact: 0.6,
-            description 'Moderate media attention',
+            description: 'Moderate media attention', // Fixed: added colon
             confidence: 75,
           },
         ],
@@ -106,7 +106,7 @@
       {
         id: 'case-002',
         title: 'State v. Anderson - Criminal Defense',
-        description 'White collar crime case involving financial fraud allegations',
+        description: 'White collar crime case involving financial fraud allegations', // Fixed: added colon
         score: 72,
         priority: 'high',
         confidence: 85,
@@ -117,28 +117,28 @@
             category: 'Evidence Strength',
             weight: 0.35,
             impact: 0.75,
-            description 'Prosecution has substantial documentation',
+            description: 'Prosecution has substantial documentation', // Fixed: added colon
             confidence: 90,
           },
           {
             category: 'Witness Credibility',
             weight: 0.25,
             impact: 0.6,
-            description 'Key witness reliability questionable',
+            description: 'Key witness reliability questionable', // Fixed: added colon
             confidence: 70,
           },
           {
             category: 'Legal Complexity',
             weight: 0.2,
             impact: 0.8,
-            description 'Multiple intersecting statutes',
+            description: 'Multiple intersecting statutes', // Fixed: added colon
             confidence: 85,
           },
           {
             category: 'Sentencing Risk',
             weight: 0.2,
             impact: 0.85,
-            description 'Mandatory minimums apply',
+            description: 'Mandatory minimums apply', // Fixed: added colon
             confidence: 95,
           },
         ],
@@ -152,7 +152,7 @@
       {
         id: 'case-003',
         title: 'Smith Family Trust - Estate Planning',
-        description 'Complex multi-generational trust with tax optimization needs',
+        description: 'Complex multi-generational trust with tax optimization needs', // Fixed: added colon
         score: 45,
         priority: 'medium',
         confidence: 88,
@@ -163,28 +163,28 @@
             category: 'Tax Implications',
             weight: 0.4,
             impact: 0.5,
-            description 'Moderate tax exposure under current structure',
+            description: 'Moderate tax exposure under current structure', // Fixed: added colon
             confidence: 85,
           },
           {
             category: 'Family Dynamics',
             weight: 0.3,
             impact: 0.4,
-            description 'Generally cooperative beneficiaries',
+            description: 'Generally cooperative beneficiaries', // Fixed: added colon
             confidence: 80,
           },
           {
             category: 'Asset Complexity',
             weight: 0.2,
             impact: 0.45,
-            description 'Mixed portfolio of liquid and illiquid assets',
+            description: 'Mixed portfolio of liquid and illiquid assets', // Fixed: added colon
             confidence: 90,
           },
           {
             category: 'Regulatory Changes',
             weight: 0.1,
             impact: 0.3,
-            description 'Stable regulatory environment',
+            description: 'Stable regulatory environment', // Fixed: added colon
             confidence: 75,
           },
         ],
@@ -198,7 +198,7 @@
       {
         id: 'case-004',
         title: 'Green Energy LLC - Contract Dispute',
-        description 'Breach of contract claim for renewable energy installation',
+        description: 'Breach of contract claim for renewable energy installation', // Fixed: added colon
         score: 32,
         priority: 'low',
         confidence: 91,
@@ -209,28 +209,28 @@
             category: 'Contract Clarity',
             weight: 0.35,
             impact: 0.25,
-            description 'Well-drafted agreement with clear terms',
+            description: 'Well-drafted agreement with clear terms', // Fixed: added colon
             confidence: 95,
           },
           {
             category: 'Damages Amount',
             weight: 0.3,
             impact: 0.3,
-            description 'Limited financial exposure',
+            description: 'Limited financial exposure', // Fixed: added colon
             confidence: 90,
           },
           {
             category: 'Counterparty Risk',
             weight: 0.2,
             impact: 0.35,
-            description 'Financially stable opponent',
+            description: 'Financially stable opponent', // Fixed: added colon
             confidence: 88,
           },
           {
             category: 'Settlement Likelihood',
             weight: 0.15,
             impact: 0.2,
-            description 'High probability of early settlement',
+            description: 'High probability of early settlement', // Fixed: added colon
             confidence: 92,
           },
         ],
@@ -244,7 +244,7 @@
       {
         id: 'case-005',
         title: 'Medical Malpractice - Hospital Group',
-        description 'Defending against surgical complication claims',
+        description: 'Defending against surgical complication claims', // Fixed: added colon
         score: 68,
         priority: 'high',
         confidence: 79,
@@ -255,28 +255,28 @@
             category: 'Medical Evidence',
             weight: 0.35,
             impact: 0.65,
-            description 'Mixed expert opinions on standard of care',
+            description: 'Mixed expert opinions on standard of care', // Fixed: added colon
             confidence: 75,
           },
           {
             category: 'Jury Sympathy',
             weight: 0.25,
             impact: 0.8,
-            description 'Plaintiff has compelling personal story',
+            description: 'Plaintiff has compelling personal story',
             confidence: 85,
           },
           {
             category: 'Insurance Coverage',
             weight: 0.2,
             impact: 0.5,
-            description 'Adequate coverage with reasonable deductible',
+            description: 'Adequate coverage with reasonable deductible',
             confidence: 90,
           },
           {
             category: 'Prior Cases',
             weight: 0.2,
             impact: 0.7,
-            description 'Previous similar claims settled',
+            description: 'Previous similar claims settled',
             confidence: 80,
           },
         ],
@@ -523,13 +523,13 @@
         <div class="loading-spinner"></div>
         <p>Loading case scores...</p>
       </div>
-    {:else if filteredCases().length === 0}
+    {:else if filteredCases.length === 0}
       <div class="empty-state">
         <h3>No cases found</h3>
         <p>Try adjusting your filters or search query.</p>
       </div>
     {:else}
-      {#each filteredCases() as caseItem (caseItem.id)}
+      {#each filteredCases as caseItem (caseItem.id)}
         <div class="case-score-card">
           <div class="card-header">
             <div class="case-header">
@@ -613,7 +613,7 @@
         if (e.key === 'Escape') showScoreDetails = false;
       }}>Close</button
     >
-    <div class="modal-content score-details-dialog" role="document" onclick={e => e.stopPropagation()}>
+    <div class="modal-content score-details-dialog" role="document">
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
@@ -697,7 +697,7 @@
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Fixed: space-betweennn -> space-between */
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -789,18 +789,18 @@
   }
   .case-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Fixed: space-betweennn -> space-between */
     align-items: flex-start;
     gap: 1rem;
   }
   .case-title {
-    flex: 1,
+    flex: 1; /* Fixed: comma -> semicolon */
     margin: 0;
   }
   .case-badges {
     display: flex;
     gap: 0.5rem;
-    flex-shrink: 0,
+    flex-shrink: 0; /* Fixed: comma -> semicolon */
   }
   .priority-badge {
     padding: 0.25rem 0.5rem;
@@ -859,12 +859,12 @@
   }
   .factors-list {
     list-style: none;
-    padding: 0,
+    padding: 0; /* Fixed: comma -> semicolon */
     margin: 0;
   }
   .factor-item {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Fixed: space-betweennn -> space-between */
     padding: 0.25rem 0;
     font-size: 0.75rem;
   }
@@ -903,16 +903,16 @@
   }
   /* Modal Styles */
   .modal-overlay {
-    position fixed;
-    top: 0,
+    position: fixed; /* Fixed: position fixed -> position: fixed; */
+    top: 0; /* Fixed: comma -> semicolon */
     left: 0;
-    right: 0,
+    right: 0; /* Fixed: comma -> semicolon */
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000,
+    z-index: 1000; /* Fixed: comma -> semicolon */
   }
   .modal-content {
     background: white;
@@ -927,7 +927,7 @@
     padding: 1.5rem;
   }
   .modal-header {
-    position relative;
+    position: relative; /* Fixed: position absolute -> position: relative; */
     margin-bottom: 1.5rem;
   }
   .modal-title {
@@ -940,8 +940,8 @@
     margin: 0;
   }
   .modal-close {
-    position absolute;
-    top: 0,
+    position: absolute; /* Fixed: position absolute -> position: absolute; */
+    top: 0; /* Fixed: comma -> semicolon */
     right: 0;
     width: 2rem;
     height: 2rem;
@@ -1011,7 +1011,7 @@
     margin-bottom: 0.5rem;
   }
   .factor-bar {
-    flex: 1,
+    flex: 1; /* Fixed: comma -> semicolon */
     height: 0.5rem;
     background: #e2e8f0;
     border-radius: 0.25rem;
@@ -1039,7 +1039,7 @@
   }
   .recommendations-list {
     list-style: none;
-    padding: 0,
+    padding: 0; /* Fixed: comma -> semicolon */
     margin: 0;
   }
   .recommendation-item {
@@ -1060,15 +1060,15 @@
     border-top: 1px solid #e2e8f0;
   }
   .visually-hidden {
-    position absolute;
+    position: absolute; /* Fixed: position absolute -> position: absolute; */
     width: 1px;
     height: 1px;
-    padding: 0,
+    padding: 0; /* Fixed: comma -> semicolon */
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0,
+    border: 0; /* Fixed: comma -> semicolon */
   }
   @media (max-width: 768px) {
     .dashboard-header {

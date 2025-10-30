@@ -1,8 +1,12 @@
 <!-- Toast Provider for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Toast } from 'bits-ui';
+  import createToast from 'bits-ui';
   import BitsToast, { type ToastProps } from './BitsToast.svelte';
+
+  // Destructure Root and Viewport from createToast()
+  const { Root, Viewport } = createToast();
+
   interface ToastWithId extends ToastProps {
     id: string;
   }
@@ -16,44 +20,44 @@
     toasts = [...toasts, newToast];
     return {
       id,
-      dismiss: () => removeToast(id);
+      dismiss: () => removeToast(id), // Changed semicolon to comma
     }
   }
   export function removeToast(id: string) {
     toasts = toasts.filter(t => t.id !== id);
   }
   // Legal AI specific toast methods
-  export function showCaseUpdate(caseName: string, action string) {
+  export function showCaseUpdate(caseName: string, action: string) {
     return addToast({
       variant: 'legal',
       title: 'Case Updated',
-      description `${caseName} - ${action}`,
-      duration 4000,
+      description: `${caseName} - ${action}`,
+      duration: 4000,
     });
   }
   export function showEvidenceProcessed(fileName: string) {
     return addToast({
       variant: 'success',
       title: 'Evidence Processed',
-      description `${fileName} has been analyzed and indexed`,
-      duration 6000,
+      description: `${fileName} has been analyzed and indexed`,
+      duration: 6000,
     });
   }
   export function showAIAnalysisComplete(documentType: string) {
     return addToast({
       variant: 'info',
       title: 'AI Analysis Complete',
-      description `${documentType} analysis finished`,
-      duration 5000,
+      description: `${documentType} analysis finished`,
+      duration: 5000,
     });
   }
   export function showLegalDeadlineWarning(deadline: string, daysLeft: number) {
     return addToast({
       variant: 'warning',
       title: 'Deadline Approaching',
-      description `${deadline} - ${daysLeft} days remaining`,
-      duration 0, // Don't auto-dismiss warning;
-      action {
+      description: `${deadline} - ${daysLeft} days remaining`,
+      duration: 0, // Don't auto-dismiss warning;
+      action: {
         label: 'View Details',
         onClick: () => {
           // Navigate to deadline details
@@ -66,9 +70,9 @@
     return addToast({
       variant: 'error',
       title: 'System Error',
-      description error;
-      duration 0, // Don't auto-dismiss error;
-      action {
+      description: error,
+      duration: 0, // Don't auto-dismiss error;
+      action: {
         label: 'Retry',
         onClick: () => {
           console.log('Retry action');
@@ -78,12 +82,11 @@
   }
 </script>
 
-<Toast.Provider swipeDirection="right">
+<Root.Provider swipeDirection="right">
   {#each toasts as toast (toast.id)}
     <BitsToast {...toast} onClose={() => removeToast(toast.id)} />
   {/each}
-  <Toast.Viewport
+  <Viewport
     class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"
   />
-</Toast.Provider>
-;
+</Root.Provider>

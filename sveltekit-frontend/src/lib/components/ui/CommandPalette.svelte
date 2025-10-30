@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { User } from '$lib/types';
-  import { onMount } from 'svelte';
-  import { Search, File, Briefcase, User as UserIcon, Settings, Command } from 'lucide-svelte';
+  import Search from 'lucide-svelte/icons/search';
+  import File from 'lucide-svelte/icons/file';
+  import Briefcase from 'lucide-svelte/icons/briefcase';
+  import UserIcon from 'lucide-svelte/icons/user';
+  import Settings from 'lucide-svelte/icons/settings';
+  import Command from 'lucide-svelte/icons/command';
   import { cn } from '$lib/utils';
   interface Props {
     open?: boolean;
@@ -15,8 +15,8 @@ https://svelte.dev/e/js_parse_error -->
   interface CommandItem {
     id: string;
     title: string;
-    description string;
-    icon unknown;
+    description: string; // Fixed syntax
+    icon: unknown; // Fixed syntax
     category: string;
     href?: string;
     shortcut?: string[];
@@ -27,6 +27,74 @@ https://svelte.dev/e/js_parse_error -->
   let searchInput: HTMLInputElement;
   let searchQuery = $state('');
   let selectedIndex = $state(0);
+
+  const allItems: CommandItem[] = [
+    // Navigation
+    {
+      id: 'nav-dashboard',
+      title: 'Dashboard',
+      description: 'Overview of cases and evidence', // Fixed syntax
+      icon: Search,
+      category: 'Navigation',
+      href: '/',
+      shortcut: ['⌘', 'H'],
+    },
+    {
+      id: 'nav-evidence',
+      title: 'Evidence Management',
+      description: 'Upload and analyze evidence', // Fixed syntax
+      icon: File,
+      category: 'Navigation',
+      href: '/evidence',
+      shortcut: ['⌘', 'E'],
+    },
+    {
+      id: 'nav-cases',
+      title: 'Case Management',
+      description: 'Manage legal cases and documents', // Fixed syntax
+      icon: Briefcase,
+      category: 'Navigation',
+      href: '/cases',
+      shortcut: ['⌘', 'C'],
+    },
+    // Actions
+    {
+      id: 'action-new-case',
+      title: 'Create New Case',
+      description: 'Start a new legal case', // Fixed syntax
+      icon: Briefcase,
+      category: 'Actions',
+      action: () => console.log('Create new case'), // Fixed syntax
+      shortcut: ['⌘', 'N'],
+    },
+    {
+      id: 'action-upload-evidence',
+      title: 'Upload Evidence',
+      description: 'Add new evidence to a case', // Fixed syntax
+      icon: File,
+      category: 'Actions',
+      action: () => console.log('Upload evidence'), // Fixed syntax
+      shortcut: ['⌘', 'U'],
+    },
+    // Settings
+    {
+      id: 'settings-profile',
+      title: 'Profile Settings',
+      description: 'Manage your user profile', // Fixed syntax
+      icon: UserIcon,
+      category: 'Settings',
+      href: '/profile',
+    },
+    {
+      id: 'settings-system',
+      title: 'System Settings',
+      description: 'Configure system preferences', // Fixed syntax
+      icon: Settings,
+      category: 'Settings',
+      href: '/settings',
+    },
+  ];
+
   let filteredItems = $derived(
     searchQuery
       ? allItems.filter(
@@ -36,72 +104,6 @@ https://svelte.dev/e/js_parse_error -->
         )
       : allItems
   );
-  const allItems: CommandItem[] = [
-    // Navigation
-    {
-      id: 'nav-dashboard',
-      title: 'Dashboard',
-      description 'Overview of cases and evidence',
-      icon Search,
-      category: 'Navigation',
-      href: '/',
-      shortcut: ['⌘', 'H'],
-    },
-    {
-      id: 'nav-evidence',
-      title: 'Evidence Management',
-      description 'Upload and analyze evidence',
-      icon File,
-      category: 'Navigation',
-      href: '/evidence',
-      shortcut: ['⌘', 'E'],
-    },
-    {
-      id: 'nav-cases',
-      title: 'Case Management',
-      description 'Manage legal cases and documents',
-      icon Briefcase,
-      category: 'Navigation',
-      href: '/cases',
-      shortcut: ['⌘', 'C'],
-    },
-    // Actions
-    {
-      id: 'action-new-case',
-      title: 'Create New Case',
-      description 'Start a new legal case',
-      icon Briefcase,
-      category: 'Actions',
-      action () => console.log('Create new case'),
-      shortcut: ['⌘', 'N'],
-    },
-    {
-      id: 'action-upload-evidence',
-      title: 'Upload Evidence',
-      description 'Add new evidence to a case',
-      icon File,
-      category: 'Actions',
-      action () => console.log('Upload evidence'),
-      shortcut: ['⌘', 'U'],
-    },
-    // Settings
-    {
-      id: 'settings-profile',
-      title: 'Profile Settings',
-      description 'Manage your user profile',
-      icon UserIcon,
-      category: 'Settings',
-      href: '/profile',
-    },
-    {
-      id: 'settings-system',
-      title: 'System Settings',
-      description 'Configure system preferences',
-      icon Settings,
-      category: 'Settings',
-      href: '/settings',
-    },
-  ];
   $effect(() => {
     if (open && searchInput) {
       searchInput.focus();
@@ -149,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 </script>
 
-<svelte:window keydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} />
 {#if open}
   <!-- Backdrop -->
   <div
@@ -157,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
     onclick={close}
     role="button"
     tabindex="0"
-    keydown={e => e.key === 'Enter' && close()}
+    on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && close()}
   >
     <!-- Command palette -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
@@ -293,21 +295,20 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
   .nier-border-glow {
-    position relative;
+    position: relative; /* Fixed syntax */
     box-shadow: 0 0 30px rgba(165, 28, 48, 0.3);
   }
   .nier-border-glow::before {
-    content: '';
-    position absolute;
-    inset: -1px;
+    content: ''; /* Fixed syntax */
+    position: absolute; /* Fixed syntax */
+    inset: -1px; /* Fixed syntax */
     padding: 1px;
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));
     border-radius: inherit;
     mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    opacity: 0.4;
+    mask-composite: exclude; /* Fixed syntax */
+    opacity: 0.4; /* Fixed syntax */
   }
 </style>
-

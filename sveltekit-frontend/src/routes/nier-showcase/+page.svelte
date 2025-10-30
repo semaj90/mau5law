@@ -2,13 +2,22 @@
   // Svelte 5 runes are auto-imported
   import NierThemeShowcase from '$lib/components/NierThemeShowcase.svelte';
   import NierHeader from '$lib/components/NierHeader.svelte';
-  import CaseCard from '$lib/components/cases/CaseCard.svelte';
   import NierAIAssistant from '$lib/components/ai/NierAIAssistant.svelte';
-  import AIAssistant from '$lib/components/AIAssistant.svelte';
-  import Button from '$lib/components/ui/bitsbutton.svelte';
-  import type { User } from '$lib/types/index';
+  import type { User } from '$lib/types/user'; // Changed import path for User type
+
   let isDarkMode = $state(false);
   let showAIAssistant = $state(false);
+
+  // Dynamic imports for components that might not have default exports
+  let CaseCard = $state<any>(null);
+
+  $effect(() => {
+    (async () => {
+      const CaseCardMod = await import('$lib/components/cases/CaseCard.svelte');
+      CaseCard = (CaseCardMod as any).default ?? CaseCardMod;
+    })();
+  });
+
   // Sample user data
   const user: User = {
     id: 'user-white-001',
@@ -18,8 +27,8 @@
     lastName: 'White',
     avatarUrl: '',
     role: 'admin',
-    createdAt: '2025-01-01T00:00:00Z',
-    updatedAt: '2025-01-01T00:00:00Z',
+    createdAt: new Date('2025-01-01T00:00:00Z'), // Converted to Date object
+    updatedAt: new Date('2025-01-01T00:00:00Z'), // Converted to Date object
     isActive: true,
     emailVerified: true
   }
@@ -28,13 +37,13 @@
     {
       id: 'CASE-2025-001',
       title: 'Machine Lifeform Network Breach',
-      description 'Investigation into unauthorized access of YoRHa combat data through compromised machine network protocols.',
+      description: 'Investigation into unauthorized access of YoRHa combat data through compromised machine network protocols.',
       status: 'active' as const,
       priority: 'critical' as const,
       created: new Date('2025-07-14'),
       assignee: {
         name: '2B',
-        avatar: null;
+        avatar: null,
       },
       stats: {
         evidence: 24,
@@ -47,13 +56,13 @@
     {
       id: 'CASE-2025-002',
       title: 'Android Rights Violation',
-      description 'Analysis of potential violations regarding android autonomy protocols in civilian sectors.',
+      description: 'Analysis of potential violations regarding android autonomy protocols in civilian sectors.',
       status: 'pending' as const,
       priority: 'high' as const,
       created: new Date('2025-07-12'),
       assignee: {
         name: '9S',
-        avatar: null;
+        avatar: null,
       },
       stats: {
         evidence: 12,
@@ -66,13 +75,13 @@
     {
       id: 'CASE-2025-003',
       title: 'Resource Allocation Dispute',
-      description 'Legal review of resource distribution protocols between resistance camps.',
+      description: 'Legal review of resource distribution protocols between resistance camps.',
       status: 'active' as const,
       priority: 'medium' as const,
       created: new Date('2025-07-10'),
       assignee: {
         name: 'A2',
-        avatar: null;
+        avatar: null,
       },
       stats: {
         evidence: 8,
@@ -165,13 +174,15 @@
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each sampleCases as caseData}
-          <CaseCard
-            {caseData}
-            view={handleViewCase}
-            edit={handleEditCase}
-            archive={handleArchiveCase}
-            delete={handleDeleteCase}
-          />
+          {#if CaseCard}
+            <CaseCard
+              {caseData}
+              view={handleViewCase}
+              edit={handleEditCase}
+              archive={handleArchiveCase}
+              delete={handleDeleteCase}
+            />
+          {/if}
         {/each}
       </div>
     </section>
@@ -183,7 +194,9 @@
           Explore the complete NieR: Automata themed component library
         </p>
       </div>
-      <NierThemeShowcase />
+      {#if NierThemeShowcase}
+        <NierThemeShowcase />
+      {/if}
     </section>
     <!-- Features Section -->
     <section class="py-16 border-t border-nier-light-gray dark:border-nier-gray/30">

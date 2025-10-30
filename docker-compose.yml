@@ -1,50 +1,8 @@
 version: "3.9"
-services:
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  triton:
-    image: nvcr.io/nvidia/tritonserver:23.09-py3
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: ["gpu"]
-    command: ["tritonserver", "--model-repository=/models", "--strict-model-config=false"]
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./native/autoencoder/triton_model_repository:/models
-
-  analytics-bridge:
-    build:
-      context: .
-      dockerfile: native/autoencoder/Dockerfile.bridge
-    env_file:
-      - native/autoencoder/.env.bridge.example
-    ports:
-      - "8001:8001"
-    depends_on:
-      - redis
-      - triton
-
-  sveltekit:
-    build:
-      context: ./sveltekit-frontend
-      dockerfile: Dockerfile
-    env_file:
-      - ./sveltekit-frontend/.env
-    ports:
-      - "5173:5173"
-    depends_on:
-      - analytics-bridge
+# NOTE: The top-level `services:` block was consolidated into a single section
+# later in this file. The original duplicated block was removed to prevent
+# "mapping key 'services' already defined" YAML errors when parsing.
 
 x-phaseh-bridge-build: &phaseh-bridge-build
   context: .

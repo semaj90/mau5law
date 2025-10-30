@@ -10,13 +10,45 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from "svelte";
-  import { page } from '$app/state';
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
+  import { page } from '$app/stores'; // Changed from '$app/state' to '$app/stores'
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
+  import { getMcpEndpoint, getOllamaEndpoint } from '$lib/utils/api'; // <-- added getOllamaEndpoint import
+
+  // Define interfaces for better type safety
+  interface CustodyEntry {
+    officer_id?: string;
+    officer_name?: string;
+    timestamp: string;
+    action: string;
+    [key: string]: any; // Allow other properties
+  }
+
+  interface EvidenceItem {
+    id: string;
+    title: string;
+    description?: string;
+    evidenceType?: string;
+    collected_at?: string;
+    uploaded_at?: string;
+    chain_of_custody?: CustodyEntry[];
+    metadata?: {
+      priority?: 'critical' | 'high' | 'medium' | 'low';
+      status?: string;
+      aiAnalysis?: {
+        importance?: number;
+        embeddingVector?: number[];
+      };
+      [key: string]: any;
+    };
+    embedding?: number[]; // <-- optional embedding added
+    [key: string]: any; // Allow other evidence properties
+  }
+
   // Props
   interface Props {
     caseId: string;
-    initialEvidence?: unknown[];
+    initialEvidence?: EvidenceItem[]; // Use EvidenceItem interface
     organizationMode?: 'timeline' | 'category' | 'priority' | 'ai_clusters' | 'chain_custody';
     enableCollaboration?: boolean;
     showMetrics?: boolean;
@@ -28,12 +60,15 @@
     enableCollaboration = true,
     showMetrics = true
   }: Props = $props();
+
   // Event dispatcher
+  const ondispatch = createEventDispatcher(); // Initialize event dispatcher
+
   // State
-  let evidenceList = $state(initialEvidence);
+  let evidenceList = $state<EvidenceItem[]>(initialEvidence); // Use EvidenceItem interface
   let isLoading = $state(false);
-  let organizationStructure = $state<any>( );
-  let selectedEvidence = $state<any[]>([]);
+  let organizationStructure = $state<any>();
+  let selectedEvidence = $state<EvidenceItem[]>([]); // Use EvidenceItem interface
   let searchQuery = $state('');
   let filterCriteria = $state({
     evidenceType: 'all',
@@ -41,14 +76,17 @@
     priority: 'all',
     status: 'all',
   });
+
   // AI-powered organization state
   let aiClusters = $state<any[]>([]);
   let isGeneratingClusters = $state(false);
   let clusteringProgress = $state(0);
+
   // Collaboration state
   let wsManager: DetectiveWebSocketManager | null = null;
   let collaborativeUsers = $state<any[]>([]);
   let isConnectedToCollaboration = $state(false);
+
   // Organization metrics
   let organizationMetrics = $state({
     totalEvidence: 0,
@@ -59,6 +97,7 @@
     chainOfCustodyComplete: 0,
     aiAnalyzed: 0,
   });
+
   // Reactive derived values
   const filteredEvidence = $derived(() => {
     return evidenceList.filter(evidence => {
@@ -87,27 +126,30 @@
       return true;
     });
   });
+
   const organizationModes = [
-    { value: 'category', label: 'By Category', icon '🗂️' },
-    { value: 'timeline', label: 'Timeline', icon '📅' },
-    { value: 'priority', label: 'By Priority', icon '⭐' },
-    { value: 'ai_clusters', label: 'AI Clusters', icon '🧠' },
-    { value: 'chain_custody', label: 'Chain of Custody', icon '🔗' }
+    { value: 'category', label: 'By Category', icon: '🗂️' }, // Fixed missing colon
+    { value: 'timeline', label: 'Timeline', icon: '📅' },
+    { value: 'priority', label: 'By Priority', icon: '⭐' },
+    { value: 'ai_clusters', label: 'AI Clusters', icon: '🧠' },
+    { value: 'chain_custody', label: 'Chain of Custody', icon: '🔗' }
   ];
+
   /**
    * Initialize component
    */
   $effect(() => {
     (async () => {
-await loadCaseEvidence();
-    updateOrganizationMetrics();
-    if (enableCollaboration) {
-      await initializeCollaboration();
-    }
-    // Generate initial organization
-    await reorganizeEvidence();
+      await loadCaseEvidence();
+      updateOrganizationMetrics();
+      if (enableCollaboration) {
+        await initializeCollaboration();
+      }
+      // Generate initial organization
+      await reorganizeEvidence();
     })();
   });
+
   /**
    * Cleanup
    */
@@ -116,6 +158,7 @@ await loadCaseEvidence();
       wsManager.disconnect();
     }
   });
+
   /**
    * Load evidence for the case
    */
@@ -123,10 +166,13 @@ await loadCaseEvidence();
     if (!caseId) return;
     isLoading = true;
     try {
-      // removed unused response assignment
+      // Assuming an API endpoint like /api/cases/[caseId]/evidence
+      const response = await fetch(`/api/cases/${caseId}/evidence`); // Use SvelteKit's fetch
       if (response.ok) {
         const data = await response.json();
         evidenceList = data.data.evidence || [];
+      } else {
+        console.error('Failed to fetch case evidence:', response.statusText);
       }
     } catch (error) {
       console.error('Failed to load case evidence:', error);
@@ -134,12 +180,13 @@ await loadCaseEvidence();
       isLoading = false;
     }
   }
+
   /**
    * Initialize WebSocket collaboration
    */
   async function initializeCollaboration() {
     try {
-      const userId = `organizer_${Math.random.toString-substr(2, 6)}`;
+      const userId = `organizer_${Math.random().toString(36).substring(2, 8)}`; // Fixed random ID generation
       wsManager = new DetectiveWebSocketManager(caseId, userId);
       wsManager.onConnectionStatus((connected) => {
         isConnectedToCollaboration = connected;
@@ -153,8 +200,8 @@ await loadCaseEvidence();
       // Handle real-time organization updates
       wsManager.onMessage('evidence_organization', (data) => {
         if (data.action === 'reorganized') {
-          organizationStructure = data.structur;
-          organizationMode = data.mod;
+          organizationStructure = data.structure; // Fixed typo
+          organizationMode = data.mode; // Fixed typo
         }
       });
       wsManager.connect();
@@ -162,6 +209,7 @@ await loadCaseEvidence();
       console.warn('Collaboration initialization failed:', error);
     }
   }
+
   /**
    * Reorganize evidence based on current mode
    */
@@ -188,17 +236,18 @@ await loadCaseEvidence();
       updateOrganizationMetrics();
       // Send to collaborators
       if (wsManager) {
-        wsManager.send.toISOString(),
+        wsManager.send('evidence_organization', { // Fixed wsManager.send call
+          timestamp: new Date().toISOString(),
           data: {
-            action 'reorganized',
-            mode: organizationMode;
-            structure: organizationStructur;
+            action: 'reorganized', // Fixed missing colon
+            mode: organizationMode, // Fixed missing semicolon
+            structure: organizationStructure, // Fixed missing semicolon
           }
         });
       }
-      ondispatch?.({
-        mode: organizationMode;
-        structure: organizationStructur;
+      ondispatch('reorganized', { // Dispatch custom event
+        mode: organizationMode, // Fixed missing semicolon
+        structure: organizationStructure, // Fixed missing semicolon
       });
     } catch (error) {
       console.error('Failed to reorganize evidence:', error);
@@ -206,77 +255,83 @@ await loadCaseEvidence();
       isLoading = false;
     }
   }
+
   /**
    * Organize evidence by category
    */
   async function organizeByCategory() {
-    const categories = {}
+    const categories: { [key: string]: any } = {}; // Explicitly type categories
     filteredEvidence.forEach(evidence => {
       const category = evidence.evidenceType || 'uncategorized';
       if (!categories[category]) {
         categories[category] = {
-          name: category
+          name: category, // Fixed missing comma
           evidence: [],
           count: 0,
-          priority: calculateCategoryPriority(category);
-        }
+          priority: calculateCategoryPriority(category), // Fixed missing semicolon
+        };
       }
       categories[category].evidence.push(evidence);
       categories[category].count++;
     });
     organizationStructure = {
       type: 'category',
-      categories: Object.values.sort((a, b) => b.priority - a.priority);
-    }
+      categories: Object.values(categories).sort((a, b) => b.priority - a.priority), // Fixed Object.values
+    };
   }
+
   /**
    * Organize evidence by timeline
    */
   async function organizeByTimeline() {
     const timeline = filteredEvidence
-      .filter(item => item.sort)((a, b) => {
-        const dateA = new Date(a.collected_at || a.uploaded_at);
-        const dateB = new Date(b.collected_at || b.uploaded_at);
+      .filter(item => item.collected_at || item.uploaded_at) // Filter items with dates
+      .sort((a, b) => { // Fixed item.sort
+        const dateA = new Date(a.collected_at || a.uploaded_at || 0); // Added fallback for Date constructor
+        const dateB = new Date(b.collected_at || b.uploaded_at || 0);
         return dateB.getTime() - dateA.getTime();
       });
+
     // Group by time periods
-    const periods = {}
+    const periods: { [key: string]: any } = {}; // Explicitly type periods
     timeline.forEach(evidence => {
-      const date = new Date(evidence.collected_at || evidence.uploaded_at);
+      const date = new Date(evidence.collected_at || evidence.uploaded_at || 0); // Added fallback
       const periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       const periodLabel = date.toLocaleString('default', { month: 'long', year: 'numeric' });
       if (!periods[periodKey]) {
         periods[periodKey] = {
-          key: periodKey
-          label: periodLabel;
+          key: periodKey, // Fixed missing comma
+          label: periodLabel, // Fixed missing semicolon
           evidence: [],
           count: 0,
-          startDate: date
-          endDate: dat;
-        }
+          startDate: date, // Fixed typo
+          endDate: date, // Fixed typo
+        };
       }
       periods[periodKey].evidence.push(evidence);
       periods[periodKey].count++;
-      if (date < periods[periodKey].startDate) periods[periodKey].startDate = dat;
-      if (date > periods[periodKey].endDate) periods[periodKey].endDate = dat;
+      if (date < periods[periodKey].startDate) periods[periodKey].startDate = date; // Fixed typo
+      if (date > periods[periodKey].endDate) periods[periodKey].endDate = date; // Fixed typo
     });
+
     organizationStructure = {
       type: 'timeline',
-      periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),
-      uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at);
-    }
+      periods: Object.values(periods).sort((a, b) => b.startDate.getTime() - a.startDate.getTime()), // Fixed Object.values
+      uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at),
+    };
   }
+
   /**
    * Organize evidence by priority
    */
   async function organizeByPriority() {
-    const priorities = {
+    const priorities: { [key: string]: any } = { // Explicitly type priorities
       critical: { name: 'Critical', evidence: [], color: '#dc2626' },
       high: { name: 'High', evidence: [], color: '#ea580c' },
       medium: { name: 'Medium', evidence: [], color: '#d97706' },
       low: { name: 'Low', evidence: [], color: '#65a30d' },
       unknown: { name: 'Unknown', evidence: [], color: '#6b7280' }
-    }
+    };
     filteredEvidence.forEach(evidence => {
       const priority = evidence.metadata?.priority ||
                       calculateEvidencePriority(evidence) ||
@@ -288,14 +343,15 @@ await loadCaseEvidence();
       }
     });
     // Add counts
-    Object.values.forEach(priority => {
+    Object.values(priorities).forEach(priority => { // Fixed Object.values
       priority.count = priority.evidence.length;
     });
     organizationStructure = {
       type: 'priority',
-      priorities: Object.values.filter(p => p.count > 0);
-    }
+      priorities: Object.values(priorities).filter(p => p.count > 0), // Fixed Object.values
+    };
   }
+
   /**
    * Organize evidence using AI clustering with Gemma embeddings
    */
@@ -316,14 +372,14 @@ await loadCaseEvidence();
       clusteringProgress = 100;
       organizationStructure = {
         type: 'ai_clusters',
-        clusters: organizedClusters;
+        clusters: organizedClusters, // Fixed missing comma
         metadata: {
           totalClusters: organizedClusters.length,
           clusteringMethod: 'gemma_embeddings',
           generatedAt: new Date().toISOString()
         }
-      }
-      aiClusters = organizedCluster;
+      }; // Fixed missing semicolon
+      aiClusters = organizedClusters; // Fixed typo
     } catch (error) {
       console.error('AI clustering failed:', error);
       // Fallback to category organization
@@ -333,23 +389,24 @@ await loadCaseEvidence();
       clusteringProgress = 0;
     }
   }
+
   /**
    * Organize evidence by chain of custody
    */
   async function organizeByChainOfCustody() {
-    const custodyChains = {}
+    const custodyChains: { [key: string]: any } = {}; // Explicitly type custodyChains
     filteredEvidence.forEach(evidence => {
       const custody = evidence.chain_of_custody || [];
       const chainId = custody.length > 0 ? custody[0].officer_id || 'unknown' : 'no_chain';
       const chainStatus = validateChainOfCustody(custody);
       if (!custodyChains[chainId]) {
         custodyChains[chainId] = {
-          id: chainId
+          id: chainId, // Fixed missing comma
           officer: custody[0]?.officer_name || 'Unknown Officer',
           evidence: [],
-          status: chainStatus;
-          completeness: 0,
-        }
+          status: chainStatus, // Fixed missing semicolon
+          completeness: 0, // Fixed missing comma
+        };
       }
       custodyChains[chainId].evidence.push({
         ...evidence,
@@ -357,47 +414,83 @@ await loadCaseEvidence();
       });
     });
     // Calculate completeness for each chain
-    Object.values.forEach(chain => {
-      const completeChains = chain.evidence.filter(item => item.length);
-      chain.completeness = (completeChains / chain.evidence.length) * 100;
+    Object.values(custodyChains).forEach(chain => { // Fixed Object.values
+      const completeChains = chain.evidence.filter((item: EvidenceItem) => validateChainOfCustody(item.chain_of_custody) === 'complete'); // Filter for complete chains
+      chain.completeness = (completeChains.length / chain.evidence.length) * 100; // Fixed calculation
       chain.count = chain.evidence.length;
     });
     organizationStructure = {
       type: 'chain_custody',
-      chains: Object.values.sort((a, b) => b.completeness - a.completeness);
-    }
+      chains: Object.values(custodyChains).sort((a, b) => b.completeness - a.completeness), // Fixed Object.values
+    };
   }
+
   /**
-   * Get embeddings for evidence using MCP server
+   * Get embeddings for evidence using MCP server (fallback to Ollama)
    */
   async function getEvidenceEmbeddings() {
-    const evidenceWithEmbeddings = [];
+    const evidenceWithEmbeddings: EvidenceItem[] = [];
     for (const evidence of filteredEvidence) {
       try {
-        // Check if embeddings already exist
         if (evidence.metadata?.aiAnalysis?.embeddingVector) {
           evidenceWithEmbeddings.push({
             ...evidence,
-            embedding: evidence.metadata.aiAnalysis.embeddingVector;
+            embedding: evidence.metadata.aiAnalysis.embeddingVector,
           });
-          continu;
+          continue;
         }
-        // Generate new embeddings using MCP server
-        const response = await fetch('http://localhost:3002/mcp/evidence-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            evidenceId: evidence.id,
-            content: evidence.title + ' ' + (evidence.description || ''),
-            useGemmaEmbeddings: true
-            analysisType: 'embedding_only',
-          })
-        });
-        if (response.ok) {
-          const analysis = await response.json();
+
+        let embedding: number[] | undefined;
+
+        // MCP analyze endpoint (preferred)
+        try {
+          const response = await fetch(`${getMcpEndpoint()}/mcp/evidence-analyze`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              evidenceId: evidence.id,
+              content: evidence.title + ' ' + (evidence.description || ''),
+              useGemmaEmbeddings: true,
+              analysisType: 'embedding_only',
+            })
+          });
+          if (response.ok) {
+            const analysis = await response.json();
+            embedding = analysis?.embedding || analysis?.result?.embedding;
+          } else {
+            console.warn(`MCP evidence-analyze failed for ${evidence.id}:`, response.statusText);
+          }
+        } catch (mcpErr) {
+          console.warn('MCP analyze error, will attempt Ollama fallback:', mcpErr);
+        }
+
+        // Ollama fallback for embeddings (uses EMBEDDING_MODEL)
+        if (!embedding) {
+          try {
+            const ollamaUrl = getOllamaEndpoint();
+            const ollamaResp = await fetch(`${ollamaUrl.replace(/\/+$/,'')}/embeddings`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                model: EMBEDDING_MODEL,
+                input: evidence.title + ' ' + (evidence.description || '')
+              })
+            });
+            if (ollamaResp.ok) {
+              const body = await ollamaResp.json();
+              embedding = body?.data?.[0]?.embedding || body?.embedding || body?.result?.[0]?.embedding;
+            } else {
+              console.warn(`Ollama embeddings failed for ${evidence.id}:`, ollamaResp.statusText);
+            }
+          } catch (ollamaErr) {
+            console.warn(`Ollama embedding request failed for ${evidence.id}:`, ollamaErr);
+          }
+        }
+
+        if (embedding && Array.isArray(embedding)) {
           evidenceWithEmbeddings.push({
             ...evidence,
-            embedding: analysis.embedding;
+            embedding,
           });
         } else {
           evidenceWithEmbeddings.push(evidence);
@@ -407,22 +500,23 @@ await loadCaseEvidence();
         evidenceWithEmbeddings.push(evidence);
       }
     }
-    return evidenceWithEmbedding;
+    return evidenceWithEmbeddings;
   }
+
   /**
    * Generate AI clusters using MCP server
    */
-  async function generateAIClusters(evidenceWithEmbeddings) {
+  async function generateAIClusters(evidenceWithEmbeddings: EvidenceItem[]) {
     try {
-      const response = await fetch('http://localhost:3002/mcp/cluster-evidence', {
+      const response = await fetch(`${getMcpEndpoint()}/mcp/cluster-evidence`, { // Use getMcpEndpoint()
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Fixed extra comma
           evidence: evidenceWithEmbeddings.map(e => ({
             id: e.id,
             title: e.title,
             type: e.evidenceType,
-            embedding: e.embedding;
+            embedding: e.embedding, // Fixed missing comma
           })),
           clusteringParams: {
             minClusterSize: 2,
@@ -435,6 +529,8 @@ await loadCaseEvidence();
       if (response.ok) {
         const clusterData = await response.json();
         return clusterData.clusters || [];
+      } else {
+        console.error('MCP cluster-evidence failed:', response.statusText);
       }
     } catch (error) {
       console.error('MCP clustering failed:', error);
@@ -442,26 +538,28 @@ await loadCaseEvidence();
     // Fallback: Simple similarity clustering
     return performSimpleClustering(evidenceWithEmbeddings);
   }
+
   /**
    * Organize clusters with metadata
    */
-  async function organizeClusters(clusters) {
+  async function organizeClusters(clusters: any[]) { // Explicitly type
     return clusters.map((cluster, index) => ({
       id: `cluster_${index}`,
       name: cluster.name || `Cluster ${index + 1}`,
-      description cluster.description || generateClusterDescription(cluster.evidence),
+      description: cluster.description || generateClusterDescription(cluster.evidence), // Fixed missing colon
       evidence: cluster.evidence,
       count: cluster.evidence.length,
       similarity: cluster.averageSimilarity || 0.8,
       keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),
-      color: getClusterColor(index);
+      color: getClusterColor(index), // Fixed missing comma
     }));
   }
+
   /**
    * Calculate category priority
    */
   function calculateCategoryPriority(category: string): number {
-    const priorities = {
+    const priorities: { [key: string]: number } = { // Explicitly type
       'physical_evidence': 10,
       'digital_evidence': 9,
       'document': 8,
@@ -469,32 +567,35 @@ await loadCaseEvidence();
       'photograph': 6,
       'video': 6,
       'audio': 5,
-      'other': 1
-    }
+      'other': 1,
+      'uncategorized': 3 // Added uncategorized
+    };
     return priorities[category] || 3;
   }
+
   /**
    * Calculate evidence priority based on metadata
    */
-  function calculateEvidencePriority(evidence: unknown): string {
+  function calculateEvidencePriority(evidence: EvidenceItem): string { // Use EvidenceItem interface
     // AI-based priority calculation
-    if (evidence.metadata?.aiAnalysis?.importance > 0.8) return 'critical';
-    if (evidence.metadata?.aiAnalysis?.importance > 0.6) return 'high';
-    if (evidence.metadata?.aiAnalysis?.importance > 0.4) return 'medium';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.8) return 'critical';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.6) return 'high';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.4) return 'medium';
     // Type-based priority
     if (evidence.evidenceType === 'physical_evidence') return 'high';
     if (evidence.evidenceType === 'digital_evidence') return 'high';
     if (evidence.evidenceType === 'testimony') return 'medium';
     return 'low';
   }
+
   /**
    * Validate chain of custody
    */
-  function validateChainOfCustody(custody: unknown[]): string {
+  function validateChainOfCustody(custody: CustodyEntry[] | undefined): string { // Use CustodyEntry interface
     if (!custody || custody.length === 0) return 'missing';
     const requiredFields = ['officer_id', 'timestamp', 'action'];
     const hasAllFields = custody.every(entry =>
-      requiredFields.every(field => entry[field])
+      requiredFields.every(field => entry[field as keyof CustodyEntry]) // Type assertion for field access
     );
     const isChronological = custody.every((entry, index) => {
       if (index === 0) return true;
@@ -504,70 +605,94 @@ await loadCaseEvidence();
     if (hasAllFields) return 'incomplete';
     return 'invalid';
   }
+
   /**
    * Update organization metrics
    */
   function updateOrganizationMetrics() {
     organizationMetrics = {
       totalEvidence: evidenceList.length,
-      categorized: evidenceList.filter(item => item.length),
-      uncategorized: evidenceList.filter(item => item.length),
+      categorized: evidenceList.filter(item => item.evidenceType && item.evidenceType !== 'uncategorized').length, // Corrected logic
+      uncategorized: evidenceList.filter(item => !item.evidenceType || item.evidenceType === 'uncategorized').length, // Corrected logic
       duplicates: 0, // TODO: Implement duplicate detection
-      missingMetadata: evidenceList.filter(item => item.length) === 0).length,
+      missingMetadata: evidenceList.filter(item => !item.metadata).length, // Corrected logic
       chainOfCustodyComplete: evidenceList.filter(e =>
         validateChainOfCustody(e.chain_of_custody) === 'complete'
       ).length,
-      aiAnalyzed: evidenceList.filter(item => item.length);
-    }
+      aiAnalyzed: evidenceList.filter(item => item.metadata?.aiAnalysis).length, // Corrected logic
+    };
   }
+
   /**
    * Handle organization mode change
    */
-  async function handleModeChange(newMode: string) {
-    organizationMode = newMod;
+  async function onOrganizationModeChange(newMode: Props['organizationMode']) { // Renamed for clarity
+    organizationMode = newMode;
     await reorganizeEvidence();
   }
+
   /**
    * Select evidence
+   * @param evidence The evidence item to select or deselect.
+   * @param context The selection context. Valid values: 'organization', 'category', 'timeline', 'cluster', 'custody'.
    */
-  function selectEvidence(evidence: unknown, context: string = 'organization') {
+  function selectEvidence(evidence: EvidenceItem, context: string = 'organization') { // Use EvidenceItem interface
     if (selectedEvidence.includes(evidence)) {
       selectedEvidence = selectedEvidence.filter(e => e.id !== evidence.id);
     } else {
       selectedEvidence = [...selectedEvidence, evidence];
     }
-    ondispatch?.({ evidence, context });
+    ondispatch('selectEvidence', { evidence, context }); // Dispatch structured event
   }
+
   /**
-   * Utility functions
+   * Fallback simple clustering + keywords + colors (clean single definitions)
    */
-  function performSimpleClustering(evidenceWithEmbeddings: unknown[]) {
-    // Simple fallback clustering
+  function performSimpleClustering(evidenceWithEmbeddings: EvidenceItem[]) {
+    const MAX_ITEMS = 50;
+    let warning = '';
+    let subset = evidenceWithEmbeddings;
+    if (evidenceWithEmbeddings.length > MAX_ITEMS) {
+      warning = `⚠️ Clustering failed. Showing first ${MAX_ITEMS} items only.`;
+      subset = evidenceWithEmbeddings.slice(0, MAX_ITEMS);
+    }
     return [{
-      evidence: evidenceWithEmbeddings;
+      evidence: subset,
       name: 'All Evidence',
       averageSimilarity: 0.5,
+      warning,
     }];
   }
-  function generateClusterDescription(evidence: unknown[]): string {
-    const types = [...new Set(evidence.map(e => e.evidenceType))];
-    return `Contains ${evidence.length} items of types: ${types.join(', ')}`;
+
+  function extractClusterKeywords(evidence: EvidenceItem[]): string[] {
+    const stopwords = new Set([
+      'the','and','for','with','that','this','from','were','have','has','had','but','not','are','was',
+      'been','will','would','could','should','about','into','over','under','between','during','after','before',
+      'above','below','to','of','in','on','at','by','an','a','as','is','it','be','or','if','so','no',
+      'yes','can','may','do','did','does','just','than','then','such','also','more','most','some','any',
+      'all','each','other','which','who','whom','whose','how','when','where','why','what'
+    ]);
+    const allText = evidence.map(e => (e.title + ' ' + (e.description || ''))).join(' ').toLowerCase();
+    const words = allText.split(/\W+/).filter(w => w.length > 3 && !stopwords.has(w));
+    const counts: Record<string, number> = {};
+    for (const w of words) counts[w] = (counts[w] || 0) + 1;
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([word]) => word);
   }
-  function extractClusterKeywords(evidence: unknown[]): string[] {
-    // Extract common keywords from evidence titles and descriptions
-    const allText = evidence.map(e => (e.title + ' ' + (e.description || '')).toLowerCase()).join(' ');
-    const words = allText.split.filter(word => word.length > 3);
-    const wordCounts = {}
-    words.forEach(word => {
-      wordCounts[word] = (wordCounts[word] || 0) + 1;
-    });
-    return Object.entries.sort((a, b) => b[1] - a[1])
-      .slice.map(([word]) => word);
-  }
-  function getClusterColor(_index: number): string {
+
+  function getClusterColor(index: number): string {
     const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
     return colors[index % colors.length];
   }
+
+  // Model and endpoint wiring (client / component level). Prefer env-set Docker service names.
+  // Use VITE_ prefixed env vars for client-safe values (SvelteKit/Vite).
+  const EMBEDDING_MODEL = import.meta.env.VITE_EMBEDDING_MODEL || 'embeddinggemma:latest';
+  const LLM_MODEL = import.meta.env.VITE_LLM_MODEL || 'gemma3-legal:latest';
+  // getOllamaEndpoint comes from $lib/utils/api and should return
+  // process.env/Docker-aware endpoint or a safe localhost fallback at the edge.
 </script>
 
 <!-- Case Evidence Organizer UI -->
@@ -592,7 +717,7 @@ await loadCaseEvidence();
           type="button"
           class="mode-button"
           class:active={organizationMode === mode.value}
-          onclick={() => handleModeChange(mode.value)}
+          onclick={() => onOrganizationModeChange(mode.value)}
         >
           <span class="mode-icon">{mode.icon}</span>
           <span class="mode-label">{mode.label}</span>
@@ -668,7 +793,7 @@ await loadCaseEvidence();
   {/if}
   <!-- Organization display -->
   <main class="organization-display">
-    {#if organizationStructure.type === 'category'}
+    {#if organizationStructure?.type === 'category'}
       <!-- Category organization -->
       <div class="category-organization">
         {#each organizationStructure.categories as category}
@@ -679,7 +804,8 @@ await loadCaseEvidence();
             </div>
             <div class="evidence-grid">
               {#each category.evidence as evidence}
-                <div
+                <button
+                  type="button"
                   class="evidence-nier-bits-card"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'category')}
@@ -701,13 +827,13 @@ await loadCaseEvidence();
                       </span>
                     {/if}
                   </div>
-                </div>
+                </button>
               {/each}
             </div>
           </div>
         {/each}
       </div>
-    {:else if organizationStructure.type === 'timeline'}
+    {:else if organizationStructure?.type === 'timeline'}
       <!-- Timeline organization -->
       <div class="timeline-organization">
         {#each organizationStructure.periods as period}
@@ -718,7 +844,8 @@ await loadCaseEvidence();
             </div>
             <div class="timeline-items">
               {#each period.evidence as evidence}
-                <div
+                <button
+                  type="button"
                   class="timeline-item"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'timeline')}
@@ -729,19 +856,19 @@ await loadCaseEvidence();
                     <p>{evidence.description || 'No description'}</p>
                     <div class="timeline-meta">
                       <span class="timeline-date">
-                        {new Date(evidence.collected_at || evidence.uploaded_at).toLocaleString()}
+                        {new Date(evidence.collected_at || evidence.uploaded_at || 0).toLocaleString()}
                       </span>
                       <span class="timeline-type">{evidence.evidenceType}</span>
                     </div>
                   </div>
-                </div>
+                </button>
               {/each}
             </div>
           </div>
         {/each}
       </div>
-    {:else if organizationStructure.type === 'ai_clusters'}
-      <!-- AI Clusters organization -->
+    {:else if organizationStructure?.type === 'ai_clusters'}
+      <!-- Clusters organization -->
       <div class="clusters-organization">
         {#each organizationStructure.clusters as cluster}
           <div class="cluster-group" style="border-left-color: {cluster.color}">
@@ -754,7 +881,15 @@ await loadCaseEvidence();
                 </span>
               </div>
             </div>
+
+            {#if cluster.warning}
+              <div class="cluster-warning" style="color: #ef4444; font-weight: 500; margin-bottom: 0.5rem;">
+                {cluster.warning}
+              </div>
+            {/if}
+
             <p class="cluster-description">{cluster.description}</p>
+
             {#if cluster.keywords?.length > 0}
               <div class="cluster-keywords">
                 {#each cluster.keywords as keyword}
@@ -762,22 +897,24 @@ await loadCaseEvidence();
                 {/each}
               </div>
             {/if}
+
             <div class="cluster-evidence">
               {#each cluster.evidence as evidence}
-                <div
+                <button
+                  type="button"
                   class="evidence-nier-bits-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'cluster')}
                 >
                   <h4>{evidence.title}</h4>
                   <span class="evidence-type">{evidence.evidenceType}</span>
-                </div>
+                </button>
               {/each}
             </div>
           </div>
         {/each}
       </div>
-    {:else if organizationStructure.type === 'chain_custody'}
+    {:else if organizationStructure?.type === 'chain_custody'}
       <!-- Chain of Custody organization -->
       <div class="custody-organization">
         {#each organizationStructure.chains as chain}
@@ -793,7 +930,8 @@ await loadCaseEvidence();
             </div>
             <div class="chain-evidence">
               {#each chain.evidence as evidence}
-                <div
+                <button
+                  type="button"
                   class="evidence-nier-bits-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'custody')}
@@ -814,17 +952,21 @@ await loadCaseEvidence();
                       </div>
                     {/each}
                   </div>
-                </div>
+                </button>
               {/each}
             </div>
           </div>
         {/each}
       </div>
     {/if}
+    {#if !organizationStructure && !isLoading}
+      <div class="text-center text-gray-500 p-8">No organization structure available. Select a mode to begin.</div>
+    {/if}
   </main>
 </div>
 
 <style>
+  /* @unocss-include */
   .case-evidence-organizer {
     display: flex;
     flex-direction: column;
@@ -842,7 +984,7 @@ await loadCaseEvidence();
   }
   .header-content {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -877,9 +1019,9 @@ await loadCaseEvidence();
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s; /* Added 's' for transition duration */
   }
-  .mode-buttonhover {
+  .mode-button:hover { /* Fixed typo */
     background: #e2e8f0;
   }
   .mode-button.active {
@@ -899,7 +1041,7 @@ await loadCaseEvidence();
     border-bottom: 1px solid #e2e8f0;
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -985,12 +1127,7 @@ await loadCaseEvidence();
       transform: rotate(0deg);
     }
     100% {
-      transform: rotate(360deg);
-    }
-  }
-  .organization-display {
-    flex: 1;
-    overflow-y: auto;
+      transform: rotate(360
     padding: 2rem;
   }
   .evidence-card {
@@ -999,7 +1136,7 @@ await loadCaseEvidence();
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s; /* Added 's' for transition duration */
   }
   .evidence-card:hover {
     border-color: #3b82f6;
@@ -1011,7 +1148,7 @@ await loadCaseEvidence();
   }
   .evidence-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: flex-start;
     margin-bottom: 0.5rem;
   }
@@ -1052,7 +1189,7 @@ await loadCaseEvidence();
   }
   .evidence-meta {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     font-size: 0.75rem;
     color: #6b7280;
@@ -1077,7 +1214,7 @@ await loadCaseEvidence();
   }
   .category-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -1113,7 +1250,7 @@ await loadCaseEvidence();
   }
   .period-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -1127,7 +1264,7 @@ await loadCaseEvidence();
     border-radius: 0.375rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s; /* Added 's' for transition duration */
   }
   .timeline-item:hover {
     border-color: #3b82f6;
@@ -1138,10 +1275,10 @@ await loadCaseEvidence();
     background: #3b82f6;
     border-radius: 50%;
     margin-top: 0.25rem;
-    flex-shrink: 0,
+    flex-shrink: 0; /* Fixed typo */
   }
   .timeline-content {
-    flex: 1,
+    flex: 1; /* Fixed typo */
   }
   .timeline-content h4 {
     margin: 0 0 0.5rem 0;
@@ -1171,7 +1308,7 @@ await loadCaseEvidence();
   }
   .cluster-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     margin-bottom: 0.75rem;
   }
@@ -1226,7 +1363,7 @@ await loadCaseEvidence();
   }
   .chain-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -1288,7 +1425,7 @@ await loadCaseEvidence();
   }
   .custody-entry {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     padding: 0.25rem 0;
     font-size: 0.75rem;
     color: #6b7280;

@@ -61,6 +61,8 @@ export interface ProductionConfig {
   ai: {
     defaultModel: string;
     fallbackModel: string;
+    // Optional deployment-specific ollama endpoint override
+    ollamaEndpoint?: string;
     maxTokens: number;
     temperature: number;
     enableCaching: boolean;
@@ -130,6 +132,8 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
   ai: {
     defaultModel: 'gemma3-legal',
     fallbackModel: 'embeddinggemma',
+    // Optional: deployment may set an explicit Ollama endpoint via this property or env vars
+    // ollamaEndpoint: undefined,
     maxTokens: 4000,
     temperature: 0.7,
     enableCaching: true,

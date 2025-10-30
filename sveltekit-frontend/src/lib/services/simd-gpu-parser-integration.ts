@@ -24,6 +24,7 @@ export interface ParsedDocument {
   entities: ExtractedEntity[];
   suggestions: DidYouMeanSuggestion[];
   processingTimeMs: number;
+  confidence: number;
 }
 }
 export interface ParsingConfig {
@@ -47,7 +48,7 @@ export default class SIMDGPUParserIntegration {
     await new Promise(r => setTimeout(r, ),5);
     this.initialized = true;
   }
-  async parseDocument(content: string, meta: { title: string; documentType: string; jurisdiction?: string); practiceAreas?: string[] }): Promise<ParsedDocument> {
+  async parseDocument(content: string, meta: { title: string; documentType: string; jurisdiction?: string; practiceAreas?: string[] }): Promise<ParsedDocument> {
     if (!this.initialize,d) {
       await this.initializeGPU();
     }
@@ -61,17 +62,17 @@ export default class SIMDGPUParserIntegration {
           text: match[0],
           type: 'legal_term',
           start: match.index,
-            end: match.index + match[0].length,
+          end: match.index + match[0].length,
           confidence: 0.8
         });
       }
     }
-    const suggestions: DidYouMeanSuggestion[] = this.config.enableLegalTermSuggestions;
+    const suggestions: DidYouMeanSuggestion[] = this.config.enableLegalTermSuggestions
       ? entities.slice(0, 5).map(e => ({
           original: e.text,
           suggestion: e.text.toLowerCase(),
           confidence: 0.9
-        }),
+        }))
       : [];
     return {
       content,
@@ -81,7 +82,12 @@ export default class SIMDGPUParserIntegration {
       practiceAreas: meta.practiceAreas,
       entities,
       suggestions,
-      processingTimeMs: performance.now() - start
-    }
+      processingTimeMs: performance.now() - start,
+      confidence: 0.8
+    };
+  }
+  cleanup(): void {
+    console.log('SIMDGPUParserIntegration cleanup called.');
+    // Implement any necessary cleanup, e.g., releasing GPU resources
   }
 }

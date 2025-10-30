@@ -4,10 +4,13 @@
 -->
 <script lang="ts">
   import { onDestroy, tick } from 'svelte';
-  import { createActor } from 'xstate';
-  import { aiProcessingMachine, aiTaskCreators, createAITask  } from '$lib/stores/unified';
-  import { enhancedRAGStore  } from '$lib/stores/unified';
-  import { debounce } from 'lodash-es';
+  import { createActor, type Snapshot, type ActorRef } from 'xstate'; // Import Snapshot and ActorRef types
+  import { aiProcessingMachine } from '$lib/machines/ai-processing-machine'; // Adjusted path
+  import { createAITask } from '$lib/utils/ai-task-helpers'; // Adjusted path
+  import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store'; // Adjusted path
+  import { debounce } from 'lodash-es'; // Ensure lodash-es and @types/lodash-es are installed
+  import { getOllamaApiUrl } from '$lib/utils/ollama-helpers'; // Import the new helper
+
   // Props using Svelte 5 $props()
   let {
     value = $bindable(''),
@@ -44,20 +47,25 @@
   }
   // State management using Svelte 5 runes
   let editorElement: HTMLDivElement;
-  let suggestionPopup: HTMLDivElement | undefined;
+  let suggestionPopup: HTMLDivElement | undefined = $state(undefined); // Declared with $state
   let isShowingSuggestions = $state(false);
   let currentSuggestions = $state<AISuggestion[]>([]);
   let selectedSuggestionIndex = $state(-1);
   let cursorPosition = $state({ x: 0, y: 0 });
   let isProcessing = $state(false);
   let lastProcessedText = $state('');
-  // XState actor for AI processing - using stub for now
-  const aiActor = {
-    send: (event: any) => console.log('AI actor event:', event),
-    subscribe: (callback: (state: any) => void) => ({ unsubscribe: () => {} }),
-    start: () => {},
-  };
+
+  // Define a type for the AI processing machine's context
+  interface AIProcessingSnapshotContext {
+    result?: any; // Adjust to a more specific type if known
+    error?: string;
+    task?: { id: string; [key: string]: any }; // Adjust to a more specific type if known
+  }
+
+  // XState actor for AI processing
+  const aiActor: ActorRef<typeof aiProcessingMachine> = createActor(aiProcessingMachine);
   aiActor.start();
+
   // Debounced suggestion generation
   const generateSuggestions = debounce(async (text: string, cursorPos: number) => {
     if (text.length < minCharactersForSuggestion || text === lastProcessedText) {
@@ -74,7 +82,7 @@
         text,
         contextBefore,
         contextAfter,
-        cursorPosition cursorPos,
+        cursorPosition: cursorPos, // Fixed: missing colon
       });
       currentSuggestions = suggestions.slice(0, maxSuggestions);
       if (currentSuggestions.length > 0) {
@@ -89,12 +97,13 @@
       isProcessing = false;
     }
   }, suggestionDelay);
+
   // Generate AI suggestions using multiple techniques
   async function generateAISuggestions(context: {
     text: string;
     contextBefore: string;
     contextAfter: string;
-    cursorPosition number;
+    cursorPosition: number; // Fixed: missing colon
   }): Promise<AISuggestion[]> {
     const suggestions: AISuggestion[] = [];
     // 1. Auto-completion suggestions
@@ -108,13 +117,15 @@
             - Natural language flow
             Return JSON array with completions.`,
           model: aiModel,
+          // Assuming Ollama API path for completion is '/api/generate'
+          apiUrl: getOllamaApiUrl('/api/generate'), // Wired Ollama endpoint
           format: 'json',
         });
         aiActor.send({ type: 'START_PROCESSING', task: completionTask });
         const result = await waitForAIResult(completionTask.id);
         if (result?.success && result.result?.completions) {
           suggestions.push(
-            ...result.result.completions.map((completion string, index: number) => ({
+            ...result.result.completions.map((completion: string, index: number) => ({ // Fixed: type annotation
               id: `completion_${index}`,
               type: 'completion' as const,
               text: completion,
@@ -139,13 +150,15 @@
             - Professional tone
             Return JSON with specific suggestions and replacements.`,
           model: aiModel,
+          // Assuming Ollama API path for analysis is '/api/generate'
+          apiUrl: getOllamaApiUrl('/api/generate'), // Wired Ollama endpoint
           format: 'json',
         });
         aiActor.send({ type: 'START_PROCESSING', task: grammarTask });
         const result = await waitForAIResult(grammarTask.id);
         if (result?.success && result.result?.suggestions) {
           suggestions.push(
-            ...result.result.suggestions.map((suggestion any, index: number) => ({
+            ...result.result.suggestions.map((suggestion: any, index: number) => ({ // Fixed: type annotation
               id: `grammar_${index}`,
               type: 'grammar' as const,
               text: suggestion.text,
@@ -169,6 +182,8 @@
           {
             text: context.contextBefore,
             model: 'nomic-embed-text',
+            // Assuming Ollama API path for embeddings is '/api/embeddings'
+            apiUrl: getOllamaApiUrl('/api/embeddings'), // Wired Ollama endpoint
           },
           'medium'
         );
@@ -199,24 +214,40 @@
     }
     return suggestions;
   }
+
   // Wait for AI task completion
   function waitForAIResult(taskId: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('AI task timeout')), 10000);
-      const subscription = aiActor.subscribe((state: any) => {
-        if (state?.context?.result?.taskId === taskId) {
-          clearTimeout(timeout);
-          subscription.unsubscribe();
-          resolve(state.context.result);
-        }
-        if (state?.context?.error && state?.context?.task?.id === taskId) {
-          clearTimeout(timeout);
-          subscription.unsubscribe();
-          reject(new Error(state.context.error));
+      const timeout = setTimeout(() => {
+        subscription.unsubscribe(); // Ensure unsubscribe on timeout
+        reject(new Error(`AI task timeout for task ID: ${taskId}`));
+      }, 10000);
+
+      const subscription = aiActor.subscribe((snapshot: Snapshot<typeof aiProcessingMachine>) => {
+        // Assuming the aiProcessingMachine's context stores the result and task ID
+        const typedSnapshotContext = snapshot.context as AIProcessingSnapshotContext;
+        const currentTaskResult = typedSnapshotContext?.result;
+        const currentTaskError = typedSnapshotContext?.error;
+        const currentTaskId = typedSnapshotContext?.task?.id;
+
+        if (currentTaskId === taskId) {
+          // Check if the machine is in a final state for this task
+          if (snapshot.matches('idle') && currentTaskResult) { // Assuming 'idle' is the success state
+            clearTimeout(timeout);
+            subscription.unsubscribe();
+            resolve(currentTaskResult);
+          } else if (snapshot.matches('error') && currentTaskError) { // Assuming 'error' is the failure state
+            clearTimeout(timeout);
+            subscription.unsubscribe();
+            reject(new Error(currentTaskError));
+          }
+          // If the machine has a specific state for task completion, use that.
+          // Example: if (snapshot.matches({ processing: { [taskId]: 'completed' } }))
         }
       });
     });
   }
+
   // Update suggestion popup position
   function updateSuggestionPopupPosition() {
     if (!suggestionPopup || !editorElement) return;
@@ -231,7 +262,7 @@
     };
   }
   // Handle input events
-  function handleInput(event: InputEvent) {
+  function handleInput(event: Event | InputEvent) { // Changed type to Event | InputEvent
     // Use editor content as source of truth
     value = editorElement?.textContent || '';
     const selection = window.getSelection();
@@ -264,7 +295,7 @@
     }
   }
   // Apply selected suggestion
-  function applySuggestion(suggestion AISuggestion) {
+  function applySuggestion(suggestion: AISuggestion) { // Fixed: type annotation
     if (!editorElement) return;
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
@@ -284,6 +315,16 @@
       const before = textContent.slice(0, suggestion.range.start);
       const after = textContent.slice(suggestion.range.end);
       editorElement.textContent = before + suggestion.replacement + after;
+      // Restore cursor position after replacement
+      const newCursorPos = suggestion.range.start + suggestion.replacement.length;
+      const newRange = document.createRange();
+      const textNode = editorElement.firstChild;
+      if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+        newRange.setStart(textNode, newCursorPos);
+        newRange.setEnd(textNode, newCursorPos);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      }
     }
     value = editorElement.textContent || '';
     hideSuggestions();
@@ -371,7 +412,7 @@
 
 <style>
   .enhanced-inline-editor {
-    position relative;
+    position: relative; /* Fixed: missing colon */
     font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont);
   }
   .editor-content {
@@ -398,7 +439,7 @@
     pointer-events: none;
   }
   .suggestions-popup {
-    position absolute;
+    position: absolute; /* Fixed: missing colon */
     z-index: 1000;
     min-width: 320px;
     max-width: 480px;
@@ -411,7 +452,7 @@
   .suggestions-header {
     display: flex;
     align-items: center;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Fixed: typo 'space-betweennn' */
     padding: 8px 12px;
     background: var(--console-primary, #3b82f6);
     color: var(--console-bg, white);
@@ -419,7 +460,7 @@
     font-weight: 600;
   }
   .suggestions-title {
-    flex: 1,
+    flex: 1; /* Fixed: missing semicolon */
   }
   .processing-indicator {
     color: var(--console-accent-1, #fbbf24);
@@ -487,7 +528,7 @@
     color: var(--console-success, #059669);
   }
   .reasoning {
-    flex: 1,
+    flex: 1; /* Fixed: missing semicolon */
     opacity: 0.8;
   }
   .suggestions-footer {

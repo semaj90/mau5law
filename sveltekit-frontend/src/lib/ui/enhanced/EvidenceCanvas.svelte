@@ -1,58 +1,144 @@
+/// <reference types="fabric" />
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from "svelte";
-  import { apiFetch } from "$lib/api/clients/api-client";
+  import { onMount, onDestroy } from 'svelte';
+  import { apiFetch } from '$lib/api/clients/api-client';
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
   import { detectiveAnalysisEngine } from '$lib/evidence/detective-analysis-engine';
-  import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap, X, Cpu, Database, Layers } from 'lucide-svelte';
-  // Enhanced ingestion system (mock implementations for demo)
-  const ingestionWorkerManager = {
-    processIngestion async (_task: unknownn, onProgress?: Function) => {
-      // Simulate processing with callbacks
-      if (onProgress) {
-        setTimeout(() => onProgress(25, 'Uploading files'), 500);
-        setTimeout(() => onProgress(50, 'Generating embeddings'), 1500);
-        setTimeout(() => onProgress(75, 'SOM clustering'), 2500);
-        setTimeout(() => onProgress(100, 'RTX compression'), 3500);
-      }
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 4000));
-      return {
-        taskId: task.id,
-        success: true
-        uploadResults: task.files.map((f: File, i: number) => ({,
-          success: true
-          fileId: `file-${i}`,
-          fileName: f.name,
-          bucket: task.options.bucket,
-          size: f.siz;
-        })),
-        embeddings: { documentEmbeddings: 1, chunkEmbeddings: 5, processingTime: 1200 },
-        somClustering: { clusters: 3, quality: 0.85, processingTime: 800 },
-        rtxCompression { originalSize: task.files[0].size, compressedSize: Math.floor(task.files[0].size / 50), ratio: '50:1', processingTime: 500 },
-        totalProcessingTime: 4000
-      }
-    },
-    isAvailable: true
+  import Upload from 'lucide-svelte/icons/upload';
+  import FileText from 'lucide-svelte/icons/file-text';
+  import Image from 'lucide-svelte/icons/image'; // Corrected import
+  import AlertCircle from 'lucide-svelte/icons/alert-circle';
+  import Loader2 from 'lucide-svelte/icons/loader-2'; // Corrected import
+  import Zap from 'lucide-svelte/icons/zap';
+  import X from 'lucide-svelte/icons/x'; // Corrected import
+  import Cpu from 'lucide-svelte/icons/cpu'; // Corrected import
+  import Database from 'lucide-svelte/icons/database';
+  import Layers from 'lucide-svelte/icons/layers'; // Corrected import
+  import CheckCircle from 'lucide-svelte/icons/check-circle'; // Corrected import
+
+  // Props
+  export let caseId = '';
+  export let enableDragDrop = true;
+  export let enableGPUProcessing = true;
+  export let enableCUDAAcceleration = true;
+  export let enableN64Style = true;
+  export let maxFileSize = 100 * 1024 * 1024;
+  export let acceptedTypes: string[] = ['image/*', 'application/pdf', 'text/*', '.docx', '.xlsx'];
+
+  // Local state
+  let canvasEl: HTMLCanvasElement | null = null;
+  let fabricCanvas: fabric.Canvas | null = null; // Typed fabricCanvas
+  let fabric: any = null; // fabric.js is often used as a global or UMD module
+  let fileInput: HTMLInputElement | null = null;
+
+  let analyzing = false;
+  let error: string | null = null;
+
+  // Define types for API responses and data structures
+  interface AnalysisResult {
+    analysis?: string;
+    summary?: string;
+    confidence?: number;
+    processing_time_ms?: number;
+    status?: string;
+    error?: string;
   }
+  let result: AnalysisResult | null = null; // Typed result
+
+  let options = {
+    analyze_layout: true,
+    extract_entities: true,
+    generate_summary: true,
+    confidence_level: 0.8,
+    context_window: 4096
+  };
+
+  // Drag & upload state
+  let dragOver = false;
+  let uploading = false;
+  let uploadProgress = 0;
+
+  interface AnchorPoint {
+    id: string;
+    type: string;
+    coordinates: { x: number; y: number; width: number; height: number };
+    confidence: number;
+    description: string;
+    legal_relevance: 'high' | 'medium' | 'low'; // Ensure this is respected
+  }
+
+  interface Embeddings {
+    textEmbedding?: Float32Array;
+    visualEmbedding?: Float32Array;
+    semanticEmbedding?: Float32Array;
+    // Add other embedding types as needed
+  }
+
+  interface DetectiveAnalysisResult {
+    ocrResults: { text: string; confidence: number; boundingBoxes: unknown[]; handwritingDetected: boolean };
+    embeddings: Embeddings; // Changed from unknown[] to Embeddings
+    analysis: {
+      detectedPatterns: unknown[];
+      legalRelevance: 'high' | 'medium' | 'low';
+      conflictIndicators: unknown[];
+      contextualClues: unknown[];
+      suggestedActions: unknown[];
+      confidence?: number;
+    };
+    conflicts: unknown[];
+    processingTime: number;
+  }
+
+  // Custom Fabric.js object with an 'id' property
+  interface FabricObjectWithId extends fabric.Object {
+    id?: string; // Make id optional as not all fabric objects might have it
+  }
+
+  type UploadedFile = {
+    id: string;
+    file: File;
+    progress: number;
+    status: 'pending' | 'uploading' | 'ingestion' | 'detective_analysis' | 'completed' | 'error';
+    minioPath?: string;
+    cudaProcessed?: boolean;
+    errorMessage?: string;
+    canvasObjectId?: string; // This will store the ID of the fabric object
+    ingestionResult?: unknown;
+    detectiveAnalysis?: DetectiveAnalysisResult; // Typed here
+    anchorPoints?: AnchorPoint[]; // Typed here
+    timestamp?: number; // Added for unified processing
+  };
+  let uploadedFiles: UploadedFile[] = [];
+
+  let performanceStats = {
+    totalFiles: 0,
+    cudaAccelerated: 0,
+    avgProcessingTime: 0,
+    throughputMBps: 0
+  };
+
+  // Removed: Mock ingestion manager (kept simple and valid)
+  // const ingestionWorkerManager = { ... };
+
+  let ingestionPipeline: MockEnhancedIngestionPipeline | null = null; // Declared here
+
   class MockEnhancedIngestionPipeline {
     async initialize() {
       console.log('🎮 Mock Enhanced Ingestion Pipeline initialized');
     }
-    async processMultimodalEvidence(evidence: unknownn) {
-      // Simulate multimodal processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+    async processMultimodalEvidence(evidence: any) {
+      await new Promise((r) => setTimeout(r, 2000));
       return {
         processing_result: {
           document_id: evidence.id,
-          embedding: new Array(384).fill.map(() => Math.random() - 0.5),
+          embedding: new Array(384).fill(0).map(() => Math.random() - 0.5),
           cluster_id: Math.floor(Math.random() * 8),
           processing_time: 2000,
           extraction_metadata: {
             entities: ['evidence', 'legal', 'document'],
             keywords: ['case', 'analysis'],
             confidence: 0.85,
-            language: 'en';
+            language: 'en'
           }
         },
         anchor_points: [
@@ -61,258 +147,199 @@
             type: 'text',
             coordinates: { x: 0.1, y: 0.1, width: 0.3, height: 0.1 },
             confidence: 0.9,
-            description 'Key evidence section',
-            legal_relevance: 'high' ;
+            description: 'Key evidence section',
+            legal_relevance: 'high' // Corrected to match AnchorPoint type
           },
           {
             id: '2',
             type: 'object',
             coordinates: { x: 0.5, y: 0.3, width: 0.2, height: 0.2 },
             confidence: 0.8,
-            description 'Relevant document element',
-            legal_relevance: 'medium' ;
+            description: 'Relevant document element',
+            legal_relevance: 'medium' // Corrected to match AnchorPoint type
           }
         ],
-        timeline_segments: evidence.type === 'video' ? [
-          { start_time: 0, end_time: 30, event_type: 'scene_change', description 'Initial scene', confidence: 0.9, legal_significance: 'Key evidence timestamp' }
-        ] : undefined
-        copilot_analysis: `Enhanced analysis for ${evidence.type} evidence: Legal relevance assessed with high confidence. Recommended for case inclusion.`;
-      }
+        timeline_segments: evidence?.type === 'video'
+          ? [{ start_time: 0, end_time: 30, event_type: 'scene_change', description: 'Initial scene', confidence: 0.9, legal_significance: 'Key evidence timestamp' }]
+          : undefined,
+        copilot_analysis: `Enhanced analysis for ${evidence?.type ?? 'unknown'} evidence: Legal relevance assessed with high confidence. Recommended for case inclusion.`
+      };
     }
   }
-  interface Props {
-    caseId?: string;
-    enableDragDrop?: boolean;
-    enableGPUProcessing?: boolean;
-    enableCUDAAcceleration?: boolean;
-    enableN64Style?: boolean;
-    maxFileSize?: number;
-    acceptedTypes?: string[];
-  }
-  let {
-    caseId = '',
-    enableDragDrop = true,
-    enableGPUProcessing = true,
-    enableCUDAAcceleration = true,
-    enableN64Style = true,
-    maxFileSize = 100 * 1024 * 1024, // 100MB
-    acceptedTypes = ['image/*', 'application/pdf', 'text/*', '.docx', '.xlsx']
-  }: Props = $props();
-  let canvasEl: HTMLCanvasElement = $state();
-  let fabricCanvas: unknownn;
-  let fabric: unknownn;
-  let fileInput: HTMLInputElement;
-  let analyzing = $state(false);
-  let error: string | null = $state(null);
-  let result: {
-    analysis?: string;
-    summary?: string;
-    confidence?: number;
-    processing_time_ms?: number;
-    status?: string;
-    error?: string;
-  } | null = $state(null);
-  let options = $state({
-    analyze_layout: true
-    extract_entities: true
-    generate_summary: true
-    confidence_level: 0.8,
-    context_window: 4096,
-  });
-  // Drag and drop state
-  let dragOver = $state(false);
-  let uploading = $state(false);
-  let uploadProgress = $state(0);
-  let uploadedFiles = $state<UploadedFile[]>([]);
-  let performanceStats = $state({
-    totalFiles: 0,
-    cudaAccelerated: 0,
-    avgProcessingTime: 0,
-    throughputMBps: 0
-  });
-  interface UploadedFile {
-    id: string;
-    file: Fil;
-    progress: number;
-    status: 'pending' | 'uploading' | 'ingestion' | 'detective_analysis' | 'completed' | 'error';
-    minioPath?: string;
-    cudaProcessed?: boolean;
-    errorMessage?: string;
-    canvasObjectId?: string;
-    ingestionResult?: unknownn;
-    detectiveAnalysis?: {
-      ocrResults: unknownn;
-      embeddings: unknownn;
-      analysis: unknownn;
-      conflicts: unknownn[];
-      processingTime: number;
-    }
-    anchorPoints?: Array;
-  }
-  interface UploadResult {
-    id: string;
-    fileName: string;
-    minioPath: string;
-    size: number;
-    contentType: string;
-    cudaOptimized: boolean;
-    processingTime: number;
-  }
-  $effect(() => {
+
+  // Lifecycle: init fabric
+  onMount(() => {
+    let cancelled = false;
     (async () => {
-const fabricModule = await import("fabric");
-    fabric = fabricModule.fabric;
-    fabricCanvas = new fabric.Canvas(canvasEl);
-    // Register canvas with concurrency orchestrator
-    const canvasId = `evidence-canvas-${Date.now()}`;
-    concurrencyOrchestrator.createCanvas(canvasId, canvasEl);
-    // Setup canvas drag and drop
-    if (enableDragDrop) {
-      setupCanvasDragDrop();
-    }
-    // Example: Add a rectangle with N64 styling
-    fabricCanvas.add(
-      new fabric.Rect({
+      const fabricModule = await import('fabric');
+      fabric = (fabricModule as any).fabric;
+      if (!canvasEl || cancelled) return;
+      const currentCanvasEl = canvasEl as HTMLCanvasElement; // Explicit cast
+      fabricCanvas = new fabric.Canvas(currentCanvasEl, { selection: true });
+
+      // Register canvas with orchestrator
+      const canvasId = `evidence-canvas-${Date.now()}`;
+      try {
+        concurrencyOrchestrator.createCanvas?.(canvasId, currentCanvasEl);
+      } catch {
+        // ignore if not present
+      }
+
+      if (enableDragDrop) setupCanvasDragDrop();
+
+      // Example objects (safe property usage)
+      const rect = new fabric.Rect({
         left: 100,
         top: 100,
-        fill: enableN64Style ? "#FFD700" : "red",
+        fill: enableN64Style ? '#FFD700' : 'red',
         width: 60,
         height: 60,
-        stroke: enableN64Style ? "#FFA500" : undefined
-        strokeWidth: enableN64Style ? 2 : 0;
-      })
-    );
-    // Example: Add evidence annotation text with N64 styling
-    fabricCanvas.add(
-      new fabric.Text('🎮 Evidence Item #1', {
+        stroke: enableN64Style ? '#FFA500' : undefined,
+        strokeWidth: enableN64Style ? 2 : 0
+      });
+      rect.set('id', 'example-rect-1'); // Assign an ID
+      fabricCanvas?.add(rect); // Added null check
+
+      const text = new fabric.Text('🎮 Evidence Item #1', {
         left: 120,
         top: 80,
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
         fontSize: enableN64Style ? 14 : 12,
         fill: enableN64Style ? '#FFD700' : '#333',
-        fontWeight: enableN64Style ? 'bold' : 'normal';
-      })
-    );
-    // Add canvas event listeners for file drops
-    canvasEl.addEventListener('dragover', handleCanvasDragOver);
-    canvasEl.addEventListener('dragleave', handleCanvasDragLeave);
-    canvasEl.addEventListener('drop', handleCanvasDrop);
+        fontWeight: enableN64Style ? 'bold' : 'normal'
+      });
+      text.set('id', 'example-text-1'); // Assign an ID
+      fabricCanvas?.add(text); // Added null check
+
+      currentCanvasEl.addEventListener('dragover', handleCanvasDragOver as EventListener);
+      currentCanvasEl.addEventListener('dragleave', handleCanvasDragLeave as EventListener);
+      currentCanvasEl.addEventListener('drop', handleCanvasDrop as EventListener);
     })();
+
+    return () => { cancelled = true; };
   });
+
   onDestroy(() => {
     if (canvasEl) {
-      canvasEl.removeEventListener('dragover', handleCanvasDragOver);
-      canvasEl.removeEventListener('dragleave', handleCanvasDragLeave);
-      canvasEl.removeEventListener('drop', handleCanvasDrop);
+      const currentCanvasEl = canvasEl as HTMLCanvasElement; // Explicit cast
+      currentCanvasEl.removeEventListener('dragover', handleCanvasDragOver as EventListener);
+      currentCanvasEl.removeEventListener('dragleave', handleCanvasDragLeave as EventListener);
+      currentCanvasEl.removeEventListener('drop', handleCanvasDrop as EventListener);
     }
+    fabricCanvas?.dispose?.();
   });
+
   function collectObjects() {
-    const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: unknownn) => {
-      const type = o.type || "object";
-      const left = typeof o.left === "number" ? o.left: 0;
-      const top = typeof o.top === "number" ? o.top: 0;
-      const text = typeof o.text === "string" ? o.text: undefined;
-      return { type, position { x: left, y: top }, ...(text ? { text } : ) }
+    const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: FabricObjectWithId) => { // Typed o as FabricObjectWithId
+      const type = o?.type ?? 'object';
+      const left = typeof o?.left === 'number' ? o.left : 0;
+      const top = typeof o?.top === 'number' ? o.top : 0;
+      const text = (o as fabric.Text)?.text; // Cast to fabric.Text to access text property
+      return { id: o.id, type, position: { x: left, y: top }, ...(text ? { text } : {}) }; // Include id
     });
-    return obj;
+    return objs;
   }
+
   async function analyzeCanvas() {
     analyzing = true;
     error = null;
     result = null;
     try {
-      // Use concurrency orchestrator for analysis
-      const analysisTaskId = await concurrencyOrchestrator.submitAnalysisTask(
-        {
-          canvas_json fabricCanvas?.toJSON() ||
-          objects: collectObjects(),
-          canvas_size: { width: canvasEl.width, height: canvasEl.height },
-          uploaded_files: uploadedFiles.filter(item => item.map)(f => ({,
-            id: f.id,
-            fileName: f.file.name,
-            minioPath: f.minioPath,
-            cudaProcessed: f.cudaProcessed;
-          })),
-          options
-        },
-        'legal'
-      );
-      // Subscribe to task completion
-      const unsubscribe = concurrencyOrchestrator.subscribe((snapshot: unknownn) => {
-        const completedResult = snapshot.context.results.find(
-          (r: unknownn) => r.taskId === analysisTaskId && r.success
-        );
+      const payload = {
+        canvas_json: fabricCanvas?.toJSON?.() ?? null,
+        objects: collectObjects(),
+        canvas_size: canvasEl ? { width: canvasEl.width, height: canvasEl.height } : undefined,
+        uploaded_files: uploadedFiles.filter((item: UploadedFile) => !!item.minioPath).map((f: UploadedFile) => ({ // Typed item, f
+          id: f.id,
+          fileName: f.file.name,
+          minioPath: f.minioPath,
+          cudaProcessed: f.cudaProcessed
+        })),
+        options
+      };
+
+      const analysisTaskId = await concurrencyOrchestrator.submitAnalysisTask?.(payload, 'legal');
+
+      const unsubscribe = concurrencyOrchestrator.subscribe?.((snapshot: any) => {
+        const completedResult = snapshot?.context?.results?.find?.((r: any) => r.taskId === analysisTaskId && r.success);
         if (completedResult) {
           result = {
-            analysis: completedResult.data.response || completedResult.data.analysis || 'Analysis completed',
-            summary: completedResult.data.summary || 'Summary generated',
-            confidence: completedResult.data.confidence || 0.85,
+            analysis: completedResult.data?.response ?? completedResult.data?.analysis ?? 'Analysis completed',
+            summary: completedResult.data?.summary ?? 'Summary generated',
+            confidence: completedResult.data?.confidence ?? 0.85,
             processing_time_ms: completedResult.duration,
-            status: 'success';
-          }
-          unsubscribe();
+            status: 'success'
+          };
+          unsubscribe?.();
           analyzing = false;
         }
-        const failedResult = snapshot.context.results.find(
-          (r: unknownn) => r.taskId === analysisTaskId && !r.success
-        );
+        const failedResult = snapshot?.context?.results?.find?.((r: any) => r.taskId === analysisTaskId && !r.success);
         if (failedResult) {
-          error = failedResult.error || 'Analysis failed';
-          unsubscribe();
+          error = failedResult.error ?? 'Analysis failed';
+          unsubscribe?.();
           analyzing = false;
         }
-      });
+      }) ?? (() => { /* noop */ });
+
       // Fallback timeout
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         if (analyzing) {
           error = 'Analysis timed out';
           analyzing = false;
-          unsubscribe();
+          unsubscribe?.();
         }
       }, 30000);
-    } catch (e: unknownn) {
-      error = e instanceof Error ? e.message: String(e);
+
+      // clean up timeout when done
+      if (!analyzing) clearTimeout(timeout);
+    } catch (e: unknown) {
+      error = e instanceof Error ? e.message : String(e);
       analyzing = false;
     }
   }
-  // Drag and Drop Functions
+
+  // Drag and Drop helpers
   function setupCanvasDragDrop() {
     console.log('🎮 Canvas drag and drop enabled with N64 style');
   }
-  function handleCanvasDragOver(_event: DragEvent) {
+
+  function handleCanvasDragOver(event: DragEvent) {
     event.preventDefault();
-    event.dataTransfer!.dropEffect = 'copy';
-    if (!dragOver && !uploading) {
-      dragOver = true;
-    }
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+    if (!dragOver && !uploading) dragOver = true;
   }
-  function handleCanvasDragLeave(_event: DragEvent) {
+
+  function handleCanvasDragLeave(event: DragEvent) {
     event.preventDefault();
+    if (!canvasEl) return;
     const rect = canvasEl.getBoundingClientRect();
     const x = event.clientX;
     const y = event.clientY;
-    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+    if (x < rect.left || x > rect.right || y < rect.top || y < rect.bottom) { // Corrected y < rect.bottom
       dragOver = false;
     }
   }
+
   function handleCanvasDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     if (uploading) return;
-    const droppedFiles = Array.from(event.dataTransfer?.files || []);
+    const droppedFiles = Array.from(event.dataTransfer?.files ?? []);
+    if (!canvasEl) return;
     const canvasRect = canvasEl.getBoundingClientRect();
     const dropX = event.clientX - canvasRect.left;
     const dropY = event.clientY - canvasRect.top;
     processDroppedFiles(droppedFiles, { x: dropX, y: dropY });
   }
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    if (!target.files) return;
+
+  function handleFileSelect(event: Event) {
+    const target = event.target as HTMLInputElement | null;
+    if (!target?.files) return;
     const selectedFiles = Array.from(target.files);
-    processDroppedFiles(selectedFiles, { x: 400, y: 300 }); // Center position
-    target.value = ''; // Clear input
+    processDroppedFiles(selectedFiles, { x: 400, y: 300 });
   }
-  async function processDroppedFiles(droppedFiles: File[], position { x: number; y: number }) {
+
+  async function processDroppedFiles(droppedFiles: File[], position: { x: number; y: number }) {
     error = null;
     // Validate files
     const validFiles = droppedFiles.filter(file => {
@@ -322,7 +349,7 @@ const fabricModule = await import("fabric");
       }
       const isValidType = acceptedTypes.some(type => {
         if (type.startsWith('.')) {
-          return file.name.toLowerCase.endsWith(type.toLowerCase());
+          return file.name.toLowerCase().endsWith(type.toLowerCase());
         }
         return file.type.match(type.replace('*', '.*'));
       });
@@ -337,18 +364,48 @@ const fabricModule = await import("fabric");
       return;
     }
     // Create upload file objects
-    const uploadFiles: UploadedFile[] = validFiles.map(file => ({,
+    const uploadFiles: UploadedFile[] = validFiles.map(file => ({
       id: `${Date.now()}-${Math.random()}`,
       file,
       progress: 0,
-      status: 'pending';
+      status: 'pending',
+      timestamp: Date.now() // Added timestamp
     }));
     uploadedFiles = [...uploadedFiles, ...uploadFiles];
     performanceStats.totalFiles += uploadFiles.length;
     // Start upload process
     await uploadFilesToMinIO(uploadFiles, position);
   }
-  async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position { x: number; y: number }) {
+
+  interface CudaPreprocessingResult {
+    success: boolean;
+    processedFile?: File; // Changed from Blob to File
+    metadata?: unknown;
+    error?: string;
+  }
+
+  interface UploadApiResponseData {
+    minioPath: string;
+    id: string;
+    fileName: string;
+    // Add other properties from result.data[0] if known
+  }
+
+  interface UploadApiResponse {
+    success: boolean;
+    data?: UploadApiResponseData[];
+    error?: { message: string };
+  }
+
+  type UploadResult = {
+    minioPath: string;
+    cudaOptimized: boolean;
+    id: string;
+    fileName: string;
+    // ... any other properties from result.data[0]
+  };
+
+  async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position: { x: number; y: number }) {
     uploading = true;
     uploadProgress = 0;
     const startTime = Date.now();
@@ -358,35 +415,35 @@ const fabricModule = await import("fabric");
         uploadFile.status = 'uploading';
         uploadProgress = (i / uploadFiles.length) * 100;
         // CUDA preprocessing if enabled
-        let preprocessedData = uploadFile.fil;
+        let preprocessedData: File = uploadFile.file; // Explicitly type as File
         let cudaProcessed = false;
         if (enableCUDAAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
-          if (cudaResult.success) {
-            preprocessedData = cudaResult.processedFile || uploadFile.fil;
+          if (cudaResult.success && cudaResult.processedFile) { // Check for processedFile existence
+            preprocessedData = cudaResult.processedFile; // This is now guaranteed to be a File
             cudaProcessed = true;
             performanceStats.cudaAccelerated++;
           }
         }
         // Upload to MinIO via evidence API
-        const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        if ((result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).success) {
+        const uploadResultResponse = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
+        if (uploadResultResponse.success && uploadResultResponse.data) { // Check for data existence
           uploadFile.status = 'ingestion';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
-          uploadFile.minioPath = (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).data.minioPath;
+          uploadFile.minioPath = uploadResultResponse.data.minioPath;
           // Start enhanced ingestion processing
           try {
             const ingestionResult = await processEnhancedIngestion(uploadFile);
             uploadFile.ingestionResult = ingestionResult.processing_result;
-            uploadFile.anchorPoints = ingestionResult.anchor_point;
+            uploadFile.anchorPoints = ingestionResult.anchor_points; // Corrected from anchor_point
             // Start detective analysis
             uploadFile.status = 'detective_analysis';
-            const detectiveResult = await processDetectiveAnalysis(uploadFile);
+            const detectiveResult: DetectiveAnalysisResult = await processDetectiveAnalysis(uploadFile); // Typed here
             uploadFile.detectiveAnalysis = detectiveResult;
             uploadFile.status = 'completed';
             // Add file to canvas with anchor points and detective insights
-            await addFileToCanvas(uploadFile, position, (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).data);
+            await addFileToCanvas(uploadFile, position, uploadResultResponse.data); // Pass the typed data
             // Add anchor points visualization
             if (ingestionResult.anchor_points) {
               await addAnchorPointsToCanvas(uploadFile, ingestionResult.anchor_points);
@@ -398,7 +455,7 @@ const fabricModule = await import("fabric");
           } catch (ingestionError) {
             console.warn('Enhanced ingestion failed:', ingestionError);
             uploadFile.status = 'completed'; // Still mark as completed if upload succeeded
-            await addFileToCanvas(uploadFile, position, (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).data);
+            await addFileToCanvas(uploadFile, position, uploadResultResponse.data); // Pass the typed data
           }
           // Adjust position for next file
           position.x += 120;
@@ -408,7 +465,7 @@ const fabricModule = await import("fabric");
           }
         } else {
           uploadFile.status = 'error';
-          uploadFile.errorMessage = (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).error;
+          uploadFile.errorMessage = uploadResultResponse.error;
         }
       }
       const endTime = Date.now();
@@ -417,24 +474,26 @@ const fabricModule = await import("fabric");
       performanceStats.avgProcessingTime = totalTime / uploadFiles.length;
       performanceStats.throughputMBps = totalSizeMB / (totalTime / 1000);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message: 'Upload failed';
+      const errorMsg = error instanceof Error ? error.message : 'Upload failed';
       console.error('🎮 Upload error:', errorMsg);
     } finally {
       uploading = false;
       uploadProgress = 0;
     }
   }
+
   function shouldUseCudaPreprocessing(file: File): boolean {
     const cudaTypes = ['image/', 'application/pdf'];
     const isLargeFile = file.size > 10 * 1024 * 1024; // 10MB+
-    return cudaTypes.some(type => file.type.startsWith(type)) || isLargeFil;
+    return cudaTypes.some(type => file.type.startsWith(type)) || isLargeFile;
   }
-  async function preprocessWithCuda(file: File) {
+
+  async function preprocessWithCuda(file: File): Promise<CudaPreprocessingResult> {
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('options', JSON.stringify({
-        enableGpuOptimization enableGPUProcessing
+        enableGpuOptimization: enableGPUProcessing,
         targetGpuArch: 'sm_75', // RTX 3060 Ti
         useClangOptimizations: true
       }));
@@ -442,30 +501,36 @@ const fabricModule = await import("fabric");
         method: 'POST',
         body: formData
       });
-      if (!(response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).ok) {
-        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`CUDA preprocessing failed: ${response.statusText}`);
       }
-      const result = await (response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).json();
+      const result: { success: boolean; processedFile?: Blob; metadata?: unknown; error?: string } = await response.json(); // Temporarily type as Blob for API response
+      // Ensure processedFile is always a File object if it exists and is a Blob
+      const processedFileAsFile = result.processedFile instanceof Blob
+        ? new File([result.processedFile], file.name, { type: file.type })
+        : undefined;
+
       return {
-        success: true
-        processedFile: (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).processedFile ? new File([(result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).processedFile], file.name, { type: file.type }) : undefined;
-        metadata: (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).metadata
-      }
+        success: result.success,
+        processedFile: processedFileAsFile, // Use the converted File object
+        metadata: result.metadata
+      };
     } catch (error) {
       console.warn('CUDA preprocessing failed:', error);
-      return { success: false }
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   }
-  async function uploadSingleFile(uploadFile: UploadedFile, file: File, cudaProcessed: boolean) {
+
+  async function uploadSingleFile(uploadFile: UploadedFile, file: File, cudaProcessed: boolean): Promise<{ success: boolean; data?: UploadResult; error?: string }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
       title: file.name,
-      description `🎮 Canvas upload: ${file.name}`,
+      description: `🎮 Canvas upload: ${file.name}`,
       evidenceType: getEvidenceType(file),
-      enableAiAnalysis: true
-      enableEmbeddings: true
+      enableAiAnalysis: true,
+      enableEmbeddings: true,
       enableOcr: file.type.startsWith('image/') || file.type === 'application/pdf',
       cudaPreprocessed: cudaProcessed
     }));
@@ -473,31 +538,32 @@ const fabricModule = await import("fabric");
       method: 'POST',
       body: formData
     });
-    if (!(response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).ok) {
-      const errorData = await (response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).json();
+    if (!response.ok) {
+      const errorData: UploadApiResponse = await response.json();
       return {
-        success: false;
-        error: errorData.error?.message || 'Upload failed';
-      }
+        success: false,
+        error: errorData.error?.message || 'Upload failed'
+      };
     }
-    const result = await (response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).json();
-    if ((result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).success && (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).data?.[0]) {
+    const result: UploadApiResponse = await response.json();
+    if (result.success && result.data?.[0]) {
       return {
-        success: true;
+        success: true,
         data: {
           ...result.data[0],
           cudaOptimized: cudaProcessed
         } as UploadResult
-      }
+      };
     }
     return {
-      success: false;
-      error: 'Invalid response from upload service';
-    }
+      success: false,
+      error: 'Invalid response from upload service'
+    };
   }
-  async function addFileToCanvas(uploadFile: UploadedFile, position { x: number; y: number }, uploadResult: UploadResult) {
+
+  async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, uploadResult: UploadResult) {
     if (!fabricCanvas) return;
-    const file = uploadFile.fil;
+    const file = uploadFile.file;
     if (file.type.startsWith('image/')) {
       // Add image to canvas
       const reader = new FileReader();
@@ -511,10 +577,11 @@ const fabricModule = await import("fabric");
             scaleY: 0.3,
             cornerColor: enableN64Style ? '#FFD700' : '#178cff',
             cornerStrokeColor: enableN64Style ? '#FFA500' : '#178cff',
-            borderColor: enableN64Style ? '#FFD700' : '#178cff';
+            borderColor: enableN64Style ? '#FFD700' : '#178cff'
           });
-          fabricCanvas.add(fabricImage);
-          uploadFile.canvasObjectId = fabricImage.id;
+          fabricImage.set('id', uploadFile.id); // Assign the uploadFile.id to the fabric object
+          fabricCanvas?.add(fabricImage); // Added null check
+          uploadFile.canvasObjectId = uploadFile.id; // Store the same ID
           // Add N64-style label
           const label = new fabric.Text(enableN64Style ? `🎮 ${file.name}` : file.name, {
             left: position.x,
@@ -524,10 +591,11 @@ const fabricModule = await import("fabric");
             fontFamily: enableN64Style ? 'Courier New' : 'Arial',
             fontWeight: enableN64Style ? 'bold' : 'normal',
             backgroundColor: enableN64Style ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
-            padding: 3;
+            padding: 3
           });
-          fabricCanvas.add(label);
-          fabricCanvas.renderAll();
+          label.set('id', `${uploadFile.id}-label`); // Assign an ID to the label
+          fabricCanvas?.add(label); // Added null check
+          fabricCanvas?.renderAll(); // Added null check
         }
         imgElement.src = e.target?.result as string;
       }
@@ -543,8 +611,9 @@ const fabricModule = await import("fabric");
         stroke: enableN64Style ? '#FFD700' : '#333',
         strokeWidth: enableN64Style ? 3 : 2,
         rx: enableN64Style ? 0 : 5,
-        ry: enableN64Style ? 0 : 5;
+        ry: enableN64Style ? 0 : 5
       });
+      icon.set('id', uploadFile.id); // Assign the uploadFile.id to the fabric object
       // File type icon
       const fileIcon = new fabric.Text(getFileIcon(file), {
         left: position.x + 25,
@@ -552,8 +621,9 @@ const fabricModule = await import("fabric");
         fontSize: 24,
         fill: enableN64Style ? '#FFD700' : '#fff',
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
-        textAlign: 'center';
+        textAlign: 'center'
       });
+      fileIcon.set('id', `${uploadFile.id}-file-icon`); // Assign an ID
       const label = new fabric.Text(enableN64Style ? `🎮 ${file.name}` : file.name, {
         left: position.x + 5,
         top: position.y + 50,
@@ -562,25 +632,28 @@ const fabricModule = await import("fabric");
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
         width: 70,
         textAlign: 'center',
-        fontWeight: enableN64Style ? 'bold' : 'normal';
+        fontWeight: enableN64Style ? 'bold' : 'normal'
       });
+      label.set('id', `${uploadFile.id}-label`); // Assign an ID
       // CUDA indicator if processed
       if (uploadFile.cudaProcessed) {
         const cudaIndicator = new fabric.Text('⚡', {
           left: position.x + 65,
           top: position.y + 5,
           fontSize: 16,
-          fill: '#40FF40';
+          fill: '#40FF40'
         });
-        fabricCanvas.add(cudaIndicator);
+        cudaIndicator.set('id', `${uploadFile.id}-cuda-indicator`); // Assign an ID
+        fabricCanvas?.add(cudaIndicator); // Added null check
       }
-      fabricCanvas.add(icon);
-      fabricCanvas.add(fileIcon);
-      fabricCanvas.add(label);
-      uploadFile.canvasObjectId = icon.id;
-      fabricCanvas.renderAll();
+      fabricCanvas?.add(icon); // Added null check
+      fabricCanvas?.add(fileIcon); // Added null check
+      fabricCanvas?.add(label); // Added null check
+      uploadFile.canvasObjectId = uploadFile.id; // Store the same ID
+      fabricCanvas?.renderAll(); // Added null check
     }
   }
+
   function getFileIcon(file: File): string {
     if (file.type.startsWith('image/')) return '🖼️';
     if (file.type === 'application/pdf') return '📄';
@@ -591,6 +664,7 @@ const fabricModule = await import("fabric");
     if (file.type.includes('excel') || file.type.includes('spreadsheet')) return '📊';
     return '📎';
   }
+
   function getEvidenceType(file: File): string {
     if (file.type.startsWith('image/')) return 'IMAGE';
     if (file.type === 'application/pdf') return 'PDF';
@@ -599,6 +673,7 @@ const fabricModule = await import("fabric");
     if (file.type.startsWith('text/')) return 'TEXT';
     return 'DOCUMENT';
   }
+
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -606,11 +681,13 @@ const fabricModule = await import("fabric");
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
+
   function openFileDialog() {
     if (!uploading && fileInput) {
       fileInput.click();
     }
   }
+
   async function processEnhancedIngestion(uploadFile: UploadedFile) {
     if (!ingestionPipeline) {
       ingestionPipeline = new MockEnhancedIngestionPipeline();
@@ -621,11 +698,12 @@ const fabricModule = await import("fabric");
       type: getEvidenceType(uploadFile.file).toLowerCase(),
       fileName: uploadFile.file.name,
       size: uploadFile.file.size,
-      minioPath: uploadFile.minioPath;
+      minioPath: uploadFile.minioPath
     }
     return await ingestionPipeline.processMultimodalEvidence(evidence);
   }
-  async function processDetectiveAnalysis(uploadFile: UploadedFile) {
+
+  async function processDetectiveAnalysis(uploadFile: UploadedFile): Promise<DetectiveAnalysisResult> { // Typed return
     try {
       console.log(`🕵️ Starting detective analysis for: ${uploadFile.file.name}`);
       // Use the detective analysis engine
@@ -633,75 +711,109 @@ const fabricModule = await import("fabric");
       const evidenceItem = await detectiveAnalysisEngine.analyzeEvidence(
         uploadFile.file,
         {
-          type: evidenceType as any
-          caseId: caseId
-          userId: 'evidence-canvas-user';
+          type: evidenceType as any,
+          caseId: caseId,
+          userId: 'evidence-canvas-user'
         }
       );
       return {
         ocrResults: evidenceItem.ocrResults,
-        embeddings: evidenceItem.embeddings,
+        embeddings: evidenceItem.embeddings, // This should now match the Embeddings interface
         analysis: evidenceItem.analysis,
         conflicts: [], // Would be populated by conflict detection
-        processingTime: evidenceItem.metadata.processingTim;
+        processingTime: evidenceItem.metadata.processingTime
       }
     } catch (error) {
       console.error('Detective analysis failed:', error);
       return {
         ocrResults: { text: '', confidence: 0, boundingBoxes: [], handwritingDetected: false },
-        embeddings: ,
-        analysis: { detectedPatterns: [], legalRelevance: 'low', conflictIndicators: [], contextualClues: [], suggestedActions: [] },
+        embeddings: {}, // Default to an empty object for Embeddings
+        analysis: { detectedPatterns: [], legalRelevance: 'low', conflictIndicators: [], contextualClues: [], suggestedActions: [], confidence: 0 }, // Added confidence
         conflicts: [],
-        processingTime: 0;
+        processingTime: 0
       }
     }
   }
-  async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: unknownn) {
+
+  async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: DetectiveAnalysisResult) { // Typed detectiveResult
     if (!fabricCanvas || !detectiveResult.analysis.detectedPatterns.length) return;
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
-    const fileObject = canvasObjects.find((obj: unknownn) => obj.id === uploadFile.canvasObjectId);
+    const fileObject = canvasObjects.find((obj: FabricObjectWithId) => obj.id === uploadFile.canvasObjectId); // Typed obj as FabricObjectWithId
     if (!fileObject) return;
+
+    // Provide default values for left and top if they are undefined
+    const fileObjectLeft = fileObject.left ?? 0;
+    const fileObjectTop = fileObject.top ?? 0;
+
     // Add detective insights indicator
     const insightsIcon = new fabric.Text('🔍', {
-      left: fileObject.left + 80,
-      top: fileObject.top - 5,
+      left: fileObjectLeft + 80, // Use default-safe value
+      top: fileObjectTop - 5,    // Use default-safe value
       fontSize: 16,
       fill: detectiveResult.analysis.legalRelevance === 'high' ? '#FF3030' :
             detectiveResult.analysis.legalRelevance === 'medium' ? '#FFD700' : '#40FF40',
-      selectable: true
-      hasControls: false
-      hasBorders: false
-      hoverCursor: 'pointer';
+      selectable: true,
+      hasControls: false,
+      hasBorders: false,
+      hoverCursor: 'pointer'
     });
+    insightsIcon.set('id', `${uploadFile.id}-insights-icon`); // Assign an ID
     // Add tooltip on hover (simplified)
     insightsIcon.on('mouseover', () => {
-      const tooltip = new fabric.Text.join('\n')}`,
-        {
-          left: insightsIcon.left + 20,
-          top: insightsIcon.top,
+      const tooltip = new fabric.Text([
+          `Legal Relevance: ${detectiveResult.analysis.legalRelevance}`,
+          `Confidence: ${detectiveResult.analysis.confidence?.toFixed(2) || 'N/A'}`, // Added toFixed and null check
+          `Patterns Detected: ${detectiveResult.analysis.detectedPatterns.length}`
+        ].join('\n'), {
+          left: (insightsIcon.left ?? 0) + 20, // Add null check for insightsIcon.left
+          top: insightsIcon.top ?? 0,          // Add null check for insightsIcon.top
           fontSize: enableN64Style ? 9 : 8,
           fill: enableN64Style ? '#FFD700' : '#333',
           fontFamily: enableN64Style ? 'Courier New' : 'Arial',
           backgroundColor: enableN64Style ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)',
           padding: 5,
           cornerStyle: 'rect',
-          selectable: false;
+          selectable: false
         }
       );
-      fabricCanvas.add(tooltip);
-      setTimeout(() => fabricCanvas.remove(tooltip), 3000);
+      tooltip.set('id', `${uploadFile.id}-insights-tooltip`); // Assign an ID
+      fabricCanvas?.add(tooltip); // Added null check
+      setTimeout(() => fabricCanvas?.remove(tooltip), 3000); // Added null check
     });
-    fabricCanvas.add(insightsIcon);
-    fabricCanvas.renderAll();
+    fabricCanvas?.add(insightsIcon); // Added null check
+    fabricCanvas?.renderAll(); // Added null check
   }
+
+  interface UnifiedProcessingResponse {
+    success: boolean;
+    jobIds: string[];
+    evidenceCount: number;
+    jobStatuses: { [key: string]: { subscriptionEndpoint: string; status: string } };
+    error?: { message: string };
+  }
+
+  interface JobStatusResponse {
+    success: boolean;
+    status: {
+      status: 'processing' | 'pending' | 'completed' | 'failed';
+      progress?: number;
+      type?: string;
+      results?: {
+        detectedEntities?: unknown;
+        relationshipMap?: unknown;
+        patternDetection?: unknown;
+      };
+    };
+    error?: { message: string };
+  }
+
   // Enhanced evidence processing using unified legal orchestration service
-  async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: unknownn[]) {
+  async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: unknown[]): Promise<UnifiedProcessingResponse | null> { // Typed return
     try {
       console.log(`🚀 Starting unified evidence processing for canvas: ${canvasId}`);
       // Use the unified legal orchestration service for comprehensive processing
-      const response = await apiFetch('/api/legal/evidence-canvas', {
-        method: 'POST',
+      const response: UnifiedProcessingResponse = await apiFetch('/api/legal/evidence-canvas', 'POST', { // Corrected apiFetch call and typed response
         headers: {
           'Content-Type': 'application/json',
         },
@@ -711,15 +823,16 @@ const fabricModule = await import("fabric");
           analysisType: 'detective'
         })
       });
-      if ((response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).success) {
-        console.log.jobIds,
-          evidenceCount: (response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).evidenceCount
+      if (response.success) {
+        console.log({ // Corrected console.log syntax
+          jobIds: response.jobIds,
+          evidenceCount: response.evidenceCount
         });
         // Start monitoring job progress
-        monitorUnifiedProcessingJobs((response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).jobIds, (response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).jobStatuses);
-        return respon;
+        monitorUnifiedProcessingJobs(response.jobIds, response.jobStatuses);
+        return response; // Corrected return value
       } else {
-        console.error(error);
+        console.error(response.error?.message || 'Unknown error during unified processing'); // Typed error
         return null;
       }
     } catch (error) {
@@ -734,7 +847,7 @@ const fabricModule = await import("fabric");
       // Poll job status every 2 seconds
       const pollStatus = async () => {
         try {
-          const statusResponse = await apiFetch(endpoint);
+          const statusResponse: JobStatusResponse = await apiFetch(endpoint); // Typed statusResponse
           if (statusResponse.success) {
             updateJobProgressUI(jobId, statusResponse.status);
             // Continue polling if job is still processing
@@ -754,7 +867,7 @@ const fabricModule = await import("fabric");
     return Promise.all(monitoringPromises);
   }
   // Update UI with job progress
-  function updateJobProgressUI(jobId: string, status: unknownn) {
+  function updateJobProgressUI(jobId: string, status: JobStatusResponse['status']) { // Typed status
     // Update any UI elements that show processing status
     console.log(`📊 Job ${jobId} status: ${status.status} (${status.progress || 0}%)`);
     // You could add visual indicators here, update progress bars, etc.
@@ -763,15 +876,26 @@ const fabricModule = await import("fabric");
     }
   }
   // Handle job completion
-  function handleJobCompletion(jobId: string, status: unknownn) {
+  function handleJobCompletion(jobId: string, status: JobStatusResponse['status']) { // Typed status
     console.log(`✅ Job ${jobId} completed:`, status);
     // Update canvas with results if applicable
     if (status.results) {
       addProcessingResultsToCanvas(status.results);
     }
   }
+
+  function showProcessingIndicator(message: string) {
+    console.log(`💡 Indicator: ${message}`);
+    // Implement actual UI indicator logic here
+  }
+
+  function showSuccessMessage(message: string) {
+    console.log(`✅ Success: ${message}`);
+    // Implement actual success message UI logic here
+  }
+
   // Add processing results to canvas
-  function addProcessingResultsToCanvas(results: unknownn) {
+  function addProcessingResultsToCanvas(results: { detectedEntities?: unknown; relationshipMap?: unknown; patternDetection?: unknown }) { // Typed results
     if (!fabricCanvas) return;
     // Add visual representations of processing results
     if (results.detectedEntities) {
@@ -784,17 +908,33 @@ const fabricModule = await import("fabric");
       highlightPatterns(results.patternDetection);
     }
   }
+
+  function addEntitiesToCanvas(entities: unknown) {
+    console.log('Adding entities to canvas:', entities);
+    // Implement logic to add entities to fabricCanvas
+  }
+
+  function addRelationshipLinesToCanvas(relationshipMap: unknown) {
+    console.log('Adding relationship lines to canvas:', relationshipMap);
+    // Implement logic to add relationship lines to fabricCanvas
+  }
+
+  function highlightPatterns(patternDetection: unknown) {
+    console.log('Highlighting patterns on canvas:', patternDetection);
+    // Implement logic to highlight patterns on fabricCanvas
+  }
+
   // Trigger unified processing when evidence is added to canvas
   async function triggerUnifiedProcessing() {
     if (uploadedFiles.length === 0) return;
-    const evidenceItems = uploadedFiles.map(file => ({
+    const evidenceItems = uploadedFiles.map((file: UploadedFile) => ({ // Typed file
       id: file.id,
       name: file.file.name,
       type: getEvidenceType(file.file),
       size: file.file.size,
-      canvasPosition file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null;
-      metadata: file.detectiveAnalysis ||
-      uploadTime: file.timestamp;
+      canvasPosition: file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null,
+      metadata: file.detectiveAnalysis || {},
+      uploadTime: file.timestamp
     }));
     const canvasId = `canvas_${Date.now()}`;
     const processingResult = await processEvidenceWithUnifiedService(canvasId, evidenceItems);
@@ -805,32 +945,42 @@ const fabricModule = await import("fabric");
   // Helper function to get canvas object position
   function getCanvasObjectPosition(objectId: string) {
     if (!fabricCanvas) return null;
-    const obj = fabricCanvas.getObjects.find((o: unknownn) => o.id === objectId);
-    return obj ? { x: obj.left, y: obj.top } : null;
+    const obj = fabricCanvas.getObjects().find((o: FabricObjectWithId) => o.id === objectId); // Typed o as FabricObjectWithId
+    return obj ? { x: obj.left ?? 0, y: obj.top ?? 0 } : null; // Add nullish coalescing for left/top
   }
-  async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: unknownn[]) {
+  async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: AnchorPoint[]) { // Typed anchorPoints
     if (!fabricCanvas || !anchorPoints?.length) return;
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
-    const fileObject = canvasObjects.find((obj: unknownn) => obj.id === uploadFile.canvasObjectId);
+    const fileObject = canvasObjects.find((obj: FabricObjectWithId) => obj.id === uploadFile.canvasObjectId); // Typed obj as FabricObjectWithId
     if (!fileObject) return;
+
+    // Provide default values for left and top if they are undefined
+    const fileObjectLeft = fileObject.left ?? 0;
+    const fileObjectTop = fileObject.top ?? 0;
+    const fileObjectScaleX = fileObject.scaleX ?? 1;
+    const fileObjectScaleY = fileObject.scaleY ?? 1;
+    const fileObjectWidth = fileObject.width ?? 0;
+    const fileObjectHeight = fileObject.height ?? 0;
+
     // Add anchor point indicators
-    anchorPoints.forEach((anchor, index) => {
-      const anchorX = fileObject.left + (fileObject.width * fileObject.scaleX * anchor.coordinates.x);
-      const anchorY = fileObject.top + (fileObject.height * fileObject.scaleY * anchor.coordinates.y);
+    anchorPoints.forEach((anchor: AnchorPoint, index: number) => { // Typed anchor
+      const anchorX = fileObjectLeft + (fileObjectWidth * fileObjectScaleX * anchor.coordinates.x);
+      const anchorY = fileObjectTop + (fileObjectHeight * fileObjectScaleY * anchor.coordinates.y);
       // Add anchor point circle
       const anchorCircle = new fabric.Circle({
-        left: anchorX
-        top: anchorY
+        left: anchorX,
+        top: anchorY,
         radius: 8,
         fill: anchor.legal_relevance === 'high' ? '#FF3030' :
               anchor.legal_relevance === 'medium' ? '#FFD700' : '#40FF40',
         stroke: enableN64Style ? '#000' : '#fff',
         strokeWidth: 2,
-        selectable: true
-        hasControls: false
-        hasBorders: false;
+        selectable: true,
+        hasControls: false,
+        hasBorders: false
       });
+      anchorCircle.set('id', `${uploadFile.id}-anchor-circle-${index}`); // Assign an ID
       // Add anchor label
       const anchorLabel = new fabric.Text(`📍 ${anchor.type}`, {
         left: anchorX + 15,
@@ -840,12 +990,13 @@ const fabricModule = await import("fabric");
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
         backgroundColor: enableN64Style ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
         padding: 2,
-        fontWeight: enableN64Style ? 'bold' : 'normal';
+        fontWeight: enableN64Style ? 'bold' : 'normal'
       });
-      fabricCanvas.add(anchorCircle);
-      fabricCanvas.add(anchorLabel);
+      anchorLabel.set('id', `${uploadFile.id}-anchor-label-${index}`); // Assign an ID
+      fabricCanvas?.add(anchorCircle); // Added null check
+      fabricCanvas?.add(anchorLabel); // Added null check
     });
-    fabricCanvas.renderAll();
+    fabricCanvas?.renderAll(); // Added null check
   }
   function removeFile(fileId: string) {
     const fileIndex = uploadedFiles.findIndex(f => f.id === fileId);
@@ -854,15 +1005,15 @@ const fabricModule = await import("fabric");
     // Remove from canvas if it exists
     if (file.canvasObjectId && fabricCanvas) {
       const canvasObjects = fabricCanvas.getObjects();
-      const objectsToRemove = canvasObjects.filter((obj: unknownn) =>
-        obj.id === file.canvasObjectId ||
-        (obj.left === file.canvasObjectId) // For grouped objects
+      // Filter objects by the assigned ID and any associated objects
+      const objectsToRemove = canvasObjects.filter((obj: FabricObjectWithId) => // Typed obj as FabricObjectWithId
+        obj.id === file.canvasObjectId || obj.id?.startsWith(`${file.canvasObjectId}-`)
       );
-      objectsToRemove.forEach((obj: unknownn) => fabricCanvas.remove(obj));
-      fabricCanvas.renderAll();
+      objectsToRemove.forEach((obj: FabricObjectWithId) => fabricCanvas?.remove(obj)); // Typed obj as FabricObjectWithId, added null check
+      fabricCanvas?.renderAll(); // Added null check
     }
     // Remove from files array
-    uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
+    uploadedFiles = uploadedFiles.filter((f: UploadedFile) => f.id !== fileId); // Typed f
   }
 </script>
 
@@ -898,7 +1049,7 @@ const fabricModule = await import("fabric");
         <span class="font-semibold">
           {enableN64Style ? '🧠 ENHANCED INGESTION PIPELINE:' : 'Enhanced Ingestion'}
         </span>
-        <span>{uploadedFiles.filter(item => item.length)}/{uploadedFiles.length} processed</span>
+        <span>{uploadedFiles.filter((item: UploadedFile) => item.status === 'completed').length}/{uploadedFiles.length} processed</span>
       </div>
       <div class="progress-stages">
         <div class="stage" class:active={uploadedFiles.some(f => f.status === 'ingestion')}>
@@ -968,7 +1119,6 @@ const fabricModule = await import("fabric");
     <small class="config-input" class:n64-input={enableN64Style}>
       Ctx: <input
         type="number"
-        ;
         bind:value={options.context_window}
         min={512}
         max={16384}
@@ -979,7 +1129,6 @@ const fabricModule = await import("fabric");
     <small class="config-input" class:n64-input={enableN64Style}>
       Conf: <input
         type="number"
-        ;
         bind:value={options.confidence_level}
         min={0}
         max={1}
@@ -988,7 +1137,7 @@ const fabricModule = await import("fabric");
       />
     </small>
     {#if error}<span class="error">{error}</span>{/if}
-    {#if result && (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).status === 'success'}<span
+    {#if result && result.status === 'success'}<span
         class="ok">✓</span
       >{/if}
     {#if analyzing}<span class="spinner">⏳</span>{/if}
@@ -1078,7 +1227,6 @@ const fabricModule = await import("fabric");
             </div>
             <button
               class="remove-btn"
-              ;
               class:n64-remove={enableN64Style}
               onclick={() => removeFile(file.id)}
               disabled={file.status === 'uploading'}
@@ -1097,86 +1245,21 @@ const fabricModule = await import("fabric");
       <div class="analysis-content">
         <div class="analysis-section">
           <h4>{enableN64Style ? '🔍 ANALYSIS' : 'Analysis'}</h4>
-          <pre>{(
-              result as {
-                success?: unknownn;
-                data?: unknownn;
-                error?: unknownn;
-                processedFile?: unknownn;
-                metadata?: unknownn;
-                status?: unknownn;
-                analysis?: unknownn;
-                summary?: unknownn;
-                confidence?: unknownn;
-                processing_time_ms?: unknownn;
-              }
-            ).analysis}</pre>
+          <pre>{result.analysis}</pre>
         </div>
         <div class="analysis-section">
           <h4>{enableN64Style ? '📋 SUMMARY' : 'Summary'}</h4>
-          <pre>{(
-              result as {
-                success?: unknownn;
-                data?: unknownn;
-                error?: unknownn;
-                processedFile?: unknownn;
-                metadata?: unknownn;
-                status?: unknownn;
-                analysis?: unknownn;
-                summary?: unknownn;
-                confidence?: unknownn;
-                processing_time_ms?: unknownn;
-              }
-            ).summary}</pre>
+          <pre>{result.summary}</pre>
         </div>
         <div class="meta-info">
           <span
-            >Confidence: {(
-              result as {
-                success?: unknownn;
-                data?: unknownn;
-                error?: unknownn;
-                processedFile?: unknownn;
-                metadata?: unknownn;
-                status?: unknownn;
-                analysis?: unknownn;
-                summary?: unknownn;
-                confidence?: unknownn;
-                processing_time_ms?: unknownn;
-              }
-            ).confidence?.toFixed?.(2)}</span
+            >Confidence: {result.confidence?.toFixed(2)}</span
           >
           <span
-            >Time: {(
-              result as {
-                success?: unknownn;
-                data?: unknownn;
-                error?: unknownn;
-                processedFile?: unknownn;
-                metadata?: unknownn;
-                status?: unknownn;
-                analysis?: unknownn;
-                summary?: unknownn;
-                confidence?: unknownn;
-                processing_time_ms?: unknownn;
-              }
-            ).processing_time_ms} ms</span
+            >Time: {result.processing_time_ms} ms</span
           >
           <span
-            >Status: {(
-              result as {
-                success?: unknownn;
-                data?: unknownn;
-                error?: unknownn;
-                processedFile?: unknownn;
-                metadata?: unknownn;
-                status?: unknownn;
-                analysis?: unknownn;
-                summary?: unknownn;
-                confidence?: unknownn;
-                processing_time_ms?: unknownn;
-              }
-            ).status}</span
+            >Status: {result.status}</span
           >
           {#if uploadedFiles.some(f => f.cudaProcessed)}
             <span class="cuda-meta">⚡ CUDA Optimized</span>
@@ -1188,7 +1271,7 @@ const fabricModule = await import("fabric");
 </div>
 
 <style>
-  .enhanced-evidence-canv.n64-style {
+  .enhanced-evidence-canvas.n64-style { /* Corrected class name */
     font-family: 'Courier New', monospace;
     background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
     border: 2px solid #FFD700;
@@ -1235,7 +1318,7 @@ const fabricModule = await import("fabric");
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease; /* Corrected syntax */
   }
   .n64-btn {
     background: #FFD700;
@@ -1250,7 +1333,7 @@ const fabricModule = await import("fabric");
       inset 1px 1px 0 rgba(255, 255, 255, 0.3),
       inset -1px -1px 0 rgba(0, 0, 0, 0.3);
   }
-  .n64-btn:hover:not(:disabled) {,
+  .n64-btn:hover:not(:disabled) {
     background: #FFA500;
     transform: translateY(-1px);
   }
@@ -1296,7 +1379,7 @@ const fabricModule = await import("fabric");
     color: #ffaa00;
   }
   .evidence-canvas-wrapper {
-    position relative;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1307,14 +1390,14 @@ const fabricModule = await import("fabric");
     max-width: 820px;
     height: 620px;
     background: #fafafa;
-    transition all 0.3s ease;
+    transition: all 0.3s ease; /* Corrected syntax */
   }
-  .n64-canv.evidence-canvas-wrapper.drag-over {
+  .evidence-canvas-wrapper.drag-over { /* Corrected class name */
     border-color: #4090FF;
     background: #e8f4fd;
     transform: scale(1.02);
   }
-  .n64-canvas.drag-over {
+  .n64-canvas.drag-over { /* Corrected class name */
     border-color: #FF6B35;
     background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%);
     box-shadow:
@@ -1322,7 +1405,7 @@ const fabricModule = await import("fabric");
       0 0 40px rgba(255, 107, 53, 0.7);
   }
   .drag-overlay {
-    position absolute;
+    position: absolute;
     inset: 0;
     background: rgba(64, 144, 255, 0.9);
     display: flex;
@@ -1346,11 +1429,11 @@ const fabricModule = await import("fabric");
     color: rgba(255, 255, 255, 0.8);
   }
   .upload-progress-overlay {
-    position absolute;
+    position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: white;
@@ -1392,7 +1475,7 @@ const fabricModule = await import("fabric");
   }
   .files-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between; /* Corrected syntax */
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
@@ -1416,7 +1499,7 @@ const fabricModule = await import("fabric");
     background: white;
     border: 1px solid #ddd;
     border-radius: 6px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease; /* Corrected syntax */
   }
   .n64-file {
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
@@ -1424,13 +1507,13 @@ const fabricModule = await import("fabric");
     border-radius: 0;
     color: #FFD700;
   }
-  .file-.status-completed {
+  .file-item.status-completed { /* Corrected class name */
     border-color: #28a745;
   }
-  .file-.status-error {
+  .file-item.status-error { /* Corrected class name */
     border-color: #dc3545;
   }
-  .file-.status-uploading {
+  .file-item.status-uploading { /* Corrected class name */
     border-color: #007bff;
   }
   .file-icon {
@@ -1479,14 +1562,14 @@ const fabricModule = await import("fabric");
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease; /* Corrected syntax */
   }
   .n64-remove {
     background: #FF3030;
     border: 1px solid #CC0000;
     border-radius: 0;
   }
-  .remove-btn:hover:not(:disabled) {,
+  .remove-btn:hover:not(:disabled) {
     background: #c82333;
     transform: scale(1.1);
   }
@@ -1510,7 +1593,7 @@ const fabricModule = await import("fabric");
   }
   .analysis-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .analysis-section h4 {
@@ -1547,7 +1630,7 @@ const fabricModule = await import("fabric");
     font-size: 0.9rem;
     color: #666;
     padding-top: 1rem;
-    border-top: 1px solid #ee;
+    border-top: 1px solid #eee; /* Corrected hex code */
   }
   .n64-panel .meta-info {
     color: #CCCCCC;
@@ -1576,7 +1659,7 @@ const fabricModule = await import("fabric");
   }
   .progress-stages {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between; /* Corrected syntax */
     margin: 0.75rem 0;
   }
   .stage {
@@ -1587,7 +1670,7 @@ const fabricModule = await import("fabric");
     border-radius: 4px;
     font-size: 0.8rem;
     opacity: 0.5;
-    transition all 0.2s ease;
+    transition: all 0.2s ease; /* Corrected syntax */
   }
   .stage.active {
     opacity: 1;
@@ -1634,7 +1717,7 @@ const fabricModule = await import("fabric");
     margin-left: 0.25rem;
     box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
   }
-  .file-.status-ingestion {
+  .file-item.status-ingestion { /* Corrected class name */
     border-color: #4090FF;
     background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
   }
@@ -1642,7 +1725,7 @@ const fabricModule = await import("fabric");
     border-color: #4090FF;
     background: linear-gradient(135deg, #1a1a3e 0%, #0a0a2a 100%);
   }
-  .file-.status-detective_analysis {
+  .file-item.status-detective_analysis { /* Corrected class name */
     border-color: #8B5CF6;
     background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
   }
@@ -1651,8 +1734,8 @@ const fabricModule = await import("fabric");
     background: linear-gradient(135deg, #2a1a3e 0%, #1a0a2a 100%);
   }
   @media (max-width: 768px) {
-    .enhanced-evidence-canv.toolbar {
-      flex-direction column;
+    .enhanced-evidence-canvas.toolbar { /* Corrected class name */
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
     }

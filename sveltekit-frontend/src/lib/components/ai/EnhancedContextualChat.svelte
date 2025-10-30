@@ -13,15 +13,21 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { chatMessageSchema } from '$lib/forms/contextual-chat-schema';
-  import * as Dialog from 'bits-ui';
-  import * as Accordion from 'bits-ui';
-  import * as Tooltip from 'bits-ui';
+  import * as Dialog from 'bits-ui/dialog'; // Corrected import
+  import * as Accordion from 'bits-ui/accordion'; // Corrected import
+  import * as Tooltip from 'bits-ui/tooltip'; // Corrected import
   import type {
     ContextualState,
     NextStepPrediction,
     LegalEntity,
     ConversationTurn
   } from '$lib/types/sharedTypes';
+
+  // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
+  // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
+  // Drizzle-ORM, and Docker environment variables for production readiness
+  // occurs within those server-side SvelteKit API routes (+server.ts files).
+  // This component correctly uses relative paths for API calls, allowing SvelteKit to handle routing.
 
   // Props
   interface Props {
@@ -31,9 +37,9 @@
   }
 
   let {
-    sessionId = $state(`session-${Date.now()}`),
-    userId = $state('demo-user'),
-    caseId = $state<string | undefined>(undefined)
+    sessionId = `session-${Date.now()}`,
+    userId = 'demo-user',
+    caseId = undefined
   }: Props = $props();
 
   // Form state
@@ -452,7 +458,7 @@
 
   .header-content {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -488,7 +494,7 @@
   .chat-body {
     display: grid;
     grid-template-columns: 1fr 400px;
-    flex: 1,
+    flex: 1;
     overflow: hidden;
   }
 
@@ -541,7 +547,7 @@
 
   .form-controls {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     margin-top: 0.75rem;
   }
@@ -560,7 +566,7 @@
   .accordion-trigger {
     width: 100%;
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem !important;
     cursor: pointer;
@@ -585,7 +591,7 @@
 
   .prediction-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
   }
 
@@ -620,7 +626,7 @@
 
   .entity-item {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     text-align: left;
     width: 100%;
   }
@@ -641,14 +647,14 @@
   }
 
   .dialog-overlay {
-    position fixed;
-    inset: 0,
+    position: fixed;
+    inset: 0;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 50,
+    z-index: 50;
   }
 
   .dialog-content {
-    position fixed;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -656,7 +662,7 @@
     max-width: 500px;
     max-height: 85vh;
     padding: 2rem;
-    z-index: 51,
+    z-index: 51;
   }
 
   .dialog-title {
@@ -671,7 +677,7 @@
 
   .detail-row {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid #444;
   }
@@ -688,7 +694,7 @@
   .tooltip-content {
     padding: 0.5rem 1rem !important;
     font-size: 10px;
-    z-index: 100,
+    z-index: 100;
   }
 </style>
 

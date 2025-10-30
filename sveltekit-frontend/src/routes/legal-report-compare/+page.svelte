@@ -29,9 +29,9 @@
   let formData = $state({
     title: '',
     documentType: 'report' as 'verdict' | 'sentence' | 'contract' | 'evidence' | 'brief' | 'motion' | 'report',
-    jurisdiction '',
+    jurisdiction: '', // Added colon
     caseNumber: '',
-    enableComparison true,
+    enableComparison: true, // Added colon
   });
 
   // Analysis results
@@ -61,7 +61,7 @@
         keyFacts: string[];
       };
       why: {
-        motivation string;
+        motivation: string; // Added colon
         legalBasis: string[];
         precedents: string[];
       };
@@ -73,7 +73,7 @@
       evidence: {
         physicalEvidence: Array<{
           type: string;
-          description string;
+          description: string; // Added colon
           relevance: number;
           admissible: boolean;
         }>;
@@ -104,7 +104,7 @@
       recommendations: Array<{
         type: string;
         priority: string;
-        description string;
+        description: string; // Added colon
         reasoning: string;
         confidence: number;
       }>;
@@ -134,6 +134,35 @@
   // File Upload Handlers
   // ============================================================================
 
+  // Add small helpers so TypeScript accepts toast.* method usage.
+  type ToastWithMethods = ((message: string, opts?: any) => any) & {
+    info?: (message: string, opts?: any) => any;
+    success?: (message: string, opts?: any) => any;
+    error?: (message: string, opts?: any) => any;
+  };
+  const _toast = (toast as unknown) as ToastWithMethods;
+  function toastError(message: string) {
+    if (typeof _toast.error === 'function') {
+      _toast.error(message);
+    } else {
+      _toast(message, { type: 'error' } as any);
+    }
+  }
+  function toastSuccess(message: string) {
+    if (typeof _toast.success === 'function') {
+      _toast.success(message);
+    } else {
+      _toast(message, { type: 'success' } as any);
+    }
+  }
+  function toastInfo(message: string) {
+    if (typeof _toast.info === 'function') {
+      _toast.info(message);
+    } else {
+      _toast(message, { type: 'info' } as any);
+    }
+  }
+
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
@@ -153,7 +182,8 @@
       ];
 
       if (!supportedTypes.includes(file.type)) {
-        toast.error(`Unsupported file type: ${file.type}\n\nSupported: PDF, TXT, JSON, PNG/JPG, MP4, MP3`);
+-        toast.error(`Unsupported file type: ${file.type}\n\nSupported: PDF, TXT, JSON, PNG/JPG, MP4, MP3`);
++        toastError(`Unsupported file type: ${file.type}\n\nSupported: PDF, TXT, JSON, PNG/JPG, MP4, MP3`);
         return;
       }
 
@@ -164,7 +194,8 @@
         formData.title = file.name.replace(/\.(pdf|txt|json|png|jpg|jpeg|mp4|mp3)$/i, '');
       }
 
-      toast.success(`Selected: ${file.name} (${file.type})`);
+-      toast.success(`Selected: ${file.name} (${file.type})`);
++      toastSuccess(`Selected: ${file.name} (${file.type})`);
     }
   }
 
@@ -185,51 +216,53 @@
       data.append('caseNumber', formData.caseNumber);
       data.append('enableComparison', formData.enableComparison.toString());
 
-      uploadProgress = 25;
-      toast.info('📄 Uploading PDF...');
+uploadProgress = 25;
+toastInfo('📄 Uploading PDF...');
 
       const response = await fetch('/api/legal-report/analyze', {
         method: 'POST',
         body: data,
       });
 
-      uploadProgress = 50;
-      toast.info('🔍 Extracting text with OCR...');
+uploadProgress = 50;
+toastInfo('🔍 Extracting text with OCR...');
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Analysis failed');
       }
 
-      uploadProgress = 75;
-      toast.info('🧠 Analyzing with gemma3-legal:latest...');
+uploadProgress = 75;
+toastInfo('🧠 Analyzing with gemma3-legal:latest...');
 
       const result = await response.json();
       uploadProgress = 100;
 
       if (result.success) {
         analysisResult = result.data;
-        toast.success('✅ Legal analysis complete!');
+-        toast.success('✅ Legal analysis complete!');
++        toastSuccess('✅ Legal analysis complete!');
 
-        // Show summary toasts
-        if (result.data.analysis.who.personsOfInterest.length > 0) {
-          toast.info(`👥 Identified ${result.data.analysis.who.personsOfInterest.length} persons of interest`);
-        }
+// Show summary toasts
+if (result.data.analysis.who.personsOfInterest.length > 0) {
+  toastInfo(`👥 Identified ${result.data.analysis.who.personsOfInterest.length} persons of interest`);
+}
 
-        if (result.data.comparison?.similarCases.length > 0) {
-          toast.info(`📊 Found ${result.data.comparison.similarCases.length} similar cases`);
-        }
+if (result.data.comparison?.similarCases.length > 0) {
+  toastInfo(`📊 Found ${result.data.comparison.similarCases.length} similar cases`);
+}
 
-        if (result.data.comparison?.recommendations.length > 0) {
-          toast.info(`💡 Generated ${result.data.comparison.recommendations.length} recommendations`);
-        }
+if (result.data.comparison?.recommendations.length > 0) {
+  toastInfo(`💡 Generated ${result.data.comparison.recommendations.length} recommendations`);
+}
       } else {
         throw new Error(result.error || 'Analysis failed');
       }
     } catch (err: any) {
       console.error('Analysis error:', err);
       analysisError = err.message || 'Unknown error';
-      toast.error(`❌ Analysis failed: ${analysisError}`);
+-      toast.error(`❌ Analysis failed: ${analysisError}`);
++      toastError(`❌ Analysis failed: ${analysisError}`);
     } finally {
       isUploading = false;
     }
@@ -243,9 +276,9 @@
     formData = {
       title: '',
       documentType: 'report',
-      jurisdiction '',
+      jurisdiction: '', // Added colon
       caseNumber: '',
-      enableComparison true,
+      enableComparison: true, // Added colon
     };
   }
 

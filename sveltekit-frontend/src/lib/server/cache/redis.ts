@@ -5,9 +5,11 @@
  * - Fully ESM-safe for SvelteKit 2 + Node 22
  */
 
-import Redis from 'ioredis';
+import { createClient, type RedisClientType } from 'redis';
+import { getRedisUrl, getRedisPassword } from '$lib/config/env.server';
 import { gzipSync, gunzipSync } from 'zlib';
 import { Buffer } from 'buffer';
+import crypto from 'crypto';
 
 /* -------------------------------------------------------------------------- */
 /*  Error Formatting Utility                                                  */
@@ -324,3 +326,105 @@ export const cacheShader = (key: string, compiledWGSL: string, ttlMs?: number) =
 export const getCachedShader = (key: string) => cache.getShader(key);
 
 export default cache;
+
+/* -------------------------------------------------------------------------- */
+/*  Redis Client Singleton                                                    */
+/* -------------------------------------------------------------------------- */
+
+import { createClient, type RedisClientType } from 'redis';
+import { getRedisUrl, getRedisPassword } from '$lib/config/env.server';
+import crypto from 'crypto';
+
+let redisClient: RedisClientType | null = null;
+
+export async function getRedisClient(): Promise<RedisClientType> {
+  if (!redisClient) {
+    const redisUrl = getRedisUrl();
+    try {
+      redisClient = createClient({
+        url: redisUrl,
+        password: getRedisPassword(), // Use password from env if not in URL
+      });
+      redisClient.on('error', err => console.error('Redis Client Error', err));
+      await redisClient.connect();
+      console.log('Redis client connected.');
+    } catch (error) {
+      console.error('Failed to connect to Redis:', error);
+      // Fallback or throw error based on application needs
+      throw error;
+    }
+  }
+  return redisClient;
+}
+
+export async function closeRedisClient() {
+  if (redisClient && redisClient.isReady) {
+    await redisClient.quit();
+    redisClient = null;
+    console.log('Redis client disconnected.');
+  }
+}
+
+// --- Langcache specific functions ---
+
+/**
+ * Generates a SHA256 hash for a given prompt.
+ * @param prompt The input string to hash.
+ * @returns The SHA256 hash as a hexadecimal string.
+ */
+function generateSha256(prompt: string): string {
+  return crypto.createHash('sha256').update(prompt).digest('hex');
+}
+
+interface LangCacheEntry<T> {
+  embedding?: number[];
+  result?: T;
+  tokens?: number;
+  ttl?: number; // Time to live in seconds
+}
+
+/**
+ * Stores an item in the langcache.
+ * Key pattern: `langcache:{model}:{shaPrompt}`
+ * @param model The AI model identifier.
+ * @param prompt The original prompt.
+ * @param data The data to store (embedding, result, tokens).
+ * @param ttl Time to live in seconds (default: 3600).
+ */
+export async function setLangCache<T>(
+  model: string,
+  prompt: string,
+  data: LangCacheEntry<T>,
+  ttl: number = 3600
+): Promise<void> {
+  const client = await getRedisClient();
+  const shaPrompt = generateSha256(prompt);
+  const key = `langcache:${model}:${shaPrompt}`;
+  await client.set(key, JSON.stringify(data), { EX: ttl });
+}
+
+/**
+ * Retrieves an item from the langcache.
+ * @param model The AI model identifier.
+ * @param prompt The original prompt.
+ * @returns The cached data or null if not found.
+ */
+export async function getLangCache<T>(model: string, prompt: string): Promise<LangCacheEntry<T> | null> {
+  const client = await getRedisClient();
+  const shaPrompt = generateSha256(prompt);
+  const key = `langcache:${model}:${shaPrompt}`;
+  const cached = await client.get(key);
+  return cached ? JSON.parse(cached) : null;
+}
+
+/**
+ * Deletes an item from the langcache.
+ * @param model The AI model identifier.
+ * @param prompt The original prompt.
+ */
+export async function deleteLangCache(model: string, prompt: string): Promise<void> {
+  const client = await getRedisClient();
+  const shaPrompt = generateSha256(prompt);
+  const key = `langcache:${model}:${shaPrompt}`;
+  await client.del(key);
+}

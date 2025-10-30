@@ -141,6 +141,7 @@ export interface ConversationTurn {
   intent: string;
   entities: LegalEntity[];
   embedding?: number[];
+  hmmState: number;
 }
 
 export interface LegalEntity {
@@ -148,6 +149,8 @@ export interface LegalEntity {
   value: string;
   confidence: number;
   span: { start: number; end: number };
+  startPos?: number;
+  endPos?: number;
 }
 
 export interface HMMState {
@@ -161,7 +164,7 @@ export interface HMMState {
 export interface NextStepPrediction {
   action: string;
   confidence: number;
-  reasoning: string;
+  description: string;
   requiredContext: string[];
   estimatedDuration: number;
 }

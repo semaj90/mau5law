@@ -1,18 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
-  // Svelte 5 runes are auto-imported
-` element and/or a single top-level `<script module>` element;
-https://svelte.dev/e/script_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element -->
-<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
-  ` element and/or a single top-level `<script module>
-// Auto-generated default export
-export default ;
-</script>` element
-  https://svelte.dev/e/script_duplicate -->
 <!-- Tiptap Editor with AI Assistant Integration -->
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 <script lang="ts">
-  import { onMount, onDestroy, tick } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
   import { Collaboration } from '@tiptap/extension-collaboration';
@@ -36,21 +25,25 @@ export default ;
 }
 
   // Props
-  let { documentId,
+  interface Props {
+    documentId: string;
+    initialContent?: string;
+    placeholder?: string;
+    autoSave?: boolean;
+    showAIAssistant?: boolean;
+    enableInlineSuggestions?: boolean;
+    readOnly?: boolean;
+  }
+  let {
+    documentId,
     initialContent = '',
     placeholder = 'Start typing your legal document...',
     autoSave = true,
     showAIAssistant = true,
     enableInlineSuggestions = true,
     readOnly = false
-   }: { documentId,
-    initialContent = '',
-    placeholder = 'Start typing your legal document...',
-    autoSave = true,
-    showAIAssistant = true,
-    enableInlineSuggestions = true,
-    readOnly = false
-  : any } = $props();
+  }: Props = $props();
+
   // State management
   const { state, send } = useMachine(crewAIOrchestrationMachine);
   // Component state
@@ -74,8 +67,8 @@ export default ;
   const focusSchema = $derived($state.context.focusSchema);
   $effect(() => {
     (async () => {
-await initializeEditor();
-    setupEventListeners();
+      await initializeEditor();
+      setupEventListeners();
     })();
   });
   onDestroy(() => {
@@ -137,7 +130,7 @@ await initializeEditor();
   // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
-  function handleKeyDown(_event: KeyboardEvent) {
+  function handleKeyDown(event: KeyboardEvent) {
     userTyping = true;
     // Send user activity to state machine
     send({ type: 'USER_ACTIVITY', activity: 'typing' });
@@ -180,7 +173,7 @@ await initializeEditor();
     }
   }
   function handleSelectionUpdate(editor: Editor) {
-    const selection = editor.state.selectio;
+    const selection = editor.state.selection;
     const pos = editor.view.coordsAtPos(selection.from);
     recommendationPosition = {
       x: pos.left,
@@ -229,7 +222,7 @@ await initializeEditor();
     if (!editor) return;
     const content = editor.getHTML();
     await saveDocument(content);
-    lastSaveTime = new Date().getTime();
+    lastSaveTime = new Date();
     // Show save confirmation
     showNotification('Document saved', 'success');
   }
@@ -282,18 +275,21 @@ await initializeEditor();
           }
         })
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; data?: any; suggestions?: any }).success) {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      if (result.success) {
         // Start state machine orchestration
         send({
           type: 'START_REVIEW',
           task: {
-            taskId: (result as { success?: any; data?: any; suggestions?: any }).data.taskId,
+            taskId: result.data.taskId,
             documentId,
             documentContent: content,
             reviewType: 'comprehensive',
             priority: 'medium',
-            assignedAgents: (result as { success?: any; data?: any; suggestions?: any }).data.assignedAgents.map((a: any) => a.id)
+            assignedAgents: result.data.assignedAgents.map((a: any) => a.id)
           }
         });
         showNotification('CrewAI review started', 'info');
@@ -303,21 +299,27 @@ await initializeEditor();
       showNotification('Failed to start review', 'error');
     }
   }
-  function applySuggestion(suggestion any) {
+  function applySuggestion(suggestion: any) {
     if (!editor) return;
     // Apply the suggestion to the editor
-    if (suggestion.position !== undefined) {
+    if (suggestion.position !== undefined && suggestion.length !== undefined && suggestion.suggestedText) {
       editor.commands.setTextSelection({
         from: suggestion.position,
-        to: suggestion.position + suggestion.length,
+        to: suggestion.position + suggestion.length
       });
       editor.commands.insertContent(suggestion.suggestedText);
+    } else if (suggestion.text) {
+      // From inline popup, replaces current selection
+      editor.chain().focus().insertContent(suggestion.text).run();
     }
     // Accept recommendation in state machine
-    send({ type: 'ACCEPT_RECOMMENDATION', recommendationId: suggestion.id });
+    if (suggestion.id) {
+      send({ type: 'ACCEPT_RECOMMENDATION', recommendationId: suggestion.id });
+    }
     showNotification('Suggestion applied', 'success');
+    hideAllSuggestions();
   }
-  function rejectSuggestion(suggestion any) {
+  function rejectSuggestion(suggestion: any) {
     send({ type: 'REJECT_RECOMMENDATION', recommendationId: suggestion.id });
     showNotification('Suggestion rejected', 'info');
   }
@@ -328,7 +330,7 @@ await initializeEditor();
   }
   function showInlineSuggestions() {
     if (!editor) return;
-    const selection = editor.state.selectio;
+    const selection = editor.state.selection;
     const selectedText = editor.state.doc.textBetween(selection.from, selection.to);
     if (selectedText.length > 0) {
       generateContextualSuggestion(selectedText);
@@ -339,11 +341,14 @@ await initializeEditor();
   // ============================================================================
   async function saveDocument(content: string): Promise<void> {
     // This would integrate with your document save API
-    await fetch(`/api/documents/${documentId}`, {
+    const response = await fetch(`/api/documents/${documentId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content })
     });
+    if (!response.ok) {
+      throw new Error(`Failed to save document: ${response.statusText}`);
+    }
   }
   async function fetchInlineSuggestions(content: string): Promise<unknown[]> {
     // This would call your AI suggestion API
@@ -352,20 +357,26 @@ await initializeEditor();
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content, type: 'inline' })
     });
-    const result = await (response as { json?: any }).json();
-    return (result as { success?: any; data?: any; suggestions?: any }).suggestions || [];
+    if (!response.ok) {
+      throw new Error(`Failed to fetch suggestions: ${response.statusText}`);
+    }
+    const result = await response.json();
+    return result.suggestions || [];
   }
   async function generateContextualSuggestion(selectedText: string): Promise<void> {
     // Generate suggestion for selected text
     const suggestions = await fetchInlineSuggestions(selectedText);
     if (suggestions.length > 0) {
-      currentRecommendation = suggestions[0].text;
-      showSuggestions = true;
+      const firstSuggestion = suggestions[0] as { text: string };
+      if (firstSuggestion?.text) {
+        currentRecommendation = firstSuggestion.text;
+        showSuggestions = true;
+      }
     }
   }
-  function checkForRecommendationAtSelection(selection any): void {
+  function checkForRecommendationAtSelection(selection: any): void {
     // Check if current selection contains any pending recommendations
-    const recommendations = $state.context.currentRecommendation;
+    const recommendations = $state.context.currentRecommendations;
     for (const rec of recommendations) {
       if (rec.position && selection.from <= rec.position && selection.to >= rec.position) {
         currentRecommendation = rec.text;
@@ -376,7 +387,7 @@ await initializeEditor();
   function updateWordCount(): void {
     if (editor) {
       const text = editor.getText();
-      wordCount = text.split.filter-length;
+      wordCount = text.trim().split(/\s+/).filter(Boolean).length;
     }
   }
   function showNotification(message: string, type: 'success' | 'error' | 'info'): void {
@@ -399,8 +410,7 @@ await initializeEditor();
   <!-- Editor Element -->
   <div
     bind:this={editorElement}
-    class="tiptap-editor-wrapper min-h-96 border border-gray-300 rounded-lg p-4 focus-within: border-blue-500 transition-colors"
-    ;
+    class="tiptap-editor-wrapper min-h-96 border border-gray-300 rounded-lg p-4 focus-within:border-blue-500 transition-colors"
     class:opacity-50={readOnly}
   />
   <!-- Status Bar -->
@@ -431,7 +441,7 @@ await initializeEditor();
   {#if aiAssistantVisible}
     <div
       class="ai-assistant-panel absolute top-0 right-0 w-80 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10"
-      transitionslide={{ axis: 'x', duration 200 }}
+      transition:slide={{ axis: 'x', duration: 200 }}
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-semibold text-gray-800">AI Assistant</h3>
@@ -458,7 +468,7 @@ await initializeEditor();
         <div class="recommendations">
           <h4 class="font-medium text-gray-700 mb-2">Recommendations</h4>
           {#each $state.context.currentRecommendations as rec (rec.id)}
-            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transitionfade={{ duration 150 }}>
+            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transition:fade={{ duration: 150 }}>
               <div class="flex items-start justify-between">
                 <div class="flex-1">
                   <div class="text-sm text-gray-800">{rec.text}</div>
@@ -500,7 +510,7 @@ await initializeEditor();
     <div
       class="inline-suggestion absolute bg-yellow-50 border border-yellow-300 rounded-lg p-3 shadow-lg z-20 max-w-xs"
       style="left: {recommendationPosition.x}px; top: {recommendationPosition.y + 25}px;"
-      transitionfade={{ duration 150 }}
+      transition:fade={{ duration: 150 }}
     >
       <div class="text-sm text-gray-800 mb-2">{currentRecommendation}</div>
       <div class="flex justify-end space-x-2">
@@ -533,13 +543,13 @@ await initializeEditor();
     outline: none;
     min-height: 200px;
   }
-  :global(.tiptap-editor .ProseMirror::before) {
+  :global(.tiptap-editor .ProseMirror:empty::before) {
     content: attr(data-placeholder);
     color: #9ca3af;
     pointer-events: none;
     display: block;
-    height: 0,
-  }
+    height: 0;
+    float: left;
   }
   .ai-assistant-panel {
     max-height: 500px;

@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import PerfChart from '$lib/components/PerfChart.svelte';
   import { writable } from 'svelte/store';
   const runtime = writable<any>(null);
@@ -20,7 +19,7 @@
           if (res.ok){
             const aData = await res.json();
             serverAlerts = aData.alerts || [];
-            serverAlertCounts = aData.counts || serverAlertCount;
+            serverAlertCounts = aData.counts || serverAlertCounts;
             if (serverAlerts.some(a=>a.Level==='crit'||a.level==='crit')) highestAlertLevel='crit'; else if (serverAlerts.some(a=>a.Level==='warn'||a.level==='warn')) highestAlertLevel='warn'; else highestAlertLevel='none';
           }
         } catch (error) {
@@ -53,25 +52,115 @@
   let memUsedSeries: number[] = [];
   let load1Series: number[] = [];
   let cacheRecentSeries: number[] = [];
+
+  // --- New Interfaces for type safety ---
+  interface ServerAlert {
+    level: 'warn' | 'crit';
+    message: string;
+    anomaly?: boolean;
+    ZScore?: number;
+    zScore?: number;
+    zscore?: number;
+    ts?: number; // timestamp in seconds
+    timestamp?: number; // timestamp in milliseconds or seconds
+    Level?: 'warn' | 'crit'; // Allow for different casing from backend
+  }
+
+  interface AnomalyMetricStats {
+    count: number;
+    mean: number;
+    std: number;
+    last_z: number;
+    threshold_z: number;
+  }
+
+  interface AnomalyStats {
+    gpu_util: AnomalyMetricStats;
+    jobs_rate: AnomalyMetricStats;
+  }
+
+  interface GpuEnginesClocks {
+    graphics_clock_mhz?: number;
+    sm_clock_mhz?: number;
+    mem_clock_mhz?: number;
+  }
+
+  interface GpuUtilization {
+    gpu_percent?: number;
+  }
+
+  interface GpuMemory {
+    used_bytes?: number;
+    total_bytes?: number;
+  }
+
+  interface GpuProcessUtilization {
+    pid: number;
+    sm_util: number;
+    mem_util: number;
+    enc_util: number;
+    dec_util: number;
+    timestamp: number; // in nanoseconds, converted to ms for Date
+  }
+
+  interface GpuEngines {
+    engines?: GpuEnginesClocks;
+    utilization?: GpuUtilization;
+    memory?: GpuMemory;
+    power_watts?: number;
+    process_utilization?: GpuProcessUtilization[];
+  }
+
+  interface WorkerStat {
+    pid: number;
+    name: string;
+    cpu_percent?: number;
+    CPUPercent?: number; // Go backend might use different casing
+    rss_bytes: number;
+    num_threads: number;
+    create_time: number; // timestamp
+  }
+
+  interface ProfilingHistoryEntry {
+    ts?: number;
+    Timestamp?: number;
+    kernel_samples?: number;
+    tensor_core_util?: number;
+    dram_throughput_gbs?: number;
+    occupancy_avg?: number;
+  }
+
+  interface ProfilingSnapshot {
+    kernel_samples?: number;
+    tensor_core_util?: number;
+    dram_throughput_gbs?: number;
+    occupancy_avg?: number;
+    enabled?: boolean;
+    ts?: number; // timestamp
+    Timestamp?: number; // timestamp
+    notes?: string[];
+  }
+  // --- End New Interfaces ---
+
   // Server-provided alerts & history
-  let serverAlerts = $state<any[]>([]);
+  let serverAlerts = $state<ServerAlert[]>([]);
   let serverAlertCounts = $state({warn:0,crit:0});
   let historyGpuUtilSeries = $state<number[]>([]);
   let historyJobsSeries = $state<number[]>([]);
   let historyMemUsedSeries = $state<number[]>([]);
   let historyLoad1Series = $state<number[]>([]);
   let historyRedisMemSeries = $state<number[]>([]);
-  let anomalyStats: unknown = $state(null);
+  let anomalyStats: AnomalyStats | null = $state(null);
   let activeHistoryTab = $state<'gpu'|'jobs'|'system'|'redis'|'anomaly'>('gpu');
   // New tabs for profiling & engines
   let showGpuEngines = $state<boolean>(false);
   let showWorkers = $state<boolean>(false);
   let showProfiling = $state<boolean>(false);
   // Backend (cuda-service) new endpoints data
-  let gpuEngines: unknown = $state(null);
-  let workerStats: unknown[] = $state([]);
-  let profilingSnapshot: unknown = $state(null);
-  let profilingHistory: unknown[] = $state([]);
+  let gpuEngines: GpuEngines | null = $state(null);
+  let workerStats: WorkerStat[] = $state([]);
+  let profilingSnapshot: ProfilingSnapshot | null = $state(null);
+  let profilingHistory: ProfilingHistoryEntry[] = $state([]);
   let lastProfilingFetched: number | null = $state(null);
   async function fetchCudaEndpoint(path: string) {
     try {
@@ -148,29 +237,29 @@
         } catch (error) {
           console.error('Cache metrics error:', error);
         }
+      } // Closing brace for the for-loop
       // Simulate realistic cache metrics based on performance optimization principles
-      try {
-        const mockData = {
-          hits: Math.floor(Math.random() * 50000) + 10000,
-          misses: Math.floor(Math.random() * 5000) + 1000,
-          hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
-          evictions: Math.floor(Math.random() * 200),
-          size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
-          maxSize: 1024 * 1024 * 256, // 256MB max
-          entries: Math.floor(Math.random() * 10000) + 1000,
-          types: {
-            'function-results': Math.floor(Math.random() * 3000),
-            'compiled-wasm': Math.floor(Math.random() * 100),
-            'database-queries': Math.floor(Math.random() * 2000),
-            'api-responses': Math.floor(Math.random() * 1500)
-          }
+      const mockData = {
+        hits: Math.floor(Math.random() * 50000) + 10000,
+        misses: Math.floor(Math.random() * 5000) + 1000,
+        hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
+        evictions: Math.floor(Math.random() * 200),
+        size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
+        maxSize: 1024 * 1024 * 256, // 256MB max
+        entries: Math.floor(Math.random() * 10000) + 1000,
+        types: {
+          'function-results': Math.floor(Math.random() * 3000),
+          'compiled-wasm': Math.floor(Math.random() * 100),
+          'database-queries': Math.floor(Math.random() * 2000),
+          'api-responses': Math.floor(Math.random() * 1500)
         }
-        cacheMetrics.set(mockData);
-        cacheHitSeries.push(mockData.hitRate * 100);
-        cacheEvictionSeries.push(mockData.evictions);
-        if (cacheHitSeries.length > 300) cacheHitSeries.shift();
-        if (cacheEvictionSeries.length > 300) cacheEvictionSeries.shift();
-      } catch (e) {
+      }
+      cacheMetrics.set(mockData);
+      cacheHitSeries.push(mockData.hitRate * 100);
+      cacheEvictionSeries.push(mockData.evictions);
+      if (cacheHitSeries.length > 300) cacheHitSeries.shift();
+      if (cacheEvictionSeries.length > 300) cacheEvictionSeries.shift();
+    } catch (e) {
       console.warn('Cache metrics unavailable:', e);
     }
   }
@@ -187,46 +276,48 @@
         }
         return;
       }
-    } catch // Simulate WebAssembly metrics
-    const mockWasm = {
-      modules: [
-        {
-          name: 'legal-nlp-engine',
-          memory: 64 * 1024 * 1024,
-          instances: 2,
-          calls: Math.floor(Math.random() * 10000) + 5000,
-          compilationTime: 150 + Math.random() * 100;
+    } catch (error) {
+      // Simulate WebAssembly metrics
+      const mockWasm = {
+        modules: [
+          {
+            name: 'legal-nlp-engine',
+            memory: 64 * 1024 * 1024,
+            instances: 2,
+            calls: Math.floor(Math.random() * 10000) + 5000,
+            compilationTime: 150 + Math.random() * 100,
+          },
+          {
+            name: 'vector-operations',
+            memory: 32 * 1024 * 1024,
+            instances: 1,
+            calls: Math.floor(Math.random() * 5000) + 2000,
+            compilationTime: 80 + Math.random() * 50,
+          },
+          {
+            name: 'crypto-utils',
+            memory: 16 * 1024 * 1024,
+            instances: 3,
+            calls: Math.floor(Math.random() * 15000) + 8000,
+            compilationTime: 45 + Math.random() * 30,
+          }
+        ],
+        totalMemory: 112 * 1024 * 1024,
+        executionTime: {
+          avg: 8.5 + Math.random() * 15,
+          p95: 25.2 + Math.random() * 20,
+          p99: 58.3 + Math.random() * 30,
         },
-        {
-          name: 'vector-operations',
-          memory: 32 * 1024 * 1024,
-          instances: 1,
-          calls: Math.floor(Math.random() * 5000) + 2000,
-          compilationTime: 80 + Math.random() * 50;
-        },
-        {
-          name: 'crypto-utils',
-          memory: 16 * 1024 * 1024,
-          instances: 3,
-          calls: Math.floor(Math.random() * 15000) + 8000,
-          compilationTime: 45 + Math.random() * 30;
+        optimizations: {
+          cacheHits: Math.floor(Math.random() * 1000) + 500,
+          inlineFunctions: Math.floor(Math.random() * 200) + 100,
+          memoryReuse: (0.7 + Math.random() * 0.25) * 100 // 70-95%
         }
-      ],
-      totalMemory: 112 * 1024 * 1024,
-      executionTime: {
-        avg: 8.5 + Math.random() * 15,
-        p95: 25.2 + Math.random() * 20,
-        p99: 58.3 + Math.random() * 30;
-      },
-      optimizations: {
-        cacheHits: Math.floor(Math.random() * 1000) + 500,
-        inlineFunctions: Math.floor(Math.random() * 200) + 100,
-        memoryReuse: (0.7 + Math.random() * 0.25) * 100 // 70-95%
-      }
+      };
+      wasmMetrics.set(mockWasm);
+      wasmExecutionSeries.push(mockWasm.executionTime.avg);
+      if (wasmExecutionSeries.length > 300) wasmExecutionSeries.shift();
     }
-    wasmMetrics.set(mockWasm);
-    wasmExecutionSeries.push(mockWasm.executionTime.avg);
-    if (wasmExecutionSeries.length > 300) wasmExecutionSeries.shift();
   }
   // Load Node.js event loop and performance metrics
   async function loadNodeMetrics() {
@@ -245,34 +336,36 @@
         }
         return;
       }
-    } catch // Simulate Node.js metrics
-    const mockNode = {
-      eventLoop: {
-        lag: Math.random() * 25 + 2, // 2-27ms lag
-        utilization Math.random() * 0.8 + 0.1, // 10-90% utilization;
-        idle: Math.random() * 0.5 + 0.3 // 30-80% idl;
-      },
-      memory: {
-        rss: (150 + Math.random() * 100) * 1024 * 1024,
-        heapTotal: (80 + Math.random() * 50) * 1024 * 1024,
-        heapUsed: (60 + Math.random() * 30) * 1024 * 1024,
-        external: (20 + Math.random() * 15) * 1024 * 1024;
-      },
-      handles: {
-        active: Math.floor(Math.random() * 150) + 50,
-        requests: Math.floor(Math.random() * 80) + 20;
-      },
-      performance: {
-        dnsLookups: Math.floor(Math.random() * 100),
-        httpRequests: Math.floor(Math.random() * 1000) + 200,
-        fileOperations: Math.floor(Math.random() * 500) + 100
-      }
+    } catch (error) {
+      // Simulate Node.js metrics
+      const mockNode = {
+        eventLoop: {
+          lag: Math.random() * 25 + 2, // 2-27ms lag
+          utilization: Math.random() * 0.8 + 0.1, // 10-90% utilization
+          idle: Math.random() * 0.5 + 0.3, // 30-80% idle
+        },
+        memory: {
+          rss: (150 + Math.random() * 100) * 1024 * 1024,
+          heapTotal: (80 + Math.random() * 50) * 1024 * 1024,
+          heapUsed: (60 + Math.random() * 30) * 1024 * 1024,
+          external: (20 + Math.random() * 15) * 1024 * 1024,
+        },
+        handles: {
+          active: Math.floor(Math.random() * 150) + 50,
+          requests: Math.floor(Math.random() * 80) + 20,
+        },
+        performance: {
+          dnsLookups: Math.floor(Math.random() * 100),
+          httpRequests: Math.floor(Math.random() * 1000) + 200,
+          fileOperations: Math.floor(Math.random() * 500) + 100
+        }
+      };
+      nodeMetrics.set(mockNode);
+      eventLoopLagSeries.push(mockNode.eventLoop.lag);
+      memoryUsageSeries.push(mockNode.memory.heapUsed / (1024 * 1024));
+      if (eventLoopLagSeries.length > 300) eventLoopLagSeries.shift();
+      if (memoryUsageSeries.length > 300) memoryUsageSeries.shift();
     }
-    nodeMetrics.set(mockNode);
-    eventLoopLagSeries.push(mockNode.eventLoop.lag);
-    memoryUsageSeries.push(mockNode.memory.heapUsed / (1024 * 1024));
-    if (eventLoopLagSeries.length > 300) eventLoopLagSeries.shift();
-    if (memoryUsageSeries.length > 300) memoryUsageSeries.shift();
   }
   // Load service health metrics
   async function loadServiceHealth() {
@@ -283,15 +376,17 @@
         serviceHealth.set(data.services || []);
         return;
       }
-    } catch // Mock service health
-    const services = [
-      { name: 'PostgreSQL', status: 'running', port: 5432, health: 'excellent', latency: 2.1, uptime: 345600 },
-      { name: 'Redis', status: 'running', port: 6379, health: 'good', latency: 0.8, uptime: 345550 },
-      { name: 'Ollama Primary', status: 'running', port: 11434, health: 'excellent', latency: 45.2, uptime: 82800 },
-      { name: 'Neo4j', status: 'running', port: 7474, health: 'good', latency: 12.5, uptime: 259200 },
-      { name: 'NATS Server', status: 'running', port: 4222, health: 'excellent', latency: 1.2, uptime: 345500 }
-    ];
-    serviceHealth.set(services);
+    } catch (error) {
+      // Mock service health
+      const services = [
+        { name: 'PostgreSQL', status: 'running', port: 5432, health: 'excellent', latency: 2.1, uptime: 345600 },
+        { name: 'Redis', status: 'running', port: 6379, health: 'good', latency: 0.8, uptime: 345550 },
+        { name: 'Ollama Primary', status: 'running', port: 11434, health: 'excellent', latency: 45.2, uptime: 82800 },
+        { name: 'Neo4j', status: 'running', port: 7474, health: 'good', latency: 12.5, uptime: 259200 },
+        { name: 'NATS Server', status: 'running', port: 4222, health: 'excellent', latency: 1.2, uptime: 345500 }
+      ];
+      serviceHealth.set(services);
+    }
   }
   // Load all enhanced metrics
   async function loadAllEnhancedMetrics() {
@@ -325,13 +420,17 @@
           cacheRecentSeries.push(data.cache.recent_embedding_jobs_minute);
           if (cacheRecentSeries.length > 300) cacheRecentSeries.shift();
         }
+      } else {
+        throw new Error('Enhanced metrics fetch failed');
       }
-    } catch await Promise.all([
-      loadCacheMetrics(),
-      loadWasmMetrics(),
-      loadNodeMetrics(),
-      loadServiceHealth()
-    ]);
+    } catch (error) {
+      await Promise.all([
+        loadCacheMetrics(),
+        loadWasmMetrics(),
+        loadNodeMetrics(),
+        loadServiceHealth()
+      ]);
+    }
     // Fetch server-side alerts & history (best-effort)
     try {
       const [alertsRes, histRes] = await Promise.all([
@@ -341,7 +440,7 @@
       if (alertsRes.ok) {
         const aData = await alertsRes.json();
         serverAlerts = aData.alerts || [];
-        serverAlertCounts = aData.counts || serverAlertCount;
+        serverAlertCounts = aData.counts || serverAlertCounts;
       }
       if (histRes.ok) {
         const hData = await histRes.json();
@@ -354,7 +453,7 @@
         for (const snap of history) {
           const gpuUtil = (snap.gpu && (snap.gpu.util || snap.gpu.Util)) ?? null;
           if (gpuUtil != null) historyGpuUtilSeries.push(gpuUtil);
-          const jobs = snap.cache?.recent_embedding_jobs_minut;
+          const jobs = snap.cache?.recent_embedding_jobs_minute;
           if (typeof jobs === 'number') historyJobsSeries.push(jobs);
           const memPct = snap.memory?.used_percent;
           if (typeof memPct === 'number') historyMemUsedSeries.push(memPct);
@@ -364,11 +463,17 @@
           if (typeof redisBytes === 'number') historyRedisMemSeries.push(redisBytes/1024/1024);
         }
       }
-    } catch // anomaly stats
+    } catch (e) {
+      console.error('Failed to fetch alerts or history', e);
+    }
+    // anomaly stats
     try {
       const aRes = await fetch('/api/cuda/metrics/anomalies');
-      if (aRes.ok) { anomalyStats = await aRes.json(), }
-    } catch }
+      if (aRes.ok) { anomalyStats = await aRes.json(); }
+    } catch (e) {
+      console.error('Failed to fetch anomaly stats', e);
+    }
+  }
   async function load() {
     try {
   loading.set(true);
@@ -412,11 +517,14 @@
             }
           }
         }
-      } catch // Load enhanced metrics
+      } catch (e) {
+        console.error('GPU stats fetch failed', e);
+      }
+      // Load enhanced metrics
   await loadAllEnhancedMetrics();
   error.set(null);
     } catch (e: unknown) {
-  error.set(e.message);
+  error.set(e instanceof Error ? e.message : String(e));
     } finally {
   loading.set(false);
     }
@@ -508,7 +616,7 @@
     <div class="text-xs text-gray-500">No recent server alerts</div>
   {:else}
     <ul class="space-y-1 text-sm max-h-48 overflow-auto pr-1">
-      {#each serverAlerts.slice.reverse() as a}
+      {#each serverAlerts.slice().reverse() as a}
   <li class="flex items-start gap-2 p-2 rounded border text-xs {a.level === 'crit' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700' : 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700'} {a.anomaly ? 'outline outline-2 outline-indigo-400/70 dark:outline-indigo-500/60' : ''}">
           <span class="mt-0.5 font-bold {a.level === 'crit' ? 'text-red-600 dark:text-red-300' : 'text-amber-600 dark:text-amber-300'}">{a.level?.toUpperCase?.() || a.level}</span>
           <span class="flex-1">{a.message}</span>
@@ -646,8 +754,8 @@
       <div><strong>Temp (C):</strong> {$enhancedMetrics.gpu.temp_c ?? '–'}</div>
       <div><strong>Power (W):</strong> {($enhancedMetrics.gpu.power_mw/1000)?.toFixed(1) ?? '–'}</div>
       <div><strong>SM Clock (MHz):</strong> {$enhancedMetrics.gpu.clock_sm_mhz ?? '–'}</div>
-      <div><strong>Mem Used (MB):</strong> {($enhancedMetrics.gpu.mem_used/1024/1024)?.toFixed(0)}</div>
-      <div><strong>Mem Total (MB):</strong> {($enhancedMetrics.gpu.mem_total/1024/1024)?.toFixed(0)}</div>
+      <div><strong>Mem Used (MB):</strong> {((gpuEngines.memory?.used_bytes ?? 0)/1024/1024).toFixed(0)}</div>
+      <div><strong>Mem Total (MB):</strong> {((gpuEngines.memory?.total_bytes ?? 0)/1024/1024).toFixed(0)}</div>
     </div>
   </div>
 {/if}
@@ -682,19 +790,19 @@
           <div class="w-full h-2 bg-gray-200 rounded"><div class="h-2 bg-indigo-600 rounded" style={`width:${gpuEngines.utilization?.gpu_percent||0}%`}></div></div>
         </div>
         <div class="flex-1">
-          <div class="flex justify-between mb-1"><span>VRAM</span><span class="font-mono">{(gpuEngines.memory ? ((gpuEngines.memory.used_bytes / gpuEngines.memory.total_bytes)*100).toFixed(1):'0')}%</span></div>
-          <div class="w-full h-2 bg-gray-200 rounded"><div class="h-2 bg-purple-600 rounded" style={`width:${gpuEngines.memory ? (gpuEngines.memory.used_bytes / gpuEngines.memory.total_bytes * 100).toFixed(1):0}%`}></div></div>
+          <div class="flex justify-between mb-1"><span>VRAM</span><span class="font-mono">{(gpuEngines.memory?.used_bytes != null && gpuEngines.memory?.total_bytes != null && gpuEngines.memory.total_bytes > 0 ? (gpuEngines.memory.used_bytes / gpuEngines.memory.total_bytes * 100).toFixed(1) : '0')}%</span></div>
+          <div class="w-full h-2 bg-gray-200 rounded"><div class="h-2 bg-purple-600 rounded" style={`width:${gpuEngines.memory?.used_bytes != null && gpuEngines.memory?.total_bytes != null && gpuEngines.memory.total_bytes > 0 ? (gpuEngines.memory.used_bytes / gpuEngines.memory.total_bytes * 100).toFixed(1) : 0}%`}></div></div>
         </div>
       </div>
-      <div class="text-[11px] text-gray-500 mb-3">Power: {gpuEngines.power_watts?.toFixed?.(1)} W • Memory: {(gpuEngines.memory?.used_bytes/1024/1024).toFixed(0)} / {(gpuEngines.memory?.total_bytes/1024/1024).toFixed(0)} MB</div>
+      <div class="text-[11px] text-gray-500 mb-3">Power: {gpuEngines.power_watts?.toFixed?.(1)} W • Memory: {((gpuEngines.memory?.used_bytes ?? 0)/1024/1024).toFixed(0)} / {((gpuEngines.memory?.total_bytes ?? 0)/1024/1024).toFixed(0)} MB</div>
       <h4 class="font-semibold text-sm mb-2">Per-Process (last sample)</h4>
       {#if gpuEngines.process_utilization?.length}
         <div class="overflow-auto max-h-48 border rounded">
           <table class="w-full text-[11px]">
-            <thead class="bg-gray-100"><tr class="text-left"><th class="py-1 px-2">PID</th><th class="py-1 px-2">SM%</th><th class="py-1 px-2">Mem%</th><th class="py-1 px-2">Enc%</th><th class="py-1 px-2">Dec%</th><th class="py-1 px-2">Time</th></tr></thead>
+            <thead class="bg-gray-100"><tr class="text-left"><th class="py-1">PID</th><th class="py-1">SM%</th><th class="py-1">Mem%</th><th class="py-1">Enc%</th><th class="py-1">Dec%</th><th class="py-1">Time</th></tr></thead>
             <tbody>
             {#each gpuEngines.process_utilization as p}
-              <tr class="border-t hover:bg-gray-50"><td class="py-1 px-2 font-mono">{p.pid}</td><td class="py-1 px-2">{p.sm_util}</td><td class="py-1 px-2">{p.mem_util}</td><td class="py-1 px-2">{p.enc_util}</td><td class="py-1 px-2">{p.dec_util}</td><td class="py-1 px-2 text-gray-500">{new Date(p.timestamp/1e6).toLocaleTimeString?.() || p.timestamp}</td></tr>
+              <tr class="border-t hover:bg-gray-50"><td class="py-1 font-mono">{p.pid}</td><td class="py-1">{p.sm_util}</td><td class="py-1">{p.mem_util}</td><td class="py-1">{p.enc_util}</td><td class="py-1">{p.dec_util}</td><td class="py-1 text-gray-500">{new Date(p.timestamp/1e6).toLocaleTimeString?.() || p.timestamp}</td></tr>
             {/each}
             </tbody>
           </table>
@@ -728,15 +836,15 @@
     {#if profilingSnapshot}
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs mb-4">
         <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">Kernel Samples</div><div class="font-mono text-sm">{profilingSnapshot.kernel_samples}</div></div>
-        <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">Tensor Util</div><div class="font-mono text-sm">{profilingSnapshot.tensor_core_util.toFixed?.(1)}%</div></div>
-        <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">DRAM GB/s</div><div class="font-mono text-sm">{profilingSnapshot.dram_throughput_gbs.toFixed?.(2)}</div></div>
-        <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">Occupancy</div><div class="font-mono text-sm">{(profilingSnapshot.occupancy_avg*100).toFixed?.(1)}%</div></div>
+        <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">Tensor Util</div><div class="font-mono text-sm">{profilingSnapshot.tensor_core_util?.toFixed?.(1)}%</div></div>
+        <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">DRAM GB/s</div><div class="font-mono text-sm">{profilingSnapshot.dram_throughput_gbs?.toFixed?.(2)}</div></div>
+        <div class="p-2 bg-gray-50 rounded border"><div class="text-[10px] text-gray-500 mb-1">Occupancy</div><div class="font-mono text-sm">{(profilingSnapshot.occupancy_avg!*100).toFixed?.(1)}%</div></div>
       </div>
-      <div class="text-[11px] text-gray-500 mb-2">{profilingSnapshot.enabled ? 'Profiler Enabled' : 'Profiler Disabled'} • {new Date(profilingSnapshot.ts || profilingSnapshot.Timestamp).toLocaleTimeString()}</div>
+      <div class="text-[11px] text-gray-500 mb-2">{profilingSnapshot.enabled ? 'Profiler Enabled' : 'Profiler Disabled'} • {new Date(profilingSnapshot.ts || profilingSnapshot.Timestamp || Date.now()).toLocaleTimeString()}</div>
       <div class="mb-3">
         <h4 class="font-semibold text-sm mb-1">Notes</h4>
         <ul class="text-[11px] list-disc list-inside space-y-0.5 max-h-32 overflow-auto">
-          {#each profilingSnapshot.notes as n}<li>{n}</li>{/each}
+          {#each profilingSnapshot.notes || [] as n}<li>{n}</li>{/each}
         </ul>
       </div>
       <h4 class="font-semibold text-sm mb-2">Recent History ({profilingHistory.length})</h4>
@@ -744,7 +852,7 @@
         <div class="overflow-auto max-h-40 border rounded">
           <table class="w-full text-[11px]">
             <thead class="bg-gray-100"><tr class="text-left"><th class="py-1 px-2">Time</th><th class="py-1 px-2">Kernels</th><th class="py-1 px-2">Tensor%</th><th class="py-1 px-2">DRAM GB/s</th><th class="py-1 px-2">Occ%</th></tr></thead>
-            <tbody>{#each profilingHistory as h}<tr class="border-t hover:bg-gray-50"><td class="py-1 px-2">{new Date(h.ts || h.Timestamp).toLocaleTimeString()}</td><td class="py-1 px-2">{h.kernel_samples}</td><td class="py-1 px-2">{h.tensor_core_util.toFixed?.(1)}</td><td class="py-1 px-2">{h.dram_throughput_gbs.toFixed?.(2)}</td><td class="py-1 px-2">{(h.occupancy_avg*100).toFixed?.(1)}</td></tr>{/each}</tbody>
+            <tbody>{#each profilingHistory as h}<tr class="border-t hover:bg-gray-50"><td class="py-1 px-2">{new Date(h.ts || h.Timestamp || Date.now()).toLocaleTimeString()}</td><td class="py-1 px-2">{h.kernel_samples}</td><td class="py-1 px-2">{h.tensor_core_util?.toFixed?.(1)}</td><td class="py-1 px-2">{h.dram_throughput_gbs?.toFixed?.(2)}</td><td class="py-1 px-2">{(h.occupancy_avg!*100).toFixed?.(1)}</td></tr>{/each}</tbody>
           </table>
         </div>
       {:else}<div class="text-xs text-gray-500">No profiling history yet.</div>{/if}
@@ -886,7 +994,7 @@
     <div class="p-4 border rounded bg-white/50 shadow">
       <h3 class="font-medium mb-3">Cache Distribution by Type</h3>
       <div class="space-y-2 text-sm">
-        {#each Object.entries($cacheMetrics.types || ) as [type, count]}
+        {#each Object.entries($cacheMetrics.types || {}) as [type, count]}
         <div class="flex items-center justify-between">
           <span class="capitalize">{type.replace('-', ' ')}:</span>
           <div class="flex items-center gap-2">

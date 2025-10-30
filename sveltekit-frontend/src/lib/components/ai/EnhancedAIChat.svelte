@@ -9,7 +9,7 @@
   // Card components removed - using native HTML elements
   import Button from '$lib/components/ui/button/Button.svelte'; // Corrected Button import path
   // Use default imports to match other UI components (avoid named/default mismatch)
-  import Badge from '$lib/components/ui/badge';
+  // import Badge from '$lib/components/ui/badge'; // Removed: Badge is not used
   // import * as Tooltip from '$lib/components/ui/tooltip'; // Removed, now imported from bits-ui
   import Textarea from '$lib/components/ui/Textarea.svelte';
 
@@ -21,6 +21,7 @@
     id: string;
     confidence?: number; // Make optional as it might not always be present
     tokensPerSecond?: number; // Make optional
+    error?: boolean; // Added for consistency with error handling
   };
 
   // Local definition for RAGContext to include 'summary'
@@ -184,7 +185,7 @@
   // Helper to send via HTTP (extracted to avoid duplication)
   async function sendViaHttp(messageToSend: string) {
     try {
-      const response = await fetch('/api/chat-test', {
+      const response = await fetch('/api/contextual/chat', { // Changed from /api/chat-test to /api/contextual/chat
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [{ role: 'user', content: messageToSend }] }),
@@ -236,6 +237,7 @@
           content: 'Sorry, I encountered an error. Please try again.',
           timestamp: Date.now(), // Convert to number
           sessionId: sessionId, // Add sessionId
+          error: true, // Mark message as error
         } as UIMessage,
       ];
     } finally {
@@ -364,24 +366,28 @@
   });
 </script>
 
-<div class="enhanced-ai-chat w-full max-w-6xl mx-auto">
+<div class="enhanced-ai-chat w-full max-w-6xl mx-auto nes-container is-dark with-title">
+  <p class="title">Enhanced Legal AI Assistant</p>
   <!-- Main Chat Interface -->
   <div class="h-[700px] flex flex-col">
-    <div class="chat-header border-b">
+    <div class="chat-header border-b nes-container is-dark is-small">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <ChatBubbleIcon class="w-6 h-6 text-primary" />
+          <ChatBubbleIcon class="w-6 h-6 nes-text is-primary" />
           <div>
-            <h3 class="text-lg font-semibold">Enhanced Legal AI Assistant</h3>
-            <div class="text-sm text-muted-foreground flex items-center gap-2">
+            <h3 class="text-lg font-semibold nes-text is-primary">Enhanced Legal AI Assistant</h3>
+            <div class="text-sm nes-text is-disabled flex items-center gap-2">
               <div class="flex items-center gap-1">
-                <div
-                  class={isConnected ? 'w-2 h-2 rounded-full bg-green-500' : 'w-2 h-2 rounded-full bg-red-500'}
-                ></div>
-                <span class="text-xs">{isConnected ? 'Connected' : 'Disconnected'}</span>
+                {#if isConnected}
+                  <i class="nes-icon star is-small"></i>
+                  <span class="text-xs nes-text is-success">Connected</span>
+                {:else}
+                  <i class="nes-icon close is-small"></i>
+                  <span class="text-xs nes-text is-error">Disconnected</span>
+                {/if}
               </div>
               {#if enableWebGPU && webgpuAccelerator}
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">WebGPU Enabled</span>
+                <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled">WebGPU Enabled</span>
               {/if}
             </div>
           </div>
@@ -391,7 +397,7 @@
           {#if showAnalysisPanel}
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <Button variant="ghost" size="sm" class="p-2 bits-btn">
+                <Button variant="ghost" size="sm" class="p-2 nes-btn is-small">
                   <MagnifyingGlassIcon class="w-4 h-4" />
                 </Button>
               </Tooltip.Trigger>
@@ -401,32 +407,34 @@
             </Tooltip.Root>
           {/if}
 
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">Clear</Button>
+          <Button class="nes-btn is-small" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">Clear</Button>
         </div>
       </div>
     </div>
     <!-- Messages Area -->
-    <div class="chat-content flex-1 overflow-hidden p-0">
+    <div class="chat-content flex-1 overflow-hidden p-0 nes-container is-dark">
       <div bind:this={chatContainer} class="h-full overflow-y-auto p-4 space-y-4">
         {#each messages as message (message.id)}
           <div class={message.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
             <div
               class={message.role === 'user'
-                ? 'max-w-[80%] p-3 rounded-lg bg-primary text-primary-foreground'
-                : 'max-w-[80%] p-3 rounded-lg bg-muted'}
+                ? 'max-w-[80%] p-3 rounded-lg nes-container is-primary'
+                : message.error
+                  ? 'max-w-[80%] p-3 rounded-lg nes-container is-error'
+                  : 'max-w-[80%] p-3 rounded-lg nes-container'}
             >
-              <div class="text-sm font-medium mb-1 opacity-70">
+              <div class="text-sm font-medium mb-1 nes-text is-disabled">
                 {message.role === 'user' ? 'You' : 'AI Assistant'}
                 <span class="text-xs ml-2">{formatTimestamp(message.timestamp)}</span>
               </div>
-              <div class="whitespace-pre-wrap">{message.content ?? ''}</div>
+              <div class="whitespace-pre-wrap nes-text">{message.content ?? ''}</div>
               {#if message.role === 'assistant' && message.confidence}
-                <div class="flex gap-1 mt-2">
-                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                <div class="flex gap-1 mt-2 pt-2 border-t border-current/20">
+                  <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled"
                     >{Math.round(message.confidence * 100)}%</span
                   >
                   {#if message.tokensPerSecond}
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                    <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled"
                       >{Math.round(message.tokensPerSecond)} tok/s</span
                     >
                   {/if}
@@ -437,18 +445,18 @@
         {/each}
         {#if streamingResponse}
           <div class="flex justify-start">
-            <div class="max-w-[80%] p-3 rounded-lg bg-muted">
-              <div class="text-sm font-medium mb-1 opacity-70">AI Assistant</div>
-              <div class="whitespace-pre-wrap">{streamingResponse}</div>
+            <div class="max-w-[80%] p-3 rounded-lg nes-container">
+              <div class="text-sm font-medium mb-1 nes-text is-disabled">AI Assistant</div>
+              <div class="whitespace-pre-wrap nes-text">{streamingResponse}</div>
               <div class="w-2 h-4 bg-current animate-pulse inline-block ml-1"></div>
             </div>
           </div>
         {/if}
         {#if isTyping && !streamingResponse}
           <div class="flex justify-start">
-            <div class="max-w-[80%] p-3 rounded-lg bg-muted">
-              <div class="text-sm font-medium mb-1 opacity-70">AI Assistant</div>
-              <div class="flex items-center gap-1">
+            <div class="max-w-[80%] p-3 rounded-lg nes-container">
+              <div class="text-sm font-medium mb-1 nes-text is-disabled">AI Assistant</div>
+              <div class="flex items-center gap-1 nes-text">
                 <span>Thinking</span>
                 <div class="flex gap-1">
                   <div class="w-1 h-1 bg-current rounded-full animate-bounce"></div>
@@ -462,21 +470,23 @@
       </div>
     </div>
     <!-- Input Area -->
-    <div class="border-t p-4">
+    <div class="border-t p-4 nes-container is-dark">
       <div class="flex gap-3">
-        <!-- @ts-ignore: Textarea component might not be fully Svelte 5 typed yet, usage is correct per instructions -->
-        <Textarea
-          bind:this={messageInput}
-          bind:value={currentMessage}
-          placeholder="Ask about legal matters..."
-          disabled={isTyping || !isConnected}
-          onkeydown={handleKeydown}
-          class="flex-1 min-h-[40px] max-h-[120px] resize-none"
-        />
+        <div class="nes-field is-inline flex-1">
+          <!-- @ts-ignore: Textarea component might not be fully Svelte 5 typed yet, usage is correct per instructions -->
+          <Textarea
+            bind:this={messageInput}
+            bind:value={currentMessage}
+            placeholder="Ask about legal matters..."
+            disabled={isTyping || !isConnected}
+            onkeydown={handleKeydown}
+            class="flex-1 min-h-[40px] max-h-[120px] resize-none nes-input"
+          />
+        </div>
         <Button
           onclick={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
-          class="self-end bits-btn bits-btn"
+          class="self-end nes-btn is-primary"
         >
           <PaperPlaneIcon class="w-4 h-4" />
         </Button>
@@ -493,20 +503,20 @@
   <!-- Analysis Dialog -->
   {#if showAnalysisPanel}
     <Dialog.Root>
-      <Dialog.Content class="max-w-2xl">
+      <Dialog.Content class="max-w-2xl nes-dialog is-dark">
         <Dialog.Header>
-          <Dialog.Title>Message Analysis</Dialog.Title>
-          <Dialog.Description>Detailed analysis and context for the current conversation</Dialog.Description>
+          <Dialog.Title class="nes-text is-primary">Message Analysis</Dialog.Title>
+          <Dialog.Description class="nes-text is-disabled">Detailed analysis and context for the current conversation</Dialog.Description>
         </Dialog.Header>
-        <div class="space-y-4">
+        <div class="space-y-4 nes-container is-dark">
           {#if currentAnalysis}
             <div>
-              <h4 class="font-medium mb-2">Sentiment Analysis</h4>
+              <h4 class="font-medium mb-2 nes-text is-primary">Sentiment Analysis</h4>
               <div class="flex gap-2">
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled"
                   >Sentiment: {currentAnalysis.sentiment || 'Neutral'}</span
                 >
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled"
                   >Confidence: {Math.round((currentAnalysis.confidence || 0) * 100)}%</span
                 >
               </div>
@@ -514,15 +524,15 @@
           {/if}
           {#if ragContext}
             <div>
-              <h4 class="font-medium mb-2">Relevant Context</h4>
+              <h4 class="font-medium mb-2 nes-text is-primary">Relevant Context</h4>
               <div class="text-sm nes-text is-disabled">
                 <p>{ragContext.summary || 'No relevant context found'}</p>
               </div>
             </div>
           {/if}
         </div>
-        <Dialog.Footer>
-          <Button class="bits-btn" variant="ghost">Close</Button>
+        <Dialog.Footer class="nes-container is-dark">
+          <Button class="nes-btn is-small" variant="ghost">Close</Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>
@@ -535,5 +545,53 @@
       system-ui,
       -apple-system,
       sans-serif;
+  }
+  /* Additional NES.css specific overrides/adjustments */
+  :global(.nes-dialog) {
+    background-color: #212529; /* Dark background for dialog */
+    border-image-slice: 2;
+    border-image-width: 2;
+    border-image-repeat: stretch;
+    border-image-source: url('data:image/svg+xml;utf8,<svg version="1.1" width="8" height="8" xmlns="http://www.w3.org/2000/svg"><path fill="%23d4af37" d="M0 2h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-4-2h2v2h-2v-2zm4 0h2v2h-2v-2zm-2-2h2v2h-2v-2zm0 4h2v2h-2v-2z"/></svg>');
+    padding: 0; /* Remove default padding to control internal spacing */
+  }
+  :global(.nes-dialog.is-dark) {
+    border-image-source: url('data:image/svg+xml;utf8,<svg version="1.1" width="8" height="8" xmlns="http://www.w3.org/2000/svg"><path fill="%23d4af37" d="M0 2h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm-4-2h2v2h-2v-2zm4 0h2v2h-2v-2zm-2-2h2v2h-2v-2zm0 4h2v2h-2v-2z"/></svg>');
+  }
+  .nes-container.is-dark {
+    background-color: #1a1d20 !important; /* Darker background for containers */
+  }
+  .nes-text.is-primary {
+    color: #d4af37 !important; /* Gold color for primary text */
+  }
+  .nes-text.is-disabled {
+    color: #888 !important; /* Gray for disabled text */
+  }
+  :global(.nes-btn.is-primary) {
+    background-color: #d4af37 !important;
+    color: #1a1d20 !important;
+  }
+  :global(.nes-btn.is-primary:hover) {
+    background-color: #e0c26e !important;
+  }
+  :global(.nes-btn.is-small) {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  :global(.nes-input) {
+    background-color: #2a2d30;
+    color: #eee;
+    border: 2px solid #d4af37;
+  }
+  :global(.nes-input:focus) {
+    outline: none;
+    box-shadow: 0 0 0 2px #d4af37;
+  }
+  .nes-field.is-inline {
+    display: flex;
+    align-items: center;
+  }
+  :global(.nes-field.is-inline .nes-input) {
+    flex-grow: 1;
   }
 </style>

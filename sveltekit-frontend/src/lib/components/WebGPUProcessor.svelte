@@ -1,18 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level;
-https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Tensor Processing Component for SvelteKit 2 -->
 <!-- Real-time GPU acceleration for legal document processing -->
 <!-- Integrates with QUIC streaming and attention tracking -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  	import { writable, derived } from 'svelte/store';
-  	import type { PageData } from './$types';
-  	// Props
-  	let {
+  // Props
+  let {
   		documentData = [],
   		enableWebGPU = true,
   		enableAttentionTracking = true,
@@ -25,8 +17,8 @@ https://svelte.dev/e/js_parse_error -->
   		streamingEnabled?: boolean;
   		class?: string;
   	} = $props();
-  	// WebGPU interfaces and types
-  	interface WebGPUContext {
+  // WebGPU interfaces and types
+  interface WebGPUContext {
   		device: GPUDevice | null;
   		adapter: GPUAdapter | null;
   		canvas: HTMLCanvasElement | null;
@@ -54,32 +46,32 @@ https://svelte.dev/e/js_parse_error -->
   		timestamp: number;
   		activeRegions: { start: number; end: number; weight: number }[];
   	}
-  	// Stores
-  	const webgpuContext = writable<WebGPUContext>({
-  		device: null
-  		adapter: null;
-  		canvas: null;
-  		context: null
-  		isSupported: false
-  		isInitialized: false,
-  	});
-  	const tensorOperations = writable<TensorOperation[]>([]);
-  	const attentionData = writable<AttentionHeatmap | null>(null);
-  	const processingQueue = writable<TensorOperation[]>([]);
-  	const gpuMetrics = writable({
-  		operationsPerSecond: 0,
-  		memoryUsage: 0,
-  		powerEfficiency: 0,
-  		cacheHitRatio: 0
-  	});
-  	// Derived stores
-  	const isWebGPUReady = derived(webgpuContext, ($ctx) => $ctx.isSupported && $ctx.isInitialized);
-  	const queueLength = derived(processingQueue, ($queue) => $queue.length);
-  	const completedOperations = derived(tensorOperations, ($ops) =>
-  		$ops.filter(op => op.status === 'completed')
-  	);
-  	// WebGPU compute shaders
-  	const EMBEDDING_SHADER = `
+  // State
+  let webgpuContext = $state<WebGPUContext>({
+    device: null,
+    adapter: null,
+    canvas: null,
+    context: null,
+    isSupported: false,
+    isInitialized: false,
+  });
+  let tensorOperations = $state<TensorOperation[]>([]);
+  let attentionData = $state<AttentionHeatmap | null>(null);
+  let processingQueue = $state<TensorOperation[]>([]);
+  let gpuMetrics = $state({
+    operationsPerSecond: 0,
+    memoryUsage: 0,
+    powerEfficiency: 0,
+    cacheHitRatio: 0
+  });
+  // Derived state
+  const isWebGPUReady = $derived(webgpuContext.isSupported && webgpuContext.isInitialized);
+  const queueLength = $derived(processingQueue.length);
+  const completedOperations = $derived(
+    tensorOperations.filter(op => op.status === 'completed')
+  );
+  // WebGPU compute shaders
+  const EMBEDDING_SHADER = `
   		@group(0) @binding(0) var<storage, read_write> input_data: array<f32>;
   		@group(0) @binding(1) var<storage, read_write> output_data: array<f32>;
   		@group(0) @binding(2) var<uniform> params: vec4<f32>; // [batch_size, embedding_dim, chunk_size, reserved]
@@ -121,20 +113,20 @@ https://svelte.dev/e/js_parse_error -->
   					let k_idx = key_pos * head_dim + dim;
   					score += query_vectors[q_idx] * key_vectors[k_idx];
   				}
-  				score *= scal;
-  				attention_scores[seq_pos * seq_length + key_pos] = scor;
+  				score *= scale;
+  				attention_scores[seq_pos * seq_length + key_pos] = score;
   				max_score = max(max_score, score);
   			}
   			// Softmax normalization
   			var sum_exp = 0.0;
   			for (var key_pos = 0u; key_pos < seq_length; key_pos++) {
-  				let score_idx = seq_pos * seq_length + key_po;
+  				let score_idx = seq_pos * seq_length + key_pos;
   				let exp_score = exp(attention_scores[score_idx] - max_score);
-  				attention_scores[score_idx] = exp_scor;
-  				sum_exp += exp_scor;
+  				attention_scores[score_idx] = exp_score;
+  				sum_exp += exp_score;
   			}
   			for (var key_pos = 0u; key_pos < seq_length; key_pos++) {
-  				let score_idx = seq_pos * seq_length + key_po;
+  				let score_idx = seq_pos * seq_length + key_pos;
   				attention_scores[score_idx] /= sum_exp;
   			}
   		}
@@ -177,13 +169,15 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	`;
   	// Component variables
-  let canvas = $state({}) >(new Map());
-  let bufferPool = $state<Map<string, GPUBuffer>('') >(new Map());
+  let canvas: HTMLCanvasElement | null = $state(null);
+  let computePipelines = $state<Map<string, GPUComputePipeline>>(new Map());
+  let bufferPool = $state<Map<string, GPUBuffer>>(new Map());
   let operationId = $state(0);
-  let animationFrame = $state<numberlet attentionTracker = $state<AttentionTracker  | null>(null); const data = null);
-  	// Attention tracking class
-  	class AttentionTracker {
-  		private mousePositions: { x: number; y: number; timestamp: number }[] >([]);
+  let animationFrame: number | null = $state(null);
+  let attentionTracker: AttentionTracker | null = $state(null);
+  // Attention tracking class
+  class AttentionTracker {
+  		private mousePositions: { x: number; y: number; timestamp: number }[] = [];
   		private scrollPositions: { y: number; timestamp: number }[] = [];
   		private focusRegions: { element: HTMLElement; weight: number }[] = [];
   		private isTracking = false;
@@ -203,11 +197,11 @@ https://svelte.dev/e/js_parse_error -->
   			// Click tracking for attention heatmap
   			this.container.addEventListener('click', this.handleClick.bind(this));
   		}
-  		private handleMouseMove(_event: MouseEvent) {
+  		private handleMouseMove(event: MouseEvent) {
   			this.mousePositions.push({
   				x: event.clientX,
   				y: event.clientY,
-  				timestamp: performance.now();
+  				timestamp: performance.now(),
   			});
   			// Keep only last 100 positions
   			if (this.mousePositions.length > 100) {
@@ -215,30 +209,30 @@ https://svelte.dev/e/js_parse_error -->
   			}
   			this.updateAttentionHeatmap();
   		}
-  		private handleScroll(_event: Event) {
-  			// removed unused target assignment
+  		private handleScroll(event: Event) {
+  			const target = event.currentTarget as HTMLElement;
   			this.scrollPositions.push({
   				y: target.scrollTop,
-  				timestamp: performance.now();
+  				timestamp: performance.now(),
   			});
   			if (this.scrollPositions.length > 50) {
   				this.scrollPositions = this.scrollPositions.slice(-50);
   			}
   		}
-  		private handleFocusIn(_event: FocusEvent) {
-  			// removed unused target assignment
+  		private handleFocusIn(event: FocusEvent) {
+  			const target = event.target as HTMLElement;
   			this.focusRegions.push({ element: target, weight: 1.0 });
   		}
-  		private handleFocusOut(_event: FocusEvent) {
-  			// removed unused target assignment
+  		private handleFocusOut(event: FocusEvent) {
+  			const target = event.target as HTMLElement;
   			this.focusRegions = this.focusRegions.filter(region => region.element !== target);
   		}
-  		private handleClick(_event: MouseEvent) {
+  		private handleClick(event: MouseEvent) {
   			// Add high-weight attention point for clicks
   			this.mousePositions.push({
   				x: event.clientX,
   				y: event.clientY,
-  				timestamp: performance.now();
+  				timestamp: performance.now(),
   			});
   			// Increase weight for recent positions
   			const now = performance.now();
@@ -266,19 +260,19 @@ https://svelte.dev/e/js_parse_error -->
   			});
   			// Create active regions
   			const activeRegions = this.identifyActiveRegions(recentPositions, scores);
-  			attentionData.set({
+  			attentionData = {
   				scores,
-  				positions: recentPositions;
-  				timestamp: now
-  				activeRegion;
-  			});
+  				positions: recentPositions,
+  				timestamp: now,
+  				activeRegions,
+  			};
   		}
   		private identifyActiveRegions(positions: { x: number; y: number }[], scores: Float32Array) {
   			// Simple clustering of attention positions
   			const regions: { start: number; end: number; weight: number }[] = [];
   			const threshold = 50; // pixels
   			for (let i = 0; i < positions.length; i++) {
-  let found = $state(false);
+  				let found = false;
   				for (const region of regions) {
   					const regionCenter = (region.start + region.end) / 2;
   					const distance = Math.abs(positions[i].y - regionCenter);
@@ -294,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
   					regions.push({
   						start: positions[i].y - threshold,
   						end: positions[i].y + threshold,
-  						weight: scores[i];
+  						weight: scores[i],
   					});
   				}
   			}
@@ -311,58 +305,62 @@ https://svelte.dev/e/js_parse_error -->
   	}
   	// Initialize WebGPU
   	async function initializeWebGPU() {
-  		try {
-  			if (!navigator.gpu) {
-  				console.warn('WebGPU not supported');
-  				webgpuContext.update(ctx => ({ ...ctx, isSupported: false }));
-  				return;
-  			}
-  			const adapter = await navigator.gpu.requestAdapter({
-  				powerPreference: 'high-performance'
-  			});
-  			if (!adapter) {
-  				throw new Error('No WebGPU adapter found');
-  			}
-  			const device = await adapter.requestDevice({
-  				requiredFeatures: [],
-  				requiredLimits: {
+    try {
+      if (!navigator.gpu) {
+        console.warn('WebGPU not supported');
+        webgpuContext.isSupported = false;
+        return;
+      }
+      const adapter = await navigator.gpu.requestAdapter({
+        powerPreference: 'high-performance'
+      });
+      if (!adapter) {
+        throw new Error('No WebGPU adapter found');
+      }
+      const device = await adapter.requestDevice({
+        requiredFeatures: [],
+        requiredLimits: {
   					maxComputeWorkgroupStorageSize: 16384,
-  					maxComputeWorkgroupsPerDimension 65535,
-  					maxComputeInvocationsPerWorkgroup: 256
-  				}
-  			});
-  			// Configure canvas context
-  			const context = canvas.getContext('webgpu');
-  			if (!context) {
-  				throw new Error('Failed to get WebGPU context');
-  			}
-  			context.configure({
-  				device,
-  				format: 'bgra8unorm',
-  				alphaMode: 'premultiplied',
-  			});
-  			webgpuContext.set({
-  				device,
-  				adapter,
-  				canvas,
-  				context,
-  				isSupported: true
-  				isInitialized: true
-  			});
-  			// Initialize compute pipelines
-  			await initializeComputePipelines(device);
-  			console.log('✅ WebGPU initialized successfully');
-  		} catch (error) {
-  			console.error('❌ WebGPU initialization failed:', error);
-  			webgpuContext.update(ctx => ({ ...ctx, isSupported: false, isInitialized: false }));
-  		}
-  	}
-  	// Initialize compute pipelines
+  					maxComputeWorkgroupsPerDimension: 65535,
+  					maxComputeInvocationsPerWorkgroup: 256,
+  				},
+      });
+      // Configure canvas context
+      if (!canvas) {
+        throw new Error('Canvas element not found');
+      }
+      const context = canvas.getContext('webgpu');
+      if (!context) {
+        throw new Error('Failed to get WebGPU context');
+      }
+      context.configure({
+        device,
+        format: 'bgra8unorm',
+        alphaMode: 'premultiplied',
+      });
+      webgpuContext = {
+        device,
+        adapter,
+        canvas,
+        context,
+        isSupported: true,
+        isInitialized: true,
+      };
+      // Initialize compute pipelines
+      await initializeComputePipelines(device);
+      console.log('✅ WebGPU initialized successfully');
+    } catch (error) {
+      console.error('❌ WebGPU initialization failed:', error);
+      webgpuContext.isSupported = false;
+      webgpuContext.isInitialized = false;
+    }
+  }
+  // Initialize compute pipelines
   	async function initializeComputePipelines(device: GPUDevice) {
   		try {
   			// Embedding pipeline
   			const embeddingModule = device.createShaderModule({
-  				code: EMBEDDING_SHADER;
+  				code: EMBEDDING_SHADER,
   			});
   			const embeddingPipeline = device.createComputePipeline({
   				layout: 'auto',
@@ -374,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
   			computePipelines.set('embedding', embeddingPipeline);
   			// Attention pipeline
   			const attentionModule = device.createShaderModule({
-  				code: ATTENTION_SHADER;
+  				code: ATTENTION_SHADER,
   			});
   			const attentionPipeline = device.createComputePipeline({
   				layout: 'auto',
@@ -386,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
   			computePipelines.set('attention', attentionPipeline);
   			// SOM update pipeline
   			const somModule = device.createShaderModule({
-  				code: SOM_UPDATE_SHADER;
+  				code: SOM_UPDATE_SHADER,
   			});
   			const somPipeline = device.createComputePipeline({
   				layout: 'auto',
@@ -403,124 +401,121 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	}
   	// Process tensor operation on GPU
-  	async function processOperationGPU(operation TensorOperation): Promise<void> {
-  		const ctx = $webgpuContext;
-  		if (!ctx.device || !ctx.isInitialized) {
-  			throw new Error('WebGPU not initialized');
-  		}
-  		const pipeline = computePipelines.get(operation.type);
-  		if (!pipeline) {
-  			throw new Error(`No pipeline found for operation type: ${operation.type}`);
-  		}
-  		const startTime = performance.now();
-  		try {
-  			// Create buffers
-  			const inputBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,
-  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-  			});
-  			const outputBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,
-  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-  			});
-  			const readBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,
-  				usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-  			});
-  			// Write input data
-  			ctx.device.queue.writeBuffer(inputBuffer, 0, operation.input);
-  			// Create bind group
-  			const bindGroup = ctx.device.createBindGroup({
-  				layout: pipeline.getBindGroupLayout(0),
-  				entries: [
-  					{ binding: 0, resource: { buffer: inputBuffer } },
-  					{ binding: 1, resource: { buffer: outputBuffer } },
-  				],
-  			});
-  			// Dispatch compute shader
-  			const commandEncoder = ctx.device.createCommandEncoder();
-  			const passEncoder = commandEncoder.beginComputePass();
-  			passEncoder.setPipeline(pipeline);
-  			passEncoder.setBindGroup(0, bindGroup);
-  			const workgroupCount = Math.ceil(operation.input.length / 256);
-  			passEncoder.dispatchWorkgroups(workgroupCount);
-  			passEncoder.end();
-  			// Copy result to read buffer
-  			commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, operation.input.byteLength);
-  			// Submit and wait
-  			ctx.device.queue.submit([commandEncoder.finish()]);
-  			// Read result
-  			await readBuffer.mapAsync(GPUMapMode.READ);
-  			const result = readBuffer.getMappedRange();
-  			operation.output = new Float32Array(result);
-  			readBuffer.unmap();
-  			// Clean up buffers
-  			inputBuffer.destroy();
-  			outputBuffer.destroy();
-  			readBuffer.destroy();
-  			operation.status = 'completed';
-  			operation.duration = performance.now() - startTime;
-  			// Update operations store
-  			tensorOperations.update(ops => {
-  				const index = ops.findIndex(op => op.id === operation.id);
-  				if (index !== -1) {
-  					ops[index] = operatio;
-  				}
-  				return op;
-  			});
-  			console.log(`✅ GPU operation ${operation.type} completed in ${operation.duration?.toFixed(2)}ms`);
-  		} catch (error) {
-  			operation.status = 'error';
-  			console.error(`❌ GPU operation ${operation.type} failed:`, error);
-  			throw error;
-  		}
+  	async function processOperationGPU(operation: TensorOperation): Promise<void> {
+    const ctx = webgpuContext;
+    if (!ctx.device || !ctx.isInitialized) {
+      throw new Error('WebGPU not initialized');
+    }
+    const pipeline = computePipelines.get(operation.type);
+    if (!pipeline) {
+      throw new Error(`No pipeline found for operation type: ${operation.type}`);
+    }
+    const startTime = performance.now();
+    try {
+      // Create buffers
+      const inputBuffer = ctx.device.createBuffer({
+        size: operation.input.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+      const outputBuffer = ctx.device.createBuffer({
+        size: operation.input.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+      const readBuffer = ctx.device.createBuffer({
+        size: operation.input.byteLength,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+      // Write input data
+      ctx.device.queue.writeBuffer(inputBuffer, 0, operation.input);
+      // Create bind group
+      const bindGroup = ctx.device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: inputBuffer } },
+          { binding: 1, resource: { buffer: outputBuffer } },
+        ],
+      });
+      // Dispatch compute shader
+      const commandEncoder = ctx.device.createCommandEncoder();
+      const passEncoder = commandEncoder.beginComputePass();
+      passEncoder.setPipeline(pipeline);
+      passEncoder.setBindGroup(0, bindGroup);
+      const workgroupCount = Math.ceil(operation.input.length / 256);
+      passEncoder.dispatchWorkgroups(workgroupCount);
+      passEncoder.end();
+      // Copy result to read buffer
+      commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, operation.input.byteLength);
+      // Submit and wait
+      ctx.device.queue.submit([commandEncoder.finish()]);
+      // Read result
+      await readBuffer.mapAsync(GPUMapMode.READ);
+      const result = readBuffer.getMappedRange();
+      operation.output = new Float32Array(result);
+      readBuffer.unmap();
+      // Clean up buffers
+      inputBuffer.destroy();
+      outputBuffer.destroy();
+      readBuffer.destroy();
+      operation.status = 'completed';
+      operation.duration = performance.now() - startTime;
+      // Update operations store
+      const index = tensorOperations.findIndex(op => op.id === operation.id);
+      if (index !== -1) {
+        tensorOperations[index] = operation;
+      }
+      console.log(`✅ GPU operation ${operation.type} completed in ${operation.duration?.toFixed(2)}ms`);
+    } catch (error) {
+      operation.status = 'error';
+      console.error(`❌ GPU operation ${operation.type} failed:`, error);
+      throw error;
+    }
   	}
   	// Queue tensor operation
-  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {} {
-  		const operation TensorOperation = {
+  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {}) {
+  		const operation: TensorOperation = {
   			id: `op_${++operationId}`,
   			type,
   			input,
   			shape,
   			metadata: {
-  				...metadata,
-  				timestamp: performance.now();
+  				...(metadata as object),
+  				timestamp: performance.now(),
   			},
   			status: 'pending',
-  		}
-  		tensorOperations.update(ops => [...ops, operation]);
-  		processingQueue.update(queue => [...queue, operation]);
+  		};
+  		tensorOperations.push(operation);
+  		processingQueue.push(operation);
   		// Process immediately if WebGPU is ready
-  		if ($isWebGPUReady) {
+  		if (isWebGPUReady) {
   			processNextOperation();
   		}
   		return operation.id;
   	}
   	// Process next operation in queue
   	async function processNextOperation() {
-  		const queue = $processingQueu;
-  		if (queue.length === 0) return;
-  		const operation = queue[0];
-  		operation.status = 'processing';
-  		processingQueue.update(q => q.slice(1));
-  		try {
-  			if (enableWebGPU && $isWebGPUReady) {
-  				await processOperationGPU(operation);
-  			} else {
-  				// Fallback to CPU processing
-  				await processOperationCPU(operation);
-  			}
-  		} catch (error) {
-  			console.error('Operation processing failed:', error);
-  			operation.status = 'error';
-  		}
-  		// Continue processing queue
-  		if ($processingQueue.length > 0) {
-  			setTimeout(processNextOperation, 10);
-  		}
-  	}
-  	// CPU fallback processing
-  	async function processOperationCPU(operation TensorOperation): Promise<void> {
+    const queue = processingQueue;
+    if (queue.length === 0) return;
+    const operation = queue[0];
+    operation.status = 'processing';
+    processingQueue.shift();
+    try {
+      if (enableWebGPU && isWebGPUReady) {
+        await processOperationGPU(operation);
+      } else {
+        // Fallback to CPU processing
+        await processOperationCPU(operation);
+      }
+    } catch (error) {
+      console.error('Operation processing failed:', error);
+      operation.status = 'error';
+    }
+    // Continue processing queue
+    if (processingQueue.length > 0) {
+      setTimeout(processNextOperation, 10);
+    }
+  }
+  // CPU fallback processing
+  	async function processOperationCPU(operation: TensorOperation): Promise<void> {
   		const startTime = performance.now();
   		// Simple CPU implementations
   		switch (operation.type) {
@@ -550,44 +545,44 @@ https://svelte.dev/e/js_parse_error -->
   	}
   	// Process document data
   	function processDocumentData(data: unknown[]) {
-  		if (!data || data.length === 0) return;
-  		data.forEach((doc, index) => {
-  			// Generate mock embeddings for demonstration
-  			const embedding = new Float32Array(384).map(() => Math.random() * 2 - 1);
-  			queueOperation('embedding', embedding, [1, 384], {
-  				documentId: doc.id || `doc_${index}`,
-  				chunkIndex: index
-  			});
-  			// Generate attention scores if text is available
-  			if (doc.content) {
-  				const attentionInput = new Float32Array(doc.content.length).map(() => Math.random());
-  				queueOperation('attention', attentionInput, [1, doc.content.length], {
-  					documentId: doc.id || `doc_${index}`,
-  					type: 'content_attention',
-  				});
-  			}
-  		});
-  	}
-  	// Update performance metrics
-  	function updateMetrics() {
-  		const completed = $completedOperation;
-  		const timeWindow = 5000; // 5 seconds
-  		const now = performance.now();
-  		const recentOps = completed.filter(op =>
-  			op.metadata.timestamp > now - timeWindow
-  		);
-  		const opsPerSecond = recentOps.length / (timeWindow / 1000);
-  		const avgDuration = recentOps.reduce((sum, op) => sum + (op.duration || 0), 0) / recentOps.length || 0;
-  		gpuMetrics.update(metrics => ({
-  			...metrics,
-  			operationsPerSecond: Math.round(opsPerSecond * 100) / 100,
-  			memoryUsage: Math.random() * 100, // Mock data
-  			powerEfficiency: Math.max(0, 100 - avgDuration), // Mock calculation
-  			cacheHitRatio: Math.random() * 100 // Mock data
-  		}));
-  	}
-  	// Animation loop for real-time updates
-  	function animate() {
+    if (!data || data.length === 0) return;
+    data.forEach((doc: any, index) => {
+      // Generate mock embeddings for demonstration
+      const embedding = new Float32Array(384).map(() => Math.random() * 2 - 1);
+      queueOperation('embedding', embedding, [1, 384], {
+        documentId: doc.id || `doc_${index}`,
+        chunkIndex: index
+      });
+      // Generate attention scores if text is available
+      if (doc.content) {
+        const attentionInput = new Float32Array(doc.content.length).map(() => Math.random());
+        queueOperation('attention', attentionInput, [1, doc.content.length], {
+          documentId: doc.id || `doc_${index}`,
+          type: 'content_attention',
+        });
+      }
+    });
+  }
+  // Update performance metrics
+  function updateMetrics() {
+    const completed = completedOperations;
+    const timeWindow = 5000; // 5 seconds
+    const now = performance.now();
+    const recentOps = completed.filter(op =>
+      op.metadata.timestamp > now - timeWindow
+    );
+    const opsPerSecond = recentOps.length / (timeWindow / 1000);
+    const avgDuration = recentOps.reduce((sum, op) => sum + (op.duration || 0), 0) / recentOps.length || 0;
+    gpuMetrics = {
+      ...gpuMetrics,
+      operationsPerSecond: Math.round(opsPerSecond * 100) / 100,
+      memoryUsage: Math.random() * 100, // Mock data
+      powerEfficiency: Math.max(0, 100 - avgDuration), // Mock calculation
+      cacheHitRatio: Math.random() * 100 // Mock data
+    };
+  }
+  // Animation loop for real-time updates
+  function animate() {
   		updateMetrics();
   		// Continue animation: if WebGPU is enabled
   		if (enableWebGPU) {
@@ -596,40 +591,43 @@ https://svelte.dev/e/js_parse_error -->
   	}
   	// Component lifecycle
   	$effect(() => {
-    (async () => {
-if (enableWebGPU) {
-  			await initializeWebGPU();
-  		}
-  		if (enableAttentionTracking && canvas.parentElement) {
-  			attentionTracker = new AttentionTracker(canvas.parentElement);
-  		}
-  		// Process initial document data
-  		if (documentData.length > 0) {
-  			processDocumentData(documentData);
-  		}
-  		// Start animation: loop
-  		animate();
-    })();
+    async function setup() {
+      if (enableWebGPU) {
+        await initializeWebGPU();
+      }
+      if (enableAttentionTracking && canvas?.parentElement) {
+        attentionTracker = new AttentionTracker(canvas.parentElement);
+      }
+      // Process initial document data
+      if (documentData.length > 0) {
+        processDocumentData(documentData);
+      }
+      // Start animation: loop
+      animate();
+    }
+    setup();
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+      if (attentionTracker) {
+        attentionTracker.destroy();
+      }
+      // Clean up GPU resources
+      bufferPool.forEach(buffer => buffer.destroy());
+      bufferPool.clear();
+    };
   });
-  	onDestroy(() => {
-  		if (animationFrame) {
-  			cancelAnimationFrame(animationFrame);
-  		}
-  		if (attentionTracker) {
-  			attentionTracker.destroy();
-  		}
-  		// Clean up GPU resources
-  		bufferPool.forEach(buffer => buffer.destroy());
-  		bufferPool.clear();
-  	});
-  	// Reactive updates
-  	$effect(() => {
-  		if (documentData && $isWebGPUReady) {
-  			processDocumentData(documentData);
-  		}
-  	});
-  	// Expose methods for external use
-  	function processEmbedding(embedding: Float32Array) {
+
+  // Reactive updates
+  $effect(() => {
+    if (documentData && isWebGPUReady) {
+      processDocumentData(documentData);
+    }
+  });
+  // Expose methods for external use
+  function processEmbedding(embedding: Float32Array) {
   		return queueOperation('embedding', embedding, [1, embedding.length]);
   	}
   	function processAttention(scores: Float32Array) {
@@ -642,102 +640,110 @@ if (enableWebGPU) {
   		return queueOperation('som_update', combined, [weights.length, input.length]);
   	}
   	function getMetrics() {
-  		return $gpuMetric;
+  		return gpuMetrics;
   	}
   	function getOperationStatus(operationId: string) {
-  		return $tensorOperations.find(op => op.id === operationId);
+  		return tensorOperations.find(op => op.id === operationId);
   	}
 </script>
 
 <!-- Component template -->
-<div className={`webgpu-processor ${className}`}>
+<div class="webgpu-processor bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border {className}">
   <!-- WebGPU Canvas -->
-  <canvas bind:this={canvas as any} class="webgpu-canvas" width="800" height="600" style="display: none;"></canvas>
+  <canvas bind:this={canvas} class="webgpu-canvas" width="800" height="600" style="display: none;"></canvas>
   <!-- Status Display -->
-  <div class="status-panel">
-    <div class="status-item">
-      <span class="label">WebGPU:</span>
-      <span class="value" class:enabled={$isWebGPUReady} class:disabled={!$isWebGPUReady}>
-        {$isWebGPUReady ? 'Ready' : 'Not Available'}
+  <div class="status-panel grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+    <div class="status-item bg-white dark:bg-gray-800 p-3 rounded border">
+      <span class="label text-sm font-medium text-gray-600 dark:text-gray-400">WebGPU:</span>
+      <span
+        class="value block text-lg font-bold text-gray-900 dark:text-white"
+        class:text-green-600={isWebGPUReady}
+        class:dark:text-green-400={isWebGPUReady}
+        class:text-red-600={!isWebGPUReady}
+        class:dark:text-red-400={!isWebGPUReady}
+      >
+        {isWebGPUReady ? 'Ready' : 'Not Available'}
       </span>
     </div>
-    <div class="status-item">
-      <span class="label">Queue:</span>
-      <span class="value">{$queueLength} operations</span>
+    <div class="status-item bg-white dark:bg-gray-800 p-3 rounded border">
+      <span class="label text-sm font-medium text-gray-600 dark:text-gray-400">Queue:</span>
+      <span class="value block text-lg font-bold text-gray-900 dark:text-white">{queueLength} operations</span>
     </div>
-    <div class="status-item">
-      <span class="label">Completed:</span>
-      <span class="value">{$completedOperations.length} operations</span>
+    <div class="status-item bg-white dark:bg-gray-800 p-3 rounded border">
+      <span class="label text-sm font-medium text-gray-600 dark:text-gray-400">Completed:</span>
+      <span class="value block text-lg font-bold text-gray-900 dark:text-white">{completedOperations.length} operations</span>
     </div>
-    <div class="status-item">
-      <span class="label">Performance:</span>
-      <span class="value">{$gpuMetrics.operationsPerSecond} ops/sec</span>
+    <div class="status-item bg-white dark:bg-gray-800 p-3 rounded border">
+      <span class="label text-sm font-medium text-gray-600 dark:text-gray-400">Performance:</span>
+      <span class="value block text-lg font-bold text-gray-900 dark:text-white">{gpuMetrics.operationsPerSecond} ops/sec</span>
     </div>
   </div>
   <!-- Performance Metrics -->
-  {#if enableWebGPU && $isWebGPUReady}
-    <div class="metrics-panel">
-      <h3>GPU Metrics</h3>
-      <div class="metric">
-        <label>Operations/sec:</label>
-        <div class="progress-bar">
-          <div class="progress" style="width: {Math.min(100, $gpuMetrics.operationsPerSecond * 2)}%"></div>
+  {#if enableWebGPU && isWebGPUReady}
+    <div class="metrics-panel bg-white dark:bg-gray-800 p-4 rounded border mb-4">
+      <h3 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">GPU Metrics</h3>
+      <div class="metric flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-3 mb-2">
+        <label class="text-sm font-medium text-gray-600 dark:text-gray-400 w-full md:w-32">Operations/sec:</label>
+        <div class="progress-bar flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="progress h-full bg-blue-500" style="width: {Math.min(100, gpuMetrics.operationsPerSecond * 2)}%"></div>
         </div>
-        <span>{$gpuMetrics.operationsPerSecond.toFixed(1)}</span>
+        <span>{gpuMetrics.operationsPerSecond.toFixed(1)}</span>
       </div>
-      <div class="metric">
-        <label>Memory Usage:</label>
-        <div class="progress-bar">
-          <div class="progress memory" style="width: {$gpuMetrics.memoryUsage}%"></div>
+      <div class="metric flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-3 mb-2">
+        <label class="text-sm font-medium text-gray-600 dark:text-gray-400 w-full md:w-32">Memory Usage:</label>
+        <div class="progress-bar flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="progress h-full bg-yellow-500" style="width: {gpuMetrics.memoryUsage}%"></div>
         </div>
-        <span>{$gpuMetrics.memoryUsage.toFixed(1)}%</span>
+        <span>{gpuMetrics.memoryUsage.toFixed(1)}%</span>
       </div>
-      <div class="metric">
-        <label>Power Efficiency:</label>
-        <div class="progress-bar">
-          <div class="progress efficiency" style="width: {$gpuMetrics.powerEfficiency}%"></div>
+      <div class="metric flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-3 mb-2">
+        <label class="text-sm font-medium text-gray-600 dark:text-gray-400 w-full md:w-32">Power Efficiency:</label>
+        <div class="progress-bar flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="progress h-full bg-green-500" style="width: {gpuMetrics.powerEfficiency}%"></div>
         </div>
-        <span>{$gpuMetrics.powerEfficiency.toFixed(1)}%</span>
+        <span>{gpuMetrics.powerEfficiency.toFixed(1)}%</span>
       </div>
     </div>
   {/if}
   <!-- Attention Heatmap Visualization -->
-  {#if enableAttentionTracking && $attentionData}
-    <div class="attention-heatmap">
-      <h3>Attention Tracking</h3>
-      <div class="heatmap-container">
-        {#each $attentionData.activeRegions as region, i}
+  {#if enableAttentionTracking && attentionData}
+    <div class="attention-heatmap bg-white dark:bg-gray-800 p-4 rounded border mb-4">
+      <h3 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">Attention Tracking</h3>
+      <div class="heatmap-container relative h-64 border rounded">
+        {#each attentionData.activeRegions as region, i}
           <div
-            class="attention-region"
-            style=";
+            class="attention-region absolute left-0 right-0 border-l-4 border-blue-500"
+            style="
 							top: {region.start}px;
 							height: {region.end - region.start}px;
-							opacity: {Math.min(1, region.weight)}
+							opacity: {Math.min(1, region.weight)};
 							background: hsl({240 - region.weight * 60}, 70%, 50%);
 						"
           >
-            <span class="region-weight">{region.weight.toFixed(2)}</span>
+            <span class="region-weight absolute right-2 top-1 text-xs text-white font-bold bg-black bg-opacity-50 px-1 rounded">{region.weight.toFixed(2)}</span>
           </div>
         {/each}
       </div>
     </div>
   {/if}
   <!-- Operation Log (for debugging) -->
-  {#if $tensorOperations.length > 0}
-    <details class="operation-log">
-      <summary>Operation Log ({$tensorOperations.length})</summary>
-      <div class="log-content">
-        {#each $tensorOperations.slice(-10) as operation}
+  {#if tensorOperations.length > 0}
+    <details class="operation-log bg-white dark:bg-gray-800 rounded border">
+      <summary class="p-3 cursor-pointer font-medium text-gray-900 dark:text-white">Operation Log ({tensorOperations.length})</summary>
+      <div class="log-content border-t p-3 max-h-48 overflow-y-auto">
+        {#each tensorOperations.slice(-10) as operation}
           <div
-            class="operation-entry"
-            class:completed={operation.status === 'completed'}
-            class:error={operation.status === 'error'}
+            class="operation-entry flex gap-3 py-1 text-sm border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+            class:text-green-600={operation.status === 'completed'}
+            class:dark:text-green-400={operation.status === 'completed'}
+            class:text-red-600={operation.status === 'error'}
+            class:dark:text-red-400={operation.status === 'error'}
           >
-            <span class="op-id">{operation.id}</span>
-            <span class="op-type">{operation.type}</span>
-            <span class="op-status">{operation.status}</span>
+            <span class="op-id font-mono text-xs w-16 truncate">{operation.id}</span>
+            <span class="op-type flex-1 font-medium">{operation.type}</span>
+            <span class="op-status w-20 text-center">{operation.status}</span>
             {#if operation.duration}
-              <span class="op-duration">{operation.duration.toFixed(2)}ms</span>
+              <span class="op-duration w-16 text-right text-gray-500">{operation.duration.toFixed(2)}ms</span>
             {/if}
           </div>
         {/each}
@@ -748,53 +754,47 @@ if (enableWebGPU) {
 
 <style>
   .webgpu-processor {
-    /* @apply bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border; */
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
   }
-  .webgpu-canv.status-panel {
-    /* @apply grid grid-cols-2 md:grid-cols-4 gap-4 mb-4; */
-  }
-  .status-item {
-    /* @apply bg-white dark:bg-gray-800 p-3 rounded border; */
-  }
-  .label {
-    /* @apply text-sm font-medium text-gray-600 dark:text-gray-400; */
-  }
-  .value {
-    /* @apply block text-lg font-bold text-gray-900 dark:text-white; */
-  }
-  .value.enabled {
-    /* @apply text-green-600 dark:text-green-400; */
-  }
-  .value.disabled {
-    /* @apply text-red-600 dark:text-red-400; */
-  }
-  .metrics-panel {
-    /* @apply bg-white dark:bg-gray-800 p-4 rounded border mb-4; */
-  }
-  .metrics-panel h3 {
-    /* @apply text-lg font-bold mb-3 text-gray-900 dark:text-white; */
-  }
-  .metric {
-    /* @apply flex items-center gap-3 mb-2; */
-  }
-  .metric label {
-    /* @apply text-sm font-medium text-gray-600 dark:text-gray-400 w-32; */
-  }
-  .progress-bar {
-    /* @apply flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden; */
-  }
-  .progress {
-    /* @apply h-full bg-blue-500 transition-all duration-300; */
-  }
-  .progress.memory {
-    /* @apply bg-yellow-500; */
-  }
-  .progress.efficiency {
-    /* @apply bg-green-500; */
-  }
   .attention-heatmap {
-    /* @apply bg-white dark: bg-gray-800 p-4 rounded border mb-4; */
+    position: relative;
+  }
+  .heatmap-container {
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1));
+  }
+  .attention-region {
+    pointer-events: none;
+  }
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    .webgpu-canvas {
+      border-color: #374151;
+    }
+  }
+  /* Animation for smooth updates */
+  .progress {
+    transition: width 0.3s ease-out;
+  }
+  .attention-region {
+    transition: all 0.2s ease-out;
+  }
+  /* Focus and accessibility */
+  .operation-log summary:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+  /* Performance indicator colors */
+  .value.enabled::before {
+    content: '●';
+    color: #4ade80;
+    margin-right: 0.25rem;
+  }
+  .value.disabled::before {
+    content: '●';
+    color: #f87171;
+    margin-right: 0.25rem;
+  }
+</style>
     position relative;
   }
   .attention-heatmap h3 {

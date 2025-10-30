@@ -6,6 +6,8 @@
   import SelectBitsRaw from '$lib/components/ui/select/SelectBits.svelte';
   import TabsBitsRaw from '$lib/components/ui/tabs/TabsBits.svelte';
   import TooltipBitsRaw from '$lib/components/ui/tooltip/TooltipBits.svelte';
+  import { addToast } from '$lib/components/ui/toast/ToastProvider.svelte'; // Import addToast for notifications
+  import { getBackendApiUrl } from '$lib/utils/api-endpoints'; // Import API endpoint utility
 
   // Form state using Svelte 5 runes
   let formData = $state({
@@ -13,10 +15,10 @@
     caseNumber: '',
     clientName: '',
     practiceArea: '',
-    jurisdiction '',
+    jurisdiction: '', // Fixed typo
     courtLevel: '',
     priority: '',
-    description '',
+    description: '', // Fixed typo
     assignedAttorney: '',
     estimatedHours: '',
     budget: '',
@@ -49,32 +51,65 @@
   // Form submission
   async function handleSubmit() {
     if (!validateForm()) {
+      addToast({
+        variant: 'warning',
+        title: 'Validation Error',
+        description: 'Please complete all required fields.',
+        duration: 3000,
+      });
       return;
     }
     isSubmitting = true;
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Form submitted:', formData);
+      // Make an API call to a SvelteKit endpoint (e.g., /api/cases)
+      const response = await fetch(getBackendApiUrl('/cases'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create case');
+      }
+
+      const result = await response.json();
+      console.log('Form submitted successfully:', result);
+
       // Reset form on success
       formData = {
         caseTitle: '',
         caseNumber: '',
         clientName: '',
         practiceArea: '',
-        jurisdiction '',
+        jurisdiction: '',
         courtLevel: '',
         priority: '',
-        description '',
+        description: '',
         assignedAttorney: '',
         estimatedHours: '',
         budget: '',
         deadline: '',
       };
-      alert('✅ Legal case created successfully!');
-    } catch (error) {
+      formErrors = {}; // Clear errors
+      activeTab = 'basic'; // Reset to basic tab
+
+      addToast({
+        variant: 'success',
+        title: 'Case Created',
+        description: `Legal case "${result.caseTitle || 'Untitled'}" created successfully!`,
+        duration: 5000,
+      });
+    } catch (error: any) {
       console.error('Form submission error:', error);
-      alert('❌ Failed to create case. Please try again.');
+      addToast({
+        variant: 'error',
+        title: 'Submission Failed',
+        description: error.message || 'Failed to create case. Please try again.',
+        duration: 0, // Don't auto-dismiss errors
+      });
     } finally {
       isSubmitting = false;
     }
@@ -145,20 +180,22 @@
   });
 
   // Correct constructor typing for Svelte components to satisfy TypeScript
-  import type { SvelteComponentTyped } from 'svelte';
-  type ComponentConstructor<
-    Props = Record<string, any>,
-    Events = Record<string, any>,
-    Slots = Record<string, any>,
-  > = new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>;
+  // Svelte 5 runes handle component typing differently; SvelteComponentTyped is deprecated.
+  // Casting to 'any' bypasses the need for explicit constructor types here.
+  // import type { SvelteComponentTyped } from 'svelte';
+  // type ComponentConstructor<
+  //   Props = Record<string, any>,
+  //   Events = Record<string, any>,
+  //   Slots = Record<string, any>,
+  // > = new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>;
 
   // Cast the raw imports to constructor types (keeps runtime import the same)
-  const CardBits = CardBitsRaw as unknown as ComponentConstructor;
-  const InputBits = InputBitsRaw as unknown as ComponentConstructor;
-  const SelectBits = SelectBitsRaw as unknown as ComponentConstructor;
-  const ButtonBits = ButtonBitsRaw as unknown as ComponentConstructor;
-  const TooltipBits = TooltipBitsRaw as unknown as ComponentConstructor;
-  const TabsBits = TabsBitsRaw as unknown as ComponentConstructor;
+  const CardBits = CardBitsRaw as any;
+  const InputBits = InputBitsRaw as any;
+  const SelectBits = SelectBitsRaw as any;
+  const ButtonBits = ButtonBitsRaw as any;
+  const TooltipBits = TooltipBitsRaw as any;
+  const TabsBits = TabsBitsRaw as any;
 </script>
 
 <CardBits variant="interactive" padding="lg">
@@ -329,7 +366,7 @@
                   >
                 </div>
                 <div class="review-item">
-                  <strong>Jurisdiction</strong>
+                  <strong>Jurisdiction:</strong> <!-- Fixed typo -->
                   <span>{jurisdictions.find(j => j.value === formData.jurisdiction)?.label || 'Not selected'}</span>
                 </div>
                 <div class="review-item">
@@ -343,7 +380,7 @@
               </div>
               {#if formData.description}
                 <div class="review-description">
-                  <strong>Description</strong>
+                  <strong>Description:</strong> <!-- Fixed typo -->
                   <p>{formData.description}</p>
                 </div>
               {/if}
@@ -372,10 +409,10 @@
                   caseNumber: '',
                   clientName: '',
                   practiceArea: '',
-                  jurisdiction '',
+                  jurisdiction: '', // Fixed typo
                   courtLevel: '',
                   priority: '',
-                  description '',
+                  description: '', // Fixed typo
                   assignedAttorney: '',
                   estimatedHours: '',
                   budget: '',
@@ -411,7 +448,7 @@
   }
   .form-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Fixed typo */
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;
@@ -582,7 +619,7 @@
       justify-content: stretch;
     }
     .action-buttons :global(button) {
-      flex: 1,
+      flex: 1; /* Fixed comma to semicolon */
     }
   }
 </style>

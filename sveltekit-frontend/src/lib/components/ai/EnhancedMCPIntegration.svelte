@@ -6,6 +6,7 @@
 
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
+  import { browser } from '$app/environment'; // Import browser environment check
 
   type Status = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -26,7 +27,7 @@
   interface McpTool {
     id: string;
     name: string;
-    description string;
+    description: string; // Fixed syntax
     status: 'available' | 'busy' | 'error';
     successCount: number;
     errorCount: number;
@@ -45,7 +46,7 @@
   interface ContextualSuggestion {
     id: string;
     title: string;
-    description string;
+    description: string; // Fixed syntax
     priority: 'high' | 'medium' | 'low';
   }
 
@@ -53,24 +54,26 @@
   const queryResults = writable<QueryResult[]>([]);
   const contextualSuggestions = writable<ContextualSuggestion[]>([]);
 
-  let wsConnection WebSocket | null = null;
-  let queryInput = '';
-  let selectedTool = '';
-  let isProcessing = false;
+  let wsConnection: WebSocket | null = null; // Fixed syntax
+  let queryInput = $state(''); // Made reactive
+  let selectedTool = $state(''); // Made reactive
+  let isProcessing = $state(false); // Made reactive
 
   let metricsInterval: ReturnType<typeof setInterval> | null = null;
 
   const availableMCPTools = [
-    { id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description 'Semantic search with Context7 integration' },
-    { id: 'mcp_memory2_create_relations', name: 'Memory Relations', description 'Create knowledge graph relations' },
-    { id: 'mcp_memory2_read_graph', name: 'Memory Read Graph', description 'Query knowledge graph' },
+    { id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description: 'Semantic search with Context7 integration' }, // Fixed syntax
+    { id: 'mcp_memory2_create_relations', name: 'Memory Relations', description: 'Create knowledge graph relations' }, // Fixed syntax
+    { id: 'mcp_memory2_read_graph', name: 'Memory Read Graph', description: 'Query knowledge graph' }, // Fixed syntax
   ];
 
   onMount(() => {
-    initializeMCPConnection();
-    if (enableRealtimeUpdates) setupWebSocketConnection();
-    loadInitialData();
-    if (enableClusterMode) startMetricsPolling();
+    if (browser) { // Ensure browser environment for DOM-related operations
+      initializeMCPConnection();
+      if (enableRealtimeUpdates) setupWebSocketConnection();
+      loadInitialData();
+      if (enableClusterMode) startMetricsPolling();
+    }
   });
 
   onDestroy(() => {
@@ -81,6 +84,7 @@
   async function initializeMCPConnection() {
     mcpStatus.set('connecting');
     try {
+      // Assuming /mcp/health is proxied by SvelteKit backend
       const response = await fetch('/mcp/health');
       if (response.ok) {
         mcpStatus.set('connected');
@@ -97,9 +101,12 @@
   }
 
   function setupWebSocketConnection() {
+    if (!browser) return; // Only run in browser
+
     try {
-      // Try a local MCP websocket endpoint; non-fatal if it fails
-      wsConnection = new WebSocket('ws://localhost:3002/mcp/ws');
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      // Assuming /mcp/ws is proxied by SvelteKit backend
+      wsConnection = new WebSocket(`${protocol}//${window.location.host}/mcp/ws`);
       wsConnection.addEventListener('open', () => {
         // no-op
       });
@@ -115,8 +122,13 @@
         // Attempt reconnect later
         setTimeout(() => setupWebSocketConnection(), 3000);
       });
+      wsConnection.addEventListener('error', (event) => {
+        console.error('WebSocket error:', event);
+        mcpStatus.set('error');
+      });
     } catch (e) {
       console.warn('WebSocket setup failed (non-fatal)', e);
+      mcpStatus.set('error');
     }
   }
 
@@ -149,7 +161,7 @@
       suggestions.push({
         id: 'analyze-evidence',
         title: 'Analyze Case Evidence',
-        description 'Run enhanced RAG analysis on case evidence',
+        description: 'Run enhanced RAG analysis on case evidence', // Fixed syntax
         priority: 'high',
       });
     }
@@ -160,6 +172,7 @@
     if (metricsInterval) return;
     metricsInterval = setInterval(async () => {
       try {
+        // Assuming /mcp/metrics is proxied by SvelteKit backend
         const res = await fetch('/mcp/metrics');
         if (res.ok) {
           const data = await res.json();
@@ -178,10 +191,11 @@
   }
 
   async function executeMCPTool(toolId: string, args: any = {}) {
-    if (isProcessing || !toolId) return; // Added !toolId check
+    if (isProcessing || !toolId) return;
     isProcessing = true;
     mcpTools.update(tools => tools.map(t => (t.id === toolId ? { ...t, status: 'busy' } : t)));
     try {
+      // Assuming /mcp/execute is proxied by SvelteKit backend
       const resp = await fetch('/mcp/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -229,123 +243,109 @@
   }
 </script>
 
-<div class="enhanced-mcp-integration">
-  <div class="mcp-header">
-    <div class="mcp-title">
-      <strong>Enhanced MCP</strong>
-      <span class="connection-status">{$mcpStatus}</span>
+<div class="nes-container is-dark with-title">
+  <p class="title">Enhanced MCP Integration</p>
+  <div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-4">
+    <div class="flex items-center gap-2">
+      <strong class="nes-text is-primary">Enhanced MCP</strong>
+      <span class="nes-text is-disabled">{$mcpStatus}</span>
     </div>
-    <div class="connection-indicator" class:show-metrics={showMetrics}>
-      <span class="status-indicator" aria-hidden="true"></span>
+    <div class="flex items-center gap-2">
+      {#if $mcpStatus === 'checking'}
+        <i class="nes-icon coin is-small animate-pulse"></i>
+        <span class="nes-text is-warning">Checking...</span>
+      {:else if $mcpStatus === 'connected'}
+        <i class="nes-icon star is-small"></i>
+        <span class="nes-text is-success">Connected</span>
+      {:else}
+        <i class="nes-icon close is-small"></i>
+        <span class="nes-text is-error">Disconnected</span>
+      {/if}
     </div>
   </div>
 
   {#if showMetrics}
-    <div class="cluster-metrics">
-      <div class="metrics-grid">
-        <div class="metric">
-          <div class="metric-label">Active Workers</div>
-          <div class="metric-value">{$clusterMetrics.activeWorkers}</div>
+    <div class="nes-container is-dark is-small mb-4">
+      <p class="nes-text is-primary">Cluster Metrics</p>
+      <div class="flex justify-around items-center mt-2">
+        <div class="text-center">
+          <div class="nes-text is-disabled text-xs">Active Workers</div>
+          <div class="nes-text is-success text-lg font-bold">{$clusterMetrics.activeWorkers}</div>
         </div>
-        <div class="metric">
-          <div class="metric-label">Total Requests</div>
-          <div class="metric-value">{$clusterMetrics.totalRequests}</div>
+        <div class="text-center">
+          <div class="nes-text is-disabled text-xs">Total Requests</div>
+          <div class="nes-text is-success text-lg font-bold">{$clusterMetrics.totalRequests}</div>
         </div>
-        <div class="metric">
-          <div class="metric-label">Success Rate</div>
-          <div class="metric-value">{$successRatePercent}%</div>
+        <div class="text-center">
+          <div class="nes-text is-disabled text-xs">Success Rate</div>
+          <div class="nes-text is-success text-lg font-bold">{$successRatePercent}%</div>
         </div>
       </div>
     </div>
   {/if}
 
-  <div class="mcp-interface">
-    <div class="query-section">
-      <h3>Run MCP Tool</h3>
-      <div class="query-form">
-        <select class="tool-selector" bind:value={selectedTool}>
+  <div class="mb-6">
+    <h3 class="nes-text is-primary mb-2">Run MCP Tool</h3>
+    <div class="nes-field is-inline">
+      <div class="nes-select">
+        <select bind:value={selectedTool}>
           <option value="">Select tool...</option>
           {#each $mcpTools as tool}
             <option value={tool?.id}>{tool?.name}</option>
           {/each}
         </select>
-        <input class="query-input" placeholder="Enter query or parameters" bind:value={queryInput} />
-        <button
-          class="execute-button"
-          onclick={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
-          disabled={!selectedTool || isProcessing}
-        >
+      </div>
+      <input
+        type="text"
+        class="nes-input"
+        placeholder="Enter query or parameters"
+        bind:value={queryInput}
+      />
+      <button
+        class="nes-btn is-primary"
+        onclick={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
+        disabled={!selectedTool || isProcessing}
+      >
+        {#if isProcessing}
+          <i class="nes-icon coin is-small animate-pulse"></i> Processing...
+        {:else}
           Execute
-        </button>
-      </div>
+        {/if}
+      </button>
     </div>
+  </div>
 
-    <div class="suggestions-section">
-      <h3>Suggestions</h3>
-      <ul>
-        {#each $contextualSuggestions as s}
-          <li>{s.title} — {s.description}</li>
-        {/each}
-      </ul>
-    </div>
+  <div class="mb-6">
+    <h3 class="nes-text is-primary mb-2">Suggestions</h3>
+    <ul class="nes-list is-disc">
+      {#each $contextualSuggestions as s}
+        <li><span class="nes-text is-warning">{s.title}</span> — <span class="nes-text is-disabled">{s.description}</span></li>
+      {/each}
+    </ul>
+  </div>
 
-    <div class="results-section">
-      <h3>Recent Results</h3>
-      <div class="results-list">
-        {#each $queryResults as result}
-          <div class="result-card">
-            <div class="result-meta">
-              <div class="result-source">{result?.source || 'mcp'}</div>
-              <div class="result-time">{result?.timestamp ? new Date(result.timestamp).toLocaleTimeString() : ''}</div>
-            </div>
-            <div class="result-query">{result?.query}</div>
-            <div class="result-content">
-              {#if result.success}
-                <pre>{JSON.stringify(result.result, null, 2)}</pre>
-              {:else}
-                <div class="error-message">Error: {result.error || 'Unknown error'}</div>
-              {/if}
-            </div>
+  <div>
+    <h3 class="nes-text is-primary mb-2">Recent Results</h3>
+    <div class="space-y-4">
+      {#each $queryResults as result}
+        <div class="nes-container is-dark is-small">
+          <div class="flex justify-between items-center mb-2">
+            <div class="nes-text is-disabled text-xs">{result?.source || 'mcp'}</div>
+            <div class="nes-text is-disabled text-xs">{result?.timestamp ? new Date(result.timestamp).toLocaleTimeString() : ''}</div>
           </div>
-        {/each}
-      </div>
+          <div class="nes-text is-primary mb-2">Query: {result?.query || 'N/A'}</div>
+          <div class="nes-text">
+            {#if result.success}
+              <pre class="whitespace-pre-wrap break-words text-xs">{JSON.stringify(result.result, null, 2)}</pre>
+            {:else}
+              <div class="nes-text is-error">Error: {result.error || 'Unknown error'}</div>
+            {/if}
+          </div>
+        </div>
+      {/each}
     </div>
   </div>
 </div>
-
-<style>
-  .enhanced-mcp-integration {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    border-radius: 12px;
-    padding: 24px;
-    color: #e5e7eb;
-    font-family:
-      system-ui,
-      -apple-system,
-      'Segoe UI',
-      Roboto,
-      'Helvetica Neue',
-      Arial;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-  .mcp-header {
-    display: flex;
-    justify-content: space-betweennn;
-    align-items: center;
-    margin-bottom: 24px;
-    border-bottom: 1px solid rgba(229, 231, 235, 0.06);
-    padding-bottom: 16px;
-  }
-  .mcp-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #f3f4f6;
-  }
-  .connection-status {
-    font-size: 0.875rem;
-    color: #9ca3af;
-    margin-left: 8px;
-  }
   .connection-indicator {
     display: flex;
     align-items: center;

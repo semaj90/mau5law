@@ -2,346 +2,301 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { afterUpdate, onMount, tick } from "svelte";
   import { elasticOut, quintOut } from "svelte/easing";
-  import { writable } from "svelte/store";
+  import { writable, type Writable } from "svelte/store";
   import { fade, fly, scale } from "svelte/transition";
-  // Icons from lucide-svelte
-  import {
-    Bot,
-    Brain,
-    FileText,
-    RotateCw,
-    Scale,
-    Send,
-    Sparkles,
-    User,
-    X,
-    Zap,
-  } from "lucide-svelte";
-  // Svelte 5 Props Interface
-  interface Props {
-    conversationId?: string;
-    userId: string;
-    caseId?: string | null;
-    open?: boolean;
-    title?: string;
-    onsuggestionsreceived?: (suggestions: string[]) => void;
-    onactionsreceived?: (actions: any[]) => void;
-    onmessage?: (_event: any) => void;
-    onclose?: () => void;
-    onaction?: (action any) => void;
+
+  // Props (use standard export let for Svelte compatibility)
+  export let conversationId: string = crypto.randomUUID();
+  export let userId: string;
+  export let caseId: string | null = null;
+  export let open: boolean = false;
+  export let title: string = "Legal AI Assistant";
+  export let onsuggestionsreceived: ((suggestions: string[]) => void) | undefined;
+  export let onactionsreceived: ((actions: any[]) => void) | undefined;
+  export let onclose: (() => void) | undefined;
+  export let onaction: ((action: any) => void) | undefined;
+
+  // Message type
+  interface Message {
+    id: string;
+    role: "user" | "assistant";
+    content: string;
+    timestamp: string | Date;
+    isTyping?: boolean;
+    isError?: boolean;
+    suggestions?: string[];
+    actions?: { text: string; [k: string]: any }[];
+    contextUsed?: any;
   }
-  // Svelte 5 props with defaults
-  let {
-    conversationId = crypto.randomUUID(),
-    userId,
-    caseId = null,
-    open = false,
-    title = "Legal AI Assistant",
-    onsuggestionsreceived,
-    onactionsreceived,
-    onmessage,
-    onclose,
-    onaction
-  }: Props = $props();
-  // Chat state using Svelte 5 runes
-  let currentMessage = $state("");
-  let isGenerating = $state(false);
-  let selectedMode = $state("professional");
-  let showModeSelector = $state(false);
-  let componentError = $state<Error | null>(null);
-  let messagesContainer = $state<HTMLElement;
-  let messageInput = $state<HTMLTextAreaElement// Messages store (keeping as writable for complex state management)
-  let messages  | null>(null); const data = writable<
-    Array;
-      isTyping?: boolean;
-      isError?: boolean;
-    }>
-  >([]);
-  // AI modes/vibes
-  const aiModes = $state([
-    {
-      id: "professional",
-      label: "Professional",
-      icon Scale;
-      description "Formal legal analysis",
-    },
-    {
-      id: "investigative",
-      label: "Investigative",
-      icon Brain;
-      description "Deep case analysis",
-    },
-    {
-      id: "evidence",
-      label: "Evidence Focus",
-      icon FileText;
-      description "Evidence-centered responses",
-    },
-    {
-      id: "strategic",
-      label: "Strategic",
-      icon Zap;
-      description "Case strategy planning",
-    },
-  ]);
-  // Quick actions
-  const quickActions = [
-    { text: "Analyze evidence timeline", icon FileText },
-    { text: "Review witness statements", icon User },
-    { text: "Check legal precedents", icon Scale },
-    { text: "Suggest next steps", icon Zap },
+
+  // Local state
+  let currentMessage: string = "";
+  let isGenerating: boolean = false;
+  let selectedMode: string = "professional";
+  let showModeSelector: boolean = false;
+  let componentError: Error | null = null;
+  let messagesContainer: HTMLElement | null = null;
+  let messageInput: HTMLTextAreaElement | null = null;
+
+  const messages: Writable<Message[]> = writable<Message[]>([]);
+
+  const aiModes = [
+    { id: "professional", label: "Professional", icon: "⚖️", description: "Formal legal analysis" },
+    { id: "investigative", label: "Investigative", icon: "🧠", description: "Deep case analysis" },
+    { id: "evidence", label: "Evidence Focus", icon: "📄", description: "Evidence-centered responses" },
+    { id: "strategic", label: "Strategic", icon: "⚡", description: "Case strategy planning" },
   ];
-  $effect(() => {
-    try {
-      if (open) {
-        focusInput();
-        loadConversationHistory();
-      }
-    } catch (error) {
-      componentError = error instanceof Error ? error : new Error('Initialization failed');
-    }
-  });
-  $effect(() => {
+
+  const quickActions = [
+    { text: "Analyze evidence timeline", icon: "📄" },
+    { text: "Review witness statements", icon: "👥" },
+    { text: "Check legal precedents", icon: "⚖️" },
+    { text: "Suggest next steps", icon: "⚡" },
+  ];
+
+  // Effects
+  $: if (open) {
+    focusInput();
+    loadConversationHistory();
+  }
+
+  afterUpdate(() => {
     scrollToBottom();
   });
+
   async function loadConversationHistory() {
     try {
-      const response = await fetch(
-        `/api/chat?conversationId=${conversationId}&userId=${userId}&limit=50`
-      );
-      if ((response as { ok?: any; json?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any }).json();
-        if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).conversation) {
-          messages.set(conversation));
+      const res = await fetch(`/api/chat?conversationId=${conversationId}&userId=${userId}&limit=50`);
+      if (res.ok) {
+        const result = await res.json();
+        if (result?.success && result.conversation) {
+          // Expect conversation to be an array of messages
+          messages.set(result.conversation as Message[]);
         }
       }
-    } catch (error) {
-      console.warn("Failed to load conversation history:", error);
+    } catch (err) {
+      console.warn("Failed to load conversation history:", err);
     }
   }
+
   function focusInput() {
     tick().then(() => {
       messageInput?.focus();
     });
   }
+
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-  function handleKeydown(_event: KeyboardEvent) {
+
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
-      if (event.shiftKey) {
-        // Allow new line with Shift+Enter
-        return;
-      } else {
-        event.preventDefault();
-        sendMessage();
-      }
+      if (event.shiftKey) return; // newline
+      event.preventDefault();
+      sendMessage();
     } else if (event.key === "Escape") {
       closeChat();
     }
   }
-  function handleQuickAction(action string) {
-    currentMessage = action;
+
+  function handleQuickAction(actionText: string) {
+    currentMessage = actionText;
     sendMessage();
   }
+
   async function sendMessage() {
     if (!currentMessage.trim() || isGenerating) return;
-    const userMessage = {
+
+    const userMessage: Message = {
       id: crypto.randomUUID(),
-      role: "user" as const,
+      role: "user",
       content: currentMessage.trim(),
-      timestamp: new Date(),
-    }
-    // Add user message immediately
-    messages.update((msgs) => [...msgs, userMessage]);
+      timestamp: new Date().toISOString(),
+    };
+
+    messages.update((m) => [...m, userMessage]);
     const messageContent = currentMessage.trim();
     currentMessage = "";
     isGenerating = true;
-    // Add typing indicator
-    const typingMessage = {
+
+    const typingMessage: Message = {
       id: "typing-" + Date.now(),
-      role: "assistant" as const,
+      role: "assistant",
       content: "",
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
       isTyping: true,
-    }
-    messages.update((msgs) => [...msgs, typingMessage]);
+    };
+    messages.update((m) => [...m, typingMessage]);
+
     try {
-      // Send to enhanced chat API with vector context
-      const response = await fetch("/api/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
-          message: messageContent
+        body: JSON.stringify({
+          message: messageContent,
           conversationId,
           userId,
           caseId,
-          mode: selectedMode
-          useContext: true
+          mode: selectedMode,
+          useContext: true,
           maxTokens: 1000,
         }),
       });
-      const result = await (response as { ok?: any; json?: any }).json();
-      // Remove typing indicator
-      messages.update((msgs) => msgs.filter((m) => !m.isTyping));
-      if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).message) {
-        // Add AI response with enhanced features
-        const aiMessage = {
+
+      const result = await res.json();
+
+      // remove typing indicator
+      messages.update((m) => m.filter((x) => !x.isTyping));
+
+      if (result?.success && result?.message) {
+        const aiMsg: Message = {
           ...result.message,
-          contextUsed: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).contextUsed,
-          suggestions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions,
-          actions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions,
+          contextUsed: result.contextUsed,
+          suggestions: result.suggestions,
+          actions: result.actions,
+        };
+        messages.update((m) => [...m, aiMsg]);
+
+        if (result.suggestions?.length && typeof onsuggestionsreceived === "function") {
+          onsuggestionsreceived(result.suggestions);
         }
-        messages.update((msgs) => [...msgs, aiMessage]);
-        // Dispatch events for suggestions and actions
-        if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions?.length > 0 && onsuggestionsreceived) {
-          onsuggestionsreceived((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions);
+        if (result.actions?.length && typeof onactionsreceived === "function") {
+          onactionsreceived(result.actions);
         }
-        if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions?.length > 0 && onactionsreceived) {
-          onactionsreceived((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions);
-        }
-        // Store message embedding for future context
-        if (aiMessage.content) {
-          storeMessageEmbedding(aiMessage.content, "assistant");
+
+        if (aiMsg.content) {
+          storeMessageEmbedding(aiMsg.content, "assistant");
         }
       } else {
-        throw new Error((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).error || "Failed to get AI response");
+        throw new Error(result?.error || "Failed to get AI response");
       }
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      componentError = error instanceof Error ? error : new Error('Send message failed');
-      // Remove typing indicator and show error
-      messages.update((msgs) => msgs.filter((m) => !m.isTyping));
-      const errorMessage = {
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      componentError = err instanceof Error ? err : new Error("Send message failed");
+      messages.update((m) => m.filter((x) => !x.isTyping));
+      const errorMessage: Message = {
         id: crypto.randomUUID(),
-        role: "assistant" as const,
-        content:
-          "Sorry, I encountered an error while processing your request. Please try again.",
-        timestamp: new Date(),
+        role: "assistant",
+        content: "Sorry, I encountered an error while processing your request. Please try again.",
+        timestamp: new Date().toISOString(),
         isError: true,
-      }
-      messages.update((msgs) => [...msgs, errorMessage]);
+      };
+      messages.update((m) => [...m, errorMessage]);
     } finally {
       isGenerating = false;
       scrollToBottom();
       focusInput();
     }
   }
-  async function storeMessageEmbedding(
-    content: string;
-    role: "user" | "assistant"
-  ) {
+
+  async function storeMessageEmbedding(content: string, role: "user" | "assistant") {
     try {
       await fetch("/api/embed", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
-          text: content;
+        body: JSON.stringify({
+          text: content,
           type: "chat_message",
           metadata: {
             userId,
             caseId,
             conversationId,
             role,
-            mode: selectedMode;
+            mode: selectedMode,
           },
         }),
       });
-    } catch (error) {
-      console.warn("Failed to store message embedding:", error);
+    } catch (err) {
+      console.warn("Failed to store message embedding:", err);
     }
   }
+
   function closeChat() {
     open = false;
     if (onclose) onclose();
   }
+
   function clearConversation() {
     messages.set([]);
     conversationId = crypto.randomUUID();
   }
-  function formatTimestamp(timestamp: Date): string {
-    return new Intl.DateTimeFormat.format(timestamp);
+
+  function formatTimestamp(timestamp: string | Date) {
+    return new Intl.DateTimeFormat().format(new Date(timestamp));
   }
-  function handleActionClick(action any) {
+
+  function handleActionClick(action: any) {
     if (onaction) onaction(action);
   }
 </script>
+
 {#if componentError}
   <div class="error-boundary">
     <h2>Chat Error</h2>
     <p>The chat component encountered an error:</p>
     <p class="error-message">{componentError.message}</p>
     <button
-      onclick={() => { componentError = null, }}
+      on:click={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
     </button>
   </div>
 {:else if open}
-  <!-- Chat overlay -->
   <div
     class="chat-overlay"
-    transitifade={{ duration 200 }}
-    onclick={(e) => { if (e.target === e.currentTarget) closeChat(), }}
-    onkeydown={(e) => e.key === "Escape" && closeChat()}
     role="dialog"
     aria-modal="true"
     aria-labelledby="chat-title"
     tabindex="-1"
+    on:click={(e) => { if (e.currentTarget === e.target) closeChat(); }}
+    on:keydown={(e) => e.key === "Escape" && closeChat()}
   >
-    <!-- Chat container -->
-    <div
-      class="chat-container"
-      /* transition: removed */}
-    >
-      <!-- Header -->
+    <div class="chat-container" role="document">
       <div class="chat-header">
         <div class="header-content">
           <div class="title-section">
             <div class="ai-indicator">
-              <Sparkles size={20} />
+              <!-- Sparkles -> emoji -->
+              <span aria-hidden="true" style="font-size:18px">✨</span>
             </div>
             <h2 id="chat-title">{title}</h2>
           </div>
-          <!-- Mode selector -->
+
           <div class="mode-section">
             <button
               class="mode-button"
               class:active={showModeSelector}
-              onclick={() => (showModeSelector = !showModeSelector)}
+              on:click={() => (showModeSelector = !showModeSelector)}
               title="Select AI mode"
               aria-label="Select AI mode"
               aria-expanded={showModeSelector}
             >
               {#each aiModes as mode}
                 {#if mode.id === selectedMode}
-                  <svelte:component this={mode.icon} size={16} />
+                  <span class="mode-icon" aria-hidden="true" style="line-height:0">{mode.icon}</span>
                   {mode.label}
                 {/if}
               {/each}
             </button>
+
             {#if showModeSelector}
-              <div
-                class="mode-dropdown"
-                transitiscale={{ duration 200, easing: elasticOut }}
-              >
+              <div class="mode-dropdown">
                 {#each aiModes as mode}
                   <button
-                    class="mode-option";
+                    class="mode-option"
                     class:selected={mode.id === selectedMode}
-                    onclick={() => {
+                    on:click={() => {
                       selectedMode = mode.id;
                       showModeSelector = false;
                     }}
                     aria-label="Switch to {mode.label} mode"
                   >
-                    <svelte:component this={mode.icon} size={16} />
+                    <span class="mode-icon" aria-hidden="true" style="line-height:0">{mode.icon}</span>
                     <div class="mode-info">
                       <span class="mode-name">{mode.label}</span>
                       <span class="mode-desc">{mode.description}</span>
@@ -352,28 +307,30 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-        <!-- Actions -->
+
         <div class="header-actions">
           <button
             class="header-action"
-            onclick={() => clearConversation()}
+            on:click={() => clearConversation()}
             title="Clear conversation"
             disabled={isGenerating}
             aria-label="Clear conversation"
           >
-            <RotateCw size={16} />
+            <!-- RotateCw -> reload emoji -->
+            <span aria-hidden="true">⟳</span>
           </button>
           <button
             class="header-action"
-            onclick={() => closeChat()}
+            on:click={() => closeChat()}
             title="Close chat"
             aria-label="Close chat"
           >
-            <X size={16} />
+            <!-- X -> cross mark -->
+            <span aria-hidden="true">✖️</span>
           </button>
         </div>
       </div>
-      <!-- Messages area -->
+
       <div class="messages-container" bind:this={messagesContainer}>
         {#each $messages as message (message.id)}
           <div
@@ -381,15 +338,17 @@ https://svelte.dev/e/js_parse_error -->
             class:user={message.role === "user"}
             class:assistant={message.role === "assistant"}
             class:error={message.isError}
-            /* transition: removed */}
           >
             <div class="message-avatar">
               {#if message.role === "user"}
-                <User size={16} />
+                <!-- User -> person emoji -->
+                <span aria-hidden="true">👤</span>
               {:else}
-                <Bot size={16} />
+                <!-- Bot -> robot emoji -->
+                <span aria-hidden="true">🤖</span>
               {/if}
             </div>
+
             <div class="message-content">
               {#if message.isTyping}
                 <div class="typing-indicator">
@@ -401,9 +360,8 @@ https://svelte.dev/e/js_parse_error -->
                   <span class="typing-text">AI is thinking...</span>
                 </div>
               {:else}
-                <div class="message-text">
-                  {message.content}
-                </div>
+                <div class="message-text">{message.content}</div>
+
                 {#if message.suggestions && message.suggestions.length > 0}
                   <div class="suggestions">
                     <h4>Suggestions:</h4>
@@ -414,12 +372,13 @@ https://svelte.dev/e/js_parse_error -->
                     </ul>
                   </div>
                 {/if}
+
                 {#if message.actions && message.actions.length > 0}
                   <div class="actions">
                     {#each message.actions as action}
                       <button
                         class="action-button"
-                        onclick={() => handleActionClick(action)}
+                        on:click={() => handleActionClick(action)}
                         title={action.text}
                         aria-label="Action {action.text}"
                       >
@@ -428,16 +387,13 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </div>
                 {/if}
+
                 <div class="message-meta">
-                  <span class="message-timestamp"
-                    >{formatTimestamp(message.timestamp)}</span
-                  >
+                  <span class="message-timestamp">{formatTimestamp(message.timestamp)}</span>
                   {#if message.contextUsed && (message.contextUsed.similarContent?.length > 0 || message.contextUsed.evidence?.length > 0)}
-                    <span
-                      class="context-indicator"
-                      title="Response used relevant context"
-                    >
-                      <Brain size={12} />
+                    <span class="context-indicator" title="Response used relevant context">
+                      <!-- Brain -> brain emoji -->
+                      <span aria-hidden="true" style="font-size:12px">🧠</span>
                     </span>
                   {/if}
                 </div>
@@ -446,15 +402,15 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-      <!-- Quick actions (when no messages) -->
+
       {#if $messages.length === 0}
-        <div class="quick-actions" transitifade={{ delay: 300 }}>
+        <div class="quick-actions">
           <h3>Quick Actions</h3>
           <div class="action-grid">
             {#each quickActions as action}
               <button
                 class="quick-action"
-                onclick={() => handleQuickAction(action.text)}
+                on:click={() => handleQuickAction(action.text)}
                 disabled={isGenerating}
                 aria-label="Quick action {action.text}"
               >
@@ -465,7 +421,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-      <!-- Input area -->
+
       <div class="input-area">
         <div class="input-container">
           <textarea
@@ -473,23 +429,25 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={currentMessage}
             placeholder="Ask about your case, evidence, or legal strategy..."
             disabled={isGenerating}
-            onkeydown={handleKeydown}
+            on:keydown={handleKeydown}
             rows="4"
             class="message-input"
             aria-label="Type your message here"
           ></textarea>
+
           <button
             class="send-button"
             class:sending={isGenerating}
             disabled={!currentMessage.trim() || isGenerating}
-            onclick={() => sendMessage()}
+            on:click={() => sendMessage()}
             title="Send message"
             aria-label="Send message"
           >
             {#if isGenerating}
               <div class="spinner"></div>
             {:else}
-              <Send size={20} />
+              <!-- Send -> arrow emoji -->
+              <span aria-hidden="true">➤</span>
             {/if}
           </button>
         </div>
@@ -497,6 +455,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+
 <style>
   .error-boundary {
     background: #fef2f2;
@@ -530,20 +489,22 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     cursor: pointer;
   }
+
   .chat-overlay {
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000,
+    z-index: 1000;
     padding: 1rem;
   }
+
   .chat-container {
     background: white;
     border-radius: 12px;
@@ -555,6 +516,7 @@ https://svelte.dev/e/js_parse_error -->
     flex-direction: column;
     overflow: hidden;
   }
+
   .chat-header {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #e5e7eb;
@@ -564,17 +526,20 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     justify-content: space-between;
   }
+
   .header-content {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex: 1,
+    flex: 1;
   }
+
   .title-section {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+
   .ai-indicator {
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.2);
@@ -583,14 +548,17 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     justify-content: center;
   }
+
   .chat-header h2 {
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
   }
+
   .mode-section {
-    position relative;
+    position: relative;
   }
+
   .mode-button {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -602,13 +570,14 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
-  .mode-buttonhover {
+  .mode-button:hover {
     background: rgba(255, 255, 255, 0.2);
   }
+
   .mode-dropdown {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0;
     margin-top: 0.5rem;
@@ -619,6 +588,7 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 10;
     min-width: 200px;
   }
+
   .mode-option {
     width: 100%;
     padding: 0.75rem;
@@ -628,16 +598,17 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
-    transition: background 0.2;
+    transition: background 0.2s;
     color: #374151;
   }
-  .mode-optionhover {
+  .mode-option:hover {
     background: #f3f4f6;
   }
   .mode-option.selected {
     background: #e0e7ff;
     color: #3730a3;
   }
+
   .mode-info {
     display: flex;
     flex-direction: column;
@@ -651,10 +622,12 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.75rem;
     color: #6b7280;
   }
+
   .header-actions {
     display: flex;
     gap: 0.5rem;
   }
+
   .header-action {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -662,18 +635,15 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.5rem;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .header-actionhover {
+  .header-action:hover {
     background: rgba(255, 255, 255, 0.2);
   }
-  .header-actiondisabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+
   .messages-container {
     flex: 1;
     overflow-y: auto;
@@ -682,6 +652,7 @@ https://svelte.dev/e/js_parse_error -->
     flex-direction: column;
     gap: 1rem;
   }
+
   .message {
     display: flex;
     gap: 0.75rem;
@@ -689,11 +660,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   .message.user {
     align-self: flex-end;
-    flex-direction row-rever;
+    flex-direction: row-reverse;
   }
   .message.assistant {
     align-self: flex-start;
   }
+
   .message-avatar {
     width: 32px;
     height: 32px;
@@ -701,8 +673,9 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
+
   .message.user .message-avatar {
     background: #3b82f6;
     color: white;
@@ -711,34 +684,41 @@ https://svelte.dev/e/js_parse_error -->
     background: #10b981;
     color: white;
   }
+
   .message-content {
     background: #f8fafc;
     padding: 0.75rem 1rem;
     border-radius: 12px;
-    flex: 1,
+    flex: 1;
   }
+
   .message.user .message-content {
     background: #3b82f6;
     color: white;
   }
+
   .message.error .message-content {
     background: #fef2f2;
     border: 1px solid #fecaca;
     color: #dc2626;
   }
+
   .message-text {
     line-height: 1.5;
     white-space: pre-wrap;
   }
+
   .typing-indicator {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+
   .typing-dots {
     display: flex;
     gap: 4px;
   }
+
   .typing-dots span {
     width: 6px;
     height: 6px;
@@ -747,16 +727,18 @@ https://svelte.dev/e/js_parse_error -->
     animation: typing 1.4s infinite;
   }
   .typing-dots span:nth-child(2) {
-    animation-delay: 0.2,
+    animation-delay: 0.2s;
   }
   .typing-dots span:nth-child(3) {
-    animation-delay: 0.4,
+    animation-delay: 0.4s;
   }
+
   .typing-text {
     color: #6b7280;
     font-style: italic;
     font-size: 0.875rem;
   }
+
   .suggestions {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
@@ -765,27 +747,27 @@ https://svelte.dev/e/js_parse_error -->
   .message.assistant .suggestions {
     border-top-color: #e5e7eb;
   }
+
   .suggestions h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
     font-weight: 600;
     opacity: 0.9;
   }
+
   .suggestions ul {
     margin: 0;
     padding-left: 1rem;
     font-size: 0.875rem;
   }
-  .suggestions li {
-    margin-bottom: 0.25rem;
-    opacity: 0.9;
-  }
+
   .actions {
     margin-top: 0.75rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
+
   .action-button {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -794,19 +776,15 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
+
   .message.assistant .action-button {
     background: #e5e7eb;
     border-color: #d1d5db;
     color: #374151;
   }
-  .action-buttonhover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-  .message.assistant .action-buttonhover {
-    background: #d1d5db;
-  }
+
   .message-meta {
     margin-top: 0.5rem;
     display: flex;
@@ -815,25 +793,24 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.75rem;
     opacity: 0.7;
   }
+
   .context-indicator {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
+
   .quick-actions {
     padding: 2rem;
     text-align: center;
   }
-  .quick-actions h3 {
-    margin: 0 0 1.5rem 0;
-    color: #374151;
-    font-size: 1.125rem;
-  }
+
   .action-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
   }
+
   .quick-action {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
@@ -844,31 +821,29 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
     color: #374151;
   }
-  .quick-actionhover {
+  .quick-action:hover {
     background: #f1f5f9;
     border-color: #cbd5e1;
     transform: translateY(-1px);
   }
-  .quick-actiondisabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
+
   .input-area {
     padding: 1rem 1.5rem;
     border-top: 1px solid #e5e7eb;
     background: #f8fafc;
   }
+
   .input-container {
     display: flex;
     gap: 0.75rem;
     align-items: flex-end;
   }
+
   .message-input {
-    flex: 1,
+    flex: 1;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     padding: 0.75rem;
@@ -879,17 +854,14 @@ https://svelte.dev/e/js_parse_error -->
     min-height: 44px;
     max-height: 120px;
     background: white;
-    transition: border-color 0.2;
+    transition: border-color 0.2s;
   }
   .message-input:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
-  .message-input:disabled {
-    background: #f3f4f6;
-    color: #9ca3af;
-  }
+
   .send-button {
     background: #3b82f6;
     border: none;
@@ -897,20 +869,21 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 44px;
     height: 44px;
   }
-  .send-buttonhover {
+  .send-button:hover {
     background: #2563eb;
   }
-  .send-buttondisabled {
+  .send-button:disabled {
     background: #9ca3af;
     cursor: not-allowed;
   }
+
   .spinner {
     width: 20px;
     height: 20px;
@@ -919,43 +892,21 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
+
   @keyframes typing {
-    0%,
-    60%,
-    100% {
-      transform: translateY(0);
-    }
-    30% {
-      transform: translateY(-10px);
-    }
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
   }
   @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
-  /* Responsive design */
+
   @media (max-width: 768px) {
-    .chat-overlay {
-      padding: 0.5rem;
-    }
-    .chat-header {
-      padding: 1rem;
-    }
-    .header-content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    .action-grid {
-      grid-template-columns: 1fr;
-    }
-    .message {
-      max-width: 95%;
-    }
+    .chat-overlay { padding: 0.5rem; }
+    .chat-header { padding: 1rem; }
+    .header-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .action-grid { grid-template-columns: 1fr; }
+    .message { max-width: 95%; }
   }
 </style>
-<!-- Svelte 5 migration completed - modern patterns applied -->

@@ -1,8 +1,11 @@
 #include <NvInfer.h>
 #include <cuda_runtime_api.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h> // For malloc, free
 #include <string.h> // For memcpy
+#include <vector>
+
 
 // A simple logger for TensorRT
 class Logger : public nvinfer1::ILogger {
@@ -25,23 +28,47 @@ static nvinfer1::IRuntime* runtime = NULL;
 static nvinfer1::ICudaEngine* engine = NULL;
 static nvinfer1::IExecutionContext* context = NULL;
 
+// Helper macros / functions for error checking (minimal)
+static inline bool checkCuda(cudaError_t code, const char *msg) {
+  if (code != cudaSuccess) {
+    fprintf(stderr, "CUDA Error (%s): %s\n", msg, cudaGetErrorString(code));
+    return false;
+  }
+  return true;
+}
+
 extern "C" int loadTRTEngine(const char* path) {
     FILE* f = fopen(path, "rb");
     if (!f) {
         fprintf(stderr, "Error: Failed to open engine file %s\n", path);
         return -1;
     }
-    fseek(f, 0, SEEK_END);
+    if (fseek(f, 0, SEEK_END) != 0) {
+      fclose(f);
+      fprintf(stderr, "Error: fseek failed for engine file %s\n", path);
+      return -1;
+    }
     long sz = ftell(f);
+    if (sz <= 0) {
+      fclose(f);
+      fprintf(stderr, "Error: engine file %s has invalid size\n", path);
+      return -1;
+    }
     rewind(f);
-    void* data = malloc(sz);
+    void *data = malloc((size_t)sz);
     if (!data) {
         fprintf(stderr, "Error: Failed to allocate memory for engine data\n");
         fclose(f);
         return -1;
     }
-    fread(data, 1, sz, f);
+    size_t read = fread(data, 1, (size_t)sz, f);
     fclose(f);
+    if (read != (size_t)sz) {
+      fprintf(stderr, "Error: Failed to read full engine file (%zu != %zu)\n",
+              read, (size_t)sz);
+      free(data);
+      return -1;
+    }
 
     runtime = nvinfer1::createInferRuntime(gLogger);
     if (!runtime) {
@@ -49,10 +76,11 @@ extern "C" int loadTRTEngine(const char* path) {
         free(data);
         return -1;
     }
-    engine = runtime->deserializeCudaEngine(data, sz);
+    engine = runtime->deserializeCudaEngine(data, (size_t)sz);
     if (!engine) {
         fprintf(stderr, "Error: Failed to deserialize CUDA engine\n");
         runtime->destroy();
+        runtime = nullptr;
         free(data);
         return -1;
     }
@@ -60,7 +88,9 @@ extern "C" int loadTRTEngine(const char* path) {
     if (!context) {
         fprintf(stderr, "Error: Failed to create execution context\n");
         engine->destroy();
+        engine = nullptr;
         runtime->destroy();
+        runtime = nullptr;
         free(data);
         return -1;
     }
@@ -68,125 +98,217 @@ extern "C" int loadTRTEngine(const char* path) {
     return 0;
 }
 
+// Add an unload helper so callers can cleanup
+extern "C" void unloadTRTEngine() {
+  if (context) {
+    context->destroy();
+    context = nullptr;
+  }
+  if (engine) {
+    engine->destroy();
+    engine = nullptr;
+  }
+  if (runtime) {
+    runtime->destroy();
+    runtime = nullptr;
+  }
+}
+
 // Placeholder for tokenization and actual inference logic
 // This function needs significant expansion to handle real tokenization,
 // input tensor creation, and binding to the TensorRT engine.
 // For now, it simulates the process.
-extern "C" float runEmbedding(const char* text, float* out, int maxLen) {
-    if (!context || !engine) {
-        fprintf(stderr, "Error: TensorRT engine not loaded or context not created.\n");
-        return -1.0f;
-    }
+extern "C" float runEmbedding(const int *input_ids, const int *attention_mask,
+                              int maxLen, float *out) {
+  if (!context || !engine) {
+    fprintf(stderr,
+            "Error: TensorRT engine not loaded or context not created.\n");
+    return -1.0f;
+  }
 
-    cudaStream_t stream;
-    cudaStreamCreate(&stream);
+  cudaStream_t stream = nullptr;
+  if (!checkCuda(cudaStreamCreate(&stream), "cudaStreamCreate")) {
+    return -1.0f;
+  }
 
-    // --- REAL INFERENCE IMPLEMENTATION ---
+  // 2. Get input/output binding indices and dimensions from the engine.
+  int inputIdsIdx = engine->getBindingIndex("input_ids");
+  int attentionMaskIdx = engine->getBindingIndex("attention_mask");
+  int outputEmbeddingsIdx = engine->getBindingIndex("output_embeddings");
 
-    // 1. Tokenize 'text' into input IDs and create an attention mask.
-    //    This is a critical step that requires a tokenizer library (e.g., SentencePiece, Hugging Face tokenizers).
-    //    You need to replace this with actual tokenization logic based on your model.
-    //    For demonstration, we'll use dummy token IDs and attention mask.
-    int* hostInputIds = (int*)malloc(maxLen * sizeof(int));
-    int* hostAttentionMask = (int*)malloc(maxLen * sizeof(int));
-    if (!hostInputIds || !hostAttentionMask) {
-        fprintf(stderr, "Error: Failed to allocate host memory for tokenization.\n");
-        cudaStreamDestroy(stream);
-        free(hostInputIds);
-        free(hostAttentionMask);
-        return -1.0f;
-    }
+  if (inputIdsIdx == -1 || attentionMaskIdx == -1 ||
+      outputEmbeddingsIdx == -1) {
+    fprintf(stderr,
+            "Error: One or more binding names not found in engine. "
+            "Expected 'input_ids', 'attention_mask', 'output_embeddings'. "
+            "Please check your TensorRT engine's binding names.\n");
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
 
-    // Dummy tokenization: fill with sequential IDs and all 1s for attention mask.
-    // Replace this loop with your actual tokenizer output.
-    for (int i = 0; i < maxLen; ++i) {
-        hostInputIds[i] = i % 100; // Example: dummy token IDs
-        hostAttentionMask[i] = 1;  // All tokens are attended
-    }
-    // If the text is shorter than maxLen, pad and set attention mask accordingly.
+  nvinfer1::Dims outputEmbeddingsDims =
+      engine->getBindingDimensions(outputEmbeddingsIdx);
 
-    // 2. Get input/output binding indices and dimensions from the engine.
-    //    Adjust binding names ("input_ids", "attention_mask", "output_embeddings") if your model uses different ones.
-    int inputIdsIdx = engine->getBindingIndex("input_ids");
-    int attentionMaskIdx = engine->getBindingIndex("attention_mask");
-    int outputEmbeddingsIdx = engine->getBindingIndex("output_embeddings");
+  // Assuming batch size 1 and sequence length maxLen for inputs.
+  size_t inputIdsSize = (size_t)maxLen * sizeof(int);
+  size_t attentionMaskSize = (size_t)maxLen * sizeof(int);
 
-    if (inputIdsIdx == -1 || attentionMaskIdx == -1 || outputEmbeddingsIdx == -1) {
-        fprintf(stderr, "Error: One or more binding names not found in engine. "
-                        "Expected 'input_ids', 'attention_mask', 'output_embeddings'. "
-                        "Please check your TensorRT engine's binding names.\n");
-        cudaStreamDestroy(stream);
-        free(hostInputIds);
-        free(hostAttentionMask);
-        return -1.0f;
-    }
-
-    nvinfer1::Dims outputEmbeddingsDims = engine->getBindingDimensions(outputEmbeddingsIdx);
-
-    // Assuming batch size 1 and sequence length maxLen for inputs.
-    size_t inputIdsSize = maxLen * sizeof(int);
-    size_t attentionMaskSize = maxLen * sizeof(int);
-
-    // Calculate output buffer size. 'out' must be pre-allocated by the caller to this size.
-    size_t outputEmbeddingsSize = 1;
+  // Calculate output buffer size. Handle dims.nbDims == 0 guard.
+  size_t outputEmbeddingsCount = 1;
+  if (outputEmbeddingsDims.nbDims <= 0) {
+    // fallback: assume 1 element if dims unknown
+    outputEmbeddingsCount = 1;
+  } else {
     for (int i = 0; i < outputEmbeddingsDims.nbDims; ++i) {
-        outputEmbeddingsSize *= outputEmbeddingsDims.d[i];
+      // if any dimension is <=0 treat as 1 to avoid size_t underflow
+      int d = outputEmbeddingsDims.d[i] > 0 ? outputEmbeddingsDims.d[i] : 1;
+      outputEmbeddingsCount *= (size_t)d;
     }
-    outputEmbeddingsSize *= sizeof(float); // Assuming float output type
+  }
+  size_t outputEmbeddingsSize = outputEmbeddingsCount * sizeof(float);
 
-    // 3. Allocate device memory for inputs and outputs.
-    void* buffers[engine->getNbBindings()];
-    cudaMalloc(&buffers[inputIdsIdx], inputIdsSize);
-    cudaMalloc(&buffers[attentionMaskIdx], attentionMaskSize);
-    cudaMalloc(&buffers[outputEmbeddingsIdx], outputEmbeddingsSize);
+  // 3. Allocate device memory for inputs and outputs.
+  const int nbBindings = engine->getNbBindings();
+  std::vector<void *> buffers(nbBindings, nullptr);
 
-    if (!buffers[inputIdsIdx] || !buffers[attentionMaskIdx] || !buffers[outputEmbeddingsIdx]) {
-        fprintf(stderr, "Error: Failed to allocate device memory.\n");
-        cudaStreamDestroy(stream);
-        free(hostInputIds);
-        free(hostAttentionMask);
-        if (buffers[inputIdsIdx]) cudaFree(buffers[inputIdsIdx]);
-        if (buffers[attentionMaskIdx]) cudaFree(buffers[attentionMaskIdx]);
-        if (buffers[outputEmbeddingsIdx]) cudaFree(buffers[outputEmbeddingsIdx]);
-        return -1.0f;
-    }
+  bool allocOk = true;
+  if (!checkCuda(cudaMalloc(&buffers[inputIdsIdx], inputIdsSize),
+                 "cudaMalloc input_ids"))
+    allocOk = false;
+  if (!checkCuda(cudaMalloc(&buffers[attentionMaskIdx], attentionMaskSize),
+                 "cudaMalloc attention_mask"))
+    allocOk = false;
+  if (!checkCuda(
+          cudaMalloc(&buffers[outputEmbeddingsIdx], outputEmbeddingsSize),
+          "cudaMalloc output_embeddings"))
+    allocOk = false;
 
-    // 4. Copy tokenized input from host to device.
-    cudaMemcpyAsync(buffers[inputIdsIdx], hostInputIds, inputIdsSize, cudaMemcpyHostToDevice, stream);
-    cudaMemcpyAsync(buffers[attentionMaskIdx], hostAttentionMask, attentionMaskSize, cudaMemcpyHostToDevice, stream);
+  if (!allocOk) {
+    fprintf(stderr, "Error: Failed to allocate device memory.\n");
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
 
-    // 5. Execute inference.
-    cudaEvent_t startEvent, endEvent;
-    cudaEventCreate(&startEvent);
-    cudaEventCreate(&endEvent);
+  // 4. Copy tokenized input from host to device.
+  if (!checkCuda(cudaMemcpyAsync(buffers[inputIdsIdx], input_ids, inputIdsSize,
+                                 cudaMemcpyHostToDevice, stream),
+                 "cudaMemcpyAsync input_ids")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
+  if (!checkCuda(cudaMemcpyAsync(buffers[attentionMaskIdx], attention_mask,
+                                 attentionMaskSize, cudaMemcpyHostToDevice,
+                                 stream),
+                 "cudaMemcpyAsync attention_mask")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
 
-    cudaEventRecord(startEvent, stream);
-    context->enqueueV2(buffers, stream, nullptr); // Execute inference
-    cudaEventRecord(endEvent, stream);
-    cudaEventSynchronize(endEvent);
+  // 5. Execute inference.
+  cudaEvent_t startEvent = nullptr, endEvent = nullptr;
+  if (!checkCuda(cudaEventCreate(&startEvent), "cudaEventCreate start") ||
+      !checkCuda(cudaEventCreate(&endEvent), "cudaEventCreate end")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    if (startEvent)
+      cudaEventDestroy(startEvent);
+    if (endEvent)
+      cudaEventDestroy(endEvent);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
 
-    float milliseconds = 0;
-    cudaEventElapsedTime(&milliseconds, startEvent, endEvent);
-
-    // 6. Copy output from device to host 'out'.
-    //    Ensure 'out' (passed as a parameter) has enough allocated memory on the host side
-    //    to receive the output (size: outputEmbeddingsSize / sizeof(float)).
-    cudaMemcpyAsync(out, buffers[outputEmbeddingsIdx], outputEmbeddingsSize, cudaMemcpyDeviceToHost, stream);
-    cudaStreamSynchronize(stream); // Ensure copy is complete before returning
-
-    // 7. Free device memory.
-    cudaFree(buffers[inputIdsIdx]);
-    cudaFree(buffers[attentionMaskIdx]);
-    cudaFree(buffers[outputEmbeddingsIdx]);
-
-    // 8. Clean up host memory and events.
-    free(hostInputIds);
-    free(hostAttentionMask);
+  if (!checkCuda(cudaEventRecord(startEvent, stream),
+                 "cudaEventRecord start")) {
+    // cleanup
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
     cudaEventDestroy(startEvent);
     cudaEventDestroy(endEvent);
     cudaStreamDestroy(stream);
+    return -1.0f;
+  }
 
-    // --- END REAL INFERENCE IMPLEMENTATION ---
+  // Note: enqueueV2 returns bool in newer TRT versions; it may throw otherwise.
+  if (!context->enqueueV2(buffers.data(), stream, nullptr)) {
+    fprintf(stderr, "Error: context->enqueueV2 failed\n");
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(endEvent);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
 
-    return milliseconds; // Returns inference latency in ms
+  if (!checkCuda(cudaEventRecord(endEvent, stream), "cudaEventRecord end")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(endEvent);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
+  if (!checkCuda(cudaEventSynchronize(endEvent), "cudaEventSynchronize end")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(endEvent);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
+
+  float milliseconds = 0;
+  if (!checkCuda(cudaEventElapsedTime(&milliseconds, startEvent, endEvent),
+                 "cudaEventElapsedTime")) {
+    milliseconds = -1.0f;
+  }
+
+  // 6. Copy output from device to host 'out'.
+  if (!checkCuda(cudaMemcpyAsync(out, buffers[outputEmbeddingsIdx],
+                                 outputEmbeddingsSize, cudaMemcpyDeviceToHost,
+                                 stream),
+                 "cudaMemcpyAsync output")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(endEvent);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
+  if (!checkCuda(cudaStreamSynchronize(stream), "cudaStreamSynchronize")) {
+    for (void *b : buffers)
+      if (b)
+        cudaFree(b);
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(endEvent);
+    cudaStreamDestroy(stream);
+    return -1.0f;
+  }
+
+  // 7. Free device memory.
+  for (void *b : buffers)
+    if (b)
+      cudaFree(b);
+
+  // 8. Clean up events & stream.
+  cudaEventDestroy(startEvent);
+  cudaEventDestroy(endEvent);
+  cudaStreamDestroy(stream);
+
+  return milliseconds; // Returns inference latency in ms
 }

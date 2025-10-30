@@ -27,9 +27,9 @@ interface ErrorPayload {
 // Minimal window shape for Redux DevTools availability check
 interface DevtoolsWindow extends Window {
   __REDUX_DEVTOOLS_EXTENSION__?: {
-    connect: (opts?: any) => {
-      send: (action: any, state?: any) => void;
-      init: (state: any) => void;
+    connect: (opts?: { name?: string; [key: string]: unknown }) => {
+      send: (action: unknown, state?: unknown) => void;
+      init: (state: unknown) => void;
     };
   };
 }
@@ -40,16 +40,7 @@ interface InspectionEvent {
   event?: unknown;
   snapshot?: unknown;
 }
-/**
- * XState Svelte Store Integration
- * Provides reactive Svelte stores for XState machines with persistence and devtools
- */
-import { readable, derived, type Readable } from 'svelte/store';
-import type { ActorRefFrom } from 'xstate';
-import { createCompatibleActor } from '$lib/services/xstate-utils';
-import { browser } from '$app/environment';
-import { appMachine, appSelectors, type AppEvents } from './app-machine.js';
-import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
+
 // Store persistence interface
 export interface StoreState {
   appState: unknown;

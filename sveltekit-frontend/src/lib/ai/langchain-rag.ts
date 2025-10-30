@@ -835,9 +835,11 @@ Only return the queries, one per line.`),
       // Replace `any` with a narrow local type capturing only the members we use.
       let pdfjsModule: PDFJSModule | null = null;
       try {
+        // @ts-ignore - This path may not exist if only the main package is installed
         pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
       } catch {
         // Fallback to main package if legacy build isn't present
+        // @ts-ignore - This module might not be installed
         pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
       }
       if (!pdfjsModule) {
@@ -858,6 +860,9 @@ Only return the queries, one per line.`),
       }
 
       const arrayBuffer = await file.arrayBuffer();
+      if (typeof pdfjs.getDocument !== 'function') {
+        throw new Error('pdfjs.getDocument is not a function. PDF.js module may be corrupt or incompatible.');
+      }
       const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
       // loadingTask may be:
       // - a LoadingTask with a `.promise` property,
@@ -928,6 +933,7 @@ Only return the queries, one per line.`),
     type MammothResult = { value?: string };
     try {
       // Try to use mammoth.js if available
+      // @ts-ignore - This module might not be installed
       const mammoth = await import('mammoth').catch(() => null);
       if (mammoth) {
         const arrayBuffer = await file.arrayBuffer();
@@ -946,6 +952,7 @@ Only return the queries, one per line.`),
     type MammothResult = { value?: string };
     try {
       // Try to use mammoth.js if available
+      // @ts-ignore - This module might not be installed
       const mammoth = await import('mammoth').catch(() => null);
       if (mammoth) {
         const result = (await mammoth.extractRawText({ buffer })) as MammothResult;

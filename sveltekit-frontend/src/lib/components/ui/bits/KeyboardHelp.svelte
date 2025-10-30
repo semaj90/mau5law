@@ -10,7 +10,7 @@
   interface KeyboardShortcut {
     id: string;
     keys: string[];
-    description string;
+    description: string; // Added colon
     category: string;
     enabled?: boolean;
   }
@@ -44,48 +44,48 @@
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
     // Case Management
-    { id: 'new-case', keys: ['ctrl', 'shift', 'c'], description 'Create New Case', category: 'Case Management' },
-    { id: 'case-search', keys: ['ctrl', 'shift', 'f'], description 'Search Cases', category: 'Case Management' },
-    { id: 'case-list', keys: ['ctrl', 'shift', 'l'], description 'View All Cases', category: 'Case Management' },
+    { id: 'new-case', keys: ['ctrl', 'shift', 'c'], description: 'Create New Case', category: 'Case Management' }, // Added colon
+    { id: 'case-search', keys: ['ctrl', 'shift', 'f'], description: 'Search Cases', category: 'Case Management' }, // Added colon
+    { id: 'case-list', keys: ['ctrl', 'shift', 'l'], description: 'View All Cases', category: 'Case Management' }, // Added colon
     // Evidence Management
-    { id: 'upload-evidence', keys: ['ctrl', 'u'], description 'Upload Evidence', category: 'Evidence' },
+    { id: 'upload-evidence', keys: ['ctrl', 'u'], description: 'Upload Evidence', category: 'Evidence' }, // Added colon
     {
       id: 'evidence-analysis',
       keys: ['ctrl', 'shift', 'a'],
-      description 'AI Evidence Analysis',
+      description: 'AI Evidence Analysis', // Added colon
       category: 'Evidence',
     },
-    { id: 'evidence-search', keys: ['ctrl', 'e'], description 'Search Evidence', category: 'Evidence' },
+    { id: 'evidence-search', keys: ['ctrl', 'e'], description: 'Search Evidence', category: 'Evidence' }, // Added colon
     // AI Tools
-    { id: 'ai-assistant', keys: ['ctrl', 'shift', 'i'], description 'Open AI Assistant', category: 'AI Tools' },
-    { id: 'legal-research', keys: ['ctrl', 'shift', 'r'], description 'Legal Research', category: 'AI Tools' },
+    { id: 'ai-assistant', keys: ['ctrl', 'shift', 'i'], description: 'Open AI Assistant', category: 'AI Tools' }, // Added colon
+    { id: 'legal-research', keys: ['ctrl', 'shift', 'r'], description: 'Legal Research', category: 'AI Tools' }, // Added colon
     {
       id: 'document-drafting',
       keys: ['ctrl', 'shift', 'd'],
-      description 'AI Document Drafting',
+      description: 'AI Document Drafting', // Added colon
       category: 'AI Tools',
     },
     // Documents
-    { id: 'new-document', keys: ['ctrl', 'n'], description 'New Document', category: 'Documents' },
-    { id: 'save-document', keys: ['ctrl', 's'], description 'Save Document', category: 'Documents' },
-    { id: 'document-review', keys: ['ctrl', 'r'], description 'Document Review', category: 'Documents' },
+    { id: 'new-document', keys: ['ctrl', 'n'], description: 'New Document', category: 'Documents' }, // Added colon
+    { id: 'save-document', keys: ['ctrl', 's'], description: 'Save Document', category: 'Documents' }, // Added colon
+    { id: 'document-review', keys: ['ctrl', 'r'], description: 'Document Review', category: 'Documents' }, // Added colon
     // Navigation
-    { id: 'dashboard', keys: ['ctrl', 'h'], description 'Go to Dashboard', category: 'Navigation' },
-    { id: 'quick-search', keys: ['ctrl', 'k'], description 'Quick Search', category: 'Navigation' },
-    { id: 'settings', keys: ['ctrl', ','], description 'Open Settings', category: 'Navigation' },
+    { id: 'dashboard', keys: ['ctrl', 'h'], description: 'Go to Dashboard', category: 'Navigation' }, // Added colon
+    { id: 'quick-search', keys: ['ctrl', 'k'], description: 'Quick Search', category: 'Navigation' }, // Added colon
+    { id: 'settings', keys: ['ctrl', ','], description: 'Open Settings', category: 'Navigation' }, // Added colon
     // Accessibility
     {
       id: 'accessibility-panel',
       keys: ['ctrl', 'alt', 'a'],
-      description 'Accessibility Panel',
+      description: 'Accessibility Panel', // Added colon
       category: 'Accessibility',
     },
-    { id: 'screen-reader', keys: ['ctrl', 'alt', 's'], description 'Screen Reader Mode', category: 'Accessibility' },
-    { id: 'high-contrast', keys: ['ctrl', 'alt', 'h'], description 'High Contrast Mode', category: 'Accessibility' },
+    { id: 'screen-reader', keys: ['ctrl', 'alt', 's'], description: 'Screen Reader Mode', category: 'Accessibility' }, // Added colon
+    { id: 'high-contrast', keys: ['ctrl', 'alt', 'h'], description: 'High Contrast Mode', category: 'Accessibility' }, // Added colon
     // Help
-    { id: 'keyboard-help', keys: ['shift', '?'], description 'Keyboard Shortcuts Help', category: 'Help' },
-    { id: 'documentation', keys: ['f1'], description 'Open Documentation', category: 'Help' },
-    { id: 'support', keys: ['ctrl', 'shift', 'h'], description 'Contact Support', category: 'Help' },
+    { id: 'keyboard-help', keys: ['shift', '?'], description: 'Keyboard Shortcuts Help', category: 'Help' }, // Added colon
+    { id: 'documentation', keys: ['f1'], description: 'Open Documentation', category: 'Help' }, // Added colon
+    { id: 'support', keys: ['ctrl', 'shift', 'h'], description: 'Contact Support', category: 'Help' }, // Added colon
   ];
 
   // Reactive derived data using Svelte 5 runes

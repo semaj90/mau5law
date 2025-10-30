@@ -1,12 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/button'; // Adjusted import
+  import * as Card from '$lib/components/ui/card'; // Adjusted import
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
   import type { SimilarityResult } from '$lib/server/db/vector-operations';
@@ -37,17 +32,17 @@
   let targetCompressionRatio = $state(50);
   // Available styles
   const styles = [
-    { value: 'detective', label: '🔍 Detective', description 'Dark, investigative theme' },
-    { value: 'corporate', label: '🏢 Corporate', description 'Professional business theme' },
-    { value: 'forensic', label: '🧪 Forensic', description 'Scientific analysis theme' },
-    { value: 'legal', label: '⚖️ Legal', description 'Court and legal documentation theme' }
+    { value: 'detective', label: '🔍 Detective', description: 'Dark, investigative theme' }, // Fixed syntax
+    { value: 'corporate', label: '🏢 Corporate', description: 'Professional business theme' }, // Fixed syntax
+    { value: 'forensic', label: '🧪 Forensic', description: 'Scientific analysis theme' }, // Fixed syntax
+    { value: 'legal', label: '⚖️ Legal', description: 'Court and legal documentation theme' } // Fixed syntax
   ];
   // Dimension presets
   const dimensionPresets = [
-    { value: [256, 256], label: '256×256', description 'Small (fast)' },
-    { value: [512, 512], label: '512×512', description 'Medium (balanced)' },
-    { value: [768, 768], label: '768×768', description 'Large (detailed)' },
-    { value: [1024, 1024], label: '1024×1024', description 'Extra large (slow)' }
+    { value: [256, 256], label: '256×256', description: 'Small (fast)' }, // Fixed syntax
+    { value: [512, 512], label: '512×512', description: 'Medium (balanced)' }, // Fixed syntax
+    { value: [768, 768], label: '768×768', description: 'Large (detailed)' }, // Fixed syntax
+    { value: [1024, 1024], label: '1024×1024', description: 'Extra large (slow)' } // Fixed syntax
   ];
   async function generateGlyph() {
     if (!prompt.trim()) {
@@ -71,11 +66,11 @@
           'current-user',
           evidenceId ? `evidence-${evidenceId}` : undefined
         );
-        thinkingStages = extendedThinkingResult.thinkingStage;
-        cachePerformance = extendedThinkingResult.cachePerformanc;
+        thinkingStages = extendedThinkingResult.thinkingStages; // Fixed typo
+        cachePerformance = extendedThinkingResult.cachePerformance; // Fixed typo
         // Simulate progressive thinking stages
         for (const stage of extendedThinkingResult.thinkingStages) {
-          currentStage = stag;
+          currentStage = stage; // Fixed typo
           await new Promise(resolve => setTimeout(resolve, Math.min(stage.duration, 500)));
         }
         // Enhanced generation with GRPMO context
@@ -88,9 +83,9 @@
         result = {
           ...finalResult.data,
           grpmo_metadata: {
-            extended_thinking_enabled: extendedThinkingEnabled
-            thinking_stages: thinkingStages
-            cache_performance: cachePerformance
+            extended_thinking_enabled: extendedThinkingEnabled, // Added comma
+            thinking_stages: thinkingStages, // Added comma
+            cache_performance: cachePerformance, // Added comma
             glyph_embedding: glyphEmbedding
           }
         }
@@ -108,7 +103,7 @@
   }
   function generateMockEmbedding(text: string): number[] {
     // Generate deterministic embedding from text
-    const hash = text.split.reduce((a, b) => {
+    const hash = text.split('').reduce((a, b) => { // Fixed syntax
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
     }, 0);
@@ -692,6 +687,11 @@
   textarea::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 2px;
+  }
+  textarea::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+</style>
   }
   textarea::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;

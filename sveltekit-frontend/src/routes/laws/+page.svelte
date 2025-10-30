@@ -39,7 +39,7 @@
     try {
       const params = new URLSearchParams({
         q: searchQuery,
-        jurisdiction 'all',
+        jurisdiction: 'all', // Fixed syntax error here
         category: 'all',
       });
       const response = await fetch(`/api/laws/search?${params}`);
@@ -222,6 +222,10 @@
     <div class="nes-container">
       <div class="yorha-panel-content py-8 text-center">
         <p class="nes-text is-disabled">No results found for "{searchQuery}"</p>
+      </div>
+    </div>
+  {/if}
+</div>
       </div>
     </div>
   {/if}
