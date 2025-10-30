@@ -240,9 +240,8 @@
           <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted">{ICON.search}</span>
           <!-- annotate event type to avoid implicit any -->
           <Input
-            value={query}
-            oninput={(e: Event) => (query = (e.target as HTMLInputElement).value)}
-            onkeydown={handleKeyPress}
+            bind:value={query}
+            on:keydown={handleKeyPress}
             placeholder="Describe your legal research question in natural language..."
             class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
             disabled={loading}
@@ -270,13 +269,16 @@
          <!-- Search Mode Tabs -->
          <!-- simple inline tab buttons to avoid external Tabs API mismatch -->
          <div class="grid w-full grid-cols-3 gap-2">
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'semantic')}>
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+              onclick={() => (searchMode = 'semantic')}>
               <span class="inline-block mr-1">{ICON.brain}</span> Semantic
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'keyword')}>
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+              onclick={() => (searchMode = 'keyword')}>
               <span class="inline-block mr-1">{ICON.target}</span> Keyword
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'hybrid')}>
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+              onclick={() => (searchMode = 'hybrid')}>
               <span class="inline-block mr-1">{ICON.sparkles}</span> Hybrid
             </button>
           </div>

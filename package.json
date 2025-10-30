@@ -72,11 +72,13 @@
     "mcp:start": "node scripts/mcp-multicore-server.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.920.0",
     "@langchain/community": "^1.0.0",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/jwt": "^0.3.0",
     "@qdrant/js-client-rest": "^1.15.1",
+    "@sveltejs/adapter-node": "^5.4.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "axios": "^1.13.0",
     "bits-ui": "^2.14.1",
@@ -102,7 +104,6 @@
   "devDependencies": {
     "@julr/unocss-preset-forms": "^2.0.0",
     "@playwright/test": "^1.55.0",
-    "@sveltejs/adapter-auto": "^6.1.0",
     "@sveltejs/enhanced-img": "^0.8.2",
     "@types/bun": "^1.2.22",
     "@types/fabric": "^5.3.10",

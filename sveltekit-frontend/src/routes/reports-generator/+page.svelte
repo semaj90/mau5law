@@ -1,33 +1,37 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Evidence } from '$lib/types/api';
-  	import { onMount } from 'svelte';
-  	import { page } from '$app/state';
-  	import ReportEditor from "$lib/components/ReportEditor.svelte";
-  	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
-  	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
-  	let currentReport: Report | null = $state(null);
-  	let currentCanvasState: CanvasState | null = $state(null);
-  	let evidence: Evidence[] = $state([]);
-  	let citationPoints: CitationPoint[] = $state([]);
-  	let activeTab: 'editor' | 'canvas' = $state('editor');
-  	let isLoading = $state(false);
-  	let error = $state('');
-  	// Demo case ID - in real app this would come from the route
-  	const caseId = page.params.caseId || 'demo-case-123';
-  	$effect(() => {
-    (async () => {
-await loadDemoData();
-    })();
-  });
-  	async function loadDemoData() {
-  		try {
-  			isLoading = true;
-  			// Load sample citation points
-  			const citationsResponse = await fetch(`/api/citations?caseId=${caseId}`);
-  			if (citationsResponse.ok) {
-  				citationPoints = await citationsResponse.json();
-  }
+	// Svelte 5 runes are auto-imported
+	import type { Evidence } from '$lib/types/api';
+	// onMount not used — remove to avoid unused import
+	import { page } from '$app/stores'; // correct store import for SvelteKit page
+ 	import ReportEditor from "$lib/components/ReportEditor.svelte";
+ 	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
+ 	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
+	let currentReport: Report | null = $state(null);
+	let currentCanvasState: CanvasState | null = $state(null);
+	let evidence: Evidence[] = $state([]);
+	let citationPoints: CitationPoint[] = $state([]);
+	let activeTab: 'editor' | 'canvas' = $state('editor');
+	let isLoading = $state(false);
+	let error = $state('');
+	// Demo case ID - default, will be overridden from route params if present
+	let caseId = $state('demo-case-123');
+
+	// Ensure caseId comes from the page store before loading demo data
+	$effect(() => {
+		// $page gives the current value of the routed page store
+		caseId = $page?.params?.caseId ?? caseId;
+		(async () => {
+			await loadDemoData();
+		})();
+	});
+ 	async function loadDemoData() {
+ 		try {
+ 			isLoading = true;
+ 			// Load sample citation points
+			const citationsResponse = await fetch(`/api/citations?caseId=${caseId}`);
+ 			if (citationsResponse.ok) {
+ 				citationPoints = await citationsResponse.json();
+   }
   			// Load sample evidence (mock for now)
   			evidence = [
   				{
@@ -164,8 +168,8 @@ await loadDemoData();
       <h1>📝 Report Builder</h1>
       <p class="space-y-4">AI-powered case analysis and report generation</p>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => createNewReport()}> 📄 New Report </button>
-        <button class="space-y-4" onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
+        <button class="space-y-4" on:click={createNewReport}> 📄 New Report </button>
+        <button class="space-y-4" on:click={createNewCanvas}> 🎨 New Canvas </button>
       </div>
     </div>
   </header>
@@ -185,10 +189,10 @@ await loadDemoData();
   {:else}
     <!-- Tab Navigation -->
     <div class="space-y-4">
-      <button class="space-y-4" class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}>
+      <button class="space-y-4" class:active={activeTab === 'editor'} on:click={() => (activeTab = 'editor')}>
         📝 Report Editor
       </button>
-      <button class="space-y-4" ; class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
+      <button class="space-y-4" class:active={activeTab === 'canvas'} on:click={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
     </div>
@@ -269,7 +273,7 @@ await loadDemoData();
       </div>
     </aside>
   {/if}
-</div>
+</div> <!-- .container wrapper end -->
 
 <style>
   /* @unocss-include */
@@ -280,10 +284,6 @@ await loadDemoData();
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 </style>
-  /* @unocss-include */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }

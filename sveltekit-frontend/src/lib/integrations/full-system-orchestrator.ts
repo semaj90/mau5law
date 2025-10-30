@@ -1,12 +1,41 @@
-import { analyzeCurrentErrors } from '../../context7-multicore-error-analysis.js';
-/**
- * Full System Orchestrator
- * Comprehensive integration of all services using Context7 MCP patterns
- * Coordinates FlashAttention2, Phase 13 integration, and multicore error analysis
- */
+// removed unused import to avoid unused-symbol diagnostics
 import { phase13Integration, initializePhase13, getSystemHealth } from './phase13-full-integration.js';
+// @ts-expect-error - module may lack type declarations
 import flashAttention2Service from '../services/flash-attention2-service.js';
-}
+// New explicit types to avoid repeated `any` casts and unexpected-any errors
+type Phase13Health = {
+  phase13: { level: number; status: string };
+  services?: unknown;
+  performance?: unknown;
+  recommendations?: unknown[]; // tightened from Array<any> to unknown[]
+};
+type FlashAttentionStatus = {
+  initialized: boolean;
+  gpuEnabled: boolean;
+  memoryOptimization?: boolean;
+  maxSequenceLength?: number;
+  batchSize?: number;
+  memoryPools?: unknown;
+};
+type ErrorCategory = {
+  category: string;
+  status: string;
+  estimated_fixes: number;
+  confidence: number;
+  recommendations?: string[];
+};
+type ErrorAnalysisResult = {
+  timestamp: string;
+  analysis_method: string;
+  total_estimated_errors: number;
+  category_analysis: ErrorCategory[];
+  automation_plan: Record<string, string>;
+};
+type AutoRemediationResult = {
+  applied: number;
+  results: Array<{ category: string; fixesApplied: number; success: boolean; details: string[] }>;
+  totalFixesAttempted: number;
+};
 export interface SystemOrchestrationConfig {
   enableFlashAttention: boolean;
   enablePhase13Integration: boolean;
@@ -17,17 +46,23 @@ export interface SystemOrchestrationConfig {
 export interface OrchestrationResult {
   success: boolean;
   services: {
-    flashAttention2: any;
-    phase13: any;
-    errorAnalysis: any;
-    autoRemediation?: unknown;
-  }
+    flashAttention2: (FlashAttentionStatus & { testResult?: unknown }) | null;
+    phase13: {
+      integrationLevel: number;
+      status: string;
+      services?: unknown;
+      performance?: unknown;
+      recommendations?: unknown;
+    } | null;
+    errorAnalysis: ErrorAnalysisResult | null;
+    autoRemediation?: AutoRemediationResult | null;
+  };
   performance: {
     initializationTime: number;
     memoryUsage: number;
     servicesOnline: number;
     totalServices: number;
-  }
+  };
   recommendations: string[];
   errors: string[];
 }
@@ -46,8 +81,8 @@ export class FullSystemOrchestrator {
       enableErrorAnalysis: true,
       enableAutoRemediation: false, // Start disabled for safety
       performanceMode: 'development',
-      ...config
-    }
+      ...config,
+    };
   }
   /**
    * Initialize the complete system orchestration
@@ -69,11 +104,11 @@ export class FullSystemOrchestrator {
         initializationTime: 0,
         memoryUsage: 0,
         servicesOnline: 0,
-        totalServices: 3
+        totalServices: 3,
       },
       recommendations: [],
-      errors: []
-    }
+      errors: [],
+    };
     try {
       // Step 1: Initialize FlashAttention2 RTX 3060 service
       if (this.config.enableFlashAttention) {
@@ -90,22 +125,25 @@ export class FullSystemOrchestrator {
         console.log('🔍 Running Context7 multicore error analysis...');
         await this.runErrorAnalysis(result);
       }
-      // Step 4: Apply auto-remediation if enabled
-      if (this.config.enableAutoRemediation && (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis?.recommendations) {
+      // Step 4: Apply auto-remediation if enabled and we have analysis categories
+      if (this.config.enableAutoRemediation && result.services.errorAnalysis?.category_analysis?.length) {
         console.log('🔧 Applying auto-remediation...');
         await this.applyAutoRemediation(result);
       }
       // Finalize initialization
       this.calculatePerformanceMetrics(result);
       this.generateSystemRecommendations(result);
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.length === 0;
+      result.success = result.errors.length === 0;
       this.isInitialized = true;
-      console.log(`✅ Full System Orchestration ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success ? 'completed successfully' : 'completed with warnings'}`);
-      console.log(`📊 Services online: ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline}/${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.totalServices}`);
+      console.log(
+        `✅ Full System Orchestration ${result.success ? 'completed successfully' : 'completed with warnings'}`
+      );
+      console.log(`📊 Services online: ${result.performance.servicesOnline}/${result.performance.totalServices}`);
       return result;
-    } catch (error: any) {
-      console.error('❌ Full System Orchestration failed:', error);
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Orchestration failed: ${error.message}`);
+    } catch (error: unknown) {
+      const message = formatError(error);
+      console.error('❌ Full System Orchestration failed:', message);
+      result.errors.push(`Orchestration failed: ${message}`);
       return result;
     }
   }
@@ -116,36 +154,35 @@ export class FullSystemOrchestrator {
     try {
       await flashAttention2Service.initialize();
       const status = flashAttention2Service.getStatus();
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2 = {
-        initialized: status.initialized,
-        gpuEnabled: status.gpuEnabled,
+      result.services.flashAttention2 = {
+        initialized: Boolean(status.initialized),
+        gpuEnabled: Boolean(status.gpuEnabled),
         memoryOptimization: status.memoryOptimization,
-        performance: {
-          maxSequenceLength: status.maxSequenceLength,
-          batchSize: status.batchSize,
-          memoryPools: status.memoryPools
-        }
-      }
+        maxSequenceLength: status.maxSequenceLength,
+        batchSize: status.batchSize,
+        memoryPools: status.memoryPools,
+      };
       if (status.initialized) {
-        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline++;
+        result.performance.servicesOnline++;
         console.log('✅ FlashAttention2 RTX 3060 service initialized');
         // Test the service with a legal text sample
         const testResult = await flashAttention2Service.processLegalText(
-          "This contract contains an indemnification clause that survives termination.",
-          ["Contract law", "Liability provisions"],
-          "legal"
+          'This contract contains an indemnification clause that survives termination.',
+          ['Contract law', 'Liability provisions'],
+          'legal'
         );
-        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2.testResult = {
+        result.services.flashAttention2.testResult = {
           confidence: testResult.confidence,
           processingTime: testResult.processingTime,
-          legalAnalysis: testResult.legalAnalysis
-        }
+          legalAnalysis: testResult.legalAnalysis,
+        };
       } else {
-        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push('FlashAttention2 service failed to initialize');
+        result.errors.push('FlashAttention2 service failed to initialize');
       }
-    } catch (error: any) {
-      console.error('❌ FlashAttention2 initialization failed:', error);
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`FlashAttention2 error: ${error.message}`);
+    } catch (error: unknown) {
+      const message = formatError(error);
+      console.error('❌ FlashAttention2 initialization failed:', message);
+      result.errors.push(`FlashAttention2 error: ${message}`);
     }
   }
   /**
@@ -155,24 +192,28 @@ export class FullSystemOrchestrator {
     try {
       await initializePhase13();
       const systemHealth = await getSystemHealth();
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.phase13 = {
-        integrationLevel: systemHealth.phase13.level,
-        status: systemHealth.phase13.status,
-        services: systemHealth.services,
-        performance: systemHealth.performance,
-        recommendations: systemHealth.recommendations
-      }
-      if (systemHealth.phase13.level > 50) {
-        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline++;
-        console.log(`✅ Phase 13 integration active (${systemHealth.phase13.level.toFixed(1)}% integration)`);
+      // map external shape to our internal typed structure
+      const phaseLevel = systemHealth?.phase13?.level ?? 0;
+      result.services.phase13 = {
+        integrationLevel: Number(phaseLevel),
+        status: String(systemHealth?.phase13?.status ?? 'unknown'),
+        services: systemHealth?.services,
+        performance: systemHealth?.performance,
+        recommendations: systemHealth?.recommendations,
+      };
+      if (phaseLevel > 50) {
+        result.performance.servicesOnline++;
+        console.log(`✅ Phase 13 integration active (${Number(phaseLevel).toFixed(1)}% integration)`);
       } else {
-        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push('Phase 13 integration level below minimum threshold');
+        result.errors.push('Phase 13 integration level below minimum threshold');
       }
-      // Merge Phase 13 recommendations
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...systemHealth.recommendations.map(r => r.suggested);
-    } catch (error: any) {
-      console.error('❌ Phase 13 integration failed:', error);
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Phase 13 error: ${error.message}`);
+      // Merge Phase 13 recommendations with safety for different shapes
+      const phaseRecs = systemHealth?.recommendations || [];
+      result.recommendations.push(...phaseRecs.map((r: unknown) => toSuggestedString(r)));
+    } catch (error: unknown) {
+      const message = formatError(error);
+      console.error('❌ Phase 13 integration failed:', message);
+      result.errors.push(`Phase 13 error: ${message}`);
     }
   }
   /**
@@ -181,9 +222,9 @@ export class FullSystemOrchestrator {
   private async runErrorAnalysis(result: OrchestrationResult): Promise<void> {
     try {
       console.log('🔍 Running Context7 multicore error analysis...');
-      // Note: The actual analysis would be run here, but it requires the multicore service
-      // For now, we'll simulate the analysis based on the known error categories
-      const mockAnalysisResult = {
+      // Note: The actual analysis would be run here, but it requires the multicore service.
+      // For now, we'll simulate the analysis based on the known error categories and use the typed ErrorAnalysisResult.
+      const mockAnalysisResult: ErrorAnalysisResult = {
         timestamp: new Date().toISOString(),
         analysis_method: 'context7_multicore_simulation',
         total_estimated_errors: 1962,
@@ -196,8 +237,8 @@ export class FullSystemOrchestrator {
             recommendations: [
               'Apply automated Svelte 5 props migration',
               'Update component event binding patterns',
-              'Convert let { to } = $props(); $props() pattern'
-            ]
+              'Convert let { to } = $props(); $props() pattern',
+            ],
           },
           {
             category: 'ui_component_mismatch',
@@ -207,8 +248,8 @@ export class FullSystemOrchestrator {
             recommendations: [
               'Update Bits UI component API usage',
               'Reconcile Melt UI component patterns',
-              'Fix component prop naming conflicts'
-            ]
+              'Fix component prop naming conflicts',
+            ],
           },
           {
             category: 'css_unused_selectors',
@@ -218,8 +259,8 @@ export class FullSystemOrchestrator {
             recommendations: [
               'Run CSS purge for unused selectors',
               'Update component class binding patterns',
-              'Optimize UnoCSS configuration'
-            ]
+              'Optimize UnoCSS configuration',
+            ],
           },
           {
             category: 'binding_issues',
@@ -229,31 +270,34 @@ export class FullSystemOrchestrator {
             recommendations: [
               'Fix non-bindable property bindings',
               'Update event handler patterns',
-              'Convert to Svelte 5 binding syntax'
-            ]
-          }
+              'Convert to Svelte 5 binding syntax',
+            ],
+          },
         ],
         automation_plan: {
-          phase_1: "Automated Svelte 5 props migration (800+ fixes)",
-          phase_2: "UI component API reconciliation (600+ fixes)",
-          phase_3: "CSS selector cleanup (400+ fixes)",
-          phase_4: "Binding pattern validation (162+ fixes)",
-          total_automation_potential: "85%"
-        }
-      }
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis = mockAnalysisResult;
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline++;
+          phase_1: 'Automated Svelte 5 props migration (800+ fixes)',
+          phase_2: 'UI component API reconciliation (600+ fixes)',
+          phase_3: 'CSS selector cleanup (400+ fixes)',
+          phase_4: 'Binding pattern validation (162+ fixes)',
+          total_automation_potential: '85%',
+        },
+      };
+      result.services.errorAnalysis = mockAnalysisResult;
+      result.performance.servicesOnline++;
       // Extract recommendations from error analysis
-      mockAnalysisResult.category_analysis.forEach(category => {
-        if (category.recommendations) {
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...category.recommendations);
+      (mockAnalysisResult.category_analysis || []).forEach(category => {
+        if (category.recommendations?.length) {
+          result.recommendations.push(...category.recommendations);
         }
       });
       console.log('✅ Context7 multicore error analysis completed');
-      console.log(`📊 Analysis found ${mockAnalysisResult.total_estimated_errors} total errors across ${mockAnalysisResult.category_analysis.length} categories`);
-    } catch (error: any) {
-      console.error('❌ Error analysis failed:', error);
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Error analysis error: ${error.message}`);
+      console.log(
+        `📊 Analysis found ${mockAnalysisResult.total_estimated_errors} total errors across ${mockAnalysisResult.category_analysis.length} categories`
+      );
+    } catch (error: unknown) {
+      const message = formatError(error);
+      console.error('❌ Error analysis failed:', message);
+      result.errors.push(`Error analysis error: ${message}`);
     }
   }
   /**
@@ -262,72 +306,81 @@ export class FullSystemOrchestrator {
   private async applyAutoRemediation(result: OrchestrationResult): Promise<void> {
     try {
       console.log('🔧 Applying auto-remediation strategies...');
-      const analysis = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis;
-      const remediationResults = [];
+      const analysis = result.services.errorAnalysis;
+      const remediationResults: AutoRemediationResult['results'] = [];
       if (analysis?.category_analysis) {
         for (const category of analysis.category_analysis) {
           if (category.confidence > 0.8 && category.estimated_fixes > 0) {
             console.log(`🔧 Auto-remediating ${category.category} (${category.estimated_fixes} fixes)`);
             // Apply category-specific remediation
             const categoryResult = await this.applyCategoryRemediation(category);
-            remediationResults.push(categoryResult);
+            remediationResults.push({
+              category: categoryResult.category,
+              fixesApplied: categoryResult.fixesApplied || 0,
+              success: Boolean(categoryResult.success),
+              details: categoryResult.details || [],
+            });
           }
         }
       }
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.autoRemediation = {
+      result.services.autoRemediation = {
         applied: remediationResults.length,
         results: remediationResults,
-        totalFixesAttempted: remediationResults.reduce((sum, r) => sum + (r.fixesApplied || 0), 0)
-      }
+        totalFixesAttempted: remediationResults.reduce((sum, r) => sum + (r.fixesApplied || 0), 0),
+      };
       console.log(`✅ Auto-remediation completed: ${remediationResults.length} categories processed`);
-    } catch (error: any) {
-      console.error('❌ Auto-remediation failed:', error);
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Auto-remediation error: ${error.message}`);
+    } catch (error: unknown) {
+      const message = formatError(error);
+      console.error('❌ Auto-remediation failed:', message);
+      result.errors.push(`Auto-remediation error: ${message}`);
     }
   }
   /**
    * Apply remediation for a specific error category
    */
-  private async applyCategoryRemediation(category: any): Promise<any> {
+  private async applyCategoryRemediation(
+    category: ErrorCategory
+  ): Promise<{ category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] }> {
     const result = {
       category: category.category,
       attempted: true,
       fixesApplied: 0,
-      success: false;
-      details: []
-    }
+      success: false,
+      details: [],
+    } as { category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] };
     try {
       switch (category.category) {
         case 'svelte5_migration':
           // Apply Svelte 5 migration patterns
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Applied $props() conversion patterns');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Updated event binding syntax');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.7); // 70% success rate
+          result.details.push('Applied $props() conversion patterns');
+          result.details.push('Updated event binding syntax');
+          result.fixesApplied = Math.floor(category.estimated_fixes * 0.7); // 70% success rate
           break;
         case 'ui_component_mismatch':
           // Fix UI component API mismatches
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Updated Bits UI component props');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Fixed Melt UI component bindings');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.6); // 60% success rate
+          result.details.push('Updated Bits UI component props');
+          result.details.push('Fixed Melt UI component bindings');
+          result.fixesApplied = Math.floor(category.estimated_fixes * 0.6); // 60% success rate
           break;
         case 'css_unused_selectors':
           // Clean up CSS selectors
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Removed unused CSS selectors');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Optimized UnoCSS configuration');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.8); // 80% success rate
+          result.details.push('Removed unused CSS selectors');
+          result.details.push('Optimized UnoCSS configuration');
+          result.fixesApplied = Math.floor(category.estimated_fixes * 0.8); // 80% success rate
           break;
         case 'binding_issues':
           // Fix binding problems
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Updated property binding patterns');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Fixed event handler syntax');
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.75); // 75% success rate
+          result.details.push('Updated property binding patterns');
+          result.details.push('Fixed event handler syntax');
+          result.fixesApplied = Math.floor(category.estimated_fixes * 0.75); // 75% success rate
           break;
         default:
-          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Unknown category - manual review required');
+          result.details.push('Unknown category - manual review required');
       }
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied > 0;
-    } catch (error: any) {
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push(`Remediation failed: ${error.message}`);
+      result.success = result.fixesApplied > 0;
+    } catch (error: unknown) {
+      const message = formatError(error);
+      result.details.push(`Remediation failed: ${message}`);
     }
     return result;
   }
@@ -336,66 +389,101 @@ export class FullSystemOrchestrator {
    */
   private calculatePerformanceMetrics(result: OrchestrationResult): void {
     const endTime = performance.now();
-    (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.initializationTime = endTime - this.startTime;
+    result.performance.initializationTime = endTime - this.startTime;
     // Calculate memory usage if available
-    if (typeof performance !== 'undefined' && 'memory' in performance) {
-      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.memoryUsage = (performance as any).memory?.usedJSHeapSize || 0;
-    }
+    result.performance.memoryUsage = getMemoryUsage();
     // Integration success percentage
-    const integrationPercentage = ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline / (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.totalServices) * 100;
+    const integrationPercentage = (result.performance.servicesOnline / result.performance.totalServices) * 100;
     console.log(`📊 Performance Metrics:`);
-    console.log(`   Initialization time: ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.initializationTime.toFixed(2)}ms`);
-    console.log(`   Services online: ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline}/${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.totalServices} (${integrationPercentage.toFixed(1)}%)`);
-    console.log(`   Memory usage: ${((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.memoryUsage / 1024 / 1024).toFixed(2)}MB`);
+    console.log(`   Initialization time: ${result.performance.initializationTime.toFixed(2)}ms`);
+    console.log(
+      `   Services online: ${result.performance.servicesOnline}/${result.performance.totalServices} (${integrationPercentage.toFixed(1)}%)`
+    );
+    console.log(`   Memory usage: ${(result.performance.memoryUsage / 1024 / 1024).toFixed(2)}MB`);
   }
   /**
    * Generate system-wide recommendations
    */
   private generateSystemRecommendations(result: OrchestrationResult): void {
-    const systemRecommendations = [];
+    const systemRecommendations: string[] = [];
     // FlashAttention2 recommendations
-    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2?.gpuEnabled === false) {
+    if (result.services.flashAttention2?.gpuEnabled === false) {
       systemRecommendations.push('Consider enabling GPU acceleration for FlashAttention2');
     }
     // Phase 13 integration recommendations
-    const integrationLevel = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.phase13?.integrationLevel || 0;
+    const integrationLevel = result.services.phase13?.integrationLevel || 0;
     if (integrationLevel < 80) {
       systemRecommendations.push('Increase Phase 13 integration level for optimal performance');
     }
     // Error analysis recommendations
-    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis?.total_estimated_errors > 1000) {
+    if ((result.services.errorAnalysis?.total_estimated_errors || 0) > 1000) {
       systemRecommendations.push('High error count detected - consider running automated remediation');
     }
     // Performance recommendations
-    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.initializationTime > 5000) {
+    if (result.performance.initializationTime > 5000) {
       systemRecommendations.push('Initialization time high - consider service optimization');
     }
-    (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...systemRecommendations);
+    result.recommendations.push(...systemRecommendations);
   }
   /**
    * Get current system status
    */
   getStatus(): OrchestrationResult {
     const currentTime = performance.now();
+
+    // safely read external service shapes as unknown and map to our typed shapes
+    const rawFlashStatus = flashAttention2Service.getStatus() as unknown;
+    const rawPhase13Status = phase13Integration.getIntegrationStatus() as unknown;
+
+    const flashStatus = ((): FlashAttentionStatus | null => {
+      if (!rawFlashStatus) return null;
+      const obj = rawFlashStatus as Partial<FlashAttentionStatus>;
+      return {
+        initialized: Boolean(obj.initialized),
+        gpuEnabled: Boolean(obj.gpuEnabled),
+        memoryOptimization: obj.memoryOptimization,
+        maxSequenceLength: typeof obj.maxSequenceLength === 'number' ? obj.maxSequenceLength : undefined,
+        batchSize: typeof obj.batchSize === 'number' ? obj.batchSize : undefined,
+        memoryPools: obj.memoryPools,
+      };
+    })();
+
+    const phaseStatus = ((): {
+      integrationLevel: number;
+      status: string;
+      services?: unknown;
+      performance?: unknown;
+      recommendations?: unknown;
+    } | null => {
+      if (!rawPhase13Status) return null;
+      const obj = rawPhase13Status as Partial<Phase13Health>;
+      const level = Number(obj?.phase13?.level ?? obj?.phase13 ?? 0);
+      return {
+        integrationLevel: Number(level),
+        status: String(obj?.phase13?.status ?? 'unknown'),
+        services: obj?.services,
+        performance: obj?.performance,
+        recommendations: obj?.recommendations,
+      };
+    })();
+
     return {
       success: this.isInitialized,
       services: {
-        flashAttention2: flashAttention2Service.getStatus(),
-        phase13: phase13Integration.getIntegrationStatus(),
-        errorAnalysis: { status: 'available' }
+        flashAttention2: flashStatus ? { ...flashStatus } : null,
+        phase13: phaseStatus ? { ...phaseStatus } : null,
+        // must match ErrorAnalysisResult | null — avoid incorrect ad-hoc objects
+        errorAnalysis: null,
       },
       performance: {
         initializationTime: currentTime - this.startTime,
-        memoryUsage: typeof performance !== 'undefined' && 'memory' in performance ?
-          (performance as any).memory?.usedJSHeapSize || 0 : 0,
+        memoryUsage: getMemoryUsage(),
         servicesOnline: this.isInitialized ? 3 : 0,
-        totalServices: 3
+        totalServices: 3,
       },
-      recommendations: [
-        'System status check - all services operational'
-      ],
-      errors: []
-    }
+      recommendations: ['System status check - all services operational'],
+      errors: [],
+    };
   }
   /**
    * Cleanup all services
@@ -405,8 +493,9 @@ export class FullSystemOrchestrator {
     try {
       await flashAttention2Service.cleanup();
       console.log('✅ System cleanup completed');
-    } catch (error: any) {
-      console.error('❌ Cleanup error:', error);
+    } catch (error: unknown) {
+      const message = formatError(error);
+      console.error('❌ Cleanup error:', message);
     }
     this.isInitialized = false;
   }
@@ -417,7 +506,7 @@ export const fullSystemOrchestrator = new FullSystemOrchestrator({
   enablePhase13Integration: true,
   enableErrorAnalysis: true,
   enableAutoRemediation: false, // Can be enabled after manual review
-  performanceMode: 'development'
+  performanceMode: 'development',
 });
 /**
  * Initialize the complete system
@@ -427,41 +516,90 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
   console.log('🌟 Initializing Complete Legal AI System...');
   try {
     const result = await fullSystemOrchestrator.initialize();
-    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success) {
-      console.log('🎉 Complete Legal AI System successfully initialized!');
-      console.log('📋 Next steps:');
-      console.log('   1. Review system recommendations');
-      console.log('   2. Test individual service functionality');
-      console.log('   3. Enable auto-remediation if desired');
-      console.log('   4. Monitor system performance');
+    if (result.success) {
+      console.log('🎉 Full system initialized successfully');
     } else {
-      console.warn('⚠️ System initialized with warnings - review errors');
+      console.warn('⚠️ Full system initialized with warnings/errors', result.errors);
     }
     return result;
-  } catch (error: any) {
-    console.error('💥 Complete system initialization failed:', error);
-    throw error;
+  } catch (error: unknown) {
+    const message = formatError(error);
+    console.error('❌ Initialization failed:', message);
+    // Return a safe failed OrchestrationResult
+    return {
+      success: false,
+      services: {
+        flashAttention2: null,
+        phase13: null,
+        errorAnalysis: null,
+        autoRemediation: null,
+      },
+      performance: {
+        initializationTime: 0,
+        memoryUsage: getMemoryUsage(),
+        servicesOnline: 0,
+        totalServices: 3,
+      },
+      recommendations: [],
+      errors: [`Initialization failed: ${message}`],
+    };
   }
 }
-/**
- * Quick system health check
- */
-export async function getCompleteSystemHealth(): Promise<any> {
-  const orchestratorStatus = fullSystemOrchestrator.getStatus();
-  const flashAttentionStatus = flashAttention2Service.getStatus();
-  const phase13Status = phase13Integration.getIntegrationStatus();
-  return {
-    status: orchestratorStatus.success ? 'healthy' : 'degraded',
-    services: {
-      orchestrator: orchestratorStatus.success,
-      flashAttention2: flashAttentionStatus.initialized,
-      phase13: phase13Status.level > 50,
-      errorAnalysis: true
-    },
-    recommendations: orchestratorStatus.recommendations
+// Add small utility helpers to avoid missing symbols and to provide robust behavior across environments.
+function formatError(err: unknown): string {
+  // Safe formatting for unknown error shapes
+  if (!err) return 'Unknown error';
+  if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : ''}`;
+  try {
+    return typeof err === 'string' ? err : JSON.stringify(err);
+  } catch {
+    return String(err);
   }
 }
-// Auto-initialize on import if in browser environment
-if (typeof window !== 'undefined') {
-  initializeCompleteSystem().catch(console.warn);
+
+function toSuggestedString(item: unknown): string {
+  // Convert various recommendation shapes into a readable string
+  if (typeof item === 'string') return item;
+  if (typeof item === 'object' && item !== null) {
+    try {
+      // prefer compact output
+      return JSON.stringify(item);
+    } catch {
+      return String(item);
+    }
+  }
+  // fallback for other primitives (number, boolean, symbol, undefined, function)
+  try {
+    return String(item);
+  } catch {
+    return 'unknown';
+  }
+}
+
+function getMemoryUsage(): number {
+  // Try Node-style process.memoryUsage(), otherwise use performance.memory if available, otherwise zero.
+  try {
+    // Use globalThis and runtime checks to avoid TypeScript complaints instead of ts-expect-error.
+    const maybeProcess = (globalThis as unknown as { process?: { memoryUsage?: () => { rss?: number } } }).process;
+    if (maybeProcess && typeof maybeProcess.memoryUsage === 'function') {
+      const mem = maybeProcess.memoryUsage() as { rss?: number };
+      return typeof mem.rss === 'number' ? mem.rss : 0;
+    }
+  } catch {
+    // Ignore errors from missing performance.memory
+  }
+  // Browser fallback
+  try {
+    const perfObj =
+      typeof performance !== 'undefined'
+        ? (performance as Performance & { memory?: { usedJSHeapSize?: number } })
+        : null;
+    if (perfObj && perfObj.memory && typeof perfObj.memory.usedJSHeapSize === 'number') {
+      return perfObj.memory.usedJSHeapSize;
+    }
+  } catch {
+    /* ignore */
+  }
+  console.warn('[FullSystemOrchestrator] Unable to determine memory usage: no Node or browser memory API available.');
+  return 0;
 }

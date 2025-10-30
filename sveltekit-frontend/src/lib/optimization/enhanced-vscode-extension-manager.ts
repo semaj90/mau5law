@@ -1,19 +1,15 @@
+import { EventEmitter } from "events";
 
-/**
- * Enhanced VS Code Extension Memory Manager
- * Async/Promise-based command execution with WebAssembly JSON optimization
- * Self-organizing memory pools and neural network-based resource management
- */
-// Import vscode only when available
-let vscode: any;
+// Import vscode only when available (safe require)
+let vscode: any = null;
 try {
+  // require may throw when not running inside VS Code extension host
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   vscode = require("vscode");
-} catch (e: any) {
-  // Running outside VS Code context
+} catch {
   vscode = null;
 }
-import { EventEmitter } from "events";
-}
+
 export interface CommandMetrics {
   commandId: string;
   executionTime: number;
@@ -27,7 +23,7 @@ export interface MemoryPrediction {
   confidence: number;
 }
 export type LODLevel = "auto" | "ultra" | "high" | "medium" | "low";
-}
+
 export interface ExtensionConfig {
   maxMemoryMB: number;
   enableWebAssembly: boolean;
@@ -53,7 +49,7 @@ export class NeuralMemoryManager extends EventEmitter {
     this.config = config;
   }
   predict(resourceType: string): MemoryPrediction {
-    return this.predictions.get(resourceType) || { nextAllocation: 1024, confidence: 0.5 }
+    return this.predictions.get(resourceType) || { nextAllocation: 1024, confidence: 0.5 };
   }
   allocate(size: number, type: string): boolean {
     // Simple allocation logic
@@ -81,14 +77,29 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
     this.config = config;
     this.memoryManager = new NeuralMemoryManager(config);
   }
-  async executeCommand<T>(commandId: string, ...args: any[]): Promise<AsyncCommandResult<T>, {
-    const startTime = performance.now();
+
+  // cross-environment now() helper (performance.now fallback)
+  private now(): number {
+    // globalThis.performance may be undefined in some Node environments
+    // use Date.now() as fallback (ms precision)
+    // prefer performance.now() when available for higher resolution
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (typeof globalThis !== "undefined" && globalThis.performance && typeof globalThis.performance.now === "function") {
+      // @ts-ignore
+      return globalThis.performance.now();
+    }
+    return Date.now();
+  }
+
+  async executeCommand<T>(commandId: string, ...args: any[]): Promise<AsyncCommandResult<T>> {
+    const startTime = this.now();
     try {
       if (!vscode) {
-        return { success: false, error: new Error("VS Code not available") }
+        return { success: false, error: new Error("VS Code not available") };
       }
       const result = await vscode.commands.executeCommand(commandId, ...args);
-      const endTime = performance.now();
+      const endTime = this.now();
       const metrics: CommandMetrics = {
         commandId,
         executionTime: endTime - startTime,
@@ -96,11 +107,11 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         timestamp: Date.now(),
         success: true,
         resourceType: "json",
-      }
+      };
       this.recordMetrics(commandId, metrics);
-      return { success: true, result, metrics }
+      return { success: true, result, metrics };
     } catch (error: any) {
-      const endTime = performance.now();
+      const endTime = this.now();
       const metrics: CommandMetrics = {
         commandId,
         executionTime: endTime - startTime,
@@ -108,9 +119,9 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         timestamp: Date.now(),
         success: false,
         resourceType: "json",
-      }
+      };
       this.recordMetrics(commandId, metrics);
-      return { success: false, error: error as Error, metrics }
+      return { success: false, error: error as Error, metrics };
     }
   }
   private recordMetrics(commandId: string, metrics: CommandMetrics): void {

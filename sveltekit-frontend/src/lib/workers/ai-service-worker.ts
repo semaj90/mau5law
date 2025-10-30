@@ -3,7 +3,8 @@
  * Handles parallel AI tasks across multiple LLM providers
  */
 /// <reference lib="webworker" />
-import type { LLMModel, AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
+import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
+import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist
 declare const self: DedicatedWorkerGlobalScope;
 
 export interface AIProviderConfig {
@@ -13,21 +14,49 @@ export interface AIProviderConfig {
   timeout: number;
   retries: number;
 }
+
+// More specific task types
+interface OllamaTask extends AITask {
+  model: string;
+  systemPrompt?: string;
+  temperature?: number;
+  topP?: number;
+  topK?: number;
+  repeatPenalty?: number;
+}
+
+interface AutoGenTask extends AITask {
+  agents?: string[];
+  maxRounds?: number;
+  context?: Record<string, unknown>;
+  timestamp: number;
+}
+
+interface CrewAITask extends AITask {
+  crewId?: string;
+  context?: Record<string, unknown>;
+  agents?: string[];
+  timestamp: number;
+}
+
+type QueuedAITask = AITask & { taskId: string };
+
 // UUID helper compatible with Web Workers without Node polyfills
 const getUUID = (): string => {
   try {
-    // @ts-ignore - randomUUID is available in secure contexts
-    const rnd = (self as any)?.crypto?.randomUUID?.();
+    const rnd = self.crypto.randomUUID();
     if (rnd) return rnd;
-  } catch (error) {}
+  } catch (error) {
+    // Fallback will be used
+  }
   // Fallback
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
+};
 
 class AIServiceWorker {
   private providers: Map<string, AIProviderConfig> = new Map();
   private activeRequests: Map<string, AbortController> = new Map();
-  private requestQueue: AITask[] = [];
+  private requestQueue: QueuedAITask[] = [];
   private maxConcurrentRequests = 3;
   private activeRequestCount = 0;
 
@@ -41,30 +70,30 @@ class AIServiceWorker {
     this.providers.set('ollama', {
       id: 'ollama',
       type: 'ollama',
-      endpoint: 'http://localhost:11434',
+      endpoint: getOllamaEndpoint(),
       timeout: 30000,
-      retries: 2
+      retries: 2,
     });
     this.providers.set('llamacpp', {
       id: 'llamacpp',
       type: 'llamacpp',
       endpoint: 'http://localhost:8000',
       timeout: 15000,
-      retries: 3
+      retries: 3,
     });
     this.providers.set('autogen', {
       id: 'autogen',
       type: 'autogen',
       endpoint: 'http://localhost:8001',
       timeout: 45000,
-      retries: 1
+      retries: 1,
     });
     this.providers.set('crewai', {
       id: 'crewai',
       type: 'crewai',
       endpoint: 'http://localhost:8002',
       timeout: 60000,
-      retries: 1
+      retries: 1,
     });
   }
 
@@ -88,7 +117,7 @@ class AIServiceWorker {
           default:
             console.warn('Unknown message type:', type);
         }
-      } catch (error: any) {
+      } catch (error) {
         this.sendError(taskId, error as Error);
       }
     });
@@ -97,11 +126,11 @@ class AIServiceWorker {
   private async processAITask(task: AITask, taskId: string) {
     // Add to queue if at max capacity
     if (this.activeRequestCount >= this.maxConcurrentRequests) {
-      this.requestQueue.push({ ...task, taskId } as AITask);
+      this.requestQueue.push({ ...task, taskId });
       this.sendMessage({
         type: 'TASK_QUEUED',
         taskId,
-        payload: { position: this.requestQueue.length }
+        payload: { position: this.requestQueue.length },
       });
       return;
     }
@@ -114,23 +143,24 @@ class AIServiceWorker {
       this.sendMessage({
         type: 'TASK_STARTED',
         taskId,
-        payload: { providerId: task.providerId }
+        payload: { providerId: task.providerId },
       });
       const result = await this.executeAITask(task, abortController.signal);
       this.sendMessage({
         type: 'TASK_COMPLETED',
         taskId,
-        payload: result
+        payload: result,
       });
-    } catch (error: any) {
-      if (error && (error.name === 'AbortError' || error.message === 'timeout')) {
+    } catch (error) {
+      const err = error as Error;
+      if (err && (err.name === 'AbortError' || err.message === 'timeout')) {
         this.sendMessage({
           type: 'TASK_CANCELLED',
           taskId,
-          payload: null
+          payload: null,
         });
       } else {
-        this.sendError(taskId, error as Error);
+        this.sendError(taskId, err);
       }
     } finally {
       this.activeRequests.delete(taskId);
@@ -151,7 +181,7 @@ class AIServiceWorker {
       try {
         const response = await this.callProvider(provider, task, signal);
         return response;
-      } catch (error: any) {
+      } catch (error) {
         lastError = error as Error;
         if (signal.aborted || attempt === provider.retries) {
           break;
@@ -163,11 +193,7 @@ class AIServiceWorker {
     throw lastError || new Error('Unknown error during AI task execution');
   }
 
-  private async callProvider(
-    provider: AIProviderConfig,
-    task: AITask,
-    signal: AbortSignal
-  ): Promise<AIResponse> {
+  private async callProvider(provider: AIProviderConfig, task: AITask, signal: AbortSignal): Promise<AIResponse> {
     const timeoutController = new AbortController();
     const combinedSignal = this.mergeAbortSignals(signal, timeoutController.signal);
     const timeoutId = setTimeout(() => {
@@ -193,27 +219,24 @@ class AIServiceWorker {
     }
   }
 
-  private async callOllama(
-    provider: AIProviderConfig,
-    task: AITask,
-    signal: AbortSignal
-  ): Promise<AIResponse> {
+  private async callOllama(provider: AIProviderConfig, task: AITask, signal: AbortSignal): Promise<AIResponse> {
+    const ollamaTask = task as OllamaTask;
     const response = await fetch(`${provider.endpoint}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: (task as any)?.model ?? 'unknown',
+        model: ollamaTask.model ?? 'unknown',
         prompt: task.prompt,
-        system: (task as any)?.systemPrompt ?? undefined,
+        system: ollamaTask.systemPrompt,
         stream: false,
         options: {
-          temperature: (task as any)?.temperature ?? 0.1,
-          top_p: (task as any)?.topP ?? 0.9,
-          top_k: (task as any)?.topK ?? 40,
-          repeat_penalty: (task as any)?.repeatPenalty ?? 1.05
-        }
+          temperature: ollamaTask.temperature ?? 0.1,
+          top_p: ollamaTask.topP ?? 0.9,
+          top_k: ollamaTask.topK ?? 40,
+          repeat_penalty: ollamaTask.repeatPenalty ?? 1.05,
+        },
       }),
-      signal
+      signal,
     });
 
     if (!response.ok) {
@@ -224,32 +247,29 @@ class AIServiceWorker {
       id: getUUID(),
       content: data.response ?? data.output ?? '',
       providerId: provider.id,
-      model: (task as any)?.model ?? 'unknown',
+      model: ollamaTask.model ?? 'unknown',
       tokensUsed: data.eval_count || 0,
       responseTime: data.total_duration ? Math.round(data.total_duration / 1000000) : 0,
       metadata: {
         evalCount: data.eval_count,
         evalDuration: data.eval_duration,
-        loadDuration: data.load_duration
-      }
+        loadDuration: data.load_duration,
+      },
     };
   }
 
-  private async callAutoGen(
-    provider: AIProviderConfig,
-    task: AITask,
-    signal: AbortSignal
-  ): Promise<AIResponse> {
+  private async callAutoGen(provider: AIProviderConfig, task: AITask, signal: AbortSignal): Promise<AIResponse> {
+    const autoGenTask = task as AutoGenTask;
     const response = await fetch(`${provider.endpoint}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        agents: (task as any).agents ?? ['assistant'],
+        agents: autoGenTask.agents ?? ['assistant'],
         message: task.prompt,
-        max_rounds: (task as any).maxRounds ?? 5,
-        context: (task as any).context ?? {}
+        max_rounds: autoGenTask.maxRounds ?? 5,
+        context: autoGenTask.context ?? {},
       }),
-      signal
+      signal,
     });
 
     if (!response.ok) {
@@ -262,30 +282,27 @@ class AIServiceWorker {
       providerId: provider.id,
       model: 'autogen-agents',
       tokensUsed: data.total_tokens || 0,
-      responseTime: Date.now() - ((task as any).timestamp || Date.now()),
+      responseTime: Date.now() - (autoGenTask.timestamp || Date.now()),
       metadata: {
         rounds: data.rounds,
         agents: data.agent_responses,
-        conversationId: data.conversation_id
-      }
+        conversationId: data.conversation_id,
+      },
     };
   }
 
-  private async callCrewAI(
-    provider: AIProviderConfig,
-    task: AITask,
-    signal: AbortSignal
-  ): Promise<AIResponse> {
+  private async callCrewAI(provider: AIProviderConfig, task: AITask, signal: AbortSignal): Promise<AIResponse> {
+    const crewAITask = task as CrewAITask;
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        crew_id: (task as any).crewId ?? 'legal-analysis-crew',
+        crew_id: crewAITask.crewId ?? 'legal-analysis-crew',
         task: task.prompt,
-        context: (task as any).context ?? {},
-        agents: (task as any).agents ?? ['researcher', 'analyst', 'writer']
+        context: crewAITask.context ?? {},
+        agents: crewAITask.agents ?? ['researcher', 'analyst', 'writer'],
       }),
-      signal
+      signal,
     });
 
     if (!response.ok) {
@@ -298,20 +315,20 @@ class AIServiceWorker {
       providerId: provider.id,
       model: 'crewai-agents',
       tokensUsed: data.total_tokens || 0,
-      responseTime: Date.now() - ((task as any).timestamp || Date.now()),
+      responseTime: Date.now() - (crewAITask.timestamp || Date.now()),
       metadata: {
         taskId: data.task_id,
         agents: data.agent_outputs,
-        executionTime: data.execution_time
-      }
+        executionTime: data.execution_time,
+      },
     };
   }
 
   private processQueue() {
     if (this.requestQueue.length > 0 && this.activeRequestCount < this.maxConcurrentRequests) {
       const task = this.requestQueue.shift();
-      if (task && (task as any).taskId) {
-        this.processAITask(task, (task as any).taskId);
+      if (task && task.taskId) {
+        this.processAITask(task, task.taskId);
       }
     }
   }
@@ -323,7 +340,7 @@ class AIServiceWorker {
       this.activeRequests.delete(taskId);
     }
     // Remove from queue if present
-    this.requestQueue = this.requestQueue.filter((t) => (t as any).taskId !== taskId);
+    this.requestQueue = this.requestQueue.filter(t => t.taskId !== taskId);
   }
 
   private updateProviderConfig(config: Partial<AIProviderConfig>) {
@@ -341,8 +358,8 @@ class AIServiceWorker {
         activeRequests: this.activeRequestCount,
         queueLength: this.requestQueue.length,
         providers: Array.from(this.providers.values()),
-        maxConcurrent: this.maxConcurrentRequests
-      }
+        maxConcurrent: this.maxConcurrentRequests,
+      },
     });
   }
 
@@ -357,13 +374,33 @@ class AIServiceWorker {
       payload: {
         name: error.name,
         message: error.message,
-        stack: error.stack
-      }
+        stack: error.stack,
+      },
     });
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  // Merge two AbortSignals into a
+  private mergeAbortSignals(...signals: AbortSignal[]): AbortSignal {
+    const controller = new AbortController();
+    const onAbort = () => {
+      controller.abort();
+      for (const signal of signals) {
+        signal.removeEventListener('abort', onAbort);
+      }
+    };
+
+    for (const signal of signals) {
+      if (signal.aborted) {
+        onAbort();
+        break;
+      }
+      signal.addEventListener('abort', onAbort);
+    }
+
+    return controller.signal;
+  }
+}
+new AIServiceWorker();

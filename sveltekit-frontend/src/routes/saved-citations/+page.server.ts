@@ -5,8 +5,7 @@ import { citations } from '$lib/server/db/schema';
 import { CONFIG } from '$lib/config/env.server';
 import { getUserId } from '$lib/server/auth/utils';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { Buffer } from 'buffer';
-import type { InferSelectModel } from 'drizzle-orm/pg-core'; // Import InferSelectModel
+// Use global Buffer (Node.js >= v18) for compatibility with SvelteKit server environments
 
 /** Typed structure for the Citation record */
 type Citation = {
@@ -23,7 +22,7 @@ type Citation = {
 };
 
 // Infer the select type for the citations table
-type CitationSelect = InferSelectModel<typeof citations>;
+type CitationSelect = typeof citations.$inferSelect;
 
 /**
  * 🧠 Server Load: /saved-citations

@@ -38,13 +38,9 @@ const memoryStore = new Map<
     updatedAt: string;
   }
 >();
-type AutoTagDocument = (
-  documentId: string,
-  content: string,
-  documentType: string
-) => Promise<{
+type AutoTagDocument = (params: { documentId: string; content: string; documentType: string }) => Promise<{
   tags?: string[];
-  entities?: string[];
+  entities?: (string | { text?: string })[];
   summary?: string;
   confidence?: number;
 }>;
@@ -79,14 +75,14 @@ export const POST: RequestHandler = async ({ request }) => {
     // Try optional real service if available
     try {
       const mod: OptionalAutoTaggingModule | null = await import('$lib/services/aiAutoTagging')
-        .then(m => m as OptionalAutoTaggingModule)
+        .then(m => m as unknown as OptionalAutoTaggingModule)
         .catch(() => null);
       const autoTag = mod?.default?.autoTagDocument;
       if (autoTag) {
-        const r = await autoTag(documentId, content, documentType);
+        const r = await autoTag({ documentId, content, documentType });
         result = {
           tags: r?.tags ?? [],
-          entities: r?.entities ?? [],
+          entities: r?.entities?.map(e => (typeof e === 'string' ? e : (e?.text ?? String(e)))) ?? [],
           summary: r?.summary ?? '',
           confidence: r?.confidence ?? 0.7,
         };

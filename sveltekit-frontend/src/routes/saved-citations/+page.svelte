@@ -18,9 +18,9 @@ import '$lib/styles/bits-ui.css';
 
 <script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
-  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
   import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
   import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
@@ -32,18 +32,32 @@ import '$lib/styles/bits-ui.css';
   import DropdownMenuRoot from '$lib/components/ui/dropdown-menu/DropdownMenuRoot.svelte';
   import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/DropdownMenuSeparator.svelte';
   import DropdownMenuTrigger from '$lib/components/ui/dropdown-menu/DropdownMenuTrigger.svelte';
-  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import Copy from 'lucide-svelte';
-  import Edit from 'lucide-svelte';
-  import MoreVertical from 'lucide-svelte';
-  import Plus from 'lucide-svelte';
-  import Search from 'lucide-svelte';
-  import Star from 'lucide-svelte';
-  import Tag from 'lucide-svelte';
-  import Trash2 from 'lucide-svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  // NOTE: lucide-svelte named exports caused type/import issues in this project;
+  // use a small inline icon map (emoji placeholders) to avoid breaking the build.
+  // import Copy from 'lucide-svelte';
+  // import Edit from 'lucide-svelte';
+  // import MoreVertical from 'lucide-svelte';
+  // import Plus from 'lucide-svelte';
+  // import Search from 'lucide-svelte';
+  // import Star from 'lucide-svelte';
+  // import Tag from 'lucide-svelte';
+  // import Trash2 from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { liveReports, connectReportsStream } from '$lib/stores/reports-live';
   import type { Citation } from '$lib/types/api';
+
+  // Define emoji icons
+  const ICON = {
+    copy: '📋',
+    edit: '✏️',
+    moreVertical: '⋮',
+    plus: '➕',
+    search: '🔍',
+    star: '⭐',
+    tag: '🏷️',
+    trash2: '🗑️',
+  };
 
   // --- Local types used in this component ---
   type CitationForm = {
@@ -51,7 +65,7 @@ import '$lib/styles/bits-ui.css';
     content: string;
     source: string;
     category: string;
-    tags: string | string[];
+    tags: string; // Changed from string | string[] to string
     notes?: string;
   };
 
@@ -75,6 +89,9 @@ import '$lib/styles/bits-ui.css';
 
   // collision boundary for dropdowns (set on client)
   let menuCollisionBoundary = $state<Element | undefined>(undefined);
+
+  // New state for editing tags input
+  let editingTagsInput = $state<string>('');
 
   // Initialize with sample data (optional)
   $effect(() => {
@@ -201,21 +218,17 @@ import '$lib/styles/bits-ui.css';
     // clone for safe editing
     editingCitation = { ...citation } as CitationWithMeta;
     // make tags a comma string for edit UI
-    editingCitation.tags = Array.isArray(citation.tags) ? citation.tags.join(', ') : (citation.tags as string | undefined) ?? '';
+    editingTagsInput = Array.isArray(citation.tags) ? citation.tags.join(', ') : (citation.tags as string | undefined) ?? '';
   }
 
   async function updateCitation() {
     try {
       if (!editingCitation) return;
-      const tagsArray =
-        typeof editingCitation.tags === 'string'
-          ? (editingCitation.tags as string)
+      // Use editingTagsInput for parsing
+      const tagsArray = editingTagsInput
               .split(',')
-              .map((t: string) => t.trim()) // <-- added explicit type
-              .filter((t: string) => t.length > 0)
-          : Array.isArray(editingCitation.tags)
-          ? editingCitation.tags
-          : [];
+              .map((t: string) => t.trim())
+              .filter((t: string) => t.length > 0);
 
       const updated = { ...editingCitation, tags: tagsArray, updatedAt: new Date() } as any;
       const index = savedCitations.findIndex((c) => c.id === updated.id);
@@ -224,6 +237,7 @@ import '$lib/styles/bits-ui.css';
         savedCitations = [...savedCitations];
       }
       editingCitation = null;
+      editingTagsInput = ''; // Clear the input state after update
     } catch (error) {
       console.error('Error updating citation', error);
     }
@@ -301,7 +315,7 @@ import '$lib/styles/bits-ui.css';
   <!-- Toolbar -->
   <div class="flex items-center gap-4"> <!-- Use flex and gap for horizontal spacing -->
     <div class="relative flex-1"> <!-- Use relative and flex-1 for search input -->
-      <Search class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      <span class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400">{ICON.search}</span>
       <Input
         type="text"
         placeholder="Search citations..."
@@ -314,16 +328,15 @@ import '$lib/styles/bits-ui.css';
       {/each}
     </select>
     <Button
-      class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
+      class="nes-citation-control n64-enhanced lod-optimized retro-add-btn"
       on:click={() => (showAddDialog = true)}
       aria-label="Open dialog to add a new legal citation"
       aria-describedby="add-citation-help"
       role="button"
       data-nes-theme="citation-primary"
-      data-enhanced-bits="true"
       data-operation="add-citation"
     >
-      <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
+      <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
       Add Citation
     </Button>
     <div id="add-citation-help" class="sr-only">
@@ -339,17 +352,16 @@ import '$lib/styles/bits-ui.css';
           <DropdownMenuRoot>
             <DropdownMenuTrigger>
               <Button
-                class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-menu-btn"
+                class="nes-citation-control n64-enhanced lod-optimized retro-menu-btn"
                 variant="ghost"
                 size="sm"
                 aria-label="Open citation actions menu"
                 aria-describedby="citation-menu-help"
                 role="button"
                 data-nes-theme="citation-menu"
-                data-enhanced-bits="true"
                 data-citation-id={citation.id}
               >
-                <MoreVertical class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon" />
+                <span class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon">{ICON.moreVertical}</span>
               </Button>
               <div id="citation-menu-help" class="sr-only">
                 Access citation actions: favorite, copy, edit, or delete
@@ -360,17 +372,17 @@ import '$lib/styles/bits-ui.css';
             <DropdownMenuContent collisionBoundary={menuCollisionBoundary as Element}>
               <!-- Use component props onclick/onselect expected by the generated typings -->
               <DropdownMenuItem href="#" onclick={() => toggleFavorite(citation)} onselect={() => toggleFavorite(citation)}>
-                <Star class="w-4 h-4 mr-2" />
+                <span class="w-4 h-4 mr-2">{ICON.star}</span>
                 {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               </DropdownMenuItem>
 
               <DropdownMenuItem href="#" onclick={() => copyCitation(citation)} onselect={() => copyCitation(citation)}>
-                <Copy class="w-4 h-4 mr-2" />
+                <span class="w-4 h-4 mr-2">{ICON.copy}</span>
                 Copy citation
               </DropdownMenuItem>
 
               <DropdownMenuItem href="#" onclick={() => editCitation(citation)} onselect={() => editCitation(citation)}>
-                <Edit class="w-4 h-4 mr-2" />
+                <span class="w-4 h-4 mr-2">{ICON.edit}</span>
                 Edit
               </DropdownMenuItem>
 
@@ -378,7 +390,7 @@ import '$lib/styles/bits-ui.css';
 
               <!-- provide className (typing expects className) and onclick/onselect -->
               <DropdownMenuItem href="#" className="text-destructive" onclick={() => deleteCitation(citation.id)} onselect={() => deleteCitation(citation.id)}>
-                <Trash2 class="w-4 h-4 mr-2" />
+                <span class="w-4 h-4 mr-2">{ICON.trash2}</span>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -390,7 +402,7 @@ import '$lib/styles/bits-ui.css';
           {#if citation.isFavorite}
             <!-- Badge replaced with span -->
             <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
-              <Star class="w-3 h-3 mr-1" />
+              <span class="w-3 h-3 mr-1">{ICON.star}</span>
               Favorite
             </span>
           {/if}
@@ -408,7 +420,7 @@ import '$lib/styles/bits-ui.css';
             <div class="flex flex-wrap gap-2"> <!-- Use flex-wrap and gap for tags -->
               {#each citation.tags as tag}
                 <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
-                  <Tag class="w-3 h-3 mr-1" />
+                  <span class="w-3 h-3 mr-1">{ICON.tag}</span>
                   {tag}
                 </span>
               {/each}
@@ -433,7 +445,7 @@ import '$lib/styles/bits-ui.css';
           <h3 class="text-xl font-semibold">No citations found</h3>
           <p class="text-gray-600">No citations match your current search criteria.</p>
           <Button
-            class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
+            class="nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
             variant="secondary"
             on:click={() => {
               searchQuery = '';
@@ -443,7 +455,6 @@ import '$lib/styles/bits-ui.css';
             aria-describedby="clear-filters-help"
             role="button"
             data-nes-theme="citation-secondary"
-            data-enhanced-bits="true"
             data-operation="clear-filters"
           >
             Clear filters
@@ -458,16 +469,15 @@ import '$lib/styles/bits-ui.css';
             new ones.
           </p>
           <Button
-            class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
+            class="nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
             on:click={() => (showAddDialog = true)}
             aria-label="Create your first legal citation"
             aria-describedby="first-citation-help"
             role="button"
             data-nes-theme="citation-primary"
-            data-enhanced-bits="true"
             data-operation="add-first-citation"
           >
-            <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
+            <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
             Add your first citation
           </Button>
           <div id="first-citation-help" class="sr-only">
@@ -533,17 +543,16 @@ import '$lib/styles/bits-ui.css';
         </div>
         <DialogFooter>
           <Button
-            class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
+            class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
             variant="secondary"
             on:click={() => (showAddDialog = false)}
             aria-label="Cancel citation creation and close dialog"
             role="button"
             data-nes-theme="dialog-secondary"
-            data-enhanced-bits="true"
           >Cancel</Button>
 
           <Button
-            class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
+            class="nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
             on:click={() => saveCitation()}
             disabled={!newCitation.title || !newCitation.content}
             aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
@@ -551,7 +560,6 @@ import '$lib/styles/bits-ui.css';
             role="button"
             tabindex={!newCitation.title || !newCitation.content ? -1 : 0}
             data-nes-theme="dialog-primary"
-            data-enhanced-bits="true"
             data-operation="save-citation"
           >
             Save Citation
@@ -602,7 +610,7 @@ import '$lib/styles/bits-ui.css';
               </div>
               <div class="grid gap-2">
                 <label for="edit-tags" class="text-sm font-medium">Tags</label>
-                <Input id="edit-tags" bind:value={editingCitation.tags} />
+                <Input id="edit-tags" bind:value={editingTagsInput} />
               </div>
             </div>
             <div class="grid gap-2">
@@ -617,23 +625,21 @@ import '$lib/styles/bits-ui.css';
           </div>
           <DialogFooter>
             <Button
-              class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
+              class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
               variant="secondary"
               on:click={() => (editingCitation = null)}
               aria-label="Cancel editing and close dialog"
               role="button"
               data-nes-theme="dialog-secondary"
-              data-enhanced-bits="true"
             >Cancel</Button>
 
             <Button
-              class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
+              class="nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
               on:click={() => updateCitation()}
               aria-label="Save changes to citation"
               aria-describedby="update-citation-help"
               role="button"
               data-nes-theme="dialog-primary"
-              data-enhanced-bits="true"
               data-operation="update-citation"
             >Update Citation</Button>
 

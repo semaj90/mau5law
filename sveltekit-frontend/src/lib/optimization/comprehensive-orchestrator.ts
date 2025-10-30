@@ -1,4 +1,3 @@
-
 /**
  * Comprehensive Memory Optimization Integration System - DISABLED
  * This file has been temporarily disabled due to syntax errors.
@@ -7,13 +6,13 @@
 // File disabled to prevent TypeScript compilation errors
 // TODO: Restore when optimization features are stabilized
 export const comprehensiveOrchestrator = {
-  disabled: true;
+  disabled: true,
   initialize: () => console.log('Comprehensive orchestrator disabled'),
   getSystemStatus: () => ({ status: 'disabled' })
 }
 // Stub exports for Context7 integration compatibility
 export const copilotOrchestrator = {
-  disabled: true;
+  disabled: true,
   analyze: () => Promise.resolve({ status: 'disabled' })
 }
 export const mcpMemoryReadGraph = async () => ({
@@ -27,5 +26,5 @@ export const semanticSearch = async () => ({
 });
 export const generateMCPPrompt = () => 'MCP tools disabled';
 export const validateMCPRequest = () => ({ valid: false, disabled: true });
-export const commonMCPQueries = [];
+export const commonMCPQueries: any[] = [];
 export default comprehensiveOrchestrator;

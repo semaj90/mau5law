@@ -81,14 +81,14 @@ export interface GraphPathNode {
 }
 export class QuicNeo4jRecommendationEngine {
 	private tensorClient: QuicTensorClient;
-	private readonly QUIC_SERVER = 'https://localhost:4433'
-	private readonly HTTP2_FALLBACK = 'http://localhost:8444'
+	private readonly QUIC_SERVER = 'https://localhost:4433';
+	private readonly HTTP2_FALLBACK = 'http://localhost:8444';
 	private isConnected: boolean = false;
 	private connectionRetries: number = 0;
 	private maxRetries: number = 3;
 	constructor() {
 		// Initialize with running QUIC tensor server
-		this.tensorClient = new QuicTensorClient('https://localhost:4433')
+		this.tensorClient = new QuicTensorClient('https://localhost:4433');
 		this.initializeConnection();
 	}
 	private async initializeConnection(): Promise<void> {
@@ -113,7 +113,7 @@ export class QuicNeo4jRecommendationEngine {
 		const startTime = performance.now();
 		try {
 			// Ensure connection
-			if (!this.isConnected && this.connectionRetries < this.maxRetries) {>
+			if (!this.isConnected && this.connectionRetries < this.maxRetries) {
 				await this.initializeConnection();
 			}
 			// Create tensor metadata for legal query processing
@@ -131,24 +131,24 @@ export class QuicNeo4jRecommendationEngine {
 					useGPU: request.useGPU ?? true,
 					useTensorCores: request.useTensorCores ?? true
 				}
-			}
+			};
 			// Execute QUIC tensor operation for ultra-fast processing
 			const tensorResult = await this.executeQuicRecommendationQuery(
 				request.query,
 				tensorMetadata
-		),	);
+			);
 			const processingTime = performance.now() - startTime;
 			// Transform tensor results to legal recommendations
 			const recommendations = await this.transformToLegalRecommendations(
 				tensorResult,
 				request
-		),	);
+			);
 			return {
 				success: true,
 				recommendations,
 				processingTime,
 				protocol: this.isConnected ? 'QUIC' : 'HTTP/2',
-				cacheHit: processingTime < 20, // Assume cache hit if under 20ms>
+				cacheHit: processingTime < 20, // Assume cache hit if under 20ms
 				tensorMetrics: {
 					tensorId: tensorResult.tensor_id || 'unknown',
 					gpuProcessingTime: tensorResult.quic_processing_time_ms || processingTime,
@@ -161,24 +161,24 @@ export class QuicNeo4jRecommendationEngine {
 					neo4jQueryTime: tensorResult.quic_processing_time_ms || processingTime * 0.6,
 					simdOptimized: true
 				}
-			}
+			};
 		} catch (error) {
 			console.error('❌ QUIC recommendation failed:', error);
 			// Fallback to HTTP/2 or HTTP/1.1
 			return await this.fallbackRecommendations(request, startTime);
 		}
 	}
-	private async executeQuicRecommendationQuery()
-		query: string;
-		metadata: TensorMetadata;
-	): Promise<any>, {
+	private async executeQuicRecommendationQuery(
+		query: string,
+		metadata: TensorMetadata
+	): Promise<any> {
 		// Create recommendation tensor payload
 		const payload = {
 			query,
 			metadata,
 			operation: 'legal_recommendation',
 			timestamp: Date.now()
-		}
+		};
 		try {
 			// Send to QUIC tensor server for processing
 			const response = await fetch(`${this.QUIC_SERVER}/api/legal-recommendations`, {
@@ -190,133 +190,185 @@ export class QuicNeo4jRecommendationEngine {
 				},
 				body: JSON.stringify(payload)
 			});
-			if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-				throw new Error(`QUIC server error: ${(response as { ok?: any; status?: any); json?: any }).status}`);
+			if (!response.ok) {
+				throw new Error(`QUIC server error: ${response.status}`);
 			}
-			return await (response as { ok?: any; status?: any; json?: any }).json();
+			return await response.json();
 		} catch (error) {
 			// Try direct tensor operation if server endpoint not available
 			console.warn('Direct endpoint failed, trying tensor operations...');
 			// Simulate tensor operation with existing client
 			return {
-				tensor_id: `,legal_${Date.now()}`,
+				tensor_id: `legal_${Date.now()}`,
 				quic_processing_time_ms: Math.random() * 10 + 5, // 5-15ms simulation
 				results: this.generateMockRecommendations(query, metadata),
 				success: true
-			}
+			};
 		}
 	}
-	private async transformToLegalRecommendations()
-		tensorResult: any
-		request: QuicRecommendationRequest;
+	private async transformToLegalRecommendations(
+		tensorResult: any,
+		request: QuicRecommendationRequest
 	): Promise<LegalRecommendation[]> {
 		const results = tensorResult.results || [];
-		return results.map((result: any, index: number): LegalRecommendation => ({,
-			id: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).id || `,rec_${index}`,
-			title: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).title || `,Legal Recommendation ${index + 1}`,
-			practiceArea: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).practice_area || request.practiceArea || 'general',
-			jurisdiction: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).jurisdiction || request.jurisdiction || 'federal',
-			relevanceScore: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).relevance_score || Math.random() * 0.3 + 0.7,
-			confidence: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).confidence || Math.random() * 0.2 + 0.8,
-			summary: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).summary || `,Summary for, ${(result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).title || 'legal matte,r'}`,
-			citations: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).citations?.map((cite: any) => ({,
-				caseId: cite.case_id || cite.id,
-				citation: cite.citation || cite.title,
-				relevance: cite.relevance || 0.8,
-				authority: cite.authority || 'persuasive'
-			})) || [],
-			relatedCases: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).related_cases?.map((relCase: any) => ({,
-				caseId: relCase.case_id || relCase.id,
-				title: relCase.title || 'Related Case',
-				relationshipType: relCase.relationship_type || 'similar',
-				weight: relCase.weight || 0.7,
-				jurisdiction: relCase.jurisdiction || 'federal',
-				year: relCase.year || new Date().getFullYear()
-			})) || [],
-			riskAssessment: {
-				litigationRisk: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).risk?.litigation || Math.random() * 0.3 + 0.2,
-				precedentStrength: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).risk?.precedent || Math.random() * 0.2 + 0.7,
-				jurisdictionalWeight: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).risk?.jurisdiction || Math.random() * 0.2 + 0.6,
-				timelineRelevance: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).risk?.timeline || Math.random() * 0.3 + 0.5,
-				outcomeConfidence: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).risk?.outcome || Math.random() * 0.2 + 0.75
-			},
-			graphPath: (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).graph_path?.map((node: any) => ({,
-				nodeId: node.node_id || node.id,
-				nodeType: node.type || 'case',
-				title: node.title || 'Graph Node',
-				relationship: node.relationship || 'related',
-				weight: node.weight || 0.5,
-				distance: node.distance || Math.floor(Math.random() * 5) + 1
-			})) || []
-		});
+		return results.map((result: any, index: number): LegalRecommendation => {
+            // Prioritize fields from the Go server if available (title, precedent, weight)
+            const title = result.title || `Legal Recommendation ${index + 1}`;
+            const precedent = result.precedent; // From Go server's Neo4j query
+            const weight = result.weight;     // From Go server's Neo4j query
+
+            // Use existing logic for other fields, falling back to Go server data or defaults
+            const practiceArea = result.practice_area || request.practiceArea || 'general';
+            const jurisdiction = result.jurisdiction || request.jurisdiction || 'federal';
+            const relevanceScore = result.relevance_score || weight || (Math.random() * 0.3 + 0.7);
+            const confidence = result.confidence || weight || (Math.random() * 0.2 + 0.8);
+            const summary = result.summary || (precedent ? `Summary for ${title} citing ${precedent}` : `Summary for ${title || 'legal matter'}`);
+
+            const citations: CitationInfo[] = result.citations?.map((cite: any) => ({
+                caseId: cite.case_id || cite.id,
+                citation: cite.citation || cite.title,
+                relevance: cite.relevance || 0.8,
+                authority: cite.authority || 'persuasive'
+            })) || (precedent ? [{ // If precedent exists from Go server, create a basic citation
+                caseId: `go_cite_${index}`,
+                citation: precedent,
+                relevance: weight || 0.8,
+                authority: 'persuasive'
+            }] : []);
+
+            const relatedCases: RelatedCase[] = result.related_cases?.map((relCase: any) => ({
+                caseId: relCase.case_id || relCase.id,
+                title: relCase.title || 'Related Case',
+                relationshipType: relCase.relationship_type || 'similar',
+                weight: relCase.weight || 0.7,
+                jurisdiction: relCase.jurisdiction || 'federal',
+                year: relCase.year || new Date().getFullYear()
+            })) || (precedent ? [{ // If precedent exists, create a basic related case
+                caseId: `go_related_${index}`,
+                title: precedent, // Using precedent as related case title for now
+                relationshipType: 'precedent',
+                weight: weight || 0.7,
+                jurisdiction: jurisdiction,
+                year: new Date().getFullYear()
+            }] : []);
+
+            const riskAssessment = result.riskAssessment || {
+                litigationRisk: result.risk?.litigation || Math.random() * 0.3 + 0.2,
+                precedentStrength: result.risk?.precedent || Math.random() * 0.2 + 0.7,
+                jurisdictionalWeight: result.risk?.jurisdiction || Math.random() * 0.2 + 0.6,
+                timelineRelevance: result.risk?.timeline || Math.random() * 0.3 + 0.5,
+                outcomeConfidence: result.risk?.outcome || Math.random() * 0.2 + 0.75
+            };
+
+            const graphPath: GraphPathNode[] = result.graph_path?.map((node: any) => ({
+                nodeId: node.node_id || node.id,
+                nodeType: node.type || 'case',
+                title: node.title || 'Graph Node',
+                relationship: node.relationship || 'related',
+                weight: node.weight || 0.5,
+                distance: node.distance || Math.floor(Math.random() * 5) + 1
+            })) || [];
+
+            return {
+                id: result.id || `rec_${index}`,
+                title,
+                practiceArea,
+                jurisdiction,
+                relevanceScore,
+                confidence,
+                summary,
+                citations,
+                relatedCases,
+                riskAssessment,
+                graphPath
+            };
+        });
 	}
 	private generateMockRecommendations(query: string, metadata: TensorMetadata): any[] {
 		// Generate realistic mock data based on query and metadata
-		const recommendations = [];
+		const recommendations: LegalRecommendation[] = [];
 		const count = Math.min(metadata.context.maxResults || 5, 10);
-		for (let i = 0; i < count; i++) {>;
+		for (let i = 0; i < count; i++) {
 			recommendations.push({
-				id: `,legal_${Date.now()}_${i}`,
-				title: `,${metadata.practice_area} -, ${query} Recommendation ${i + 1}`,
+				id: `legal_${Date.now()}_${i}`,
+				title: `${metadata.practice_area} - ${query} Recommendation ${i + 1}`,
 				practice_area: metadata.practice_area,
 				jurisdiction: metadata.context.jurisdiction || 'federal',
-				relevance_score: Math.random() * 0.3 + 0.7,
+				relevanceScore: Math.random() * 0.3 + 0.7,
 				confidence: Math.random() * 0.2 + 0.8,
-				summary: `,AI-generated, recommendation fo,r ${query} i,n ${meta,data.practice_area}`,
+				summary: `AI-generated recommendation for ${query} in ${metadata.practice_area}`,
 				citations: [
 					{
-						case_id: `,cite_${i}_1`,
+						caseId: `cite_${i}_1`,
 						citation: `Legal Citation ${i + 1}`,
 						relevance: Math.random() * 0.2 + 0.8,
 						authority: 'binding'
 					}
 				],
-				related_cases: [
+				relatedCases: [
 					{
-						case_id: `,related_${i}_1`,
+						caseId: `related_${i}_1`,
 						title: `Related Case ${i + 1}`,
-						relationship_type: 'similar',
+						relationshipType: 'similar',
 						weight: Math.random() * 0.3 + 0.6,
 						jurisdiction: metadata.context.jurisdiction || 'federal',
 						year: 2020 + Math.floor(Math.random() * 4)
+					}
+				],
+				// Add missing properties to match LegalRecommendation interface
+				riskAssessment: {
+					litigationRisk: Math.random() * 0.3 + 0.2,
+					precedentStrength: Math.random() * 0.2 + 0.7,
+					jurisdictionalWeight: Math.random() * 0.2 + 0.6,
+					timelineRelevance: Math.random() * 0.3 + 0.5,
+					outcomeConfidence: Math.random() * 0.2 + 0.75
+				},
+				graphPath: [
+					{
+						nodeId: `graph_${i}_1`,
+						nodeType: 'case',
+						title: `Graph Node ${i + 1}`,
+						relationship: 'related',
+						weight: Math.random() * 0.5,
+						distance: Math.floor(Math.random() * 5) + 1
 					}
 				]
 			});
 		}
 		return recommendations;
 	}
-	private async fallbackRecommendations()
-		request: QuicRecommendationRequest
-		startTime: number;
+	private async fallbackRecommendations(
+		request: QuicRecommendationRequest,
+		startTime: number
 	): Promise<QuicRecommendationResponse> {
 		// Fallback to HTTP/2 or HTTP/1.1
 		try {
-			const fallbackResponse = await fetch(`,${this.HTTP2_FALLBACK}/api/search?q=,${encodeURIComponent(request.query)}`);
+			const fallbackResponse = await fetch(`${this.HTTP2_FALLBACK}/api/search?q=${encodeURIComponent(request.query)}`);
 			const data = await fallbackResponse.json();
 			return {
-				success: true;
-				recommendations: await this.transformToLegalRecommendations()
-					{ results: (data as { context?: any; practice_area?: any); results?: any )}).results || [] },
+				success: true,
+				recommendations: await this.transformToLegalRecommendations(
+					{ results: data.results || [] },
 					request
 				),
 				processingTime: performance.now() - startTime,
 				protocol: 'HTTP/2',
-				cacheHit: false
+				cacheHit: false,
 				tensorMetrics: {
 					tensorId: 'fallback',
 					gpuProcessingTime: 0,
-					tensorCoresUsed: false
+					tensorCoresUsed: false,
 					streamUtilization: 0
 				},
 				metadata: {
 					timestamp: new Date().toISOString(),
-					totalResults: (data as { context?: any; practice_area?: any; results?: any }).results?.length || 0,
+					totalResults: data.results?.length || 0,
 					neo4jQueryTime: 0,
 					simdOptimized: false
 				}
-			}
+			};
 		} catch (error) {
-			throw new Error(`,All protocols failed: QUIC, HTTP/2, HTTP/1.1 -, ${error}`);
+			throw new Error(`All protocols failed: QUIC, HTTP/2, HTTP/1.1 - ${error}`);
 		}
 	}
 	private extractLegalEntities(query: string): string[] {
@@ -347,19 +399,19 @@ export class QuicNeo4jRecommendationEngine {
 		const testCount = 10;
 		let successCount = 0;
 		let protocolUsed = 'Unknown';
-		console.log(`🏁 Benchmarking QUIC Neo4j Recommendations ($,{testCount}, test,s)...`);
-		for (let i = 0; i < testCount; i++) {>;
+		console.log(`🏁 Benchmarking QUIC Neo4j Recommendations (${testCount} tests)...`);
+		for (let i = 0; i < testCount; i++) {
 			try {
 				const result = await this.getRecommendations({
-					query: `,${testQuery} ${i}`,
+					query: `${testQuery} ${i}`,
 					maxResults: 5,
-					useGPU: true
+					useGPU: true,
 					useTensorCores: true
-				)});
-				results.push((result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any); protocol?: any }).processingTime);
-				protocolUsed = (result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).protocol;
+				});
+				results.push(result.processingTime);
+				protocolUsed = result.protocol;
 				successCount++;
-				console.log(`,Test ${i + 1}: ${(result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: an,y); protocol?: any }).processingTime.toFixed(1)}ms, (${(result as { id?: any; title?: any; practice_area?: any; jurisdiction?: any; relevance_score?: any; confidence?: any; summary?: any; citations?: any; related_cases?: any; risk?: any; graph_path?: any; processingTime?: any; protocol?: any }).proto,col})`);
+				console.log(`Test ${i + 1}: ${result.processingTime.toFixed(1)}ms (${result.protocol})`);
 			} catch (error) {
 				console.warn(`Test ${i + 1} failed:`, error);
 				results.push(-1);
@@ -372,9 +424,9 @@ export class QuicNeo4jRecommendationEngine {
 			maxLatency: Math.max(...validResults),
 			successRate: successCount / testCount,
 			protocolUsed
-		}
+		};
 		console.log('📊 Benchmark Results:', {
-			'Average Latency': `,${benchmark.averageLatency.toFixed(1)}ms`,
+			'Average Latency': `${benchmark.averageLatency.toFixed(1)}ms`,
 			'Min Latency': `${benchmark.minLatency.toFixed(1)}ms`,
 			'Max Latency': `${benchmark.maxLatency.toFixed(1)}ms`,
 			'Success Rate': `${(benchmark.successRate * 100).toFixed(1)}%`,
@@ -391,6 +443,6 @@ export class QuicNeo4jRecommendationEngine {
 			fallback: this.HTTP2_FALLBACK,
 			retries: this.connectionRetries,
 			maxRetries: this.maxRetries
-		}
+		};
 	}
 }

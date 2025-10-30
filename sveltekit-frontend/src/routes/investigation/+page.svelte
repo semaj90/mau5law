@@ -4,23 +4,29 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { page } from '$app/state';
-  import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  import UnifiedCanvasIntegration from '$lib/components/unified/UnifiedCanvasIntegration.svelte';
-  import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  import EnhancedAIAssistant from '$lib/components/ai/EnhancedAIAssistant.svelte';
-  import CitationsManager from '$lib/components/citations/CitationsManager.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { UnifiedCanvasIntegration } from '$lib/components/unified';
+  import { NierRichTextEditor } from '$lib/components/editors';
+  import { EnhancedAIAssistant } from '$lib/components/ai';
+  import { CitationsManager } from '$lib/components/citations';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import * as Card from '$lib/components/ui/card';
-  import * as Tabs from '$lib/components/ui/tabs';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Label from '$lib/components/ui/label/Label.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  // Changed Card component imports from named exports to default exports from specific files
+  import Card from '$lib/components/ui/card/Card.svelte';
+  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+  import CardDescription from '$lib/components/ui/card/CardDescription.svelte';
+  import CardContent from '$lib/components/ui/card/CardContent.svelte';
+  // Removed unused import: CardFooter
+  // import CardFooter from '$lib/components/ui/card/CardFooter.svelte';
+  // Changed Tabs component imports from named exports to default exports from specific files
+  import TabsRoot from '$lib/components/ui/tabs/Root.svelte';
+  import TabsList from '$lib/components/ui/tabs/List.svelte';
+  import TabsTrigger from '$lib/components/ui/tabs/Trigger.svelte';
+  import TabsContent from '$lib/components/ui/tabs/Content.svelte';
+  // Removed unused imports: Input, Label
+  // import { Input } from '$lib/components/ui/enhanced-bits';
+  // import Label from '$lib/components/ui/label/Label.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea'; // Changed to Textarea from enhanced-bits
   import {
     FileText,
     Search,
@@ -29,14 +35,15 @@
     MessageSquare,
     Camera,
     Shield,
-    Target,
     Database,
     Cpu,
-    Eye,
-    Plus,
     Save,
     Upload
   } from 'lucide-svelte';
+  // Removed unused Lucide icons: Target, Eye, Plus
+  // Target,
+  // Eye,
+  // Plus,
   interface Case {
     id: string;
     title: string;
@@ -81,30 +88,30 @@
     evidenceCanvas: true,
     detectiveAnalysis: true,
     aiAssistant: false,
-    webgpuAcceleration false,
-    ollamaConnection false
+    webgpuAcceleration: false,
+    ollamaConnection: false
   });
-  // Create a new case
-  async function createCase(title: string, description string = '') {
-    const newCase: Case = {
-      id: `case-${Date.now()}`,
-      title,
-      description,
-      status: 'active',
-      priority: 'medium',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      assignedTo: 'current-user'
-    }
-    cases = [newCase, ...cases];
-    currentCase = newCase;
-    // Add system message
-    addChatMessage('system', `New case created: ${title}`, 'case', newCase.id);
-    return newCase;
-  }
+  // Removed unused function: createCase
+  // async function createCase(title: string, description: string = '') {
+  //   const newCase: Case = {
+  //     id: `case-${Date.now()}`,
+  //     title,
+  //     description,
+  //     status: 'active',
+  //     priority: 'medium',
+  //     createdAt: new Date().toISOString(),
+  //     updatedAt: new Date().toISOString(),
+  //     assignedTo: 'current-user'
+  //   };
+  //   cases = [newCase, ...cases];
+  //   currentCase = newCase;
+  //   // Add system message
+  //   addChatMessage('system', `New case created: ${title}`, 'case', newCase.id);
+  //   return newCase;
+  // }
   // Evidence handling
   function handleEvidenceUploaded(event: CustomEvent) {
-    const { file, position } = e(vent as CustomEvent).detail;
+    const { file, position } = (event as CustomEvent).detail;
     console.log('🔍 Evidence uploaded:', file.name, 'at position', position);
     const newEvidence: EvidenceItem = {
       id: `evidence-${Date.now()}`,
@@ -114,89 +121,92 @@
       status: 'analyzing',
       tags: [],
       uploadedAt: new Date().toISOString(),
-      size: file.size;
-    }
+      size: file.size
+    };
     evidence = [newEvidence, ...evidence];
     addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id);
   }
-  function handleAnalysisComplete(_event: CustomEvent) {
-    const { fileId, analysis, confidence } = e(vent as CustomEvent).detail;
+  function handleAnalysisComplete(event: CustomEvent) {
+    const { fileId, analysis, confidence } = (event as CustomEvent).detail;
     console.log('🧠 Analysis complete:', analysis);
     // Update evidence with analysis
     evidence = evidence.map((item) => {
-      if (item.title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
+      if (item.id === fileId) {
         return {
           ...item,
           status: 'analyzed',
-          aiAnalysis: analysis.summary || 'Analysis completed',
-          confidence: confidence || 0.85,
-          tags: analysis.tags || ['analyzed'];
-        }
+          aiAnalysis: (analysis && analysis.summary) || 'Analysis completed',
+          confidence: confidence ?? 0.85,
+          tags: (analysis && analysis.tags) || ['analyzed']
+        };
       }
       return item;
     });
-    addChatMessage('assistant', `Analysis completed for ${fileId}: ${analysis.summary || 'Evidence processed successfully'}`, 'evidence', fileId);
+    addChatMessage('assistant', `Analysis completed for ${fileId}: ${(analysis && analysis.summary) || 'Evidence processed successfully'}`, 'evidence', fileId);
   }
-  function handleDetectiveInsights(_event: CustomEvent) {
-    const { patterns, conflicts, relevance } = e(vent as CustomEvent).detail;
+  function handleDetectiveInsights(event: CustomEvent) {
+    // Removed unused parameter: relevance
+    const { patterns, conflicts } = (event as CustomEvent).detail;
     console.log('🕵️ Detective insights:', patterns);
     if (conflicts && conflicts.length > 0) {
-      addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: unknown) => c.description).join(', ')}`, 'analysis');
+      addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: any) => c.description).join(', ')}`, 'analysis');
     }
     if (patterns && patterns.length > 0) {
-      addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: unknown) => p.type).join(', ')}`, 'analysis');
+      addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis');
     }
   }
   // AI Chat functionality
-  function addChatMessage(role: 'user' | 'assistant' | 'system', content: string, context?: string, relatedId?: string) {
+  function addChatMessage(role: 'user' | 'assistant' | 'system', content: string, context?: 'evidence' | 'case' | 'citation' | 'analysis', relatedId?: string) {
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
       role,
       content,
       timestamp: new Date().toISOString(),
       context,
-      relatedId;
-    }
+      relatedId: relatedId
+    };
     chatMessages = [...chatMessages, message];
   }
-  async function sendChatMessage() {
-    if (!currentChatMessage.trim()) return;
-    const userMessage = currentChatMessage.trim();
-    addChatMessage('user', userMessage);
-    currentChatMessage = '';
-    isAIProcessing = true;
-    try {
-      // Send to AI assistant with context
-      const context = {
-        currentCase,
-        evidence,
-        investigationNotes,
-        citations
-      }
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: userMessage,
-          context,
-          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context;
-        })
-      });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        addChatMessage('assistant', (data as { response?: unknown }).response || 'I understand. How can I assist with this investigation?');
-      } else {
-        addChatMessage('assistant', 'I apologize, but I am currently unavailable. Please try again later.');
-      }
-    } catch (error) {
-      console.error('Chat error:', error);
-      addChatMessage('assistant', 'There was an error processing your request. Please try again.');
-    } finally {
-      isAIProcessing = false;
-    }
-  }
+  // Removed unused function: sendChatMessage
+  // async function sendChatMessage() {
+  //   if (!currentChatMessage.trim()) return;
+  //   const userMessage = currentChatMessage.trim();
+  //   addChatMessage('user', userMessage);
+  //   currentChatMessage = '';
+  //   isAIProcessing = true;
+  //   try {
+  //     // Send to AI assistant with context
+  //     const context = {
+  //       currentCase,
+  //       evidence,
+  //       investigationNotes,
+  //       citations
+  //     };
+  //     const response = await fetch('/api/ai/chat', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         message: userMessage,
+  //         context,
+  //         conversationHistory: chatMessages.slice(-10) // Last 10 messages for context
+  //       })
+  //     });
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       addChatMessage('assistant', data.response || 'I understand. How can I assist with this investigation?');
+  //     } else {
+  //       addChatMessage('assistant', 'I apologize, but I am currently unavailable. Please try again later.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Chat error:', error);
+  //     addChatMessage('assistant', 'There was an error processing your request. Please try again.');
+  //   } finally {
+  //     isAIProcessing = false;
+  //   }
+  // }
   // Utility functions
   function getEvidenceType(mimeType: string): EvidenceItem['type'] {
+    if (!mimeType) return 'digital';
     if (mimeType.startsWith('image/')) return 'image';
     if (mimeType.startsWith('video/')) return 'video';
     if (mimeType.startsWith('audio/')) return 'audio';
@@ -240,7 +250,7 @@
         priority: 'high',
         createdAt: '2024-01-15T10:00:00Z',
         updatedAt: '2024-01-20T14:30:00Z',
-        description 'Investigation into alleged financial irregularities',
+        description: 'Investigation into alleged financial irregularities'
       },
       {
         id: 'case-002',
@@ -249,7 +259,7 @@
         priority: 'medium',
         createdAt: '2024-01-18T09:00:00Z',
         updatedAt: '2024-01-18T09:00:00Z',
-        description 'Breach of contract claim requiring evidence analysis',
+        description: 'Breach of contract claim requiring evidence analysis'
       }
     ];
     if (!currentCase && cases.length > 0) {
@@ -258,10 +268,10 @@
   }
   async function loadSystemStatus() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const status = await (response as { ok?: unknown; json?: unknown }).json();
-        systemStatus = { ...systemStatus, ...status }
+      const response = await fetch('/api/system/status');
+      if (response.ok) {
+        const status = await response.json();
+        systemStatus = { ...systemStatus, ...status };
       }
     } catch (error) {
       console.log('Could not load system status:', error);
@@ -277,16 +287,18 @@
         evidence: evidence.filter(e => e.caseId === currentCase.id),
         citations,
         chatHistory: chatMessages,
-        updatedAt: new Date().toISOString();
-      }
+        updatedAt: new Date().toISOString()
+      };
       // Save to backend
       const response = await fetch(`/api/cases/${currentCase.id}/investigation`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(investigationData);
+        body: JSON.stringify(investigationData)
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
+      if (response.ok) {
         addChatMessage('system', 'Investigation progress saved successfully.');
+      } else {
+        addChatMessage('system', 'Failed to save investigation progress.');
       }
     } catch (error) {
       console.error('Save error:', error);
@@ -294,85 +306,89 @@
     }
   }
 </script>
+
 <svelte:head>
   <title>Legal Investigation Workspace - YoRHa Legal AI</title>
   <meta name="description" content="Integrated workspace for legal investigation with AI-powered evidence analysis" />
 </svelte:head>
-<div class="investigation-workspace">
+
+<div class="investigation-workspace flex flex-col h-screen bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] text-[#00ff88] font-mono">
   <!-- Header -->
-  <div class="workspace-header">
-    <div class="header-content">
+  <div class="workspace-header border-b-2 border-[#00ff88] bg-[#00ff88]/10 px-4 py-2 sm:px-8 sm:py-4">
+    <div class="header-content flex justify-between items-center flex-col sm:flex-row gap-4 sm:gap-0">
       <div class="case-info">
-        <h1>🔍 Legal Investigation Workspace</h1>
+        <h1 class="text-2xl font-bold mb-2 text-shadow-green">🔍 Legal Investigation Workspace</h1>
         {#if currentCase}
-          <div class="case-details">
+          <div class="case-details flex items-center gap-2">
             <Badge class={`${getPriorityColor(currentCase.priority)} text-white mr-2`}>
               {currentCase.priority.toUpperCase()}
             </Badge>
-            <span class="case-title">{currentCase.title}</span>
+            <span class="case-title font-semibold text-[#FFD700]">{currentCase.title}</span>
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{currentCase.status}</span>
           </div>
         {/if}
       </div>
-      <div class="workspace-actions">
-  <Button class="bits-btn" onclick={saveInvestigation} variant="ghost" size="sm">
-<Save class="w-4 h-4 mr-2" />
+      <div class="workspace-actions flex items-center gap-4">
+        <Button class="bits-btn" on:click={saveInvestigation} variant="ghost" size="sm">
+          <Save class="w-4 h-4 mr-2" />
           Save Progress
-</Button>
+        </Button>
         <!-- System Status Indicators -->
-        <div class="status-indicators">
-          <div class="status-item" class:active={systemStatus.evidenceCanvas} title="Evidence Canvas">
+        <div class="status-indicators flex gap-2">
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300 ease-in-out" class:active={systemStatus.evidenceCanvas} title="Evidence Canvas">
             <Camera class="w-4 h-4" />
           </div>
-          <div class="status-item" class:active={systemStatus.detectiveAnalysis} title="Detective Analysis">
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300 ease-in-out" class:active={systemStatus.detectiveAnalysis} title="Detective Analysis">
             <Shield class="w-4 h-4" />
           </div>
-          <div class="status-item" class:active={systemStatus.aiAssistant} title="AI Assistant">
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300 ease-in-out" class:active={systemStatus.aiAssistant} title="AI Assistant">
             <Brain class="w-4 h-4" />
           </div>
-          <div class="status-item" class:active={systemStatus.webgpuAcceleration} title="WebGPU Acceleration">
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300 ease-in-out" class:active={systemStatus.webgpuAcceleration} title="WebGPU Acceleration">
             <Zap class="w-4 h-4" />
           </div>
-          <div class="status-item" class:active={systemStatus.ollamaConnection} title="Ollama Connection">
+          <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300 ease-in-out" class:active={systemStatus.ollamaConnection} title="Ollama Connection">
             <Cpu class="w-4 h-4" />
           </div>
         </div>
       </div>
     </div>
   </div>
+
   <!-- Main Content -->
-  <div class="workspace-content">
-    <Tabs.Root bind:value={activeTab} class="w-full h-full">
-      <Tabs.List class="workspace-tabs">
-        <Tabs.Trigger value="evidence" class="tab-trigger">
+  <div class="workspace-content flex-1 overflow-hidden">
+    <TabsRoot bind:value={activeTab} class="w-full h-full">
+      <TabsList class="workspace-tabs">
+        <TabsTrigger value="evidence" class="tab-trigger">
           <FileText class="w-4 h-4 mr-2" />
           Evidence Analysis
-        </Tabs.Trigger>
-        <Tabs.Trigger value="investigation" class="tab-trigger">
+        </TabsTrigger>
+        <TabsTrigger value="investigation" class="tab-trigger">
           <Search class="w-4 h-4 mr-2" />
           Investigation Notes
-        </Tabs.Trigger>
-        <Tabs.Trigger value="chat" class="tab-trigger">
+        </TabsTrigger>
+        <TabsTrigger value="chat" class="tab-trigger">
           <MessageSquare class="w-4 h-4 mr-2" />
           AI Assistant
-        </Tabs.Trigger>
-        <Tabs.Trigger value="citations" class="tab-trigger">
+        </TabsTrigger>
+        <TabsTrigger value="citations" class="tab-trigger">
           <Database class="w-4 h-4 mr-2" />
           Citations & References
-        </Tabs.Trigger>
-      </Tabs.List>
+        </TabsTrigger>
+      </TabsList>
+
       <!-- Evidence Analysis Tab -->
-      <Tabs.Content value="evidence" class="tab-content">
-        <div class="evidence-layout">
-          <div class="evidence-canvas-section">
-            <div.Root class="h-full">
-              <div.Header>
-                <div.Title>Enhanced Evidence Canvas</div.Title>
-                <div.Description>
+      <TabsContent value="evidence" class="tab-content">
+        <div class="evidence-layout grid grid-cols-1 lg:grid-cols-3 gap-4 h-full p-4">
+          <div class="evidence-canvas-section lg:col-span-2 min-h-0">
+            <Card class="h-full">
+              <CardHeader>
+                <CardTitle>Enhanced Evidence Canvas</CardTitle>
+                <CardDescription>
                   Upload and analyze evidence with AI-powered detection and CUDA acceleration
-                </div.Description>
-              </div.Header>
-              <div.Content class="h-full p-0">
+                </CardDescription>
+              </CardHeader>
+              <CardContent class="h-full p-0">
                 <UnifiedCanvasIntegration
                   caseId={currentCase?.id || 'demo-case'}
                   enableYoRHaBoard={true}
@@ -380,329 +396,233 @@
                   splitView={false}
                   syncCanvases={true}
                   initialMode="both"
-                  onevidenceUploaded={handleEvidenceUploaded}
-                  onanalysisComplete={handleAnalysisComplete}
-                  ondetectiveInsights={handleDetectiveInsights}
+                  on:evidenceUploaded={handleEvidenceUploaded}
+                  on:analysisComplete={handleAnalysisComplete}
+                  on:detectiveInsights={handleDetectiveInsights}
                 />
-              </div>
-            </div>
-          </div>
-          <div class="evidence-sidebar">
-            <div.Root>
-              <div.Header>
-                <div.Title>Evidence Items</div.Title>
-                <div.Description>{evidence.length} items</div.Description>
-              </div.Header>
-              <div.Content>
-                <div class="evidence-list">
-                  {#each evidence as item}
-                    <div class="evidence-item">
-                      <div class="evidence-header">
-                        <span class="evidence-title">{(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).title}</span>
-                        <Badge class={`${getStatusColor((item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).status)} text-white text-xs`}>
-                          {(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).status}
+              </CardContent>
+            </Card>
+           </div>
+           <div class="evidence-sidebar lg:col-span-1 max-h-[300px] lg:max-h-full overflow-y-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle>Evidence Items</CardTitle>
+                <CardDescription>{evidence.length} items</CardDescription>
+              </CardHeader>
+              <CardContent>
+                 <div class="evidence-list">
+                   {#each evidence as item: EvidenceItem}
+                     <div class="evidence-item p-3 border border-[#00ff88]/30 rounded-md mb-2 bg-black/30">
+                       <div class="evidence-header flex justify-between items-center mb-2">
+                         <span class="evidence-title font-medium">{item.title}</span>
+                         <Badge class={`${getStatusColor(item.status)} text-white text-xs`}>
+                          {item.status}
                         </Badge>
-                      </div>
-                      {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence}
-                        <div class="confidence-meter">
-                          <span class="confidence-label">Confidence: {Math.round.confidence * 100)}%</span>
-                          <div class="confidence-bar">
+                       </div>
+                       {#if item.confidence}
+                        <div class="confidence-meter mt-2">
+                          <span class="confidence-label text-xs text-gray-400">Confidence: {Math.round((item.confidence ?? 0) * 100)}%</span>
+                          <div class="confidence-bar h-2 bg-gray-700 rounded-full mt-1">
                             <div
-                              class="confidence-fill"
-                              style="width: {(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence * 100}%"
+                              class="confidence-fill h-full rounded-full"
+                              style="width: {((item.confidence ?? 0) * 100)}%; background: linear-gradient(to right, #ff4444, #ffaa00, #00ff88);"
                             ></div>
                           </div>
                         </div>
                       {/if}
-                      {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).aiAnalysis}
-                        <p class="evidence-analysis">{(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).aiAnalysis}</p>
+                      {#if item.aiAnalysis}
+                        <p class="evidence-analysis text-sm text-gray-400 mt-2 leading-tight">{item.aiAnalysis}</p>
                       {/if}
-                      {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).tags.length > 0}
-                        <div class="evidence-tags">
-                          {#each (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).tags as tag}
+                      {#if item.tags.length > 0}
+                        <div class="evidence-tags flex flex-wrap gap-1 mt-2">
+                          {#each item.tags as tag}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                           {/each}
                         </div>
                       {/if}
                     </div>
-                  {/each}
-                  {#if evidence.length === 0}
-                    <div class="empty-state">
-                      <Upload class="w-8 h-8 text-gray-400 mb-2" />
-                      <p class="text-gray-500">Upload evidence to begin analysis</p>
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Tabs.Content>
-      <!-- Investigation Notes Tab -->
-      <Tabs.Content value="investigation" class="tab-content">
-        <div.Root class="h-full">
-          <div.Header>
-            <div.Title>Investigation Notes</div.Title>
-            <div.Description>
+                   {/each}
+                   {#if evidence.length === 0}
+                     <div class="empty-state flex flex-col items-center justify-center h-50 text-center opacity-60">
+                       <Upload class="w-8 h-8 text-gray-400 mb-2" />
+                       <p class="text-gray-500">Upload evidence to begin analysis</p>
+                     </div>
+                   {/if}
+                 </div>
+              </CardContent>
+            </Card>
+           </div>
+         </div>
+       </TabsContent>
+
+       <!-- Investigation Notes Tab -->
+       <TabsContent value="investigation" class="tab-content p-4">
+        <Card class="h-full">
+          <CardHeader>
+            <CardTitle>Investigation Notes</CardTitle>
+            <CardDescription>
               Document findings, observations, and analysis using the rich text editor
-            </div.Description>
-          </div.Header>
-          <div.Content class="h-full">
-            <NierRichTextEditor
-              bind:content={investigationNotes}
-              placeholder="Document your investigation findings, observations, and analysis..."
-            />
-          </div>
-        </div>
-      </Tabs.Content>
-      <!-- AI Assistant Tab -->
-      <Tabs.Content value="chat" class="tab-content">
-        <div.Root class="h-full">
-          <div.Header>
-            <div.Title>Unified AI Legal Assistant</div.Title>
-            <div.Description>
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="h-full">
+             <NierRichTextEditor
+               bind:content={investigationNotes}
+               placeholder="Document your investigation findings, observations, and analysis..."
+             />
+          </CardContent>
+        </Card>
+       </TabsContent>
+
+       <!-- AI Assistant Tab -->
+       <TabsContent value="chat" class="tab-content p-4">
+        <Card class="h-full">
+          <CardHeader>
+            <CardTitle>Unified AI Legal Assistant</CardTitle>
+            <CardDescription>
               Advanced AI assistant with Ollama, vLLM, WebGPU acceleration, and Go microservices integration
-            </div.Description>
-          </div.Header>
-          <div.Content class="h-full p-0">
-            <EnhancedAIAssistant
-              caseId={currentCase?.id || 'demo-case'}
-              legalContext="legal-investigation"
-              evidenceId={evidence[0]?.id}
-              maxHeight="500px"
-              placeholder="Ask about evidence, legal precedents, case analysis..."
-              showReferences={true}
-              onresponse={() => console.log('AI response received')}
-              oncitation={() => console.log('Citation requested')}
-            />
-          </div>
-        </div>
-      </Tabs.Content>
-            <div class="chat-input">
-              <Input
-                bind:value={currentChatMessage}
-                placeholder="Ask about evidence, legal precedents, case analysis..."
-                onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
-                class="flex-1"
-              />
-              <Button class="bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
-<MessageSquare class="w-4 h-4" />
-</Button>
-            </div>
-          </div>
-        </div>
-      </Tabs.Content>
-      <!-- Citations Tab -->
-      <Tabs.Content value="citations" class="tab-content">
-        <div.Root class="h-full">
-          <div.Header>
-            <div.Title>Legal Citations & References</div.Title>
-            <div.Description>
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="h-full p-0">
+             <EnhancedAIAssistant
+               caseId={currentCase?.id || 'demo-case'}
+               legalContext="legal-investigation"
+               evidenceId={evidence[0]?.id}
+               maxHeight="500px"
+               placeholder="Ask about evidence, legal precedents, case analysis..."
+               showReferences={true}
+               onresponse={() => console.log('AI response received')}
+               oncitation={() => console.log('Citation requested')}
+             />
+          </CardContent>
+        </Card>
+       </TabsContent>
+
+       <!-- Citations Tab -->
+       <TabsContent value="citations" class="tab-content p-4">
+        <Card class="h-full">
+          <CardHeader>
+            <CardTitle>Legal Citations & References</CardTitle>
+            <CardDescription>
               Advanced citation management with AI-powered legal research integration
-            </div.Description>
-          </div.Header>
-          <div.Content class="h-full p-0">
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="h-full p-0">
             <CitationsManager
               caseId={currentCase?.id || 'demo-case'}
               readonly={false}
             />
-          </div>
-        </div>
-      </Tabs.Content>
-                {#if citations.length === 0}
-                  <div class="empty-state">
-                    <Database class="w-8 h-8 text-gray-400 mb-2" />
-                    <p class="text-gray-500">No citations added yet</p>
-                  </div>
-                {/if}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Tabs.Content>
-    </Tabs.Root>
-  </div>
-</div>
+          </CardContent>
+        </Card>
+       </TabsContent>
+     </TabsRoot>
+   </div>
+ </div>
+
 <style>
-  .investigation-workspace {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+  /* Global styles for tabs and chat components */
+  :global(.workspace-tabs) {
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid #00ff88;
+  }
+  :global(.tab-trigger) {
+    color: #cccccc;
+    transition: color 0.3s ease;
+  }
+  :global(.tab-trigger):hover {
+    color: #bfeecf;
+  }
+  :global(.tab-trigger[data-state="active"]) {
     color: #00ff88;
-    font-family: 'Courier New', monospace;
-  }
-  .workspace-header {
-    border-bottom: 2px solid #00ff88;
     background: rgba(0, 255, 136, 0.1);
-    padding: 1rem 2rem;
   }
-  .header-content {
-    display: flex;
-    justify-content: space-betweenn;
-    align-items: center;
-  }
-  .case-info h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 0 0.5rem 0;
+
+  /* Text shadow for header */
+  .text-shadow-green {
     text-shadow: 0 0 10px #00ff88;
   }
-  .case-details {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .case-title {
-    font-weight: 600;
-    color: #FFD700;
-  }
-  .workspace-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .status-indicators {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .status-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid #666;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
-  .status-.active {
+
+  /* Active status item styling */
+  .status-item.active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88;
     color: #00ff88;
   }
-  .workspace-content {
-    flex: 1,
-    overflow: hidden;
-  }
-  .workspace-tabs {
-    background: rgba(0, 0, 0, 0.8);
-    border-bottom: 1px solid #00ff88;
-  }
-  .tab-trigger {
-    color: #cccccc;
-    transition: color 0.3s ease;
-  }
-  .tab-trigger: hover
-  .tab-trigger[data-state="active"] {
-    color: #00ff88;
-    background: rgba(0, 255, 136, 0.1);
-  }
-  .tab-content {
-    height: calc(100vh - 140px);
-    padding: 1rem;
-    overflow: auto;
-  }
-  .evidence-layout {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 1rem;
-    height: 100%;
-  }
-  .evidence-canvas-section {
-    min-height: 0,
-  }
-  .evidence-sidebar {
-    overflow-y: auto;
-  }
-  .evidence-list {
+
+  /* message/chat related styles need to be global because the chat component may render markup */
+  :global(.message-header) {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .evidence-item {
-    padding: 1rem;
-    border: 1px solid rgba(0, 255, 136, 0.3);
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.5);
-  }
-  .evidence-header {
-    display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
-  }
-  .evidence-title {
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  .confidence-meter {
-    margin: 0.5rem 0;
-  }
-  .confidence-label {
     font-size: 0.8rem;
-    color: #FFD700;
+    opacity: 0.7;
   }
-  .confidence-bar {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 2px;
-  }
-  .confidence-fill {
-    height: 100%;
-    background: linear-gradient(to right, #ff4444, #ffaa00, #00ff88);
-    transition: width 0.3s ease;
-  }
-  .evidence-analysis {
-    font-size: 0.8rem;
-    color: #cccccc;
-    margin: 0.5rem 0;
-    line-height: 1.4;
-  }
-  .evidence-tags {
+  :global(.thinking-indicator) {
     display: flex;
-    flex-wrap: wrap;
     gap: 0.25rem;
-    margin-top: 0.5rem;
   }
-  .tag {
-    font-size: 0.7rem;
+  /* span rules declared earlier as global */
+  :global(.thinking-indicator span) {
+    width: 6px;
+    height: 6px;
+    background: #FFD700;
+    border-radius: 50%;
+    animation: thinking 1.5s ease-in-out infinite;
   }
-  .chat-container {
+  :global(.thinking-indicator span:nth-child(2)) {
+    animation-delay: 0.3s;
+  }
+  :global(.thinking-indicator span:nth-child(3)) {
+    animation-delay: 0.6s;
+  }
+
+  :global(.citations-list) {
+    flex: 1;
+  }
+  :global(.citation-item) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  /* chat layout — make global so nested chat component DOM picks up these styles */
+  :global(.chat-container) {
     display: flex;
     flex-direction: column;
   }
-  .chat-content {
+  :global(.chat-content) {
     display: flex;
     flex-direction: column;
     height: 100%;
   }
-  .messages-container {
+  :global(.messages-container) {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 1rem;
     padding-right: 0.5rem;
   }
-  .message {
+  :global(.message) {
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 8px;
     max-width: 90%;
   }
-  .message.user {
+  :global(.message.user) {
     margin-left: auto;
     background: rgba(0, 255, 136, 0.1);
     border-left: 3px solid #00ff88;
   }
-  .message.assistant {
+  :global(.message.assistant) {
     margin-right: auto;
     background: rgba(255, 215, 0, 0.1);
     border-left: 3px solid #FFD700;
   }
-  .message.system {
+  :global(.message.system) {
     background: rgba(0, 150, 255, 0.1);
     border-left: 3px solid #0096ff;
     margin: 0 auto;
@@ -710,43 +630,19 @@
     text-align: center;
     font-size: 0.9rem;
   }
-  .message-header {
-    display: flex;
-    justify-content: space-betweenn;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-    opacity: 0.7;
-  }
-  .message-role {
+
+  :global(.message-role) {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     font-weight: 600;
     text-transform: uppercase;
   }
-  .message-time {
+  :global(.message-time) {
     font-size: 0.7rem;
   }
-  .message-content {
+  :global(.message-content) {
     line-height: 1.5;
-  }
-  .thinking-indicator {
-    display: flex;
-    gap: 0.25rem;
-  }
-  .thinking-indicator span {
-    width: 6px;
-    height: 6px;
-    background: #FFD700;
-    border-radius: 50%;
-    animation: thinking 1.5s ease-in-out infinite;
-  }
-  .thinking-indicator span:nth-child(2) {
-    animation-delay: 0.3,
-  }
-  .thinking-indicator span:nth-child(3) {
-    animation-delay: 0.6,
   }
   @keyframes thinking {
     0%, 80%, 100% {
@@ -758,46 +654,26 @@
       transform: scale(1);
     }
   }
-  .chat-input {
+  :global(.chat-input) {
     display: flex;
     gap: 0.5rem;
     align-items: center;
     padding-top: 1rem;
     border-top: 1px solid rgba(0, 255, 136, 0.3);
   }
-  .citations-container {
+  :global(.citations-container) {
     display: flex;
     flex-direction: column;
     height: 100%;
   }
-  .add-citation {
+  :global(.add-citation) {
     margin-bottom: 2rem;
   }
-  .citations-list {
-    flex: 1,
-  }
-  .citation-item {
-    display: flex;
-    justify-content: space-betweenn;
-    align-items: center;
-    padding: 0.75rem;
-    border: 1px solid rgba(0, 255, 136, 0.3);
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    background: rgba(0, 0, 0, 0.3);
-  }
-  .citation-text {
+  /* :global(.citations-list) is already global */
+  /* :global(.citation-item) is already global */
+  :global(.citation-text) {
     flex: 1;
     font-size: 0.9rem;
-  }
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    text-align: center;
-    opacity: 0.6;
   }
   /* Responsive */
   @media (max-width: 1024px) {
@@ -817,9 +693,8 @@
       gap: 1rem;
       align-items: flex-start;
     }
-    .tab-content {
+    :global(.tab-content) { /* Changed to global selector */
       padding: 0.5rem;
     }
   }
 </style>
-

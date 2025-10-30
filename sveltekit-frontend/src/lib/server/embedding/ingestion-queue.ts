@@ -13,14 +13,14 @@ export async function enqueue(job: IngestionJobRequest): Promise<IngestionJobSta
     jobId,
     evidenceId: job.evidenceId,
     status: 'queued',
-    model: job?.model || 'unknown', // @ts-ignore - Model property access || 'nomic-embed-text'
+    model: job.model || 'nomic-embed-text',
   };
   STATUS_STORE.set(jobId, initial);
   try {
     await cache.set(`ingest:payload:${jobId}`, job, 60 * 60 * 1000);
     MEMORY_QUEUE.push(jobId);
-  } catch (err: any) {
-    console.warn('Queue enqueue failed, fallback memory only:', err);
+  } catch (err: unknown) {
+    console.warn('Queue enqueue failed, fallback memory only:', err instanceof Error ? err.message : String(err));
     MEMORY_QUEUE.push(jobId);
   }
   return initial;
@@ -52,7 +52,7 @@ export async function processNext(
     await processor(payload, update);
     status.status = 'completed';
     status.completedAt = nowISO();
-  } catch (e: any) {
+  } catch (e: unknown) {
     status.status = 'failed';
     status.error = e instanceof Error ? e.message : String(e);
   }

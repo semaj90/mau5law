@@ -1,12 +1,10 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig, loadEnv } from 'vite';
-import fs from 'fs';
+import UnoCSS from '@unocss/vite';
 import path from 'path';
-import { fileURLToPath } from 'node:url';
-import UnoCSS from 'unocss/vite';
+import fs from 'fs';
 
-// Ensure SSR can resolve SvelteKit internals even if plugin alias injection fails
-const generatedDir = fileURLToPath(new URL('./.svelte-kit/generated/', import.meta.url));
+const generatedDir = path.resolve(__dirname, '.svelte-kit/generated');
 const serverInternals = path.resolve(generatedDir, 'server');
 const publicInternals = path.resolve(generatedDir, 'client');
 
@@ -23,8 +21,8 @@ export default defineConfig(({ mode }) => {
   return {
     assetsInclude: ['**/*.woff2'], // Added for font assets
     plugins: [
-      UnoCSS() as any,
-      sveltekit() as any,
+      sveltekit(),
+      UnoCSS(),
       // HMR error logger plugin
       {
         name: 'hmr-error-logger',
@@ -111,8 +109,8 @@ export default defineConfig(({ mode }) => {
             'cognitive-router': ['$lib/ai/cognitive-smart-router'],
             'gpu-inference': ['$lib/services/cuda-vector-integration'],
             'bits-ui': ['bits-ui'],
-            'drizzle': ['drizzle-orm'],
-            'langchain': ['langchain', '@langchain/core'],
+            drizzle: ['drizzle-orm'],
+            langchain: ['langchain', '@langchain/core'],
           },
         },
       },
@@ -121,14 +119,7 @@ export default defineConfig(({ mode }) => {
     },
     optimizeDeps: {
       exclude: ['@webgpu/types'],
-      include: [
-        '@grpc/grpc-js',
-        '@grpc/proto-loader',
-        'bits-ui',
-        'drizzle-orm',
-        'svelte',
-        '@sveltejs/kit',
-      ],
+      include: ['@grpc/grpc-js', '@grpc/proto-loader', 'bits-ui', 'drizzle-orm', 'svelte', '@sveltejs/kit'],
       esbuildOptions: {
         target: 'ES2022',
       },

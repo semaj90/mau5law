@@ -3,6 +3,7 @@ import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
 import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
 import { userRecommendationService } from '$lib/server/services/user-recommendation-service';
 import type { RequestHandler } from './$types.js';
+import { getLegalRecommendations } from '$lib/server/ai/quic-recommendation-service';
 
 // Memory access helper for MCP integration
 async function accessMemoryMCP(query: string, userContext: any) {
@@ -211,5 +212,17 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       { status: 500 }
     );
+  }
+};
+
+// New endpoint for quick legal recommendations
+export const quickRecommend: RequestHandler = async ({ request }) => {
+  try {
+    const { query, caseId, jurisdiction, practiceArea, topK } = await request.json();
+    const data = await getLegalRecommendations(query, { caseId, jurisdiction, practiceArea, topK });
+    return json(data, { status: 200 });
+  } catch (error) {
+    console.error('Error in /api/recommendations:', error);
+    return json({ error: 'Failed to get legal recommendations' }, { status: 500 });
   }
 };

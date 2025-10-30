@@ -13,7 +13,7 @@ export const MockDataGenerators = {
   /**
    * Generate mock users with different roles
    */
-  generateMockUsers(count,: number = 3), {
+  generateMockUsers(count: number = 3) {
     const roles = ['attorney', 'paralegal', 'client'] as const;
     const departments = ['Criminal Defense', 'Civil Litigation', 'Corporate Law'] as const;
     return Array.from({ length: count }, (_, i) => ({
@@ -31,14 +31,14 @@ export const MockDataGenerators = {
       practiceAreas: ['test_area'],
       barNumber: `TEST${String(i).padStart(6, '0')}`,
       firmName: 'Test Legal Firm',
-      profileEmbedding: null;
-      metadata: { test_user: true, created_by: 'unified_test_utilities' }
-    });
+      profileEmbedding: null,
+      metadata: { test_user: true, created_by: 'unified_test_utilities' },
+    }));
   },
   /**
    * Generate mock legal documents
    */
-  generateMockLegalDocuments(count,: number = 5), {
+  generateMockLegalDocuments(count: number = 5) {
     const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const;
     return Array.from({ length: count }, (_, i) => ({
       id: `mock_doc_${Date.now()}_${i}`,
@@ -56,16 +56,16 @@ export const MockDataGenerators = {
         test_document: true,
         mock_index: i,
         extractedText: `Extracted text from mock document ${i + 1}`,
-        confidence: 0.9 + (i % 10) / 100
+        confidence: 0.9 + (i % 10) / 100,
       },
       embedding: Array.from({ length: 768 }, () => Math.random() - 0.5), // Mock embedding vector;
-      tags: ['test', 'mock', documentTypes[i % documentTypes.length]]
-    });
+      tags: ['test', 'mock', documentTypes[i % documentTypes.length]],
+    }));
   },
   /**
    * Generate mock evidence items for canvas testing
    */
-  generateMockEvidenceItems(count,: number = 4), {
+  generateMockEvidenceItems(count: number = 4) {
     const evidenceTypes = ['document', 'testimony', 'physical', 'digital'] as const;
     return Array.from({ length: count }, (_, i) => ({
       id: `mock_evidence_${Date.now()}_${i}`,
@@ -79,15 +79,15 @@ export const MockDataGenerators = {
         test_evidence: true,
         priority: i % 2 === 0 ? 'high' : 'medium',
         source: 'unified_test_mock',
-        relevanceScore: 0.7 + (i % 4) * 0.075
+        relevanceScore: 0.7 + (i % 4) * 0.075,
       },
-      tags: ['test', 'evidence', evidenceTypes[i % evidenceTypes.length]]
-    });
+      tags: ['test', 'evidence', evidenceTypes[i % evidenceTypes.length]],
+    }));
   },
   /**
    * Generate mock sessions/cases
    */
-  generateMockSessions(count,: number = 2), {
+  generateMockSessions(count: number = 2) {
     const caseTypes = ['civil', 'criminal', 'corporate'] as const;
     return Array.from({ length: count }, (_, i) => ({
       id: `mock_session_${Date.now()}_${i}`,
@@ -104,45 +104,77 @@ export const MockDataGenerators = {
         test_session: true,
         mock_index: i,
         estimated_hours: 10 + i * 5,
-      }
-    });
-  }
-}
+      },
+    }));
+  },
+};
 // ============================================================================
 // MOCK SERVICES
 // ============================================================================
+
+interface MockDatabase {
+  query(sql: string, params?: unknown[]): Promise<{ rows: unknown[]; rowCount: number }>;
+  transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T>;
+}
+
+interface MockApiClientOptions extends Omit<RequestInit, 'body'> {
+  // Add any specific options your mock API client might handle
+  // For example, if it expects a 'body' to be an object, you can refine it:
+  body?: BodyInit | Record<string, unknown> | null | undefined;
+}
+
+interface MockApiResponse {
+  status: number;
+  data: unknown;
+}
+
+/**
+ * Configuration for mock services, mimicking production environment variables.
+ */
+export interface MockServiceConfig {
+  databaseUrl?: string;
+  apiUrl?: string;
+  qdrantUrl?: string;
+  redisUrl?: string;
+  ollamaUrl?: string;
+  minioEndpoint?: string;
+  neo4jUri?: string;
+}
+
 export const MockServices = {
   /**
    * Mock database service
    */
-  createMockDatabase(), {
+  createMockDatabase(config?: MockServiceConfig): MockDatabase {
     return {
-      async query(sql: string, params?: any[]): Promise<any> {
-        console.log(`Mock DB Query: ${sql}`, params);
-        return { rows: [], rowCount: 0 }
+      async query(sql: string, params?: unknown[]): Promise<{ rows: unknown[]; rowCount: number }> {
+        console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A'}): ${sql}`, params);
+        return { rows: [], rowCount: 0 };
       },
-      async transaction<T>(fn: (trx: any) => Promise<T>): Promise<T> {
-        console.log('Mock DB Transaction');
+      async transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T> {
+        console.log(`Mock DB Transaction (Configured URL: ${config?.databaseUrl || 'N/A'})`);
         return fn(this);
-      }
-    }
+      },
+    };
   },
   /**
    * Mock API client for external services
    */
-  createMockApiClient(), {
+  createMockApiClient(config?: MockServiceConfig) {
     return {
-      async makeRequest(endpoint: string, options: any = {}) {
-        console.log(`Mock API Request: ${options.method || 'GET'} ${endpoint}`);
+      async makeRequest(endpoint: string, options: MockApiClientOptions = {}): Promise<MockApiResponse> {
+        console.log(
+          `Mock API Request (Configured API URL: ${config?.apiUrl || 'N/A'}): ${options.method || 'GET'} ${endpoint}`
+        );
         // Simulate successful responses based on endpoint patterns
         if (endpoint.includes('/auth/login')) {
           return {
             status: 200,
             data: {
               token: 'mock_jwt_token_' + Date.now(),
-              user: MockDataGenerators.generateMockUsers(1)[0]
-            }
-          }
+              user: MockDataGenerators.generateMockUsers(1)[0],
+            },
+          };
         }
         if (endpoint.includes('/sessions')) {
           if (options.method === 'POST') {
@@ -150,54 +182,54 @@ export const MockServices = {
               status: 201,
               data: {
                 session_id: 'mock_session_' + Date.now(),
-                ...MockDataGenerators.generateMockSessions(1)[0]
-              }
-            }
+                ...MockDataGenerators.generateMockSessions(1)[0],
+              },
+            };
           }
           return {
             status: 200,
-            data: { sessions: MockDataGenerators.generateMockSessions(2) }
-          }
+            data: { sessions: MockDataGenerators.generateMockSessions(2) },
+          };
         }
         if (endpoint.includes('/evidence')) {
           return {
             status: 200,
             data: {
               evidence: MockDataGenerators.generateMockEvidenceItems(3),
-              canvas_id: 'mock_canvas_' + Date.now()
-            }
-          }
+              canvas_id: 'mock_canvas_' + Date.now(),
+            },
+          };
         }
         // Default successful response
-        return { status: 200, data: { success: true, endpoint } }
-      }
-    }
+        return { status: 200, data: { success: true, endpoint } };
+      },
+    };
   },
   /**
    * Mock WebSocket for real-time features
    */
-  createMockWebSocket(), {
+  createMockWebSocket() {
     const mockWs = {
       readyState: 1, // OPEN
-      send: vi.fn((data) => {
+      send: vi.fn((data: string | ArrayBufferLike | Blob | ArrayBufferView) => {
         console.log('Mock WebSocket Send:', data);
       }),
       close: vi.fn(),
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       // Simulate message reception
-      simulateMessage: (data: any) => {
-        const event = { data: JSON.stringify(data) });
-        mockWs.onmessage?.(event as any);
+      simulateMessage: (data: unknown) => {
+        const event = { data: JSON.stringify(data) };
+        mockWs.onmessage?.(event as MessageEvent);
       },
       onopen: null as ((_event: Event) => void) | null,
       onclose: null as ((_event: CloseEvent) => void) | null,
       onmessage: null as ((_event: MessageEvent) => void) | null,
-      onerror: null as ((_event: Event) => void) | null
-    }
+      onerror: null as ((_event: Event) => void) | null,
+    };
     return mockWs;
-  }
-}
+  },
+};
 // ============================================================================
 // TEST UTILITIES
 // ============================================================================
@@ -205,28 +237,28 @@ export const TestUtilities = {
   /**
    * Wait for a specific amount of time (for testing async operations)
    */
-  async wait(ms,: number = 100): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms);
+  async wait(ms: number = 100): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   },
   /**
    * Generate deterministic UUIDs for testing
    */
-  generateTestUUID(_index,: number = 0): string {
+  generateTestUUID(_index: number = 0): string {
     const base = '00000000-0000-4000-8000-000000000000';
-    const indexStr = index.toString().padStart(12, '0');
+    const indexStr = _index.toString().padStart(12, '0');
     return base.slice(0, -12) + indexStr;
   },
   /**
    * Create mock date that's deterministic for tests
    */
-  createMockDate(daysAgo,: number = 0): Date {
+  createMockDate(daysAgo: number = 0): Date {
     const baseDate = new Date('2024-01-01T00:00:00.000Z');
     return new Date(baseDate.getTime() + daysAgo * 86400000);
   },
   /**
    * Assert that an array contains items with specific properties
    */
-  assertArrayContains<T>(array,: T[], predicat,e: (item: T) => boolean, message?: strin,g): void {
+  assertArrayContains<T>(array: T[], predicate: (item: T) => boolean, message?: string): void {
     const found = array.some(predicate);
     if (!found) {
       throw new Error(message || 'Array does not contain expected item');
@@ -235,83 +267,99 @@ export const TestUtilities = {
   /**
    * Deep compare objects ignoring specified fields
    */
-  deepCompareIgnoring<T>(obj1,: T, obj,2: T, ignoreFiel,ds: string[] = ['id', 'createdAt', 'updatedAt,']): boolean {
-    const clean = (obj: any): any => {
-      if (obj === null || typeof obj !== 'object') return obj);
-      if (Array.isArray(obj)) return obj.map(clean);
-      const cleaned: any = {});
+  deepCompareIgnoring<T>(obj1: T, obj2: T, ignoreFields: string[] = ['id', 'createdAt', 'updatedAt']): boolean {
+    const clean = <U>(obj: U): U => {
+      if (obj === null || typeof obj !== 'object') return obj;
+      if (Array.isArray(obj)) return obj.map(clean) as U; // Cast back to U for array case
+      const cleaned: Partial<U> = {};
       for (const [key, value] of Object.entries(obj)) {
         if (!ignoreFields.includes(key)) {
-          cleaned[key] = clean(value);
+          (cleaned as Record<string, unknown>)[key] = clean(value); // Cast for assignment
         }
       }
-      return cleaned;
-    }
-    return JSON.stringify(clean(obj1)) === JSON.stringify(clean(obj2);
+      return cleaned as U; // Cast back to U
+    };
+    return JSON.stringify(clean(obj1)) === JSON.stringify(clean(obj2));
   },
   /**
    * Mock environment variables for tests
    */
-  mockEnvVars(vars,: Record<string, string>), {
-    const originalEnv = { ...process.env }
+  mockEnvVars(vars: Record<string, string>) {
+    const originalEnv = { ...process.env };
     Object.assign(process.env, vars);
     return () => {
-      process.env = originalEnv);
-    });
+      process.env = originalEnv;
+    };
   },
   /**
    * Create a test-specific temporary directory path
    */
-  createTempPath(testName,: string): string {
+  createTempPath(testName: string): string {
     return `/tmp/legal-ai-tests/${testName.replace(/\s+/g, '_')}_${Date.now()}`;
-  }
-}
+  },
+};
 // ============================================================================
 // VITEST HELPERS
 // ============================================================================
+
+interface CallDetails<T extends (...args: unknown[]) => unknown> {
+  args: Parameters<T>;
+  result: ReturnType<T> | undefined;
+  timestamp: number;
+}
+
 export const VitestHelpers = {
   /**
    * Mock console methods for cleaner test output
    */
-  mockConsole(), {
-    const originalConsole = { ...console }
+  mockConsole() {
+    const originalConsole = { ...console };
     console.log = vi.fn();
     console.warn = vi.fn();
     console.error = vi.fn();
     console.info = vi.fn();
     return () => {
       Object.assign(console, originalConsole);
-    });
+    };
   },
   /**
    * Mock timers and provide time control
    */
-  mockTimers(), {
+  mockTimers() {
     vi.useFakeTimers();
     return {
       advanceTime: (ms: number) => vi.advanceTimersByTime(ms),
-      restore: () => vi.useRealTimers()
-    }
+      restore: () => vi.useRealTimers(),
+    };
   },
   /**
    * Create a spy that tracks all calls with detailed info
    */
-  createDetailedSpy<T extends (...args: any[]) => any,>(fn?: T), {
+  createDetailedSpy<T extends (...args: unknown[]) => unknown>(fn?: T) {
     const spy = vi.fn(fn);
-    const calls: Array<any> = [];
-    spy.mockImplementation((...args) => {
-      const result = fn?.(...args);
-      calls.push({ args: args as Parameters<T>, result, timestamp: Date.now() });
-      return result;
+    const calls: Array<CallDetails<T>> = [];
+    spy.mockImplementation((...args: Parameters<T>): ReturnType<T> => {
+      let result: ReturnType<T> | undefined;
+      if (fn) {
+        // Cast the unknown result of fn(...args) to ReturnType<T> to satisfy the type checker
+        result = fn(...args) as ReturnType<T>;
+      } else {
+        result = undefined;
+      }
+      calls.push({ args: args, result, timestamp: Date.now() });
+      return result as ReturnType<T>; // Assert return type for mockImplementation
     });
     return Object.assign(spy, {
       getCalls: () => calls,
       getLastCall: () => calls[calls.length - 1],
       getCallCount: () => calls.length,
-      resetCalls: () => { calls.length = 0; spy.mockClear(), },
+      resetCalls: () => {
+        calls.length = 0;
+        spy.mockClear();
+      },
     });
-  }
-}
+  },
+};
 // ============================================================================
 // UNIFIED EXPORT
 // ============================================================================
@@ -325,10 +373,33 @@ export const UnifiedTestUtils = {
     /**
      * Setup common test environment with mocks
      */
-    async standardTestEnv(), {
-      const mockDb = MockServices.createMockDatabase();
-      const mockApi = MockServices.createMockApiClient();
+    async standardTestEnv() {
+      // Simulate production-like environment variables for mocks
+      const mockServiceConfig: MockServiceConfig = {
+        databaseUrl: 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db',
+        apiUrl: 'http://legal-gateway:8080/api',
+        qdrantUrl: 'http://qdrant:6333',
+        redisUrl: 'redis://:redis@redis:6379/0',
+        ollamaUrl: 'http://ollama:11434',
+        minioEndpoint: 'minio:9000',
+        neo4jUri: 'bolt://neo4j:7687',
+      };
+
+      const mockDb = MockServices.createMockDatabase(mockServiceConfig);
+      const mockApi = MockServices.createMockApiClient(mockServiceConfig);
       const restoreConsole = VitestHelpers.mockConsole();
+
+      // Optionally mock process.env for components that read it directly
+      const restoreEnv = TestUtilities.mockEnvVars({
+        DATABASE_URL: mockServiceConfig.databaseUrl || '',
+        API_URL: mockServiceConfig.apiUrl || '',
+        QDRANT_URL: mockServiceConfig.qdrantUrl || '',
+        REDIS_URL: mockServiceConfig.redisUrl || '',
+        OLLAMA_URL: mockServiceConfig.ollamaUrl || '',
+        MINIO_ENDPOINT: mockServiceConfig.minioEndpoint || '',
+        NEO4J_URI: mockServiceConfig.neo4jUri || '',
+      });
+
       return {
         mockDb,
         mockApi,
@@ -337,9 +408,10 @@ export const UnifiedTestUtils = {
         testSessions: MockDataGenerators.generateMockSessions(2),
         cleanup: () => {
           restoreConsole();
+          restoreEnv(); // Restore original environment variables
           vi.clearAllMocks();
-        }
-      }
-    }
-  }
-}
+        },
+      };
+    },
+  },
+};

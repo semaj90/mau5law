@@ -58,7 +58,7 @@ export const actions: Actions = {
       const existingUser = await db
         .select({ id: users.id })
         .from(users)
-        .where(helpers.eq(users.email, form.data.email as string) as any)
+        .where(helpers.eq(users.email, form.data.email as string))
         .limit(1);
       if (existingUser.length > 0) {
         return message(form, 'An account with this email already exists.', {
@@ -80,7 +80,7 @@ export const actions: Actions = {
         .returning();
       console.log('[Register] User created successfully:', newUser.id);
       throw redirect(302, '/login?registered=true');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('[Register] Error:', error);
       if (error instanceof Response) throw error;
       return message(form, 'Registration failed. Please try again.', {

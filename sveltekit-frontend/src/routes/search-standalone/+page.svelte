@@ -1,33 +1,62 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import SearchBox from '$lib/components/ui/SearchBox.svelte';
-  import { onMount } from 'svelte';
-  let searchResults = $state<any[]>([]);
-  let selectedDocument = $state<any>(null);
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
+  import 'uno.css'; // Add uno.css import
+  import 'nes.css/css/nes.min.css'; // Add nes.css import
+
+  interface VectorResult {
+    title?: string;
+    similarity?: number;
+    content?: string;
+    metadata?: {
+      caseId?: string;
+      documentType?: string;
+      priority?: string;
+      [key: string]: any; // Allow other metadata properties
+    };
+    embedding?: number[]; // Assuming embedding is an array of numbers
+    vectorMagnitude?: number;
+    [key: string]: any; // Allow other top-level properties
+  }
+
+  let searchResults = $state<VectorResult[]>([]); // Use VectorResult type
+  let selectedDocument = $state<VectorResult | null>(null); // Use VectorResult type
   let isAnalyzing = $state(false);
-  const handleSearchResults = (results: any[]) => {
-    searchResults = result;
+
+  const handleSearchResults = (results: VectorResult[]) => { // Use VectorResult type
+    searchResults = results; // Corrected typo: result -> results
     selectedDocument = null;
   };
-  const viewDocument = (_document: any) => {
-    selectedDocument = document;
+
+  const viewDocument = (_document: VectorResult) => { // Use VectorResult type and corrected typo
+    selectedDocument = _document; // Corrected typo: document -> _document
   };
+
   const closeDocument = () => {
     selectedDocument = null;
   };
-  const analyzeDocument = async (_document: any) => {
+
+  const analyzeDocument = async (_document: VectorResult) => { // Use VectorResult type and corrected typo
     isAnalyzing = true;
     try {
       // Simulate AI analysis
       await new Promise(resolve => setTimeout(resolve, 2000));
       // In a real implementation, this would call your legal AI analysis endpoint
-      console.log('Analyzing document:', document);
+      console.log('Analyzing document:', _document); // Corrected typo: document -> _document
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
       isAnalyzing = false;
     }
   };
+
+  // Utility function for score formatting
+  function getScorePercent(score: unknown): string {
+    const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
+    return (n * 100).toFixed(1);
+  }
+
   $effect(() => {
     // Set page title
     document.title = 'Legal AI Search - Deeds Platform';
@@ -72,7 +101,7 @@
                   </h3>
                   {#if result.similarity}
                     <div class="similarity-badge">
-                      {Math.round(result.similarity * 100)}%
+                      {getScorePercent(result.similarity)}%
                     </div>
                   {/if}
                 </div>
@@ -101,14 +130,15 @@
                   </div>
                 {/if}
                 <div class="result-actions">
-                  <button onclick={() => viewDocument(result)} class="nes-btn is-primary action-btn"> View </button>
-                  <button
+                  <Button onclick={() => viewDocument(result)} variant="primary" size="sm"> View </Button>
+                  <Button
                     onclick={() => analyzeDocument(result)}
-                    class="nes-btn is-success action-btn"
+                    variant="success"
+                    size="sm"
                     disabled={isAnalyzing}
                   >
                     {isAnalyzing ? 'Analyzing...' : 'AI Analysis'}
-                  </button>
+                  </Button>
                 </div>
               </div>
             {/each}
@@ -124,7 +154,9 @@
               <i class="nes-icon heart"></i>
               {selectedDocument.title || 'Document Viewer'}
             </h3>
-            <button onclick={closeDocument} class="nes-btn is-error close-btn"> × </button>
+            <div class="close-btn">
+              <Button onclick={closeDocument} variant="error" size="sm"> × </Button>
+            </div>
           </div>
           <div class="modal-content">
             {#if selectedDocument.content}
@@ -248,7 +280,7 @@
   }
   .result-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
     align-items: flex-start;
     margin-bottom: 12px;
   }
@@ -282,21 +314,17 @@
     display: flex;
     gap: 12px;
   }
-  .action-btn {
-    font-size: 8px;
-    padding: 8px 16px;
-  }
   .document-viewer {
-    position fixed;
-    top: 0,
+    position: fixed; /* Corrected CSS syntax */
+    top: 0; /* Corrected CSS syntax */
     left: 0;
-    right: 0,
-    bottom: 0;
+    right: 0; /* Corrected CSS syntax */
+    bottom: 0; /* Corrected CSS syntax */
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000,
+    z-index: 2000; /* Corrected CSS syntax */
     padding: 20px;
   }
   .document-modal {
@@ -308,7 +336,7 @@
   }
   .modal-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 16px;
@@ -372,7 +400,7 @@
   }
   .footer-content {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
   }
@@ -424,7 +452,7 @@
     .result-actions {
       flex-direction: column;
     }
-    .action-btn {
+    .result-actions > :global(button) {
       width: 100%;
     }
     .modal-header {
@@ -436,5 +464,3 @@
     }
   }
 </style>
-
-
