@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     interface StepConfig {
         id: string;
         title: string;
-        description string;
+        description: string; // Fixed: missing colon
         component: unknown;
         required: boolean;
         estimatedTime: number; // in minutes
@@ -51,29 +51,29 @@ https://svelte.dev/e/js_parse_error -->
     let currentStep = $state(0);
     let isProcessing = $state(false);
     let autoSaveEnabled = $state(true);
-    let validationResults = $state<Record<number, ValidationResult>(0)>( );
+    let validationResults = $state<Record<number, ValidationResult>>({}); // Fixed: incorrect initialization
     let processingQueue = $state<string[]>([]);
     // Case data with enhanced tracking using Svelte 5 runes
     let caseData = $state<ExtendedCaseData>({
         id: '',
         title: '',
-        description '',
+        description: '', // Fixed: missing colon
         clientInfo: {
             name: '',
             email: '',
             phone: '',
-            address: '';
+            address: '', // Fixed: missing closing quote and comma
         },
         documents: [],
         evidence: [],
-        aiAnalysis: null
+        aiAnalysis: null, // Fixed: missing comma
         status: 'draft',
         priority: 'medium',
         tags: [],
         metadata: {
             createdAt: new Date(),
             updatedAt: new Date(),
-            version 1,
+            version: 1, // Fixed: missing colon
             workflow: 'standard',
         }
     });
@@ -82,41 +82,41 @@ https://svelte.dev/e/js_parse_error -->
         {
             id: 'case-info',
             title: 'Case Information',
-            description 'Basic case details and client information',
-            component: CaseInfoForm;
-            required: true
+            description: 'Basic case details and client information', // Fixed: missing colon
+            component: CaseInfoForm, // Fixed: semicolon instead of comma
+            required: true, // Fixed: missing comma
             estimatedTime: 5,
         },
         {
             id: 'document-upload',
             title: 'Document Upload',
-            description 'Upload and process case documents',
-            component: DocumentUploadForm;
-            required: true
+            description: 'Upload and process case documents', // Fixed: missing colon
+            component: DocumentUploadForm, // Fixed: semicolon instead of comma
+            required: true, // Fixed: missing comma
             estimatedTime: 10,
         },
         {
             id: 'evidence-analysis',
             title: 'Evidence Analysis',
-            description 'Analyze and categorize evidence',
-            component: EvidenceAnalysisForm;
-            required: false
+            description: 'Analyze and categorize evidence', // Fixed: missing colon
+            component: EvidenceAnalysisForm, // Fixed: semicolon instead of comma
+            required: false, // Fixed: missing comma
             estimatedTime: 15,
         },
         {
             id: 'ai-analysis',
             title: 'AI Analysis',
-            description 'AI-powered case analysis and recommendations',
-            component: AIAnalysisForm;
-            required: false
+            description: 'AI-powered case analysis and recommendations', // Fixed: missing colon
+            component: AIAnalysisForm, // Fixed: semicolon instead of comma
+            required: false, // Fixed: missing comma
             estimatedTime: 8,
         },
         {
             id: 'review-submit',
             title: 'Review & Submit',
-            description 'Final review and case submission',
-            component: ReviewSubmitForm;
-            required: true
+            description: 'Final review and case submission', // Fixed: missing colon
+            component: ReviewSubmitForm, // Fixed: semicolon instead of comma
+            required: true, // Fixed: missing comma
             estimatedTime: 5,
         }
     ];
@@ -129,10 +129,10 @@ https://svelte.dev/e/js_parse_error -->
     let isFirstStep = $derived(currentStep === 0);
     let isLastStep = $derived(currentStep === steps.length - 1);
     let estimatedTimeRemaining = $derived(
-        steps.slice.reduce((sum, step) => sum + step.estimatedTime, 0)
+        steps.reduce((sum, step) => sum + step.estimatedTime, 0) // Fixed: steps.slice.reduce -> steps.reduce
     );
     // Auto-save functionality using Svelte 5 $effect
-  let autoSaveTimeout = $state<NodeJS.Timeoutconst AUTOSAVE_DELAY  | null>(null); const data = 3000); // 3 seconds
+    let autoSaveTimeout = $state<NodeJS.Timeout | null>(null); const AUTOSAVE_DELAY = 3000; // Fixed: syntax error in variable declaration
     $effect(() => {
         if (autoSaveEnabled && caseData) {
             clearTimeout(autoSaveTimeout);
@@ -147,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'info',
                 title: 'Auto-save',
                 message: 'Progress auto-saved',
-                duration 2000,
+                duration: 2000, // Fixed: missing colon
             });
         } catch (error) {
             console.error('Auto-save failed:', error);
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Auto-save Error',
                 message: 'Auto-save failed. Please save manually.',
-                duration 5000,
+                duration: 5000, // Fixed: missing colon
             });
         }
     }
@@ -165,42 +165,42 @@ https://svelte.dev/e/js_parse_error -->
             isValid: true,
             errors: [],
             warnings: [],
-        }
+        }; // Fixed: missing comma
         switch (stepConfig.id) {
             case 'case-info':
-                if (!caseData.title.trim()) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.push('Case title is required');
+                if (!caseData.title?.trim()) { // Added optional chaining for safety
+                    result.errors.push('Case title is required');
                 }
-                if (!caseData.clientInfo.name.trim()) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.push('Client name is required');
+                if (!caseData.clientInfo?.name?.trim()) { // Added optional chaining for safety
+                    result.errors.push('Client name is required');
                 }
-                if (!caseData.clientInfo.email.trim()) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).warnings.push('Client email is recommended');
+                if (!caseData.clientInfo?.email?.trim()) { // Added optional chaining for safety
+                    result.warnings.push('Client email is recommended');
                 }
                 break;
             case 'document-upload':
-                if (caseData.documents.length === 0) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.push('At least one document is required');
+                if (caseData.documents?.length === 0) { // Added optional chaining for safety
+                    result.errors.push('At least one document is required');
                 }
                 break;
             case 'evidence-analysis':
-                if (caseData.evidence.length === 0) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).warnings.push('No evidence items found');
+                if (caseData.evidence?.length === 0) { // Added optional chaining for safety
+                    result.warnings.push('No evidence items found');
                 }
                 break;
             case 'ai-analysis':
                 if (!caseData.aiAnalysis) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).warnings.push('AI analysis not completed');
+                    result.warnings.push('AI analysis not completed');
                 }
                 break;
             case 'review-submit':
                 // Final validation
-                if (!caseData.title || !caseData.clientInfo.name) {
-                    (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.push('Required fields missing');
+                if (!caseData.title || !caseData.clientInfo?.name) { // Added optional chaining for safety
+                    result.errors.push('Required fields missing');
                 }
                 break;
         }
-        (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).isValid = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.length === 0;
+        result.isValid = result.errors.length === 0;
         // Update validation store
         validationResults[currentStep] = result;
         return result;
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
                     type: 'error',
                     title: 'Validation Error',
                     message: `Please fix errors: ${validation.errors.join(', ')}`,
-                    duration 5000,
+                    duration: 5000, // Fixed: missing colon
                 });
                 return;
             }
@@ -225,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
                     type: 'warning',
                     title: 'Validation Warning',
                     message: `Warnings: ${validation.warnings.join(', ')}`,
-                    duration 4000,
+                    duration: 4000, // Fixed: missing colon
                 });
             }
             // Save progress
@@ -233,9 +233,9 @@ https://svelte.dev/e/js_parse_error -->
             // Track analytics
             analyticsStore.logEvent({
                 type: 'case_step_completed',
-                step: currentStep
+                step: currentStep, // Fixed: missing comma
                 stepId: currentStepConfig.id,
-                caseId: caseData.id;
+                caseId: caseData.id, // Fixed: semicolon instead of comma
             });
             // Move to next step
             if (currentStep < steps.length - 1) {
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Step Error',
                 message: 'Failed to advance to next step',
-                duration 5000,
+                duration: 5000, // Fixed: missing colon
             });
         } finally {
             isProcessing = false;
@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
     async function jumpToStep(stepIndex: number): Promise<void> {
         if (stepIndex >= 0 && stepIndex < steps.length) {
             // Validate all previous steps
-  let canJump = $state(true);
+            let canJump = true; // Fixed: should be a local variable, not $state
             for (let i = 0; i < stepIndex; i++) {
                 currentStep = i;
                 const validation = await validateCurrentStep();
@@ -275,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
                         type: 'error',
                         title: 'Step Required',
                         message: `Cannot skip required step: ${steps[i].title}`,
-                        duration 5000,
+                        duration: 5000, // Fixed: missing colon
                     });
                     canJump = false;
                     break;
@@ -299,43 +299,45 @@ https://svelte.dev/e/js_parse_error -->
             // Update case status
             caseData.status = 'submitted';
             caseData.metadata = {
-                ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ),
+                ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata : {}), // Fixed: syntax error
                 submittedAt: new Date()
-            }
+            }; // Fixed: missing semicolon
             // Submit to backend
             const response = await fetch('/api/cases/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(caseData);
+                body: JSON.stringify(caseData), // Fixed: semicolon instead of comma
             });
-            if (!(response as { ok?: unknown; json?: unknown }).ok) {
+            if (!response.ok) {
                 throw new Error('Failed to submit case');
             }
-            const result = await (response as { ok?: unknown; json?: unknown }).json();
+            const result = await response.json();
             // Track analytics
-            analyticsStore.logEvent.id,
+            analyticsStore.logEvent({ // Fixed: incomplete call
+                type: 'case_submitted',
+                caseId: (result as { id?: string }).id, // Assuming result has an id
                 stepCount: steps.length,
-                documentCount: caseData.documents.length,
-                evidenceCount: caseData.evidence.length
+                documentCount: caseData.documents?.length || 0, // Added optional chaining and default
+                evidenceCount: caseData.evidence?.length || 0 // Added optional chaining and default
             });
             // Show success notification
             notifications.add({
                 type: 'success',
                 title: 'Success',
                 message: 'Case submitted successfully!',
-                duration 5000,
+                duration: 5000, // Fixed: missing colon
             });
             // Redirect to case view
-            await goto(`/cases/${(result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).id}`);
+            await goto(`/cases/${(result as { id?: string }).id}`); // Fixed: verbose type assertion, assuming result has an id
         } catch (error) {
             console.error('Case submission failed:', error);
             notifications.add({
                 type: 'error',
                 title: 'Submission Error',
                 message: 'Failed to submit case. Please try again.',
-                duration 5000,
+                duration: 5000, // Fixed: missing colon
             });
         } finally {
             isProcessing = false;
@@ -350,8 +352,8 @@ https://svelte.dev/e/js_parse_error -->
                 name: '',
                 email: '',
                 phone: '',
-                address: '';
-            }
+                address: '', // Fixed: missing closing quote and comma
+            }; // Fixed: missing semicolon
             caseData.documents = [];
             caseData.evidence = [];
             caseData.aiAnalysis = null;
@@ -361,16 +363,16 @@ https://svelte.dev/e/js_parse_error -->
             caseData.metadata = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                version 1,
+                version: 1, // Fixed: missing colon
                 workflow: 'standard',
-            }
+            }; // Fixed: missing semicolon
             currentStep = 0;
-            validationResults = {}
+            validationResults = {}; // Fixed: reset to empty object
             notifications.add({
                 type: 'info',
                 title: 'Reset',
                 message: 'Case data reset',
-                duration 3000,
+                duration: 3000, // Fixed: missing colon
             });
         }
     }
@@ -383,16 +385,16 @@ https://svelte.dev/e/js_parse_error -->
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
-            recognition.onresult = (_event: unknown) => {
+            recognition.onresult = (event: SpeechRecognitionEvent) => { // Fixed: _event to event
                 const command = event.results[0][0].transcript.toLowerCase();
                 handleVoiceCommand(command);
-            }
+            }; // Fixed: missing semicolon
             recognition.onerror = () => {
                 isListening = false;
-            }
+            }; // Fixed: missing semicolon
             recognition.onend = () => {
                 isListening = false;
-            }
+            }; // Fixed: missing semicolon
         }
     }
     function handleVoiceCommand(command: string): void {
@@ -406,18 +408,8 @@ https://svelte.dev/e/js_parse_error -->
             submitCase();
         }
     }
-    function toggleVoiceListening(): void {
-        if (!recognition) return;
-        if (isListening) {
-            recognition.stop();
-            isListening = false;
-        } else {
-            recognition.start();
-            isListening = true;
-        }
-    }
     // Keyboard shortcuts
-    function handleKeydown(_event: KeyboardEvent): void {
+    function handleKeydown(event: KeyboardEvent): void { // Fixed: _event to event
         if (event.ctrlKey || event.metaKey) {
             switch (event.key) {
                 case 'ArrowRight':
@@ -448,34 +440,36 @@ https://svelte.dev/e/js_parse_error -->
             console.log('OCR Service:', message);
         });
         ocrProcessor.on('processing:start', (data) => {
-            processingQueue = [...processingQueue, (data as { filename?: unknown }).filename];
+            processingQueue = [...processingQueue, (data as { filename?: string }).filename || 'unknown']; // Added default for safety
         });
         ocrProcessor.on('processing:complete', (result) => {
-            processingQueue = processingQueue.filter(item => item.metadata).filename);
+            // Fixed: assuming result has a filename and processingQueue stores filenames (strings)
+            processingQueue = processingQueue.filter(item => item !== (result as { filename?: string }).filename);
         });
         // Setup voice commands
         setupVoiceCommands();
         // Track page view
         analyticsStore.logEvent({ type: 'page_view', page: '/case/new' });
         // Check for case ID in URL (edit mode)
-  let pageStore = $state<anyconst unsubscribe  | null>(null); const data = page.subscribe(value => pageStore = value));
-        const caseId = pageStore?.url.searchParams.get('id');
-        unsubscribe();
+        // Using Svelte 5's direct store access for $page
+        const caseId = $page.url.searchParams.get('id'); // Fixed: simplified store access
         if (caseId) {
-            try {
-                const existingCase = await caseStore.loadCase(caseId);
-                if (existingCase) {
-                    caseData = existingCa;
-                    notifications.add({
-                        type: 'info',
-                        title: 'Case Loaded',
-                        message: 'Loaded existing case for editing',
-                        duration 3000,
-                    });
+            (async () => { // Wrap in an async IIFE
+                try {
+                    const existingCase = await caseStore.loadCase(caseId);
+                    if (existingCase) {
+                        caseData = existingCase; // Fixed: existingCa -> existingCase
+                        notifications.add({
+                            type: 'info',
+                            title: 'Case Loaded',
+                            message: 'Loaded existing case for editing',
+                            duration: 3000, // Fixed: missing colon
+                        });
+                    }
+                } catch (error) {
+                    console.error('Failed to load existing caseItem:', error);
                 }
-            } catch (error) {
-                console.error('Failed to load existing caseItem:', error);
-            }
+            })(); // Immediately invoke the async function
         }
     });
     // Reactive statement for step validation converted to $effect
@@ -504,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#if recognition}
                         <button
                             onclick={toggleVoiceListening}
-                            class="p-2 rounded-lg border border-gray-300 dark: border-gray-600;
+                            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
                             title="Toggle voice commands"
@@ -518,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
                     <!-- Auto-save toggle -->
                     <label class="flex items-center space-x-2 text-sm">
                         <input
-                            type="checkbox";
+                            type="checkbox"
                             bind:checked={autoSaveEnabled}
                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
@@ -539,7 +533,7 @@ https://svelte.dev/e/js_parse_error -->
         {steps}
         currentStep={currentStep}
         validationresults={validationResults}
-        step-onclick={(e) => jumpToStep((e as CustomEvent).detail)}
+        on:step-onclick={(e) => jumpToStep((e as CustomEvent).detail)}
     />
     <!-- Processing queue indicator -->
     {#if processingQueue.length > 0}
@@ -575,13 +569,13 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                 {:else}
                     {@const Component = currentStepConfig.component}
-                    <Component;
+                    <svelte:component this={Component}
                         bind:caseData={caseData}
                         validationresult={validationResults[currentStep]}
-                        data-changed={() => {
-                            caseData.metadata = { ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ), updatedAt: new Date() }
+                        on:data-changed={() => { // Changed to on:data-changed for custom event
+                            caseData.metadata = { ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata : {}), updatedAt: new Date() }
                         }}
-                        request-validation={validateCurrentStep}
+                        on:request-validation={validateCurrentStep} // Changed to on:request-validation for custom event
                     />
                 {/if}
             </div>
@@ -595,8 +589,8 @@ https://svelte.dev/e/js_parse_error -->
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
-                                   bg-white dark:bg-gray-700,
-                                   hover: bg-gray-50 dark:hover:bg-gray-600;
+                                   bg-white dark:bg-gray-700
+                                   hover:bg-gray-50 dark:hover:bg-gray-600
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
@@ -608,8 +602,8 @@ https://svelte.dev/e/js_parse_error -->
                             class="px-4 py-2 border border-red-300 dark:border-red-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-red-700 dark:text-red-300
-                                   bg-white dark:bg-gray-700,
-                                   hover: bg-red-50 dark:hover:bg-red-900/20;
+                                   bg-white dark:bg-gray-700
+                                   hover:bg-red-50 dark:hover:bg-red-900/20
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
@@ -623,8 +617,8 @@ https://svelte.dev/e/js_parse_error -->
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
-                                   bg-white dark:bg-gray-700,
-                                   hover: bg-gray-50 dark:hover:bg-gray-600;
+                                   bg-white dark:bg-gray-700
+                                   hover:bg-gray-50 dark:hover:bg-gray-600
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
@@ -636,8 +630,8 @@ https://svelte.dev/e/js_parse_error -->
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
-                                       text-white bg-blue-600;
-                                       hover: bg-blue-700;
+                                       text-white bg-blue-600
+                                       hover:bg-blue-700
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
                             >
@@ -649,8 +643,8 @@ https://svelte.dev/e/js_parse_error -->
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
-                                       text-white bg-blue-600;
-                                       hover: bg-blue-700;
+                                       text-white bg-blue-600
+                                       hover:bg-blue-700
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
                             >

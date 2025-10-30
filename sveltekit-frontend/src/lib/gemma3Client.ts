@@ -268,34 +268,8 @@ export class Gemma3Client {
 // Add a specific ServerInfo type to avoid `any`
 type ServerInfo = { backend?: string; version?: string; [k: string]: unknown };
 
-/**
- * Helper: resolve Ollama endpoint from env or fallback to documented default.
- */
-function getOllamaEndpoint(): string {
-  // Prefer Vite-style env in build, then Node process.env, then global override, then fallback
-  try {
-    // @ts-expect-error - import.meta may not exist in some runtimes; guarded by try/catch
-    const meta = import.meta as unknown as { env?: { VITE_OLLAMA_ENDPOINT?: string } } | undefined;
-    if (meta?.env?.VITE_OLLAMA_ENDPOINT) {
-      return meta.env.VITE_OLLAMA_ENDPOINT;
-    }
-  } catch {
-    /* ignore */
-  }
-
-  if (typeof process !== 'undefined' && typeof (process as NodeJS.Process).env?.OLLAMA_ENDPOINT === 'string') {
-    return (process as NodeJS.Process).env.OLLAMA_ENDPOINT as string;
-  }
-
-  const globalAny = globalThis as unknown as { OLLAMA_ENDPOINT?: string } | undefined;
-  if (globalAny && typeof globalAny.OLLAMA_ENDPOINT === 'string') {
-    return globalAny.OLLAMA_ENDPOINT;
-  }
-
-  // Centralized documented default
-  const DEFAULT_OLLAMA_ENDPOINT = 'http://localhost:11434';
-  return DEFAULT_OLLAMA_ENDPOINT;
-}
+// Use centralized Ollama endpoint helper
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 /**
  * Safe error -> string extractor

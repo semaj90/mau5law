@@ -11,8 +11,7 @@
     id: string;
     type: 'document' | 'witness' | 'physical' | 'digital' | 'timeline';
     title: string;
-    position ;
-{ x: number; y: number; z: number }
+    position: { x: number; y: number; z: number }; // Fixed syntax
     connections: string[];
     confidence: number;
     priority: number;
@@ -85,7 +84,7 @@
         const deltaY = mousePos.y - lastMousePos.y;
         rotation.update(r => ({
           x: r.x + deltaY * 0.01,
-          y: r.y + deltaX * 0.01;
+          y: r.y + deltaX * 0.01, // Fixed syntax
         }));
       }
       // Check for node hover
@@ -101,7 +100,7 @@
     });
     canvas.addEventListener('click', () => {
       if (hoveredNode) {
-        selectedNode = hoveredNod;
+        selectedNode = hoveredNode; // Fixed typo
         showNodeDetails = true;
       }
     });
@@ -130,7 +129,7 @@
   }
   function project3DToScreen(pos: { x: number; y: number; z: number }) {
     const { x: cx, y: cy, z: cz } = $camera;
-    const { x: rx, y: ry } = $rotatio;
+    const { x: rx, y: ry } = $rotation; // Fixed typo
     // Apply camera rotation
     const cosRx = Math.cos(rx);
     const sinRx = Math.sin(rx);
@@ -151,7 +150,7 @@
     return {
       x: canvas.width / 2 + x1 * perspective,
       y: canvas.height / 2 - y1 * perspective,
-      scale: perspectiv;
+      scale: perspective, // Fixed typo
     }
   }
   function getVisibleNodes(): EvidenceNode[] {
@@ -197,8 +196,7 @@
         id: 'doc-001',
         type: 'document',
         title: 'Contract Agreement v2.1',
-        position ;
-{ x: 0, y: 0, z: 0 },
+        position: { x: 0, y: 0, z: 0 }, // Fixed syntax
         connections: ['doc-002', 'witness-001'],
         confidence: 0.95,
         priority: 220,
@@ -212,22 +210,20 @@
         id: 'doc-002',
         type: 'document',
         title: 'Email Chain - Negotiations',
-        position ;
-{ x: 150, y: 50, z: -100 },
+        position: { x: 150, y: 50, z: -100 }, // Fixed syntax
         connections: ['doc-001', 'timeline-001'],
         confidence: 0.87,
         priority: 180,
         metadata: {
           emailCount: 23,
-          participants: ['john@corp.com', 'legal@company.com'];
+          participants: ['john@corp.com', 'legal@company.com'], // Fixed syntax
         }
       },
       {
         id: 'witness-001',
         type: 'witness',
         title: 'John Smith - Key Witness',
-        position ;
-{ x: -120, y: 80, z: 150 },
+        position: { x: -120, y: 80, z: 150 }, // Fixed syntax
         connections: ['doc-001', 'physical-001'],
         confidence: 0.78,
         priority: 160,
@@ -241,14 +237,13 @@
         id: 'physical-001',
         type: 'physical',
         title: 'Signed Original Contract',
-        position ;
-{ x: 200, y: -100, z: 80 },
+        position: { x: 200, y: -100, z: 80 }, // Fixed syntax
         connections: ['witness-001', 'timeline-001'],
         confidence: 0.99,
         priority: 240,
         metadata: {
-          location 'Legal Vault A-23',
-          condition 'Excellent',
+          location: 'Legal Vault A-23', // Fixed syntax
+          condition: 'Excellent',
           verified: true,
         }
       },
@@ -256,8 +251,7 @@
         id: 'timeline-001',
         type: 'timeline',
         title: 'Contract Timeline',
-        position ;
-{ x: -50, y: -150, z: 100 },
+        position: { x: -50, y: -150, z: 100 }, // Fixed syntax
         connections: ['doc-002', 'physical-001'],
         confidence: 0.92,
         priority: 200,
@@ -306,8 +300,8 @@
         bidirectional: true,
       }
     ];
-    nodes = sampleNode;
-    connections = sampleConnection;
+    nodes = sampleNodes; // Fixed typo
+    connections = sampleConnections; // Fixed typo
     // Cache the state
     await multiLayerCache.set('evidence-board-state', { nodes, connections }, 1800, 200);
     isProcessing = false;
@@ -341,7 +335,7 @@
     for (const connection of connections) {
       const fromNode = nodes.find(n => n.id === connection.from);
       const toNode = nodes.find(n => n.id === connection.to);
-      if (!fromNode || !toNode) continu;
+      if (!fromNode || !toNode) continue; // Fixed typo
       const fromScreen = project3DToScreen(fromNode.position);
       const toScreen = project3DToScreen(toNode.position);
       // Connection color based on type
@@ -415,7 +409,7 @@
         ctx.shadowColor = palette.colors.warning;
         ctx.shadowBlur = 20;
       } else if (node === selectedNode) {
-        ctx.shadowColor = palette.colors.succes;
+        ctx.shadowColor = palette.colors.success; // Fixed typo
         ctx.shadowBlur = 25;
       }
       // Draw node based on LOD level
@@ -445,10 +439,10 @@
     ctx.shadowBlur = 0;
   }
   function drawDetailedNode(
-    ctx: CanvasRenderingContext2D;
-    pos: { x: number; y: number; scale: number },
-    size: number;
-    node: EvidenceNode;
+    ctx: CanvasRenderingContext2D, // Fixed syntax
+    pos: { x: number; y: number; scale: number }, // Fixed syntax
+    size: number, // Fixed syntax
+    node: EvidenceNode, // Fixed syntax
     color: string
   ) {
     ctx.fillStyle = color;
@@ -548,9 +542,9 @@
     const exportData = {
       nodes,
       connections,
-      camera: $camera;
-      rotation $rotation;
-      timestamp: new Date().toISOString();
+      camera: $camera, // Fixed syntax
+      rotation: $rotation, // Fixed syntax
+      timestamp: new Date().toISOString(),
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -632,7 +626,7 @@
 
 <style>
   .evidence-board-container {
-    position relative;
+    position: relative; /* Fixed syntax */
     width: 100%;
     height: 800px;
     border-radius: 8px;
@@ -649,7 +643,7 @@
     cursor: grabbing;
   }
   .control-panel {
-    position absolute;
+    position: absolute; /* Fixed syntax */
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.8);
@@ -675,7 +669,7 @@
   }
   .stat {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed typo */
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.7);
   }
@@ -694,7 +688,7 @@
     color: #fff;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s ease; /* Fixed syntax */
   }
   .control-btn:hover {
     background: rgba(138, 43, 226, 0.4);
@@ -730,7 +724,7 @@
     margin: 0.75rem 0;
   }
   .confidence-bar {
-    flex: 1,
+    flex: 1; /* Fixed syntax */
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -767,6 +761,12 @@
   }
   .connection-icon {
     color: #8a2be2;
+  }
+  .connection-type {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+  }
+</style>
   }
   .connection-type {
     color: rgba(255, 255, 255, 0.6);

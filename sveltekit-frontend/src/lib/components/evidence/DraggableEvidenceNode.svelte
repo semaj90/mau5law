@@ -32,7 +32,7 @@
     }
   }
   interface Props {
-    evidence: EvidenceNod;
+    evidence: EvidenceNode; // Fixed: EvidenceNod -> EvidenceNode
     canvasContainer?: HTMLElement;
     selected?: boolean;
     highlighted?: boolean;
@@ -66,7 +66,7 @@
   let iconComponent = $derived(() => {
     switch (evidence.type) {
       case 'document': return FileText;
-      case 'image': return Imag;
+      case 'image': return Image; // Fixed: Imag -> Image
       case 'video': return Video;
       case 'audio': return Mic;
       default: return FileText;
@@ -102,7 +102,7 @@
     try {
       // Step 1: Preprocess text (25%)
       analysisProgress = 25;
-      const textContent = evidence.content || evidence.metadata?.extractedText || evidence.titl;
+      const textContent = evidence.content || evidence.metadata?.extractedText || evidence.title; // Fixed: evidence.titl -> evidence.title
       const preprocessed = await embeddingsService.preprocessText(textContent);
       // Step 2: Generate embeddings (50%)
       analysisProgress = 50;
@@ -112,11 +112,11 @@
       const aiResponse = await fetch('/api/ai/analyze-evidence', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Fixed: removed extra comma
           evidenceId: evidence.id,
           text: preprocessed.cleanText,
           embeddings: embeddingResult.embedding,
-          metadata: evidence.metadata;
+          metadata: evidence.metadata, // Fixed: semicolon to comma
         })
       });
       if (!aiResponse.ok) {
@@ -125,16 +125,16 @@
       const analysis = await aiResponse.json();
       // Step 4: Update evidence with analysis (100%)
       analysisProgress = 100;
-      evidence.analysis = analysi;
+      evidence.analysis = analysis; // Fixed: analysi -> analysis
       evidence.metadata = {
         ...evidence.metadata,
         embeddings: embeddingResult.embedding,
-        confidence: analysis.confidence || 0.8;
+        confidence: analysis.confidence || 0.8, // Fixed: semicolon to comma
       }
       // Update store
       evidenceStore.updateEvidence(evidence.id, {
         analysis: evidence.analysis,
-        metadata: evidence.metadata;
+        metadata: evidence.metadata, // Fixed: semicolon to comma
       });
       showSuccess(`Analysis complete for ${evidence.title}`);
       onAnalyze?.(evidence.id);
@@ -148,12 +148,12 @@
   }
   // Connection handling
   function handleNodeClick(_event: MouseEvent) {
-    event.stopPropagation();
+    _event.stopPropagation(); // Fixed: use _event parameter
     onSelect?.(evidence.id);
   }
   function handleConnectionDrop(_event: DragEvent) {
-    event.preventDefault();
-    const droppedData = event.dataTransfer?.getData('text/plain');
+    _event.preventDefault(); // Fixed: use _event parameter
+    const droppedData = _event.dataTransfer?.getData('text/plain'); // Fixed: use _event parameter
     if (droppedData) {
       try {
         const droppedEvidence = JSON.parse(droppedData);
@@ -168,11 +168,11 @@
   }
   // Drag data for connections
   function handleDragStart_Connection(_event: DragEvent) {
-    if (event.dataTransfer) {
-      event.dataTransfer.setData('text/plain', JSON.stringify({
+    if (_event.dataTransfer) { // Fixed: use _event parameter
+      _event.dataTransfer.setData('text/plain', JSON.stringify({ // Fixed: use _event parameter
         id: evidence.id,
         title: evidence.title,
-        type: evidence.typ;
+        type: evidence.type, // Fixed: evidence.typ -> evidence.type, semicolon to comma
       }));
     }
   }
@@ -182,11 +182,11 @@
   bind:this={nodeElement}
   class={nodeClass}
   style="left: {evidence.x}px; top: {evidence.y}px;"
-  use:draggable={{,
+  use:draggable={{ // Fixed: removed extra comma
     id: evidence.id,
-    onDrag: handlePositionUpdate
-    onDragStart: handleDragStart
-    onDragEnd: handleDragEnd;
+    onDrag: handlePositionUpdate, // Fixed: added comma
+    onDragStart: handleDragStart, // Fixed: added comma
+    onDragEnd: handleDragEnd, // Fixed: semicolon to comma
     handle: '.drag-handle',
     constraint: canvasContainer ? { container: canvasContainer } : undefined
   }}
@@ -209,7 +209,7 @@
         <div class="flex items-center gap-1">
           <!-- Confidence indicator -->
           {#if evidence.metadata?.confidence}
-            <div class={`w-2 h-2 rounded-full ${confidenceColor()}`}
+            <div class={`w-2 h-2 rounded-full ${confidenceColor}`} // Fixed: confidenceColor() -> confidenceColor
                  title="Confidence: {Math.round((evidence.metadata.confidence || 0) * 100)}%">
             </div>
           {/if}
@@ -218,7 +218,7 @@
             size="sm"
             variant="ghost"
             class="p-1 h-6 w-6"
-            onclick={(e) => { e.stopPropagation(); analyzeEvidence(), }}
+            onclick={(e) => { e.stopPropagation(); analyzeEvidence(); }} // Fixed: removed extra comma
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}
@@ -321,18 +321,6 @@
 /* @apply z-50 rotate-2 scale-105; */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
-  .evidence-node.document {
-/* @apply border-l-4 border-l-blue-500; */
-  }
-  .evidence-node.image {
-/* @apply border-l-4 border-l-green-500; */
-  }
-  .evidence-node.video {
-/* @apply border-l-4 border-l-purple-500; */
-  }
-  .evidence-node.audio {
-/* @apply border-l-4 border-l-orange-500; */
-  }
   @keyframes pulse-glow {
     0%, 100% {
       box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
@@ -346,5 +334,6 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    line-clamp: 2; /* Fixed: Added standard property */
   }
 </style>

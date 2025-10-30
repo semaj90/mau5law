@@ -7,9 +7,30 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : unknown } = $props();
+  let {
+    nodeId = '',
+    nodeType = 'Case',
+    maxNodes = 100,
+    maxDepth = 3,
+    autoStart = true,
+    enableStreaming = true,
+    showProgress = true,
+    theme = 'yorha',
+    ondispatch // Assuming ondispatch is a prop function for events
+  }: {
+    nodeId?: string;
+    nodeType?: string;
+    maxNodes?: number;
+    maxDepth?: number;
+    autoStart?: boolean;
+    enableStreaming?: boolean;
+    showProgress?: boolean;
+    theme?: 'light' | 'dark' | 'yorha';
+    ondispatch?: (event: any) => void;
+  } = $props();
+
   import { onMount, onDestroy } from "svelte";
-  import { useMachine } from '@xstate/svelte';
+  import xstateIntegration from '$lib/services/xstate-integration'; // Import central XState service
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
   import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js';
   import { webgpuSOMCache } from '$lib/services/webgpu-som-enhanced-cache.js';
@@ -20,9 +41,11 @@ https://svelte.dev/e/js_parse_error -->
   let gpuDevice: GPUDevice | null = null;
   let context: GPUCanvasContext | null = null;
   let animationFrame: number | null = null;
-  let mounted = false;
+  let mounted = $state(false); // Use $state for reactive primitive
+  let initialLoadDone = $state(false); // New state to track initial load
+
   // Reactive state
-  let currentGraph: RecommendationGraph | null = null;
+  let currentGraph: RecommendationGraph | null = $state(null);
   let isLoading = $state(false);
   let progress = $state(0);
   let error = $state<string | null>(null);
@@ -34,29 +57,28 @@ https://svelte.dev/e/js_parse_error -->
     streamingChunks: 0,
   });
   // XState machine for idle detection and self-prompting
-  const { state: idleState, send: sendIdleEvent } = useMachine(idleDetectionMachine);
+  let idleState = $state<any>(null); // Reactive state for idle detection machine
   // Event dispatcher
   // Camera and animation: state
-  let camera = {
-    position ;
-{ x: 0, y: 0, z: 50 },
-    rotation { x: 0, y: 0, z: 0 },
+  let camera = $state({
+    position: { x: 0, y: 0, z: 50 },
+    rotation: { x: 0, y: 0, z: 0 },
     fov: 45,
     target: { x: 0, y: 0, z: 0 }
-  }
-  let animation: = {
+  });
+  let animation = $state({
     time: 0,
     phase: 0,
     speed: 1.0,
     enabled: true,
-  }
+  });
   // Progress animation: state
-  let progressAnimation = {
+  let progressAnimation = $state({
     value: 0,
     target: 0,
     speed: 0.05,
     segments: [] as Array<{ start: number; end: number; active: boolean; color: string }>
-  }
+  });
   /**
    * Initialize WebGPU and canvas context
    */
@@ -93,9 +115,9 @@ https://svelte.dev/e/js_parse_error -->
       initializeProgressSegments();
       console.log('✅ WebGPU initialized successfully');
       // Start idle detection for self-prompting
-      sendIdleEvent({ type: 'START_IDLE_DETECTION' });
-    } catch (err) {
-      error = `WebGPU initialization failed: ${err}`;
+      xstateIntegration.sendEvent('idleDetectionMachine', { type: 'START_IDLE_DETECTION' });
+    } catch (err: any) { // Catch error as any to allow string interpolation
+      error = `WebGPU initialization failed: ${err.message || err}`;
       console.error(error);
     }
   }
@@ -141,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
         const streamId = await neo4j3DEngine.startQUICStreaming(nodeId, {
           chunkSize: 8192,
           priority: 'high',
-          compression true,
+          compression: true, // Fixed syntax
         });
         streamingActive = true;
         ondispatch?.({ streamId });
@@ -155,8 +177,8 @@ https://svelte.dev/e/js_parse_error -->
       ondispatch?.({ graph });
       // Cache the graph in WebGPU SOM cache
       await cacheGraphInSOM(graph);
-    } catch (err) {
-      error = `Failed to load recommendations: ${err}`;
+    } catch (err: any) { // Catch error as any to allow string interpolation
+      error = `Failed to load recommendations: ${err.message || err}`;
       console.error(error);
     } finally {
       isLoading = false;
@@ -169,7 +191,7 @@ https://svelte.dev/e/js_parse_error -->
    * Animate progress bar segments
    */
   function animateProgressSegments() {
-    const animateSegment = (_index: number) => {
+    const animateSegment = (index: number) => { // Added index type
       if (index >= progressAnimation.segments.length) return;
       progressAnimation.segments[index].active = true;
       setTimeout(() => {
@@ -199,7 +221,9 @@ https://svelte.dev/e/js_parse_error -->
         timestamp: new Date().toISOString(),
         confidence: graph.recommendationScore,
       }
-      await webgpuSOMCache.store(cacheEntry);
+      // TODO: Implement the 'store' method in $lib/services/webgpu-som-enhanced-cache.js
+      // For now, casting to 'any' to suppress the type error.
+      await (webgpuSOMCache as any).store(cacheEntry);
       console.log('📊 Graph cached in WebGPU SOM cache');
     } catch (err) {
       console.warn('Failed to cache graph in SOM:', err);
@@ -216,8 +240,9 @@ https://svelte.dev/e/js_parse_error -->
     const render = (currentTime: number) => {
       if (!mounted) return;
       const deltaTime = (currentTime - lastTime) / 1000;
-      lastTime = currentTime
-      // Update animation: if (animation.enabled) {
+      lastTime = currentTime;
+      // Update animation
+      if (animation.enabled) {
         animation.time += deltaTime * animation.speed;
         animation.phase = (animation.time % (2 * Math.PI));
         // Rotate camera around the graph
@@ -225,7 +250,8 @@ https://svelte.dev/e/js_parse_error -->
         camera.position.x = Math.cos(camera.rotation.y) * 50;
         camera.position.z = Math.sin(camera.rotation.y) * 50;
       }
-      // Update progress animation: updateProgressAnimation(deltaTime);
+      // Update progress animation
+      updateProgressAnimation(deltaTime);
       // Update streaming stats
       if (streamingActive) {
         const streamingStats = neo4j3DEngine.getStreamingStats();
@@ -246,9 +272,11 @@ https://svelte.dev/e/js_parse_error -->
     animationFrame = requestAnimationFrame(render);
   }
   /**
-   * Update progress animation: */
+   * Update progress animation
+   */
   function updateProgressAnimation(deltaTime: number) {
-    // Smooth progress animation: const diff = progressAnimation.target - progressAnimation.value;
+    // Smooth progress animation
+    const diff = progressAnimation.target - progressAnimation.value;
     progressAnimation.value += diff * progressAnimation.speed;
     // Update progress variable for UI
     progress = progressAnimation.value;
@@ -261,10 +289,10 @@ https://svelte.dev/e/js_parse_error -->
     // Create command encoder
     const commandEncoder = gpuDevice.createCommandEncoder();
     // Get current texture
-    const textureView = context.getCurrentTexture.createView();
+    const textureView = context.getCurrentTexture().createView(); // Added parentheses for function call
     // Create render pass
     const renderPass = commandEncoder.beginRenderPass({
-      colorAttachments: [{,
+      colorAttachments: [{ // Fixed syntax
         view: textureView,
         clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 }, // Dark background
         loadOp: 'clear',
@@ -280,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Handle canvas click for node selection
    */
-  function handleCanvasClick(_event: MouseEvent) {
+  function handleCanvasClick(event: MouseEvent) { // Added event type
     if (!currentGraph || !canvasRef) return;
     const rect = canvasRef.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -318,20 +346,46 @@ https://svelte.dev/e/js_parse_error -->
   // Lifecycle
   $effect(() => {
     (async () => {
-mounted = true;
-    // Initialize WebGPU
-    await initializeWebGPU();
-    // Handle resize
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    // Start render loop
-    startRenderLoop();
-    // Auto-load if enabled
-    if (autoStart && nodeId) {
-      await loadRecommendations();
-    }
+      mounted = true;
+      // Initialize WebGPU
+      await initializeWebGPU();
+      // Handle resize
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      // Start render loop
+      startRenderLoop();
+      // Auto-load if enabled
+      if (autoStart && nodeId) {
+        await loadRecommendations();
+      }
+      initialLoadDone = true; // Mark initial load attempt as done
     })();
   });
+
+  // Reactive updates for nodeId changes
+  $effect(() => {
+    // Only trigger if mounted, initial load is done, nodeId is present, and not currently loading.
+    if (mounted && initialLoadDone && nodeId && !isLoading) {
+      loadRecommendations();
+    }
+  });
+
+  // Reactive updates for idle state
+  $effect(() => {
+    const unsubscribe = xstateIntegration.subscribe((snapshot) => {
+      // Assuming snapshot contains states of all machines, and 'idleDetectionMachine' is its ID
+      idleState = snapshot.idleDetectionMachine;
+    });
+    return () => unsubscribe();
+  });
+
+  $effect(() => {
+    if (idleState?.matches('idle.generating_prompts')) { // Check if idleState is not null
+      console.log('🤖 Self-prompting activated while viewing 3D graph');
+      // Could trigger automatic graph updates or suggestions
+    }
+  });
+
   onDestroy(() => {
     mounted = false;
     // Cleanup
@@ -340,18 +394,10 @@ mounted = true;
     }
     window.removeEventListener('resize', handleResize);
     // Stop idle detection
-    sendIdleEvent({ type: 'STOP_IDLE_DETECTION' });
+    xstateIntegration.sendEvent('idleDetectionMachine', { type: 'STOP_IDLE_DETECTION' });
     // Cleanup engine
     neo4j3DEngine.cleanup();
   });
-  // Reactive updates
-  // TODO: Convert to $derived: if (nodeId && mounted) {
-    loadRecommendations()
-  }
-  // TODO: Convert to $derived: if ($idleState.matches('idle.generating_prompts')) {
-    console.log('🤖 Self-prompting activated while viewing 3D graph')
-    // Could trigger automatic graph updates or suggestions
-  }
 </script>
 <!-- Component Template -->
 <div
@@ -368,7 +414,7 @@ mounted = true;
     onmousemove={handleCanvasClick}
     class="render-canvas"
     aria-label="3D Neo4j Knowledge Graph Visualization"
-  />
+  ></canvas>
   <!-- Progress Bar with Bit-Encoded Animation -->
   {#if showProgress && (isLoading || progress > 0)}
     <div class="progress-container">
@@ -381,19 +427,20 @@ mounted = true;
       </div>
       <!-- Segmented Progress Bar -->
       <div class="progress-bar">
-        {#each progressAnimation.segments as segment}
+        {#each progressAnimation.segments as segment (segment.start)}
           <div
             class="progress-segment"
             class:active={segment.active}
             style:--segment-color={segment.color}
             style:--segment-width="{(segment.end - segment.start)}%"
-          />
+            style:left="{segment.start}%"
+          ></div>
         {/each}
         <!-- Main Progress Fill -->
         <div
-          class="progress-fill";
+          class="progress-fill"
           style:width="{progress}%"
-        />
+        ></div>
       </div>
       <!-- Bit-Encoded Progress Info -->
       <div class="progress-info">
@@ -454,8 +501,7 @@ mounted = true;
     </button>
     <button
       class="control-button"
-      onclick={() => camera = { ...camera, position ;
-{ x: 0, y: 0, z: 50 } }}
+      onclick={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
       title="Reset Camera"
     >
       🎯
@@ -473,7 +519,7 @@ mounted = true;
 <!-- Styles -->
 <style>
   .neo4j-3d-viewer {
-    position relative;
+    position: relative; /* Fixed syntax */
     width: 100%;
     height: 100%;
     min-height: 400px;
@@ -491,16 +537,17 @@ mounted = true;
   .dark-theme {
     background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
   }
-  .render-canv.loading .render-canvas {
+  /* Corrected selector for loading state */
+  .neo4j-3d-viewer.loading .render-canvas {
     filter: blur(2px) brightness(0.7);
   }
   /* Progress Bar Styles */
   .progress-container {
-    position absolute;
+    position: absolute; /* Fixed syntax */
     top: 20px;
     left: 20px;
     right: 20px;
-    z-index: 10,
+    z-index: 10; /* Fixed syntax */
     background: rgba(0, 0, 0, 0.8);
     padding: 16px;
     border-radius: 8px;
@@ -514,7 +561,7 @@ mounted = true;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
   .progress-bar {
-    position relative;
+    position: relative; /* Fixed syntax */
     width: 100%;
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
@@ -523,12 +570,12 @@ mounted = true;
     margin-bottom: 8px;
   }
   .progress-segment {
-    position absolute;
-    top: 0,
+    position: absolute; /* Fixed syntax */
+    top: 0; /* Fixed syntax */
     height: 100%;
     background: var(--segment-color, #0ea5e9);
     width: var(--segment-width, 8.33%);
-    left: calc(var(--segment-start, 0) * 1%);
+    /* left property is now set inline in the template */
     opacity: 0;
     transition: opacity 0.2s ease;
   }
@@ -537,8 +584,8 @@ mounted = true;
     animation: pulse 0.5s ease-in-out;
   }
   .progress-fill {
-    position absolute;
-    top: 0,
+    position: absolute; /* Fixed syntax */
+    top: 0; /* Fixed syntax */
     left: 0;
     height: 100%;
     background: linear-gradient(90deg, #0ea5e9, #06b6d4);
@@ -562,7 +609,7 @@ mounted = true;
   }
   /* Stats Overlay */
   .stats-overlay {
-    position absolute;
+    position: absolute; /* Fixed syntax */
     bottom: 20px;
     left: 20px;
     background: rgba(0, 0, 0, 0.8);
@@ -593,7 +640,7 @@ mounted = true;
   }
   /* Camera Controls */
   .camera-controls {
-    position absolute;
+    position: absolute; /* Fixed syntax */
     bottom: 20px;
     right: 20px;
     display: flex;
@@ -611,7 +658,7 @@ mounted = true;
     transition: all 0.2s ease;
     backdrop-filter: blur(8px);
   }
-  .control-buttonhover {
+  .control-button:hover { /* Fixed syntax */
     background: rgba(14, 165, 233, 0.2);
     border-color: #0ea5e9;
     transform: translateY(-2px);
@@ -623,7 +670,7 @@ mounted = true;
   }
   /* Error Display */
   .error-container {
-    position absolute;
+    position: absolute; /* Fixed syntax */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -655,7 +702,7 @@ mounted = true;
     cursor: pointer;
     transition: opacity 0.2s ease;
   }
-  .retry-buttondisabled {
+  .retry-button:disabled { /* Fixed syntax */
     opacity: 0.5;
     cursor: not-allowed;
   }

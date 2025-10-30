@@ -9,7 +9,7 @@
     "src/**/*.svelte",
     "src/**/*.ts",
     "src/**/*.js",
-    "src/components/**"
+  "src/components/**/*"
   ],
   "exclude": [
     // Exclude backend/server code and heavy GPU/WASM during Svelte checks

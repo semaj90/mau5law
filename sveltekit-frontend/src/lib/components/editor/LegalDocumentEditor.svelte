@@ -1,15 +1,19 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    createDialog,
-    createDropdownMenu,
-    createTooltip,
-    melt,
-  } // Replaced melt with bits-ui components
+  import { onMount } from "svelte";
+  import { quintOut } from "svelte/easing";
+  import { fade } from "svelte/transition";
+
+  // Bits-UI components
+  import * as Dialog from "$lib/components/ui/dialog";
+  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+  import * as Tooltip from "$lib/components/ui/tooltip";
+  import { Button } from "$lib/components/ui/button";
+  import { Input } from "$lib/components/ui/input";
+  import { Label } from "$lib/components/ui/label";
+  import { Textarea } from "$lib/components/ui/textarea";
+
   import {
     AlertCircle,
     BookOpen,
@@ -22,19 +26,17 @@ https://svelte.dev/e/js_parse_error -->
     Scale,
     Search,
     Settings,
-    /* Share moved to bits-ui */
+    Share2, // Corrected import for Share icon
     X,
   } from "lucide-svelte";
-  import { onMount  } from "svelte";
-  import { quintOut } from "svelte/easing";
-  import { fade } from "svelte/transition";
+
   // Props
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined
-  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string | undefined = undefined
-  let { documentType = $bindable()  }: { documentType = $bindable() : any } = $props(); // "brief" | "contract" | "motion" | "evidence" =
-    "brief";
-  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "Legal Document"
-  let { readonly = $bindable()  }: { readonly = $bindable() : any } = $props(); // false
+  let { caseId = undefined }: { caseId?: string } = $props();
+  let { documentId = undefined }: { documentId?: string } = $props();
+  let { documentType = "brief" }: { documentType?: "brief" | "contract" | "motion" | "evidence" } = $props();
+  let { title = "Legal Document" }: { title?: string } = $props();
+  let { readonly = false }: { readonly?: boolean } = $props();
+
   // Component state
   let content = $state("");
   let query = $state("");
@@ -43,13 +45,22 @@ https://svelte.dev/e/js_parse_error -->
   let error = $state("");
   let loadingDocument = $state(false);
   let documentLoadError = $state("");
-  let citations = $state<Array() >([]);
+
+  interface Citation {
+    id: string;
+    text: string;
+    source: string;
+    type: string;
+  }
+  let citations = $state<Citation[]>([]);
+
   // Auto-save state
-  let autoSaveTimer = $state<ReturnType<typeof setTimeout>(null) | null >(null);
+  let autoSaveTimer = $state<ReturnType<typeof setTimeout> | null>(null);
   let lastSaved = $state("");
   let isSaving = $state(false);
   let saveError = $state("");
   let hasUnsavedChanges = $state(false);
+
   // Document type definitions
   interface DocumentData {
     id: string;
@@ -59,14 +70,9 @@ https://svelte.dev/e/js_parse_error -->
     caseId?: string;
     createdAt: string;
     updatedAt: string;
-    citations?: Array;
+    citations?: Citation[];
   }
-  // Melt UI Dialog for AI Assistant
-  // Melt UI component creation removed - replace with bits-ui declarative components
-  // Melt UI Dropdown for Document Actions
-  // Melt UI component creation removed - replace with bits-ui declarative components
-  // Melt UI Tooltip for help
-  // Melt UI component creation removed - replace with bits-ui declarative components
+
   async function handleAIRequest() {
     if (!query.trim()) return;
     isProcessingAI = true;
@@ -75,34 +81,35 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch("/api/ai/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
-          question query;
+        body: JSON.stringify({
+          question: query,
           context: { content, documentType, caseId },
           options: { includeReferences: true },
         }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) throw new Error("AI request failed");
-      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      if (!response.ok) throw new Error("AI request failed");
+      const result = await response.json();
       // Insert AI response into document
-      const aiSuggestion = `\n\n<!-- AI Suggestion -->\n${(result as { answer?: any; success?: any; error?: any }).answer}\n`;
-      content += aiSuggestio;
+      const aiSuggestion = `\n\n<!-- AI Suggestion -->\n${result.answer}\n`;
+      content += aiSuggestion;
       query = "";
-      $aiOpen = false;
-      ondispatch?.({ query, context: content });
+      // Close AI dialog - assuming a state variable controls it
+      // For bits-ui, the Dialog component manages its own open state or takes an `open` prop.
+      // If `aiOpen` is a prop, it would be `aiOpen = false;`
+      // If it's internal state, it's handled by the DialogTrigger/Close.
     } catch (err) {
-      error = err instanceof Error ? err.message: "AI request failed",
+      error = err instanceof Error ? err.message : "AI request failed";
     } finally {
       isProcessingAI = false;
-  }}
-  function insertCitation(citation (typeof citations)[0]) {
+    }
+  }
+
+  function insertCitation(citation: Citation) {
     const citationText = `[${citation.source}]`;
     content += citationText;
     citations = [...citations, citation];
-    ondispatch?.({ citation });
   }
-  function saveDocument() {
-    ondispatch?.({ content, title });
-  }
+
   // Enhanced auto-save function with debouncing
   function scheduleAutoSave() {
     if (!documentId || readonly) return;
@@ -110,12 +117,13 @@ https://svelte.dev/e/js_parse_error -->
     // Clear existing timer
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
-  }
+    }
     // Schedule new auto-save after 2 seconds of inactivity
     autoSaveTimer = setTimeout(() => {
       autoSaveDocument();
     }, 2000);
   }
+
   // Function to auto-save document
   async function autoSaveDocument() {
     if (!documentId || readonly || isSaving) return;
@@ -127,27 +135,30 @@ https://svelte.dev/e/js_parse_error -->
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(length),
-          isDirty: hasUnsavedChanges;
+        body: JSON.stringify({
+          content, // Send the actual content
+          isDirty: hasUnsavedChanges,
         }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+      if (!response.ok) {
         throw new Error("Failed to auto-save document");
-  }
-      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-      if ((result as { answer?: any; success?: any; error?: any }).success) {
+      }
+      const result = await response.json();
+      if (result.success) {
         lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
         console.log("Document auto-saved successfully");
       } else {
-        throw new Error((result as { answer?: any; success?: any; error?: any }).error || "Auto-save failed");
-  }
+        throw new Error(result.error || "Auto-save failed");
+      }
     } catch (err) {
-      saveError = err instanceof Error ? err.message: "Auto-save failed";
+      saveError = err instanceof Error ? err.message : "Auto-save failed";
       console.error("Auto-save failed:", err);
     } finally {
       isSaving = false;
-  }}
+    }
+  }
+
   // Function to manually save document
   async function manualSaveDocument() {
     if (!documentId || readonly || isSaving) return;
@@ -159,27 +170,30 @@ https://svelte.dev/e/js_parse_error -->
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(length),
+        body: JSON.stringify({
+          content, // Send the actual content
           status: "draft",
         }),
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+      if (!response.ok) {
         throw new Error("Failed to save document");
-  }
-      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-      if ((result as { answer?: any; success?: any; error?: any }).success) {
+      }
+      const result = await response.json();
+      if (result.success) {
         lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
         console.log("Document saved successfully");
       } else {
-        throw new Error((result as { answer?: any; success?: any; error?: any }).error || "Save failed");
-  }
+        throw new Error(result.error || "Save failed");
+      }
     } catch (err) {
-      saveError = err instanceof Error ? err.message: "Save failed";
+      saveError = err instanceof Error ? err.message : "Save failed";
       console.error("Save failed:", err);
     } finally {
       isSaving = false;
-  }}
+    }
+  }
+
   // Function to get save status
   function getSaveStatus() {
     if (isSaving) return "Saving...";
@@ -188,37 +202,45 @@ https://svelte.dev/e/js_parse_error -->
     if (lastSaved) return `Last saved ${lastSaved}`;
     return "All changes saved";
   }
+
   function getDocumentTypeIcon() {
     switch (documentType) {
       case "brief":
         return FileText;
       case "contract":
-        return BookOpe;
+        return BookOpen; // Corrected icon name
       case "motion":
-        return Scal;
+        return Scale; // Corrected icon name
       case "evidence":
         return Search;
       default:
         return FileText;
-  }}
+    }
+  }
+
   $effect(() => {
     // Load document content if documentId is provided
     if (documentId) {
       loadDocument();
-  }
+    }
     // Set up auto-save on content changes
     return () => {
       if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
-  }
+      }
+    };
+  });
+
+  // Reactive statement to trigger auto-save when content changes
+  $effect(() => {
+    if (content && documentId && !loadingDocument) {
+      scheduleAutoSave();
     }
   });
-  // Reactive statement to trigger auto-save when content changes
-  // TODO: Convert to $derived: if (content && documentId && !loadingDocument) {
-    scheduleAutoSave()
-  }
+
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());
+
   // Function to load document from API
   async function loadDocument() {
     if (!documentId) return;
@@ -231,38 +253,41 @@ https://svelte.dev/e/js_parse_error -->
           "Content-Type": "application/json",
         },
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-        throw new Error(`Failed to load document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
-  }
-      const documentData: DocumentData = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      if (!response.ok) {
+        throw new Error(`Failed to load document: ${response.statusText}`);
+      }
+      const documentData: DocumentData = await response.json();
       // Update component state with loaded data
       content = documentData.content || "";
       title = documentData.title || "Legal Document";
       documentType = documentData.type || "brief";
       // Load citations if available
       if (documentData.citations) {
-        citations = documentData.citation;
-  }
+        citations = documentData.citations;
+      }
       // Set initial save status
       lastSaved = new Date(documentData.updatedAt).toLocaleTimeString();
       hasUnsavedChanges = false;
       console.log("Document loaded successfully:", documentData.title);
     } catch (err) {
       documentLoadError =
-        err instanceof Error ? err.message: "Failed to load document";
+        err instanceof Error ? err.message : "Failed to load document";
       console.error("Error loading document:", err);
     } finally {
       loadingDocument = false;
-  }}
+    }
+  }
+
   // Custom animation: function for dialog
   function flyAndScale(
-    node: Element;
-    params: { duration?: number; y?: number; start?: number } = ) {
+    node: Element,
+    params: { duration?: number; y?: number; start?: number } = {}
+  ) {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
     const opacity = +style.opacity;
     const scaleConversion = (
-      valueA: number
+      valueA: number,
       scaleA: [number, number],
       scaleB: [number, number]
     ) => {
@@ -271,17 +296,17 @@ https://svelte.dev/e/js_parse_error -->
       const percentage = (valueA - minA) / (maxA - minA);
       const valueB = percentage * (maxB - minB) + minB;
       return valueB;
-    }
+    };
     const styleToString = (
       style: Record<string, number | string | undefined>
     ): string => {
-      return Object.keys.reduce((str, key) => {
+      return Object.keys(style).reduce((str, key) => {
         if (style[key] === undefined) return str;
-        return str + `${key}:${style[key]}`;
+        return str + `${key}:${style[key]};`; // Added semicolon
       }, "");
-    }
+    };
     return {
-      duration params.duration ?? 150,
+      duration: params.duration ?? 150,
       delay: 0,
       css: (t: number) => {
         const y = scaleConversion(t, [0, 1], [params.y ?? 0, 0]);
@@ -291,294 +316,269 @@ https://svelte.dev/e/js_parse_error -->
           opacity: t * opacity,
         });
       },
-      easing: quintOut;
-    }
+      easing: quintOut,
+    };
   }
 </script>
 
 <!-- Main Document Editor Container -->
-<div class="container mx-auto px-4">
+<div class="mx-auto px-4 py-6 max-w-7xl">
   <!-- Header with semantic styling -->
-  <header class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      <div class="container mx-auto px-4">
-        <div class="container mx-auto px-4">
-          <svelte:component this={getDocumentTypeIcon()} class="container mx-auto px-4" />
-          <div>
-            <h1 class="container mx-auto px-4">{title}</h1>
-            <p class="container mx-auto px-4">
-              {documentType.charAt.toUpperCase() + documentType.slice(1)}
-              {#if caseId}
-                • Case {caseId.slice(0, 8)}
-              {/if}
-              {#if loadingDocument}
-                • Loading...
-              {/if}
-            </p>
+  <header class="mb-6 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <svelte:component this={getDocumentTypeIcon()} class="h-8 w-8 text-nier-primary" />
+      <div>
+        <h1 class="text-3xl font-bold text-nier-text">{title}</h1>
+        <p class="text-sm text-nier-gray-light">
+          {documentType.charAt(0).toUpperCase() + documentType.slice(1)}
+          {#if caseId}
+            • Case {caseId.slice(0, 8)}
+          {/if}
+          {#if loadingDocument}
+            • Loading...
+          {/if}
+        </p>
+      </div>
+    </div>
+    <!-- Document Actions Dropdown -->
+    <div class="flex items-center gap-2">
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild let:builder>
+          <Button builders={[builder]} variant="ghost" size="icon" aria-label="Help">
+            <AlertCircle class="h-5 w-5" />
+          </Button>
+        </Tooltip.Trigger>
+        <Tooltip.Content>
+          Use the AI assistant for legal research and drafting help. Click the citation button to add references.
+        </Tooltip.Content>
+      </Tooltip.Root>
+
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild let:builder>
+          <Button builders={[builder]} variant="outline" class="flex items-center gap-2">
+            <Settings class="h-4 w-4" />
+            <span>Actions</span>
+            <ChevronDown class="h-4 w-4" />
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content class="w-56">
+          <DropdownMenu.Item on:click={() => console.log('Preview')}>
+            <Eye class="mr-2 h-4 w-4" />
+            Preview
+          </DropdownMenu.Item>
+          <DropdownMenu.Item on:click={() => console.log('Share')}>
+            <Share2 class="mr-2 h-4 w-4" />
+            Share
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item on:click={() => console.log('Delete')} class="text-red-500">
+            <X class="mr-2 h-4 w-4" />
+            Delete
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+
+      <Button
+        on:click={() => manualSaveDocument()}
+        disabled={readonly || loadingDocument || isSaving}
+        class="flex items-center gap-2"
+      >
+        {#if isSaving}
+          <Loader2 class="h-4 w-4 animate-spin" />
+          <span>Saving...</span>
+        {:else}
+          <Save class="h-4 w-4" />
+          <span>Save</span>
+        {/if}
+      </Button>
+    </div>
+  </header>
+
+  <!-- Main Content Area with Grid -->
+  <main class="grid grid-cols-3 gap-6">
+    <!-- Document Editor (2/3 width) -->
+    <div class="col-span-2">
+      <div class="rounded-lg border bg-nier-surface p-4 shadow-sm">
+        <div class="mb-4 flex items-center justify-between border-b pb-2">
+          <div class="flex items-center gap-2">
+            <Button variant="ghost" size="icon" title="Bold">
+              <strong>B</strong>
+            </Button>
+            <Button variant="ghost" size="icon" title="Italic">
+              <em>I</em>
+            </Button>
+            <Button variant="ghost" size="icon" title="Underline">
+              <u>U</u>
+            </Button>
+            <span class="toolbar-separator">|</span>
+            <Button variant="ghost" size="icon" title="Insert Citation" on:click={() =>
+              insertCitation({
+                id: Math.random().toString(),
+                text: 'Sample Citation',
+                source: 'Smith v. Jones, 123 F.3d 456 (2023)',
+                type: 'case',
+              })}>
+              📚
+            </Button>
+            <Dialog.Root>
+              <Dialog.Trigger asChild let:builder>
+                <Button builders={[builder]} variant="ghost" size="icon" title="AI Assistant">
+                  <Brain class="h-5 w-5" />
+                </Button>
+              </Dialog.Trigger>
+              <Dialog.Content transition={flyAndScale} class="max-w-md">
+                <Dialog.Header>
+                  <Dialog.Title class="flex items-center gap-2">
+                    <Brain class="h-6 w-6 text-nier-primary" />
+                    AI Legal Assistant
+                  </Dialog.Title>
+                  <Dialog.Description>Ask for help with legal research, drafting, or analysis</Dialog.Description>
+                </Dialog.Header>
+                {#if error}
+                  <div class="flex items-center gap-2 rounded-md bg-red-100 p-3 text-red-700">
+                    <AlertCircle class="h-5 w-5" />
+                    <span>{error}</span>
+                  </div>
+                {/if}
+                <div class="grid gap-4 py-4">
+                  <div class="grid gap-2">
+                    <Label for="ai-query"> What would you like help with? </Label>
+                    <Textarea
+                      id="ai-query"
+                      bind:value={query}
+                      placeholder="e.g., Help me draft a motion to dismiss based on lack of jurisdiction..."
+                      disabled={isProcessingAI}
+                    ></Textarea>
+                  </div>
+                </div>
+                <Dialog.Footer>
+                  <Dialog.Close asChild let:builder>
+                    <Button builders={[builder]} variant="outline" disabled={isProcessingAI}> Cancel </Button>
+                  </Dialog.Close>
+                  <Button
+                    on:click={() => handleAIRequest()}
+                    disabled={!query.trim() || isProcessingAI}
+                  >
+                    {#if isProcessingAI}
+                      <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+                      <span>Processing...</span>
+                    {:else}
+                      <Brain class="mr-2 h-4 w-4" />
+                      <span>Get Help</span>
+                    {/if}
+                  </Button>
+                </Dialog.Footer>
+              </Dialog.Content>
+            </Dialog.Root>
+          </div>
+          <div class="text-sm text-nier-gray-light">
+            {content.length} characters | {content.split(/\s+/).filter(Boolean).length} words
           </div>
         </div>
-        <!-- Document Actions Dropdown -->
-        <div class="container mx-auto px-4">
-          <button class="container mx-auto px-4" aria-label="Help">
-            <AlertCircle class="container mx-auto px-4" />
-          </button>
-          <button class="container mx-auto px-4">
-            <Settings class="container mx-auto px-4" />
-            <span>Actions</span>
-            <ChevronDown class="container mx-auto px-4" />
-          </button>
-          <button
-            onclick={() => manualSaveDocument()}
-            class="container mx-auto px-4"
-            disabled={readonly || loadingDocument || isSaving}
-          >
-            {#if isSaving}
-              <Loader2 class="container mx-auto px-4" />
-              <span>Saving...</span>
-            {:else}
-              <Save class="container mx-auto px-4" />
-              <span>Save</span>
-            {/if}
-          </button>
+        <!-- Text Editor Area -->
+        <div class="relative">
+          {#if loadingDocument}
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-nier-surface/80 backdrop-blur-sm">
+              <Loader2 class="h-8 w-8 animate-spin text-nier-primary" />
+              <p class="mt-2 text-nier-text">Loading document...</p>
+            </div>
+          {:else if documentLoadError}
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-nier-surface/80 backdrop-blur-sm text-red-500">
+              <AlertCircle class="h-8 w-8" />
+              <p class="mt-2 text-lg">Failed to load document</p>
+              <p class="text-sm text-nier-gray-light">{documentLoadError}</p>
+              <Button on:click={() => loadDocument()} class="mt-4"> Try Again </Button>
+            </div>
+          {/if}
+          <Textarea
+            bind:value={content}
+            disabled={readonly}
+            placeholder="Begin drafting your legal document..."
+            class="min-h-[600px] w-full resize-y border-none p-4 focus:ring-0"
+            style="font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6;"
+          ></Textarea>
         </div>
       </div>
     </div>
-  </header>
-  <!-- Main Content Area with Grid -->
-  <main class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      <div class="container mx-auto px-4">
-        <!-- Document Editor (2/3 width) -->
-        <div class="container mx-auto px-4">
-          <div class="container mx-auto px-4">
-            <div class="container mx-auto px-4">
-              <div class="container mx-auto px-4">
-                <div class="container mx-auto px-4">
-                  <button class="container mx-auto px-4" title="Bold">
-                    <strong>B</strong>
-                  </button>
-                  <button class="container mx-auto px-4" title="Italic">
-                    <em>I</em>
-                  </button>
-                  <button class="container mx-auto px-4" title="Underline">
-                    <u>U</u>
-                  </button>
-                  <span class="container mx-auto px-4">|</span>
-                  <button class="container mx-auto px-4" title="Insert Citation"> 📚 </button>
-                  <button class="container mx-auto px-4" title="AI Assistant">
-                    <Brain class="container mx-auto px-4" />
-                  </button>
-                </div>
-                <div class="container mx-auto px-4">
-                  {content.length} characters
-                </div>
-              </div>
-            </div>
-            <!-- Text Editor Area -->
-            <div class="container mx-auto px-4">
-              {#if loadingDocument}
-                <div class="container mx-auto px-4">
-                  <div class="container mx-auto px-4">
-                    <Loader2 class="container mx-auto px-4" />
-                    <p class="container mx-auto px-4">Loading document...</p>
-                  </div>
-                </div>
-              {:else if documentLoadError}
-                <div class="container mx-auto px-4">
-                  <div class="container mx-auto px-4">
-                    <AlertCircle class="container mx-auto px-4" />
-                    <p class="container mx-auto px-4">Failed to load document</p>
-                    <p class="container mx-auto px-4">{documentLoadError}</p>
-                    <button class="container mx-auto px-4" onclick={() => loadDocument()}> Try Again </button>
-                  </div>
-                </div>
-              {:else}
-                <textarea
-                  bind:value={content}
-                  disabled={readonly}
-                  placeholder="Begin drafting your legal document..."
-                  class="container mx-auto px-4"
-                  style="font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6;"
-                ></textarea>
-              {/if}
-            </div>
-          </div>
+    <!-- Sidebar (1/3 width) -->
+    <div class="col-span-1 space-y-6">
+      <!-- Citations Panel -->
+      <div class="rounded-lg border bg-nier-surface p-4 shadow-sm">
+        <div class="mb-4 flex items-center gap-2 border-b pb-2">
+          <BookOpen class="h-5 w-5 text-nier-primary" />
+          <h3 class="text-lg font-semibold text-nier-text">Citations</h3>
         </div>
-        <!-- Sidebar (1/3 width) -->
-        <div class="container mx-auto px-4">
-          <!-- Citations Panel -->
-          <div class="container mx-auto px-4">
-            <div class="container mx-auto px-4">
-              <h3 class="container mx-auto px-4">
-                <BookOpen class="container mx-auto px-4" />
-                Citations
-              </h3>
-            </div>
-            <div class="container mx-auto px-4">
-              {#if citations.length === 0}
-                <p class="container mx-auto px-4">No citations added yet.</p>
-              {:else}
-                <div class="container mx-auto px-4">
-                  {#each citations as citation}
-                    <div class="container mx-auto px-4">
-                      <div class="container mx-auto px-4">
-                        {citation.type.toUpperCase()}
-                      </div>
-                      <div class="container mx-auto px-4">{citation.source}</div>
-                    </div>
-                  {/each}
+        <div class="space-y-3">
+          {#if citations.length === 0}
+            <p class="text-nier-gray-light">No citations added yet.</p>
+          {:else}
+            <div class="space-y-2">
+              {#each citations as citation}
+                <div class="rounded-md bg-nier-bg p-3 text-sm">
+                  <div class="font-medium text-nier-text">{citation.type.toUpperCase()}</div>
+                  <div class="text-nier-gray-light">{citation.source}</div>
                 </div>
-              {/if}
-              <button
-                class="container mx-auto px-4"
-                onclick={() =>
-                  insertCitation({
-                    id: Math.random.toString(),
-                    text: 'Sample Citation',
-                    source: 'Smith v. Jones, 123 F.3d 456 (2023)',
-                    type: 'case',
-                  })}
-              >
-                Add Citation
-              </button>
+              {/each}
             </div>
+          {/if}
+          <Button
+            variant="outline"
+            class="w-full"
+            on:click={() =>
+              insertCitation({
+                id: Math.random().toString(),
+                text: 'Sample Citation',
+                source: 'Smith v. Jones, 123 F.3d 456 (2023)',
+                type: 'case',
+              })}
+          >
+            Add Citation
+          </Button>
+        </div>
+      </div>
+      <!-- Document Info -->
+      <div class="rounded-lg border bg-nier-surface p-4 shadow-sm">
+        <div class="mb-4 flex items-center gap-2 border-b pb-2">
+          <FileText class="h-5 w-5 text-nier-primary" />
+          <h3 class="text-lg font-semibold text-nier-text">Document Info</h3>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="font-medium text-nier-text">Type:</span>
+            <span class="text-nier-gray-light">{documentType}</span>
           </div>
-          <!-- Document Info -->
-          <div class="container mx-auto px-4">
-            <div class="container mx-auto px-4">
-              <h3 class="container mx-auto px-4">Document Info</h3>
-            </div>
-            <div class="container mx-auto px-4">
-              <div class="container mx-auto px-4">
-                <span class="container mx-auto px-4">Type:</span>
-                <span class="container mx-auto px-4">{documentType}</span>
-              </div>
-              <div class="container mx-auto px-4">
-                <span class="container mx-auto px-4">Word Count:</span>
-                <span class="container mx-auto px-4">{content.split.length}</span>
-              </div>
-              <div class="container mx-auto px-4">
-                <span class="container mx-auto px-4">Status:</span>
-                <span
-                  class="container mx-auto px-4"
-                  class:text-red-600={saveError}
-                  class:text-green-600={!hasUnsavedChanges && !saveError}
-                >
-                  {saveStatus}
-                </span>
-              </div>
-              {#if saveError}
-                <div class="container mx-auto px-4">
-                  {saveError}
-                </div>
-              {/if}
-            </div>
+          <div class="flex justify-between">
+            <span class="font-medium text-nier-text">Word Count:</span>
+            <span class="text-nier-gray-light">{content.split(/\s+/).filter(Boolean).length}</span>
           </div>
+          <div class="flex justify-between">
+            <span class="font-medium text-nier-text">Status:</span>
+            <span
+              class:text-red-600={saveError}
+              class:text-green-600={!hasUnsavedChanges && !saveError}
+              class:text-yellow-600={hasUnsavedChanges && !saveError}
+            >
+              {saveStatus}
+            </span>
+          </div>
+          {#if saveError}
+            <div class="text-sm text-red-500">
+              {saveError}
+            </div>
+          {/if}
         </div>
       </div>
     </div>
   </main>
 </div>
-<!-- AI Assistant Dialog -->
-{#if $aiOpen}
-  <div>
-    <div class="container mx-auto px-4" transitifade={{ duration 150 }}></div>
-    <div class="container mx-auto px-4" transitiflyAndScale={{ duration 150, y: 8, start: 0.96 }}>
-      <div class="container mx-auto px-4">
-        <h2 class="container mx-auto px-4">
-          <Brain class="container mx-auto px-4" />
-          AI Legal Assistant
-        </h2>
-        <p class="container mx-auto px-4">Ask for help with legal research, drafting, or analysis</p>
-        <button class="container mx-auto px-4">
-          <X class="container mx-auto px-4" />
-        </button>
-      </div>
-      <div class="container mx-auto px-4">
-        {#if error}
-          <div class="container mx-auto px-4">
-            <div class="container mx-auto px-4">
-              <AlertCircle class="container mx-auto px-4" />
-              <span class="container mx-auto px-4">{error}</span>
-            </div>
-          </div>
-        {/if}
-        <div class="container mx-auto px-4">
-          <div>
-            <label for="ai-query" class="container mx-auto px-4"> What would you like help with? </label>
-            <textarea
-              id="ai-query"
-              bind:value={query}
-              placeholder="e.g., Help me draft a motion to dismiss based on lack of jurisdiction..."
-              class="container mx-auto px-4"
-              disabled={isProcessingAI}
-            ></textarea>
-          </div>
-          <div class="container mx-auto px-4">
-            <button class="container mx-auto px-4" disabled={isProcessingAI}> Cancel </button>
-            <button
-              onclick={() => handleAIRequest()}
-              class="container mx-auto px-4"
-              disabled={!query.trim() || isProcessingAI}
-            >
-              {#if isProcessingAI}
-                <Loader2 class="container mx-auto px-4" />
-                <span>Processing...</span>
-              {:else}
-                <Brain class="container mx-auto px-4" />
-                <span>Get Help</span>
-              {/if}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-{/if}
-<!-- Actions Dropdown Menu -->
-{#if $actionsOpen}
-  <div class="container mx-auto px-4">
-    <button class="container mx-auto px-4">
-      <Eye class="container mx-auto px-4" />
-      Preview
-    </button>
-    <button class="container mx-auto px-4">
-      <Share2 class="container mx-auto px-4" />
-      Share
-    </button>
-    <div class="container mx-auto px-4"></div>
-    <button class="container mx-auto px-4">
-      <X class="container mx-auto px-4" />
-      Delete
-    </button>
-  </div>
-{/if}
-<!-- Help Tooltip -->
-{#if $helpOpen}
-  <div class="container mx-auto px-4">
-    Use the AI assistant for legal research and drafting help. Click the citation button to add references.
-  </div>
-{/if}
 
 <style>
   /* @unocss-include */
-  .toolbar-btn {
-    padding: 0.5rem 0.5rem;
-    font-size: 0.875rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.25rem;
-    transition: background-color 0.2;
-  }
-  .toolbar-btn:hover {
-    background-color: #f9fafb;
-  }
   .toolbar-separator {
-    color: #d1d5db;
+    color: var(--nier-gray);
     margin: 0 0.5rem;
   }
-  .ai-button {
-    background-color: #eff6ff;
-    border-color: #93c5fd;
+</style>
     color: #1d4ed8;
   }
   .ai-buttonhover {

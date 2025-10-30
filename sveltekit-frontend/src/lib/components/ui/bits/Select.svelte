@@ -1,19 +1,19 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Snippet } from 'svelte';
-  import { Select as BitsSelect } from 'bits-ui';
-  import { cn } from '$lib/utils/cn';
-  import { ChevronDown, Check } from 'lucide-svelte';
-  // Extract available components from BitsSelect
-  const {
-    Root: SelectRoot
-    Trigger: SelectTrigger
-    Content: SelectContent
-    Item: SelectItem
-    // Value and other components might not be available
-    Portal: SelectPortal
-    Group: SelectGroup
-  } = BitsSelect;
+  import { Select as SelectPrimitive } from 'bits-ui';
+
+  // Re-export the Bits UI Select components
+  export const Root = SelectPrimitive.Root;
+  export const Trigger = SelectPrimitive.Trigger;
+  export const Content = SelectPrimitive.Content;
+  export const Item = SelectPrimitive.Item;
+  export const Group = SelectPrimitive.Group;
+  export const Label = SelectPrimitive.Label;
+  export const Separator = SelectPrimitive.Separator;
+  export const Arrow = SelectPrimitive.Arrow;
+  export const Portal = SelectPrimitive.Portal;
+  export const Value = SelectPrimitive.Value;
+  export const Icon = SelectPrimitive.Icon;
+</script>
   interface SelectOption {
     value: string;
     label: string;

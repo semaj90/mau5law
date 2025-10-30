@@ -1,37 +1,43 @@
+import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import postgres from 'postgres';
-import * as schema from './schema-unified.js';
+import { env } from '$env/dynamic/private';
+import * as schema from './schema-postgres.js';
 
-// Environment check that works in both SvelteKit and worker contexts
-const isDev = process.env.NODE_ENV === 'development';
+/**
+ * True when running in development mode (NODE_ENV === 'development')
+ */
+const isDev: boolean = process.env.NODE_ENV === 'development';
 
-// Connection strings with role separation
-const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db';
-const ADMIN_DATABASE_URL =
-  process.env.DATABASE_URL_ADMIN ||
-  process.env.ADMIN_DATABASE_URL ||
-  'postgresql://postgres:123456@127.0.0.1:5432/legal_ai_db';
+/**
+ * Returns the main application database URL.
+ */
+function getDatabaseUrl(): string {
+  return env.DATABASE_URL ?? process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/app';
+}
 
-// Create connections with role separation
+/**
+ * Returns the admin database URL (used for migrations and privileged operations).
+ * Falls back to the main database URL if ADMIN_DATABASE_URL is not set.
+ */
+function getAdminDatabaseUrl(): string {
+  return env.ADMIN_DATABASE_URL ?? process.env.ADMIN_DATABASE_URL ?? getDatabaseUrl();
+}
+
+// Singletons for database connections
 let runtimeConnectionSingleton: postgres.Sql | null = null;
 let adminConnectionSingleton: postgres.Sql | null = null;
 
 function createRuntimeConnection(): postgres.Sql {
   if (!runtimeConnectionSingleton) {
-    runtimeConnectionSingleton = postgres(RUNTIME_DATABASE_URL, {
-      // Connection pool settings
+    const databaseUrl = getDatabaseUrl();
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL is not set in environment variables');
+    }
+    runtimeConnectionSingleton = postgres(databaseUrl, {
       max: isDev ? 5 : 10,
       idle_timeout: 20,
       max_lifetime: 60 * 30, // 30 minutes
-      // Enable prepared statements for better performance
-      prepare: !isDev, // Disable in isDev for better DX with schema changes
-      // SSL settings (disable for local isDev)
-      ssl: false,
-      // Connection retry settings for Vite SSR context
-      backoff: (attempt) => Math.min(1000 * 2 ** attempt, 30000),
-      connect_timeout: 3000,
-      // Transform settings for compatibility
       transform: {
         undefined: null,
       },
@@ -51,7 +57,11 @@ function createRuntimeConnection(): postgres.Sql {
 
 function createAdminConnection(): postgres.Sql {
   if (!adminConnectionSingleton) {
-    adminConnectionSingleton = postgres(ADMIN_DATABASE_URL, {
+    const adminDatabaseUrl = getAdminDatabaseUrl();
+    if (!adminDatabaseUrl) {
+      throw new Error('ADMIN_DATABASE_URL is not set in environment variables');
+    }
+    adminConnectionSingleton = postgres(adminDatabaseUrl, {
       // Minimal pool for admin operations
       max: 2,
       idle_timeout: 10,
@@ -76,10 +86,10 @@ function createAdminConnection(): postgres.Sql {
 
 // Lazy-initialized Drizzle instances for Vite SSR compatibility
 // These defer connection establishment until first actual use
-let dbInstance: ReturnType<typeof drizzle> | null = null;
-let adminDbInstance: ReturnType<typeof drizzle> | null = null;
+let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
+let adminDbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
-function initializeDb(): ReturnType<typeof drizzle> {
+function initializeDb(): ReturnType<typeof drizzle<typeof schema>> {
   if (!dbInstance) {
     dbInstance = drizzle(createRuntimeConnection(), {
       schema,
@@ -89,7 +99,7 @@ function initializeDb(): ReturnType<typeof drizzle> {
   return dbInstance;
 }
 
-function initializeAdminDb(): ReturnType<typeof drizzle> {
+function initializeAdminDb(): ReturnType<typeof drizzle<typeof schema>> {
   if (!adminDbInstance) {
     adminDbInstance = drizzle(createAdminConnection(), {
       schema,
@@ -100,39 +110,39 @@ function initializeAdminDb(): ReturnType<typeof drizzle> {
 }
 
 // Export lazy-loaded database instances using Proxies
-export const db = new Proxy({} as ReturnType<typeof drizzle>, {
-  get(target, prop) {
+export const db = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
+  get(_target, prop) {
     const instance = initializeDb();
     return Reflect.get(instance, prop);
   },
-  has(target, prop) {
+  has(_target, prop) {
     const instance = initializeDb();
     return Reflect.has(instance, prop);
   },
-  ownKeys(target) {
+  ownKeys(_target) {
     const instance = initializeDb();
     return Reflect.ownKeys(instance);
   },
-  getOwnPropertyDescriptor(target, prop) {
+  getOwnPropertyDescriptor(_target, prop) {
     const instance = initializeDb();
     return Reflect.getOwnPropertyDescriptor(instance, prop);
   },
 });
 
-export const adminDb = new Proxy({} as ReturnType<typeof drizzle>, {
-  get(target, prop) {
+export const adminDb = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
+  get(_target, prop) {
     const instance = initializeAdminDb();
     return Reflect.get(instance, prop);
   },
-  has(target, prop) {
+  has(_target, prop) {
     const instance = initializeAdminDb();
     return Reflect.has(instance, prop);
   },
-  ownKeys(target) {
+  ownKeys(_target) {
     const instance = initializeAdminDb();
     return Reflect.ownKeys(instance);
   },
-  getOwnPropertyDescriptor(target, prop) {
+  getOwnPropertyDescriptor(_target, prop) {
     const instance = initializeAdminDb();
     return Reflect.getOwnPropertyDescriptor(instance, prop);
   },
@@ -147,13 +157,13 @@ async function initializeDatabase() {
       await migrate(adminDb, { migrationsFolder: './src/lib/server/db/migrations' });
       console.log('✅ Database migrations completed');
     } catch (error) {
-      console.warn('⚠️ Migration error (expected in isDevelopment):', error);
+      console.warn('⚠️ Migration error (expected in development):', error);
     }
     initialized = true;
   }
 }
 
-// Auto-initialize in production, skip in isDev
+// Auto-initialize in production, skip in dev
 if (!isDev) {
   initializeDatabase();
 }
@@ -164,9 +174,8 @@ export * from './schema-postgres.js';
 // Health check utilities
 export async function testRuntimeConnection(): Promise<boolean> {
   try {
-    const result = await db.execute('SELECT 1 as test');
+    const result = await createRuntimeConnection()`SELECT 1 as test`;
     console.log('✅ Runtime database connection healthy');
-    // Safe narrowing: after Array.isArray(result) TypeScript treats result as unknown[]
     return Array.isArray(result) && result.length > 0;
   } catch (error) {
     console.error('❌ Runtime database connection test failed:', error);
@@ -176,9 +185,8 @@ export async function testRuntimeConnection(): Promise<boolean> {
 
 export async function testAdminConnection(): Promise<boolean> {
   try {
-    const result = await adminDb.execute('SELECT 1 as test');
+    const result = await createAdminConnection()`SELECT 1 as test`;
     console.log('✅ Admin database connection healthy');
-    // Safe narrowing: after Array.isArray(result) TypeScript treats result as unknown[]
     return Array.isArray(result) && result.length > 0;
   } catch (error) {
     console.error('❌ Admin database connection test failed:', error);

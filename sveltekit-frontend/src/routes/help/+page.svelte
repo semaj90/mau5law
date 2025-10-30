@@ -1,28 +1,21 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
-https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    AlertTriangle,
-    ArrowRight,
-    Book,
-    Clock,
-    Download,
-    ExternalLink,
-    HelpCircle,
-    Info,
-    MessageSquare,
-    Play,
-    Search,
-    Star,
-    User as UserIcon,
-    Video,
-  } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits'; // Changed from default to named import
+  import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+  import ArrowRight from 'lucide-svelte/icons/arrow-right';
+  import Book from 'lucide-svelte/icons/book';
+  import Clock from 'lucide-svelte/icons/clock';
+  import Download from 'lucide-svelte/icons/download';
+  import ExternalLink from 'lucide-svelte/icons/external-link';
+  import HelpCircle from 'lucide-svelte/icons/help-circle';
+  import Info from 'lucide-svelte/icons/info';
+  import MessageSquare from 'lucide-svelte/icons/message-square';
+  import Play from 'lucide-svelte/icons/play';
+  import Search from 'lucide-svelte/icons/search';
+  import Star from 'lucide-svelte/icons/star';
+  import UserIcon from 'lucide-svelte/icons/user'; // Renamed from User as UserIcon
+  import Video from 'lucide-svelte/icons/video';
+
   interface HelpArticle {
     id: string;
     title: string;
@@ -31,52 +24,51 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     tags: string[];
     lastUpdated: string;
     helpful?: number;
-    description string;
-    duration string;
+    description: string;
+    duration: string;
     popularity: number;
     type: string;
   }
   // Help state
   let activeCategory = $state('getting-started');
   let searchQuery = $state('');
-  let filteredArticles = $state<HelpArticle[]>([]);
   // Help categories
   const categories = [
     {
       id: 'getting-started',
       title: 'Getting Started',
-      icon Star,
-      description 'New to the system? Start here',
+      icon: Star,
+      description: 'New to the system? Start here',
     },
     {
       id: 'cases',
       title: 'Case Management',
-      icon Book,
-      description 'Managing and organizing cases',
+      icon: Book,
+      description: 'Managing and organizing cases',
     },
     {
       id: 'evidence',
       title: 'Evidence Handling',
-      icon Search,
-      description 'Evidence collection and analysis',
+      icon: Search,
+      description: 'Evidence collection and analysis',
     },
     {
       id: 'ai-assistant',
       title: 'AI Assistant',
-      icon MessageSquare,
-      description 'Using AI features effectively',
+      icon: MessageSquare,
+      description: 'Using AI features effectively',
     },
     {
       id: 'advanced',
       title: 'Advanced Features',
-      icon UserIcon,
-      description 'Power user features and tips',
+      icon: UserIcon,
+      description: 'Power user features and tips',
     },
     {
       id: 'troubleshooting',
       title: 'Troubleshooting',
-      icon AlertTriangle,
-      description 'Common issues and solutions',
+      icon: AlertTriangle,
+      description: 'Common issues and solutions',
     },
   ];
   // Help articles
@@ -86,9 +78,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'quick-start',
       category: 'getting-started',
       title: 'Quick Start Guide',
-      description 'Get up and running in 5 minutes',
+      description: 'Get up and running in 5 minutes',
       type: 'article',
-      duration '5 min read',
+      duration: '5 min read',
       popularity: 5,
       tags: ['getting-started', 'tutorial', 'basics'],
       lastUpdated: '2024-01-15',
@@ -125,9 +117,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'navigation-tour',
       category: 'getting-started',
       title: 'System Navigation Tour',
-      description 'Learn how to navigate the interface',
+      description: 'Learn how to navigate the interface',
       type: 'interactive',
-      duration '10 min',
+      duration: '10 min',
       popularity: 4,
       tags: [],
       lastUpdated: '2024-01-15',
@@ -159,9 +151,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'first-case',
       category: 'getting-started',
       title: 'Creating Your First Case',
-      description 'Step-by-step case creation walkthrough',
+      description: 'Step-by-step case creation walkthrough',
       type: 'video',
-      duration '8 min',
+      duration: '8 min',
       popularity: 5,
       tags: [],
       lastUpdated: '2024-01-15',
@@ -196,9 +188,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'case-organization',
       category: 'cases',
       title: 'Case Organization Best Practices',
-      description 'How to structure and organize cases effectively',
+      description: 'How to structure and organize cases effectively',
       type: 'article',
-      duration '7 min read',
+      duration: '7 min read',
       popularity: 4,
       tags: [],
       content: `
@@ -234,9 +226,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'evidence-best-practices',
       category: 'evidence',
       title: 'Evidence Handling Best Practices',
-      description 'Proper evidence collection and management',
+      description: 'Proper evidence collection and management',
       type: 'article',
-      duration '10 min read',
+      duration: '10 min read',
       popularity: 5,
       tags: [],
       content: `
@@ -271,9 +263,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'ai-prompting',
       category: 'ai-assistant',
       title: 'Effective AI Prompting Techniques',
-      description 'How to get better results from the AI assistant',
+      description: 'How to get better results from the AI assistant',
       type: 'article',
-      duration '8 min read',
+      duration: '8 min read',
       popularity: 4,
       tags: [],
       content: `
@@ -305,9 +297,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: 'common-issues',
       category: 'troubleshooting',
       title: 'Common Issues and Solutions',
-      description 'Solutions to frequently encountered problems',
+      description: 'Solutions to frequently encountered problems',
       type: 'article',
-      duration '6 min read',
+      duration: '6 min read',
       popularity: 3,
       tags: [],
       content: `
@@ -346,32 +338,30 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   // FAQ items
   const faqs = [
     {
-      question 'How do I reset my password?',
+      question: 'How do I reset my password?',
       answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.',
     },
     {
-      question 'Can I export my case data?',
+      question: 'Can I export my case data?',
       answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.',
     },
     {
-      question 'How do I use keyboard shortcuts?',
+      question: 'How do I use keyboard shortcuts?',
       answer:
         'Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.',
     },
     {
-      question 'What file types are supported for evidence?',
+      question: 'What file types are supported for evidence?',
       answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.',
     },
     {
-      question 'How do I collaborate with team members?',
+      question: 'How do I collaborate with team members?',
       answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.',
     },
   ];
-  $effect(() => {
-    filterArticles();
-  });
-  function filterArticles() {
-    let results = article;
+
+  const filteredArticles = $derived(() => {
+    let results = articles;
     // Filter by category
     if (activeCategory !== 'all') {
       results = results.filter(article => article.category === activeCategory);
@@ -388,8 +378,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     }
     // Sort by popularity
     results = results.sort((a, b) => b.popularity - a.popularity);
-    filteredArticles = result;
-  }
+    return results;
+  });
+
   function getTypeIcon(type: string) {
     switch (type) {
       case 'video':
@@ -410,8 +401,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         return 'text-gray-600';
     }
   }
-  // TODO: Convert to $derived
-  // filterArticles()
 </script>
 
 <svelte:head>
@@ -448,7 +437,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           <button
             type="button"
             class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors"
-            ;
             class:bg-green-100={activeCategory === 'all'}
             class:text-green-700={activeCategory === 'all'}
             class:hover:bg-gray-100={activeCategory !== 'all'}
@@ -471,8 +459,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               class:hover:bg-gray-100={activeCategory !== category.id}
               onclick={() => (activeCategory = category.id)}
             >
-              {@const Icon = category.icon}
-              <Icon class="h-5 w-5" />
+              <!-- <svelte:component> is deprecated in runes mode -->
+              {category.icon({ class: "h-5 w-5" })}
               <div>
                 <div class="font-medium">{category.title}</div>
                 <div class="text-xs text-gray-500">{category.description}</div>
@@ -485,15 +473,15 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <div class="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
-          <Button variant="ghost" class="w-full justify-start bits-btn bits-btn">
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate 'bits-btn' -->
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
           </Button>
-          <Button variant="ghost" class="w-full justify-start bits-btn bits-btn">
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate 'bits-btn' -->
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
           </Button>
-          <Button variant="ghost" class="w-full justify-start bits-btn bits-btn">
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate 'bits-btn' -->
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
           </Button>
@@ -518,8 +506,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               <div class="p-6 hover:bg-gray-50 transition-colors">
                 <div class="flex items-start gap-4">
                   <div class="flex-shrink-0 mt-1">
-                    {@const Icon = getTypeIcon(article.type)}
-                    <Icon class={`h-6 w-6 ${getTypeColor(article.type)}`} />
+                    <!-- <svelte:component> is deprecated in runes mode -->
+                    {getTypeIcon(article.type)({ class: `h-6 w-6 ${getTypeColor(article.type)}` })}
                   </div>
                   <div class="flex-1 min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 mb-2">
@@ -543,9 +531,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     </div>
                     <!-- Article preview -->
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
-                      {@html article.content.split.slice(0, 3).join.substring(0, 200)}...
+                      {@html article.content.split('\n').slice(0, 3).join('\n').substring(0, 200)}...
                     </div>
-                    <Button class="bits-btn" variant="ghost" size="sm">
+                    <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate 'bits-btn' -->
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
@@ -595,11 +583,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               Can't find what you're looking for? Our support team is here to help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button class="bits-btn" variant="ghost" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate 'bits-btn' -->
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
               </Button>
-              <Button class="bits-btn" variant="ghost" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate 'bits-btn' -->
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
               </Button>
@@ -639,4 +627,3 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     margin-bottom: 0.5rem;
   }
 </style>
-

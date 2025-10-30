@@ -32,13 +32,13 @@
   let selectedPracticeArea = $state('');
   let analysisInProgress = $state(false);
   let analysisProgress = $state(0);
-  let precedentMatches = $state([]);
+  let precedentMatches = $state<PrecedentMatch[]>([]);
   // let similarityScores = $state([]);
-  let legalReasoningChain = $state([]);
-  let citationNetworkMap = $state([]);
+  let legalReasoningChain = $state<LegalReasoningStep[]>([]);
+  let citationNetworkMap = $state<CitationNetwork[]>([]);
   // let distinguishingFactors = $state([]);
-  let applicabilityAnalysis = $state(null);
-  let strengthAssessment = $state(null);
+  let applicabilityAnalysis = $state<ApplicabilityAnalysisResult | null>(null);
+  let strengthAssessment = $state<StrengthAssessmentResult | null>(null);
   // Legal AI System State
   let legalSystem = $state({
     status: 'idle',
@@ -100,6 +100,31 @@
     strengthScore: number;
     vulnerabilities: string[]; // Fixed syntax
   }
+
+  interface ApplicabilityAnalysisResult {
+    overallApplicability: 'HIGH' | 'MODERATE' | 'LOW';
+    jurisdictionalAlignment: 'STRONG' | 'MODERATE' | 'WEAK';
+    factualAlignment: 'STRONG' | 'MODERATE' | 'WEAK';
+    legalPrincipleAlignment: 'STRONG' | 'MODERATE' | 'WEAK';
+    factors: {
+      bindingPrecedents: number;
+      persuasivePrecedents: number;
+      averageSimilarity: number;
+      recentAuthority: number;
+    };
+    recommendations: string[];
+  }
+
+  interface StrengthAssessmentResult {
+    overallStrength: 'STRONG' | 'MODERATE' | 'WEAK';
+    bindingAuthorityScore: number;
+    factualSupportScore: number;
+    legalReasoningScore: number;
+    vulnerabilities: string[];
+    strengths: string[];
+    strategicRecommendations: string[];
+  }
+
   $effect(() => {
     initializePrecedentSystem();
     startSystemMonitoring();
@@ -183,121 +208,96 @@
     }, 2000);
   }
   async function performVectorSearch(): Promise<PrecedentMatch[]> {
-    // Mock vector search results
-    const mockResults: PrecedentMatch[] = [
-      {
-        id: 'CASE-2023-001',
-        title: 'State v. Johnson - Contract Interpretation Under Duress',
-        citation: '847 F.3d 234 (5th Cir. 2023)',
-        court: '5th Circuit Court of Appeals',
-        jurisdiction: 'Federal',
-        dateDecided: '2023-08-15',
-        similarityScore: 0.94,
-        factualSimilarity: 0.92,
-        legalSimilarity: 0.96,
-        precedentialValue: 'BINDING',
-        keyFacts: [
-          'Contract signed under financial duress',
-          'Unequal bargaining power between parties',
-          'Evidence of coercive circumstances',
-          'Alternative options were unavailable'
-        ],
-        legalHolding: 'Contracts entered under economic duress are voidable when the duress was a substantial factor in the decision to contract and no reasonable alternative existed.',
-        reasoningChain: [
-          'Economic duress requires proof of coercive circumstances',
-          'Unequal bargaining power alone is insufficient',
-          'Must show lack of reasonable alternatives',
-          'Substantial factor test applies to causation'
-        ],
-        citationCount: 156,
-        recentCitations: 23,
-        distinguishingFactors: [],
-        applicabilityScore: 0.91,
-        strengthIndicators: {
-          factualAlignment: 92,
-          legalPrinciples: 96,
-          jurisdictionalRelevance: 85,
-          temporalRelevance: 98
-        }
-      },
-      {
-        id: 'CASE-2022-087',
-        title: 'Martinez v. Global Corp - Unconscionable Contract Terms',
-        citation: '623 F.Supp.3d 445 (S.D. Cal. 2022)',
-        court: 'U.S. District Court Southern District of California',
-        jurisdiction: 'Federal',
-        dateDecided: '2022-11-22',
-        similarityScore: 0.87,
-        factualSimilarity: 0.85,
-        legalSimilarity: 0.89,
-        precedentialValue: 'PERSUASIVE',
-        keyFacts: [
-          'Adhesion contract with no negotiation',
-          'Complex legal language',
-          'Harsh penalty clauses',
-          'Consumer protection considerations'
-        ],
-        legalHolding: 'Contract terms may be unconscionable where there is both procedural and substantive unconscionability, particularly in consumer contexts.',
-        reasoningChain: [
-          'Procedural unconscionability from lack of meaningful choice',
-          'Substantive unconscionability from one-sided terms',
-          'Consumer protection principles apply',
-          'Court has discretion to refuse enforcement'
-        ],
-        citationCount: 78,
-        recentCitations: 12,
-        distinguishingFactors: [
-          'Different factual context (consumer vs. commercial)',
-          'State law vs. federal law application'
-        ],
-        applicabilityScore: 0.79,
-        strengthIndicators: {
-          factualAlignment: 78,
-          legalPrinciples: 89,
-          jurisdictionalRelevance: 72,
-          temporalRelevance: 85
-        }
-      },
-      {
-        id: 'CASE-2021-156',
-        title: 'Thompson Industries v. Allied Manufacturing - Good Faith Dealing',
-        citation: '789 F.3d 567 (9th Cir. 2021)',
-        court: '9th Circuit Court of Appeals',
-        jurisdiction: 'Federal',
-        dateDecided: '2021-03-10',
-        similarityScore: 0.82,
-        factualSimilarity: 0.80,
-        legalSimilarity: 0.84,
-        precedentialValue: 'BINDING',
-        keyFacts: [
-          'Long-term commercial relationship',
-          'Implied covenant of good faith and fair dealing',
-          'One party acted to frustrate contract purpose',
-          'Substantial investment by plaintiff'
-        ],
-        legalHolding: 'The implied covenant of good faith and fair dealing prohibits parties from acting to frustrate the other party\'s right to receive benefits of the contract.',
-        reasoningChain: [
-          'Good faith covenant implied in all contracts',
-          'Cannot act to frustrate contract purpose',
-          'Must consider parties\' reasonable expectations',
-          'Damages available for breach of covenant'
-        ],
-        citationCount: 234,
-        recentCitations: 45,
-        distinguishingFactors: [
-          'Commercial context vs. consumer context',
-          'Long-term relationship vs. single transaction'
-        ],
-        applicabilityScore: 0.75,
-        strengthIndicators: {
-          factualAlignment: 75,
-          legalPrinciples: 84,
-          jurisdictionalRelevance: 88,
-          temporalRelevance: 76
-        }
+    // Replace mock data with an actual API call to a SvelteKit endpoint
+    try {
+      const response = await fetch('/api/precedent-matching', { // Call SvelteKit API route
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          searchQuery,
+          caseFactPattern,
+          selectedJurisdiction,
+          selectedCourtLevel,
+          selectedPracticeArea,
+        }),
+      });
+
+      if (!response.ok) {
+        // If the API call fails, throw an error to be caught by the catch block
+        // This allows the fallback mock data to be used.
+        throw new Error(`API call failed: ${response.status} ${response.statusText}`);
       }
-    ];
-    return mockResults; // Fixed typo
+
+      const data = await response.json();
+      // Assuming the API returns an object with a 'matches' array
+      if (data.success && Array.isArray(data.matches)) {
+        return data.matches;
+      } else {
+        console.warn('API call successful but returned unexpected data structure:', data);
+        // Fallback to mock data if API response is not as expected
+        // This mock data is a simplified version of the original for brevity.
+        return [
+          {
+            id: 'FALLBACK-CASE-2023-001',
+            title: 'Fallback: State v. Johnson - Contract Interpretation Under Duress',
+            citation: '847 F.3d 234 (5th Cir. 2023)',
+            court: '5th Circuit Court of Appeals',
+            jurisdiction: 'Federal',
+            dateDecided: '2023-08-15',
+            similarityScore: 0.90,
+            factualSimilarity: 0.88,
+            legalSimilarity: 0.92,
+            precedentialValue: 'BINDING',
+            keyFacts: ['Fallback: Contract signed under financial duress'],
+            legalHolding: 'Fallback: Contracts entered under economic duress are voidable.',
+            reasoningChain: ['Fallback: Economic duress requires proof of coercive circumstances'],
+            citationCount: 100,
+            recentCitations: 10,
+            distinguishingFactors: [],
+            applicabilityScore: 0.85,
+            strengthIndicators: {
+              factualAlignment: 90,
+              legalPrinciples: 90,
+              jurisdictionalRelevance: 80,
+              temporalRelevance: 90
+            }
+          }
+        ];
+      }
+    } catch (error) {
+      console.error('Error during vector search API call:', error);
+      // Return mock data on network error or API failure
+      // This mock data is a simplified version of the original for brevity.
+      return [
+        {
+          id: 'FALLBACK-CASE-2023-001',
+          title: 'Fallback: State v. Johnson - Contract Interpretation Under Duress',
+          citation: '847 F.3d 234 (5th Cir. 2023)',
+          court: '5th Circuit Court of Appeals',
+          jurisdiction: 'Federal',
+          dateDecided: '2023-08-15',
+          similarityScore: 0.90,
+          factualSimilarity: 0.88,
+          legalSimilarity: 0.92,
+          precedentialValue: 'BINDING',
+          keyFacts: ['Fallback: Contract signed under financial duress'],
+          legalHolding: 'Fallback: Contracts entered under economic duress are voidable.',
+          reasoningChain: ['Fallback: Economic duress requires proof of coercive circumstances'],
+          citationCount: 100,
+          recentCitations: 10,
+          distinguishingFactors: [],
+          applicabilityScore: 0.85,
+          strengthIndicators: {
+            factualAlignment: 90,
+            legalPrinciples: 90,
+            jurisdictionalRelevance: 80,
+            temporalRelevance: 90
+          }
+        }
+      ];
+    }
   }
   async function calculateSimilarityScores() {
     return precedentMatches.map(match => ({

@@ -1,7 +1,7 @@
 <!-- Citation Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
+  import createLegalEvidenceAnalyzer from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
   import {
     Card,
     CardHeader,
@@ -10,15 +10,16 @@
     Button,
     Input
   } from '$lib/components/ui/enhanced-bits';
+
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'constitutional' | 'secondary' | 'foreign';
-    fullCitation string;
+    fullCitation: string;
     shortForm: string;
     pinpoint?: string;
     court?: string;
     year?: number;
-    jurisdiction string;
+    jurisdiction: string;
     verified: boolean;
     accuracy: number;
     relevanceScore: number;
@@ -30,6 +31,7 @@
     dateAdded: string;
     lastChecked?: string;
   }
+
   interface CitationDatabase {
     citations: Citation[];
     categories: string[];
@@ -39,34 +41,38 @@
       verified: number;
       pending: number;
       byType: Record<string, number>;
-      byJurisdiction Record<string, number>;
+      byJurisdiction: Record<string, number>;
     }
   }
+
   interface Props {
     citations?: Citation[];
     onVerify?: (citationId: string) => Promise<boolean>;
     onSearch?: (query: string) => Promise<Citation[]>;
     onExport?: (citations: Citation[], format: string) => void;
   }
+
   let { citations = [], onVerify, onSearch, onExport }: Props = $props();
+
   // Enhanced-Bits builder for citations
   const citationBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
     aiModel: 'gemma3',
   });
+
   let citationData = $state<CitationDatabase>({
     citations: citations.length > 0 ? citations : [
       {
         id: 'cit-001',
         type: 'case',
-        fullCitation 'Brown v. Board of Education, 347 U.S. 483 (1954)',
+        fullCitation: 'Brown v. Board of Education, 347 U.S. 483 (1954)',
         shortForm: 'Brown',
         pinpoint: '495',
         court: 'Supreme Court',
         year: 1954,
-        jurisdiction 'Federal',
-        verified: true
+        jurisdiction: 'Federal',
+        verified: true,
         accuracy: 0.98,
         relevanceScore: 0.92,
         usageCount: 15,
@@ -80,10 +86,10 @@
       {
         id: 'cit-002',
         type: 'statute',
-        fullCitation '42 U.S.C. § 1983',
+        fullCitation: '42 U.S.C. § 1983',
         shortForm: '§ 1983',
-        jurisdiction 'Federal',
-        verified: true
+        jurisdiction: 'Federal',
+        verified: true,
         accuracy: 0.95,
         relevanceScore: 0.88,
         usageCount: 8,
@@ -96,10 +102,10 @@
       {
         id: 'cit-003',
         type: 'regulation',
-        fullCitation '29 C.F.R. § 1630.2(g)',
+        fullCitation: '29 C.F.R. § 1630.2(g)',
         shortForm: '29 C.F.R. § 1630.2(g)',
-        jurisdiction 'Federal',
-        verified: false
+        jurisdiction: 'Federal',
+        verified: false,
         accuracy: 0.82,
         relevanceScore: 0.75,
         usageCount: 3,
@@ -116,9 +122,10 @@
       verified: 0,
       pending: 0,
       byType: {},
-      byJurisdiction {}
+      byJurisdiction: {}
     }
   });
+
   let searchTerm = $state('');
   let filterType = $state<string>('all');
   let filterJurisdiction = $state<string>('all');
@@ -127,6 +134,7 @@
   let showAddForm = $state(false);
   let isVerifying = $state(false);
   let bulkOperations = $state(false);
+
   // Calculate statistics
   $effect(() => {
     const stats = {
@@ -134,17 +142,18 @@
       verified: citationData.citations.filter(c => c.verified).length,
       pending: citationData.citations.filter(c => !c.verified).length,
       byType: {} as Record<string, number>,
-      byJurisdiction {} as Record<string, number>
+      byJurisdiction: {} as Record<string, number>
     }
     citationData.citations.forEach(citation => {
       stats.byType[citation.type] = (stats.byType[citation.type] || 0) + 1;
       stats.byJurisdiction[citation.jurisdiction] = (stats.byJurisdiction[citation.jurisdiction] || 0) + 1;
     });
-    citationData.stats = stat;
+    citationData.stats = stats;
   });
+
   // Filtered and sorted citations
   let filteredCitations = $derived(() => {
-    let filtered = citationData.citation;
+    let filtered = citationData.citations;
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(citation =>
@@ -164,21 +173,28 @@
     }
     // Sort citations
     filtered.sort((a, b) => {
+      let comparison = 0;
       switch (sortBy) {
         case 'relevance':
-          return b.relevanceScore - a.relevanceScor;
+          comparison = b.relevanceScore - a.relevanceScore;
+          break;
         case 'date':
-          return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+          comparison = new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+          break;
         case 'usage':
-          return b.usageCount - a.usageCount;
+          comparison = b.usageCount - a.usageCount;
+          break;
         case 'accuracy':
-          return b.accuracy - a.accuracy;
+          comparison = b.accuracy - a.accuracy;
+          break;
         default:
-          return 0;
+          comparison = 0;
       }
+      return comparison;
     });
     return filtered;
   });
+
   async function verifyCitation(citationId: string) {
     if (!onVerify) return;
     isVerifying = true;
@@ -196,6 +212,7 @@
       isVerifying = false;
     }
   }
+
   async function searchCitations() {
     if (!onSearch || !searchTerm) return;
     try {
@@ -214,6 +231,7 @@
       console.error('Citation search failed:', error);
     }
   }
+
   function toggleSelection(citationId: string) {
     const newSelection = new Set(selectedCitations);
     if (newSelection.has(citationId)) {
@@ -221,14 +239,17 @@
     } else {
       newSelection.add(citationId);
     }
-    selectedCitations = newSelectio;
+    selectedCitations = newSelection;
   }
+
   function selectAll() {
     selectedCitations = new Set(filteredCitations.map(c => c.id));
   }
+
   function clearSelection() {
     selectedCitations = new Set();
   }
+
   function exportCitations(format: 'bluebook' | 'apa' | 'mla' | 'json' | 'csv') {
     if (onExport) {
       const citationsToExport = citationData.citations.filter(c =>
@@ -239,39 +260,43 @@
       console.log(`Exporting ${selectedCitations.size} citations as ${format.toUpperCase()}`);
     }
   }
+
   function addNewCitation() {
-    const newCitation Citation = {
+    const newCitation: Citation = {
       id: `new-${Date.now()}`,
       type: 'case',
-      fullCitation '',
+      fullCitation: '',
       shortForm: '',
-      jurisdiction 'Federal',
-      verified: false
+      jurisdiction: 'Federal',
+      verified: false,
       accuracy: 0,
       relevanceScore: 0,
       usageCount: 0,
       tags: [],
       status: 'pending',
-      dateAdded: new Date().toISOString();
+      dateAdded: new Date().toISOString(),
     }
     citationData.citations.unshift(newCitation);
     showAddForm = false;
   }
+
   function deleteCitation(citationId: string) {
     citationData.citations = citationData.citations.filter(c => c.id !== citationId);
     selectedCitations.delete(citationId);
   }
+
   function getCitationIcon(type: Citation['type']): string {
     const icons = {
       case: '⚖️',
       statute: '📜',
-      regulation '📋',
+      regulation: '📋',
       constitutional: '🏛️',
       secondary: '📚',
       foreign: '🌍',
     }
     return icons[type] || '📄';
   }
+
   function getStatusColor(status: Citation['status']) {
     const colors = {
       active: '#10b981',
@@ -281,342 +306,348 @@
     }
     return colors[status] || colors.pending;
   }
+
   function getAccuracyColor(accuracy: number) {
     if (accuracy >= 0.9) return '#10b981';
     if (accuracy >= 0.7) return '#f59e0b';
     return '#ef4444';
   }
 </script>
+
 <div class="citation-manager">
   <!-- Citation Manager Header -->
-  <Card
-    style="
-      border-color: {citationBuilder.styling.colors.primary}
-      border-width: {citationBuilder.styling.nes.borderWidth}
-    "
-  >
-    <CardHeader>
-      <CardTitle class="citation-title">
-        <div class="title-section">
-          <span class="citation-icon">📚</span>
-          <div class="title-text">
-            <h2>Citation Manager</h2>
-            <div class="citation-meta">
-              <span class="total-count">{citationData.stats.total} Total Citations</span>
-              <span class="verified-count">✅ {citationData.stats.verified} Verified</span>
-              <span class="pending-count">⏳ {citationData.stats.pending} Pending</span>
+  <Card>
+    <!-- Moved style attributes to an inner div if needed, or rely on global CSS variables -->
+    <div
+      style="
+        border-color: {citationBuilder.styling.colors.primary};
+        border-width: {citationBuilder.styling.nes.borderWidth};
+      "
+    >
+      <CardHeader>
+        <CardTitle class="citation-title">
+          <div class="title-section">
+            <span class="citation-icon">📚</span>
+            <div class="title-text">
+              <h2>Citation Manager</h2>
+              <div class="citation-meta">
+                <span class="total-count">{citationData.stats.total} Total Citations</span>
+                <span class="verified-count">✅ {citationData.stats.verified} Verified</span>
+                <span class="pending-count">⏳ {citationData.stats.pending} Pending</span>
+              </div>
+            </div>
+          </div>
+          <div class="citation-actions">
+            <Button
+              onclick={() => showAddForm = !showAddForm}
+              style="background: {citationBuilder.styling.colors.evidence}"
+            >
+              ➕ Add Citation
+            </Button>
+            <Button
+              onclick={() => bulkOperations = !bulkOperations}
+              variant="outline"
+            >
+              🔧 Bulk Operations
+            </Button>
+            {#if selectedCitations.size > 0}
+              <div class="bulk-actions" transition:fade>
+                <Button onclick={() => exportCitations('bluebook')} size="sm">
+                  📄 Bluebook ({selectedCitations.size})
+                </Button>
+                <Button onclick={() => exportCitations('json')} size="sm" variant="outline">
+                  🔧 JSON
+                </Button>
+              </div>
+            {/if}
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <!-- Add Citation Form -->
+        {#if showAddForm}
+          <div class="add-form" transition:fly={{ y: -20, duration: 300 }}>
+            <div class="form-header">
+              <h3>Add New Citation</h3>
+              <Button onclick={() => showAddForm = false} size="sm">✕</Button>
+            </div>
+            <div class="form-content">
+              <Button onclick={addNewCitation}>
+                📝 Create New Citation
+              </Button>
+              <Button onclick={searchCitations} disabled={!searchTerm}>
+                🔍 Search Legal Databases
+              </Button>
+            </div>
+          </div>
+        {/if}
+        <!-- Bulk Operations Panel -->
+        {#if bulkOperations}
+          <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
+            <div class="panel-header">
+              <h3>Bulk Operations</h3>
+              <Button onclick={() => bulkOperations = false} size="sm">✕</Button>
+            </div>
+            <div class="bulk-controls">
+              <Button onclick={selectAll}>Select All ({filteredCitations.length})</Button>
+              <Button onclick={clearSelection}>Clear Selection</Button>
+              <Button onclick={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
+                Export Selected ({selectedCitations.size})
+              </Button>
+            </div>
+          </div>
+        {/if}
+        <!-- Search and Filters -->
+        <div class="controls-section">
+          <div class="search-controls">
+            <Input
+              bind:value={searchTerm}
+              placeholder="Search citations by title, content, tags, or notes..."
+              class="citation-search"
+            />
+            <Button onclick={searchCitations} disabled={!searchTerm}>
+              🔍 Search
+            </Button>
+          </div>
+          <div class="filter-controls">
+            <select bind:value={filterType} class="filter-select">
+              <option value="all">All Types</option>
+              <option value="case">⚖️ Cases</option>
+              <option value="statute">📜 Statutes</option>
+              <option value="regulation">📋 Regulations</option>
+              <option value="constitutional">🏛️ Constitutional</option>
+              <option value="secondary">📚 Secondary</option>
+              <option value="foreign">🌍 Foreign</option>
+            </select>
+            <select bind:value={filterJurisdiction} class="filter-select">
+              <option value="all">All Jurisdictions</option>
+              {#each citationData.jurisdictions as jurisdiction}
+                <option value={jurisdiction}>{jurisdiction}</option>
+              {/each}
+            </select>
+            <select bind:value={sortBy} class="sort-select">
+              <option value="relevance">Sort by Relevance</option>
+              <option value="date">Sort by Date Added</option>
+              <option value="usage">Sort by Usage Count</option>
+              <option value="accuracy">Sort by Accuracy</option>
+            </select>
+          </div>
+        </div>
+        <!-- Citation Statistics -->
+        <div class="stats-section">
+          <h3>Citation Statistics</h3>
+          <div class="stats-grid">
+            <!-- By Type Stats -->
+            <div class="stat-group">
+              <h4>By Type</h4>
+              {#each Object.entries(citationData.stats.byType) as [type, count]}
+                <div class="stat-item">
+                  <span class="stat-icon">{getCitationIcon(type as Citation['type'])}</span>
+                  <span class="stat-label">{type.toUpperCase()}</span>
+                  <span class="stat-count">{count}</span>
+                </div>
+              {/each}
+            </div>
+            <!-- By Jurisdiction Stats -->
+            <div class="stat-group">
+              <h4>By Jurisdiction</h4>
+              {#each Object.entries(citationData.stats.byJurisdiction) as [jurisdiction, count]}
+                <div class="stat-item">
+                  <span class="stat-icon">🏛️</span>
+                  <span class="stat-label">{jurisdiction}</span>
+                  <span class="stat-count">{count}</span>
+                </div>
+              {/each}
+            </div>
+            <!-- Verification Status -->
+            <div class="stat-group">
+              <h4>Verification Status</h4>
+              <div class="stat-item">
+                <span class="stat-icon">✅</span>
+                <span class="stat-label">VERIFIED</span>
+                <span class="stat-count">{citationData.stats.verified}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-icon">⏳</span>
+                <span class="stat-label">PENDING</span>
+                <span class="stat-count">{citationData.stats.pending}</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="citation-actions">
-          <Button
-            onclick={() => showAddForm = !showAddForm}
-            style="background: {citationBuilder.styling.colors.evidence}"
-          >
-            ➕ Add Citation
-          </Button>
-          <Button
-            onclick={() => bulkOperations = !bulkOperations}
-            variant="outline"
-          >
-            🔧 Bulk Operations
-          </Button>
-          {#if selectedCitations.size > 0}
-            <div class="bulk-actions" transitionfade>
-              <Button onclick={() => exportCitations('bluebook')} size="sm">
-                📄 Bluebook ({selectedCitations.size})
-              </Button>
-              <Button onclick={() => exportCitations('json')} size="sm" variant="outline">
-                🔧 JSON
+        <!-- Citation List -->
+        <div class="citation-list">
+          {#each filteredCitations as citation (citation.id)}
+            <div
+              class="citation-item"
+              class:selected={selectedCitations.has(citation.id)}
+              transition:scale={citationBuilder.animations.enter}
+            >
+              <div class="citation-header">
+                <div class="citation-select">
+                  <input
+                    type="checkbox"
+                    checked={selectedCitations.has(citation.id)}
+                    onchange={() => toggleSelection(citation.id)}
+                    class="citation-checkbox"
+                  />
+                </div>
+                <div class="citation-type">
+                  <span class="type-icon">{getCitationIcon(citation.type)}</span>
+                  <span class="type-label">{citation.type.toUpperCase()}</span>
+                </div>
+                <div class="citation-status">
+                  <div
+                    class="status-badge"
+                    style="color: {getStatusColor(citation.status)}; border-color: {getStatusColor(citation.status)};"
+                  >
+                    {citation.status}
+                  </div>
+                  <div
+                    class="verification-badge"
+                    class:verified={citation.verified}
+                  >
+                    {citation.verified ? '✅ Verified' : '⏳ Pending'}
+                  </div>
+                </div>
+                <div class="citation-actions">
+                  <Button
+                    onclick={() => verifyCitation(citation.id)}
+                    disabled={isVerifying || citation.verified}
+                    size="sm"
+                  >
+                    {isVerifying ? '🔄' : citation.verified ? '✅' : '🔍'} Verify
+                  </Button>
+                  <Button onclick={() => deleteCitation(citation.id)} size="sm" variant="outline">
+                    🗑️
+                  </Button>
+                </div>
+              </div>
+              <div class="citation-content">
+                <div class="citation-main">
+                  <div class="citation-full">
+                    <strong>{citation.fullCitation}</strong>
+                  </div>
+                  {#if citation.shortForm}
+                    <div class="citation-short">
+                      Short form: <em>{citation.shortForm}</em>
+                    </div>
+                  {/if}
+                  {#if citation.pinpoint}
+                    <div class="citation-pinpoint">
+                      Pinpoint: {citation.pinpoint}
+                    </div>
+                  {/if}
+                  <div class="citation-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Jurisdiction</span>
+                      <span class="detail-value">{citation.jurisdiction}</span>
+                    </div>
+                    {#if citation.court}
+                      <div class="detail-item">
+                        <span class="detail-label">Court:</span>
+                        <span class="detail-value">{citation.court}</span>
+                      </div>
+                    {/if}
+                    {#if citation.year}
+                      <div class="detail-item">
+                        <span class="detail-label">Year:</span>
+                        <span class="detail-value">{citation.year}</span>
+                      </div>
+                    {/if}
+                    <div class="detail-item">
+                      <span class="detail-label">Usage:</span>
+                      <span class="detail-value">{citation.usageCount} times</span>
+                    </div>
+                  </div>
+                  {#if citation.notes}
+                    <div class="citation-notes">
+                      <strong>Notes:</strong> {citation.notes}
+                    </div>
+                  {/if}
+                  {#if citation.parentheticals && citation.parentheticals.length > 0}
+                    <div class="citation-parentheticals">
+                      <strong>Parentheticals:</strong>
+                      <ul>
+                        {#each citation.parentheticals as parenthetical}
+                          <li>({parenthetical})</li>
+                        {/each}
+                      </ul>
+                    </div>
+                  {/if}
+                  <div class="citation-tags">
+                    {#each citation.tags as tag}
+                      <span class="citation-tag">#{tag}</span>
+                    {/each}
+                  </div>
+                </div>
+                <div class="citation-metrics">
+                  <div class="metric-item">
+                    <span class="metric-label">Relevance Score:</span>
+                    <div class="metric-bar">
+                      <div
+                        class="metric-fill"
+                        style="
+                          width: {citation.relevanceScore * 100}%;
+                          background: {citationBuilder.styling.colors.evidence};
+                        "
+                      ></div>
+                    </div>
+                    <span class="metric-value">
+                      {Math.round(citation.relevanceScore * 100)}%
+                    </span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-label">Accuracy:</span>
+                    <div class="metric-bar">
+                      <div
+                        class="metric-fill"
+                        style="
+                          width: {citation.accuracy * 100}%;
+                          background: {getAccuracyColor(citation.accuracy)};
+                        "
+                      ></div>
+                    </div>
+                    <span class="metric-value">
+                      {Math.round(citation.accuracy * 100)}%
+                    </span>
+                  </div>
+                  <div class="citation-dates">
+                    <div class="date-item">
+                      <span class="date-label">Added:</span>
+                      <span class="date-value">
+                        {new Date(citation.dateAdded).toLocaleDateString()}
+                      </span>
+                    </div>
+                    {#if citation.lastChecked}
+                      <div class="date-item">
+                        <span class="date-label">Last Checked:</span>
+                        <span class="date-value">
+                          {new Date(citation.lastChecked).toLocaleDateString()}
+                        </span>
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {/each}
+          {#if filteredCitations.length === 0}
+            <div class="no-citations" transition:fade>
+              <span class="no-citations-icon">📚</span>
+              <h3>No Citations Found</h3>
+              <p>No citations match your current search and filter criteria.</p>
+              <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
+                Clear Filters
               </Button>
             </div>
           {/if}
         </div>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <!-- Add Citation Form -->
-      {#if showAddForm}
-        <div class="add-form" transitionfly={{ y: -20, duration 300 }}>
-          <div class="form-header">
-            <h3>Add New Citation</h3>
-            <Button onclick={() => showAddForm = false} size="sm">✕</Button>
-          </div>
-          <div class="form-content">
-            <Button onclick={addNewCitation}>
-              📝 Create New Citation
-            </Button>
-            <Button onclick={searchCitations} disabled={!searchTerm}>
-              🔍 Search Legal Databases
-            </Button>
-          </div>
-        </div>
-      {/if}
-      <!-- Bulk Operations Panel -->
-      {#if bulkOperations}
-        <div class="bulk-panel" transitionfly={{ y: -20, duration 300 }}>
-          <div class="panel-header">
-            <h3>Bulk Operations</h3>
-            <Button onclick={() => bulkOperations = false} size="sm">✕</Button>
-          </div>
-          <div class="bulk-controls">
-            <Button onclick={selectAll}>Select All ({filteredCitations.length})</Button>
-            <Button onclick={clearSelection}>Clear Selection</Button>
-            <Button onclick={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
-              Export Selected ({selectedCitations.size})
-            </Button>
-          </div>
-        </div>
-      {/if}
-      <!-- Search and Filters -->
-      <div class="controls-section">
-        <div class="search-controls">
-          <Input
-            bind:value={searchTerm}
-            placeholder="Search citations by title, content, tags, or notes..."
-            class="citation-search"
-          />
-          <Button onclick={searchCitations} disabled={!searchTerm}>
-            🔍 Search
-          </Button>
-        </div>
-        <div class="filter-controls">
-          <select bind:value={filterType} class="filter-select">
-            <option value="all">All Types</option>
-            <option value="case">⚖️ Cases</option>
-            <option value="statute">📜 Statutes</option>
-            <option value="regulation">📋 Regulations</option>
-            <option value="constitutional">🏛️ Constitutional</option>
-            <option value="secondary">📚 Secondary</option>
-            <option value="foreign">🌍 Foreign</option>
-          </select>
-          <select bind:value={filterJurisdiction} class="filter-select">
-            <option value="all">All Jurisdictions</option>
-            {#each citationData.jurisdictions as jurisdiction}
-              <option value={jurisdiction}>{jurisdiction}</option>
-            {/each}
-          </select>
-          <select bind:value={sortBy} class="sort-select">
-            <option value="relevance">Sort by Relevance</option>
-            <option value="date">Sort by Date Added</option>
-            <option value="usage">Sort by Usage Count</option>
-            <option value="accuracy">Sort by Accuracy</option>
-          </select>
-        </div>
-      </div>
-      <!-- Citation Statistics -->
-      <div class="stats-section">
-        <h3>Citation Statistics</h3>
-        <div class="stats-grid">
-          <!-- By Type Stats -->
-          <div class="stat-group">
-            <h4>By Type</h4>
-            {#each Object.entries(citationData.stats.byType) as [type, count]}
-              <div class="stat-item">
-                <span class="stat-icon">{getCitationIcon(type as Citation['type'])}</span>
-                <span class="stat-label">{type.toUpperCase()}</span>
-                <span class="stat-count">{count}</span>
-              </div>
-            {/each}
-          </div>
-          <!-- By Jurisdiction Stats -->
-          <div class="stat-group">
-            <h4>By Jurisdiction</h4>
-            {#each Object.entries(citationData.stats.byJurisdiction) as [jurisdiction, count]}
-              <div class="stat-item">
-                <span class="stat-icon">🏛️</span>
-                <span class="stat-label">{jurisdiction}</span>
-                <span class="stat-count">{count}</span>
-              </div>
-            {/each}
-          </div>
-          <!-- Verification Status -->
-          <div class="stat-group">
-            <h4>Verification Status</h4>
-            <div class="stat-item">
-              <span class="stat-icon">✅</span>
-              <span class="stat-label">VERIFIED</span>
-              <span class="stat-count">{citationData.stats.verified}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-icon">⏳</span>
-              <span class="stat-label">PENDING</span>
-              <span class="stat-count">{citationData.stats.pending}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Citation List -->
-      <div class="citation-list">
-        {#each filteredCitations as citation (citation.id)}
-          <div
-            class="citation-item";
-            class:selected={selectedCitations.has(citation.id)}
-            transitionscale={citationBuilder.animations.enter}
-          >
-            <div class="citation-header">
-              <div class="citation-select">
-                <input
-                  type="checkbox"
-                  checked={selectedCitations.has(citation.id)}
-                  onchange={() => toggleSelection(citation.id)}
-                  class="citation-checkbox"
-                />
-              </div>
-              <div class="citation-type">
-                <span class="type-icon">{getCitationIcon(citation.type)}</span>
-                <span class="type-label">{citation.type.toUpperCase()}</span>
-              </div>
-              <div class="citation-status">
-                <div
-                  class="status-badge"
-                  style="color: {getStatusColor(citation.status)} border-color: {getStatusColor(citation.status)}"
-                >
-                  {citation.status}
-                </div>
-                <div
-                  class="verification-badge"
-                  class:verified={citation.verified}
-                >
-                  {citation.verified ? '✅ Verified' : '⏳ Pending'}
-                </div>
-              </div>
-              <div class="citation-actions">
-                <Button
-                  onclick={() => verifyCitation(citation.id)}
-                  disabled={isVerifying || citation.verified}
-                  size="sm"
-                >
-                  {isVerifying ? '🔄' : citation.verified ? '✅' : '🔍'} Verify
-                </Button>
-                <Button onclick={() => deleteCitation(citation.id)} size="sm" variant="outline">
-                  🗑️
-                </Button>
-              </div>
-            </div>
-            <div class="citation-content">
-              <div class="citation-main">
-                <div class="citation-full">
-                  <strong>{citation.fullCitation}</strong>
-                </div>
-                {#if citation.shortForm}
-                  <div class="citation-short">
-                    Short form: <em>{citation.shortForm}</em>
-                  </div>
-                {/if}
-                {#if citation.pinpoint}
-                  <div class="citation-pinpoint">
-                    Pinpoint: {citation.pinpoint}
-                  </div>
-                {/if}
-                <div class="citation-details">
-                  <div class="detail-item">
-                    <span class="detail-label">Jurisdiction</span>
-                    <span class="detail-value">{citation.jurisdiction}</span>
-                  </div>
-                  {#if citation.court}
-                    <div class="detail-item">
-                      <span class="detail-label">Court:</span>
-                      <span class="detail-value">{citation.court}</span>
-                    </div>
-                  {/if}
-                  {#if citation.year}
-                    <div class="detail-item">
-                      <span class="detail-label">Year:</span>
-                      <span class="detail-value">{citation.year}</span>
-                    </div>
-                  {/if}
-                  <div class="detail-item">
-                    <span class="detail-label">Usage:</span>
-                    <span class="detail-value">{citation.usageCount} times</span>
-                  </div>
-                </div>
-                {#if citation.notes}
-                  <div class="citation-notes">
-                    <strong>Notes:</strong> {citation.notes}
-                  </div>
-                {/if}
-                {#if citation.parentheticals && citation.parentheticals.length > 0}
-                  <div class="citation-parentheticals">
-                    <strong>Parentheticals:</strong>
-                    <ul>
-                      {#each citation.parentheticals as parenthetical}
-                        <li>({parenthetical})</li>
-                      {/each}
-                    </ul>
-                  </div>
-                {/if}
-                <div class="citation-tags">
-                  {#each citation.tags as tag}
-                    <span class="citation-tag">#{tag}</span>
-                  {/each}
-                </div>
-              </div>
-              <div class="citation-metrics">
-                <div class="metric-item">
-                  <span class="metric-label">Relevance Score:</span>
-                  <div class="metric-bar">
-                    <div
-                      class="metric-fill"
-                      style=";
-                        width: {citation.relevanceScore * 100}%;
-                        background: {citationBuilder.styling.colors.evidence}
-                      "
-                    ></div>
-                  </div>
-                  <span class="metric-value">
-                    {Math.round(citation.relevanceScore * 100)}%
-                  </span>
-                </div>
-                <div class="metric-item">
-                  <span class="metric-label">Accuracy:</span>
-                  <div class="metric-bar">
-                    <div
-                      class="metric-fill"
-                      style="
-                        width: {citation.accuracy * 100}%;
-                        background: {getAccuracyColor(citation.accuracy)}
-                      "
-                    ></div>
-                  </div>
-                  <span class="metric-value">
-                    {Math.round(citation.accuracy * 100)}%
-                  </span>
-                </div>
-                <div class="citation-dates">
-                  <div class="date-item">
-                    <span class="date-label">Added:</span>
-                    <span class="date-value">
-                      {new Date(citation.dateAdded).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {#if citation.lastChecked}
-                    <div class="date-item">
-                      <span class="date-label">Last Checked:</span>
-                      <span class="date-value">
-                        {new Date(citation.lastChecked).toLocaleDateString()}
-                      </span>
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            </div>
-          </div>
-        {/each}
-        {#if filteredCitations.length === 0}
-          <div class="no-citations" transitionfade>
-            <span class="no-citations-icon">📚</span>
-            <h3>No Citations Found</h3>
-            <p>No citations match your current search and filter criteria.</p>
-            <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all', }}>
-              Clear Filters
-            </Button>
-          </div>
-        {/if}
-      </div>
-    </CardContent>
+      </CardContent>
+    </div>
   </Card>
 </div>
+
 <style>
   .citation-manager {
     max-width: 1400px;
@@ -626,7 +657,7 @@
   }
   .citation-title {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -673,7 +704,7 @@
   }
   .form-header, .panel-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -688,7 +719,7 @@
   }
   .controls-section {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     gap: 1rem;
@@ -698,7 +729,7 @@
     display: flex;
     gap: 1rem;
     flex: 1;
-    min-width: 0,
+    min-width: 0;
   }
   .citation-search {
     flex: 1;

@@ -132,7 +132,7 @@
 
   let redisChannels = {
     canvas: `legal:canvas:${caseId}`,
-    collaboration `legal:canvas:${caseId}:collab`,
+    collaboration: `legal:canvas:${caseId}:collab`, // Fixed: added colon
     cursors: `legal:canvas:${caseId}:cursors`,
     ai: `legal:canvas:${caseId}:ai`,
   };
@@ -166,7 +166,7 @@
       width: canvasWidth,
       height: canvasHeight,
       backgroundColor: '#1a1a1a',
-      selection !readOnly,
+      selection: !readOnly, // Fixed: added colon
       interactive: !readOnly,
       preserveObjectStacking: true,
     });
@@ -298,7 +298,7 @@
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
 
-  async function createEvidenceNode(evidence: any, position { x: number; y: number }) {
+  async function createEvidenceNode(evidence: any, position: { x: number; y: number }) { // Fixed: added colon
     const fabric = await getFabric();
     const nodeGroup = new fabric.Group([], {
       left: position.x,
@@ -379,8 +379,8 @@
       nodeType: 'evidence',
     });
 
-    nodeGroup.on && nodeGroup.on('mousedown', (e: any) => handleNodeClick(nodeGroup, e));
-    nodeGroup.on && nodeGroup.on('moving', () => saveCanvasState());
+    nodeGroup.on?.('mousedown', (e: any) => handleNodeClick(nodeGroup, e)); // Fixed: optional chaining
+    nodeGroup.on?.('moving', () => saveCanvasState()); // Fixed: optional chaining
     return nodeGroup;
   }
 
@@ -425,7 +425,7 @@
     return group;
   }
 
-  async function createAnnotation(position { x: number; y: number }, text: string, type: string = 'note') {
+  async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') { // Fixed: added colon
     const fabric = await getFabric();
     const annotation = new fabric.Group([], {
       left: position.x,
@@ -513,7 +513,7 @@
     propertiesPanel = {
       type: node.nodeType,
       data: node.nodeType === 'evidence' ? node.evidenceData : node,
-      position { x: node.left ?? 0, y: node.top ?? 0 },
+      position: { x: node.left ?? 0, y: node.top ?? 0 }, // Fixed: added colon
     };
   }
 
@@ -641,22 +641,22 @@
     if (target) {
       if (target.nodeType === 'evidence') {
         actions.push(
-          { label: 'Analyze Evidence', action () => analyzeEvidence(target.evidenceId) },
-          { label: 'Add Connection', action () => startConnection(target) },
-          { label: 'Add Note', action () => addNote(target) },
-          { label: 'Properties', action () => selectNode(target) }
+          { label: 'Analyze Evidence', action: () => analyzeEvidence(target.evidenceId) }, // Fixed: added colon
+          { label: 'Add Connection', action: () => startConnection(target) },
+          { label: 'Add Note', action: () => addNote(target) },
+          { label: 'Properties', action: () => selectNode(target) }
         );
       } else if (target.nodeType === 'connection') {
         actions.push(
-          { label: 'Edit Connection', action () => editConnection(target) },
-          { label: 'Delete Connection', action () => deleteConnection(target) }
+          { label: 'Edit Connection', action: () => editConnection(target) },
+          { label: 'Delete Connection', action: () => deleteConnection(target) }
         );
       }
-      actions.push({ label: 'Delete', action () => fabricCanvas.remove && fabricCanvas.remove(target) });
+      actions.push({ label: 'Delete', action: () => fabricCanvas.remove && fabricCanvas.remove(target) });
     } else {
       actions.push(
-        { label: 'Add Note', action () => addNoteAt(contextMenu?.x ?? 0, contextMenu?.y ?? 0) },
-        { label: 'Paste', action () => paste() }
+        { label: 'Add Note', action: () => addNoteAt(contextMenu?.x ?? 0, contextMenu?.y ?? 0) },
+        { label: 'Paste', action: () => paste() }
       );
     }
     return actions;
@@ -753,13 +753,13 @@
       fabricCanvas.add && fabricCanvas.add(cursor);
     } else {
       const cursor = collaboratorCursors.get(userId);
-      cursor.animate && cursor.animate('left', cursorData.x, { duration 100 });
-      cursor.animate && cursor.animate('top', cursorData.y, { duration 100 });
+      cursor.animate && cursor.animate('left', cursorData.x, { duration: 100 }); // Fixed: added colon
+      cursor.animate && cursor.animate('top', cursorData.y, { duration: 100 }); // Fixed: added colon
     }
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
 
-  function broadcastCanvasChange(action string, data: any) {
+  function broadcastCanvasChange(action: string, data: any) { // Fixed: added colon
     if (websocketStore.connected)
       websocketStore.broadcastEvidenceEdit && websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
   }
@@ -854,7 +854,7 @@
         await saveToRedisCache(savePayload);
         if (pubSubController && collaborative && pubSubController.publish) {
           await pubSubController.publish(redisChannels.canvas, {
-            action 'canvas_saved',
+            action: 'canvas_saved', // Fixed: added colon
             caseId,
             timestamp: savePayload.timestamp,
             user: 'current_user', // replace with actual user id retrieval
@@ -901,25 +901,22 @@
   }
 
   function setupAutoSave() {
-    fabricCanvas.on &&
-      fabricCanvas.on('object:modified', () => {
-        saveCanvasState();
-        publishCanvasChange('object_modified');
-      });
-    fabricCanvas.on &&
-      fabricCanvas.on('object:added', () => {
-        saveCanvasState();
-        publishCanvasChange('object_added');
-      });
-    fabricCanvas.on &&
-      fabricCanvas.on('object:removed', () => {
-        saveCanvasState();
-        publishCanvasChange('object_removed');
-      });
+    fabricCanvas.on?.('object:modified', () => { // Fixed: optional chaining
+      saveCanvasState();
+      publishCanvasChange('object_modified');
+    });
+    fabricCanvas.on?.('object:added', () => { // Fixed: optional chaining
+      saveCanvasState();
+      publishCanvasChange('object_added');
+    });
+    fabricCanvas.on?.('object:removed', () => { // Fixed: optional chaining
+      saveCanvasState();
+      publishCanvasChange('object_removed');
+    });
     console.log('Auto-save enabled');
   }
 
-  async function publishCanvasChange(action string) {
+  async function publishCanvasChange(action: string) { // Fixed: added colon
     if (!pubSubController || !collaborative) return;
     try {
       await pubSubController.publish(redisChannels.collaboration, {
@@ -966,7 +963,7 @@
     }
   }
 
-  async function highlightSuggestedConnection(suggestion any) {
+  async function highlightSuggestedConnection(suggestion: any) { // Fixed: added colon
     const fabric = await getFabric();
     const fromNode = evidenceNodes.get(suggestion.fromId);
     const toNode = evidenceNodes.get(suggestion.toId);
@@ -1004,14 +1001,14 @@
     if (!undoStack.length) return;
     redoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
     const prev = undoStack.pop();
-    if (prev) loadCanvasFromJSON(prev);
+    if (prev) loadCanvasFromJSON(JSON.stringify(prev)); // Fixed: stringify JSON
   }
 
   function redo() {
     if (!redoStack.length) return;
     undoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
     const next = redoStack.pop();
-    if (next) loadCanvasFromJSON(next);
+    if (next) loadCanvasFromJSON(JSON.stringify(next)); // Fixed: stringify JSON
   }
 
   function exportCanvas(format: 'json' | 'png' | 'svg' = 'png') {
@@ -1303,14 +1300,14 @@
     background: #0a0a0a;
     color: white;
     font-family: Arial, sans-serif;
-    position relative;
+    position: relative; /* Fixed: added colon */
     overflow: hidden;
   }
   .toolbar {
-    position absolute;
-    top: 0,
+    position: absolute; /* Fixed: added colon */
+    top: 0; /* Fixed: comma to semicolon */
     left: 0;
-    right: 0,
+    right: 0; /* Fixed: comma to semicolon */
     height: 60px;
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(10px);
@@ -1319,7 +1316,7 @@
     align-items: center;
     padding: 0 20px;
     gap: 30px;
-    z-index: 100,
+    z-index: 100; /* Fixed: comma to semicolon */
   }
   .tool-group,
   .action-group,
@@ -1363,11 +1360,11 @@
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     padding: 80px 20px 20px 20px;
     overflow-y: auto;
-    z-index: 50,
+    z-index: 50; /* Fixed: comma to semicolon */
   }
   .sidebar-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed: typo 'space-betweenn' */
     align-items: center;
     margin-bottom: 20px;
   }
@@ -1381,7 +1378,7 @@
     color: #ccc;
     font-size: 20px;
     cursor: pointer;
-    padding: 0,
+    padding: 0; /* Fixed: comma to semicolon */
     width: 24px;
     height: 24px;
   }
@@ -1405,7 +1402,7 @@
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(74, 144, 226, 0.5);
   }
-  .evidence-item.on-canv.evidence-icon {
+  .evidence-item.on-canvas .evidence-icon { /* Fixed: class selector and removed extra dot */
     font-size: 24px;
     width: 32px;
     height: 32px;
@@ -1414,7 +1411,7 @@
     justify-content: center;
   }
   .evidence-info {
-    flex: 1,
+    flex: 1; /* Fixed: comma to semicolon */
   }
   .evidence-title {
     font-weight: bold;
@@ -1424,13 +1421,13 @@
   .evidence-type {
     font-size: 12px;
     color: #ccc;
-    text-transform: capitaliz;
+    text-transform: capitalize; /* Fixed: typo 'capitaliz' */
   }
   .sidebar-toggle {
-    position absolute;
+    position: absolute; /* Fixed: added colon */
     top: 80px;
     left: 20px;
-    z-index: 60,
+    z-index: 60; /* Fixed: comma to semicolon */
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
@@ -1442,11 +1439,11 @@
   .canvas-container {
     flex: 1;
     margin-top: 60px;
-    position relative;
+    position: relative; /* Fixed: added colon */
     overflow: hidden;
   }
   .properties-panel {
-    position absolute;
+    position: absolute; /* Fixed: added colon */
     top: 80px;
     right: 20px;
     width: 280px;
@@ -1454,11 +1451,11 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    z-index: 100,
+    z-index: 100; /* Fixed: comma to semicolon */
   }
   .panel-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed: typo 'space-betweenn' */
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -1498,7 +1495,7 @@
     width: calc(50% - 5px);
   }
   .context-menu {
-    position fixed;
+    position: fixed; /* Fixed: added colon */
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1519,7 +1516,7 @@
     font-size: 14px;
     transition: background 0.2s ease;
   }
-  .context-actionhover {
+  .context-action:hover { /* Fixed: added dot for class selector */
     background: rgba(255, 255, 255, 0.1);
   }
   .collaborators {
@@ -1555,7 +1552,7 @@
   }
   .suggestion-item {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Fixed: typo 'space-betweenn' */
     align-items: flex-start;
     gap: 10px;
     padding: 10px;
@@ -1582,6 +1579,9 @@
     background: rgba(74, 144, 226, 0.8);
   }
   .canvas-workspace.sidebar-open .canvas-container {
+    margin-left: 300px;
+  }
+</style>
     margin-left: 300px;
   }
 </style>

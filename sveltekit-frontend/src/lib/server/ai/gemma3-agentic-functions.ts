@@ -1,5 +1,28 @@
 import { caseScoringService } from '../services/CaseScoringService';
 import { cognitiveCache } from './cache'; // Keep this import
+import { embeddingGemma } from './embeddinggemma-service'; // Direct embeddingGemma import
+import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
+
+// Helper for structured logging
+function logError(context: string, error: unknown, details?: Record<string, unknown>) {
+  console.error(
+    `[ERROR] ${new Date().toISOString()} - ${context}:`,
+    error instanceof Error ? error.message : String(error),
+    details ? JSON.stringify(details) : ''
+  );
+  // TODO: Integrate with Sentry or other structured logging system
+  // Sentry.captureException(error, { contexts: { custom: { context, ...details } } });
+}
+
+export async function embed(text: string): Promise<number[]> {
+  try {
+    const result = await embeddingGemma.embed(text); // Use embeddingGemma directly
+    return result.embedding;
+  } catch (error) {
+    logError('Embedding failed', error, { text });
+    throw new Error('Failed to generate embedding.');
+  }
+}
 
 // Import the canonical CaseScoringRequest type
 import type { CaseScoringRequest as BaseCaseScoringRequest } from '$lib/types/scoring';
@@ -123,9 +146,23 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
  */
 
 import { contextualUnderstanding } from './contextual-understanding-service';
-import { embeddingGemma } from './embeddinggemma-service';
-import { qdrantVectorStore } from './qdrant-vector-store';
 import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from '$lib/types/sharedTypes';
+
+/**
+ * Define the expected structure of an item returned by enhancedVectorSearchService.hybridSearch
+ */
+export interface VectorSearchResultItem {
+  id: string;
+  content: string;
+  score: number; // e.g., similarity score or relevance score
+  meta?: Record<string, unknown>; // Additional metadata from the document
+  embedding?: number[]; // Optional: the embedding of the retrieved chunk
+  // Add any other properties that the hybridSearch method might return
+  // For example, if it returns a 'documentId' or 'title' directly
+  documentId?: string;
+  title?: string;
+  documentType?: string;
+}
 
 /**
  * Represents a document record used in retrieval and reranking.
@@ -311,7 +348,10 @@ export const agenticFunctions = {
           body: JSON.stringify({ audioPath: params.audioPath }),
         });
 
-        if (!response.ok) throw new Error(`Whisper API error: ${response.statusText}`);
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Whisper API error: ${response.statusText} - ${errorBody}`);
+        }
 
         const data = await response.json();
         const transcript = data.text || '';
@@ -319,8 +359,8 @@ export const agenticFunctions = {
         await cognitiveCache.storeJsonbDocument(cacheKey, transcript, 600);
         return transcript;
       } catch (error) {
-        console.error('Voice-to-text failed:', error);
-        return '';
+        logError('Voice-to-text failed', error, { audioPath: params.audioPath });
+        return ''; // Return empty string on failure
       }
     },
   },
@@ -345,35 +385,52 @@ export const agenticFunctions = {
           type: 'string',
           description: 'Session ID for context filtering',
         },
+        // Add a filter for document type if needed
+        documentType: {
+          type: 'string',
+          description: 'Optional filter for document type (e.g., "case", "statute")',
+        },
       },
       required: ['query'],
     },
-    handler: async (params: { query: string; topK?: number; sessionId?: string }): Promise<DocumentRecord[]> => {
+    handler: async (params: {
+      query: string;
+      topK?: number;
+      sessionId?: string;
+      documentType?: string;
+    }): Promise<DocumentRecord[]> => {
       const topK = params.topK || 8;
+      const filters: Record<string, unknown> = {};
+      if (params.sessionId) filters.sessionId = params.sessionId;
+      if (params.documentType) filters.documentType = params.documentType;
 
-      // Generate query embedding
-      const embeddingResult = await embeddingGemma.embed(params.query, {
-        embeddingType: 'message',
-        useCache: true,
-      });
+      try {
+        // Generate query embedding
+        const embeddingResult = await embeddingGemma.embed(params.query, {
+          embeddingType: 'message',
+          useCache: true,
+        });
 
-      // Search Qdrant
-      const results = await qdrantVectorStore.searchSimilarConversations(
-        embeddingResult.embedding,
-        topK,
-        params.sessionId ? { sessionId: params.sessionId } : undefined
-      );
+        // Use the unified enhancedVectorSearchService for hybrid search
+        const results: VectorSearchResultItem[] = await enhancedVectorSearchService.hybridSearch(
+          embeddingResult.embedding,
+          params.query, // Pass the original query for keyword search if supported
+          topK,
+          filters
+        );
 
-      return results.map(r => ({
-        id: r.sessionId + '-' + r.turnIndex,
-        content: r.agentResponse,
-        score: r.score,
-        meta: {
-          intent: r.intent,
-          hmmState: r.hmmState,
-          userMessage: r.userMessage,
-        },
-      }));
+        // Map results to DocumentRecord interface
+        return results.map(r => ({
+          id: r.id, // Assuming the unified service returns an ID
+          content: r.content, // Assuming the unified service returns content
+          score: r.score,
+          meta: r.meta || {}, // Assuming meta is returned or can be empty
+          embedding: r.embedding, // Assuming embedding might be returned
+        }));
+      } catch (error) {
+        logError('Hybrid document retrieval failed', error, { query: params.query, topK, filters });
+        throw new Error('Failed to retrieve relevant documents.');
+      }
     },
   },
 
@@ -480,13 +537,16 @@ export const agenticFunctions = {
           }),
         });
 
-        if (!response.ok) throw new Error(`Piper API error: ${response.statusText}`);
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Piper API error: ${response.statusText} - ${errorBody}`);
+        }
 
         const data = await response.json();
         return data.audioPath || '';
       } catch (error) {
-        console.error('Text-to-speech failed:', error);
-        return '';
+        logError('Text-to-speech failed', error, { text: params.text });
+        return ''; // Return empty string on failure
       }
     },
   },
@@ -731,34 +791,39 @@ export class AgenticGemma3Client {
    * Call Ollama API
    */
   private async callOllama(request: LLMRequest): Promise<LLMOutput> {
-    const response = await fetch(`${this.baseUrl}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    try {
+      const response = await fetch(`${this.baseUrl}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: request.model || this.model,
+          prompt: request.prompt,
+          stream: false,
+          options: {
+            temperature: request.temperature ?? 0.7,
+            num_predict: request.maxTokens ?? 512,
+            top_p: 0.9,
+            top_k: 50,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Ollama API error: ${response.statusText} - ${errorBody}`);
+      }
+
+      const data = await response.json();
+
+      return {
+        text: data.response,
         model: request.model || this.model,
-        prompt: request.prompt,
-        stream: false,
-        options: {
-          temperature: request.temperature ?? 0.7,
-          num_predict: request.maxTokens ?? 512,
-          top_p: 0.9,
-          top_k: 50,
-        },
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.statusText}`);
+        confidence: 0.85, // Placeholder, ideally derived from LLM output
+      };
+    } catch (error) {
+      logError('Ollama API call failed', error, { model: request.model, prompt: request.prompt.substring(0, 100) });
+      throw new Error('Failed to get response from Ollama API.');
     }
-
-    const data = await response.json();
-
-    // Removed tokensUsed to match LLMOutput type and avoid type error.
-    return {
-      text: data.response,
-      model: request.model || this.model,
-      confidence: 0.85,
-    };
   }
 
   /**
@@ -803,7 +868,8 @@ export class AgenticGemma3Client {
             result,
           });
         } catch (error) {
-          console.error(`Function ${functionName} failed:`, error);
+          logError(`Agentic function ${functionName} failed`, error, { params });
+          // Continue processing other function calls even if one fails
         }
       }
     }

@@ -1,37 +1,58 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { Chart, registerables } from 'chart.js';
-  import type { EvidenceAnalysis, Finding, Correlation, Entity, TimelineEvent } from '$lib/services/ai-evidence-analyzer';
-  Chart.register(...registerables);
+  // Chart is dynamically imported in the browser to avoid TS/build errors / SSR issues
+  let Chart: any = null;
+  import type { EvidenceAnalysis, Finding, Correlation } from '$lib/services/ai-evidence-analyzer';
+
   interface Props {
-    analysis: EvidenceAnalysi;
+    analysis: EvidenceAnalysis; // Fixed typo: EvidenceAnalysi -> EvidenceAnalysis
   }
+
   let { analysis }: Props = $props();
+
   let canvasRisk: HTMLCanvasElement;
   let canvasEntities: HTMLCanvasElement;
   let canvasTimeline: HTMLCanvasElement;
   let canvasCorrelations: HTMLCanvasElement;
   let canvasSentiment: HTMLCanvasElement;
-  let charts: Chart[] = [];
+
+  let charts: any[] = [];
+
   $effect(() => {
-    renderRiskChart();
-    renderEntitiesChart();
-    renderTimelineChart();
-    renderCorrelationsChart();
-    renderSentimentChart();
+    // Guard for SSR/build-time: only run in browser
+    if (typeof window === 'undefined') return;
+
+    let cancelled = false;
+    (async () => {
+      if (!Chart) {
+        // dynamic import so TS doesn't require 'chart.js/auto' at build-time
+        const mod = await import('chart.js/auto');
+        Chart = mod?.default ?? mod;
+      }
+      if (cancelled) return;
+
+      // render charts after Chart is available
+      renderRiskChart();
+      renderEntitiesChart();
+      renderTimelineChart();
+      renderCorrelationsChart();
+      renderSentimentChart();
+    })();
+
     return () => {
+      cancelled = true;
       charts.forEach(chart => chart.destroy());
-    }
+    };
   });
+
   function renderRiskChart() {
     const ctx = canvasRisk.getContext('2d');
     if (!ctx) return;
+
     const chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: ['Risk', 'Safe'],
-        datasets: [{,
+        datasets: [{ // Fixed: removed leading comma
           data: [analysis.riskScore * 100, (1 - analysis.riskScore) * 100],
           backgroundColor: [
             `rgba(${255 * analysis.riskScore}, ${255 * (1 - analysis.riskScore)}, 0, 0.8)`,
@@ -42,7 +63,7 @@
         }]
       },
       options: {
-        responsive: true
+        responsive: true, // Fixed: added comma
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
@@ -56,31 +77,37 @@
     });
     charts.push(chart);
   }
+
   function renderEntitiesChart() {
     const ctx = canvasEntities.getContext('2d');
     if (!ctx) return;
+
     const entityTypes = ['person', 'organization', 'location', 'date', 'amount', 'object'];
-    const entityCounts = entityTypes.map.length
+    // Fixed: Correctly count entities by type from analysis.keyEntities
+    const entityCounts = entityTypes.map(type =>
+      analysis.keyEntities.filter(entity => entity.type.toLowerCase() === type).length
     );
+
     const chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: entityTypes.map.toUpperCase() + t.slice(1)),
-        datasets: [{,
+        // Fixed: Correctly map and format labels
+        labels: entityTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+        datasets: [{ // Fixed: removed leading comma
           label: 'Entity Count',
-          data: entityCounts
+          data: entityCounts, // Fixed: added comma
           backgroundColor: 'rgba(99, 102, 241, 0.8)',
           borderColor: 'rgba(99, 102, 241, 1)',
           borderWidth: 1,
         }]
       },
       options: {
-        responsive: true
+        responsive: true, // Fixed: added comma
         maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true
-            ticks: { precision 0 }
+            beginAtZero: true, // Fixed: added comma
+            ticks: { precision: 0 } // Fixed: precision 0 -> precision: 0
           }
         },
         plugins: {
@@ -90,27 +117,31 @@
     });
     charts.push(chart);
   }
+
   function renderTimelineChart() {
     const ctx = canvasTimeline.getContext('2d');
     if (!ctx) return;
+
     const sortedEvents = [...analysis.timeline].sort((a, b) =>
       new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
+
     const chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: sortedEvents.map.toLocaleDateString()),
-        datasets: [{,
+        // Fixed: Correctly map dates
+        labels: sortedEvents.map(e => new Date(e.timestamp).toLocaleDateString()),
+        datasets: [{ // Fixed: removed leading comma
           label: 'Event Confidence',
-          data: sortedEvents.map(e => e.confidence * 100),
+          data: sortedEvents.map(e => (e.confidence as number) * 100),
           borderColor: 'rgba(168, 85, 247, 1)',
           backgroundColor: 'rgba(168, 85, 247, 0.1)',
-          tension 0.3,
+          tension: 0.3, // Fixed: tension 0.3 -> tension: 0.3
           fill: true,
         }]
       },
       options: {
-        responsive: true
+        responsive: true, // Fixed: added comma
         maintainAspectRatio: false,
         scales: {
           y: {
@@ -122,7 +153,7 @@
         plugins: {
           tooltip: {
             callbacks: {
-              afterLabel: (context) => {
+              afterLabel: (context: any) => {
                 const event = sortedEvents[context.dataIndex];
                 return `${event.type}: ${event.description}`;
               }
@@ -133,14 +164,16 @@
     });
     charts.push(chart);
   }
+
   function renderCorrelationsChart() {
     const ctx = canvasCorrelations.getContext('2d');
     if (!ctx) return;
+
     const chart = new Chart(ctx, {
       type: 'radar',
       data: {
         labels: analysis.correlations.map((_, i) => `Evidence ${i + 1}`),
-        datasets: [{,
+        datasets: [{ // Fixed: removed leading comma
           label: 'Correlation Strength',
           data: analysis.correlations.map(c => c.strength * 100),
           borderColor: 'rgba(34, 197, 94, 1)',
@@ -152,7 +185,7 @@
         }]
       },
       options: {
-        responsive: true
+        responsive: true, // Fixed: added comma
         maintainAspectRatio: false,
         scales: {
           r: {
@@ -165,16 +198,20 @@
     });
     charts.push(chart);
   }
+
   function renderSentimentChart() {
     const ctx = canvasSentiment.getContext('2d');
     if (!ctx) return;
-    const emotions = analysis.sentiment.emotion;
+
+    const emotions = analysis.sentiment.emotions;
     const chart = new Chart(ctx, {
       type: 'polarArea',
       data: {
-        labels: Object.keys.map(e => e.charAt.toUpperCase() + e.slice(1)),
-        datasets: [{,
-          data: Object.values.map(v => v * 100),
+        // Fixed: Correctly extract and map keys
+        labels: Object.keys(emotions).map((e: string) => e.charAt(0).toUpperCase() + e.slice(1)),
+        datasets: [{ // Fixed: removed leading comma
+          // Fixed: Correctly extract and map values
+          data: Object.values(emotions).map(v => v * 100),
           backgroundColor: [
             'rgba(239, 68, 68, 0.7)',   // anger - red
             'rgba(156, 163, 175, 0.7)',  // fear - gray
@@ -187,7 +224,7 @@
         }]
       },
       options: {
-        responsive: true
+        responsive: true, // Fixed: added comma
         maintainAspectRatio: false,
         scales: {
           r: {
@@ -197,14 +234,14 @@
         },
         plugins: {
           legend: {
-            position ;
-'right';
+            position: 'right', // Fixed: position ; 'right'; -> position: 'right',
           }
         }
       }
     });
     charts.push(chart);
   }
+
   function getFindingIcon(type: Finding['type']) {
     switch (type) {
       case 'pattern': return '🔄';
@@ -215,6 +252,7 @@
       default: return '📊';
     }
   }
+
   function getCorrelationIcon(type: Correlation['correlationType']) {
     switch (type) {
       case 'temporal': return '🕐';
@@ -345,134 +383,227 @@
 
 <style>
   .evidence-analysis-visualization {
-    /* @apply p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg; */
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
   }
   .analysis-header {
-    /* @apply flex justify-between items-start border-b pb-4; */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
   }
   .metadata {
-    /* @apply flex gap-3 items-center; */
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
   }
   .badge {
-    /* @apply px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-sm; */
+    padding: 0.25rem 0.75rem;
+    background: #eef2ff;
+    color: #3730a3;
+    border-radius: 9999px;
+    font-size: 0.875rem;
   }
   .section-title {
-    /* @apply text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3; */
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
   }
   .summary-section {
-    /* @apply bg-gray-50 dark:bg-gray-700 p-4 rounded-lg; */
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
   }
   .summary-text {
-    /* @apply text-gray-700 dark:text-gray-300 leading-relaxed; */
+    color: #374151;
+    line-height: 1.6;
   }
   .charts-grid {
-    /* @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6; */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   .chart-container {
-    /* @apply bg-gray-50 dark: bg-gray-700 p-4 rounded-lg; */
-    position relative;
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    position: relative;
     min-height: 250px;
   }
   .chart-title {
-    /* @apply text-sm font-medium text-gray-700 dark:text-gray-300 mb-2; */
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
   }
   .risk-value {
-    /* @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
   }
   .risk-score {
-    /* @apply text-3xl font-bold block; */
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: block;
   }
   .risk-label {
-    /* @apply text-sm text-gray-500 dark:text-gray-400; */
+    font-size: 0.875rem;
+    color: #6b7280;
   }
   .findings-grid {
-    /* @apply grid grid-cols-1 md:grid-cols-2 gap-4; */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   .finding-card {
-    /* @apply p-4 rounded-lg border; */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
   }
   .finding-card.pattern {
-    /* @apply bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700; */
+    background: #eff6ff;
+    border-color: #bfdbfe;
   }
   .finding-card.anomaly {
-    /* @apply bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700; */
+    background: #fffbeb;
+    border-color: #fef3c7;
   }
   .finding-card.match {
-    /* @apply bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700; */
+    background: #ecfdf5;
+    border-color: #bbf7d0;
   }
   .finding-card.contradiction {
-    /* @apply bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700; */
+    background: #fff1f2;
+    border-color: #fecaca;
   }
   .finding-card.gap {
-    /* @apply bg-gray-50 dark:bg-gray-900/20 border-gray-300 dark:border-gray-700; */
+    background: #f8fafc;
+    border-color: #e6eef3;
   }
   .finding-header {
-    /* @apply flex items-center gap-2 mb-2; */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .finding-icon {
-    /* @apply text-xl; */
+    font-size: 1.25rem;
   }
   .finding-type {
-    /* @apply text-sm font-medium capitaliz; */
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
   }
   .finding-confidence {
-    /* @apply ml-auto text-sm text-gray-500; */
+    margin-left: auto;
+    font-size: 0.875rem;
+    color: #6b7280;
   }
   .finding-description {
-    /* @apply text-sm text-gray-700 dark:text-gray-300 mb-2; */
+    font-size: 0.875rem;
+    color: #374151;
+    margin-bottom: 0.5rem;
   }
   .finding-relevance {
-    /* @apply h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden; */
+    height: 0.5rem;
+    background: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
   }
   .relevance-bar {
-    /* @apply h-full bg-indigo-500 transition-all duration-300; */
+    height: 100%;
+    background: #6366f1;
+    transition: all 0.3s;
   }
   .correlations-list {
-    /* @apply space-y-3; */
+    margin-top: 0.5rem;
   }
   .correlation-item {
-    /* @apply flex gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg; */
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
   }
   .correlation-icon {
-    /* @apply text-2xl; */
+    font-size: 1.25rem;
   }
   .correlation-content {
-    /* @apply flex-1; */
+    flex: 1;
   }
   .correlation-description {
-    /* @apply text-sm text-gray-700 dark:text-gray-300 mb-1; */
+    font-size: 0.875rem;
+    color: #374151;
+    margin-bottom: 0.25rem;
   }
   .correlation-meta {
-    /* @apply flex gap-3 text-xs text-gray-500 dark:text-gray-400; */
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: #6b7280;
   }
   .shared-entities {
-    /* @apply flex flex-wrap gap-1 mt-2; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
   }
   .entity-tag {
-    /* @apply px-2 py-0.5 bg-gray-200 dark:bg-gray-600 text-xs rounded; */
+    padding: 0.25rem 0.5rem;
+    background: #e5e7eb;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
   }
   .recommendations-list {
-    /* @apply space-y-3; */
+    margin-top: 0.5rem;
   }
   .recommendation-item {
-    /* @apply flex gap-3; */
+    display: flex;
+    gap: 0.75rem;
   }
   .recommendation-number {
-    /* @apply flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-medium; */
+    width: 1.5rem;
+    height: 1.5rem;
+    background: #6366f1;
+    color: #ffffff;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
   }
   .entities-grid {
-    /* @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3; */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
   .entity-card {
-    /* @apply p-3 bg-gray-50 dark:bg-gray-700 rounded-lg; */
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
   }
   .entity-type {
-    /* @apply text-xs text-gray-500 dark:text-gray-400 upperca; */
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
   }
   .entity-value {
-    /* @apply block text-sm text-gray-800 dark:text-gray-200 my-1; */
+    display: block;
+    font-size: 0.875rem;
+    color: #111827;
+    margin: 0.25rem 0;
   }
   .entity-stats {
-    /* @apply flex justify-between text-xs text-gray-500 dark:text-gray-400; */
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #6b7280;
   }
 </style>

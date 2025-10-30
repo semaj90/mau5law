@@ -17,8 +17,7 @@
       chatMessages?: unknown[];
     }
     onnavigate?: (data: { view: string; data: any }) => void;
-    oninteract?: (data: { type: string; position ;
-{ x: number; y: number } view: string; data: any }) => void;
+    oninteract?: (data: { type: string; position: { x: number; y: number }; view: string; data: any }) => void;
   }
   let {
     fullscreen = true,
@@ -34,11 +33,11 @@
   let animationFrame: number;
   // SPA Navigation state
   let navigationItems = [
-    { id: 'dashboard', icon '🏠', label: 'Dashboard', color: '#0066cc' },
-    { id: 'evidence', icon '📋', label: 'Evidence', color: '#00cc66' },
-    { id: 'documents', icon '📄', label: 'Documents', color: '#cccc00' },
-    { id: 'chat', icon '💬', label: 'AI Chat', color: '#cc0000' },
-    { id: 'cases', icon '⚖️', label: 'Cases', color: '#cd9a5b' }
+    { id: 'dashboard', icon: '🏠', label: 'Dashboard', color: '#0066cc' },
+    { id: 'evidence', icon: '📋', label: 'Evidence', color: '#00cc66' },
+    { id: 'documents', icon: '📄', label: 'Documents', color: '#cccc00' },
+    { id: 'chat', icon: '💬', label: 'AI Chat', color: '#cc0000' },
+    { id: 'cases', icon: '⚖️', label: 'Cases', color: '#cd9a5b' }
   ];
   // Canvas dimensions and viewport
   let canvasWidth = 1200;
@@ -126,7 +125,7 @@ if (!canvas) return;
   function renderNavigation() {
     if (!ctx) return;
     // Navigation background
-    ctx.fillStyle = colors.surfac;
+    ctx.fillStyle = colors.surface; // Fixed: surfac -> surface
     ctx.fillRect(0, 0, canvasWidth, navigationHeight);
     // Navigation border
     ctx.strokeStyle = colors.secondary;
@@ -146,10 +145,10 @@ if (!canvas) return;
       ctx.font = '24px "Courier New", monospace';
       ctx.fillStyle = isActive ? colors.text: colors.textSecondary;
       ctx.textAlign = 'center';
-      ctx.fillText.icon, x + itemWidth / 2, 25);
+      ctx.fillText(item.icon, x + itemWidth / 2, 25); // Fixed: fillText.icon -> fillText(item.icon
       // Item label
       ctx.font = '12px "Courier New", monospace';
-      ctx.fillText.label, x + itemWidth / 2, 45);
+      ctx.fillText(item.label, x + itemWidth / 2, 45); // Fixed: fillText.label -> fillText(item.label
     });
   }
   function renderCurrentView() {
@@ -198,7 +197,7 @@ if (!canvas) return;
       const x = startX + col * (cardWidth + 20);
       const cardY = y + 80 + row * (cardHeight + 20);
       // Card background
-      ctx.fillStyle = colors.surfac;
+      ctx.fillStyle = colors.surface; // Fixed: surfac -> surface
       ctx.fillRect(x, cardY, cardWidth, cardHeight);
       // Card border
       ctx.strokeStyle = stat.color;
@@ -225,17 +224,17 @@ if (!canvas) return;
     // Evidence items list
     const itemHeight = 80;
     const maxVisible = Math.floor((height - 60) / itemHeight);
-    legalData.evidence.slice.forEach((item, index) => {
+    legalData.evidence.slice().forEach((item, index) => { // Fixed: slice. -> slice()
       const itemY = y + 60 + index * itemHeight;
       // Item background
-      ctx.fillStyle = colors.surfac;
+      ctx.fillStyle = colors.surface; // Fixed: surfac -> surface
       ctx.fillRect(20, itemY, canvasWidth - 40, itemHeight - 10);
       // Priority indicator
       const priorityColors = {
         critical: colors.error,
         high: colors.warning,
         medium: colors.primary,
-        low: colors.accent;
+        low: colors.accent, // Fixed: semicolon to comma
       }
       ctx.fillStyle = priorityColors[(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority];
       ctx.fillRect(20, itemY, 5, itemHeight - 10);
@@ -243,11 +242,11 @@ if (!canvas) return;
       ctx.font = 'bold 16px "Courier New", monospace';
       ctx.fillStyle = colors.text;
       ctx.textAlign = 'left';
-      ctx.fillText.title, 35, itemY + 25);
+      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title, 35, itemY + 25); // Fixed: fillText.title -> fillText(item.title
       // Item type and confidence
       ctx.font = '12px "Courier New", monospace';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText.type.toUpperCase()} | Confidence: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).confidence}%`, 35, itemY + 45);
+      ctx.fillText(`${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).type.toUpperCase()} | Confidence: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).confidence}%`, 35, itemY + 45); // Fixed: fillText.type -> fillText(`${item.type...
     });
   }
   function renderDocuments(y: number, height: number) {
@@ -265,13 +264,13 @@ if (!canvas) return;
       const docHeight = 150;
       const cols = Math.floor((canvasWidth - 40) / (docWidth + 20));
       const startX = (canvasWidth - (cols * (docWidth + 20) - 20)) / 2;
-      legalData.documents.slice.forEach((doc, index) => {
+      legalData.documents.slice().forEach((doc, index) => { // Fixed: slice. -> slice()
         const row = Math.floor(index / cols);
-        const col = index % col;
+        const col = index % cols; // Fixed: index % col -> index % cols
         const x = startX + col * (docWidth + 20);
         const docY = y + 100 + row * (docHeight + 20);
         // Document card
-        ctx.fillStyle = colors.surfac;
+        ctx.fillStyle = colors.surface; // Fixed: surfac -> surface
         ctx.fillRect(x, docY, docWidth, docHeight);
         ctx.strokeStyle = colors.secondary;
         ctx.lineWidth = 2;
@@ -307,10 +306,10 @@ if (!canvas) return;
       x: 20,
       y: y + 100,
       width: canvasWidth - 40,
-      height: height - 150;
+      height: height - 150, // Fixed: semicolon to comma
     }
     // Chat background
-    ctx.fillStyle = colors.surfac;
+    ctx.fillStyle = colors.surface; // Fixed: surfac -> surface
     ctx.fillRect(chatArea.x, chatArea.y, chatArea.width, chatArea.height);
     ctx.strokeStyle = colors.primary;
     ctx.lineWidth = 2;
@@ -384,8 +383,8 @@ if (!canvas) return;
   }
   function handleCanvasClick(_event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = _event.clientX - rect.left; // Fixed: event -> _event
+    const y = _event.clientY - rect.top; // Fixed: event -> _event
     // Navigation click detection
     if (y <= navigationHeight) {
       const itemWidth = canvasWidth / navigationItems.length;
@@ -393,18 +392,17 @@ if (!canvas) return;
       if (clickedIndex >= 0 && clickedIndex < navigationItems.length) {
         currentView = navigationItems[clickedIndex].id as any;
         onnavigate?.({
-          view: currentView;
-          data: legalData;
+          view: currentView, // Fixed: semicolon to comma
+          data: legalData, // Fixed: semicolon to comma
         });
       }
     }
     // Content area interactions
     oninteract?.({
       type: 'click',
-      position ;
-{ x, y },
-      view: currentView;
-      data: legalData;
+      position: { x, y }, // Fixed: position ; -> position:
+      view: currentView, // Fixed: semicolon to comma
+      data: legalData, // Fixed: semicolon to comma
     });
   }
 </script>
@@ -416,7 +414,7 @@ if (!canvas) return;
   aria-label="Legal AI Single Page Application"
   tabindex="0"
 >
-  <canva;
+  <canvas // Fixed: canva; -> canvas
     bind:this={canvas as any}
     width={canvasWidth}
     height={canvasHeight}
@@ -426,7 +424,7 @@ if (!canvas) return;
   />
   <!-- Accessibility content for screen readers -->
   <div class="sr-only">
-    <h1>Legal AI Platform - {currentView.charAt.toUpperCase() + currentView.slice(1)}</h1>
+    <h1>Legal AI Platform - {currentView.charAt(0).toUpperCase() + currentView.slice(1)}</h1>
     <p>Powered by gemma3:legal-latest AI model</p>
     {#if legalData.evidence}
       <h2>Evidence ({legalData.evidence.length} items)</h2>
@@ -444,31 +442,30 @@ if (!canvas) return;
 </div>
 <style>
   .spa-canvas-container {
-    position relative;
+    position: relative; /* Fixed: position relative; -> position: relative; */
     background: var(--yorha-black, #454138);
     border: none;
     margin: 0;
     padding: 0;
   }
   .spa-canvas-container.fullscreen {
-    position fixed;
-d;
-    top: 0,
+    position: fixed; /* Fixed: position fixed;d; -> position: fixed; */
+    top: 0; /* Fixed: top: 0, -> top: 0; */
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1000,
+    z-index: 1000; /* Fixed: z-index: 1000, -> z-index: 1000; */
   }
-  .spa-canv.sr-only {
-    position absolute;
+  .spa-canvas.sr-only { /* Fixed: .spa-canv.sr-only -> .spa-canvas.sr-only */
+    position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0,
+    padding: 0; /* Fixed: padding: 0, -> padding: 0; */
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0,
+    border: 0; /* Fixed: border: 0, -> border: 0; */
   }
   /* Hide scrollbars when fullscreen */
   .spa-canvas-container.fullscreen {
@@ -477,7 +474,10 @@ d;
   /* Responsive design */
   @media (max-width: 768px) {
     .spa-canvas {
-      touch-action none;
+      touch-action: none; /* Fixed: touch-action none; -> touch-action: none; */
+    }
+  }
+</style>
     }
   }
 </style>

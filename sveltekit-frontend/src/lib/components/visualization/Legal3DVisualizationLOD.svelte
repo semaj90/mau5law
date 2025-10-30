@@ -15,27 +15,25 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/card';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import {
-    Box, Eye, Layers, RotateCcw, ZoomIn, ZoomOut, Move3D,
-    Cube, Sphere, Pyramid, Users, FileText, Building, MapPin
+    Eye, Layers, RotateCcw, ZoomIn, ZoomOut,
+    Users, FileText
   } from 'lucide-svelte';
   interface Legal3DEntity {
     id: string;
     type: 'person' | 'organization' | 'document' | 'location' | 'event';
-    position ;
-{ x: number; y: number; z: number }
-    scale: { x: number; y: number; z: number }
-    rotation { x: number; y: number; z: number }
+    position: { x: number; y: number; z: number };
+    scale: { x: number; y: number; z: number };
+    rotation: { x: number; y: number; z: number };
     importance: number; // 0-1, affects LOD visibility and mesh detail
     connections: string[];
     meshType: 'cube' | 'sphere' | 'pyramid' | 'cylinder' | 'complex';
-    color: { r: number; g: number; b: number; a: number }
+    color: { r: number; g: number; b: number; a: number };
     label: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
   interface MeshLODLevel {
     vertices: Float32Array;
@@ -50,24 +48,23 @@
     target: string;
     type: 'legal' | 'business' | 'personal' | 'temporal';
     strength: number; // 0-1, affects line thickness and visibility
-    color: { r: number; g: number; b: number; a: number }
+    color: { r: number; g: number; b: number; a: number };
   }
   interface Camera3D {
-    position ;
-{ x: number; y: number; z: number }
-    target: { x: number; y: number; z: number }
-    up: { x: number; y: number; z: number }
+    position: { x: number; y: number; z: number };
+    target: { x: number; y: number; z: number };
+    up: { x: number; y: number; z: number };
     fov: number;
     near: number;
     far: number;
   }
   interface Legal3DVisualizationLODProps {
     caseId: string;
-    sceneData?: { entities: Legal3DEntity[]; connections: Legal3DConnection[] }
+    sceneData?: { entities: Legal3DEntity[]; connections: Legal3DConnection[] };
     enableWebGPU?: boolean;
     initialCamera?: Camera3D;
     onEntityClick?: (entity: Legal3DEntity) => void;
-    onConnectionClick?: (connection Legal3DConnection) => void;
+    onConnectionClick?: (connection: Legal3DConnection) => void;
     onCameraChange?: (camera: Camera3D) => void;
     onLODChange?: (level: number) => void;
   }
@@ -92,8 +89,7 @@
   let visibleConnections = $state<Legal3DConnection[]>([]);
   let currentLOD = $state(1);
   let camera = $state<Camera3D>(initialCamera || {
-    position ;
-{ x: 0, y: 5, z: 15 },
+    position: { x: 0, y: 5, z: 15 },
     target: { x: 0, y: 0, z: 0 },
     up: { x: 0, y: 1, z: 0 },
     fov: 45,
@@ -110,7 +106,7 @@
   let cameraRotation = $state({ horizontal: 0, vertical: 20 });
   let autoRotate = $state(false);
   // Rendering state
-  let meshBuffers = $state<Map<string, Map<number, GPUBuffer>(0)>>(new Map());
+  let meshBuffers = $state<Map<string, Map<number, GPUBuffer>>>(new Map());
   let renderPipeline = $state<GPURenderPipeline | null>(null);
   let uniformBuffer = $state<GPUBuffer | null>(null);
   let bindGroup = $state<GPUBindGroup | null>(null);
@@ -122,7 +118,7 @@
       maxDistance: 25,
       fogStart: 20,
       fogEnd: 25,
-      description 'Ultra High (Full Detail)',
+      description: 'Ultra High (Full Detail)',
       renderComplexity: 1.0,
     },
     1: {
@@ -131,7 +127,7 @@
       maxDistance: 50,
       fogStart: 40,
       fogEnd: 50,
-      description 'High Detail',
+      description: 'High Detail',
       renderComplexity: 0.7,
     },
     2: {
@@ -140,7 +136,7 @@
       maxDistance: 75,
       fogStart: 60,
       fogEnd: 75,
-      description 'Medium Detail',
+      description: 'Medium Detail',
       renderComplexity: 0.4,
     },
     3: {
@@ -149,7 +145,7 @@
       maxDistance: 100,
       fogStart: 70,
       fogEnd: 100,
-      description 'Low Poly (N64 Style)',
+      description: 'Low Poly (N64 Style)',
       renderComplexity: 0.2,
     }
   }
@@ -165,7 +161,7 @@
   });
   let recommendedLOD = $derived(() => {
     // N64-style LOD based on camera distance and entity density
-    const distance = averageEntityDistanc;
+    const distance = averageEntityDistance;
     const entityCount = allEntities.length;
     if (distance < 20 && entityCount < 50) return 0; // Ultra high for close views
     if (distance < 40 && entityCount < 100) return 1; // High detail
@@ -175,7 +171,7 @@
   let scene3DStats = $derived(() => {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     return {
-      level: currentLOD
+      level: currentLOD,
       visibleEntities: visibleEntities.length,
       visibleConnections: visibleConnections.length,
       totalPolygons: calculateTotalPolygons(),
@@ -227,10 +223,10 @@ if (!browser) return;
     context = canvasElement.getContext('webgpu');
     if (!context) throw new Error('WebGPU context creation failed');
     context.configure({
-      device: gpuDevice;
+      device: gpuDevice,
       format: 'bgra8unorm',
       alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
     });
     isWebGPUReady = true;
     console.log('[Legal3DVisualizationLOD] WebGPU initialized for 3D rendering');
@@ -255,18 +251,18 @@ if (!browser) return;
       @group(0) @binding(0) var<uniform> uniforms : Uniform;
       @vertex
       fn main(
-        @location(0) position : vec3<f32>
+        @location(0) position : vec3<f32>,
         @location(1) color : vec4<f32>
       ) -> VertexOutput {
         var output : VertexOutput;
         // Apply N64-style vertex wobble for low LOD levels
-        var wobbledPosition = positio;
+        var wobbledPosition = position;
         if (uniforms.lodLevel >= 2.0) {
           let wobbleIntensity = (uniforms.lodLevel - 1.0) * 0.1;
           wobbledPosition.x += sin(uniforms.time + position.y * 10.0) * wobbleIntensity;
           wobbledPosition.z += cos(uniforms.time + position.x * 10.0) * wobbleIntensity;
         }
-        output.worldPos = wobbledPositio;
+        output.worldPos = wobbledPosition;
         output.position = uniforms.modelViewProjectionMatrix * vec4<f32>(wobbledPosition, 1.0);
         output.color = color;
         // Calculate fog factor based on distance
@@ -303,18 +299,18 @@ if (!browser) return;
     renderPipeline = gpuDevice.createRenderPipeline({
       layout: 'auto',
       vertex: {
-        module: vertexShader
+        module: vertexShader,
         entryPoint: 'main',
-        buffers: [{,
+        buffers: [{
           arrayStride: 7 * 4, // 3 position + 4 color floats
           attributes: [
-            { shaderLocation 0, offset: 0, format: 'float32x3' }, // position
-            { shaderLocation 1, offset: 3 * 4, format: 'float32x4' }, // color
+            { shaderLocation: 0, offset: 0, format: 'float32x3' }, // position
+            { shaderLocation: 1, offset: 3 * 4, format: 'float32x4' }, // color
           ]
         }]
       },
       fragment: {
-        module: fragmentShader
+        module: fragmentShader,
         entryPoint: 'main',
         targets: [{ format: 'bgra8unorm' }]
       },
@@ -323,20 +319,20 @@ if (!browser) return;
         cullMode: 'back',
       },
       depthStencil: {
-        depthWriteEnabled: true
+        depthWriteEnabled: true,
         depthCompare: 'less',
         format: 'depth24plus',
       }
     });
     // Create uniform buffer
     uniformBuffer = gpuDevice.createBuffer({
-      size: 4 * 16 + 4 * 4, // mat4x4 + 4 float;
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
+      size: 4 * 16 + 4 * 4, // mat4x4 + 4 floats
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
     // Create bind group
     bindGroup = gpuDevice.createBindGroup({
       layout: renderPipeline.getBindGroupLayout(0),
-      entries: [{,
+      entries: [{
         binding: 0,
         resource: { buffer: uniformBuffer }
       }]
@@ -353,7 +349,8 @@ if (!browser) return;
     isLoading = true;
     try {
       // Load 3D scene data from API
-      // removed unused response assignment
+      const response = await fetch(`/api/cases/${caseId}/3d-scene`);
+      if (!response.ok) throw new Error('Failed to fetch scene data');
       const data = await response.json();
       allEntities = data.entities || sceneData.entities || [];
       allConnections = data.connections || sceneData.connections || [];
@@ -378,7 +375,7 @@ if (!browser) return;
         const mesh = generateMeshForLOD(entity, lod);
         const buffer = gpuDevice.createBuffer({
           size: mesh.vertices.byteLength + mesh.indices.byteLength,
-          usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
+          usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
         });
         // Upload mesh data
         gpuDevice.queue.writeBuffer(buffer, 0, mesh.vertices);
@@ -433,7 +430,7 @@ if (!browser) return;
       indices: new Uint16Array(cubeIndices),
       vertexCount: cubeVertices.length / 7,
       triangleCount: cubeIndices.length / 3,
-      complexity;
+      complexity,
     }
   }
   function generateSphereMesh(complexity: number): MeshLODLevel {
@@ -444,11 +441,11 @@ if (!browser) return;
     const indices: number[] = [];
     // Generate sphere vertices
     for (let r = 0; r <= rings; r++) {
-      const theta = (r * Math.PI) / ring;
+      const theta = (r * Math.PI) / rings;
       const sinTheta = Math.sin(theta);
       const cosTheta = Math.cos(theta);
       for (let s = 0; s <= sectors; s++) {
-        const phi = (s * 2 * Math.PI) / sector;
+        const phi = (s * 2 * Math.PI) / sectors;
         const sinPhi = Math.sin(phi);
         const cosPhi = Math.cos(phi);
         const x = sinTheta * cosPhi;
@@ -460,7 +457,7 @@ if (!browser) return;
     // Generate sphere indices
     for (let r = 0; r < rings; r++) {
       for (let s = 0; s < sectors; s++) {
-        const first = r * (sectors + 1) + ;
+        const first = r * (sectors + 1) + s;
         const second = first + sectors + 1;
         indices.push(first, second, first + 1);
         indices.push(second, second + 1, first + 1);
@@ -471,7 +468,7 @@ if (!browser) return;
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
-      complexity;
+      complexity,
     }
   }
   function generatePyramidMesh(complexity: number): MeshLODLevel {
@@ -496,7 +493,7 @@ if (!browser) return;
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
-      complexity;
+      complexity,
     }
   }
   function generateCylinderMesh(complexity: number): MeshLODLevel {
@@ -506,7 +503,7 @@ if (!browser) return;
     const indices: number[] = [];
     // Generate cylinder vertices
     for (let i = 0; i <= sides; i++) {
-      const angle = (i * 2 * Math.PI) / side;
+      const angle = (i * 2 * Math.PI) / sides;
       const x = Math.cos(angle);
       const z = Math.sin(angle);
       // Bottom vertex
@@ -529,7 +526,7 @@ if (!browser) return;
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
-      complexity;
+      complexity,
     }
   }
   function applyLODFiltering(): void {
@@ -587,11 +584,13 @@ if (!browser) return;
     const depthTexture = gpuDevice.createTexture({
       size: { width: canvasElement?.width || 800, height: canvasElement?.height || 600 },
       format: 'depth24plus',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
     });
     // Begin render pass
     const commandEncoder = gpuDevice.createCommandEncoder();
-    const renderPass = commandEncoder.beginRenderPass.createView(),
+    const renderPass = commandEncoder.beginRenderPass({
+      colorAttachments: [{
+        view: context.getCurrentTexture().createView(),
         clearValue: { r: 0.2, g: 0.1, b: 0.4, a: 1.0 }, // N64-style purple background
         loadOp: 'clear',
         storeOp: 'store'
@@ -633,34 +632,34 @@ if (!browser) return;
     return identity; // Placeholder
   }
   function updateCameraFromControls(): void {
-    const distance = cameraDistanc;
+    const distance = cameraDistance;
     const horizontalRad = (cameraRotation.horizontal * Math.PI) / 180;
     const verticalRad = (cameraRotation.vertical * Math.PI) / 180;
     camera.position = {
       x: Math.sin(horizontalRad) * Math.cos(verticalRad) * distance,
       y: Math.sin(verticalRad) * distance,
-      z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distanc;
+      z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distance,
     }
     onCameraChange?.(camera);
   }
   // Event handlers
-  function handleMouseDown(_event: MouseEvent): void {
+  function handleMouseDown(event: MouseEvent): void {
     isDragging = true;
-    lastMousePos = { x: event.clientX, y: event.clientY }
+    lastMousePos = { x: event.clientX, y: event.clientY };
   }
-  function handleMouseMove(_event: MouseEvent): void {
+  function handleMouseMove(event: MouseEvent): void {
     if (!isDragging) return;
     const deltaX = event.clientX - lastMousePos.x;
     const deltaY = event.clientY - lastMousePos.y;
     cameraRotation.horizontal += deltaX * 0.5;
     cameraRotation.vertical = Math.max(-80, Math.min(80, cameraRotation.vertical - deltaY * 0.5));
     updateCameraFromControls();
-    lastMousePos = { x: event.clientX, y: event.clientY }
+    lastMousePos = { x: event.clientX, y: event.clientY };
   }
   function handleMouseUp(): void {
     isDragging = false;
   }
-  function handleWheel(_event: WheelEvent): void {
+  function handleWheel(event: WheelEvent): void {
     event.preventDefault();
     cameraDistance = Math.max(5, Math.min(100, cameraDistance + event.deltaY * 0.01));
     updateCameraFromControls();
@@ -690,9 +689,9 @@ if (!browser) return;
   }
   function calculateMemoryUsage(): number {
     let totalMemory = 0;
-    meshBuffers.forEach(entityBuffers => {
-      entityBuffers.forEach(buffer => {
-        totalMemory += buffer.siz;
+    meshBuffers.forEach((entityBuffers: Map<number, GPUBuffer>) => {
+      entityBuffers.forEach((buffer: GPUBuffer) => {
+        totalMemory += buffer.size;
       });
     });
     return totalMemory / (1024 * 1024); // Convert to MB
@@ -703,10 +702,9 @@ if (!browser) return;
       {
         id: 'person_1',
         type: 'person',
-        position ;
-{ x: 0, y: 0, z: 0 },
+        position: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
-        rotation { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
         importance: 0.9,
         connections: ['org_1'],
         meshType: 'sphere',
@@ -717,10 +715,9 @@ if (!browser) return;
       {
         id: 'org_1',
         type: 'organization',
-        position ;
-{ x: 3, y: 0, z: 0 },
+        position: { x: 3, y: 0, z: 0 },
         scale: { x: 1.5, y: 1.5, z: 1.5 },
-        rotation { x: 0, y: 45, z: 0 },
+        rotation: { x: 0, y: 45, z: 0 },
         importance: 0.8,
         connections: ['person_1'],
         meshType: 'cube',
@@ -739,8 +736,8 @@ if (!browser) return;
         color: { r: 1, g: 1, b: 0, a: 1 }
       }
     ];
-    allEntities = demoEntitie;
-    allConnections = demoConnection;
+    allEntities = demoEntities;
+    allConnections = demoConnections;
     await generateEntityMeshLODs();
     applyLODFiltering();
   }
@@ -902,21 +899,27 @@ if (!browser) return;
     font-size: 0.75rem;
   }
   .canvas-container {
-    position relative;
-    background: #1a1a2;
+    position: relative;
+    background: #1a1a2e;
     border: 2px solid #444;
     border-radius: 4px;
     margin-bottom: 1rem;
     overflow: hidden;
   }
-  .visualization-canv.visualization-canvas:active {
+  .visualization-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+  }
+  .visualization-canvas:active {
     cursor: grabbing;
   }
   .loading-overlay {
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -926,7 +929,7 @@ if (!browser) return;
     gap: 1rem;
   }
   .controls-overlay {
-    position absolute;
+    position: absolute;
     bottom: 10px;
     left: 10px;
     right: 10px;
@@ -1009,7 +1012,7 @@ if (!browser) return;
     .lod-controls {
       justify-self: center;
     }
-    .visualization-canv.stats-grid {
+    .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }

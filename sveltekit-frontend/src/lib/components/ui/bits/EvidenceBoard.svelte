@@ -8,12 +8,11 @@
     title: string;
     content?: string;
     thumbnail?: string;
-    position ;
-{ x: number; y: number }
-    size: { width: number; height: number }
+    position: { x: number; y: number };
+    size: { width: number; height: number };
     color?: string;
     connections?: string[];
-    metadata?: { [key: string]: any }
+    metadata?: { [key: string]: any };
   }
   interface EvidenceBoardProps {
     theme?: 'default' | 'legal' | 'gaming' | 'yorha';
@@ -49,8 +48,7 @@
       type: 'document',
       title: 'Contract Agreement',
       content: 'Employment contract between parties',
-      position ;
-{ x: 100, y: 100 },
+      position: { x: 100, y: 100 },
       size: { width: 200, height: 150 },
       color: '#3b82f6',
       metadata: { fileType: 'pdf', size: '2.4MB' }
@@ -60,33 +58,30 @@
       type: 'image',
       title: 'Signed Document',
       content: 'Signature verification',
-      position ;
-{ x: 350, y: 150 },
+      position: { x: 350, y: 150 },
       size: { width: 180, height: 120 },
       color: '#10b981',
-      metadata: { resolution '1920x1080', format: 'PNG' }
+      metadata: { resolution: '1920x1080', format: 'PNG' }
     },
     {
       id: '3',
       type: 'note',
       title: 'Legal Analysis',
       content: 'Key points:\n- Clause 4.2 needs review\n- Liability section unclear\n- Termination conditions',
-      position ;
-{ x: 150, y: 300 },
+      position: { x: 150, y: 300 },
       size: { width: 250, height: 180 },
       color: '#f59e0b',
-      connections: ['1', '2'];
+      connections: ['1', '2']
     },
     {
       id: '4',
       type: 'link',
       title: 'Case Precedent',
       content: 'Similar case: Johnson v. TechCorp (2023)',
-      position ;
-{ x: 450, y: 350 },
+      position: { x: 450, y: 350 },
       size: { width: 200, height: 100 },
       color: '#8b5cf6',
-      connections: ['3'];
+      connections: ['3']
     }
   ];
   // Initialize with sample data if empty
@@ -100,27 +95,27 @@
       background: 'bg-gray-50 dark:bg-gray-900',
       grid: 'opacity-20',
       item: 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
-      connection 'stroke-gray-400 dark:stroke-gray-500',
+      connection: 'stroke-gray-400 dark:stroke-gray-500'
     },
     legal: {
       background: 'bg-slate-50 dark:bg-slate-900',
       grid: 'opacity-20',
       item: 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100',
-      connection 'stroke-slate-400 dark:stroke-slate-500',
+      connection: 'stroke-slate-400 dark:stroke-slate-500'
     },
     gaming: {
       background: 'bg-black',
       grid: 'opacity-30 stroke-green-400',
       item: 'border-green-400 bg-black text-green-400 shadow-[0_0_15px_rgba(0,255,65,0.3)]',
-      connection 'stroke-green-400',
+      connection: 'stroke-green-400'
     },
     yorha: {
       background: 'bg-black',
       grid: 'opacity-40 stroke-green-400',
       item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',
-      connection 'stroke-green-400 stroke-2',
+      connection: 'stroke-green-400 stroke-2'
     }
-  }
+  };
   function getItemIcon(type: EvidenceItem['type']): string {
     const icons = {
       document: '📄',
@@ -132,27 +127,27 @@
     }
     return icons[type];
   }
-  function startDrag(_event: MouseEvent, item: EvidenceItem) {
+  function startDrag(event: MouseEvent, item: EvidenceItem) {
     if (readonly) return;
     const rect = boardElement.getBoundingClientRect();
     draggedItem = item;
     dragOffset = {
       x: event.clientX - rect.left - item.position.x,
-      y: event.clientY - rect.top - item.position.y;
-    }
+      y: event.clientY - rect.top - item.position.y
+    };
     document.addEventListener('mousemove', handleDrag);
     document.addEventListener('mouseup', stopDrag);
     event.preventDefault();
   }
-  function handleDrag(_event: MouseEvent) {
+  function handleDrag(event: MouseEvent) {
     if (!draggedItem || !boardElement) return;
     const rect = boardElement.getBoundingClientRect();
     let newX = event.clientX - rect.left - dragOffset.x;
     let newY = event.clientY - rect.top - dragOffset.y;
     // Snap to grid if enabled
     if (snapToGrid) {
-      newX = Math.round(newX / gridSize) * gridSiz;
-      newY = Math.round(newY / gridSize) * gridSiz;
+      newX = Math.round(newX / gridSize) * gridSize;
+      newY = Math.round(newY / gridSize) * gridSize;
     }
     // Keep within bounds
     newX = Math.max(0, Math.min(width - draggedItem.size.width, newX));
@@ -165,7 +160,7 @@
     document.removeEventListener('mousemove', handleDrag);
     document.removeEventListener('mouseup', stopDrag);
   }
-  function selectItem(id: string, event: MouseEvent) {
+  function selectItem(id: string, event: MouseEvent | KeyboardEvent) {
     if (event.ctrlKey || event.metaKey) {
       if (selectedItems.has(id)) {
         selectedItems.delete(id);
@@ -212,11 +207,10 @@
       type,
       title: `New ${type}`,
       content: '',
-      position ;
-{ x: 50, y: 50 },
+      position: { x: 50, y: 50 },
       size: { width: 200, height: 150 },
-      color: '#6b7280',
-    }
+      color: '#6b7280'
+    };
     items = [...items, newItem];
     dispatch('itemAdded', { item: newItem });
   }
@@ -227,16 +221,16 @@
     if (!fromItem || !toItem) return '';
     const fromCenter = {
       x: fromItem.position.x + fromItem.size.width / 2,
-      y: fromItem.position.y + fromItem.size.height / 2;
-    }
+      y: fromItem.position.y + fromItem.size.height / 2
+    };
     const toCenter = {
       x: toItem.position.x + toItem.size.width / 2,
-      y: toItem.position.y + toItem.size.height / 2;
-    }
+      y: toItem.position.y + toItem.size.height / 2
+    };
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
   }
   // Handle keyboard shortcuts
-  function handleKeyDown(_event: KeyboardEvent) {
+  function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Delete' || event.key === 'Backspace') {
       deleteSelected();
     }
@@ -244,6 +238,16 @@
       selectedItems.clear();
       connectionStart = null;
       isConnecting = false;
+    }
+  }
+  function handleItemKeyDown(event: KeyboardEvent, item: EvidenceItem) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (isConnecting) {
+        completeConnection(item.id);
+      } else {
+        selectItem(item.id, event);
+      }
     }
   }
 </script>
@@ -256,7 +260,6 @@
     ${theme === 'yorha' ? 'border-green-400/50' : 'border-gray-300 dark:border-gray-600'}
   `}
   style="width: {width}px; height: {height}px;"
-  tabindex="0"
 >
   <!-- Grid Pattern -->
   {#if snapToGrid}
@@ -314,6 +317,8 @@
   <!-- Evidence Items -->
   {#each items as item (item.id)}
     <div
+      role="button"
+      tabindex="0"
       class={`
         absolute border rounded-lg p-3 cursor-move select-none transition-all duration-200
         ${themeStyles[theme].item}
@@ -337,11 +342,12 @@
           selectItem(item.id, e);
         }
       }}
+      onkeydown={(e) => handleItemKeyDown(e, item)}
       oncontextmenu={(e) => {
         e.preventDefault();
         startConnection(item.id);
       }}
-      transitionscale={{ duration 200, easing: quintOut }}
+      transition:scale={{ duration: 200, easing: quintOut }}
     >
       <!-- Item Header -->
       <div class="flex items-center justify-between mb-2">
@@ -392,7 +398,7 @@
               px-1.5 py-0.5 text-xs rounded
               ${theme === 'yorha'
                 ? 'bg-green-400/10 text-green-400 border border-green-400/30'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400';
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
               }
             `}>
               {key}: {value}
@@ -422,7 +428,7 @@
       absolute bottom-4 left-4 flex space-x-2 p-2 rounded-lg
       ${theme === 'yorha'
         ? 'bg-black/80 border border-green-400/30 backdrop-blur-sm'
-        : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 shadow-lg';
+        : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 shadow-lg'
       }
     `}>
       <button
@@ -431,7 +437,7 @@
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300';
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           }
         `}
         title="Add Note"
@@ -444,7 +450,7 @@
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300';
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           }
         `}
         title="Add Document"
@@ -457,7 +463,7 @@
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300';
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
           }
         `}
         title="Add Link"
@@ -471,7 +477,7 @@
             px-3 py-1 rounded text-sm transition-colors
             ${theme === 'yorha'
               ? 'hover:bg-red-400/20 text-red-400 border border-red-400/30'
-              : 'hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400';
+              : 'hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400'
             }
           `}
           title="Delete Selected"
@@ -488,7 +494,7 @@
         text-center p-8 rounded-lg border-2 border-dashed
         ${theme === 'yorha'
           ? 'border-green-400/30 text-green-400/70 font-mono'
-          : 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400';
+          : 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
         }
       `}>
         <div class="text-4xl mb-4">🔍</div>

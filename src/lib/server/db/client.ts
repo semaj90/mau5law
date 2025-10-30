@@ -1,19 +1,31 @@
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+/**
+ * Drizzle ORM client setup.
+ * Uses the DATABASE_URL environment variable for connection.
+ */
 
-// Docker-friendly fallback per project conventions.
-// The environment should provide DATABASE_URL; fall back to docker service name.
-const connectionString =
-	process.env.DATABASE_URL || 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { getDatabaseUrl } from "$lib/server/utils/env";
+import * as schema from "./schema"; // Import all schema definitions
 
-// Small pool for server usage; tune max as needed for your environment
-export const pool = new Pool({
-	connectionString,
-	max: 10,
+const databaseUrl = getDatabaseUrl();
+
+// For production, use a connection pool.
+// For development, a single client might be sufficient, but a pool is safer.
+const pool = new Pool({
+  connectionString: databaseUrl,
 });
 
-// Drizzle ORM instance (if you need typed schema usage later)
-export const db = drizzle(pool);
+const db = drizzle(pool, { schema });
+
+export default db;
 
 // export connectionString for debugging/health checks if needed
-export const DB_CONNECTION_STRING = connectionString;
+export const DB_CONNECTION_STRING = databaseUrl;
+}
+
+// Drizzle ORM instance (if you need typed schema usage later)
+export const db = getDb();
+
+// export connectionString for debugging/health checks if needed
+export const DB_CONNECTION_STRING = getDatabaseUrl();

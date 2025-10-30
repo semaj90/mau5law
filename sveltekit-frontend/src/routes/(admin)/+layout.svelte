@@ -4,10 +4,10 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: { children: any; data: any } = $props();
+  let { children, data }: { children: any; data: { user?: any } } = $props();
 
   // Admin-focused console theme (amber on black for admin work)
-  const consolePalette: ConsolePaletteName = 'amber';
+  const consolePalette: ConsolePaletteName = 'cyberpunk'; // Changed to a valid type from the allowed list
 
   $effect(() => {
     applyConsolePalette(consolePalette);
@@ -20,7 +20,7 @@
 </svelte:head>
 
 <div class="admin-layout">
-  <NavBar />
+  <NavBar user={data.user} />
   <div class="admin-content">
     <aside class="admin-sidebar">
       <Sidebar />
@@ -51,22 +51,22 @@
   }
 
   .admin-main {
-    flex: 1,
+    flex: 1; /* Added semicolon */
     padding: 1.5rem;
     overflow-x: auto;
   }
 
   /* Admin-specific security indicators */
   .admin-main::after {
-    content: '🔒 ADMIN ACCESS',
-    position fixed;
+    content: '🔒 ADMIN ACCESS'; /* Added semicolon */
+    position: fixed; /* Added semicolon */
     top: 70px;
     right: 20px;
     font-size: 0.75rem;
     color: var(--text-secondary, #ff6600);
     opacity: 0.6;
     pointer-events: none;
-    z-index: 1000,
+    z-index: 1000; /* Added semicolon */
   }
 
   @media (max-width: 768px) {
