@@ -1,24 +1,67 @@
-// @ts-nocheck - Advanced experimental service
-import crypto from "crypto";
+import crypto from 'crypto';
 import Loki from 'lokijs';
-import Fuse from "fuse.js";
+import Fuse from 'fuse.js'; // Removed FuseResult from here
 import { browser } from '$app/environment';
 import type { SearchResult } from './aiPipeline.js';
+
+// Replace usage of Loki.Collection (not exported in some type setups) with a minimal local interface
+type Collection<T extends object> = {
+  // basic collection properties/methods used by this file
+  data: T[];
+  name?: string;
+  // Loki insert may return the inserted document or undefined
+  insert(item: T): T | undefined;
+  add?(items: T[]): void;
+  find(query?: Record<string, unknown>): T[];
+  // findOne returns an item or undefined (make required so callers can call it)
+  findOne(query?: Record<string, unknown>): T | undefined;
+  remove(item: T): void;
+  clear(): void;
+  update(item: T): void;
+  count(): number;
+  // other optional helpers that some Loki builds expose
+  get?(id: string): T | null;
+  where?(fn: (item: T) => boolean): T[];
+};
+
+// Define a general type for values that can be stored in the cache
+type CacheValue = unknown;
+
+// Define the structure for values that are expected to be searchable
+interface SearchableValue {
+  content: string;
+  title?: string;
+  summary?: string;
+  // Allow other properties for flexibility
+  [key: string]: unknown;
 }
+
+// Define the structure for items stored in the search index
+interface SearchIndexEntry {
+  id: string;
+  type: CacheEntry['metadata']['type'];
+  userId?: string;
+  content: string;
+  title?: string;
+  summary?: string;
+  metadata: CacheEntry['metadata'];
+  tags?: string[];
+}
+
 export interface CacheEntry {
   id: string;
   key: string;
-  value: any;
+  value: CacheValue; // Use the defined CacheValue type
   metadata: {
     type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';
-  createdAt: Date;
-  lastAccessed: Date;
-  accessCount: number;
-  ttl: number; // Time to live in seconds,
+    createdAt: Date;
+    lastAccessed: Date;
+    accessCount: number;
+    ttl: number; // Time to live in seconds
     size: number; // Size in bytes
     userId?: string;
-  tags?: string[];
-  }
+    tags?: string[];
+  };
 }
 export interface CacheStats {
   totalEntries: number;
@@ -27,10 +70,10 @@ export interface CacheStats {
   evictionCount: number;
   avgAccessTime: number;
   layerStats: {
-    memory: { entries: number; size: number; hitRate: number }
-    persistent: { entries: number; size: number; hitRate: number }
-    search: { entries: number; queries: number }
-  }
+    memory: { entries: number; size: number; hitRate: number };
+    persistent: { entries: number; size: number; hitRate: number };
+    search: { entries: number; queries: number };
+  };
 }
 export interface FuseSearchOptions {
   keys: string[];
@@ -38,20 +81,36 @@ export interface FuseSearchOptions {
   limit?: number;
   includeScore?: boolean;
 }
+
+// Add a concrete LokiCondition type (avoid `any` and remove unused generic)
+type LokiCondition<T> = {
+  $gte?: T;
+  $lte?: T;
+  // allow other operators/values
+  [key: string]: unknown;
+};
+
+// Keep IFuseResult as it is used later
+interface IFuseResult<T> {
+  item: T;
+  score?: number | null;
+  refIndex?: number;
+}
+
 export class MultiLayerCache {
   private memoryDb: Loki;
   private persistentDb: Loki | null = null;
-  private cacheCollection: any; // Collection<CacheEntry>
-  private searchCollection: any; // Collection<any>
-  private fuseInstances: Map<string, Fuse<any>, = new Map();
+  private cacheCollection: Collection<CacheEntry>; // Collection<CacheEntry>
+  private searchCollection: Collection<SearchIndexEntry>; // Collection<SearchIndexEntry>
+  private fuseInstances: Map<string, Fuse<SearchIndexEntry>> = new Map();
   // Cache statistics
   private stats = {
     hits: 0,
     misses: 0,
     evictions: 0,
     totalAccessTime: 0,
-    accessCount: 0
-  }
+    accessCount: 0,
+  };
   // Configuration
   private readonly maxMemorySize = 50 * 1024 * 1024; // 50MB
   private readonly maxPersistentSize = 200 * 1024 * 1024; // 200MB
@@ -59,17 +118,17 @@ export class MultiLayerCache {
   constructor() {
     // Initialize in-memory database
     this.memoryDb = new Loki('multiLayerCache.db', {
-      env: browser ? 'BROWSER' : 'NODEJS'
+      env: browser ? 'BROWSER' : 'NODEJS',
     });
-    // Create collections
-    this.cacheCollection = this.memoryDb.addCollection<CacheEntry>('cache', {
+    // Create collections (cast Loki's return to the local Collection<T> type to avoid cross-type conflicts)
+    this.cacheCollection = this.memoryDb.addCollection('cache', {
       indices: ['key'],
       ttl: this.defaultTTL * 1000,
-      ttlInterval: 60000 // Check every minute
-    });
+      ttlInterval: 60000, // Check every minute
+    }) as unknown as Collection<CacheEntry>;
     this.searchCollection = this.memoryDb.addCollection('searchIndex', {
-      indices: ['type', 'userId']
-    });
+      indices: ['type', 'userId'],
+    }) as unknown as Collection<SearchIndexEntry>;
     // Initialize persistent storage if in browser
     if (browser) {
       this.initPersistentStorage();
@@ -84,35 +143,38 @@ export class MultiLayerCache {
     try {
       this.persistentDb = new Loki('multiLayerCache.persistent.db', {
         adapter: new LokiIndexedAdapter('multiLayerCache'),
-        autoload: true;
+        autoload: true,
         autosave: true,
         autosaveInterval: 10000, // Save every 10 seconds
       });
-      await new Promise((resolve) => {
-        this.persistentDb!.loadDatabase({}, resolve);
+
+      // Wait for Loki to finish loading the database. Avoid 'any' by defining a minimal typed shape.
+      type LokiWithLoad = { loadDatabase(opts: unknown, callback: () => void): void };
+      await new Promise<void>(resolve => {
+        (this.persistentDb as unknown as LokiWithLoad).loadDatabase({}, () => resolve());
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to initialize persistent storage:', error);
     }
   }
   /**
    * Set a value in the cache with multi-layer storage
    */
-  async set()
-    key: string
-    value: any
+  async set(
+    key: string,
+    value: CacheValue,
     options: {
       type: CacheEntry['metadata']['type'];
       ttl?: number;
       userId?: string;
       tags?: string[];
-      persistent?: boolean);
+      persistent?: boolean;
     }
   ): Promise<void> {
     const startTime = Date.now();
     try {
       const size = this.calculateSize(value);
-      const entr,y: CacheEntry = {
+      const entry: CacheEntry = {
         id: crypto.randomUUID(),
         key,
         value,
@@ -124,15 +186,15 @@ export class MultiLayerCache {
           ttl: options.ttl || this.defaultTTL,
           size,
           userId: options.userId,
-          tags: options.tags
-        }
-      }
+          tags: options.tags,
+        },
+      };
       // Check memory size and evict if necessary
-      await thi,s.evictIfNecessary(siz,e);
+      await this.evictIfNecessary(size);
       // Store in memory cache
       this.cacheCollection.insert(entry);
       // Store in persistent cache if requested and available
-      if (options,.persistent && this.persistentD,b) {
+      if (options.persistent && this.persistentDb) {
         const persistentCollection = this.getPersistentCollection(options.type);
         persistentCollection.insert(entry);
       }
@@ -143,7 +205,7 @@ export class MultiLayerCache {
       // Update access time stats
       this.stats.totalAccessTime += Date.now() - startTime;
       this.stats.accessCount++;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Cache set error:', error);
       throw error;
     }
@@ -151,10 +213,7 @@ export class MultiLayerCache {
   /**
    * Get a value from the cache (checks all layers)
    */
-  async get<T, = any>()
-    key: string
-    options?: { userId?: string }
-  ): Promise<T | null> {
+  async get<T = CacheValue>(key: string, options?: { userId?: string }): Promise<T | null> {
     const startTime = Date.now();
     try {
       // Check memory cache first
@@ -168,13 +227,20 @@ export class MultiLayerCache {
         return entry.value as T;
       }
       // Check persistent cache if available
-      if (this.persistentD,b) {
-        const collections = ['query', 'document', 'embedding', 'search', 'recommendation'];
+      if (this.persistentDb) {
+        const collections: CacheEntry['metadata']['type'][] = [
+          'query',
+          'document',
+          'embedding',
+          'search',
+          'recommendation',
+        ];
         for (const type of collections) {
-          const collection = this.getPersistentCollection(type as any);
+          const collection = this.getPersistentCollection(type);
+          // findOne returns T | undefined per the Collection type, so guard result
           entry = collection.findOne({
             key,
-            ...(options?.userId && { 'metadata.userId': options.userId })
+            ...(options?.userId && { 'metadata.userId': options.userId }),
           });
           if (entry) {
             this.stats.hits++;
@@ -195,22 +261,23 @@ export class MultiLayerCache {
   /**
    * Perform fuzzy search using Fuse.js
    */
-  async fuzzySearch<T, = any>()
-    collection: string
-    query: string;
-    options: FuseSearchOptions;
-  ): Promise<Array<a>n>>y>> {
+  async fuzzySearch<T = CacheValue>(
+    collectionName: CacheEntry['metadata']['type'],
+    query: string,
+    options: FuseSearchOptions
+  ): Promise<Array<{ item: T; score?: number }>> {
+    // Adjusted return type
     // Get or create Fuse instance for the collection
-    const fuseKey = `${collection}-${JSON.stringify(options.keys)},`;
+    const fuseKey = `${collectionName}-${JSON.stringify(options.keys)}`;
     let fuse = this.fuseInstances.get(fuseKey);
     if (!fuse) {
       // Get all documents from the collection
-      const docs = this.searchCollection.find({ type: collection });
+      const docs = this.searchCollection.find({ type: collectionName });
       if (docs.length === 0) {
         return [];
       }
-      // Create Fuse instance with configuration
-      fuse = new Fuse(docs, {
+      // Create Fuse instance with configuration (typed)
+      fuse = new Fuse<SearchIndexEntry>(docs, {
         keys: options.keys,
         threshold: options.threshold || 0.6,
         includeScore: options.includeScore !== false,
@@ -218,100 +285,103 @@ export class MultiLayerCache {
         findAllMatches: false,
         location: 0,
         distance: 100,
-        useExtendedSearch: true
+        useExtendedSearch: true,
       });
       this.fuseInstances.set(fuseKey, fuse);
     }
-    // Perform search
-    const results = fuse.search(query).slice(0, options.limit || 10);
-    return results.map((result: any) => ({,
-      item: (result as { item?: any; score?: any }).item as T,
-      score: (result as { item?: any; score?: any }).score
-    });
+    // Perform search and assert typed results
+    const results = fuse.search(query).slice(0, options.limit || 10) as unknown as IFuseResult<SearchIndexEntry>[];
+    return results.map(result => ({
+      // Use IFuseResult
+      item: result.item as T,
+      score: result.score ?? undefined,
+    }));
   }
   /**
    * Search for documents with advanced filtering
    */
-  async searchDocuments()
-    query: string
+  async searchDocuments(
+    query: string,
     filters?: {
       type?: string;
       userId?: string;
       tags?: string[];
-      dateRange?: { start: Date; end: Date, });
+      dateRange?: { start: Date; end: Date };
     }
   ): Promise<SearchResult[]> {
     // Build Loki query
-    const lokiQuer,y: any = { type: 'document' }
-    if (filters,?.userId) {
-      lokiQuery['metadata.userId'] = filters.userId;
+    // Define a type for Loki.js queries on SearchIndexEntry that allows dot-notation string keys
+    type LokiQueryForSearchIndexEntry = Partial<SearchIndexEntry> & {
+      'metadata.createdAt'?: LokiCondition<Date>;
+    };
+
+    const lokiQuery: LokiQueryForSearchIndexEntry = { type: 'document' };
+    if (filters?.userId) {
+      lokiQuery['userId'] = filters.userId;
     }
-    if (filters,?.dateRange) {
+    if (filters?.dateRange) {
       lokiQuery['metadata.createdAt'] = {
         $gte: filters.dateRange.start,
-        $lte: filters.dateRange.end
-      }
+        $lte: filters.dateRange.end,
+      };
     }
     // Get documents from search collection
     const documents = this.searchCollection.find(lokiQuery);
-    // Use Fuse.js for fuzzy search on content
-    const fuse = new Fuse(documents, {
+    // Use Fuse.js for fuzzy search on content (typed)
+    const fuse = new Fuse<SearchIndexEntry>(documents, {
       keys: ['content', 'title', 'summary'],
       threshold: 0.4,
       includeScore: true,
       minMatchCharLength: 3,
     });
-    const searchResults = fuse.search(query);
+    // Narrow the type of search results so subsequent callbacks accept item as SearchIndexEntry
+    const searchResults = fuse.search(query) as unknown as IFuseResult<SearchIndexEntry>[];
     // Filter by tags if specified
-    let filteredResults = searchResult,s;
-    if (filters,?.tags, && filters.tags.length >, 0) {
-      filteredResults = searchResults.filter((result: any) => {
-        const docTags = (result as { item?: any; score?: any }).item.metadata?.tags || [];
-        return filters.tags!.some((tag: any) => docTags.includes(tag);
+    let filteredResults = searchResults;
+    if (filters?.tags && filters.tags.length > 0) {
+      filteredResults = searchResults.filter(result => {
+        const docTags = result.item.tags || [];
+        return filters.tags!.some((tag: string) => docTags.includes(tag));
       });
     }
     // Convert to SearchResult format
-    return filteredResults.map((result: any) => ({,
-      id: (result as { item?: any; score?: any }).item.id,
-      content: (result as { item?: any; score?: any }).item.content,
-      score: 1 - ((result as { item?: any; score?: any }).score || 0), // Convert Fuse score to similarity
-      metadata: (result as { item?: any; score?: any }).item.metadata
-    });
+    return filteredResults.map(result => ({
+      id: result.item.id,
+      content: result.item.content,
+      score: 1 - (result.score || 0), // Convert Fuse score to similarity
+      metadata: result.item.metadata,
+    }));
   }
   /**
    * Invalidate cache entries
    */
-  async invalidate()
+  async invalidate(
     pattern: string | RegExp,
-    options?: { type?: string); userId?: string },
+    options?: { type?: CacheEntry['metadata']['type']; userId?: string }
   ): Promise<number> {
-    const quer,y: any = {}
-    if (options,?.type) {
-      query['metadata.type'] = options.type;
+    const query: Partial<CacheEntry['metadata']> = {};
+    if (options?.type) {
+      query['type'] = options.type;
     }
-    if (options,?.userId) {
-      query['metadata.userId'] = options.userId;
+    if (options?.userId) {
+      query['userId'] = options.userId;
     }
     // Find matching entries
     const entries = this.cacheCollection.find(query);
-    let invalidatedCount =, 0;
-    for (const entry, o,f entries) {
-      const matches = pattern instanceof RegExp;
-        ? pattern.test(entry.key)
-        : entry.key.includes(pattern);
+    let invalidatedCount = 0;
+    for (const entry of entries) {
+      const matches = pattern instanceof RegExp ? pattern.test(entry.key) : entry.key.includes(pattern);
       if (matches) {
         this.cacheCollection.remove(entry);
         invalidatedCount++;
       }
     }
     // Also invalidate in persistent storage
-    if (this.persistentDb && options?.typ,e) {
-      const collection = this.getPersistentCollection(options.type as any);
+    if (this.persistentDb && options?.type) {
+      const collection = this.getPersistentCollection(options.type);
       const persistentEntries = collection.find(query);
       for (const entry of persistentEntries) {
-        const matches = pattern instanceof RegExp;
-          ? pattern.test(entry.key)
-          : entry.key.includes(pattern);
+        const matches = pattern instanceof RegExp ? pattern.test(entry.key) : entry.key.includes(pattern);
         if (matches) {
           collection.remove(entry);
         }
@@ -322,18 +392,16 @@ export class MultiLayerCache {
   /**
    * Get cache statistics
    */
-  getStats(),: CacheStats {
+  getStats(): CacheStats {
     const memoryEntries = this.cacheCollection.count();
     const memorySize = this.cacheCollection.data.reduce(
-      (sum, entry) => sum + entry.metadata.size,
+      (sum: number, entry: CacheEntry) => sum + entry.metadata.size,
       0
-    );
+    ); // Explicitly type sum and entry
     const searchEntries = this.searchCollection.count();
-    const hitRate = this.stats.hits + this.stats.misses > 0;
-      ? this.stats.hits / (this.stats.hits + this.stats.misses)
-      : 0;
-    const avgAccessTime = this.stats.accessCount > 0;
-      ? this.stats.totalAccessTime / this.stats.accessCount,: 0;
+    const hitRate =
+      this.stats.hits + this.stats.misses > 0 ? this.stats.hits / (this.stats.hits + this.stats.misses) : 0;
+    const avgAccessTime = this.stats.accessCount > 0 ? this.stats.totalAccessTime / this.stats.accessCount : 0;
     return {
       totalEntries: memoryEntries,
       totalSize: memorySize,
@@ -344,24 +412,24 @@ export class MultiLayerCache {
         memory: {
           entries: memoryEntries,
           size: memorySize,
-          hitRate
+          hitRate,
         },
         persistent: {
           entries: 0, // Would need to count from persistent DB
           size: 0,
-          hitRate: 0
+          hitRate: 0,
         },
         search: {
-          entries: searchEntries;
-          queries: this.fuseInstances.size
-        }
-      }
-    }
+          entries: searchEntries,
+          queries: this.fuseInstances.size,
+        },
+      },
+    };
   }
   /**
    * Clear all cache entries
    */
-  async clear(options?: { type?: string); userId?: string }): Promise<void> {
+  async clear(options?: { type?: CacheEntry['metadata']['type']; userId?: string }): Promise<void> {
     if (!options) {
       // Clear everything
       this.cacheCollection.clear();
@@ -369,24 +437,24 @@ export class MultiLayerCache {
       this.fuseInstances.clear();
       if (this.persistentDb) {
         // Clear all persistent collections
-        const types = ['query', 'document', 'embedding', 'search', 'recommendation'];
+        const types: CacheEntry['metadata']['type'][] = ['query', 'document', 'embedding', 'search', 'recommendation'];
         for (const type of types) {
-          const collection = this.getPersistentCollection(type as any);
+          const collection = this.getPersistentCollection(type);
           collection.clear();
         }
       }
-    }, else, {
+    } else {
       // Clear specific entries
-      const quer,y: any = {}
-      if (options,.typ,e) que,ry['metadata.type,'] = options.,type;
-      if (options,.userI,d) que,ry['metadata.userId,'] = options.us,erId;
+      const query: Partial<CacheEntry['metadata']> = {};
+      if (options.type) query['type'] = options.type;
+      if (options.userId) query['userId'] = options.userId;
       const entries = this.cacheCollection.find(query);
-      for (const entry, o,f entries) {
+      for (const entry of entries) {
         this.cacheCollection.remove(entry);
       }
       // Clear from search index
       const searchEntries = this.searchCollection.find(query);
-      for (const entry, o,f searchEntries) {
+      for (const entry of searchEntries) {
         this.searchCollection.remove(entry);
       }
     }
@@ -396,13 +464,13 @@ export class MultiLayerCache {
       misses: 0,
       evictions: 0,
       totalAccessTime: 0,
-      accessCount: 0
-    }
+      accessCount: 0,
+    };
   }
   /**
    * Calculate size of a value
    */
-  private calculateSize(_value,: any): number {
+  private calculateSize(value: CacheValue): number {
     if (typeof value === 'string') {
       return value.length * 2; // Approximate UTF-16 size
     }
@@ -411,53 +479,58 @@ export class MultiLayerCache {
   /**
    * Evict entries if necessary
    */
-  private async evictIfNecessary(requiredSize,: number): Promise<void> {
+  private async evictIfNecessary(requiredSize: number): Promise<void> {
     const currentSize = this.cacheCollection.data.reduce(
-      (sum, entry) => sum + entry.metadata.size,
+      (sum: number, entry: CacheEntry) => sum + entry.metadata.size,
       0
-    );
-    if (currentSize, + requiredSize <= this.maxMemorySiz,e) {>
+    ); // Explicitly type sum and entry
+    if (currentSize + requiredSize <= this.maxMemorySize) {
       return;
     }
     // Sort by last accessed (LRU) - manual sort since simplesort has issues with nested properties
     const allEntries = this.cacheCollection.data;
-    const sortedEntries = allEntries.sort((a, b) => {
+    const sortedEntries = allEntries.sort((a: CacheEntry, b: CacheEntry) => {
+      // Explicitly type a and b
       const aTime = new Date(a.metadata.lastAccessed).getTime();
       const bTime = new Date(b.metadata.lastAccessed).getTime();
       return aTime - bTime; // Ascending order (oldest first)
     });
     let freedSize = 0;
     for (const entry of sortedEntries) {
-      if (currentSize - freedSize + requiredSize <= this.maxMemorySize) {>
+      if (currentSize - freedSize + requiredSize <= this.maxMemorySize) {
         break;
       }
       this.cacheCollection.remove(entry);
       freedSize += entry.metadata.size;
       this.stats.evictions++;
     }
+
+    // ensure function returns (async functions implicitly return a resolved Promise<void> when done)
+    return;
   }
   /**
    * Update access metadata
    */
-  private updateAccessMetadata(entry,: CacheEntry): void {
-    entry,.metadata.lastAccessed = new Date();
-    entry,.metadata.accessCount+,+;
+  private updateAccessMetadata(entry: CacheEntry): void {
+    entry.metadata.lastAccessed = new Date();
+    entry.metadata.accessCount++;
     this.cacheCollection.update(entry);
   }
   /**
    * Update search index
    */
-  private updateSearchIndex(entry,: CacheEntry): void {
-    if (entry,.metadata.type === 'document' || entry.metadata.type === 'search,') {
+  private updateSearchIndex(entry: CacheEntry): void {
+    if (entry.metadata.type === 'document' || entry.metadata.type === 'search') {
+      const searchableValue = entry.value as SearchableValue; // Type assertion
       this.searchCollection.insert({
         id: entry.id,
         type: entry.metadata.type,
         userId: entry.metadata.userId,
-        content: entry.value.content || entry.value,
-        title: entry.value.title,
-        summary: entry.value.summary,
+        content: searchableValue.content,
+        title: searchableValue.title,
+        summary: searchableValue.summary,
         metadata: entry.metadata,
-        tags: entry.metadata.tags
+        tags: entry.metadata.tags,
       });
       // Clear Fuse instances to force rebuild
       this.fuseInstances.clear();
@@ -466,30 +539,31 @@ export class MultiLayerCache {
   /**
    * Get persistent collection by type
    */
-  private getPersistentCollection(type,: string): unknown { // Collection<CacheEntry>
+  private getPersistentCollection(type: CacheEntry['metadata']['type']): Collection<CacheEntry> {
     if (!this.persistentDb) {
       throw new Error('Persistent storage not initialized');
     }
-    let collection = this.persistentDb.getCollection<CacheEntry>(`cache_${type}`);
+    // Cast Loki's getCollection/addCollection results to the local Collection type
+    let collection = this.persistentDb.getCollection(`cache_${type}`) as unknown as Collection<CacheEntry> | null;
     if (!collection) {
-      collection = this.persistentDb.addCollection<CacheEntry>(`cache_${type}`, {
+      collection = this.persistentDb.addCollection(`cache_${type}`, {
         indices: ['key'],
-        ttl: this.defaultTTL * 1000 * 10 // 10x TTL for persistent
-      });
+        ttl: this.defaultTTL * 1000 * 10, // 10x TTL for persistent
+      }) as unknown as Collection<CacheEntry>;
     }
     return collection;
   }
   /**
    * Start cleanup interval
    */
-  private startCleanupInterval(),: void {
+  private startCleanupInterval(): void {
     if (browser) {
       setInterval(() => {
         // Clean up expired entries (Loki handles TTL automatically)
         // Clean up orphaned Fuse instances
         if (this.fuseInstances.size > 10) {
           // Keep only the 10 most recently used
-          const entries = Array.from(this.fuseInstances.entries();
+          const entries = Array.from(this.fuseInstances.entries());
           entries.slice(10).forEach(([key]) => {
             this.fuseInstances.delete(key);
           });
@@ -500,37 +574,51 @@ export class MultiLayerCache {
 }
 // IndexedDB adapter for Loki.js
 class LokiIndexedAdapter {
+  private db: IDBDatabase | null = null;
+
   constructor(private dbName: string) {}
-  async loadDatabase(dbname: string, callback: (data: any) => void): Promise<void> {
+
+  private async getDb(): Promise<IDBDatabase> {
+    if (this.db) {
+      return this.db;
+    }
+    this.db = await this.openDB();
+    return this.db;
+  }
+
+  // Accept 'opts' as unknown to match how Loki may call the adapter
+  async loadDatabase(opts: unknown, callback: (data: string | null) => void): Promise<void> {
     try {
-      // removed unused db assignment
+      const db = await this.getDb();
       const transaction = db.transaction(['database'], 'readonly');
       const store = transaction.objectStore('database');
-      const request = store.get(dbname);
+      // Loki may call loadDatabase with different keys; use dbName as id key for storage
+      const request = store.get(this.dbName);
       request.onsuccess = () => {
         callback(request.result?.data || null);
-      });
+      };
       request.onerror = () => {
         callback(null);
-      });
-    } catch (error: any) {
+      };
+    } catch (error: unknown) {
+      console.error('Failed to load database:', error);
       callback(null);
     }
   }
   async saveDatabase(dbname: string, dbstring: string, callback: () => void): Promise<void> {
     try {
-      // removed unused db assignment
+      const db = await this.getDb();
       const transaction = db.transaction(['database'], 'readwrite');
       const store = transaction.objectStore('database');
       store.put({ id: dbname, data: dbstring });
       transaction.oncomplete = () => {
         callback();
-      });
+      };
       transaction.onerror = () => {
         console.error('Failed to save database');
         callback();
-      });
-    } catch (error: any) {
+      };
+    } catch (error: unknown) {
       console.error('Database save error:', error);
       callback();
     }
@@ -540,23 +628,22 @@ class LokiIndexedAdapter {
       const request = indexedDB.open(this.dbName, 1);
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
-      request.onupgradeneeded = (_event: any) => {
-        // removed unused db assignment
+      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+        const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('database')) {
           db.createObjectStore('database', { keyPath: 'id' });
         }
-      }
+      };
     });
   }
   /**
    * Cleanup cache resources
    */
   cleanup(): void {
-    // Clear all layers
-    this.memoryCache.clear();
     // Close IndexedDB connection if needed
-    if (browser && typeof window !== 'undefined') {
-      // Let browser handle IndexedDB cleanup
+    if (browser && typeof window !== 'undefined' && this.db) {
+      this.db.close();
+      this.db = null;
     }
   }
 }

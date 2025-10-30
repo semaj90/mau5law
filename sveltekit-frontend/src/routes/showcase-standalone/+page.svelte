@@ -11,11 +11,9 @@
   // removed invalid/unused lucide-svelte imports
   import { notifications } from '$lib/stores/unified';
   // Import our enhanced UI components
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Changed import path
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
-  // Resolve runtime constructor in case enhanced-bits exports an object/module
-  const Btn = (Button as any)?.Button ?? (Button as any)?.default ?? Button;
 
   // State for demonstrations
   let modalOpen = $state(false);
@@ -101,16 +99,23 @@
     <div class="nier-nier-bits-card nier-nier-bits-card-interactive p-6">
       <div class="flex gap-4 mb-4">
         <Input bind:value={searchQuery} placeholder="Search cases, evidence, legal documents..." class="flex-1" />
-        <Btn
-          class="bits-btn"
-          onclick={performVectorSearch}
-          loading={isSearching}
-          disabled={!searchQuery.trim()}
-        >
-          <!-- replaced <Search /> icon with emoji to avoid lucide import issues -->
-          <span class="mr-2">🔍</span>
-          Search
-        </Btn>
+        <div class="bits-btn">
+          <Button
+            onclick={performVectorSearch}
+            disabled={!searchQuery.trim() || isSearching}
+            variant="primary"
+            size="sm"
+          >
+            {#if isSearching}
+              <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+              Searching...
+            {:else}
+              <!-- replaced <Search /> icon with emoji to avoid lucide import issues -->
+              <span class="mr-2">🔍</span>
+              Search
+            {/if}
+          </Button>
+        </div>
       </div>
       {#if vectorResults.length > 0}
         <div class="mt-4">
@@ -154,10 +159,18 @@
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Button Variants</h3>
           <div class="space-y-3">
-            <Btn class="bits-btn" variant="default">Primary Action</Btn>
-            <Btn class="bits-btn" variant="secondary">Secondary Action</Btn>
-            <Btn class="bits-btn" variant="ghost">Ghost Button</Btn>
-            <Btn class="bits-btn" variant="error">Delete Action</Btn>
+            <div class="bits-btn">
+              <Button variant="default" onclick={() => {}} size="default">Primary Action</Button> // Changed Btn to Button
+            </div>
+            <div class="bits-btn">
+              <Button variant="secondary" onclick={() => {}} size="default">Secondary Action</Button> // Changed Btn to Button
+            </div>
+            <div class="bits-btn">
+              <Button variant="ghost" onclick={() => {}} size="default">Ghost Button</Button> // Changed Btn to Button
+            </div>
+            <div class="bits-btn">
+              <Button variant="error" onclick={() => {}} size="default">Delete Action</Button> // Changed Btn to Button
+            </div>
           </div>
         </div>
       </div>
@@ -165,9 +178,11 @@
       <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Btn class="bits-btn" onclick={() => (modalOpen = true)}>
-            Open Modal
-          </Btn>
+          <div class="bits-btn">
+            <Button onclick={() => (modalOpen = true)} variant="default" size="default"> // Changed Btn to Button
+              Open Modal
+            </Button>
+          </div>
           <Modal bind:open={modalOpen} title="System Alert">
             <div class="mt-4">
               <p class="text-nier-light-gray mb-4">
@@ -175,12 +190,16 @@
                 follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Btn class="bits-btn" variant="ghost" onclick={() => (modalOpen = false)}>
-                  Cancel
-                </Btn>
-                <Btn class="bits-btn" onclick={() => (modalOpen = false)}>
-                  Acknowledge
-                </Btn>
+                <div class="bits-btn">
+                  <Button variant="ghost" onclick={() => (modalOpen = false)} size="default"> // Changed Btn to Button
+                    Cancel
+                  </Button>
+                </div>
+                <div class="bits-btn">
+                  <Button onclick={() => (modalOpen = false)} variant="default" size="default"> // Changed Btn to Button
+                    Acknowledge
+                  </Button>
+                </div>
               </div>
             </div>
           </Modal>

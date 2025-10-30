@@ -4,19 +4,50 @@
 import { browser } from '$app/environment';
 import { concurrencyOrchestrator } from './concurrency-orchestrator.js';
 import { gemma3LegalService } from './ollama-gemma3-service.js';
+
+// New: minimal local types to avoid `any` everywhere
+type Constructor<T = unknown> = new (...args: unknown[]) => T;
+
+interface FuseLike {
+  new (data: unknown[], opts?: unknown): { search(query: string): unknown[] };
 }
+interface FabricLike {
+  Canvas?: Constructor;
+}
+interface XStateModuleLike {
+  createMachine?: (config: unknown) => unknown;
+  createActor?: (...args: unknown[]) => unknown;
+}
+interface RedisClientLike {
+  connect?: () => Promise<unknown>;
+  ping?: () => Promise<unknown>;
+  quit?: () => Promise<unknown>;
+  disconnect?: () => void;
+}
+interface AmqpModuleLike {
+  connect?: (...args: unknown[]) => unknown;
+  default?: { connect?: (...args: unknown[]) => unknown };
+}
+
+type HealthStatus = {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  services: StartupStatus['services'];
+  uptime: number;
+  errors: string[];
+};
+
 export interface StartupStatus {
   initialized: boolean;
   services: {
     loki: boolean;
-  fuse: boolean;
-  fabric: boolean;
-  xstate: boolean;
-  redis: boolean;
-  rabbitmq: boolean;
-  orchestrator: boolean;
-  ollama: boolean;
-  }
+    fuse: boolean;
+    fabric: boolean;
+    xstate: boolean;
+    redis: boolean;
+    rabbitmq: boolean;
+    orchestrator: boolean;
+    ollama: boolean;
+  };
   errors: string[];
   startTime: number;
   initTime?: number;
@@ -35,8 +66,8 @@ class MultiLibraryStartupService {
       ollama: false,
     },
     errors: [],
-    startTime: Date.now()
-  }
+    startTime: Date.now(),
+  };
   private initPromise: Promise<void> | null = null;
   async initialize(): Promise<StartupStatus> {
     if (this.initPromise) {
@@ -51,14 +82,14 @@ class MultiLibraryStartupService {
     console.log('🚀 Initializing Multi-Library Integration...');
     try {
       // Initialize services concurrently for better performance
-      await Promise.all([)
+      await Promise.all([
         this.initializeLoki(),
         this.initializeFuse(),
         this.initializeFabric(),
         this.initializeXState(),
         this.initializeRedis(),
         this.initializeRabbitMQ(),
-        this.initializeOllama()
+        this.initializeOllama(),
       ]);
       // Initialize orchestrator after all services are ready
       await this.initializeOrchestrator();
@@ -66,8 +97,8 @@ class MultiLibraryStartupService {
       this.status.initTime = Date.now() - this.status.startTime;
       console.log(`✅ Multi-Library Integration Complete (${this.status.initTime}ms)`);
       this.logServiceStatus();
-    } catch (error: any) {
-      const errorMsg = error instanceof Error ? error.message: 'Unknown initialization error';
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(errorMsg);
       console.error('❌ Multi-Library Initialization Failed:', errorMsg);
     }
@@ -76,31 +107,35 @@ class MultiLibraryStartupService {
     try {
       // Loki.js is initialized within the concurrency orchestrator
       // This just verifies the import works
-      const { default: Loki } = await import('lokijs'););
-      if (typeof Loki === 'function') {
+      const mod = await import('lokijs');
+      const LokiCtor = ((mod as { default?: Constructor }) .default ?? (mod as unknown as Constructor));
+      if (typeof LokiCtor === 'function') {
         this.status.services.loki = true;
         console.log('✅ Loki.js - High-performance in-memory database ready');
       }
-    } catch (error: any) {
-      this.status.errors.push(`Loki.js initialization failed: ${error}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.status.errors.push(`Loki.js initialization failed: ${msg}`);
     }
   }
   private async initializeFuse(): Promise<void> {
     try {
-      const { default: Fuse } = await import('fuse.js'););
+      const mod = await import('fuse.js');
+      const Fuse = (mod as { default?: FuseLike }).default ?? (mod as unknown as FuseLike);
       // Test with a small dataset to verify functionality
       const testData = [{ title: 'Legal Document', content: 'Sample legal text' }];
-      const testFuse = new Fuse(testData, {
+      const testFuse = new (Fuse as unknown as FuseLike)(testData, {
         keys: ['title', 'content'],
-        threshold: 0.3
+        threshold: 0.3,
       });
-      const testResult = testFuse.search('legal');
-      if (testResult.length > 0) {
+      const testResult = (testFuse as unknown as { search: (q: string) => unknown[] }).search('legal');
+      if (Array.isArray(testResult) && testResult.length > 0) {
         this.status.services.fuse = true;
         console.log('✅ Fuse.js - Advanced fuzzy search capabilities ready');
       }
-    } catch (error: any) {
-      this.status.errors.push(`Fuse.js initialization failed: ${error}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.status.errors.push(`Fuse.js initialization failed: ${msg}`);
     }
   }
   private async initializeFabric(): Promise<void> {
@@ -112,35 +147,45 @@ class MultiLibraryStartupService {
         return;
       }
       // Client-side: test canvas creation
-      const { fabric } = await import('fabric'););
+      const mod = await import('fabric');
+      const fabric = (mod as { fabric?: FabricLike }).fabric ?? (mod as unknown as FabricLike);
       if (fabric && typeof fabric.Canvas === 'function') {
         this.status.services.fabric = true;
         console.log('✅ Fabric.js - Interactive evidence canvas ready');
       }
-    } catch (error: any) {
-      this.status.errors.push(`Fabric.js initialization failed: ${error}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.status.errors.push(`Fabric.js initialization failed: ${msg}`);
     }
   }
   private async initializeXState(): Promise<void> {
     try {
-      const { createMachine, createActor } = await import('xstate'););
-      // Test machine creation
-      const testMachine = createMachine({
-        id: 'test',
-        initial: 'idle',
-        states: {
-          idle: {
-            on: { START: 'active' }
-          },
-          active: { [key,: strin,g]: any },
-        }
-      });
+      const mod = await import('xstate');
+      const xs = mod as XStateModuleLike;
+      const createMachine = xs.createMachine;
+      const createActor = xs.createActor;
+      // Test machine creation with a minimal valid machine only if function exists
+      const testMachine = createMachine
+        ? createMachine({
+            id: 'test',
+            initial: 'idle',
+            states: {
+              idle: {
+                on: { START: 'active' },
+              },
+              active: {
+                on: { STOP: 'idle' },
+              },
+            },
+          })
+        : null;
       if (testMachine && typeof createActor === 'function') {
         this.status.services.xstate = true;
         console.log('✅ XState - Multi-core worker patterns ready');
       }
-    } catch (error: any) {
-      this.status.errors.push(`XState initialization failed: ${error}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.status.errors.push(`XState initialization failed: ${msg}`);
     }
   }
   private async initializeRedis(): Promise<void> {
@@ -152,24 +197,29 @@ class MultiLibraryStartupService {
         return;
       }
       // Server-side: attempt Redis connection
-      const { default: Redis } = await import('ioredis'););
-      const redis = new Redis({
-        host: 'localhost',
-        port: 6379,
-        retryDelayOnFailover: 100,
-        maxRetriesPerRequest: 1,
-        enableOfflineQueue: false,
-        lazyConnect: true,
-      });
-      await redis.connect();
-      await redis.ping();
-      redis.disconnect();
+      const mod = await import('ioredis');
+      const Redis = (mod as { default?: unknown }).default ?? mod;
+      const redis = (Redis as unknown as Constructor<RedisClientLike>);
+      const client = new redis() as RedisClientLike;
+      // many ioredis versions expose .connect/.ping/.quit — guard in case of variant
+      if (typeof client.connect === 'function') {
+        await client.connect();
+      }
+      if (typeof client.ping === 'function') {
+        await client.ping();
+      }
+      if (typeof client.quit === 'function') {
+        await client.quit();
+      } else if (typeof client.disconnect === 'function') {
+        client.disconnect();
+      }
       this.status.services.redis = true;
       console.log('✅ Redis - Native Windows performance optimization ready');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
       // Fallback: mark as ready for development even if Redis isn't running
       this.status.services.redis = true;
-      console.log('⚠️ Redis - Development mode (service not running)');
+      console.log('⚠️ Redis - Development mode (service not running):', msg);
     }
   }
   private async initializeRabbitMQ(): Promise<void> {
@@ -180,29 +230,32 @@ class MultiLibraryStartupService {
         return;
       }
       // Server-side: check if RabbitMQ module imports correctly
-      const amqp = await import('amqplib)');
-      if (amqp && typeof amqp.connect === 'function') {
+      const amqp = await import('amqplib');
+      const connectFn = (amqp as AmqpModuleLike).connect ?? (amqp as AmqpModuleLike).default?.connect;
+      if (typeof connectFn === 'function') {
         this.status.services.rabbitmq = true;
         console.log('✅ RabbitMQ - Native Windows queuing ready');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
       // Fallback: mark as ready for development
       this.status.services.rabbitmq = true;
-      console.log('⚠️ RabbitMQ - Development mode (service not running)');
+      console.log('⚠️ RabbitMQ - Development mode (service not running):', msg);
     }
   }
   private async initializeOllama(): Promise<void> {
     try {
       const health = await gemma3LegalService.healthCheck();
-      if (health.status === 'healthy') {
+      if (health && (health as { status?: string }).status === 'healthy') {
         this.status.services.ollama = true;
         console.log('✅ Ollama - Gemma3-Legal model ready');
       } else {
         this.status.services.ollama = true;
         console.log('⚠️ Ollama - Service available but models may be loading');
       }
-    } catch (error: any) {
-      this.status.errors.push(`Ollama initialization failed: ${error}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.status.errors.push(`Ollama initialization failed: ${msg}`);
     }
   }
   private async initializeOrchestrator(): Promise<void> {
@@ -210,14 +263,15 @@ class MultiLibraryStartupService {
       // The orchestrator is already initialized as a singleton
       // Just verify it's working
       const health = await concurrencyOrchestrator.healthCheck();
-      if (health.status === 'healthy' || health.status === 'degraded') {
+      if (health && ((health as { status?: string }).status === 'healthy' || (health as { status?: string }).status === 'degraded')) {
         this.status.services.orchestrator = true;
         console.log('✅ Concurrency Orchestrator - 561-line comprehensive integration ready');
       } else {
-        throw new Error(`Orchestrator unhealthy: ${health.status}`);
+        throw new Error(`Orchestrator unhealthy: ${(health as { status?: string }).status}`);
       }
-    } catch (error: any) {
-      this.status.errors.push(`Orchestrator initialization failed: ${error}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.status.errors.push(`Orchestrator initialization failed: ${msg}`);
     }
   }
   private logServiceStatus(): void {
@@ -229,32 +283,32 @@ class MultiLibraryStartupService {
     });
     if (this.status.errors.length > 0) {
       console.log('\n⚠️ Initialization Errors:');
-      this.status.errors.forEach(error => console.log(`   • ${error}`);
+      this.status.errors.forEach(error => console.log(`   • ${error}`));
     }
-    const healthyServices = Object.values(this.status.services).filter(item => item.length);
+    const healthyCount = Object.values(this.status.services).filter(v => v === true).length;
     const totalServices = Object.keys(this.status.services).length;
-    const healthPercentage = Math.round((healthyServices / totalServices) * 100);
-    console.log(`\n🎯 Overall Health: ${healthPercentage}% (${healthyServices}/${totalServices} services)`);
+    const healthPercentage = Math.round((healthyCount / totalServices) * 100);
+    console.log(`\n🎯 Overall Health: ${healthPercentage}% (${healthyCount}/${totalServices} services)`);
   }
   getStatus(): StartupStatus {
-    return { ...this.status }
+    return { ...this.status };
   }
   isInitialized(): boolean {
     return this.status.initialized;
   }
-  async getHealthCheck(): Promise<any> {
-    const healthyServices = Object.values(this.status.services).filter(item => item.length);
+  async getHealthCheck(): Promise<HealthStatus> {
+    const healthyCount = Object.values(this.status.services).filter(v => v === true).length;
     const totalServices = Object.keys(this.status.services).length;
-    const healthRatio = healthyServices / totalServices;
+    const healthRatio = totalServices > 0 ? healthyCount / totalServices : 0;
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-    if (healthRatio < 0.8) status = 'degraded';>
-    if (healthRatio < 0.5) status = 'unhealthy';>
+    if (healthRatio < 0.8) status = 'degraded';
+    if (healthRatio < 0.5) status = 'unhealthy';
     return {
       status,
       services: this.status.services,
       uptime: Date.now() - this.status.startTime,
-      errors: this.status.errors
-    }
+      errors: this.status.errors,
+    };
   }
 }
 // Singleton instance
@@ -262,7 +316,8 @@ export const multiLibraryStartup = new MultiLibraryStartupService();
 // Auto-initialize when imported (client-side only)
 if (browser) {
   multiLibraryStartup.initialize().catch(error => {
-    console.error('Failed to auto-initialize multi-library services:', error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('Failed to auto-initialize multi-library services:', msg);
   });
 }
 // Utility functions for components
@@ -272,6 +327,6 @@ export async function ensureServicesReady(): Promise<StartupStatus> {
 export function getServicesStatus(): StartupStatus {
   return multiLibraryStartup.getStatus();
 }
-export async function getServicesHealth(): Promise<any> {
+export async function getServicesHealth(): Promise<HealthStatus> {
   return await multiLibraryStartup.getHealthCheck();
 }

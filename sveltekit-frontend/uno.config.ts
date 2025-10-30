@@ -1,33 +1,33 @@
 // @ts-nocheck
-import { defineConfig, presetUno, presetAttributify, presetTypography, transformerDirectives, transformerVariantGroup, transformerCompileClass } from 'unocss';
-import presetIcons from '@unocss/preset-icons';
-import extractorSvelte from '@unocss/extractor-svelte';
-import { presetForms } from '@unocss/preset-forms';
-import { presetRadix } from 'unocss-preset-radix';
+import { defineConfig, presetUno, presetAttributify, presetIcons } from 'unocss';
 
 export default defineConfig({
   presets: [
     presetUno(),
     presetAttributify(),
-    presetIcons({
-      scale: 1.2,
-      // Use local @iconify-json packages — ensure these are installed
-      collections: {
-        lucide: () => import('@iconify-json/lucide/icons.json').then(i => i.default),
-        tabler: () => import('@iconify-json/tabler/icons.json').then(i => i.default),
-        heroicons: () => import('@iconify-json/heroicons/icons.json').then(i => i.default),
-      },
-      autoInstall: true,
-    }),
-    presetTypography({
-      cssExtend: {
-        code: {
-          color: 'var(--color-nier-accent)',
-          'background-color': 'var(--color-nier-bg-tertiary)',
-          padding: '0.125rem 0.25rem',
-          'border-radius': '0.25rem',
-          'font-size': '0.875em',
-          'font-family': 'var(--font-mono)',
+    presetIcons(),
+  ],
+  rules: [
+    ['no-scrollbar', { 'scrollbar-width': 'none', '-ms-overflow-style': 'none' }],
+    [/^no-scrollbar-(.+)$/, ([, c]) => ({ 'scrollbar-width': 'none', '-ms-overflow-style': 'none', 'overflow': c })],
+  ],
+  shortcuts: {
+    'btn': 'py-2 px-4 font-semibold rounded-lg shadow-md',
+    'btn-green': 'text-white bg-green-500 hover:bg-green-700',
+  },
+  theme: {
+    colors: {
+      'primary': '#007bff',
+      'secondary': '#6c757d',
+    },
+    breakpoints: {
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+    },
+  },
+});
         },
         pre: {
           'background-color': 'var(--color-nier-bg-secondary)',

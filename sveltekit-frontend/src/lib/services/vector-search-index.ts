@@ -1,6 +1,27 @@
 import { browser } from '$app/environment';
 import type { MinIOFile } from './minio-service.js';
+
+// Define the expected structure for metadata within MinIOFile
+interface ExpectedMinIOMetadata {
+  title?: string;
+  documentType?: "unknown" | "contract" | "evidence" | "brief" | "citation" | "precedent";
+  legalEntities?: string[];
+  jurisdiction?: string;
+  confidenceLevel?: number;
+  riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+  caseReferences?: string[];
+  citationCount?: number;
+  [key: string]: unknown; // Allow for other properties that might exist in MinIOFile's metadata
 }
+
+// Extend the imported MinIOFile type to include 'originalName', 'uploadedAt',
+// and a more specific 'metadata' structure for local use.
+interface MinIOFileWithExpectedProps extends Omit<MinIOFile, 'uploadedAt'> {
+  originalName?: string;
+  uploadedAt?: Date; // Now correctly optional, overriding the base type
+  metadata?: ExpectedMinIOMetadata;
+}
+
 export interface VectorSearchResult {
   id: string;
   score: number;
@@ -77,7 +98,7 @@ class VectorSearchIndex {
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
       request.onupgradeneeded = (event) => {
-        // removed unused db assignment
+        const db = (event.target as IDBOpenDBRequest).result; // Correctly get db from event and cast
         // Create object stores
         if (!db.objectStoreNames.contains('embeddings')) {
           db.createObjectStore('embeddings', { keyPath: 'id' });
@@ -106,15 +127,15 @@ class VectorSearchIndex {
     return new Promise((resolve, reject) => {
       transaction.oncomplete = () => {
         // Process embeddings
-        embeddingsRequest.result.forEach((item: { id: string); embedding: number[], }) => {
-          this.embeddings.set(item.id, new Float32Array(item.embedding);
+        embeddingsRequest.result.forEach((item: { id: string; embedding: number[] }) => {
+          this.embeddings.set(item.id, new Float32Array(item.embedding));
         });
         // Process metadata
-        metadataRequest.result.forEach((item: { id: string); metadata: VectorSearchResult['metadata'] }) => {
+        metadataRequest.result.forEach((item: { id: string; metadata: VectorSearchResult['metadata'] }) => {
           this.metadata.set(item.id, item.metadata);
         });
         // Process chunks
-        chunksRequest.result.forEach((item: { id: string); chunks: VectorSearchResult['chunks'] }) => {
+        chunksRequest.result.forEach((item: { id: string; chunks: VectorSearchResult['chunks'] }) => {
           this.textChunks.set(item.id, item.chunks);
         });
         resolve();
@@ -122,11 +143,11 @@ class VectorSearchIndex {
       transaction.onerror = () => reject(transaction.error);
     });
   }
-  async indexDocument(file,: MinIOFile, embedding,s: Float32Array[], textChun,ks: string,[]): Promise<void> {
-    if (!this.isInitialize,d) {
+  async indexDocument(file: MinIOFileWithExpectedProps, embeddings: Float32Array[], textChunks: string[]): Promise<void> {
+    if (!this.isInitialized) {
       await this.initialize();
     }
-    const documentId = file.id || file.path;
+    const documentId = file.id; // Removed '|| file.path' as 'path' does not exist on MinIOFileWithExpectedProps
     // Extract legal metadata from document
     const metadata: VectorSearchResult['metadata'] = {
       title: file.metadata?.title || file.originalName || 'Untitled Document',
@@ -138,15 +159,15 @@ class VectorSearchIndex {
       riskLevel: file.metadata?.riskLevel || 'medium',
       caseReferences: file.metadata?.caseReferences || [],
       citationCount: file.metadata?.citationCount || 0,
-      lastModified: file.uploadedAt || new Date().toISOString()
-    }
+      lastModified: file.uploadedAt?.toISOString() || new Date().toISOString() // Safely call toISOString()
+    };
     // Create chunk metadata
     const chunks = textChunks.map((text, index) => ({
       text,
       startIndex: index * 1000, // Approximate
       endIndex: (index + 1) * 1000,
       relevanceScore: 1.0 // Initial score
-    });
+    }));
     // Store in memory
     this.embeddings.set(documentId, embeddings[0]); // Store first embedding as document embedding
     this.metadata.set(documentId, metadata);
@@ -155,7 +176,7 @@ class VectorSearchIndex {
     if (this.db) {
       const transaction = this.db.transaction(['embeddings', 'metadata', 'chunks'], 'readwrite');
       transaction.objectStore('embeddings').put({
-        id: documentId;
+        id: documentId,
         embedding: Array.from(embeddings[0])
       });
       transaction.objectStore('metadata').put({
@@ -169,8 +190,8 @@ class VectorSearchIndex {
     }
     console.log(`📚 Indexed document: ${metadata.title} (${documentId})`);
   }
-  async search(query,: SearchQuery): Promise<VectorSearchResult[]> {
-    if (!this.isInitialize,d) {
+  async search(query: SearchQuery): Promise<VectorSearchResult[]> {
+    if (!this.isInitialized) {
       await this.initialize();
     }
     // Generate query embedding using Gemma
@@ -185,7 +206,7 @@ class VectorSearchIndex {
       if (!this.passesFilters(metadata, query.filters)) continue;
       // Calculate similarity score
       const similarityScore = this.cosineSimilarity(queryEmbedding, embedding);
-      if (similarityScore < (query.threshold || 0.1)) continue;>
+      if (similarityScore < (query.threshold || 0.1)) continue;
       // Apply ranking strategy
       const finalScore = this.applyRankingStrategy(
         similarityScore,
@@ -197,7 +218,7 @@ class VectorSearchIndex {
         score: finalScore,
         metadata,
         embedding,
-        filePath: id;
+        filePath: id,
         chunks: query.includeChunks ? chunks : []
       });
     }
@@ -205,14 +226,14 @@ class VectorSearchIndex {
     results.sort((a, b) => b.score - a.score);
     return results.slice(0, query.limit || 20);
   }
-  private async generateQueryEmbedding(text,: string): Promise<Float32Array> {
+  private async generateQueryEmbedding(text: string): Promise<Float32Array> {
     try {
       const response = await fetch('/api/embeddings/gemma?action=generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, )}),
+        body: JSON.stringify({ text }),
       });
-      if (!response,.o,k) {
+      if (!response.ok) {
         throw new Error(`Embedding API error: ${response.status}`);
       }
       const data = await response.json();
@@ -224,10 +245,10 @@ class VectorSearchIndex {
     } catch (error) {
       console.error('❌ Failed to generate query embedding:', error);
       // Fallback to random embedding for development (512 dimensions)
-      return new Float32Array(512).map(() => Math.random();
+      return new Float32Array(512).map(() => Math.random());
     }
   }
-  private passesFilters(metadata,: VectorSearchResult['metadata'], filters?: SearchQuery['filters']): boolean {
+  private passesFilters(metadata: VectorSearchResult['metadata'], filters?: SearchQuery['filters']): boolean {
     if (!filters) return true;
     // Document type filter
     if (filters.documentType && !filters.documentType.includes(metadata.documentType)) {
@@ -242,7 +263,7 @@ class VectorSearchIndex {
       return false;
     }
     // Confidence filter
-    if (filters.minimumConfidence && metadata.confidenceLevel < filters.minimumConfidence) {>
+    if (filters.minimumConfidence && metadata.confidenceLevel < filters.minimumConfidence) {
       return false;
     }
     // Date range filter
@@ -256,33 +277,35 @@ class VectorSearchIndex {
     }
     return true;
   }
-  private cosineSimilarity(a,: Float32Array, b: Float32Array): number {
+  private cosineSimilarity(a: Float32Array, b: Float32Array): number {
     if (a.length !== b.length) return 0;
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-    for (let i = 0; i < a.length; i++) {>
-      dotProduct, += a[i] * b[i];
+    for (let i = 0; i < a.length; i++) {
+      dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
-  private applyRankingStrategy()
-    similarityScore: number
+  private applyRankingStrategy(
+    similarityScore: number,
     metadata: VectorSearchResult['metadata'],
-    strategy,: SearchQuery['rankingStrategy'];
+    strategy: SearchQuery['rankingStrategy']
   ): number {
     switch (strategy) {
-      case 'legal_relevance':
+      case 'legal_relevance': {
         // Boost legal entities and case references
         const legalBoost = metadata.legalEntities.length * 0.1 + metadata.caseReferences.length * 0.15;
         return similarityScore * (1 + legalBoost);
-      case 'citation_weighted':
+      }
+      case 'citation_weighted': {
         // Weight by citation count
         const citationBoost = Math.log(metadata.citationCount + 1) * 0.2;
         return similarityScore * (1 + citationBoost);
-      case 'risk_prioritized':
+      }
+      case 'risk_prioritized': {
         // Prioritize high-risk documents
         const riskMultiplier = {
           'critical': 1.5,
@@ -291,14 +314,15 @@ class VectorSearchIndex {
           'low': 0.8
         }[metadata.riskLevel] || 1.0;
         return similarityScore * riskMultiplier;
+      }
       case 'similarity':
       default:
         return similarityScore;
     }
   }
-  async getStats(),: Promise<IndexStats> {
-    const documentType,s: Record<string, number,> = {}
-    const jurisdictions: Record<string, number> = {}
+  async getStats(): Promise<IndexStats> {
+    const documentTypes: Record<string, number> = {};
+    const jurisdictions: Record<string, number> = {};
     let totalConfidence = 0;
     for (const metadata of this.metadata.values()) {
       documentTypes[metadata.documentType] = (documentTypes[metadata.documentType] || 0) + 1;
@@ -315,7 +339,7 @@ class VectorSearchIndex {
       jurisdictions
     }
   }
-  private calculateIndexSize(),: number {
+  private calculateIndexSize(): number {
     let size = 0;
     // Estimate embedding size (512 dimensions * 4 bytes per float)
     size += this.embeddings.size * 512 * 4;
@@ -325,11 +349,11 @@ class VectorSearchIndex {
     }
     return size;
   }
-  async clearIndex(),: Promise<void> {
+  async clearIndex(): Promise<void> {
     this.embeddings.clear();
     this.metadata.clear();
     this.textChunks.clear();
-    if (this.d,b) {
+    if (this.db) {
       const transaction = this.db.transaction(['embeddings', 'metadata', 'chunks'], 'readwrite');
       transaction.objectStore('embeddings').clear();
       transaction.objectStore('metadata').clear();

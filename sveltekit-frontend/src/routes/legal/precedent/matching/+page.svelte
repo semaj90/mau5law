@@ -21,9 +21,8 @@
   import SelectContent from '$lib/components/ui/select/SelectContent.svelte';
   import SelectItem from '$lib/components/ui/select/SelectItem.svelte';
   import SelectTrigger from '$lib/components/ui/select/SelectTrigger.svelte';
-  import SelectValue from '$lib/components/ui/select/SelectValue.svelte';
-  import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import { glyphShaderCache } from '$lib/cache/glyph-shader-cache-bridge';
+  import nesMemoryBridge from '$lib/gpu/nes-gpu-memory-bridge';
+  import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes
   let activeTab = $state('search');
   let searchQuery = $state('');
@@ -34,10 +33,10 @@
   let analysisInProgress = $state(false);
   let analysisProgress = $state(0);
   let precedentMatches = $state([]);
-  let similarityScores = $state([]);
+  // let similarityScores = $state([]);
   let legalReasoningChain = $state([]);
   let citationNetworkMap = $state([]);
-  let distinguishingFactors = $state([]);
+  // let distinguishingFactors = $state([]);
   let applicabilityAnalysis = $state(null);
   let strengthAssessment = $state(null);
   // Legal AI System State
@@ -112,10 +111,10 @@
     await nesMemoryBridge.initialize({
       mode: 'legal-ai',
       optimizeFor: 'vector-similarity',
-      cacheRegions: ['case-embeddings', 'precedent-patterns', 'citation-networks'];
+      cacheRegions: ['case-embeddings', 'precedent-patterns', 'citation-networks']
     });
     // Initialize Glyph Shader Cache for legal pattern recognition
-    await glyphShaderCache.loadPatterns([
+    await (glyphShaderCache as unknown as any).initialize([
       'legal-reasoning-chains',
       'citation-network-visualization',
       'fact-pattern-similarity',
@@ -152,7 +151,8 @@
           precedentMatches = await performVectorSearch();
           break;
         case 2:
-          similarityScores = await calculateSimilarityScores();
+          // similarityScores = await calculateSimilarityScores();
+          await calculateSimilarityScores();
           break;
         case 3:
           citationNetworkMap = await buildCitationNetworks();
@@ -526,18 +526,19 @@
     <NesCardContent class="space-y-4">
       <div class="grid md:grid-cols-2 gap-4">
         <div class="space-y-2">
-          <label class="text-sm font-medium">Search Query</label>
+          <label for="search-query" class="text-sm font-medium">Search Query</label>
           <Input
+            id="search-query"
             bind:value={searchQuery}
             placeholder="Enter legal issue or keywords..."
             class="w-full"
           />
         </div>
         <div class="space-y-2">
-          <label class="text-sm font-medium">Jurisdiction</label>
+          <label for="jurisdiction" class="text-sm font-medium">Jurisdiction</label>
           <Select bind:value={selectedJurisdiction}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select jurisdiction" />
+            <SelectTrigger id="jurisdiction">
+              <span class="text-sm text-gray-600">{selectedJurisdiction || 'Select jurisdiction'}</span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="federal">Federal</SelectItem>
@@ -549,10 +550,10 @@
       </div>
       <div class="grid md:grid-cols-2 gap-4">
         <div class="space-y-2">
-          <label class="text-sm font-medium">Court Level</label>
+          <label for="court-level" class="text-sm font-medium">Court Level</label>
           <Select bind:value={selectedCourtLevel}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select court level" />
+            <SelectTrigger id="court-level">
+              <span class="text-sm text-gray-600">{selectedCourtLevel || 'Select court level'}</span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="supreme">Supreme Court</SelectItem>
@@ -562,10 +563,10 @@
           </Select>
         </div>
         <div class="space-y-2">
-          <label class="text-sm font-medium">Practice Area</label>
+          <label for="practice-area" class="text-sm font-medium">Practice Area</label>
           <Select bind:value={selectedPracticeArea}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select practice area" />
+            <SelectTrigger id="practice-area">
+              <span class="text-sm text-gray-600">{selectedPracticeArea || 'Select practice area'}</span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="contracts">Contract Law</SelectItem>
@@ -577,8 +578,9 @@
         </div>
       </div>
       <div class="space-y-2">
-        <label class="text-sm font-medium">Case Fact Pattern (Optional)</label>
+        <label for="fact-pattern" class="text-sm font-medium">Case Fact Pattern (Optional)</label>
         <Textarea
+          id="fact-pattern"
           bind:value={caseFactPattern}
           placeholder="Describe the key facts of your case for more precise matching..."
           rows={4}
@@ -596,7 +598,7 @@
   </NesCard>
   <!-- Results Tabs -->
   {#if precedentMatches.length > 0}
-    <Tabs bind:value={activeTab} class="w-full">
+    <Tabs value={activeTab} onValueChange={(v) => { if (v) activeTab = v; }}>
       <TabsList class="grid w-full grid-cols-5">
         <TabsTrigger value="matches">Precedent Matches</TabsTrigger>
         <TabsTrigger value="reasoning">Legal Reasoning</TabsTrigger>

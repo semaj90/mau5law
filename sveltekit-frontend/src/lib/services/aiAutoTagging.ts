@@ -5,7 +5,9 @@
  */
 import { db } from '$lib/server/db/drizzle-client';
 import { evidence } from '$lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
+// Replace modularized Drizzle imports
+import { eq } from 'drizzle-orm/expressions';
+import { sql } from 'drizzle-orm/sql';
 import { getOllamaEndpoint } from '$lib/utils/ollama';
 
 export interface EvidenceMetadata {
@@ -54,6 +56,21 @@ interface SemanticSearchResultRow {
   tags: string[] | null;
   summary: string | null;
   similarity: number;
+}
+
+// New helper types for safe parsing
+type DBRow = Record<string, unknown>;
+
+interface OllamaEmbeddingResponse {
+  embedding?: number[]; // may be absent on error
+  // other fields allowed
+  [key: string]: unknown;
+}
+
+interface OllamaGenerateResponse {
+  response?: string;
+  output?: string; // some Ollama variants use 'output'
+  [key: string]: unknown;
 }
 
 class AIAutoTaggingService {
@@ -111,47 +128,60 @@ class AIAutoTaggingService {
    */
   public async generateEmbedding(text: string): Promise<number[]> {
     try {
-      // Primary: Try Ollama first (local GPU acceleration)
-      const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
-        // MODIFIED: Use getOllamaEndpoint()
+      const resp = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'embeddinggemma:latest', // Changed to embeddinggemma:latest
-          prompt: text.substring(0, 8192), // Limit to model context
+          model: 'embeddinggemma:latest',
+          prompt: text.substring(0, 8192),
         }),
       });
-      if (!response.ok) {
-        throw new Error(`Ollama embedding failed: ${response.statusText}`);
+
+      if (!resp.ok) {
+        throw new Error(`Ollama embedding failed: ${resp.status} ${resp.statusText}`);
       }
-      const result = await response.json();
-      return result.embedding;
+
+      const payload = (await resp.json()) as unknown;
+      // safe extraction
+      if (typeof payload === 'object' && payload !== null) {
+        const p = payload as OllamaEmbeddingResponse;
+        if (Array.isArray(p.embedding) && p.embedding.every((v) => typeof v === 'number')) {
+          return p.embedding;
+        }
+      }
+      throw new Error('Invalid embedding response shape from Ollama');
     } catch (ollamaError: unknown) {
-      // MODIFIED: Changed 'any' to 'unknown'
       console.warn('Ollama embedding failed, trying server-side Qdrant:', ollamaError);
       try {
-        // Fallback: Use server-side Qdrant embedding
         if (typeof window === 'undefined') {
-          // Server-side: Import and use Qdrant directly
           const { fetchEmbedding } = await import('$lib/server/qdrant');
           return await fetchEmbedding(text);
         } else {
-          // Client-side: Make API call to server-side embedding
-          const response = await fetch('/api/embeddings', {
+          const resp = await fetch('/api/embeddings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: text.substring(0, 8192) }),
           });
-          if (!response.ok) {
-            throw new Error(`Server embedding failed: ${response.statusText}`);
+          if (!resp.ok) {
+            throw new Error(`Server embedding failed: ${resp.status} ${resp.statusText}`);
           }
-          const result = await response.json();
-          return result.embedding;
+          const payload = (await resp.json()) as unknown;
+          // Safe typed extraction for server response
+          type ServerEmbeddingResponse = { embedding?: unknown };
+          if (typeof payload === 'object' && payload !== null) {
+            const p = payload as ServerEmbeddingResponse;
+            if (Array.isArray(p.embedding)) {
+              // Map values to numbers with guarded coercion
+              const nums: number[] = p.embedding.map((v) => (typeof v === 'number' ? v : Number(String(v))));
+              if (nums.every((n) => Number.isFinite(n))) {
+                return nums;
+              }
+            }
+          }
+          throw new Error('Invalid server embedding response shape');
         }
       } catch (fallbackError: unknown) {
-        // MODIFIED: Changed 'any' to 'unknown'
         console.error('All embedding methods failed:', fallbackError);
-        // Return zero vector as ultimate fallback
         return new Array(768).fill(0);
       }
     }
@@ -159,7 +189,10 @@ class AIAutoTaggingService {
   /**
    * Analyze content with gemma3-legal:latest for tags and entities
    */
-  private async analyzeContent(content: string, documentType: string) {
+  private async analyzeContent(
+    content: string,
+    documentType: string
+  ): Promise<{ tags: string[]; entities: ExtractedEntity[]; summary: string; confidence: number }> {
     const prompt = `Analyze this ${documentType} legal document and provide:
 1. Relevant tags (max 10)
 2. Key entities with types and confidence
@@ -177,59 +210,108 @@ Return JSON format:
   "summary": "Employment contract between...",
   "confidence": 0.87
 }`;
-    const response = await fetch(`${getOllamaEndpoint()}/api/generate`, {
-      // MODIFIED: Use getOllamaEndpoint()
+
+    const resp = await fetch(`${getOllamaEndpoint()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest', // Changed to gemma3-legal:latest
+        model: 'gemma3-legal:latest',
         prompt,
         format: 'json',
         stream: false,
       }),
     });
-    if (!response.ok) {
-      throw new Error(`Content analysis failed: ${response.statusText}`);
+
+    if (!resp.ok) {
+      throw new Error(`Content analysis failed: ${resp.status} ${resp.statusText}`);
     }
-    const result = await response.json();
-    try {
-      return JSON.parse(result.response);
-    } catch (parseError: unknown) {
-      // MODIFIED: Changed 'any' to 'unknown'
-      // Fallback to basic analysis
-      return {
-        tags: [documentType, 'auto-generated'],
-        entities: [],
-        summary: 'AI analysis completed with basic tagging.',
-        confidence: 0.5,
-      };
+
+    const payload = (await resp.json()) as unknown;
+    let jsonText = '';
+
+    if (typeof payload === 'object' && payload !== null) {
+      const p = payload as OllamaGenerateResponse;
+      if (typeof p.response === 'string') jsonText = p.response;
+      else if (typeof p.output === 'string') jsonText = p.output;
+      // else leave empty to trigger fallback
     }
+
+    if (jsonText) {
+      try {
+        const parsed = JSON.parse(jsonText) as {
+          tags?: unknown;
+          entities?: unknown;
+          summary?: unknown;
+          confidence?: unknown;
+        };
+        const tags = Array.isArray(parsed.tags) ? parsed.tags.map((t) => String(t)) : [documentType, 'auto-generated'];
+        const entities = Array.isArray(parsed.entities) ? (parsed.entities as unknown[]).map((e) => {
+          const obj = (e as Record<string, unknown>);
+          // Safely extract position without using `any`
+          let start = 0;
+          let end = 0;
+          const pos = obj.position;
+          if (typeof pos === 'object' && pos !== null) {
+            const p = pos as Record<string, unknown>;
+            const rawStart = p.start ?? p['0'] ?? 0;
+            const rawEnd = p.end ?? p['1'] ?? 0;
+            start = Number(rawStart);
+            end = Number(rawEnd);
+            if (!Number.isFinite(start)) start = 0;
+            if (!Number.isFinite(end)) end = 0;
+          }
+          return {
+            type: (obj.type as ExtractedEntity['type']) ?? 'legal_term',
+            text: String(obj.text ?? ''),
+            confidence: typeof obj.confidence === 'number' ? obj.confidence : Number(obj.confidence ?? 0),
+            position: { start, end },
+          } as ExtractedEntity;
+        }) : [];
+        const summary = typeof parsed.summary === 'string' ? parsed.summary : 'AI analysis completed with basic tagging.';
+        const confidence = typeof parsed.confidence === 'number' ? parsed.confidence : 0.5;
+        return { tags, entities, summary, confidence };
+      } catch (parseError: unknown) {
+        console.warn('Failed to parse analysis JSON response:', parseError);
+      }
+    }
+
+    // Fallback minimal response
+    return {
+      tags: [documentType, 'auto-generated'],
+      entities: [],
+      summary: 'AI analysis completed with basic tagging.',
+      confidence: 0.5,
+    };
   }
   /**
    * Find similar documents using pgvector cosine similarity
    */
   private async findSimilarDocuments(embedding: number[], excludeId: string, limit = 5): Promise<SimilarDocumentRow[]> {
-    // MODIFIED: Added return type
     const embeddingStr = `[${embedding.join(',')}]`;
     try {
-      // Raw SQL query for pgvector similarity
       const result = await db.execute(
         sql.raw(`
         SELECT id, title, 1 - (embedding <=> '${embeddingStr}'::vector) as similarity
-        FROM ${evidence._.name} -- MODIFIED: Use evidence._.name for table name
+        FROM ${evidence._.name}
         WHERE id != '${excludeId}' AND embedding IS NOT NULL
         ORDER BY embedding <=> '${embeddingStr}'::vector
         LIMIT ${limit}
       `)
       );
-      return result.rows.map((row: SimilarDocumentRow) => ({
-        // MODIFIED: Used SimilarDocumentRow interface
-        id: row.id,
-        title: row.title,
-        similarity: row.similarity,
-      }));
+
+      const rows = (result as unknown as { rows?: DBRow[] }).rows ?? [];
+      return rows.map((row) => {
+        const id = row.id ?? '';
+        const title = row.title ?? '';
+        const similarityRaw = row.similarity ?? 0;
+        const similarity = typeof similarityRaw === 'number' ? similarityRaw : Number(similarityRaw);
+        return {
+          id: String(id),
+          title: String(title),
+          similarity,
+        } as SimilarDocumentRow;
+      });
     } catch (error: unknown) {
-      // MODIFIED: Changed 'any' to 'unknown'
       console.warn('Similar document search failed:', error);
       return [];
     }
@@ -280,8 +362,19 @@ Return JSON format:
   /**
    * Batch auto-tag multiple documents
    */
-  async batchAutoTag(documents: Array<{ id: string; content: string; type: string }>) {
-    const results = [];
+  async batchAutoTag(
+    documents: Array<{ id: string; content: string; type: string }>
+  ): Promise<
+    Array<
+      | { id: string; success: true; result: AutoTaggingResult }
+      | { id: string; success: false; error: string }
+    >
+  > {
+    // typed result array to avoid `never` inference
+    const results: Array<
+      | { id: string; success: true; result: AutoTaggingResult }
+      | { id: string; success: false; error: string }
+    > = [];
     for (const doc of documents) {
       try {
         const result = await this.autoTagDocument({
@@ -306,7 +399,6 @@ Return JSON format:
    * Search documents using semantic similarity
    */
   async semanticSearch(query: string, limit = 10): Promise<SemanticSearchResultRow[]> {
-    // MODIFIED: Added return type
     const queryEmbedding = await this.generateEmbedding(query);
     const embeddingStr = `[${queryEmbedding.join(',')}]`;
     try {
@@ -315,23 +407,25 @@ Return JSON format:
         SELECT
           id, title, description, tags, summary,
           1 - (embedding <=> '${embeddingStr}'::vector) as similarity
-        FROM ${evidence._.name} -- MODIFIED: Use evidence._.name for table name
+        FROM ${evidence._.name}
         WHERE embedding IS NOT NULL
         ORDER BY embedding <=> '${embeddingStr}'::vector
         LIMIT ${limit}
       `)
       );
-      return result.rows.map((row: SemanticSearchResultRow) => ({
-        // MODIFIED: Used SemanticSearchResultRow interface
-        id: row.id,
-        title: row.title,
-        description: row.description,
-        tags: row.tags,
-        summary: row.summary,
-        similarity: row.similarity,
-      }));
+
+      const rows = (result as unknown as { rows?: DBRow[] }).rows ?? [];
+      return rows.map((row) => {
+        const id = String(row.id ?? '');
+        const title = String(row.title ?? '');
+        const description = row.description == null ? null : String(row.description);
+        const tags = Array.isArray(row.tags) ? (row.tags as unknown[]).map((t) => String(t)) : null;
+        const summary = row.summary == null ? null : String(row.summary);
+        const similarityRaw = row.similarity ?? 0;
+        const similarity = typeof similarityRaw === 'number' ? similarityRaw : Number(similarityRaw);
+        return { id, title, description, tags, summary, similarity } as SemanticSearchResultRow;
+      });
     } catch (error: unknown) {
-      // MODIFIED: Changed 'any' to 'unknown'
       console.error('Semantic search failed:', error);
       return [];
     }

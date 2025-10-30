@@ -3,10 +3,11 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   // NES UI Components
-  import MeltButton from '$lib/components/ui/MeltButton.svelte';
+  // import MeltButton from '$lib/components/ui/MeltButton.svelte'; // REMOVED
   import StatsCard from '$lib/components/ui/StatsCard.svelte';
   import Dialog from '$lib/components/ui/Dialog.svelte';
   // Enhanced-Bits UI Components
+  import Button from '$lib/components/ui/enhanced-bits'; // ADDED
   // Using built-in dialog since N64Modal might be incomplete
   import QuickActionButton from '$lib/components/ui/QuickActionButton.svelte';
   // Global Components
@@ -14,8 +15,6 @@
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
   // import { sessionActions, user, isAuthenticated } from "$lib/stores/sessionStore.svelte";
-  import { auth } from '$lib/stores/auth.svelte.ts';
-  import { evidence } from '$lib/stores/evidence.ts';
   import {
     formatRelativeTime,
     formatDetailedTimestamp,
@@ -185,7 +184,8 @@
 
   // TODO: Replace this demo workaround by fixing component typings (export constructor types) for production.
   // add MeltButtonAny alias so template demo buttons can use onclick without TS errors
-  const MeltButtonAny = (MeltButton as unknown) as any;
+  // const MeltButtonAny = (MeltButton as unknown) as any; // REMOVED
+  const ButtonComponent: any = Button; // ADDED
 </script>
 
 <div class="layout">
@@ -207,12 +207,12 @@
         {#each buttonVariants as v}
           <div>
             <!-- use alias to avoid TS constructor/instance mismatch in demo -->
-            <MeltButtonAny variant={v}>{v}</MeltButtonAny>
+            <ButtonComponent variant={v} class="nes-btn">{v}</ButtonComponent>
             <div class="meta">variant: {v}</div>
           </div>
         {/each}
         <div>
-          <MeltButtonAny disabled>{'disabled'}</MeltButtonAny>
+          <ButtonComponent disabled class="nes-btn">{'disabled'}</ButtonComponent>
           <div class="meta">variant: disabled</div>
         </div>
       </div>
@@ -246,15 +246,15 @@
     <section class="section-wrap">
       <h2 class="section">Dialog</h2>
       <!-- use any-typed alias to avoid TS errors -->
-      <MeltButtonAny onclick={openDialog}>Open Dialog</MeltButtonAny>
+      <ButtonComponent onclick={openDialog} class="nes-btn">Open Dialog</ButtonComponent>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
         <!-- changed: use DialogAny to bypass strict event typing -->
         <DialogAny title="Sample Dialog" onclose={closeDialog}>
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
-            <MeltButtonAny onclick={closeDialog}>Cancel</MeltButtonAny>
-            <MeltButtonAny onclick={closeDialog}>Confirm</MeltButtonAny>
+            <ButtonComponent onclick={closeDialog} class="nes-btn">Cancel</ButtonComponent>
+            <ButtonComponent onclick={closeDialog} class="nes-btn is-primary">Confirm</ButtonComponent>
           </div>
         </DialogAny>
       {/if}
@@ -315,11 +315,11 @@
       <div class="session-actions">
         {#if !authenticated}
           <!-- use alias here as well -->
-          <MeltButtonAny onclick={simulateLogin}>Simulate Login</MeltButtonAny>
+          <ButtonComponent onclick={simulateLogin} class="nes-btn is-primary">Simulate Login</ButtonComponent>
         {:else}
-          <MeltButtonAny onclick={simulateLogout}>Simulate Logout</MeltButtonAny>
+          <ButtonComponent onclick={simulateLogout} class="nes-btn is-error">Simulate Logout</ButtonComponent>
         {/if}
-        <MeltButtonAny onclick={simulateRefreshSession}>Refresh Session</MeltButtonAny>
+        <ButtonComponent onclick={simulateRefreshSession} class="nes-btn">Refresh Session</ButtonComponent>
       </div>
 
       {#if currentUser}

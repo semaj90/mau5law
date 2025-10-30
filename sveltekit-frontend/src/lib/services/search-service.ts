@@ -1,14 +1,8 @@
-// @ts-nocheck - Advanced experimental service
 // Enhanced Search Service with Fuse.js + Go Binaries Catalog Integration
 // Real-time search across components, documentation, and services
-import Fuse from 'fuse.js';
-import type {
-  SearchResult,
-  SearchOptions,
-  SearchCategory
-} from '$lib/types/search.types';
+import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from 'fuse.js';
+import type { SearchResult, SearchCategory } from '$lib/types/search.types';
 // ===== SEARCH INTERFACES =====
-}
 export interface SearchableItem {
   id: string;
   title: string;
@@ -19,8 +13,7 @@ export interface SearchableItem {
   path?: string;
   port?: number;
   status?: 'running' | 'stopped' | 'error' | 'unknown';
-  metadata?: { [key: string]: any }
-}
+  metadata?: Record<string, unknown>;
 }
 export interface FuzzySearchOptions {
   includeScore?: boolean;
@@ -29,7 +22,6 @@ export interface FuzzySearchOptions {
   keys?: string[];
   limit?: number;
   category?: SearchCategory;
-}
 }
 export interface SearchIndex {
   components: SearchableItem[];
@@ -42,11 +34,10 @@ export interface SearchIndex {
 export class GoBinariesCatalogParser {
   static parseMarkdown(markdownContent: string): SearchableItem[] {
     const items: SearchableItem[] = [];
-    // removed unused lines assignment
+    const lines = markdownContent.split('\n');
     let currentCategory: SearchCategory = 'service';
     let currentSection = '';
-    let currentDescription = '';
-    for (let i = 0; i < lines.length; i++) {>
+    for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       // Parse service categories
       if (line.includes('AI/RAG Services')) {
@@ -72,7 +63,7 @@ export class GoBinariesCatalogParser {
         const tags = [
           currentSection.toLowerCase().replace(/\s+/g, '-'),
           serviceName.replace('.exe', ''),
-          `port-${port}`
+          `port-${port}`,
         ];
         // Extract status from description
         let status: 'running' | 'stopped' | 'error' | 'unknown' = 'unknown';
@@ -92,9 +83,9 @@ export class GoBinariesCatalogParser {
           status,
           metadata: {
             section: currentSection,
-            executable: serviceName;
-            port: parseInt(port)
-          }
+            executable: serviceName,
+            port: parseInt(port),
+          },
         });
       }
       // Parse API endpoints
@@ -112,8 +103,8 @@ export class GoBinariesCatalogParser {
           metadata: {
             method,
             endpoint,
-            type: 'api'
-          }
+            type: 'api',
+          },
         });
       }
     }
@@ -128,9 +119,9 @@ export class EnhancedSearchService {
     goBinaries: [],
     documentation: [],
     apiEndpoints: [],
-    demos: []
-  }
-  private fuseOptions: any = { // @ts-ignore - Fuse.js types,
+    demos: [],
+  };
+  private fuseOptions: IFuseOptions<SearchableItem> = {
     includeScore: true,
     includeMatches: true,
     threshold: 0.3,
@@ -139,9 +130,9 @@ export class EnhancedSearchService {
       { name: 'title', weight: 0.4 },
       { name: 'description', weight: 0.3 },
       { name: 'content', weight: 0.2 },
-      { name: 'tags', weight: 0.1 }
-    ]
-  }
+      { name: 'tags', weight: 0.1 },
+    ],
+  };
   constructor() {
     this.initializeSearch();
   }
@@ -164,12 +155,12 @@ export class EnhancedSearchService {
     // Only load in browser environment
     if (typeof window === 'undefined') return;
     try {
-      // removed unused response assignment
-      if ((response as { ok?: any; text?: any }).ok) {
-        const content = await (response as { ok?: any; text?: any }).text();
+      const response = await fetch('/GO_BINARIES_CATALOG.md');
+      if (response.ok) {
+        const content = await response.text();
         this.searchIndex.goBinaries = GoBinariesCatalogParser.parseMarkdown(content);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to load Go binaries catalog:', error);
     }
   }
@@ -178,12 +169,12 @@ export class EnhancedSearchService {
     if (typeof window === 'undefined') return;
     // Parse appdir.txt for components
     try {
-      // removed unused response assignment
-      if ((response as { ok?: any; text?: any }).ok) {
-        const content = await (response as { ok?: any; text?: any }).text();
+      const response = await fetch('/appdir.txt');
+      if (response.ok) {
+        const content = await response.text();
         this.searchIndex.components = this.parseComponentsFromAppdir(content);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to load components:', error);
     }
   }
@@ -191,16 +182,12 @@ export class EnhancedSearchService {
     // Only load in browser environment
     if (typeof window === 'undefined') return;
     // Load documentation files
-    const docFiles = [
-      'FULL_STACK_INTEGRATION_COMPLETE.md',
-      'CLAUDE.md',
-      'README.md'
-    ];
+    const docFiles = ['FULL_STACK_INTEGRATION_COMPLETE.md', 'CLAUDE.md', 'README.md'];
     for (const file of docFiles) {
       try {
-        // removed unused response assignment
-        if ((response as { ok?: any; text?: any }).ok) {
-          const content = await (response as { ok?: any; text?: any }).text();
+        const response = await fetch(`/${file}`);
+        if (response.ok) {
+          const content = await response.text();
           this.searchIndex.documentation.push({
             id: file,
             title: file.replace('.md', '').replace(/_/g, ' '),
@@ -209,10 +196,10 @@ export class EnhancedSearchService {
             category: 'documentation',
             tags: ['docs', 'documentation', file.toLowerCase()],
             path: `/${file}`,
-            metadata: { type: 'documentation', file }
+            metadata: { type: 'documentation', file },
           });
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error(`Failed to load ${file}:`, error);
       }
     }
@@ -220,13 +207,33 @@ export class EnhancedSearchService {
   private async loadDemos() {
     // Parse demo routes from appdir.txt
     const demoRoutes = [
-      { path: '/demo/ai-assistant', title: 'AI Assistant Demo', description: 'Primary AI assistant with Ollama integration' },
-      { path: '/demo/vector-search', title: 'Vector Search Demo', description: 'Vector similarity search and retrieval' },
-      { path: '/demo/gpu-legal-ai', title: 'GPU Legal AI Demo', description: 'GPU-accelerated legal document processing' },
-      { path: '/demo/xstate-auth', title: 'XState Auth Demo', description: 'XState authentication with GPU orchestration' },
-      { path: '/demo/component-gallery', title: 'Component Gallery', description: 'Comprehensive UI component showcase' },
+      {
+        path: '/demo/ai-assistant',
+        title: 'AI Assistant Demo',
+        description: 'Primary AI assistant with Ollama integration',
+      },
+      {
+        path: '/demo/vector-search',
+        title: 'Vector Search Demo',
+        description: 'Vector similarity search and retrieval',
+      },
+      {
+        path: '/demo/gpu-legal-ai',
+        title: 'GPU Legal AI Demo',
+        description: 'GPU-accelerated legal document processing',
+      },
+      {
+        path: '/demo/xstate-auth',
+        title: 'XState Auth Demo',
+        description: 'XState authentication with GPU orchestration',
+      },
+      {
+        path: '/demo/component-gallery',
+        title: 'Component Gallery',
+        description: 'Comprehensive UI component showcase',
+      },
       { path: '/yorha', title: 'YoRHa Interface', description: 'Main YoRHa command center' },
-      { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: 'Real-time system monitoring' }
+      { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: 'Real-time system monitoring' },
     ];
     this.searchIndex.demos = demoRoutes.map(demo => ({
       id: demo.path,
@@ -236,12 +243,12 @@ export class EnhancedSearchService {
       category: 'demo' as SearchCategory,
       tags: ['demo', 'interface', 'ui'],
       path: demo.path,
-      metadata: { type: 'demo' }
-    });
+      metadata: { type: 'demo' },
+    }));
   }
   private parseComponentsFromAppdir(content: string): SearchableItem[] {
     const components: SearchableItem[] = [];
-    // removed unused lines assignment
+    const lines = content.split('\n');
     for (const line of lines) {
       // Parse component file references
       const componentMatch = line.match(/├──\s+([^/\s]+\.svelte)\s*(.*)$/);
@@ -254,7 +261,7 @@ export class EnhancedSearchService {
           content: `${fileName} ${description}`,
           category: 'component',
           tags: ['svelte', 'component', 'ui'],
-          metadata: { type: 'component', file: fileName }
+          metadata: { type: 'component', file: fileName },
         });
       }
       // Parse service references
@@ -268,7 +275,7 @@ export class EnhancedSearchService {
           content: `${serviceName} ${description}`,
           category: 'service',
           tags: ['service', serviceName.toLowerCase().replace(/\s+/g, '-')],
-          metadata: { type: 'service' }
+          metadata: { type: 'service' },
         });
       }
     }
@@ -281,7 +288,7 @@ export class EnhancedSearchService {
       ...this.searchIndex.goBinaries,
       ...this.searchIndex.documentation,
       ...this.searchIndex.apiEndpoints,
-      ...this.searchIndex.demos
+      ...this.searchIndex.demos,
     ];
     this.fuse = new Fuse(allItems, this.fuseOptions);
   }
@@ -289,65 +296,66 @@ export class EnhancedSearchService {
     if (!this.fuse || !query.trim()) {
       return [];
     }
-    const searchOptions = {
-      ...this.fuseOptions,
-      ...options
-    }
-    let results = this.fuse.search(query, { limit: options.limit || 20 });
+
+    let results = this.fuse.search(query);
+
     // Filter by category if specified
     if (options.category) {
-      results = results.filter(item => item.item).category === options.category);
+      results = results.filter(result => result.item.category === options.category);
     }
-    return results.map(result => ({
-      id: (result as { item?: any; score?: any); matches?: any }).item.id,
-      title,: (result as { item?: any; score?: any; matches?: any }).item.title,
-      description,: (result as { item?: any; score?: any; matches?: any }).item.description,
-      category,: (result as { item?: any; score?: any; matches?: any }).item.category,
-      path,: (result as { item?: any; score?: any; matches?: any }).item.path,
-      score,: (result as { item?: any; score?: any; matches?: any }).score || 0,
-      matches,: ((result as { item?: any; score?: any; matches?: any }).matches || []).map(match => ({
-        indices: match.indices || [],
-        key: match.key || '',
-        value: match.value || ''
+
+    const limitedResults = results.slice(0, options.limit || 20);
+
+    return limitedResults.map((result: FuseResult<SearchableItem>) => ({
+      id: result.item.id,
+      title: result.item.title,
+      description: result.item.description,
+      category: result.item.category,
+      path: result.item.path,
+      score: result.score ?? 0,
+      matches: (result.matches ?? []).map((match: FuseResultMatch) => ({
+        indices: match.indices ?? [],
+        key: match.key ?? '',
+        value: match.value ?? '',
       })),
-      metadata,: (result as { item?: any; score?: any; matches?: any }).item.metadata,
-      tags,: (result as { item?: any; score?: any; matches?: any }).item.tags
-    });
+      metadata: result.item.metadata,
+      tags: result.item.tags,
+    }));
   }
-  async searchByCategory(category,: SearchCategory, query?: string): Promise<SearchResult[]> {
+  async searchByCategory(category: SearchCategory, query?: string): Promise<SearchResult[]> {
     const categoryItems = this.getItemsByCategory(category);
     if (!query) {
       return categoryItems.map(item => ({
-        id: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any); port?: any }).id,
-        title,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).title,
-        description,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).description,
-        category,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).category,
-        path,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).path,
-        score,: 0,
-        matches,: [],
-        metadata,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).metadata,
-        tags,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).tags
-      });
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        path: item.path,
+        score: 0,
+        matches: [],
+        metadata: item.metadata,
+        tags: item.tags,
+      }));
     }
     const categoryFuse = new Fuse(categoryItems, this.fuseOptions);
     const results = categoryFuse.search(query);
-    return results.map(result => ({
-      id: (result as { item?: any; score?: any); matches?: any }).item.id,
-      title,: (result as { item?: any; score?: any; matches?: any }).item.title,
-      description,: (result as { item?: any; score?: any; matches?: any }).item.description,
-      category,: (result as { item?: any; score?: any; matches?: any }).item.category,
-      path,: (result as { item?: any; score?: any; matches?: any }).item.path,
-      score,: (result as { item?: any; score?: any; matches?: any }).score || 0,
-      matches,: ((result as { item?: any; score?: any; matches?: any }).matches || []).map(match => ({
-        indices: match.indices || [],
-        key: match.key || '',
-        value: match.value || ''
+    return results.map((result: FuseResult<SearchableItem>) => ({
+      id: result.item.id,
+      title: result.item.title,
+      description: result.item.description,
+      category: result.item.category,
+      path: result.item.path,
+      score: result.score ?? 0,
+      matches: (result.matches ?? []).map((match: FuseResultMatch) => ({
+        indices: match.indices ?? [],
+        key: match.key ?? '',
+        value: match.value ?? '',
       })),
-      metadata,: (result as { item?: any; score?: any; matches?: any }).item.metadata,
-      tags,: (result as { item?: any; score?: any; matches?: any }).item.tags
-    });
+      metadata: result.item.metadata,
+      tags: result.item.tags,
+    }));
   }
-  private getItemsByCategory(category,: SearchCategory): SearchableItem[,] {
+  private getItemsByCategory(category: SearchCategory): SearchableItem[] {
     switch (category) {
       case 'component':
         return this.searchIndex.components;
@@ -364,96 +372,94 @@ export class EnhancedSearchService {
     }
   }
   // ===== SPECIALIZED SEARCH METHODS =====
-  async searchGoServices(query,: string): Promise<SearchResult[]> {
-    const runningServices = this.searchIndex.goBinaries.filter(item => item.status) === 'running,';
-    );
+  async searchGoServices(query: string): Promise<SearchResult[]> {
+    const runningServices = this.searchIndex.goBinaries.filter(item => item.status === 'running');
     if (!query) {
       return runningServices.map(item => ({
-        id: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any); port?: any }).id,
-        title,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).title,
-        description,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).description,
-        category,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).category,
-        path,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).path,
-        score,: 0,
-        matches,: [],
-        metadata,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).metadata,
-        tags,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).tags
-      });
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        path: item.path,
+        score: 0,
+        matches: [],
+        metadata: item.metadata,
+        tags: item.tags,
+      }));
     }
     const serviceFuse = new Fuse(runningServices, this.fuseOptions);
     const results = serviceFuse.search(query);
-    return results.map(result => ({
-      id: (result as { item?: any; score?: any); matches?: any }).item.id,
-      title,: (result as { item?: any; score?: any; matches?: any }).item.title,
-      description,: (result as { item?: any; score?: any; matches?: any }).item.description,
-      category,: (result as { item?: any; score?: any; matches?: any }).item.category,
-      path,: (result as { item?: any; score?: any; matches?: any }).item.path,
-      score,: (result as { item?: any; score?: any; matches?: any }).score || 0,
-      matches,: ((result as { item?: any; score?: any; matches?: any }).matches || []).map(match => ({
-        indices: match.indices || [],
-        key: match.key || '',
-        value: match.value || ''
+    return results.map((result: FuseResult<SearchableItem>) => ({
+      id: result.item.id,
+      title: result.item.title,
+      description: result.item.description,
+      category: result.item.category,
+      path: result.item.path,
+      score: result.score ?? 0,
+      matches: (result.matches ?? []).map((match: FuseResultMatch) => ({
+        indices: match.indices ?? [],
+        key: match.key ?? '',
+        value: match.value ?? '',
       })),
-      metadata,: (result as { item?: any; score?: any; matches?: any }).item.metadata,
-      tags,: (result as { item?: any; score?: any; matches?: any }).item.tags
-    });
+      metadata: result.item.metadata,
+      tags: result.item.tags,
+    }));
   }
-  async searchByPort(port,: number): Promise<SearchResult[]> {
-    const portResults = this.searchIndex.goBinaries.filter(item => item.port) === por,t;
-    );
+  async searchByPort(port: number): Promise<SearchResult[]> {
+    const portResults = this.searchIndex.goBinaries.filter(item => item.port === port);
     return portResults.map(item => ({
-      id: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any); port?: any }).id,
-      title,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).title,
-      description,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).description,
-      category,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).category,
-      path,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).path,
-      score,: 1, // Exact match
-      matches,: [],
-      metadata,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).metadata,
-      tags,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).tags
-    });
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      category: item.category,
+      path: item.path,
+      score: 1, // Exact match
+      matches: [],
+      metadata: item.metadata,
+      tags: item.tags,
+    }));
   }
-  async searchByTag(tag,: string): Promise<SearchResult[]> {
-    const tagResults = Object.values(this.searchIndex);
+  async searchByTag(tag: string): Promise<SearchResult[]> {
+    const tagResults = Object.values(this.searchIndex)
       .flat()
-      .filter(item => item.tags).includes(tag.toLowerCase();
+      .filter(item => item.tags?.includes(tag.toLowerCase()));
     return tagResults.map(item => ({
-      id: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any); port?: any }).id,
-      title,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).title,
-      description,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).description,
-      category,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).category,
-      path,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).path,
-      score,: 1, // Exact match
-      matches,: [],
-      metadata,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).metadata,
-      tags,: (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any; port?: any }).tags
-    });
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      category: item.category,
+      path: item.path,
+      score: 1, // Exact match
+      matches: [],
+      metadata: item.metadata,
+      tags: item.tags,
+    }));
   }
   // ===== DATA REFRESH =====
-  async refreshIndex(), {
+  async refreshIndex() {
     await this.loadSearchData();
     this.rebuildIndex();
   }
   // ===== UTILITIES =====
-  getAvailableCategories(),: SearchCategory[], {
+  getAvailableCategories(): SearchCategory[] {
     return ['component', 'service', 'documentation', 'api', 'demo'];
   }
-  getAvailableTags(),: string[], {
-    const allTags = Object.values(this.searchIndex);
+  getAvailableTags(): string[] {
+    const allTags = Object.values(this.searchIndex)
       .flat()
-      .flatMap(item => (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any); port?: any }).tags);
+      .flatMap(item => item.tags || []);
     return [...new Set(allTags)].sort();
   }
-  getRunningServices(),: SearchableItem[], {
-    return this.searchIndex.goBinaries.filter(item => item.status) === 'running');
+  getRunningServices(): SearchableItem[] {
+    return this.searchIndex.goBinaries.filter(item => item.status === 'running');
   }
-  getServicesByPort(),: Map<number, SearchableItem[]> {
+  getServicesByPort(): Map<number, SearchableItem[]> {
     const portMap = new Map<number, SearchableItem[]>();
     this.searchIndex.goBinaries
-      .filter(item => item.port);
+      .filter(item => item.port)
       .forEach(item => {
-        const port = (item as { id?: any; title?: any; description?: any; category?: any; path?: any; metadata?: any; tags?: any; status?: any); port?: any }).port,!;
-        if (!portMap,.has(port)) {
+        const port = item.port!;
+        if (!portMap.has(port)) {
           portMap.set(port, []);
         }
         portMap.get(port)!.push(item);

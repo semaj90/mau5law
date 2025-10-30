@@ -1,52 +1,57 @@
-// @ts-nocheck
 /**
  * 🚀 Optimized Redis Pipeline with XState, Worker Threads & Memory Optimization
  * Features: Full concurrency, SIMD JSON, GPU acceleration, LRU caching, XState management
  * Architecture: Redis → SIMD → chunked GPU → XState → service worker → LokiJS/Fuse/Postgres
  */
-import { createMachine, interpret, assign } from 'xstate';
+import { createMachine, assign, createActor, type ActorRef } from 'xstate';
 import { cache } from '$lib/server/cache/redis';
-import { vectorService } from '$lib/server/vector/EnhancedVectorService';
 import { cudaService } from './cuda-tensor-service.js';
 import { lokiEvidenceService } from '$lib/utils/loki-evidence';
-import Fuse from 'fuse.js';
-import { gzipSync, gunzipSync } from 'zlib';
+import Fuse, { FuseResult } from 'fuse.js'; // Import FuseResult
+import { gunzipSync } from 'zlib';
 import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
+import type { StateFrom } from 'xstate'; // Import StateFrom for explicit typing
+
 // LRU Cache for memory optimization
 class LRUCache<T> {
   private cache = new Map<string, { value: T; timestamp: number }>();
   private maxSize: number;
   private maxAge: number;
-  constructor(maxSize = 1000, maxAge = 300000) { // 5 minutes default
+  constructor(maxSize = 1000, maxAge = 300000) {
+    // 5 minutes default
     this.maxSize = maxSize;
     this.maxAge = maxAge;
   }
-  get(_key: string): T | null {
+  get(key: string): T | null {
+    // Changed _key to key
     const item = this.cache.get(key);
     if (!item) return null;
-    if (Date.now() - (item as { timestamp?: any; value?: any; metadata?: any }).timestamp > this.maxAge) {
+    if (Date.now() - item.timestamp > this.maxAge) {
+      // Removed redundant type assertion
       this.cache.delete(key);
       return null;
     }
     // Move to end (LRU)
     this.cache.delete(key);
     this.cache.set(key, item);
-    return (item as { timestamp?: any; value?: any; metadata?: any }).value;
+    return item.value; // Removed redundant type assertion
   }
-  set(_key: string, value: T): void {
+  set(key: string, value: T): void {
+    // Changed _key to key
     if (this.cache.size >= this.maxSize) {
-  const firstKey = this.cache.keys().next().value as string | undefined;
-  if (firstKey) this.cache.delete(firstKey!);
+      const firstKey = this.cache.keys().next().value as string | undefined;
+      if (firstKey) this.cache.delete(firstKey); // Removed !
     }
     this.cache.set(key, { value, timestamp: Date.now() });
   }
 }
 // Simulated SIMD JSON parser with actual performance optimizations
 class OptimizedSIMDParser {
-  static parse(data: string): any {
+  static parse(data: string): RawDataItem[] {
+    // Changed return type from any
     const start = performance.now();
     // Pre-allocate arrays for better memory usage
-    const result = JSON.parse(data, (key, value) => {
+    const result = JSON.parse(data, (_key, value) => {
       // Optimize number parsing for embeddings
       if (Array.isArray(value) && value.every(v => typeof v === 'number')) {
         return new Float32Array(value);
@@ -54,62 +59,162 @@ class OptimizedSIMDParser {
       return value;
     });
     const parseTime = performance.now() - start;
-    console.log(`⚡ SIMD JSON parsed ${(data as { length?: any; title?: any); entries?: any }).length} chars in, ${parseTime.toFixed(2)}ms`);
+    console.log(`⚡ SIMD JSON parsed ${data.length} chars in ${parseTime.toFixed(2)}ms`);
     return result;
   }
 }
+
+// Define types for CUDA Tensor Operations (inferred from usage)
+interface TensorOperation {
+  id: string;
+  operation: 'embedding' | 'similarity' | 'clustering' | 'reduction'; // Aligned with error message
+  inputTensor: Float32Array;
+  dimensions: [number, number];
+  batchSize: number;
+  priority: 'normal' | 'high';
+}
+
+interface CUDATensorOperation extends TensorOperation {} // CUDATensorOperation now extends TensorOperation
+
 // Worker thread message types
+interface ProcessChunkData {
+  chunk: Chunk;
+  workerIndex: number;
+}
+
+interface EmbedBatchData {
+  // Define structure for EMBED_BATCH if used
+  items: RawDataItem[];
+}
+
+interface TensorOperationData {
+  // Define structure for TENSOR_OPERATION if used
+  operations: CUDATensorOperation[];
+}
+
 interface WorkerMessage {
   type: 'PROCESS_CHUNK' | 'EMBED_BATCH' | 'TENSOR_OPERATION';
-  data: any;
+  data: ProcessChunkData | EmbedBatchData | TensorOperationData; // Use union type
   id: string;
 }
+
+interface ChunkCompleteData {
+  results: OptimizedPipelineResult[];
+}
+
+interface EmbedCompleteData {
+  // Define structure for EMBED_COMPLETE if used
+  embeddings: number[][];
+}
+
+interface TensorCompleteData {
+  // Define structure for TENSOR_COMPLETE if used
+  processedTensors: Float32Array[];
+}
+
 interface WorkerResponse {
   type: 'CHUNK_COMPLETE' | 'EMBED_COMPLETE' | 'TENSOR_COMPLETE' | 'ERROR';
-  data: any;
-  id: string;
-  error?: string;
+  data: ChunkCompleteData | EmbedCompleteData | TensorCompleteData | null; // Use union type, null for ERROR
+  id: string; // Added 'id' property
+  error?: string; // Added for error messages
 }
+
+// Define types for XState context and events
+interface PipelineMetrics {
+  startTime: number;
+  cacheHits: number;
+  chunksProcessed: number;
+  tensorSlices: number;
+  workerThreads: number;
+  processingTime?: number;
+}
+
+interface PipelineConfig {
+  chunkSize: number;
+  batchSize: number;
+  workerCount: number;
+  enableGPU: boolean;
+  enableSIMD: boolean;
+}
+
+interface RawDataItem {
+  id: string;
+  content: string;
+  embedding: number[];
+  metadata: Record<string, unknown>; // Changed from any
+}
+
+interface Chunk {
+  id: string;
+  data: RawDataItem[];
+  index: number;
+  total: number;
+}
+
+interface PipelineContext {
+  cacheKey: string;
+  chunks: Chunk[];
+  results: OptimizedPipelineResult[];
+  error: Error | null;
+  metrics: PipelineMetrics;
+  workers: Worker[];
+  config: PipelineConfig;
+}
+
+type PipelineEvent =
+  | { type: 'START_PIPELINE'; cacheKey: string }
+  | { type: 'done.invoke.initWorkers'; data: { workers: Worker[] } }
+  | { type: 'error.platform.initWorkers'; data: Error }
+  | { type: 'done.invoke.fetchCache'; data: { chunks: Chunk[]; cacheHits: number } }
+  | { type: 'error.platform.fetchCache'; data: Error }
+  | { type: 'done.invoke.processChunks'; data: { results: OptimizedPipelineResult[]; chunksProcessed: number } }
+  | { type: 'error.platform.processChunks'; data: Error }
+  | { type: 'done.invoke.gpuTensorOps'; data: { results: OptimizedPipelineResult[]; tensorSlices: number } }
+  | { type: 'error.platform.gpuTensorOps'; data: Error }
+  | { type: 'done.invoke.streamingLoop'; data: void }
+  | { type: 'error.platform.streamingLoop'; data: Error }
+  | { type: 'RESET' }
+  | { type: 'RETRY' };
+
 // XState Pipeline Machine
-const pipelineMachine = createMachine({
+const pipelineMachine = createMachine<PipelineContext, PipelineEvent>({
   id: 'redisPipeline',
   initial: 'idle',
   context: {
     cacheKey: '',
     chunks: [],
     results: [],
-  error: null as any
+    error: null,
     metrics: {
       startTime: 0,
       cacheHits: 0,
       chunksProcessed: 0,
       tensorSlices: 0,
-      workerThreads: 0
+      workerThreads: 0,
     },
-    workers: [] as Worker[],
+    workers: [],
     config: {
       chunkSize: 128,
       batchSize: 32,
       workerCount: 4,
-      enableGPU: true
-      enableSIMD: true
-    }
+      enableGPU: true,
+      enableSIMD: true,
+    },
   },
   states: {
     idle: {
       on: {
         START_PIPELINE: {
           target: 'initializing',
-          // @ts-ignore - xstate v5 assign typing
           actions: assign({
-            cacheKey: (_: any, event: any = {}) => event?.cacheKey,
-            metrics: (context: any) => ({
-              ...(context as any).metrics,
-              startTime: Date.now()
-            })
-          })
-        }
-      }
+            cacheKey: (_, event) => event.cacheKey,
+            metrics: context => ({
+              ...context.metrics,
+              startTime: Date.now(),
+            }),
+          }),
+        },
+      },
     },
     initializing: {
       invoke: {
@@ -117,24 +222,21 @@ const pipelineMachine = createMachine({
         src: 'initializeWorkers',
         onDone: {
           target: 'fetching',
-          // @ts-ignore - xstate v5 assign typing
           actions: assign({
-            workers: (_: any, event: any = {}) => event?.data?.workers,
-            metrics: (context: any, event: any = {}) => ({
-              ...(context as any).metrics,
-              workerThreads: event?.data?.workers?.length || 0
-            })
-          })
+            workers: (_, event) => event.data.workers,
+            metrics: (context, event) => ({
+              ...context.metrics,
+              workerThreads: event.data.workers?.length || 0,
+            }),
+          }),
         },
         onError: {
           target: 'error',
-          // @ts-ignore
           actions: assign({
-            // store error in context for error state
-            error: (_: any, event: any = {}) => event?.data
-          })
-        }
-      }
+            error: (_, event) => event.data,
+          }),
+        },
+      },
     },
     fetching: {
       invoke: {
@@ -142,23 +244,21 @@ const pipelineMachine = createMachine({
         src: 'fetchAndParseSIMD',
         onDone: {
           target: 'chunking',
-          // @ts-ignore
           actions: assign({
-            chunks: (_: any, event: any = {}) => event?.data?.chunks,
-            metrics: (context: any, event: any = {}) => ({
-              ...(context as any).metrics,
-              cacheHits: event?.data?.cacheHits || 0
-            })
-          })
+            chunks: (_, event) => event.data.chunks,
+            metrics: (context, event) => ({
+              ...context.metrics,
+              cacheHits: event.data.cacheHits || 0,
+            }),
+          }),
         },
         onError: {
           target: 'error',
-          // @ts-ignore
           actions: assign({
-            error: (_: any, event: any = {}) => event?.data
-          })
-        }
-      }
+            error: (_, event) => event.data,
+          }),
+        },
+      },
     },
     chunking: {
       invoke: {
@@ -166,19 +266,21 @@ const pipelineMachine = createMachine({
         src: 'processChunksParallel',
         onDone: {
           target: 'tensorProcessing',
-          // @ts-ignore
           actions: assign({
-            results: (_: any, event: any = {}) => event?.data?.results,
-            metrics: (context: any, event: any = {}) => ({
-              ...(context as any).metrics,
-              chunksProcessed: event?.data?.chunksProcessed || 0
-            })
-          })
+            results: (_, event) => event.data.results,
+            metrics: (context, event) => ({
+              ...context.metrics,
+              chunksProcessed: event.data.chunksProcessed || 0,
+            }),
+          }),
         },
         onError: {
-          target: 'error'
-        }
-      }
+          target: 'error',
+          actions: assign({
+            error: (_, event) => event.data,
+          }),
+        },
+      },
     },
     tensorProcessing: {
       invoke: {
@@ -186,19 +288,21 @@ const pipelineMachine = createMachine({
         src: 'gpuTensorOperations',
         onDone: {
           target: 'streaming',
-          // @ts-ignore
           actions: assign({
-            results: (_: any, event: any = {}) => event?.data?.results,
-            metrics: (context: any, event: any = {}) => ({
-              ...(context as any).metrics,
-              tensorSlices: event?.data?.tensorSlices || 0
-            })
-          })
+            results: (_, event) => event.data.results,
+            metrics: (context, event) => ({
+              ...context.metrics,
+              tensorSlices: event.data.tensorSlices || 0,
+            }),
+          }),
         },
         onError: {
-          target: 'error'
-        }
-      }
+          target: 'error',
+          actions: assign({
+            error: (_, event) => event.data,
+          }),
+        },
+      },
     },
     streaming: {
       invoke: {
@@ -206,55 +310,84 @@ const pipelineMachine = createMachine({
         src: 'streamingArrayLoop',
         onDone: {
           target: 'complete',
-          // @ts-ignore
           actions: assign({
-            metrics: (context: any) => ({
-              ...(context as any).metrics,
-              processingTime: Date.now() - ((context as any).metrics?.startTime || Date.now()
-            })
-          })
+            metrics: context => ({
+              ...context.metrics,
+              processingTime: Date.now() - (context.metrics?.startTime || Date.now()),
+            }),
+          }),
         },
         onError: {
-          target: 'error'
-        }
-      }
+          target: 'error',
+          actions: assign({
+            error: (_, event) => event.data,
+          }),
+        },
+      },
     },
     complete: {
       entry: 'logMetrics',
       on: {
-        RESET: 'idle'
-      }
+        RESET: 'idle',
+      },
     },
     error: {
       entry: 'logError',
       on: {
-        RETRY: 'idle'
-      }
-    }
-  }
+        RETRY: 'idle',
+      },
+    },
+  },
 });
-}
 export interface OptimizedPipelineResult {
   id: string;
   content: string;
   embedding: number[];
   tensorSlice: Float32Array;
   score: number;
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>; // Changed from any
   chunkInfo: {
     index: number;
-  total: number;
-  size: number;
-  workerThread: number;
-  }
+    total: number;
+    size: number;
+    workerThread: number;
+  };
   processingTime: number;
 }
+
+// Define return type for executeOptimizedPipeline
+interface ExecutePipelineResult {
+  totalResults: number;
+  chunksProcessed: number;
+  tensorSlices: number;
+  processingTime?: number;
+  cacheHits: number;
+  workerThreads: number;
+  memoryOptimized: boolean;
+  fullConcurrency: boolean;
+}
+
+// Minimal interface for LokiEvidenceService based on usage
+interface LokiEvidenceService {
+  add(evidenceItem: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    tags: string[];
+    createdAt: Date;
+    updatedAt: Date;
+    attachments: unknown[]; // Adjust type as needed
+    metadata: Record<string, unknown>;
+  }): Promise<void>;
+  // Add other methods if they exist on the actual lokiEvidenceService
+}
+
 export class OptimizedRedisPipeline {
-  private machine: any;
-  private service: any;
-  private lokiService: any;
+  private service: ActorRef<typeof pipelineMachine>;
+  private lokiService: LokiEvidenceService; // Changed type to the new interface
   private fuseIndex: Fuse<OptimizedPipelineResult>;
-  private lruCache: LRUCache<any>;
+  private lruCache: LRUCache<RawDataItem[]>; // Changed from LRUCache<any>
   private workerPool: Worker[] = [];
   // Memory-optimized configuration
   private readonly config = {
@@ -264,15 +397,15 @@ export class OptimizedRedisPipeline {
     LRU_SIZE: 2000,
     LRU_TTL: 300000, // 5 minutes
     TENSOR_SLICE_SIZE: 256,
-    MAX_MEMORY_MB: 512
-  }
+    MAX_MEMORY_MB: 512,
+  };
   constructor() {
     // Use shared singleton to avoid multiple DB handles
-    this.lokiService = lokiEvidenceService;
+    this.lokiService = lokiEvidenceService as unknown as LokiEvidenceService; // Cast to unknown first, then to the local interface
     this.fuseIndex = new Fuse([], {
       keys: ['content', 'metadata.title'],
       threshold: 0.3,
-      includeScore: true
+      includeScore: true,
     });
     this.lruCache = new LRUCache(this.config.LRU_SIZE, this.config.LRU_TTL);
     // Initialize XState service with provided implementations
@@ -282,32 +415,34 @@ export class OptimizedRedisPipeline {
         fetchAndParseSIMD: this.fetchAndParseSIMD.bind(this),
         processChunksParallel: this.processChunksParallel.bind(this),
         gpuTensorOperations: this.gpuTensorOperations.bind(this),
-        streamingArrayLoop: this.streamingArrayLoop.bind(this)
+        streamingArrayLoop: this.streamingArrayLoop.bind(this),
       },
       actions: {
         logMetrics: this.logMetrics.bind(this),
-        logError: this.logError.bind(this)
-      }
-    } as any;
-    this.service = interpret(pipelineMachine as any, impl as any);
+        logError: this.logError.bind(this),
+      },
+    };
+    this.service = createActor(pipelineMachine, impl);
     this.service.start();
   }
   /**
    * 1️⃣ Worker Thread Initialization for Maximum Concurrency
    */
-  private async initializeWorkers(): Promise<any> {
+  private async initializeWorkers(): Promise<{ workers: Worker[] }> {
+    // Changed return type from any
     console.log(`🔧 Initializing ${this.config.WORKER_COUNT} worker threads`);
-    for (let i = 0; i < this.config.WORKER_COUNT; i++) {>;
+    for (let i = 0; i < this.config.WORKER_COUNT; i++) {
+      // Removed >
       const worker = new Worker(__filename, {
-        workerData: { workerId: i, config: this.config }
+        workerData: { workerId: i, config: this.config },
       });
-      worker.on('message', this.handleWorkerMessage.bind(this);
-      worker.on('error', (error) => {
+      worker.on('message', this.handleWorkerMessage.bind(this)); // Added semicolon
+      worker.on('error', error => {
         console.error(`❌ Worker ${i} error:`, error);
       });
       this.workerPool.push(worker);
     }
-    return { workers: this.workerPool }
+    return { workers: this.workerPool };
   }
   private handleWorkerMessage(message: WorkerResponse): void {
     // Handle worker responses asynchronously
@@ -318,8 +453,9 @@ export class OptimizedRedisPipeline {
   /**
    * 2️⃣ Redis Cache with SIMD JSON Parsing and LRU Memory Optimization
    */
-  private async fetchAndParseSIMD(context: any): Promise<any> {
-    const { cacheKey } = contex;t;
+  private async fetchAndParseSIMD(context: PipelineContext): Promise<{ chunks: Chunk[]; cacheHits: number }> {
+    // Changed return type from any
+    const { cacheKey } = context;
     console.log('🔍 Fetching with optimized SIMD parsing and LRU cache');
     // Check LRU cache first (memory-optimized)
     let data = this.lruCache.get(cacheKey);
@@ -344,18 +480,21 @@ export class OptimizedRedisPipeline {
     }
     // Chunk for parallel processing
     const chunks = this.chunkArrayForWorkers(data, this.config.CHUNK_SIZE);
-    return { chunks, cacheHits }
+    return { chunks, cacheHits };
   }
   /**
    * 3️⃣ Parallel Chunk Processing with Worker Threads
    */
-  private async processChunksParallel(context: any): Promise<any> {
-    const { chunks } = contex;t;
+  private async processChunksParallel(
+    context: PipelineContext
+  ): Promise<{ results: OptimizedPipelineResult[]; chunksProcessed: number }> {
+    // Changed return type from any
+    const { chunks } = context;
     console.log(`🚀 Processing ${chunks.length} chunks across ${this.workerPool.length} workers`);
     const allResults: OptimizedPipelineResult[] = [];
-    const chunkPromises: Promise<any>[] = [];
+    const chunkPromises: Promise<OptimizedPipelineResult[]>[] = []; // Changed type from Promise<any>[]
     // Distribute chunks across workers
-    for (let i = 0; i < chunks.length; i++) {>
+    for (let i = 0; i < chunks.length; i++) {
       const workerIndex = i % this.workerPool.length;
       const worker = this.workerPool[workerIndex];
       const promise = this.processChunkInWorker(worker, chunks[i], workerIndex);
@@ -363,32 +502,36 @@ export class OptimizedRedisPipeline {
     }
     // Wait for all chunks to complete
     const chunkResults = await Promise.all(chunkPromises);
-    allResults.push(...chunkResults.flat();
+    allResults.push(...chunkResults.flat());
     console.log(`✅ Parallel processing complete: ${allResults.length} results`);
-    return { results: allResults, chunksProcessed: chunks.length }
+    return { results: allResults, chunksProcessed: chunks.length };
   }
-  private async processChunkInWorker(worker: Worker, chunk: any, workerIndex: number): Promise<OptimizedPipelineResult[]> {
+  private async processChunkInWorker(
+    worker: Worker,
+    chunk: Chunk,
+    workerIndex: number
+  ): Promise<OptimizedPipelineResult[]> {
     return new Promise((resolve, reject) => {
       const messageId = `chunk_${Date.now()}_${Math.random()}`;
       const message: WorkerMessage = {
         type: 'PROCESS_CHUNK',
         data: { chunk, workerIndex },
-        id: messageId
-      }
+        id: messageId,
+      };
       const timeout = setTimeout(() => {
-        reject(new Error(`,Worker timeout for, chun,k ${messageId}`);
+        reject(new Error(`Worker timeout for chunk ${messageId}`));
       }, 30000); // 30 second timeout
       const messageHandler = (response: WorkerResponse) => {
-        if ((response as { id?: any; type?: any; error?: any; data?: any }).id === messageId) {
+        if (response.id === messageId) {
           clearTimeout(timeout);
           worker.off('message', messageHandler);
-          if ((response as { id?: any; type?: any; error?: any; data?: any }).type === 'ERROR') {
-            reject(new Error((response as { id?: any; type?: any; error?: any); data?: any }).error);
+          if (response.type === 'ERROR') {
+            reject(new Error(response.error));
           } else {
-            resolve((response as { id?: any; type?: any; error?: any); data?: any }).data);
+            resolve((response.data as ChunkCompleteData).results); // Assert type and access results
           }
         }
-      }
+      };
       worker.on('message', messageHandler);
       worker.postMessage(message);
     });
@@ -396,88 +539,96 @@ export class OptimizedRedisPipeline {
   /**
    * 4️⃣ GPU Tensor Operations with CUDA Streams
    */
-  private async gpuTensorOperations(context: any): Promise<any> {
-    const { results } = contex;t;
+  private async gpuTensorOperations(
+    context: PipelineContext
+  ): Promise<{ results: OptimizedPipelineResult[]; tensorSlices: number }> {
+    // Changed return type from any
+    const { results } = context;
     console.log(`🎮 Processing ${results.length} results through GPU tensor operations`);
     let totalTensorSlices = 0;
-  const processedResults: any[] = [];
+    const processedResults: OptimizedPipelineResult[] = [];
     // Batch process through CUDA service
-    for (let i = 0; i < results.length; i += this.config.GPU_BATCH_SIZE) {>
+    for (let i = 0; i < results.length; i += this.config.GPU_BATCH_SIZE) {
       const batch = results.slice(i, i + this.config.GPU_BATCH_SIZE);
       // Create tensor operations for CUDA service
-  const tensorOps = batch.map((result: any) => ({,
-        id: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).id,
-        operation: 'embedding' as const,
-        inputTensor: new Float32Array((result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any }).embedding),
-        dimensions: [1, (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).embedding.length] as [number, number],
+      const tensorOps: CUDATensorOperation[] = batch.map((result: OptimizedPipelineResult) => ({
+        // Added type
+        id: result.id,
+        operation: 'embedding' as const, // Cast to specific operation type
+        inputTensor: new Float32Array(result.embedding),
+        dimensions: [1, result.embedding.length] as [number, number],
         batchSize: 1,
-        priority: 'normal' as const
-      });
+        priority: 'normal' as const,
+      }));
       // Process batch through CUDA
       const cudaResults = await cudaService.processTensorBatch(tensorOps);
       // Combine results with CUDA processing
-      for (let j = 0; j < batch.length; j++) {>
+      for (let j = 0; j < batch.length; j++) {
         const result = batch[j];
         const cudaResult = cudaResults[j];
         if (cudaResult && !cudaResult.errorCode) {
-          (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).tensorSlice = cudaResult.outputTensor;
-          (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).metadata.cudaStream = cudaResult.cudaStream;
-          (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).metadata.vramUsed = cudaResult.vramUsed;
+          result.tensorSlice = cudaResult.outputTensor;
+          result.metadata.cudaStream = cudaResult.cudaStream;
+          result.metadata.vramUsed = cudaResult.vramUsed;
           totalTensorSlices++;
         } else {
           // Fallback to CPU tensor slicing
-          (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).tensorSlice = this.cpuTensorSlicing(new Float32Array((result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any }).embedding);
+          result.tensorSlice = this.cpuTensorSlicing(new Float32Array(result.embedding));
         }
         processedResults.push(result);
       }
     }
-    return { results: processedResults, tensorSlices: totalTensorSlices }
+    return { results: processedResults, tensorSlices: totalTensorSlices };
   }
   private cpuTensorSlicing(embedding: Float32Array): Float32Array {
     // Memory-optimized tensor slicing for CPU fallback
     const sliceSize = this.config.TENSOR_SLICE_SIZE;
-    const slice = embedding.slice(0, Math.min(sliceSize, embedding.length);
+    const slice = embedding.slice(0, Math.min(sliceSize, embedding.length));
     return slice;
   }
   /**
    * 5️⃣ Streaming Array Loop with Concurrent Service Worker Routing
    */
-  private async streamingArrayLoop(context: any): Promise<void> {
-    const { results } = contex;t;
+  private async streamingArrayLoop(context: PipelineContext): Promise<void> {
+    const { results } = context;
     console.log(`🔄 Streaming ${results.length} results through concurrent array loop`);
     const streamBatchSize = 25; // Optimized for memory usage
-  const concurrentPromises: Promise<any>[] = [];
-    for (let i = 0; i < results.length; i += streamBatchSize) {>
+    const concurrentPromises: Promise<void[]>[] = []; // Changed type from Promise<void>[] to Promise<void[]>[]
+    for (let i = 0; i < results.length; i += streamBatchSize) {
       const batch = results.slice(i, i + streamBatchSize);
       // Process each batch concurrently
-  const batchPromise: Promise<any> = Promise.all(batch.map(async (result: OptimizedPipelineResult) => {
-        try {
-          // A) LokiJS - Chunked IndexedDB storage
-          await this.lokiService.addEvidence({
-            id: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any )}).id,
-            title: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).metadata.title || `Optimized Result ${(result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).chunkInfo.index}`,
-            description: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).content.substring(0, 500),
-            type: 'gpu_processed',
-            tags: ['optimized', 'concurrent', 'xstate'],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            attachments: [],
-            metadata: {
-              ...result.metadata,
-              embedding: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).embedding,
-              tensorSlice: Array.from((result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any }).tensorSlice),
-              chunkInfo: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).chunkInfo,
-              processingTime: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).processingTime
-            }
-          });
-          // B) Fuse.js - Incremental indexing
-          this.fuseIndex.add(result);
-          // C) Service Worker - Concurrent routing
-          await this.concurrentServiceWorkerRoute(result);
-        } catch (error) {
-          console.error(`❌ Streaming error for, ${(result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: an,y); item?: an,y }).id}:`, error);
-        }
-      });
+      const batchPromise: Promise<void[]> = Promise.all(
+        // Changed type from Promise<any> to Promise<void[]>
+        batch.map(async (result: OptimizedPipelineResult) => {
+          try {
+            // A) LokiJS - Chunked IndexedDB storage
+            await this.lokiService.add({
+              // Changed to .add
+              id: result.id,
+              title: (result.metadata.title as string) || `Optimized Result ${result.chunkInfo.index}`, // Cast to string
+              description: result.content.substring(0, 500),
+              type: 'gpu_processed',
+              tags: ['optimized', 'concurrent', 'xstate'],
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              attachments: [],
+              metadata: {
+                ...result.metadata,
+                embedding: result.embedding,
+                tensorSlice: Array.from(result.tensorSlice),
+                chunkInfo: result.chunkInfo,
+                processingTime: result.processingTime,
+              },
+            });
+            // B) Fuse.js - Incremental indexing
+            this.fuseIndex.add(result);
+            // C) Service Worker - Concurrent routing
+            await this.concurrentServiceWorkerRoute(result);
+          } catch (error) {
+            console.error(`❌ Streaming error for ${result.id}:`, error);
+          }
+        })
+      );
       concurrentPromises.push(batchPromise);
     }
     // Wait for all concurrent operations to complete
@@ -490,71 +641,73 @@ export class OptimizedRedisPipeline {
   private async concurrentServiceWorkerRoute(result: OptimizedPipelineResult): Promise<void> {
     const routingPromises: Promise<void>[] = [];
     // Concurrent routing to all backends
-    routingPromises.push(this.routeToMinIO(result);
-    routingPromises.push(this.routeToPgVector(result);
-    routingPromises.push(this.routeToPostgreSQL(result);
+    routingPromises.push(this.routeToMinIO(result));
+    routingPromises.push(this.routeToPgVector(result));
+    routingPromises.push(this.routeToPostgreSQL(result));
     try {
       await Promise.all(routingPromises);
     } catch (error) {
-      console.error(`❌ Concurrent routing failed for, ${(result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: an,y); item?: an,y }).id}:`, error);
+      console.error(`❌ Concurrent routing failed for ${result.id}:`, error);
     }
   }
   private async routeToMinIO(result: OptimizedPipelineResult): Promise<void> {
     await fetch('/api/v1/upload/webhook', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        id: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any )}).id,
+      body: JSON.stringify({
+        id: result.id,
         type: 'optimized_tensor',
-        content: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).content,
-        tensorSlice: Array.from((result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any }).tensorSlice),
-        chunkInfo: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).chunkInfo,
-        bucket: 'optimized-tensors'
-      })
+        content: result.content,
+        tensorSlice: Array.from(result.tensorSlice),
+        chunkInfo: result.chunkInfo,
+        bucket: 'optimized-tensors',
+      }),
     });
   }
   private async routeToPgVector(result: OptimizedPipelineResult): Promise<void> {
     await fetch('/api/v2/vector-pipeline', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        id: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any )}).id,
-        embedding: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).embedding,
-        tensorSlice: Array.from((result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any }).tensorSlice),
-        content: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).content,
+      body: JSON.stringify({
+        id: result.id,
+        embedding: result.embedding,
+        tensorSlice: Array.from(result.tensorSlice),
+        content: result.content,
         metadata: {
           ...result.metadata,
-          optimized: true
-          concurrent: true;
-          xstate: true
-        }
-      })
+          optimized: true,
+          concurrent: true,
+          xstate: true,
+        },
+      }),
     });
   }
   private async routeToPostgreSQL(result: OptimizedPipelineResult): Promise<void> {
     await fetch('/api/v1/unified', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        id: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any )}).id,
-        title: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).metadata.title || `,Optimized Result`,
-        content: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).content.substring(0, 500),
-        score: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).score,
-        chunkIndex: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).chunkInfo.index,
-        totalChunks: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).chunkInfo.total,
-        workerThread: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).chunkInfo.workerThread,
-        metadata: (result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any; item?: any }).metadata
-      })
+      body: JSON.stringify({
+        id: result.id,
+        title: (result.metadata.title as string) || 'Optimized Result', // Cast to string
+        content: result.content.substring(0, 500),
+        score: result.score,
+        chunkIndex: result.chunkInfo.index,
+        totalChunks: result.chunkInfo.total,
+        workerThread: result.chunkInfo.workerThread,
+        metadata: result.metadata,
+      }),
     });
   }
   /**
    * 🎯 Main Pipeline Execution with XState Management
    */
-  async executeOptimizedPipeline(cacheKey: string): Promise<any> {
+  async executeOptimizedPipeline(cacheKey: string): Promise<ExecutePipelineResult> {
+    // Changed return type from any
     console.log('🚀 Starting Optimized Redis Pipeline with XState');
     return new Promise((resolve, reject) => {
       // Subscribe to state changes
-      this.service.onTransition((state: any) => {
+      this.service.onTransition((state: StateFrom<typeof pipelineMachine>) => {
+        // Explicitly type state
         console.log(`🔄 XState: ${state.value}`);
         if (state.matches('complete')) {
           const metrics = state.context.metrics;
@@ -565,11 +718,11 @@ export class OptimizedRedisPipeline {
             processingTime: metrics.processingTime,
             cacheHits: metrics.cacheHits,
             workerThreads: metrics.workerThreads,
-            memoryOptimized: true
-            fullConcurrency: true
+            memoryOptimized: true,
+            fullConcurrency: true,
           });
         } else if (state.matches('error')) {
-          reject(new Error(state.context.error);
+          reject(new Error(state.context.error?.message || 'Unknown pipeline error'));
         }
       });
       // Start the pipeline
@@ -580,11 +733,14 @@ export class OptimizedRedisPipeline {
    * 🔍 Memory-Optimized Fuzzy Search
    */
   async searchOptimizedResults(query: string, limit = 10): Promise<OptimizedPipelineResult[]> {
-  const searchResults = (this.fuseIndex.search as (pattern: string) => any[])(query).slice(0, limit);
+    const searchResults = (this.fuseIndex.search as (pattern: string) => FuseResult<OptimizedPipelineResult>[])(
+      // Use FuseResult
+      query
+    ).slice(0, limit);
     return searchResults.map(result => ({
       ...result.item,
-      score: 1 - ((result as { id?: any; embedding?: any; tensorSlice?: any; metadata?: any; chunkInfo?: any; content?: any; processingTime?: any; score?: any); item?: any }).score || 0)
-    });
+      score: 1 - (result.score || 0),
+    }));
   }
   /**
    * 🧹 Memory Management and Cleanup
@@ -592,11 +748,13 @@ export class OptimizedRedisPipeline {
   async cleanup(): Promise<void> {
     console.log('🧹 Cleaning up optimized pipeline resources');
     // Terminate worker threads
-    await Promise.all(this.workerPool.map(worker => {
-      return new Promise<void>((resolve) => {
-        worker.terminate().then(() => resolve());
-      });
-    });
+    await Promise.all(
+      this.workerPool.map(worker => {
+        return new Promise<void>(resolve => {
+          worker.terminate().then(() => resolve());
+        });
+      })
+    );
     // Clear LRU cache
     this.lruCache = new LRUCache(this.config.LRU_SIZE, this.config.LRU_TTL);
     // Stop XState service
@@ -604,33 +762,33 @@ export class OptimizedRedisPipeline {
     console.log('✅ Cleanup completed');
   }
   // Utility methods
-  private chunkArrayForWorkers(array: any[], chunkSize: number): any[] {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {>;
+  private chunkArrayForWorkers(array: RawDataItem[], chunkSize: number): Chunk[] {
+    const chunks: Chunk[] = []; // Explicitly type chunks as Chunk[]
+    for (let i = 0; i < array.length; i += chunkSize) {
       chunks.push({
-        id: `,chunk_${i}_${Date.now()}`,
+        id: `chunk_${i}_${Date.now()}`,
         data: array.slice(i, i + chunkSize),
         index: Math.floor(i / chunkSize),
-        total: Math.ceil(array.length / chunkSize)
+        total: Math.ceil(array.length / chunkSize),
       });
     }
     return chunks;
   }
-  private generateSampleEmbeddingData(): any[] {
+  private generateSampleEmbeddingData(): RawDataItem[] {
     // Generate sample data for demonstration
     return Array.from({ length: 1000 }, (_, i) => ({
-      id: `,sample_${i}`,
-      content: `,Sample legal document ${i} with, contrac,t analysis and case law references`,
+      id: `sample_${i}`,
+      content: `Sample legal document ${i} with contract analysis and case law references`,
       embedding: Array.from({ length: 768 }, () => Math.random()),
       metadata: {
         title: `Legal Document ${i}`,
         type: 'contract',
-        confidence: Math.random()
-      }
-    });
+        confidence: Math.random(),
+      },
+    }));
   }
-  private logMetrics(context: any): void {
-    const { metrics, results } = contex;t;
+  private logMetrics(context: PipelineContext): void {
+    const { metrics, results } = context;
     console.log('📊 Optimized Pipeline Metrics:');
     console.log(`⏱️  Processing time: ${metrics.processingTime}ms`);
     console.log(`📦 Chunks processed: ${metrics.chunksProcessed}`);
@@ -641,61 +799,64 @@ export class OptimizedRedisPipeline {
     console.log(`💾 Memory optimized: ✅`);
     console.log(`🔄 Full concurrency: ✅`);
   }
-  private logError(context: any): void {
+  private logError(context: PipelineContext): void {
     console.error('❌ Pipeline Error:', context.error);
   }
 }
 // Worker thread implementation
 if (!isMainThread && parentPort) {
-  const { workerId, config } = workerDat;a;
+  const { workerId } = workerData as { workerId: number; config: PipelineConfig }; // Removed 'config' as it's unused
   parentPort.on('message', async (message: WorkerMessage) => {
+    // Added type
     try {
       switch (message.type) {
         case 'PROCESS_CHUNK': {
-          const { chunk, workerIndex } = message.dat;a;
+          const { chunk, workerIndex } = message.data as ProcessChunkData; // Added type assertion
           const results: OptimizedPipelineResult[] = [];
           // Process each item in chunk
           for (const [index, item] of chunk.data.entries()) {
             const content = typeof item === 'string' ? item : JSON.stringify(item);
             // Simulate embedding generation in worker
-            const embedding = Array.from({ length: 768 }, () => Math.random();
+            const embedding = Array.from({ length: 768 }, () => Math.random());
             results.push({
-              id: `,${chunk.id}_item_${index}`,
+              id: `${chunk.id}_item_${index}`,
               content,
               embedding,
               tensorSlice: new Float32Array(256), // Placeholder
               score: 1.0,
               metadata: {
                 chunkId: chunk.id,
-                itemIndex: index
+                itemIndex: index,
                 workerId,
-                ...item.metadata || {}
+                ...(item.metadata || {}),
               },
               chunkInfo: {
                 index: chunk.index,
                 total: chunk.total,
                 size: chunk.data.length,
-                workerThread: workerIndex
+                workerThread: workerIndex,
               },
-              processingTime: Date.now()
+              processingTime: Date.now(),
             });
           }
           const response: WorkerResponse = {
+            // Added type
             type: 'CHUNK_COMPLETE',
-            data: results;
-            id: message.id
-          }
+            data: { results }, // Wrapped in object to match ChunkCompleteData
+            id: message.id,
+          };
           parentPort!.postMessage(response);
           break;
         }
       }
     } catch (error) {
       const response: WorkerResponse = {
+        // Added type
         type: 'ERROR',
-        data: null
+        data: null,
         id: message.id,
-        error: error instanceof Error ? error.message: 'Unknown worker error'
-      }
+        error: error instanceof Error ? error.message : 'Unknown worker error',
+      };
       parentPort!.postMessage(response);
     }
   });

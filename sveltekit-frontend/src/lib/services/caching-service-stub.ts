@@ -6,22 +6,24 @@ export interface CacheOptions {
   layer?: 'memory' | 'loki' | 'redis' | 'postgres' | 'all';
 }
 class StubCacheService {
-  private cache = new Map<string, any>();
-  async get<T>(_key: string, options?: CacheOptions): Promise<T | null> {
-    return this.cache.get(key) || null;
+  // avoid `any`
+  private cache = new Map<string, unknown>();
+  async get<T>(key: string, _options?: CacheOptions): Promise<T | null> {
+    const val = this.cache.get(key);
+    return val === undefined ? null : (val as T);
   }
-  async set<T>(_key: string, value: T, options?: CacheOptions): Promise<boolean> {
-    this.cache.set(key, value);
+  async set<T>(key: string, value: T, _options?: CacheOptions): Promise<boolean> {
+    this.cache.set(key, value as unknown);
     return true;
   }
-  async delete(_key: string): Promise<boolean> {
+  async delete(key: string): Promise<boolean> {
     return this.cache.delete(key);
   }
   async clear(): Promise<boolean> {
     this.cache.clear();
     return true;
   }
-  async getStats() {
+  async getStats(): Promise<{ requests: number; hits: number; misses: number; errors: number }> {
     return {
       requests: 0,
       hits: 0,
