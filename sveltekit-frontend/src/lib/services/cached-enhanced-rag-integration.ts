@@ -6,8 +6,8 @@
 import { UnifiedLegalCacheOrchestrator } from './unified-legal-cache-orchestrator.js';
 import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
 import type { RAGQuery, RAGResponse, SemanticAnalysisResult } from './enhanced-rag-semantic-analyzer.js';
-import { Redis } from 'ioredis';
-import { Pool } from 'pg';
+import type { Redis } from 'ioredis';
+import type { Pool } from 'pg';
 import { createHash } from 'crypto';
 
 interface CacheConfig {
@@ -23,12 +23,10 @@ interface CacheMetrics {
   averageResponseTime: number;
   costSavings: number;
 }
-type Document = { id: string; content: string };
 
 export class CachedEnhancedRAGIntegration {
   private cacheOrchestrator: UnifiedLegalCacheOrchestrator;
   private memoryManager: NintendoMemoryManager;
-  private redis: Redis;
   private pgPool: Pool;
 
   // Enhanced RAG endpoints
@@ -56,7 +54,7 @@ export class CachedEnhancedRAGIntegration {
   };
 
   constructor(redis: Redis, pgPool: Pool, memoryManager: NintendoMemoryManager, config?: Partial<CacheConfig>) {
-    this.redis = redis;
+    // don't store Redis as a class field (was unused); pass it directly to the orchestrator below
     this.pgPool = pgPool;
     this.memoryManager = memoryManager;
     if (config) {
@@ -142,13 +140,18 @@ export class CachedEnhancedRAGIntegration {
 
       // Optional: trigger preloading if orchestrator exposes stats (guarded)
       try {
-        const maybeGetStats = (this.cacheOrchestrator as any).getStats;
-        const stats = typeof maybeGetStats === 'function' ? await maybeGetStats.call(this.cacheOrchestrator) : null;
-        if (stats?.embedding?.hitRate != null && stats.embedding.hitRate < 30) {
-          console.log('📝 Preloading common legal document patterns');
-          await this.preloadLegalBoilerplateEmbeddings();
+        // narrow-typed guard for optional getStats method (avoid `any`)
+        const maybe = this.cacheOrchestrator as unknown as {
+          getStats?: () => Promise<{ embedding?: { hitRate?: number } } | null>;
+        };
+        if (typeof maybe.getStats === 'function') {
+          const stats = await maybe.getStats.call(this.cacheOrchestrator);
+          if (stats?.embedding?.hitRate != null && stats.embedding.hitRate < 30) {
+            console.log('📝 Preloading common legal document patterns');
+            await this.preloadLegalBoilerplateEmbeddings();
+          }
         }
-      } catch (e) {
+      } catch {
         // ignore stats/preload errors
       }
 
@@ -440,7 +443,19 @@ export class CachedEnhancedRAGIntegration {
     // Attempt to derive lightweight expansions by using the cached semantic analysis API when possible.
     try {
       const ctx = (query as unknown as Record<string, unknown>)?.context;
-      const docId = ctx && typeof ctx === 'object' ? (ctx as any).documentId : undefined;
+      let docId: string | undefined;
+
+      if (
+        ctx &&
+        typeof ctx === 'object' &&
+        'documentId' in ctx &&
+        typeof (ctx as Record<string, unknown>)['documentId'] === 'string'
+      ) {
+        docId = (ctx as Record<string, unknown>)['documentId'] as string;
+      } else {
+        docId = undefined;
+      }
+
       if (typeof docId === 'string') {
         const analysis = await this.performCachedSemanticAnalysis('', docId);
         // try common fields in a tolerant way

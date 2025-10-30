@@ -1,9 +1,17 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { writable, get } from 'svelte/store';
-	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
-	// import { ErrorResolutionEngine } from '$lib/services/error-resolution-engine.js';
-	import type { ServiceStatus } from '$lib/services/master-service-coordinator.js';
+	// prefer the module entry (no .js) and avoid importing TS types from a .js file
+	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator';
+	// local lightweight ServiceStatus shape (keeps TS happy without importing types from a .js module)
+	type ServiceStatus = {
+		status?: string;
+		responseTime?: number | null;
+		lastCheck?: number;
+		errorCount?: number;
+		uptime?: number;
+		[key: string]: unknown;
+	};
 	interface ServiceHealth {
 		name: string;
 		url: string;
@@ -87,7 +95,8 @@
 			return {
 				timestamp: now,
 				overall_status: mapHealthStatus(data.systemHealth),
-				health_percentage: Math.round((data.healthyServices / data.totalServices) * 100),
+				// avoid division by zero / NaN when totalServices is missing/zero
+				health_percentage: data.totalServices ? Math.round((data.healthyServices / data.totalServices) * 100) : 0,
 				services_online: data.healthyServices,
 				services_total: data.totalServices,
 				cuda: {
@@ -227,8 +236,9 @@
 	const formatTimestamp = (timestamp: number) => {
 		return new Date(timestamp).toLocaleString();
 	}
-	const formatResponseTime = (time?: number) => {
-		if (!time) return 'N/A';
+	const formatResponseTime = (time?: number | null) => {
+		// treat null/undefined as unavailable, but show 0ms when explicitly zero
+		if (time === null || typeof time === 'undefined') return 'N/A';
 		return `${time}ms`;
 	}
 	// Service actions

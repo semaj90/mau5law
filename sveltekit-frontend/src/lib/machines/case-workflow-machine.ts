@@ -1,9 +1,20 @@
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign } from 'xstate';
+import type { DoneInvokeEvent, ActorRefFrom } from 'xstate';
 import { caseMemoryEngine } from '../services/case-memory-engine.js';
 import { UnifiedLegalOrchestrator } from '../services/unified-legal-orchestrator.js';
 // import { rabbitmq } from '../server/queue/rabbitmq-manager.js'
 
-const orchestrator = new UnifiedLegalOrchestrator();
+// --- Small typed adapter so TS knows 'handle' exists on the orchestrator instance ---
+type OrchestratorHandleInput = {
+  type: string;
+  payload?: Record<string, unknown>;
+  context?: Record<string, unknown>;
+};
+type OrchestratorWithHandle = {
+  handle(input: OrchestratorHandleInput): Promise<Record<string, unknown>>;
+};
+
+const orchestrator = new UnifiedLegalOrchestrator() as unknown as OrchestratorWithHandle;
 
 // --- Type Definitions for Clarity ---
 export type CaseData = Record<string, unknown>;
@@ -54,23 +65,24 @@ export interface CaseWorkflowContext {
     ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
   };
 }
-export const caseWorkflowMachine = createMachine({
+
+// Explicit event union used by the machine
+export type CaseWorkflowEvent =
+  | { type: 'CREATE_CASE'; case_data: CaseData }
+  | { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: Metadata }
+  | { type: 'START_ANALYSIS' }
+  | { type: 'ACCEPT_RECOMMENDATION'; recommendation_id: string }
+  | { type: 'REJECT_RECOMMENDATION'; recommendation_id: string }
+  | { type: 'REQUEST_AI_ASSISTANCE'; query: string }
+  | { type: 'UPDATE_SETTINGS'; settings: Partial<CaseWorkflowContext['settings']> }
+  | { type: 'RETRY' }
+  | { type: 'RESET' }
+  | { type: 'NEXT_STEP' }
+  | { type: 'PREVIOUS_STEP' };
+
+// Use generics so XState infers context/event types (removes implicit any on context/event)
+export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkflowEvent>({
   id: 'caseWorkflow',
-  types: {
-    context: {} as CaseWorkflowContext,
-    events: {} as
-      | { type: 'CREATE_CASE'; case_data: CaseData }
-      | { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: Metadata }
-      | { type: 'START_ANALYSIS' }
-      | { type: 'ACCEPT_RECOMMENDATION'; recommendation_id: string }
-      | { type: 'REJECT_RECOMMENDATION'; recommendation_id: string }
-      | { type: 'REQUEST_AI_ASSISTANCE'; query: string }
-      | { type: 'UPDATE_SETTINGS'; settings: Partial<CaseWorkflowContext['settings']> }
-      | { type: 'RETRY' }
-      | { type: 'RESET' }
-      | { type: 'NEXT_STEP' }
-      | { type: 'PREVIOUS_STEP' },
-  },
   context: {
     user_id: '',
     current_step: 'initial',
@@ -95,9 +107,12 @@ export const caseWorkflowMachine = createMachine({
         CREATE_CASE: {
           target: 'creatingCase',
           actions: assign({
-            case_data: ({ event }) => event.case_data,
-            current_step: 'creating_case',
-            progress: ({ context }) => ({
+            case_data: (_: CaseWorkflowContext, event: CaseWorkflowEvent) => {
+              if (event.type === 'CREATE_CASE') return event.case_data;
+              return undefined;
+            },
+            current_step: () => 'creating_case',
+            progress: (context: CaseWorkflowContext) => ({
               ...context.progress,
               current_action: 'Creating case...',
             }),
@@ -107,7 +122,7 @@ export const caseWorkflowMachine = createMachine({
     },
     creatingCase: {
       invoke: {
-        src: fromPromise(async ({ input: context }) => {
+        src: async (context: CaseWorkflowContext) => {
           const { case_data, user_id } = context;
           // Create case through orchestrator
           const result = await orchestrator.handle({
@@ -126,38 +141,41 @@ export const caseWorkflowMachine = createMachine({
           if (!caseId) {
             throw new Error('Case creation failed: No case_id returned.');
           }
-          const memoryContext = await caseMemoryEngine.getCaseMemoryContext(caseId, user_id);
-          return { ...result, memory_context: memoryContext };
-        }),
+          const memoryContext = await caseMemoryEngine.getCaseMemoryContext(caseId as string, user_id);
+          return { ...(result as Record<string, unknown>), memory_context: memoryContext };
+        },
         onDone: {
           target: 'caseReady',
-          actions: assign({
-            case_id: ({ event }) => event.output.case_id,
-            memory_context: ({ event }) => event.output.memory_context,
-            progress: ({ context }) => ({
+          // use functional assign with typed DoneInvokeEvent
+          actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            case_id: ((evt as any).data as { case_id?: string })?.case_id as string | undefined,
+            memory_context: ((evt as any).data as { memory_context?: MemoryContext })?.memory_context as
+              | MemoryContext
+              | undefined,
+            progress: {
               ...context.progress,
               completed_steps: 1,
               current_action: 'Case created successfully',
-            }),
-          }),
+            },
+          })),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error_message: ({ event }) => `Failed to create case: ${(event.error as Error).message}`,
-          }),
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            error_message: `Failed to create case: ${String((evt as any).data ?? 'unknown error')}`,
+          })),
         },
       },
     },
     caseReady: {
       entry: assign({
-        current_step: 'case_ready',
+        current_step: () => 'case_ready',
       }),
       on: {
         UPLOAD_DOCUMENT: {
           target: 'uploadingDocument',
           actions: assign({
-            progress: ({ context }) => ({
+            progress: (context: CaseWorkflowContext) => ({
               ...context.progress,
               current_action: 'Uploading document...',
             }),
@@ -165,7 +183,7 @@ export const caseWorkflowMachine = createMachine({
         },
         START_ANALYSIS: {
           target: 'analyzingCase',
-          guard: ({ context }) => context.documents.length > 0,
+          guard: context => context.documents.length > 0,
         },
         REQUEST_AI_ASSISTANCE: {
           target: 'providingAssistance',
@@ -174,14 +192,11 @@ export const caseWorkflowMachine = createMachine({
     },
     uploadingDocument: {
       invoke: {
-        input: ({ context, event }) => ({ context, event }),
-        src: fromPromise(async ({ input }) => {
-          const { context, event } = input;
+        src: async (context: CaseWorkflowContext, event: CaseWorkflowEvent) => {
+          if (event.type !== 'UPLOAD_DOCUMENT') throw new Error('Invalid event for uploadingDocument');
           const { case_id, user_id } = context;
-          if (!case_id) {
-            throw new Error('Case ID not found for document upload');
-          }
-          const { file, metadata } = event as { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: Metadata };
+          if (!case_id) throw new Error('Case ID not found for document upload');
+          const { file, metadata } = event;
           // Upload through orchestrator
           const result = await orchestrator.handle({
             type: 'process',
@@ -206,33 +221,33 @@ export const caseWorkflowMachine = createMachine({
             metadata: {
               file_size: file.size,
               file_type: file.type,
-              ...metadata,
+              ...(metadata || {}),
             },
           });
-          return result;
-        }),
+          return result as { document: Document };
+        },
         onDone: {
           target: 'documentProcessing',
-          actions: assign({
-            documents: ({ context, event }) => [...context.documents, event.output.document],
-            progress: ({ context }) => ({
+          actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            documents: [...context.documents, ((evt as any).data as { document: Document }).document],
+            progress: {
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
               current_action: 'Document uploaded, processing...',
-            }),
-          }),
+            },
+          })),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error_message: ({ event }) => `Upload failed: ${(event.error as Error).message}`,
-          }),
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            error_message: `Upload failed: ${String((evt as any).data ?? 'unknown error')}`,
+          })),
         },
       },
     },
     documentProcessing: {
       invoke: {
-        src: fromPromise(async ({ input: context }) => {
+        src: async (context: CaseWorkflowContext) => {
           const { case_id, user_id, documents } = context;
           const latestDoc = documents[documents.length - 1];
           // Queue document for background processing
@@ -259,56 +274,63 @@ export const caseWorkflowMachine = createMachine({
               },
             });
           }
-          return { processed: true, auto_analysis: false };
-        }),
+          return { processed: true, auto_analysis: false } as const;
+        },
         onDone: [
           {
             target: 'caseReady',
-            guard: ({ event }) => !event.output.analysis,
-            actions: assign({
-              progress: ({ context }) => ({
+            guard: (_ctx: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => {
+              const out = (evt as any).data as Record<string, unknown>;
+              return !('analysis' in out);
+            },
+            actions: assign((context: CaseWorkflowContext) => ({
+              progress: {
                 ...context.progress,
                 current_action: 'Document processed',
-              }),
-            }),
+              },
+            })),
           },
           {
             target: 'analyzingCase',
-            guard: ({ event }) => !!event.output.analysis,
-            actions: assign({
-              analysis_results: ({ context, event }) => [...context.analysis_results, event.output.analysis],
-            }),
+            guard: (_ctx: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => {
+              const out = (evt as any).data as Record<string, unknown>;
+              return 'analysis' in out;
+            },
+            actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+              analysis_results: [
+                ...context.analysis_results,
+                ((evt as any).data as { analysis: AnalysisResult }).analysis,
+              ],
+            })),
           },
         ],
         onError: {
           target: 'error',
-          actions: assign({
-            error_message: ({ event }) => `Processing failed: ${(event.error as Error).message}`,
-          }),
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            error_message: `Processing failed: ${String((evt as any).data ?? 'unknown error')}`,
+          })),
         },
       },
     },
     analyzingCase: {
       entry: assign({
-        current_step: 'analyzing',
-        progress: ({ context }) => ({
+        current_step: () => 'analyzing',
+        progress: (context: CaseWorkflowContext) => ({
           ...context.progress,
           current_action: 'Analyzing case and documents...',
         }),
       }),
       invoke: {
-        src: fromPromise(async ({ input: context }) => {
+        src: async (context: CaseWorkflowContext) => {
           const { case_id, user_id, documents } = context;
-          if (!case_id) {
-            throw new Error('Case ID not found for analysis');
-          }
+          if (!case_id) throw new Error('Case ID not found for analysis');
           // Comprehensive case analysis
           const analysis = await orchestrator.handle({
             type: 'analyze',
             payload: {
               action: 'comprehensive_analysis',
               case_id,
-              documents: documents.map((d: Document) => d.id),
+              documents: documents.map(d => d.id),
               analysis_type: 'full',
             },
             context: {
@@ -317,46 +339,57 @@ export const caseWorkflowMachine = createMachine({
               priority: 'high',
             },
           });
-          // Generate recommendations based on analysis
-          const recommendations = await caseMemoryEngine.generateSelfPromptRecommendations(case_id, user_id, analysis);
+          // Cast analysis to any for compatibility with caseMemoryEngine until typings are aligned
+          const recommendationsRaw = await caseMemoryEngine.generateSelfPromptRecommendations(
+            case_id,
+            user_id,
+            analysis as any
+          );
           await caseMemoryEngine.recordInteraction({
             case_id,
             user_id,
             interaction_type: 'analysis',
             content: 'Comprehensive case analysis completed',
-            metadata: { analysis_id: (analysis as AnalysisResult).id },
+            metadata: { analysis_id: (analysis as any).id },
           });
-          return { analysis, recommendations };
-        }),
+          return {
+            analysis: analysis as AnalysisResult,
+            // cast to expected Recommendation[] for TS compatibility
+            recommendations: recommendationsRaw as unknown as Recommendation[],
+          };
+        },
         onDone: {
           target: 'reviewingRecommendations',
-          actions: assign({
-            analysis_results: ({ context, event }) => [...context.analysis_results, event.output.analysis],
-            recommendations: ({ event }) => event.output.recommendations,
-            progress: ({ context }) => ({
+          actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            analysis_results: [
+              ...context.analysis_results,
+              ((evt as any).data as { analysis: AnalysisResult }).analysis,
+            ],
+            recommendations: ((evt as any).data as { recommendations: Recommendation[] }).recommendations,
+            progress: {
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
               current_action: 'Analysis complete, reviewing recommendations...',
-            }),
-          }),
+            },
+          })),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error_message: ({ event }) => `Analysis failed: ${(event.error as Error).message}`,
-          }),
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            error_message: `Analysis failed: ${String((evt as any).data ?? 'unknown error')}`,
+          })),
         },
       },
     },
     reviewingRecommendations: {
       entry: assign({
-        current_step: 'reviewing_recommendations',
+        current_step: () => 'reviewing_recommendations',
       }),
       on: {
         ACCEPT_RECOMMENDATION: {
           target: 'executingRecommendation',
           actions: assign({
-            progress: ({ context }) => ({
+            progress: (context: CaseWorkflowContext) => ({
               ...context.progress,
               current_action: 'Executing recommendation...',
             }),
@@ -364,8 +397,10 @@ export const caseWorkflowMachine = createMachine({
         },
         REJECT_RECOMMENDATION: {
           actions: assign({
-            recommendations: ({ context, event }) =>
-              context.recommendations.filter(r => r.id !== event.recommendation_id),
+            recommendations: (context: CaseWorkflowContext, event: CaseWorkflowEvent) =>
+              context.recommendations.filter(
+                r => r.id !== (event as { type: 'REJECT_RECOMMENDATION'; recommendation_id: string }).recommendation_id
+              ),
           }),
         },
         REQUEST_AI_ASSISTANCE: {
@@ -373,7 +408,7 @@ export const caseWorkflowMachine = createMachine({
         },
         NEXT_STEP: {
           target: 'workflowComplete',
-          guard: ({ context }) => context.recommendations.every(r => r.status === 'completed'),
+          guard: context => context.recommendations.every(r => r.status === 'completed'),
         },
       },
     },
@@ -383,12 +418,10 @@ export const caseWorkflowMachine = createMachine({
           context,
           recommendation_id: (event as { type: 'ACCEPT_RECOMMENDATION'; recommendation_id: string }).recommendation_id,
         }),
-        src: fromPromise(async ({ input }) => {
-          const { context, recommendation_id } = input;
+        src: async ({ input }) => {
+          const { context, recommendation_id } = input as { context: CaseWorkflowContext; recommendation_id: string };
           const { case_id, user_id } = context;
-          if (!case_id) {
-            throw new Error('Case ID not found for executing recommendation');
-          }
+          if (!case_id) throw new Error('Case ID not found for executing recommendation');
           const result = await orchestrator.handle({
             type: 'process',
             payload: {
@@ -402,26 +435,27 @@ export const caseWorkflowMachine = createMachine({
               priority: 'high',
             },
           });
-          return result;
-        }),
+          return result as { recommendation: Recommendation };
+        },
         onDone: {
           target: 'reviewingRecommendations',
-          actions: assign({
-            recommendations: ({ context, event }) =>
-              context.recommendations.map(r =>
-                r.id === event.output.recommendation.id ? event.output.recommendation : r
-              ),
-            progress: ({ context }) => ({
+          actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            recommendations: context.recommendations.map((r: Recommendation) =>
+              r.id === ((evt as any).data as { recommendation: Recommendation }).recommendation.id
+                ? ((evt as any).data as { recommendation: Recommendation }).recommendation
+                : r
+            ),
+            progress: {
               ...context.progress,
               current_action: 'Recommendation executed',
-            }),
-          }),
+            },
+          })),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error_message: ({ event }) => `Recommendation execution failed: ${(event.error as Error).message}`,
-          }),
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            error_message: `Recommendation execution failed: ${String((evt as any).data ?? 'unknown error')}`,
+          })),
         },
       },
     },
@@ -431,16 +465,14 @@ export const caseWorkflowMachine = createMachine({
           context,
           query: (event as { type: 'REQUEST_AI_ASSISTANCE'; query: string }).query,
         }),
-        src: fromPromise(async ({ input }) => {
-          const { context, query } = input;
+        src: async (context: CaseWorkflowContext, event: CaseWorkflowEvent) => {
+          if (event.type !== 'REQUEST_AI_ASSISTANCE') throw new Error('Invalid event for providingAssistance');
           const { case_id, user_id, memory_context } = context;
-          if (!case_id) {
-            throw new Error('Case ID not found for AI assistance');
-          }
+          if (!case_id) throw new Error('Case ID not found for AI assistance');
           const assistance = await orchestrator.handle({
             type: 'chat',
             payload: {
-              message: query,
+              message: event.query,
               context_needed: true,
               use_memory: true,
               memory_context,
@@ -451,30 +483,30 @@ export const caseWorkflowMachine = createMachine({
               priority: 'normal',
             },
           });
-          return assistance;
-        }),
+          return assistance as Record<string, unknown>;
+        },
         onDone: {
           target: 'caseReady',
-          actions: assign({
-            progress: ({ context }) => ({
+          actions: assign(context => ({
+            progress: {
               ...context.progress,
               current_action: 'AI assistance provided',
-            }),
-          }),
+            },
+          })),
         },
         onError: {
           target: 'caseReady',
-          actions: assign({
-            error_message: ({ event }) => `AI assistance failed: ${(event.error as Error).message}`,
-          }),
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
+            error_message: `AI assistance failed: ${String((evt as any).data ?? 'unknown error')}`,
+          })),
         },
       },
     },
     workflowComplete: {
       type: 'final',
       entry: assign({
-        current_step: 'complete',
-        progress: ({ context }) => ({
+        current_step: () => 'complete',
+        progress: context => ({
           ...context.progress,
           completed_steps: context.progress.total_steps,
           current_action: 'Workflow completed successfully',
@@ -486,42 +518,45 @@ export const caseWorkflowMachine = createMachine({
         RETRY: {
           target: 'idle',
           actions: assign({
-            error_message: undefined,
+            error_message: () => undefined,
           }),
         },
         RESET: {
           target: 'idle',
           actions: assign({
-            case_id: undefined,
-            case_data: undefined,
-            documents: [],
-            analysis_results: [],
-            recommendations: [],
-            memory_context: undefined,
-            error_message: undefined,
-            progress: {
+            case_id: () => undefined,
+            case_data: () => undefined,
+            documents: () => [],
+            analysis_results: () => [],
+            recommendations: () => [],
+            memory_context: () => undefined,
+            error_message: () => undefined,
+            progress: () => ({
               total_steps: 6,
               completed_steps: 0,
               current_action: 'Ready to start',
-            },
+            }),
           }),
         },
       },
     },
   },
+
   // Global transitions
   on: {
     UPDATE_SETTINGS: {
       actions: assign({
-        settings: ({ context, event }) => ({
-          ...context.settings,
-          ...event.settings,
-        }),
+        settings: (context: CaseWorkflowContext, event: CaseWorkflowEvent) => {
+          if (event.type === 'UPDATE_SETTINGS') return { ...context.settings, ...event.settings };
+          return context.settings;
+        },
       }),
     },
   },
-});
+}); // end of createMachine
+
 // Export machine types for use in components
 export type CaseWorkflowMachine = typeof caseWorkflowMachine;
 export type CaseWorkflowState = ReturnType<CaseWorkflowMachine['transition']>;
-export type CaseWorkflowEvent = Parameters<CaseWorkflowMachine['transition']>[1];
+export type CaseWorkflowEventType = CaseWorkflowEvent;
+export type CaseWorkflowActor = ActorRefFrom<typeof caseWorkflowMachine>;

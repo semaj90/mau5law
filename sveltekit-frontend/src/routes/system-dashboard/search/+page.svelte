@@ -6,7 +6,7 @@
   // Enhanced-Bits orchestrated components — adjust imports to match module exports
   import Badge from '$lib/components/ui/enhanced-bits/Badge.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
   // NOTE: lucide-svelte named exports caused type/import issues in this project;
   // use a small inline icon map (emoji placeholders) to avoid breaking the build.
   const ICON = {

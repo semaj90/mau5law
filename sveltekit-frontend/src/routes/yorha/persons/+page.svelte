@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports
   import Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -258,7 +257,7 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <ButtonComponent class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
+        <ButtonComponent class="header-btn bits-btn bits-btn" on:click={() => (showNewPersonModal = true)}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </ButtonComponent>
@@ -406,8 +405,8 @@
     role="button"
     tabindex="0"
     aria-label="Close person modal"
-    onclick={() => (showNewPersonModal = false)}
-    onkeydown={(e: KeyboardEvent) => {
+    on:click={() => (showNewPersonModal = false)}
+    on:keydown={(e: KeyboardEvent) => {
       // Close on Enter / Space / Escape for keyboard users
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
         showNewPersonModal = false;
@@ -421,13 +420,13 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
       tabindex="-1"
-      onclick={(e: MouseEvent) => e.stopPropagation()}
-      onkeydown={(e: KeyboardEvent) => e.stopPropagation()}
+      on:click={(e: MouseEvent) => e.stopPropagation()}
+      on:keydown={(e: KeyboardEvent) => e.stopPropagation()}
     >
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
         <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
-        <button class="close-btn" aria-label="Close" type="button" onclick={() => (showNewPersonModal = false)}
+        <button class="close-btn" aria-label="Close" type="button" on:click={() => (showNewPersonModal = false)}
           >×</button
         >
       </header>
@@ -500,7 +499,7 @@
         <ButtonComponent
           class="bits-btn"
           variant="ghost"
-          onclick={() => {
+          on:click={() => {
             showNewPersonModal = false;
             newPerson = {
               name: '',
@@ -515,7 +514,7 @@
         >
           CANCEL
         </ButtonComponent>
-        <ButtonComponent class="bits-btn" onclick={handleAddPerson}>ADD PERSON</ButtonComponent>
+        <ButtonComponent class="bits-btn" on:click={handleAddPerson}>ADD PERSON</ButtonComponent>
       </footer>
     </div>
   </div>
@@ -571,7 +570,7 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     font-size: 11px;
   }
   .nav-item:hover {
@@ -602,7 +601,7 @@
   }
   .persons-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
@@ -636,7 +635,7 @@
   /* Search toolbar */
   .search-toolbar {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
     background: #242424;
@@ -750,7 +749,7 @@
   }
   .detail-row {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     margin-bottom: 6px;
     font-size: 11px;
   }
@@ -872,7 +871,7 @@
   }
   .dialog-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     gap: 8px;
     margin-bottom: 8px;

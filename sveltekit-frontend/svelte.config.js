@@ -1,10 +1,10 @@
 import adapter from '@sveltejs/adapter-node';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import sveltePreprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  // Use official Vite preprocessor
-  preprocess: vitePreprocess(),
+  // Use svelte-preprocess for safe defaults (TypeScript, PostCSS, scss, etc.)
+  preprocess: sveltePreprocess(),
 
   kit: {
     // Explicit Node adapter (for Docker, Redis, MinIO, SSE, etc.)
@@ -32,10 +32,6 @@ const config = {
       '$lib/utils': './src/lib/utils',
     },
   },
-}; // Added semicolon to explicitly terminate the config object
+};
 
-// If 'export default config;' is causing a 'multiple default exports' error,
-// it implies it's duplicated elsewhere or implicitly handled.
-// Removing it here addresses that specific error.
-// Ensure your SvelteKit setup correctly exports the config object if this is removed.
 export default config;

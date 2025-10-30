@@ -1,6 +1,4 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
   // Svelte 5 runes
@@ -12,6 +10,7 @@
     data?: unknown;
     status?: number;
     timestamp?: string | number | Date | undefined;
+    endpoint?: string;
   };
   // typed testResults to avoid unknown/indexing issues
   let testResults = $state<Record<string, TestResult>>({});
@@ -169,9 +168,7 @@
              type="auth"
              connections={1}
            >
-             {#snippet children()}
-               <!-- intentionally empty children to satisfy EvidenceCard typing -->
-             {/snippet}
+             <!-- intentionally empty children to satisfy EvidenceCard typing -->
            </EvidenceCard>
            {#if authStatus.user}
              <div class="text-xs text-gray-600 p-2 nes-container is-rounded bg-blue-50">
@@ -209,46 +206,37 @@
           type="system"
           connections={result?.status || 0}
         >
-          {#snippet children()}
-            <div class="nes-container is-rounded bg-gray-50 p-3">
-              <div class="text-xs mb-2">
-                <strong class="nes-text is-primary">{test.method || 'GET'}</strong>
-                {test.endpoint}
-              </div>
-              {#if result}
-                <div class="space-y-2">
-                  <div class="flex justify-between items-center">
-                    <span class="nes-text">Status:</span>
-                    <span
-                      class="nes-text {(
-                        result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }
-                      ).success
-                        ? 'is-success'
-                        : 'is-error'}"
-                    >
-                      {result?.success ? '✅ PASS' : '❌ FAIL'}
-                    </span>
-                  </div>
-                  {#if (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).error}
-                    <div class="nes-container is-rounded bg-red-50 p-2">
-                      <p class="text-xs text-red-700">
-                        Error: {(result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown })
-                          .error}
-                      </p>
-                    </div>
-                  {/if}
-                  {#if (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).data && (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success && typeof (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).data === 'object'}
-                    <div class="nes-container is-rounded bg-green-50 p-2">
-                      <p class="text-xs text-green-700">✅ Response received</p>
-                    </div>
-                  {/if}
-                  <p class="text-xs text-gray-500">{formatTimestamp(result?.timestamp)}</p>
-                </div>
-              {:else}
-                <p class="nes-text text-xs">⏳ Waiting for test...</p>
-              {/if}
+          <div class="nes-container is-rounded bg-gray-50 p-3">
+            <div class="text-xs mb-2">
+              <strong class="nes-text is-primary">{test.method || 'GET'}</strong>
+              {test.endpoint}
             </div>
-          {/snippet}
+            {#if result}
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="nes-text">Status:</span>
+                  <span
+                    class="nes-text {result?.success ? 'is-success' : 'is-error'}"
+                  >
+                    {result?.success ? '✅ PASS' : '❌ FAIL'}
+                  </span>
+                </div>
+                {#if result?.error}
+                  <div class="nes-container is-rounded bg-red-50 p-2">
+                    <p class="text-xs text-red-700">Error: {result.error}</p>
+                  </div>
+                {/if}
+                {#if result?.data && result?.success && typeof result.data === 'object'}
+                  <div class="nes-container is-rounded bg-green-50 p-2">
+                    <p class="text-xs text-green-700">✅ Response received</p>
+                  </div>
+                {/if}
+                <p class="text-xs text-gray-500">{formatTimestamp(result?.timestamp)}</p>
+              </div>
+            {:else}
+              <p class="nes-text text-xs">⏳ Waiting for test...</p>
+            {/if}
+          </div>
         </EvidenceCard>
       {/each}
     </div>
@@ -263,14 +251,12 @@
           type="frontend"
           connections={4}
         >
-          {#snippet children()}
-            <div class="space-y-1 text-xs">
-              <a href="/dev-demo" class="nes-text is-primary block">• Development Demo</a>
-              <a href="/ai-assistant" class="nes-text is-primary block">• AI Assistant (SSE)</a>
-              <a href="/test-ai-assistant" class="nes-text is-primary block">• Integration Tests</a>
-              <a href="/system-status" class="nes-text is-primary block">• System Status</a>
-            </div>
-          {/snippet}
+          <div class="space-y-1 text-xs">
+            <a href="/dev-demo" class="nes-text is-primary block">• Development Demo</a>
+            <a href="/ai-assistant" class="nes-text is-primary block">• AI Assistant (SSE)</a>
+            <a href="/test-ai-assistant" class="nes-text is-primary block">• Integration Tests</a>
+            <a href="/system-status" class="nes-text is-primary block">• System Status</a>
+          </div>
         </EvidenceCard>
         <EvidenceCard
           title="🔗 API Endpoints"
@@ -279,14 +265,12 @@
           type="api"
           connections={4}
         >
-          {#snippet children()}
-            <div class="space-y-1 text-xs">
-              <code class="nes-text is-success block">/api/auth/debug</code>
-              <code class="nes-text is-success block">/api/dev-auth</code>
-              <code class="nes-text is-success block">/api/cases</code>
-              <code class="nes-text is-success block">/api/ai/chat-sse</code>
-            </div>
-          {/snippet}
+          <div class="space-y-1 text-xs">
+            <code class="nes-text is-success block">/api/auth/debug</code>
+            <code class="nes-text is-success block">/api/dev-auth</code>
+            <code class="nes-text is-success block">/api/cases</code>
+            <code class="nes-text is-success block">/api/ai/chat-sse</code>
+          </div>
         </EvidenceCard>
         <EvidenceCard
           title="⚡ Go Services"
@@ -295,14 +279,12 @@
           type="service"
           connections={4}
         >
-          {#snippet children()}
-            <div class="space-y-1 text-xs">
-              <code class="nes-text is-warning block">:8094 Enhanced RAG</code>
-              <code class="nes-text is-warning block">:8093 Upload Service</code>
-              <code class="nes-text is-warning block">:11434 Ollama API</code>
-              <code class="nes-text is-warning block">:5432 PostgreSQL</code>
-            </div>
-          {/snippet}
+          <div class="space-y-1 text-xs">
+            <code class="nes-text is-warning block">:8094 Enhanced RAG</code>
+            <code class="nes-text is-warning block">:8093 Upload Service</code>
+            <code class="nes-text is-warning block">:11434 Ollama API</code>
+            <code class="nes-text is-warning block">:5432 PostgreSQL</code>
+          </div>
         </EvidenceCard>
       </div>
       <!-- Current Status Summary -->
@@ -312,6 +294,24 @@
           <div class="text-xs">
             <span class="nes-text font-bold">Development Server:</span>
             <p class="text-yellow-700">http://localhost:5176</p>
+          </div>
+          <div class="text-xs">
+            <span class="nes-text font-bold">Authentication</span>
+            <p class="text-yellow-700">DEV_BYPASS_AUTH enabled</p>
+          </div>
+          <div class="text-xs">
+            <span class="nes-text font-bold">Database:</span>
+            <p class="text-yellow-700">35 tables ready</p>
+          </div>
+          <div class="text-xs">
+            <span class="nes-text font-bold">AI Models:</span>
+            <p class="text-yellow-700">gemma3-legal + nomic-embed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</EvidenceBoardLayout>
           </div>
           <div class="text-xs">
             <span class="nes-text font-bold">Authentication</span>

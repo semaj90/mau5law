@@ -120,7 +120,6 @@ export function getOllamaEndpoint(): string {
   let viteEnv: string | undefined;
   try {
     if (typeof import.meta !== 'undefined') {
-      // @ts-expect-error - import.meta.env typing can vary across bundlers/runtimes
       const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
       viteEnv = env?.VITE_OLLAMA_API_URL || env?.VITE_OLLAMA_URL;
     }
@@ -132,16 +131,14 @@ export function getOllamaEndpoint(): string {
   const fallbackHost =
     (typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env.OLLAMA_HOST) ||
     (typeof import.meta !== 'undefined'
-      ? // @ts-expect-error - import.meta.env typing can vary across bundlers/runtimes
-        (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_OLLAMA_HOST
+      ? (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_OLLAMA_HOST
       : undefined) ||
     'localhost';
 
   const fallbackPort =
     (typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env.OLLAMA_PORT) ||
     (typeof import.meta !== 'undefined'
-      ? // @ts-expect-error - import.meta.env typing can vary across bundlers/runtimes
-        (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_OLLAMA_PORT
+      ? (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_OLLAMA_PORT
       : undefined) ||
     '11434';
 
