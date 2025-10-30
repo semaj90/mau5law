@@ -182,8 +182,7 @@
       ];
 
       if (!supportedTypes.includes(file.type)) {
--        toast.error(`Unsupported file type: ${file.type}\n\nSupported: PDF, TXT, JSON, PNG/JPG, MP4, MP3`);
-+        toastError(`Unsupported file type: ${file.type}\n\nSupported: PDF, TXT, JSON, PNG/JPG, MP4, MP3`);
+        toastError(`Unsupported file type: ${file.type}\n\nSupported: PDF, TXT, JSON, PNG/JPG, MP4, MP3`);
         return;
       }
 
@@ -194,8 +193,7 @@
         formData.title = file.name.replace(/\.(pdf|txt|json|png|jpg|jpeg|mp4|mp3)$/i, '');
       }
 
--      toast.success(`Selected: ${file.name} (${file.type})`);
-+      toastSuccess(`Selected: ${file.name} (${file.type})`);
+      toastSuccess(`Selected: ${file.name} (${file.type})`);
     }
   }
 
@@ -216,53 +214,51 @@
       data.append('caseNumber', formData.caseNumber);
       data.append('enableComparison', formData.enableComparison.toString());
 
-uploadProgress = 25;
-toastInfo('📄 Uploading PDF...');
+      uploadProgress = 25;
+      toastInfo('📄 Uploading PDF...');
 
       const response = await fetch('/api/legal-report/analyze', {
         method: 'POST',
         body: data,
       });
 
-uploadProgress = 50;
-toastInfo('🔍 Extracting text with OCR...');
+      uploadProgress = 50;
+      toastInfo('🔍 Extracting text with OCR...');
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Analysis failed');
       }
 
-uploadProgress = 75;
-toastInfo('🧠 Analyzing with gemma3-legal:latest...');
+      uploadProgress = 75;
+      toastInfo('🧠 Analyzing with gemma3-legal:latest...');
 
       const result = await response.json();
       uploadProgress = 100;
 
       if (result.success) {
         analysisResult = result.data;
--        toast.success('✅ Legal analysis complete!');
-+        toastSuccess('✅ Legal analysis complete!');
+        toastSuccess('✅ Legal analysis complete!');
 
-// Show summary toasts
-if (result.data.analysis.who.personsOfInterest.length > 0) {
-  toastInfo(`👥 Identified ${result.data.analysis.who.personsOfInterest.length} persons of interest`);
-}
+        // Show summary toasts
+        if (result.data.analysis.who.personsOfInterest.length > 0) {
+          toastInfo(`👥 Identified ${result.data.analysis.who.personsOfInterest.length} persons of interest`);
+        }
 
-if (result.data.comparison?.similarCases.length > 0) {
-  toastInfo(`📊 Found ${result.data.comparison.similarCases.length} similar cases`);
-}
+        if (result.data.comparison?.similarCases.length > 0) {
+          toastInfo(`📊 Found ${result.data.comparison.similarCases.length} similar cases`);
+        }
 
-if (result.data.comparison?.recommendations.length > 0) {
-  toastInfo(`💡 Generated ${result.data.comparison.recommendations.length} recommendations`);
-}
+        if (result.data.comparison?.recommendations.length > 0) {
+          toastInfo(`💡 Generated ${result.data.comparison.recommendations.length} recommendations`);
+        }
       } else {
         throw new Error(result.error || 'Analysis failed');
       }
     } catch (err: any) {
       console.error('Analysis error:', err);
       analysisError = err.message || 'Unknown error';
--      toast.error(`❌ Analysis failed: ${analysisError}`);
-+      toastError(`❌ Analysis failed: ${analysisError}`);
+      toastError(`❌ Analysis failed: ${analysisError}`);
     } finally {
       isUploading = false;
     }
@@ -353,7 +349,7 @@ if (result.data.comparison?.recommendations.length > 0) {
               <input
                 type="file"
                 accept=".pdf,.txt,.json,.png,.jpg,.jpeg,.mp4,.mp3"
-                onchange={handleFileUpload}
+                on:change={handleFileUpload}
                 class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 cursor-pointer"
               />
               <div class="mt-2 text-xs text-slate-500">
@@ -442,7 +438,7 @@ if (result.data.comparison?.recommendations.length > 0) {
 
             <!-- Submit Button -->
             <Button
-              onclick={submitReport}
+              on:click={submitReport}
               disabled={!canSubmit}
               class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
@@ -487,7 +483,7 @@ if (result.data.comparison?.recommendations.length > 0) {
                 Analysis Results
               </h2>
               <Button
-                onclick={resetForm}
+                on:click={resetForm}
                 class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg"
               >
                 Upload New Report
@@ -536,10 +532,10 @@ if (result.data.comparison?.recommendations.length > 0) {
         <div class="flex gap-2 flex-wrap">
           {#each ['who', 'what', 'why', 'how', 'evidence', 'comparison'] as tab}
             <button
-              onclick={() => activeTab = tab as typeof activeTab}
-              class="px-4 py-2 rounded-lg font-medium transition-colors {activeTab === tab
+              on:click={() => (activeTab = tab as typeof activeTab)}
+              class={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === tab
                 ? 'bg-blue-600 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
             >
               {#if tab === 'who'}
                 <Users class="w-4 h-4 inline mr-1" />
@@ -722,7 +718,7 @@ if (result.data.comparison?.recommendations.length > 0) {
                         <div class="bg-slate-700/50 rounded-lg p-3">
                           <div class="flex items-center justify-between mb-1">
                             <span class="text-white font-medium">{evidence.description}</span>
-                            <span class="px-2 py-1 rounded text-xs {evidence.admissible ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                            <span class={`px-2 py-1 rounded text-xs ${evidence.admissible ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                               {evidence.admissible ? 'Admissible' : 'Excluded'}
                             </span>
                           </div>
@@ -831,8 +827,8 @@ if (result.data.comparison?.recommendations.length > 0) {
                         {#each analysisResult.comparison.recommendations as rec}
                           <div class="bg-slate-700/50 rounded-lg p-4">
                             <div class="flex items-center gap-2 mb-2">
-                              <svelte:component this={getPriorityIcon(rec.priority)} class="w-5 h-5 {getPriorityColor(rec.priority)}" />
-                              <h5 class="text-lg font-semibold {getPriorityColor(rec.priority)}">
+                              <svelte:component this={getPriorityIcon(rec.priority)} class={`w-5 h-5 ${getPriorityColor(rec.priority)}`} />
+                              <h5 class={`text-lg font-semibold ${getPriorityColor(rec.priority)}`}>
                                 {rec.type.toUpperCase()}: {rec.description}
                               </h5>
                             </div>
@@ -894,6 +890,9 @@ if (result.data.comparison?.recommendations.length > 0) {
 
   @keyframes spin {
     from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+</style>
     to { transform: rotate(360deg); }
   }
 </style>
