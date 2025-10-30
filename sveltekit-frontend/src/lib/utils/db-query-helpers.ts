@@ -1,9 +1,10 @@
-
 // Fixed database query utilities with proper field mappings
-import { sql, desc, asc } from 'drizzle-orm';
-import { eq, and, or, like } from '$lib/server/db/utils';
-import type { SQL } from 'drizzle-orm';
-import type { PgColumn } from 'drizzle-orm/pg-core';
+import { sql, asc, desc, eq, and, or, like } from '$lib/server/db/utils';
+// Removed invalid type imports from '$lib/server/db/utils' which doesn't export `SQL` or `PgColumn`.
+// Provide local type aliases instead so this file compiles without pulling in other modules.
+type SQL = ReturnType<typeof sql>;
+// { changed code }
+type PgColumn = SQL | string | Record<string, unknown>;
 // Database field mapping utilities
 export const fieldMap = {
   // User fields
@@ -15,7 +16,7 @@ export const fieldMap = {
     firstName: 'first_name',
     lastName: 'last_name',
     avatarUrl: 'avatar_url',
-    isActive: 'is_active'
+    isActive: 'is_active',
   },
   // Case fields
   case: {
@@ -33,7 +34,7 @@ export const fieldMap = {
     createdBy: 'created_by',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    closedAt: 'closed_at'
+    closedAt: 'closed_at',
   },
   // Evidence fields;
   evidence: {
@@ -66,71 +67,55 @@ export const fieldMap = {
     summaryEmbedding: 'summary_embedding',
     uploadedBy: 'uploaded_by',
     uploadedAt: 'uploaded_at',
-    updatedAt: 'updated_at'
-  }
+    updatedAt: 'updated_at',
+  },
 } as const;
 // Query builder helpers with proper type safety
 export function buildFilters(filters: SQL[]): SQL | undefined {
   return filters.length > 0 ? and(...filters) : undefined;
 }
-export function buildSearchFilters(
-  searchColumns: PgColumn[],
-  searchTerm: string;
-): SQL {
-  const searchFilters = searchColumns.map((col: any) => like(col, `%${searchTerm}%`)
-  );
+export function buildSearchFilters(searchColumns: PgColumn[], searchTerm: string): SQL {
+  const searchFilters = searchColumns.map((col: PgColumn) => like(col, `%${searchTerm}%`));
   return or(...searchFilters);
 }
-export function applySorting(
-  column: PgColumn;
-  order: 'asc' | 'desc' = 'desc';
-): SQL {
+export function applySorting(column: PgColumn, order: 'asc' | 'desc' = 'desc'): SQL {
   return order === 'asc' ? asc(column) : desc(column);
 }
 // Type-safe filter builders
 export const filterBuilders = {
-  textFilter: (column: PgColumn, value: string) =>
-    eq(column, value),
-  searchFilter: (columns: PgColumn[], term: string) =>
-    or(...columns.map((col: any) => like(col, `%${term}%`))),
+  textFilter: (column: PgColumn, value: string) => eq(column, value),
+  searchFilter: (columns: PgColumn[], term: string) => or(...columns.map((col: PgColumn) => like(col, `%${term}%`))),
   dateRangeFilter: (column: PgColumn, start: Date, end: Date) =>
     and(
-      // Use SQL for date comparisons
-      like(column, `%${start.toISOString().split('T')[0]}%`),
-      like(column, `%${end.toISOString().split('T')[0]}%`)
-    )
-}
+      // produce proper SQL range comparisons using ISO date strings
+      sql`${column} >= ${start.toISOString()}`,
+      sql`${column} <= ${end.toISOString()}`
+    ),
+};
 // Pagination helpers
 export interface PaginationParams {
   page: number;
   limit: number;
 }
-export function getPaginationParams(
-  page: string | null;
-  limit: string | null;
-): PaginationParams {
-  const pageNum = Math.max(1, parseInt(page || '1');
-  const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20'));
+export function getPaginationParams(page: string | null, limit: string | null): PaginationParams {
+  const pageNum = Math.max(1, parseInt(page || '1'));
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20')));
   return {
-    page: pageNum;
-    limit: limitNum
-  }
+    page: pageNum,
+    limit: limitNum,
+  };
 }
 export function applyPagination(params: PaginationParams) {
   const offset = (params.page - 1) * params.limit;
   return {
     limit: params.limit,
-    offset
-  }
+    offset,
+  };
 }
 // Common query patterns
 export const queryPatterns = {
   // Safe case filtering
-  caseFilters: (filters: {
-    search?: string;
-    status?: string;
-    priority?: string;
-  }) => {
+  caseFilters: (filters: { search?: string; status?: string; priority?: string }) => {
     const conditions: SQL[] = [];
     if (filters.search) {
       // Add search conditions - implement based on actual schema
@@ -144,11 +129,7 @@ export const queryPatterns = {
     return buildFilters(conditions);
   },
   // Safe evidence filtering
-  evidenceFilters: (filters: {
-    caseId?: string;
-    evidenceType?: string;
-    search?: string;
-  }) => {
+  evidenceFilters: (filters: { caseId?: string; evidenceType?: string; search?: string }) => {
     const conditions: SQL[] = [];
     if (filters.caseId) {
       // Add caseId filter
@@ -160,8 +141,8 @@ export const queryPatterns = {
       // Add search filter
     }
     return buildFilters(conditions);
-  }
-}
+  },
+};
 export default {
   fieldMap,
   buildFilters,
@@ -170,5 +151,5 @@ export default {
   filterBuilders,
   getPaginationParams,
   applyPagination,
-  queryPatterns
-}
+  queryPatterns,
+};

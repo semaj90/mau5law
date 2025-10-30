@@ -1,7 +1,7 @@
 /**
  * Drizzle ORM Configuration with Vector Operations
  * Production-ready database schema with pgvector support
- * 
+ *
  * TODO: Ensure drizzle schema `case_memories` table exists (case_id, memory_json, updated_at)
  * TODO: Add relations: evidence.case_id → cases.id
  * TODO: Confirm embeddings vector column uses pgvector extension
@@ -19,13 +19,58 @@ const vector = customType({
   dataType(config: { dimensions?: number } = {}) {
     return `vector(${config?.dimensions || 512})`;
   },
-  toDriver(_value: number[]): string {
-    return `[${_value.join(',')}]`;
+  toDriver(value: unknown): unknown {
+    // Accept arrays of numbers or stringified vectors like "[1,2,3]".
+    if (value == null) return null;
+    if (Array.isArray(value) && value.every(n => typeof n === 'number')) {
+      return `[${(value as number[]).join(',')}]`;
+    }
+    if (typeof value === 'string') {
+      const s = value.trim();
+      if (s.startsWith('[') && s.endsWith(']')) {
+        // validate numeric parts
+        const parts = s
+          .slice(1, -1)
+          .split(',')
+          .map(p => Number(p));
+        if (parts.every(n => !Number.isNaN(n))) return `[${parts.join(',')}]`;
+      }
+    }
+    // As a final attempt, try JSON.parse
+    try {
+      const parsed = JSON.parse(String(value));
+      if (Array.isArray(parsed) && parsed.every(n => typeof n === 'number')) {
+        return `[${(parsed as number[]).join(',')}]`;
+      }
+    } catch {
+      /* ignore */
+    }
+    throw new Error('Invalid vector value: expected number[] or vector string like "[1,2,...]"');
   },
-  fromDriver(_value: unknown): number[] {
-    // Parse vector string format "[1,2,3]" to number array
-    const vectorString = String(_value);
-    return vectorString.slice(1, -1).split(',').map(Number);
+  fromDriver(value: unknown): unknown {
+    if (value == null) return [];
+    if (Array.isArray(value) && value.every(n => typeof n === 'number')) return value;
+    const s = String(value).trim();
+    // handle Postgres/text representation "[1,2,3]" or JSON arrays
+    if (s.startsWith('[') && s.endsWith(']')) {
+      const parts = s
+        .slice(1, -1)
+        .split(',')
+        .map(p => Number(p));
+      return parts;
+    }
+    try {
+      const parsed = JSON.parse(s);
+      if (Array.isArray(parsed) && parsed.every(n => typeof n === 'number')) return parsed;
+    } catch {
+      /* ignore */
+    }
+    // Fallback: attempt to parse comma-separated numbers
+    const parts = s
+      .split(',')
+      .map(p => Number(p))
+      .filter(n => !Number.isNaN(n));
+    return parts;
   },
 });
 

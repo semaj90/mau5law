@@ -1,13 +1,13 @@
-// @ts-nocheck
 // XState Graph Cache Machine - Orchestrates cache states and background refresh
 // Implements the recommended runtime flow with idle signals and telemetry
 import { createMachine, assign } from 'xstate';
 import type { ActorRefFrom } from 'xstate';
+
 // Types for the graph cache system
 export interface GraphCacheContext {
   query: string | null;
-  params: { [key: string]: any };
-  result: any;
+  params: Record<string, unknown>;
+  result: unknown;
   source: 'indexeddb_cache' | 'wasm' | 'neo4j' | 'graph_service' | 'snapshot_fallback';
   isStale: boolean;
   isAuthoritative: boolean;
@@ -23,21 +23,22 @@ export interface GraphCacheContext {
     p95LatencyMs: number;
     p99LatencyMs: number;
   };
-  worker: any;
+  worker: Worker | null;
   refreshJob: string | null;
   lastRefresh: number;
   backgroundRefreshEnabled: boolean;
   retryCount: number;
   maxRetries: number;
 }
+
 export type GraphCacheEvent =
-  | { type: 'QUERY'; query: string; params?: { [key: string]: any } }
-  | { type: 'CACHE_HIT'; result: any; source: string; latency: number }
+  | { type: 'QUERY'; query: string; params?: Record<string, unknown> }
+  | { type: 'CACHE_HIT'; result: unknown; source: GraphCacheContext['source']; latency: number }
   | { type: 'CACHE_MISS'; queryHash: string }
-  | { type: 'WASM_RESULT'; result: any; latency: number }
-  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: string; latency: number }
+  | { type: 'WASM_RESULT'; result: unknown; latency: number }
+  | { type: 'AUTHORITATIVE_RESULT'; result: unknown; source: GraphCacheContext['source']; latency: number }
   | { type: 'BACKGROUND_REFRESH'; queryHash: string }
-  | { type: 'REFRESH_COMPLETE'; result: any }
+  | { type: 'REFRESH_COMPLETE'; result: unknown }
   | { type: 'REFRESH_FAILED'; error: string }
   | { type: 'ENABLE_BACKGROUND_REFRESH' }
   | { type: 'DISABLE_BACKGROUND_REFRESH' }
@@ -48,6 +49,7 @@ export type GraphCacheEvent =
   | { type: 'INVALIDATE_CACHE'; key?: string }
   | { type: 'IDLE_CALLBACK' }
   | { type: 'RETRY' };
+
 // XState machine for graph cache orchestration
 export const graphCacheMachine = createMachine(
   {
@@ -56,7 +58,7 @@ export const graphCacheMachine = createMachine(
     // Note: predictableActionArguments removed for version compatibility
     context: {
       query: null,
-      params: {} as { [key: string]: any },
+      params: {} as Record<string, unknown>,
       result: null,
       source: 'indexeddb_cache',
       isStale: false,
@@ -251,23 +253,23 @@ export const graphCacheMachine = createMachine(
                   // Handle in machine (post WORKER_READY to parent machine if desired)
                   break;
                 case 'query_result': {
-                  const data = (payload as { type: 'query_result'; data: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'query_result'; data: WorkerQueryResultData }).data;
                   // Example: if worker indicates a cache hit, you might post CACHE_HIT
-                  if (data?.cache_hit) {
+                  if ($data?.cache_hit) {
                     // send an event into the machine from outside caller if needed
-                    // e.g. interpreter.send({ type: 'CACHE_HIT', result: data.result, source: data.source, latency: data.latency })
+                    // e.g. interpreter.send({ type: 'CACHE_HIT', result: $data.result, source: $data.source, latency: $data.latency })
                   } else {
                     // handle miss or provisional data
                   }
                   break;
                 }
                 case 'query_result_authoritative': {
-                  const data = (payload as { type: 'query_result_authoritative'; data: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'query_result_authoritative'; data: WorkerQueryResultData }).data;
                   // send AUTHORITATIVE_RESULT handling here
                   break;
                 }
                 case 'refresh_complete': {
-                  const data = (payload as { type: 'refresh_complete'; data?: WorkerQueryResultData }).data;
+                  const $data = (payload as { type: 'refresh_complete'; data?: WorkerQueryResultData }).data;
                   // handle refresh complete
                   break;
                 }

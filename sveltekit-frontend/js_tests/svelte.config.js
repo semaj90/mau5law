@@ -1,13 +1,14 @@
-import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import adapter from '@sveltejs/adapter-node';
+import sveltePreprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  // Consult https://kit.svelte.dev/docs/integrations#preprocessors
-  preprocess: vitePreprocess(),
+  // Use svelte-preprocess for a stable, compatible preprocess across environments
+  preprocess: sveltePreprocess(),
 
   kit: {
-    adapter: adapter(),
+    // Use explicit Node adapter to match the main project config
+    adapter: adapter({ out: 'build' }),
 
     alias: {
       $lib: 'src/lib',

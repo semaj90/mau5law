@@ -1,5 +1,5 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-import CONFIG from '$lib/config/env.server';
+import { CONFIG } from '$lib/config/env.server';
 
 const qdrantUrl = CONFIG.QDRANT_URL || process.env.QDRANT_URL || 'http://127.0.0.1:6333';
 
@@ -7,7 +7,10 @@ export const qdrantClient = new QdrantClient({ url: qdrantUrl });
 
 export async function initQdrant(): Promise<void> {
   try {
-    await qdrantClient.getCollections();
+    // lightweight connectivity probe to avoid relying on client method names
+    const probeUrl = `${qdrantUrl.replace(/\/$/, '')}/collections`;
+    const res = await fetch(probeUrl, { method: 'GET' });
+    if (!res.ok) throw new Error(`Qdrant returned ${res.status}`);
     console.log('🟣 Qdrant connected:', qdrantUrl);
   } catch (err) {
     console.warn('⚠️ Qdrant connection failed:', err);
@@ -116,6 +119,20 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
   }
 }
 
+// Added explicit types for Qdrant filter/search payloads
+type QdrantFilterMatch = { any: string[] } | { value: string };
+
+type QdrantFilterClause = {
+  key: string;
+  match: QdrantFilterMatch;
+};
+
+type QdrantSearchPayload = {
+  vector: number[];
+  limit?: number;
+  filter?: { must: QdrantFilterClause[] };
+};
+
 // Filtered search using Qdrant payload filters (tags, caseId)
 export async function searchQdrantFiltered(
   queryVector: number[],
@@ -124,7 +141,10 @@ export async function searchQdrantFiltered(
   try {
     const wrapper = getQdrantWrapper();
     if (!wrapper || typeof wrapper.search !== 'function') return [];
-    const must: any[] = [];
+
+    // use typed filter clauses instead of `any[]`
+    const must: QdrantFilterClause[] = [];
+
     if (options.tags && options.tags.length > 0) {
       must.push({
         key: 'tags',
@@ -137,12 +157,19 @@ export async function searchQdrantFiltered(
         match: { value: options.caseId },
       });
     }
-    const payload = {
+
+    const payload: QdrantSearchPayload = {
       vector: Array.from(queryVector),
       limit: options.limit ?? 10,
       filter: must.length > 0 ? { must } : undefined,
-    } as Record<string, unknown>;
-    const res = await wrapper.search(COLLECTIONS.DOCUMENTS, payload as any);
+    };
+
+    // call search via a typed facade to avoid `any` casts
+    const typedWrapper = wrapper as {
+      search: (collection: string, payload: QdrantSearchPayload) => Promise<SearchResult[]>;
+    };
+
+    const res = await typedWrapper.search(COLLECTIONS.DOCUMENTS, payload);
     return (res as SearchResult[]) ?? [];
   } catch (error: unknown) {
     logger.error('Qdrant filtered search failed', error instanceof Error ? error : undefined, {

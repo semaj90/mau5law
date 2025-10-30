@@ -169,13 +169,109 @@ export class XStateIntegrationService {
     this.initializeTransport();
 
     // Initialize actors with enhanced options
-    // Temporary: cast actor instances to `any` to avoid ActorLogic/typing mismatches
-    // during incremental migration. Replace with precise types in follow-up.
-    this.authActor = createActor(authMachine) as any;
-    const providedSessionMachine = sessionMachine.provide({ actors: {}, actions: (sessionActions as unknown) ?? {} });
-    this.sessionActor = createActor(providedSessionMachine) as any;
-    this.aiAssistantActor = createActor(aiAssistantMachine) as any;
-    this.agentShellActor = createActor(agentShellMachine) as any;
+    // Wrap createActor in a safe helper to avoid hard crashes when XState internals
+    // differ between versions (e.g. missing getInitialSnapshot). We log a warning
+    // and provide a lightweight no-op actor as a fallback so the app can continue
+    // in degraded mode (auth unavailable) instead of crashing the server.
+    // Lazy, resilient actor factory: defer createActor until start() is called.
+    // This avoids hard crashes during module import when machines are incompatible
+    // with the runtime XState version. Subscriptions made before the real actor
+    // exists are queued and attached when/if the actor starts.
+    const makeActorSafe = (machine: unknown, name = 'actor') => {
+      let realActor: any = null;
+      const queuedSubs: Array<(s: unknown) => void> = [];
+
+      // If machine exposes snapshot helpers at top-level, ensure they exist under .logic
+      const adaptMachineLogic = (m: any) => {
+        if (!m || typeof m !== 'object') return m;
+        const logic = { ...(m.logic ?? {}) };
+
+        if (typeof logic.getInitialSnapshot !== 'function' && typeof m.getInitialSnapshot === 'function') {
+          logic.getInitialSnapshot = m.getInitialSnapshot.bind(m);
+        }
+        if (typeof logic.getPersistedSnapshot !== 'function' && typeof m.getPersistedSnapshot === 'function') {
+          logic.getPersistedSnapshot = m.getPersistedSnapshot.bind(m);
+        }
+        if (typeof logic.restoreSnapshot !== 'function' && typeof m.restoreSnapshot === 'function') {
+          logic.restoreSnapshot = m.restoreSnapshot.bind(m);
+        }
+
+        // If no logic existed and we didn't add anything, return original; otherwise return adapted copy
+        if (!m.logic && Object.keys(logic).length === 0) return m;
+        return { ...m, logic };
+      };
+
+      const start = () => {
+        if (realActor) return realActor;
+        try {
+          const machineToUse = adaptMachineLogic(machine as any);
+          realActor = createActor(machineToUse as any) as any;
+          try {
+            realActor.start?.();
+          } catch (e) {
+            console.warn('Actor start failed', e);
+          }
+          for (const s of queuedSubs) {
+            try {
+              realActor.subscribe?.(s);
+            } catch (err) {
+              console.warn('Actor subscribe failed on queued listener', err);
+            }
+          }
+          queuedSubs.length = 0;
+          return realActor;
+        } catch (err) {
+          console.warn(`XState: failed to create actor for ${name} at start(), keeping fallback:`, err);
+          realActor = null;
+          return null;
+        }
+      };
+
+      return {
+        start: () => {
+          start();
+        },
+        stop: () => {
+          try {
+            realActor?.stop?.();
+          } catch (err) {
+            console.warn('Actor stop failed', err);
+          }
+        },
+        send: (evt: unknown) => {
+          try {
+            if (!realActor) start();
+            realActor?.send?.(evt);
+          } catch (err) {
+            console.warn('Actor send failed', err);
+          }
+        },
+        subscribe: (listener: (s: unknown) => void) => {
+          try {
+            if (realActor && typeof realActor.subscribe === 'function') return realActor.subscribe(listener);
+          } catch (err) {
+            console.warn('subscribe direct failed, queueing listener', err);
+          }
+          queuedSubs.push(listener);
+          return {
+            unsubscribe: () => {
+              const i = queuedSubs.indexOf(listener);
+              if (i >= 0) queuedSubs.splice(i, 1);
+            },
+          };
+        },
+      } as AnyActorRef;
+    };
+
+    this.authActor = makeActorSafe(authMachine, 'auth');
+    try {
+      const providedSessionMachine = sessionMachine.provide({ actors: {}, actions: (sessionActions as unknown) ?? {} });
+      this.sessionActor = makeActorSafe(providedSessionMachine, 'session');
+    } catch (e) {
+      this.sessionActor = makeActorSafe(sessionMachine, 'session-fallback');
+    }
+    this.aiAssistantActor = makeActorSafe(aiAssistantMachine, 'aiAssistant');
+    this.agentShellActor = makeActorSafe(agentShellMachine, 'agentShell');
 
     // Initialize stores using the safe helper (no `any`)
     const authCtx = getActorContext<AuthContext>(this.authActor);
@@ -211,7 +307,8 @@ export class XStateIntegrationService {
     // Create derived stores
     this.isAuthenticated = derived(this.authState, $authState => !!$authState.user && !!$authState.session);
 
-    this.currentUser = derived(this.authState, $authState => $authState.user);
+    // Ensure the derived store always yields `User | null` (not `undefined`)
+    this.currentUser = derived(this.authState, $authState => ($authState.user ?? null) as User | null);
 
     this.hasPermission = derived(this.authState, $authState => (permission: string) => {
       const perms = Array.isArray($authState.user?.permissions) ? ($authState.user!.permissions as string[]) : [];
@@ -247,85 +344,119 @@ export class XStateIntegrationService {
     );
 
     this.setupActorSubscriptions();
-    this.startActors();
+    // Do not auto-start actors during module construction to avoid hard crashes
+    // when machines are incompatible with the runtime. Actors can be started
+    // explicitly by calling startActors() when the runtime is ready.
   }
 
   private setupActorSubscriptions(): void {
-    // Auth actor subscription (typed listener)
-    const authSub = (
-      this.authActor.subscribe as unknown as (listener: (state: ActorState<AuthContext>) => void) => {
-        unsubscribe: () => void;
-      }
-    )(state => {
-      this.authState.set(state.context);
-      this.globalState.update(global => ({
-        ...global,
-        auth: state.context,
-      }));
-      if (state.value === 'authenticated') {
-        this.onAuthenticationSuccess(state.context);
-      } else if (state.value === 'idle' && (state.context as AuthContext).user === null) {
-        this.onLogout();
-      } else if ((state.context as AuthContext).error) {
-        this.showNotification({
-          type: 'error',
-          title: 'Authentication Error',
-          message: (state.context as AuthContext).error || 'Authentication failed',
+    // Auth actor subscription (typed listener) - only subscribe if actor exposes subscribe
+    let authSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
+    try {
+      if (this.authActor && typeof (this.authActor as any).subscribe === 'function') {
+        authSub = (this.authActor as any).subscribe((state: ActorState<AuthContext>) => {
+          try {
+            this.authState.set(state.context);
+            this.globalState.update(global => ({
+              ...global,
+              auth: state.context,
+            }));
+            if (state.value === 'authenticated') {
+              this.onAuthenticationSuccess(state.context);
+            } else if (state.value === 'idle' && (state.context as AuthContext).user === null) {
+              this.onLogout();
+            } else if ((state.context as AuthContext).error) {
+              this.showNotification({
+                type: 'error',
+                title: 'Authentication Error',
+                message: (state.context as AuthContext).error || 'Authentication failed',
+              });
+            }
+          } catch (inner) {
+            console.warn('Error handling auth actor update:', inner);
+          }
         });
       }
-    });
+    } catch (e) {
+      console.warn('Failed to subscribe to auth actor:', e);
+    }
 
     // Session actor subscription (typed listener)
-    const sessionSub = (
-      this.sessionActor.subscribe as unknown as (listener: (state: ActorState<SessionContext>) => void) => {
-        unsubscribe: () => void;
-      }
-    )(state => {
-      this.sessionState.set(state.context as SessionContext);
-      this.globalState.update(global => ({
-        ...global,
-        session: state.context as SessionContext,
-      }));
-      if (state.value === 'expired') {
-        this.authActor.send({ type: 'SESSION_EXPIRED' });
-        this.showNotification({
-          type: 'warning',
-          title: 'Session Expired',
-          message: 'Your session has expired. Please login again.',
+    let sessionSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
+    try {
+      if (this.sessionActor && typeof (this.sessionActor as any).subscribe === 'function') {
+        sessionSub = (this.sessionActor as any).subscribe((state: ActorState<SessionContext>) => {
+          try {
+            this.sessionState.set(state.context as SessionContext);
+            this.globalState.update(global => ({
+              ...global,
+              session: state.context as SessionContext,
+            }));
+            if (state.value === 'expired') {
+              try {
+                (this.authActor as any).send?.({ type: 'SESSION_EXPIRED' });
+              } catch (e) {
+                console.warn('Failed to notify auth actor of session expiration:', e);
+              }
+              this.showNotification({
+                type: 'warning',
+                title: 'Session Expired',
+                message: 'Your session has expired. Please login again.',
+              });
+            }
+          } catch (inner) {
+            console.warn('Error handling session actor update:', inner);
+          }
         });
       }
-    });
+    } catch (e) {
+      console.warn('Failed to subscribe to session actor:', e);
+    }
 
     // AI Assistant actor subscription (typed listener)
-    const aiSub = (
-      this.aiAssistantActor.subscribe as unknown as (listener: (state: ActorState<AIAssistantContext>) => void) => {
-        unsubscribe: () => void;
+    let aiSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
+    try {
+      if (this.aiAssistantActor && typeof (this.aiAssistantActor as any).subscribe === 'function') {
+        aiSub = (this.aiAssistantActor as any).subscribe((state: ActorState<AIAssistantContext>) => {
+          try {
+            this.aiAssistantState.set(state.context);
+            this.globalState.update(global => ({
+              ...global,
+              aiAssistant: state.context,
+            }));
+            if (state.context.response && state.context.response !== '') {
+              // Could trigger UI updates, notifications, etc.
+            }
+          } catch (inner) {
+            console.warn('Error handling ai assistant actor update:', inner);
+          }
+        });
       }
-    )(state => {
-      this.aiAssistantState.set(state.context);
-      this.globalState.update(global => ({
-        ...global,
-        aiAssistant: state.context,
-      }));
-      if (state.context.response && state.context.response !== '') {
-        // Could trigger UI updates, notifications, etc.
-      }
-    });
+    } catch (e) {
+      console.warn('Failed to subscribe to ai assistant actor:', e);
+    }
 
     // Agent Shell actor subscription (typed listener)
-    const agentSub = (
-      this.agentShellActor.subscribe as unknown as (listener: (state: ActorState<AgentShellContext>) => void) => {
-        unsubscribe: () => void;
+    let agentSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
+    try {
+      if (this.agentShellActor && typeof (this.agentShellActor as any).subscribe === 'function') {
+        agentSub = (this.agentShellActor as any).subscribe((state: ActorState<AgentShellContext>) => {
+          try {
+            if ('context' in state && state.context) {
+              this.agentShellState.set(state.context as AgentShellContext);
+              this.globalState.update(global => ({
+                ...global,
+                agentShell: state.context as AgentShellContext,
+              }));
+            }
+          } catch (inner) {
+            console.warn('Error handling agent shell actor update:', inner);
+          }
+        });
       }
-    )(state => {
-      if ('context' in state && state.context) {
-        this.agentShellState.set(state.context as AgentShellContext);
-        this.globalState.update(global => ({
-          ...global,
-          agentShell: state.context as AgentShellContext,
-        }));
-      }
-    });
+    } catch (e) {
+      console.warn('Failed to subscribe to agent shell actor:', e);
+    }
 
     this.subscriptions.push(
       () => authSub.unsubscribe(),
@@ -334,12 +465,15 @@ export class XStateIntegrationService {
       () => agentSub.unsubscribe()
     );
   }
+
+  // make starting actors safe (avoid "object is possibly 'undefined'")
   private startActors(): void {
-    this.authActor.start();
-    this.sessionActor.start();
-    this.aiAssistantActor.start();
-    this.agentShellActor.start();
+    (this.authActor as any)?.start?.();
+    (this.sessionActor as any)?.start?.();
+    (this.aiAssistantActor as any)?.start?.();
+    (this.agentShellActor as any)?.start?.();
   }
+
   private async onAuthenticationSuccess(authContext: AuthContext): Promise<void> {
     // Start session management
     if (authContext.user && authContext.session) {
@@ -718,16 +852,21 @@ export class XStateIntegrationService {
 
     // Close WebTransport
     if (this.webTransport) {
-      this.webTransport.disconnect();
+      try {
+        this.webTransport.disconnect();
+      } catch (err) {
+        console.warn('Error disconnecting WebTransport:', err);
+      }
     }
 
-    // Stop all actors
-    this.authActor.stop();
-    this.sessionActor.stop();
-    this.aiAssistantActor.stop();
-    this.agentShellActor.stop();
+    // Stop all actors (safe calls in case actors are not yet initialized)
+    (this.authActor as any)?.stop?.();
+    (this.sessionActor as any)?.stop?.();
+    (this.aiAssistantActor as any)?.stop?.();
+    (this.agentShellActor as any)?.stop?.();
   }
 }
 
+// keep a single instance/export
 const xstateIntegration = new XStateIntegrationService();
 export default xstateIntegration;

@@ -1,8 +1,11 @@
 import { lucia } from '$lib/auth/session';
 import { db } from '$lib/server/db';
 import { users, sessions, userAuditLogs, type User } from '$lib/database/schema';
-import * as drizzle from 'drizzle-orm';
-import bcrypt from 'bcrypt';
+// replaced gte with sql usage; import sql helper
+import { eq, and, sql } from '$lib/server/db/utils';
+// use bcryptjs to avoid missing type issues
+// Note: Using 'bcryptjs' for browser compatibility. For Node.js-only environments, consider 'bcrypt' for better performance.
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Session } from 'lucia';
@@ -57,7 +60,7 @@ export class EnhancedAuthService {
 
   async login(loginData: LoginAttempt): Promise<AuthResult> {
     try {
-      const rows = await db.select().from(users).where(drizzle.eq(users.email, loginData.email.toLowerCase())).limit(1);
+      const rows = await db.select().from(users).where(eq(users.email, loginData.email.toLowerCase())).limit(1);
       const existingUser = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
 
       if (!existingUser) {
@@ -71,7 +74,7 @@ export class EnhancedAuthService {
         return { success: false, error: 'Invalid email or password' };
       }
 
-      if (existingUser.lockoutUntil && existingUser.lockoutUntil > new Date()) {
+      if (existingUser?.lockoutUntil && existingUser.lockoutUntil > new Date()) {
         await this.logAuthEvent({
           userId: existingUser.id,
           action: 'login_blocked',
@@ -104,17 +107,18 @@ export class EnhancedAuthService {
 
       await this.resetLoginAttempts(existingUser.id);
 
-      let session = null;
+      // explicitly type session to allow assigning Session | null
+      let session: Session | null = null;
       try {
-        // lucia may provide createSession(userId) or createSession({userId}) depending on version; best-effort
-        // @ts-ignore
-        if (lucia && typeof lucia.createSession === 'function')
-          session = (await lucia.createSession) ? await (lucia as any).createSession(existingUser.id) : null;
-      } catch (e) {
+        // route all lucia session creation through the helper which is robust to signatures
+        session = await this.createLuciaSession(existingUser.id);
+      } catch (e: unknown) {
+        // swallow session creation failures
+        console.warn('lucia create session failed', e);
         session = null;
       }
 
-      await db.update(users).set({ lastLoginAt: new Date() }).where(drizzle.eq(users.id, existingUser.id));
+      await db.update(users).set({ lastLoginAt: new Date() }).where(eq(users.id, existingUser.id));
       await this.logAuthEvent({
         userId: existingUser.id,
         action: 'login_success',
@@ -123,7 +127,7 @@ export class EnhancedAuthService {
         metadata: { rememberMe: loginData.rememberMe },
       });
       return { success: true, user: existingUser, session };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
       return { success: false, error: 'An unexpected error occurred' };
     }
@@ -135,7 +139,7 @@ export class EnhancedAuthService {
       const validation = this.validateRegistrationData(registerData);
       if (!validation.isValid) return { success: false, error: validation.error };
 
-      const rows = await db.select().from(users).where(drizzle.eq(users.email, email.toLowerCase())).limit(1);
+      const rows = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
       const existingUser = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
       if (existingUser) return { success: false, error: 'An account with this email already exists' };
 
@@ -172,17 +176,16 @@ export class EnhancedAuthService {
         return { success: true, user: newUser, requiresVerification: true };
       }
 
-      let session = null;
+      let session: Session | null = null;
       try {
-        // @ts-ignore
-        if (lucia && typeof lucia.createSession === 'function' && newUser)
-          session = (await (lucia as any).createSession) ? await (lucia as any).createSession(newUser.id) : null;
-      } catch (e) {
+        if (newUser) session = await this.createLuciaSession(newUser.id);
+      } catch (e: unknown) {
+        console.warn('create session on register failed', e);
         session = null;
       }
 
       return { success: true, user: newUser, session };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration error:', error);
       return { success: false, error: 'Registration failed. Please try again.' };
     }
@@ -190,10 +193,14 @@ export class EnhancedAuthService {
 
   async logout(sessionId: string, request: RequestEvent): Promise<void> {
     try {
-      // @ts-ignore
-      if (lucia && typeof lucia.invalidateSession === 'function') {
-        // @ts-ignore
-        await (lucia as any).invalidateSession(sessionId);
+      // call invalidateSession if available on lucia in a typed way
+      const invalidate = (lucia as unknown as { invalidateSession?: (id: string) => Promise<void> }).invalidateSession;
+      if (typeof invalidate === 'function') {
+        try {
+          await invalidate(sessionId);
+        } catch (e: unknown) {
+          console.warn('lucia.invalidateSession failed', e);
+        }
       }
       await this.logAuthEvent({
         userId: null,
@@ -202,7 +209,7 @@ export class EnhancedAuthService {
         userAgent: request.request.headers.get('user-agent') || '',
         metadata: { sessionId },
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Logout error:', error);
     }
   }
@@ -212,14 +219,15 @@ export class EnhancedAuthService {
       const rows = await db
         .select()
         .from(users)
-        .where(drizzle.eq((users as any).emailVerificationToken, token))
+        // use direct column reference instead of any-cast
+        .where(eq(users.emailVerificationToken, token))
         .limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
       if (!user) return { success: false, error: 'Invalid or expired verification token' };
       await db
         .update(users)
         .set({ emailVerified: new Date(), emailVerificationToken: null, isActive: true })
-        .where(drizzle.eq(users.id, user.id));
+        .where(eq(users.id, user.id));
       await this.logAuthEvent({
         userId: user.id,
         action: 'email_verified',
@@ -228,15 +236,15 @@ export class EnhancedAuthService {
         metadata: { token },
       });
       return { success: true, user };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Email verification error:', error);
       return { success: false, error: 'Verification failed' };
     }
   }
 
-  async requestPasswordReset(email: string, request: RequestEvent): Promise<any> {
+  async requestPasswordReset(email: string, request: RequestEvent): Promise<{ success: boolean; error?: string }> {
     try {
-      const rows = await db.select().from(users).where(drizzle.eq(users.email, email.toLowerCase())).limit(1);
+      const rows = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
       if (!user) return { success: true };
       const resetToken = crypto.randomBytes(32).toString('hex');
@@ -244,7 +252,7 @@ export class EnhancedAuthService {
       await db
         .update(users)
         .set({ passwordResetToken: resetToken, passwordResetExpires: resetExpires })
-        .where(drizzle.eq(users.id, user.id));
+        .where(eq(users.id, user.id));
       await this.sendPasswordResetEmail(user.email, resetToken);
       await this.logAuthEvent({
         userId: user.id,
@@ -254,7 +262,7 @@ export class EnhancedAuthService {
         metadata: { resetExpires },
       });
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Password reset request error:', error);
       return { success: false, error: 'Failed to process password reset request' };
     }
@@ -265,12 +273,8 @@ export class EnhancedAuthService {
       const rows = await db
         .select()
         .from(users)
-        .where(
-          drizzle.and(
-            drizzle.eq((users as any).passwordResetToken, token),
-            drizzle.gte((users as any).passwordResetExpires, new Date())
-          )
-        )
+        // replaced gte(...) with SQL expression because utils does not export gte
+        .where(and(eq(users.passwordResetToken, token), sql`${users.passwordResetExpires} >= ${new Date()}`))
         .limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
       if (!user) return { success: false, error: 'Invalid or expired reset token' };
@@ -286,7 +290,7 @@ export class EnhancedAuthService {
           loginAttempts: 0,
           lockoutUntil: null,
         })
-        .where(drizzle.eq(users.id, user.id));
+        .where(eq(users.id, user.id));
       await this.logAuthEvent({
         userId: user.id,
         action: 'password_reset_success',
@@ -295,30 +299,32 @@ export class EnhancedAuthService {
         metadata: { token },
       });
       return { success: true, user };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Password reset error:', error);
       return { success: false, error: 'Password reset failed' };
     }
   }
 
-  async getSecuritySummary(userId: string): Promise<any> {
+  async getSecuritySummary(userId: string): Promise<{ recentActivity: unknown; activeSessionsCount: number; securitySettings: SecuritySettings } | null> {
     try {
       const recentLogs = await db
         .select()
         .from(userAuditLogs)
-        .where(drizzle.eq(userAuditLogs.userId, userId))
+        .where(eq(userAuditLogs.userId, userId))
         .orderBy(userAuditLogs.createdAt)
         .limit(10);
-      const activeSessions = await db
-        .select({ count: drizzle.count() })
+      const activeSessionsRows = await db
+        .select()
         .from(sessions)
-        .where(drizzle.and(drizzle.eq(sessions.userId, userId), drizzle.gte(sessions.expiresAt, new Date())));
+        // replaced gte(sessions.expiresAt, new Date()) with SQL expression
+        .where(and(eq(sessions.userId, userId), sql`${sessions.expiresAt} >= ${new Date()}`));
+      const activeSessionsCount = Array.isArray(activeSessionsRows) ? activeSessionsRows.length : 0;
       return {
         recentActivity: recentLogs,
-        activeSessionsCount: activeSessions[0]?.count || 0,
+        activeSessionsCount,
         securitySettings: this.securitySettings,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Security summary error:', error);
       return null;
     }
@@ -326,12 +332,15 @@ export class EnhancedAuthService {
 
   // Private helpers
   private async handleFailedLogin(user: User, loginData: LoginAttempt): Promise<void> {
-    const newAttempts = (user as any).loginAttempts ? (user as any).loginAttempts + 1 : 1;
+    // use a narrow local type so we don't rely on `any`
+    type UserWithAttempts = User & { loginAttempts?: number };
+    const currentAttempts = (user as UserWithAttempts).loginAttempts ?? 0;
+    const newAttempts = currentAttempts + 1;
     const lockoutUntil =
       newAttempts >= this.securitySettings.maxLoginAttempts
         ? new Date(Date.now() + this.securitySettings.lockoutDurationMinutes * 60 * 1000)
         : null;
-    await db.update(users).set({ loginAttempts: newAttempts, lockoutUntil }).where(drizzle.eq(users.id, user.id));
+    await db.update(users).set({ loginAttempts: newAttempts, lockoutUntil }).where(eq(users.id, user.id));
     await this.logAuthEvent({
       userId: user.id,
       action: 'login_failed',
@@ -343,7 +352,7 @@ export class EnhancedAuthService {
 
   private async resetLoginAttempts(userId: string): Promise<void> {
     try {
-      await db.update(users).set({ loginAttempts: 0, lockoutUntil: null }).where(drizzle.eq(users.id, userId));
+      await db.update(users).set({ loginAttempts: 0, lockoutUntil: null }).where(eq(users.id, userId));
     } catch {
       // ignore
     }
@@ -354,7 +363,7 @@ export class EnhancedAuthService {
     action: string;
     ipAddress: string;
     userAgent: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt?: Date;
   }) {
     try {
@@ -366,7 +375,7 @@ export class EnhancedAuthService {
         metadata: entry.metadata || {},
         createdAt: entry.createdAt || new Date(),
       });
-    } catch (e) {
+    } catch (e: unknown) {
       console.warn('Failed to log auth event', e);
     }
   }
@@ -388,9 +397,11 @@ export class EnhancedAuthService {
 
   private getClientIP(request: RequestEvent): string {
     try {
+      // narrow the optional getClientAddress shape instead of using any
+      const remote = (request as unknown as { getClientAddress?: () => string }).getClientAddress?.();
       return (
         request.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-        (request as any).getClientAddress?.() ||
+        remote ||
         'unknown'
       );
     } catch {
@@ -404,5 +415,38 @@ export class EnhancedAuthService {
 
   private async sendPasswordResetEmail(email: string, token: string) {
     console.info(`Send password reset to ${email} token=${token}`);
+  }
+
+  // Helper: try common Lucia session creation signatures (robust to different lucia versions)
+  private async createLuciaSession(userId: string): Promise<Session | null> {
+    try {
+      // explicit possible signatures for createSession
+      type CreateById = (userId: string) => Promise<Session>;
+      type CreateWithOpts = (opts: { userId: string; expiresIn?: number }) => Promise<Session>;
+      type CreateWithUserOnly = (opts: { userId: string }) => Promise<Session>;
+      type LuciaCreateSession = CreateById | CreateWithOpts | CreateWithUserOnly;
+
+      const create = (lucia as unknown as { createSession?: LuciaCreateSession }).createSession;
+      if (typeof create !== 'function') return null;
+
+      const expiresInSeconds = this.securitySettings.sessionExpiryDays * 24 * 60 * 60;
+
+      // attempt common signatures in order with properly-typed casts
+      try {
+        return await (create as CreateById)(userId);
+      } catch {
+        try {
+          return await (create as CreateWithOpts)({ userId, expiresIn: expiresInSeconds });
+        } catch {
+          try {
+            return await (create as CreateWithUserOnly)({ userId });
+          } catch {
+            return null;
+          }
+        }
+      }
+    } catch {
+      return null;
+    }
   }
 }

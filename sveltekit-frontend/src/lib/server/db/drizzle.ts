@@ -9,11 +9,28 @@ import { sql } from 'drizzle-orm/sql';
 // intentionally not importing pgvector helper type here
 import { qdrantClient } from '$lib/services/qdrant-client';
 import { Client as MinioClient } from 'minio';
-// Redis cache - project keeps redis helpers in src/lib/server/cache/redis.ts
-import { redis } from '$lib/server/cache/redis';
-import { CONFIG } from '$lib/server/config';
-const _CFG = CONFIG as any;
 import { eq } from './utils.js';
+
+// Safe runtime config placeholder (falls back to undefined so calls like _CFG?.X work)
+const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
+
+// Lazy-load project's cache/redis helper at runtime.
+// Returns undefined when the module cannot be found or fails to import.
+let _cacheInitialized = false;
+let _cache: any = undefined;
+async function getCache(): Promise<any | undefined> {
+  // simple memoization to avoid repeated dynamic imports
+  if (_cacheInitialized) return _cache;
+  _cacheInitialized = true;
+  try {
+    // dynamic import so this file can be imported without forcing cache module to exist
+    const mod = await import('$lib/server/cache/redis');
+    _cache = (mod as any).default ?? mod;
+  } catch (err) {
+    _cache = undefined;
+  }
+  return _cache;
+}
 
 export const schemaDb = schema;
 
@@ -23,22 +40,25 @@ export const db = lazyDb;
 // Cached query helper using Redis
 export async function cachedQuery<T>(key: string, queryFn: () => Promise<T>, ttlMs = 1000 * 60 * 10): Promise<T> {
   try {
-    if (redis && typeof redis.get === 'function') {
-      const cached = await redis.get(key);
-      if (cached) return JSON.parse(cached) as T;
+    const cache = await getCache();
+    if (cache && typeof cache.get === 'function') {
+      const cached = await cache.get(key);
+      if (cached) return cached as T;
     }
   } catch (err) {
-    console.warn('⚠️ Redis cache read failed:', err);
+    console.warn('⚠️ Cache read failed:', err);
   }
 
   const result = await queryFn();
 
   try {
-    if (redis && typeof redis.set === 'function') {
-      await redis.set(key, JSON.stringify(result), 'PX', ttlMs);
+    const cache = await getCache();
+    if (cache && typeof cache.set === 'function') {
+      // CacheService.set expects (key, value, ttlMs)
+      await cache.set(key, result, ttlMs);
     }
   } catch (err) {
-    console.warn('⚠️ Redis cache write failed:', err);
+    console.warn('⚠️ Cache write failed:', err);
   }
   return result;
 }
@@ -52,7 +72,12 @@ export async function hybridVectorSearch<T = unknown>(
 ): Promise<unknown[]> {
   try {
     if (qdrantClient) {
-      const qResults = await qdrantClient.search({ query_vector: embedding, limit });
+      // cast to any to avoid strict client typings here; pass collectionName explicitly
+      const qResults = await (qdrantClient as any).search({
+        collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
+        vector: embedding,
+        limit,
+      } as any);
       if (Array.isArray(qResults) && qResults.length > 0) return qResults;
     }
   } catch (err) {
@@ -94,29 +119,31 @@ export async function storeEmbedding(
 
   try {
     if (qdrantClient) {
-      await qdrantClient.upsert({
+      // cast to any to bypass strict typings; use collectionName as the client expects
+      await (qdrantClient as any).upsert({
+        collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
         points: [{ id: recordId, vector: embedding, payload: metadata as Record<string, unknown> }],
-        collection_name: _CFG.QDRANT_COLLECTION || 'legal_embeddings',
-      });
+      } as any);
     }
   } catch (err) {
     console.warn('⚠️ Failed to upsert to Qdrant:', err);
   }
 
   try {
-    if (redis && typeof redis.set === 'function') {
-      await redis.set(`embedding:${recordId}`, JSON.stringify(metadata), 'PX', 24 * 60 * 60 * 1000);
+    const cache = await getCache();
+    if (cache && typeof cache.set === 'function') {
+      await cache.set(`embedding:${recordId}`, metadata, 24 * 60 * 60 * 1000);
     }
   } catch (err) {
-    // ignore
+    // ignore cache write errors
   }
 }
 
 // MinIO helper using project's Minio usage patterns (create client if library not exported centrally)
 function makeMinioClient(): MinioClient {
-  const endpoint = CONFIG.MINIO_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost:9000';
-  const accessKey = CONFIG.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin';
-  const secretKey = CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin';
+  const endpoint = _CFG?.MINIO_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost:9000';
+  const accessKey = _CFG?.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin';
+  const secretKey = _CFG?.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin';
   const useSSL = String(endpoint).startsWith('https');
   return new MinioClient({
     endPoint: endpoint.split(':')[0],

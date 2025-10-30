@@ -567,7 +567,7 @@ curl http://localhost:7474
 1. **Runes are auto-imported** - Never manually import `$state`, `$derived`, `$effect`, `$props`, or `$bindable`
 2. **No `export let`** - Use `$props()` insteades, avoid crashing builds
 3. **No `$:` reactive statements** - Use `$derived()` or `$effect()` instead
-4. **No `&lt;slot&gt;`** - Use &#123;#snippet&#125; instead to avoid tag parsing issues and to keep the documentation plain-text friendly
+4. **No** `\<slot\>` **- Use** `` `{#snippet}` `` **instead to avoid tag parsing issues and to keep the documentation plain-text friendly**
 #### State Management Patternsoper CORS headers for .wasm files
 6. **QUIC Protocol**: Requires HTTPS in production environments
 ```svelte Conflicts**:
@@ -815,4 +815,3 @@ class QUICLegalDataStream {a.email) {
     // Sub-millisecond latency streaming with persistent context
   } }
 } });
-```
