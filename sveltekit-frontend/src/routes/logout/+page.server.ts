@@ -1,13 +1,18 @@
-import type { Actions, PageServerLoad } from './$types.js';
+import type { Actions, PageServerLoad } from './$types'; // removed .js extension
 import { redirect } from '@sveltejs/kit';
 import { invalidateSession, deleteSessionTokenCookie } from '$lib/server/session';
 export const load: PageServerLoad = async ({ cookies, locals }) => {
   if (!locals.user) throw redirect(302, '/login');
-  const sessionId = cookies.get('session_id');
+
+  // read common cookie name variants to be robust
+  const sessionId = cookies.get('session_id') ?? cookies.get('sessionId') ?? cookies.get('session');
+
   if (sessionId) {
     await invalidateSession(sessionId);
-    deleteSessionTokenCookie({ cookies } as any);
+    // pass cookies directly and await deletion; avoid unsafe casting
+    await deleteSessionTokenCookie({ cookies });
   }
+
   throw redirect(302, '/login');
 };
 export const actions: Actions = {};

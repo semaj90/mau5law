@@ -51,8 +51,20 @@ class UnifiedAgenticAutoSolve {
 
     // Test Ollama/Gemma3
     try {
-      const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-      const response = await fetch(`${ollamaUrl}/api/tags`);
+      // Prefer project-configured endpoint if available
+      let base = process.env.OLLAMA_URL || process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
+
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { getOllamaBaseUrl } = require('../src/lib/utils/ollama-endpoint');
+        if (getOllamaBaseUrl && typeof getOllamaBaseUrl === 'function') {
+          base = getOllamaBaseUrl();
+        }
+      } catch (e) {
+        // best-effort only
+      }
+
+      const response = await fetch(`${base}/api/tags`);
       const models = await response.json();
 
       const hasGemma = models.models?.some(m => m.name.includes('gemma3'));

@@ -63,43 +63,51 @@ export const loadAIServices = {
 }
 // Utilities for managing dynamic imports
 export class ComponentLoader {
-  private loadedComponents = new Map<string, any>();
-  private loadingPromises = new Map<string, Promise<any>();
-  async load<T>(_key: string, loader: () => Promise<T>): Promise<T> {
+  private loadedComponents = new Map<string, unknown>();
+  private loadingPromises = new Map<string, Promise<unknown>>();
+
+  async load<T>(key: string, loader: () => Promise<T>): Promise<T> {
     // Return already loaded component
     if (this.loadedComponents.has(key)) {
-      return this.loadedComponents.get(key);
+      return this.loadedComponents.get(key) as T;
     }
     // Return existing loading promise
     if (this.loadingPromises.has(key)) {
-      return this.loadingPromises.get(key);
+      return this.loadingPromises.get(key) as Promise<T>;
     }
     // Start loading
-    const loadingPromise = loader().then(component => {
-      this.loadedComponents.set(key, component);
-      this.loadingPromises.delete(key);
-      return component;
-    }).catch(error => {
-      this.loadingPromises.delete(key);
-      console.error(`Failed to load component ${key}:`, error);
-      throw error;
-    });
+    const loadingPromise = loader()
+      .then(component => {
+        this.loadedComponents.set(key, component);
+        this.loadingPromises.delete(key);
+        return component;
+      })
+      .catch(error => {
+        this.loadingPromises.delete(key);
+        console.error(`Failed to load component ${key}:`, error);
+        throw error;
+      });
     this.loadingPromises.set(key, loadingPromise);
     return loadingPromise;
   }
-  isLoaded(_key: string): boolean {
+
+  isLoaded(key: string): boolean {
     return this.loadedComponents.has(key);
   }
-  isLoading(_key: string): boolean {
+
+  isLoading(key: string): boolean {
     return this.loadingPromises.has(key);
   }
-  preload(_key: string, loader: () => Promise<any>): void {
+
+  preload(key: string, loader: () => Promise<unknown>): void {
     if (!this.isLoaded(key) && !this.isLoading(key)) {
+      // fire-and-forget preload
       this.load(key, loader).catch(() => {
         // Silently fail preloading
       });
     }
   }
+
   clear(): void {
     this.loadedComponents.clear();
     this.loadingPromises.clear();
@@ -127,44 +135,39 @@ export const preloadStrategies = {
     const commonComponents = [
       { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
       { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas },
-      { key: 'legalAnalysis', loader: loadAIComponents.legalAnalysis }
+      { key: 'legalAnalysis', loader: loadAIComponents.legalAnalysis },
     ];
     // Preload after first user interaction
-    return Promise.all(
-      commonComponents.map(({ key, loader }) =>
-        componentLoader.preload(key, loader)
-      )
-    );
+    return Promise.all(commonComponents.map(({ key, loader }) => componentLoader.preload(key, loader)));
   },
   // Preload based on route
   async forRoute(routeId: string) {
-    const routeComponentMap: Record<string, Array<any>, = {
+    const routeComponentMap: Record<string, Array<{ key: string; loader: () => Promise<unknown> }>> = {
       '/detective': [
         { key: 'detectives', loader: loadAIComponents.detectives },
-        { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas }
+        { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas },
       ],
-      '/upload': [
-        { key: 'uploads', loader: loadAIComponents.uploads }
-      ],
+      '/upload': [{ key: 'uploads', loader: loadAIComponents.uploads }],
       '/ai-dashboard': [
         { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
-        { key: 'webgpu', loader: loadAIComponents.webgpu }
-      ]
-    }
+        { key: 'webgpu', loader: loadAIComponents.webgpu },
+      ],
+    };
     const componentsToLoad = routeComponentMap[routeId] || [];
     return Promise.all(
       componentsToLoad.map(({ key, loader }) =>
-        componentLoader.preload(key, loader)
+        // componentLoader.preload returns void, Promise.all will resolve to void[]
+        Promise.resolve(componentLoader.preload(key, loader))
       )
     );
-  }
-}
+  },
+};
 // Bundle analysis helper
 export function getBundleStats() {
   return {
     loadedComponents: componentLoader['loadedComponents'].size,
     loadingComponents: componentLoader['loadingPromises'].size,
     componentsInMemory: Array.from(componentLoader['loadedComponents'].keys()),
-    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys()
-  }
+    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys()),
+  };
 }

@@ -343,13 +343,14 @@
           <div class="space-y-4">
             <!-- File Input -->
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">
+              <label for="legal-report-file" class="block text-sm font-medium text-slate-300 mb-2">
                 Select Legal Document (PDF, TXT, JSON, Images, Video, Audio)
               </label>
               <input
+                id="legal-report-file"
                 type="file"
                 accept=".pdf,.txt,.json,.png,.jpg,.jpeg,.mp4,.mp3"
-                on:change={handleFileUpload}
+                onchange={handleFileUpload}
                 class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 cursor-pointer"
               />
               <div class="mt-2 text-xs text-slate-500">
@@ -366,10 +367,11 @@
 
             <!-- Document Title -->
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">
+              <label for="document-title" class="block text-sm font-medium text-slate-300 mb-2">
                 Document Title *
               </label>
               <input
+                id="document-title"
                 type="text"
                 bind:value={formData.title}
                 placeholder="e.g., Smith v. Jones Verdict 2024"
@@ -379,10 +381,11 @@
 
             <!-- Document Type -->
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">
+              <label for="document-type" class="block text-sm font-medium text-slate-300 mb-2">
                 Document Type
               </label>
               <select
+                id="document-type"
                 bind:value={formData.documentType}
                 class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -399,10 +402,11 @@
             <!-- Jurisdiction & Case Number -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">
+                <label for="jurisdiction" class="block text-sm font-medium text-slate-300 mb-2">
                   Jurisdiction
                 </label>
                 <input
+                  id="jurisdiction"
                   type="text"
                   bind:value={formData.jurisdiction}
                   placeholder="e.g., California"
@@ -411,10 +415,11 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">
+                <label for="case-number" class="block text-sm font-medium text-slate-300 mb-2">
                   Case Number
                 </label>
                 <input
+                  id="case-number"
                   type="text"
                   bind:value={formData.caseNumber}
                   placeholder="e.g., 2024-CV-12345"
@@ -438,9 +443,9 @@
 
             <!-- Submit Button -->
             <Button
-              on:click={submitReport}
-              disabled={!canSubmit}
-              class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              onclick={submitReport}
+               disabled={!canSubmit}
+               class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
               {#if isUploading}
                 <span class="flex items-center gap-2 justify-center">
@@ -483,7 +488,7 @@
                 Analysis Results
               </h2>
               <Button
-                on:click={resetForm}
+                onclick={resetForm}
                 class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg"
               >
                 Upload New Report
@@ -532,7 +537,7 @@
         <div class="flex gap-2 flex-wrap">
           {#each ['who', 'what', 'why', 'how', 'evidence', 'comparison'] as tab}
             <button
-              on:click={() => (activeTab = tab as typeof activeTab)}
+              onclick={() => (activeTab = tab as typeof activeTab)}
               class={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === tab
                 ? 'bg-blue-600 text-white'
                 : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
@@ -893,7 +898,3 @@
     to { transform: rotate(360deg); }
   }
 </style>
-    to { transform: rotate(360deg); }
-  }
-</style>
-

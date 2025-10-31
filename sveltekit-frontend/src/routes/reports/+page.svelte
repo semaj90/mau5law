@@ -1,29 +1,104 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import TauriAPI from '$lib/tauri';
+  import { onMount, onDestroy } from 'svelte';
   import type { Report } from '$lib/types/index';
-  import { onMount } from 'svelte';
-  let reports: Report[] = $state([]);
-  let loading = $state(true);
-  let error: string | null = $state(null);
-  $effect(() => {
-    (async () => {
+  import TauriAPI from '$lib/tauri';
+
+  // Stores & helpers
+  import { reports as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
+
+  // Local UI state (avoid colliding with `reports` store name)
+  let reportList: Report[] = [];
+  let loading = true;
+  let error: string | null = null;
+
+  // Editor local state
+  let title = '';
+  let content = '';
+  let hoverSaveTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  let reportsUnsub: (() => void) | null = null;
+
+  onMount(async () => {
+    loading = true;
+    try {
+      // Prefer the centralized store loader
+      await loadReports();
+
+      // subscribe to the reports store to keep local list in sync
+      // normalize incoming items (ReportDraft) into a safe Report[] shape
+      reportsUnsub = reportsStore.subscribe((r: any) => {
+        reportList = (r ?? []).map((it: any) => ({
+          id: String(it?.id ?? ''), // ensure id is string
+          title: it?.title ?? '',
+          summary: it?.summary ?? '',
+          reportType: it?.reportType ?? 'general',
+          createdAt: it?.createdAt ?? new Date().toISOString(),
+          wordCount: typeof it?.wordCount === 'number' ? it.wordCount : undefined,
+          estimatedReadTime: typeof it?.estimatedReadTime === 'number' ? it.estimatedReadTime : undefined,
+          status: it?.status ?? 'draft',
+          tags: Array.isArray(it?.tags) ? it.tags : [],
+          content: it?.content ?? ''
+        })) as Report[];
+      });
+
+      // Tauri fallback: if store was empty, try to fetch directly (non-blocking)
       try {
-        reports = await TauriAPI.getReports();
-      } catch (err) {
-        error = 'Error loading reports';
-        console.error('Error:', err);
-      } finally {
-        loading = false;
+        const tauriReports = await TauriAPI.getReports();
+        if (Array.isArray(tauriReports) && tauriReports.length > 0 && reportList.length === 0) {
+          reportList = tauriReports;
+        }
+      } catch (tauriErr) {
+        // swallow Tauri error — store loader is primary
+        console.debug('Tauri getReports fallback failed:', tauriErr);
       }
-    })();
-  });
-  function formatDate(date: Date | string) {
-    if (typeof date === 'string') {
-      return new Date(date).toLocaleDateString();
+
+      // keep editor synced to activeReport if selected
+      const unsubActive = activeReport.subscribe((r) => {
+        if (r) {
+          title = r.title ?? '';
+          content = r.content ?? '';
+        }
+      });
+      // ensure we also cleanup this subscription
+      // reuse reportsUnsub variable pattern: store separate reference
+      onDestroy(() => {
+        unsubActive();
+      });
+    } catch (err) {
+      console.error('Error loading reports:', err);
+      error = 'Error loading reports';
+    } finally {
+      loading = false;
     }
+  });
+
+  onDestroy(() => {
+    if (reportsUnsub) reportsUnsub();
+    if (hoverSaveTimeout) {
+      clearTimeout(hoverSaveTimeout);
+      hoverSaveTimeout = null;
+    }
+  });
+
+  function handleHoverStart() {
+    if (hoverSaveTimeout) clearTimeout(hoverSaveTimeout);
+    hoverSaveTimeout = setTimeout(async () => {
+      await saveReport({ title, content });
+      hoverSaveTimeout = null;
+    }, 800);
+  }
+  function handleHoverEnd() {
+    if (hoverSaveTimeout) {
+      clearTimeout(hoverSaveTimeout);
+      hoverSaveTimeout = null;
+    }
+  }
+
+  function formatDate(date: Date | string) {
+    if (typeof date === 'string') return new Date(date).toLocaleDateString();
     return date.toLocaleDateString();
   }
+
   function getStatusBadgeClass(status: string) {
     switch (status) {
       case 'published':
@@ -41,45 +116,20 @@
 <svelte:head>
   <title>Reports - Legal Case Management</title>
 </svelte:head>
-<script lang="ts">
-  import { reports, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
-  import { onMount } from 'svelte';
 
-  let title = '';
-  let content = '';
-  let hoverSaveTimeout: any;
-
-  onMount(async () => {
-    await loadReports();
-    const unsubscribe = activeReport.subscribe((r) => {
-      if (r) {
-        title = r.title ?? '';
-        content = r.content ?? '';
-      }
-    });
-  });
-
-  function handleHoverStart() {
-    clearTimeout(hoverSaveTimeout);
-    hoverSaveTimeout = setTimeout(async () => {
-      await saveReport({ title, content });
-    }, 800);
-  }
-  function handleHoverEnd() {
-    clearTimeout(hoverSaveTimeout);
-  }
-</script>
 <div class="space-y-4">
   <div class="editor">
     <h2>Quick Draft (hover to autosave)</h2>
     <input bind:value={title} placeholder="Title" />
-    <div on:mouseenter={handleHoverStart} on:mouseleave={handleHoverEnd}>
-      <textarea bind:value={content} placeholder="Write your report here..." />
+    <!-- Added role and aria-label to satisfy a11y rule for interactive handlers -->
+    <div role="region" aria-label="Quick draft editor" on:mouseenter={handleHoverStart} on:mouseleave={handleHoverEnd}>
+      <textarea bind:value={content} placeholder="Write your report here..."></textarea>
     </div>
     {#if $isSaving}
       <p class="saving">Saving...</p>
     {/if}
   </div>
+
   <div class="space-y-4">
     <h1 class="space-y-4">Reports</h1>
     <a href="/report-builder" class="space-y-4">
@@ -89,6 +139,7 @@
       New Report
     </a>
   </div>
+
   {#if loading}
     <div class="space-y-4">
       <div class="space-y-4"></div>
@@ -106,7 +157,7 @@
       </svg>
       <span>{error}</span>
     </div>
-  {:else if reports.length === 0}
+  {:else if reportList.length === 0}
     <div class="space-y-4">
       <svg class="space-y-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -129,20 +180,20 @@
     </div>
   {:else}
     <div class="space-y-4">
-      {#each reports as report}
+      {#each reportList as report (report.id)}
         <div class="space-y-4">
           <div class="space-y-4">
             <div class="space-y-4">
               <div class="space-y-4">
                 <h2 class="space-y-4">
-                  <a href="/reports/{report.id}" class="space-y-4">{report.title}</a>
+                  <a href={`/reports/${report.id}`} class="space-y-4">{report.title}</a>
                 </h2>
                 <p class="space-y-4">{report.summary}</p>
                 <div class="space-y-4">
-                  <span>Type: {report.reportType}</span>
-                  <span>Created: {formatDate(report.createdAt)}</span>
-                  <span>Words: {report.wordCount || 0}</span>
-                  {#if report.estimatedReadTime}
+                  <span>Type: {report.reportType ?? '—'}</span>
+                  <span>Created: {formatDate(report.createdAt ?? new Date())}</span>
+                  <span>Words: {report.wordCount ?? 0}</span>
+                  {#if report.estimatedReadTime != null}
                     <span>Read time: {report.estimatedReadTime} min</span>
                   {/if}
                 </div>
@@ -155,7 +206,10 @@
                 {/if}
               </div>
               <div class="space-y-4">
-                <span class="space-y-4">{report.status}</span>
+                <!-- use getStatusBadgeClass so it's read and apply a default -->
+                <span class={getStatusBadgeClass(report.status ?? 'draft') + ' space-y-4'}>
+                  {report.status ?? 'draft'}
+                </span>
                 <div class="space-y-4">
                   <button tabindex={0} class="space-y-4" aria-label="Actions menu">
                     <svg class="space-y-4" fill="currentColor" viewBox="0 0 20 20">
@@ -165,10 +219,10 @@
                     </svg>
                   </button>
                   <ul class="space-y-4">
-                    <li><a href="/reports/{report.id}">View</a></li>
-                    <li><a href="/reports/{report.id}/edit">Edit</a></li>
+                    <li><a href={`/reports/${report.id}`}>View</a></li>
+                    <li><a href={`/reports/${report.id}/edit`}>Edit</a></li>
                     <li>
-                      <a href="/api/reports/{report.id}/export/pdf" target="_blank">Export PDF</a>
+                      <a href={`/api/reports/${report.id}/export/pdf`} target="_blank">Export PDF</a>
                     </li>
                     <li><button class="space-y-4">Delete</button></li>
                   </ul>
@@ -181,4 +235,3 @@
     </div>
   {/if}
 </div>
-;

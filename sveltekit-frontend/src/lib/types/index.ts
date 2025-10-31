@@ -15,16 +15,19 @@ export type MultiDimArray = {
 
 export interface Report {
   id: string;
-  userId: string;
   title: string;
-  content: string;
   summary?: string;
+  // Added optional fields used by the reports page
+  reportType?: string;
+  createdAt: string | Date;
+  wordCount?: number;
+  estimatedReadTime?: number;
+  status?: 'draft' | 'published' | 'archived' | string;
   tags?: string[];
-  autoKeywords?: string[];
-  embedding?: number[];
+  content?: string;
+  userId?: string;
   isFavorite?: boolean;
   sourceUri?: string;
-  createdAt?: string;
   updatedAt?: string;
 }
 

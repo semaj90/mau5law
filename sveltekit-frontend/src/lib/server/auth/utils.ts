@@ -23,25 +23,53 @@ export function getMetaEnv(): MetaEnv {
   return (import.meta as unknown as { env: MetaEnv }).env;
 }
 
+// --- Added types to avoid relying on App.Locals['user'] which may not exist ---
+export type User = {
+  id: string;
+  email?: string | null;
+  name?: string | null;
+  [k: string]: unknown;
+};
+
 /**
  * Development stub user returned when DEV_BYPASS_AUTH is enabled
+ * typed to match `User` so downstream functions can rely on a single User type.
  */
-export const DEV_STUB_USER = {
+export const DEV_STUB_USER: User = {
   id: '1',
   email: 'dev@local',
   name: 'Developer',
-} as const;
+};
+// --- end added types ---
+
+// Define a small local type for SvelteKit locals.
+// SvelteKit does not export a concrete `Locals` type here, so use an extendable record.
+// If your app declares `App.Locals` elsewhere via module augmentation, replace `AppLocals` accordingly.
+export type AppLocals = {
+  [key: string]: unknown;
+};
+
+// Keep previous API but base it on the local AppLocals type
+export type LocalsWithUser = AppLocals & {
+  // optional because not all requests will have an authenticated user
+  user?: User | null;
+};
 
 /**
- * Check if development authentication bypass is enabled
+ * Return true when running in dev and DEV_BYPASS_AUTH is set to a truthy value.
+ * Allowed truthy values: "1", "true", "yes", "on" (case-insensitive).
  */
 export function isDevBypassEnabled(): boolean {
-  const metaEnv = getMetaEnv();
-  return (
-    dev &&
-    (process.env.DEV_BYPASS_AUTH === 'true' ||
-      (metaEnv.DEV_BYPASS_AUTH !== undefined && metaEnv.DEV_BYPASS_AUTH === 'true'))
-  );
+  // quick guard: only allow bypass in dev environment
+  if (!dev) return false;
+
+  const env = getMetaEnv();
+  const raw = String(env.DEV_BYPASS_AUTH ?? '')
+    .trim()
+    .toLowerCase();
+  if (!raw) return false;
+
+  return ['1', 'true', 'yes', 'on'].includes(raw);
 }
 
 /**
@@ -59,10 +87,10 @@ export function isDevBypassEnabled(): boolean {
  * console.log('User ID:', user.id);
  * ```
  */
-export function resolveUser(locals: App.Locals): App.Locals['user'] | typeof DEV_STUB_USER | null {
+export function resolveUser(locals: LocalsWithUser): User | null {
   // Return authenticated user if present
   if (locals?.user) {
-    return locals.user;
+    return locals.user as User;
   }
 
   // In development with bypass enabled, return stub user
@@ -89,10 +117,7 @@ export function resolveUser(locals: App.Locals): App.Locals['user'] | typeof DEV
  * // user is guaranteed to be non-null here
  * ```
  */
-export function requireUser(
-  locals: App.Locals,
-  errorMessage = 'User authentication required'
-): NonNullable<App.Locals['user']> | typeof DEV_STUB_USER {
+export function requireUser(locals: LocalsWithUser, errorMessage = 'User authentication required'): User {
   const user = resolveUser(locals);
 
   if (!user) {
@@ -108,14 +133,14 @@ export function requireUser(
  * @param locals - SvelteKit locals object
  * @returns User ID or null if not authenticated
  */
-export function getUserId(locals: App.Locals): string | null {
+export function getUserId(locals: LocalsWithUser): string | null {
   const user = resolveUser(locals);
-  return user?.id ?? null;
+  return (user as User | null)?.id ?? null;
 }
 
 /**
  * Check if user is authenticated (including dev bypass)
  */
-export function isAuthenticated(locals: App.Locals): boolean {
+export function isAuthenticated(locals: LocalsWithUser): boolean {
   return resolveUser(locals) !== null;
 }

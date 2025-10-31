@@ -1,14 +1,8 @@
 import { cuidSchema } from '$lib/server/z-schemas';
-/*
- * Persons of Interest API Routes with Lucia v3 Authentication
- * GET /api/v1/persons-of-interest - List user's persons of interest (with pagination)
- * POST /api/v1/persons-of-interest - Create new person of interest
- */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { db, sql } from '$lib/server/db';
 import { personsOfInterest } from '$lib/server/db/schema-postgres';
 import { z } from 'zod';
-import { getUserId } from '$lib/server/auth/utils';
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -96,7 +90,7 @@ class PersonsOfInterestCRUDService {
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
-    if (!locals.session || !locals.user) {
+    if (!locals.user) {
       return json(
         {
           success: false,
@@ -106,12 +100,13 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         { status: 401 }
       );
     }
+    const userId = locals.user.id;
     // Parse query parameters
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
     const validatedQuery = PersonsOfInterestQuerySchema.parse(queryParams);
     // Create service instance
-    const personsService = new PersonsOfInterestCRUDService(getUserId(locals));
+    const personsService = new PersonsOfInterestCRUDService(userId);
     // Get persons of interest with pagination - filter by risk level if specified
     const result = validatedQuery.riskLevel
       ? await personsService.listByRiskLevel(validatedQuery.riskLevel, {
@@ -138,7 +133,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           hasPrev: page > 1,
         },
         meta: {
-          userId: getUserId(locals),
+          userId,
           riskLevel: validatedQuery.riskLevel || null,
           timestamp: new Date().toISOString(),
         },
@@ -176,7 +171,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
-    if (!locals.session || !locals.user) {
+    if (!locals.user) {
       return json(
         {
           success: false,
@@ -186,11 +181,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         { status: 401 }
       );
     }
+    const userId = locals.user.id;
     // Parse request body
     const body = await request.json();
     const validatedData = CreatePersonOfInterestSchema.parse(body) as CreatePersonOfInterestData;
     // Create service instance
-    const personsService = new PersonsOfInterestCRUDService(getUserId(locals));
+    const personsService = new PersonsOfInterestCRUDService(userId);
     // Create person of interest
     const personId = await personsService.create(validatedData);
     // Get the created person details
@@ -201,7 +197,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         data: createdPerson,
         meta: {
           personId,
-          userId: getUserId(locals),
+          userId,
           caseIds: validatedData.caseIds,
           timestamp: new Date().toISOString(),
         },

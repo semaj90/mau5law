@@ -8,42 +8,23 @@
   import { NierRichTextEditor } from '$lib/components/editors';
   import { EnhancedAIAssistant } from '$lib/components/ai';
   import { CitationsManager } from '$lib/components/citations';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  // Changed Card component imports from named exports to default exports from specific files
-  import Card from '$lib/components/ui/card/Card.svelte';
-  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
-  import CardDescription from '$lib/components/ui/card/CardDescription.svelte';
-  import CardContent from '$lib/components/ui/card/CardContent.svelte';
-  // Removed unused import: CardFooter
-  // import CardFooter from '$lib/components/ui/card/CardFooter.svelte';
-  // Changed Tabs component imports from named exports to default exports from specific files
-  import TabsRoot from '$lib/components/ui/tabs/Root.svelte';
-  import TabsList from '$lib/components/ui/tabs/List.svelte';
-  import TabsTrigger from '$lib/components/ui/tabs/Trigger.svelte';
-  import TabsContent from '$lib/components/ui/tabs/Content.svelte';
-  // Removed unused imports: Input, Label
-  // import { Input } from '$lib/components/ui/enhanced-bits';
-  // import Label from '$lib/components/ui/label/Label.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea'; // Changed to Textarea from enhanced-bits
-  import {
-    FileText,
-    Search,
-    Brain,
-    Zap,
-    MessageSquare,
-    Camera,
-    Shield,
-    Database,
-    Cpu,
-    Save,
-    Upload
-  } from 'lucide-svelte';
-  // Removed unused Lucide icons: Target, Eye, Plus
-  // Target,
-  // Eye,
-  // Plus,
+  // UI components are imported via barrel files for consistency and SSR compatibility.
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
+  import FileText from 'lucide-svelte/icons/file-text';
+  import Search from 'lucide-svelte/icons/search';
+  import Brain from 'lucide-svelte/icons/brain';
+  import Zap from 'lucide-svelte/icons/zap';
+  import MessageSquare from 'lucide-svelte/icons/message-square';
+  import Camera from 'lucide-svelte/icons/camera';
+  import Shield from 'lucide-svelte/icons/shield';
+  import Database from 'lucide-svelte/icons/database';
+  import Cpu from 'lucide-svelte/icons/cpu';
+  import Save from 'lucide-svelte/icons/save';
+  import Upload from 'lucide-svelte/icons/upload';
+
   interface Case {
     id: string;
     title: string;
@@ -84,6 +65,7 @@
   let investigationNotes = $state('');
   let citations = $state<string[]>([]);
   let isAIProcessing = $state(false);
+  let isSaving = $state(false);
   let systemStatus = $state({
     evidenceCanvas: true,
     detectiveAnalysis: true,
@@ -91,24 +73,7 @@
     webgpuAcceleration: false,
     ollamaConnection: false
   });
-  // Removed unused function: createCase
-  // async function createCase(title: string, description: string = '') {
-  //   const newCase: Case = {
-  //     id: `case-${Date.now()}`,
-  //     title,
-  //     description,
-  //     status: 'active',
-  //     priority: 'medium',
-  //     createdAt: new Date().toISOString(),
-  //     updatedAt: new Date().toISOString(),
-  //     assignedTo: 'current-user'
-  //   };
-  //   cases = [newCase, ...cases];
-  //   currentCase = newCase;
-  //   // Add system message
-  //   addChatMessage('system', `New case created: ${title}`, 'case', newCase.id);
-  //   return newCase;
-  // }
+
   // Evidence handling
   function handleEvidenceUploaded(event: CustomEvent) {
     const { file, position } = (event as CustomEvent).detail;
@@ -145,7 +110,6 @@
     addChatMessage('assistant', `Analysis completed for ${fileId}: ${(analysis && analysis.summary) || 'Evidence processed successfully'}`, 'evidence', fileId);
   }
   function handleDetectiveInsights(event: CustomEvent) {
-    // Removed unused parameter: relevance
     const { patterns, conflicts } = (event as CustomEvent).detail;
     console.log('🕵️ Detective insights:', patterns);
     if (conflicts && conflicts.length > 0) {
@@ -167,43 +131,7 @@
     };
     chatMessages = [...chatMessages, message];
   }
-  // Removed unused function: sendChatMessage
-  // async function sendChatMessage() {
-  //   if (!currentChatMessage.trim()) return;
-  //   const userMessage = currentChatMessage.trim();
-  //   addChatMessage('user', userMessage);
-  //   currentChatMessage = '';
-  //   isAIProcessing = true;
-  //   try {
-  //     // Send to AI assistant with context
-  //     const context = {
-  //       currentCase,
-  //       evidence,
-  //       investigationNotes,
-  //       citations
-  //     };
-  //     const response = await fetch('/api/ai/chat', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         message: userMessage,
-  //         context,
-  //         conversationHistory: chatMessages.slice(-10) // Last 10 messages for context
-  //       })
-  //     });
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       addChatMessage('assistant', data.response || 'I understand. How can I assist with this investigation?');
-  //     } else {
-  //       addChatMessage('assistant', 'I apologize, but I am currently unavailable. Please try again later.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Chat error:', error);
-  //     addChatMessage('assistant', 'There was an error processing your request. Please try again.');
-  //   } finally {
-  //     isAIProcessing = false;
-  //   }
-  // }
+
   // Utility functions
   function getEvidenceType(mimeType: string): EvidenceItem['type'] {
     if (!mimeType) return 'digital';
@@ -241,29 +169,21 @@
     addChatMessage('assistant', 'Welcome to the Legal Investigation Workspace. I can help you analyze evidence, manage cases, and provide legal insights. How can I assist you today?');
   });
   async function loadCases() {
-    // Mock data - replace with actual API call
-    cases = [
-      {
-        id: 'case-001',
-        title: 'Corporate Fraud Investigation',
-        status: 'investigating',
-        priority: 'high',
-        createdAt: '2024-01-15T10:00:00Z',
-        updatedAt: '2024-01-20T14:30:00Z',
-        description: 'Investigation into alleged financial irregularities'
-      },
-      {
-        id: 'case-002',
-        title: 'Contract Dispute Analysis',
-        status: 'active',
-        priority: 'medium',
-        createdAt: '2024-01-18T09:00:00Z',
-        updatedAt: '2024-01-18T09:00:00Z',
-        description: 'Breach of contract claim requiring evidence analysis'
+    try {
+      const response = await fetch('/api/cases');
+      if (response.ok) {
+        const loadedCases: Case[] = await response.json();
+        cases = loadedCases;
+        if (!currentCase && cases.length > 0) {
+          currentCase = cases[0];
+        }
+      } else {
+        addChatMessage('system', 'Error: Could not load cases from the server.');
+        console.error('Failed to load cases', response.statusText);
       }
-    ];
-    if (!currentCase && cases.length > 0) {
-      currentCase = cases[0];
+    } catch (error) {
+      addChatMessage('system', 'Error: Failed to connect to the server to load cases.');
+      console.error('Failed to load cases:', error);
     }
   }
   async function loadSystemStatus() {
@@ -279,7 +199,8 @@
   }
   // Save investigation progress
   async function saveInvestigation() {
-    if (!currentCase) return;
+    if (!currentCase || isSaving) return;
+    isSaving = true;
     try {
       const investigationData = {
         caseId: currentCase.id,
@@ -303,6 +224,8 @@
     } catch (error) {
       console.error('Save error:', error);
       addChatMessage('system', 'Error saving investigation progress.');
+    } finally {
+      isSaving = false;
     }
   }
 </script>
@@ -324,14 +247,19 @@
               {currentCase.priority.toUpperCase()}
             </Badge>
             <span class="case-title font-semibold text-[#FFD700]">{currentCase.title}</span>
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{currentCase.status}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-300">{currentCase.status}</span>
           </div>
         {/if}
       </div>
       <div class="workspace-actions flex items-center gap-4">
-        <Button class="bits-btn" on:click={saveInvestigation} variant="ghost" size="sm">
-          <Save class="w-4 h-4 mr-2" />
-          Save Progress
+        <Button on:click={saveInvestigation} variant="ghost" size="sm" disabled={!currentCase || isSaving}>
+          {#if isSaving}
+            <Cpu class="w-4 h-4 mr-2 animate-spin" />
+            Saving...
+          {:else}
+            <Save class="w-4 h-4 mr-2" />
+            Save Progress
+          {/if}
         </Button>
         <!-- System Status Indicators -->
         <div class="status-indicators flex gap-2">
@@ -357,7 +285,7 @@
 
   <!-- Main Content -->
   <div class="workspace-content flex-1 overflow-hidden">
-    <TabsRoot bind:value={activeTab} class="w-full h-full">
+    <Tabs bind:value={activeTab} class="w-full h-full">
       <TabsList class="workspace-tabs">
         <TabsTrigger value="evidence" class="tab-trigger">
           <FileText class="w-4 h-4 mr-2" />
@@ -436,14 +364,14 @@
                       {#if item.tags.length > 0}
                         <div class="evidence-tags flex flex-wrap gap-1 mt-2">
                           {#each item.tags as tag}
-                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-300">{tag}</span>
                           {/each}
                         </div>
                       {/if}
                     </div>
                    {/each}
                    {#if evidence.length === 0}
-                     <div class="empty-state flex flex-col items-center justify-center h-50 text-center opacity-60">
+                     <div class="empty-state flex flex-col items-center justify-center h-48 text-center opacity-60">
                        <Upload class="w-8 h-8 text-gray-400 mb-2" />
                        <p class="text-gray-500">Upload evidence to begin analysis</p>
                      </div>
@@ -514,7 +442,7 @@
           </CardContent>
         </Card>
        </TabsContent>
-     </TabsRoot>
+     </Tabs>
    </div>
  </div>
 

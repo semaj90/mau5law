@@ -1,30 +1,28 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { goto, invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
-  $effect(() => {
+  import { goto, invalidateAll } from '$app/navigation';
+
+  onMount(() => {
     (async () => {
       try {
-        // Call logout API endpoint
-        const response = await fetch('/api/auth/logout', {
+        const apiBase = import.meta.env?.PUBLIC_API_BASE || '/api';
+        const response = await fetch(`${apiBase}/auth/logout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        if (response.ok) {
-          // Invalidate all data and redirect to home
-          await invalidateAll();
-          goto('/');
-        } else {
-          console.error('Logout failed');
-          // Redirect anyway for security
-          goto('/');
+
+        // Ensure cache invalidation completes before redirecting
+        await invalidateAll();
+        if (!response.ok) {
+          console.error('Logout failed', response.status);
         }
+        await goto('/', { replaceState: true });
       } catch (error) {
         console.error('Logout error:', error);
         // Redirect anyway for security
-        goto('/');
+        await goto('/', { replaceState: true });
       }
     })();
   });
@@ -33,13 +31,15 @@
 <svelte:head>
   <title>Logging out... - WardenNet</title>
 </svelte:head>
-<div class="space-y-4">
-  <div class="space-y-4">
-    <div class="space-y-4">
-      <h2 class="space-y-4">Logging out...</h2>
-      <p>Please wait while we log you out securely.</p>
-      <div class="space-y-4">
-        <span class="space-y-4"></span>
+
+<div class="flex min-h-screen items-center justify-center">
+  <div class="text-center space-y-4">
+    <h2 class="text-2xl font-semibold">Logging out...</h2>
+    <p>Please wait while we log you out securely.</p>
+  </div>
+</div>
+  </div>
+</div>
       </div>
     </div>
   </div>

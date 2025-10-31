@@ -9,6 +9,7 @@ export interface OllamaConfig {
 
 // Define a function to provide the default Ollama base URL (local dev fallback)
 function getDefaultOllamaBaseUrl(): string {
+  // eslint-disable-next-line
   return 'http://localhost:11434';
 }
 

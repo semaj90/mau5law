@@ -12,10 +12,10 @@
   let caseId = $state('CASE_2024_001');
   let searchLimit = $state(5);
   let embeddingStatus = $state('idle');
-  let searchResults = $state([]);
-  let searchStats = $state(null);
-  let systemHealth = $state( );
-  let cudaStatus = $state( );
+  let searchResults = $state<SearchResult[]>([]);
+  let searchStats = $state<SearchStats>({ totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 });
+  let systemHealth = $state<SystemHealth>({ status: 'checking', database: 'checking', ollama: 'checking', embeddings: 0 });
+  let cudaStatus = $state<CudaStatus>({ status: 'checking', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 });
   let isLoading = $state(false);
   let errorMessage = $state('');
   const API_BASE = 'http://localhost:8095/api/v1'
@@ -30,27 +30,39 @@ await checkSystemHealth();
   });
   async function checkSystemHealth() {
     try {
-      // removed unused response assignment
-      systemHealth = await response.json();
+      const res = await fetch(`${API_BASE}/health`);
+      if (res.ok) systemHealth = await res.json();
+      else systemHealth = { status: 'unavailable', database: 'unavailable', ollama: 'unavailable', embeddings: 0 };
     } catch (error) {
       console.error('Health check failed:', error);
+      systemHealth = { status: 'unavailable', database: 'unavailable', ollama: 'unavailable', embeddings: 0 };
     }
   }
   async function checkCUDAStatus() {
     try {
-      // removed unused response assignment
-      cudaStatus = await response.json();
+      const res = await fetch(`${CUDA_BASE}/health`);
+      if (res.ok) cudaStatus = await res.json();
+      else cudaStatus = { status: 'unavailable', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 };
     } catch (error) {
       console.error('CUDA health check failed:', error);
-      cudaStatus = { status: 'unavailable' }
+      cudaStatus = { status: 'unavailable', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 };
     }
   }
   async function loadSearchStats() {
     try {
-      // removed unused response assignment
-      searchStats = await response.json();
+      const res = await fetch(`${API_BASE}/stats`);
+      if (res.ok) {
+        const json = await res.json();
+        // best-effort map into typed shape
+        searchStats = {
+          totalDocuments: Number(json.totalDocuments || json.total_documents || 0),
+          uniqueCases: Number(json.uniqueCases || json.unique_cases || 0),
+          avgPayloadLength: Number(json.avgPayloadLength || json.avg_payload_length || 0)
+        };
+      } else searchStats = { totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 };
     } catch (error) {
       console.error('Failed to load search stats:', error);
+      searchStats = { totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 };
     }
   }
   async function submitEmbedding() {
@@ -62,26 +74,19 @@ await checkSystemHealth();
     errorMessage = '';
     embeddingStatus = 'processing';
     try {
+      const body = { text: embeddingText, caseId, source: 'manual_test' };
       const response = await fetch(`${API_BASE}/submit`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(toISOString)(),
-            source: 'manual_test',
-          }
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const result = await response.json();
-      embeddingStatus = result.statu;
-      // Refresh stats after successful embedding
+      embeddingStatus = result.status || 'completed';
       await loadSearchStats();
     } catch (error) {
       console.error('Embedding submission failed:', error);
-      errorMessage = `Embedding failed: ${error.message}`;
+      errorMessage = `Embedding failed: ${(error as any)?.message ?? String(error)}`;
       embeddingStatus = 'error';
     } finally {
       isLoading = false;
@@ -96,22 +101,15 @@ await checkSystemHealth();
     errorMessage = '';
     searchResults = [];
     try {
-      const searchParams = new URLSearchParams({
-        q: searchQuery;
-        limit: searchLimit.toString();
-      });
-      if (caseId.trim()) {
-        searchParams.append('caseId', caseId);
-      }
-      // removed unused response assignment
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      const searchParams = new URLSearchParams({ q: searchQuery, limit: String(searchLimit) });
+      if (caseId.trim()) searchParams.append('caseId', caseId);
+      const response = await fetch(`${API_BASE}/search?${searchParams.toString()}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const result = await response.json();
-      searchResults = result.result;
+      searchResults = (result.result || result.results || []) as SearchResult[];
     } catch (error) {
       console.error('Search failed:', error);
-      errorMessage = `Search failed: ${error.message}`;
+      errorMessage = `Search failed: ${(error as any)?.message ?? String(error)}`;
     } finally {
       isLoading = false;
     }
@@ -125,31 +123,19 @@ await checkSystemHealth();
     errorMessage = '';
     searchResults = [];
     try {
-      const requestBody = {
-        query: searchQuery;
-        limit: searchLimit;
-        metadata: {
-          documentType: 'legal_contract'
-        }
-      }
-      if (caseId.trim()) {
-        requestBody.caseId = caseId;
-      }
+      const requestBody: any = { query: searchQuery, limit: searchLimit, metadata: { documentType: 'legal_contract' } };
+      if (caseId.trim()) requestBody.caseId = caseId;
       const response = await fetch(`${API_BASE}/search`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody);
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
       });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const result = await response.json();
-      searchResults = result.result;
+      searchResults = (result.result || result.results || []) as SearchResult[];
     } catch (error) {
       console.error('Advanced search failed:', error);
-      errorMessage = `Advanced search failed: ${error.message}`;
+      errorMessage = `Advanced search failed: ${(error as any)?.message ?? String(error)}`;
     } finally {
       isLoading = false;
     }
@@ -158,33 +144,24 @@ await checkSystemHealth();
     isLoading = true;
     errorMessage = '';
     try {
-      const response = await fetch(`${API_BASE}/cuda/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({,
-          type: 'embedding',
-          priority: 5,
-          payload: {
-            text: embeddingText;
-            dimension 768,
-          },
-          metadata: {
-            source: 'legal_ai_test',
-            gpu_acceleration 'true',
-          }
-        })
+      const response = await fetch(`${CUDA_BASE}/submit`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({
+           type: 'embedding',
+           priority: 5,
+           payload: { text: embeddingText, dimension: 768 },
+           metadata: { source: 'legal_ai_test', gpu_acceleration: true }
+         })
       });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const result = await response.json();
       console.log('CUDA embedding task submitted:', result);
-      // Poll for result (simplified)
       setTimeout(async () => {
         try {
-          const resultResponse = await fetch(`${API_BASE}/cuda/result/${result.task_id}`);
+          const taskId = result.task_id || result.taskId;
+          if (!taskId) return;
+          const resultResponse = await fetch(`${CUDA_BASE}/result/${taskId}`);
           if (resultResponse.ok) {
             const cudaResult = await resultResponse.json();
             console.log('CUDA embedding result:', cudaResult);
@@ -195,12 +172,24 @@ await checkSystemHealth();
       }, 2000);
     } catch (error) {
       console.error('CUDA embedding test failed:', error);
-      errorMessage = `CUDA test failed: ${error.message}`;
+      errorMessage = `CUDA test failed: ${(error as any)?.message ?? String(error)}`;
     } finally {
       isLoading = false;
     }
   }
-  function getStatusColor(status) {
+  // Add typed interfaces
+  interface SystemHealth { status: string; database: string; ollama: string; embeddings: number; }
+  interface CudaStatus { status: string; gpu_model: string; cuda_cores: number; memory_gb: number; }
+  interface SearchStats { totalDocuments: number; uniqueCases: number; avgPayloadLength: number; }
+  interface SearchResult {
+    similarity: number;
+    payload: string;
+    taskId?: string;
+    createdAt?: string;
+    metadata?: { caseId?: string; documentType?: string };
+  }
+  // Narrowed types for helpers
+  function getStatusColor(status: string): string {
     switch (status) {
       case 'healthy': return 'text-green-600';
       case 'ok': return 'text-green-600';
@@ -211,10 +200,11 @@ await checkSystemHealth();
       default: return 'text-gray-600';
     }
   }
-  function formatSimilarity(similarity) {
+  function formatSimilarity(similarity: number): string {
     return `${(similarity * 100).toFixed(1)}%`;
   }
-  function truncateText(text, maxLength = 150) {
+  function truncateText(text: string, maxLength = 150): string {
+    if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   }
@@ -305,25 +295,27 @@ await checkSystemHealth();
     <div class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Case ID</label>
+          <label for="caseId" class="block text-sm font-medium text-gray-700 mb-2">Case ID</label>
           <input
+            id="caseId"
             type="text"
-            ;
             bind:value={caseId}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="e.g., CASE_2024_001"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"
-            >Status:
+          <!-- Status is display-only — use a div, not a form label -->
+          <div class="block text-sm font-medium text-gray-700 mb-2">
+            Status:
             <span class={getStatusColor(embeddingStatus)}>{embeddingStatus}</span>
-          </label>
+          </div>
         </div>
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Legal Document Text</label>
-        <textarea;
+        <label for="embeddingText" class="block text-sm font-medium text-gray-700 mb-2">Legal Document Text</label>
+        <textarea
+          id="embeddingText"
           bind:value={embeddingText}
           rows="4"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -354,20 +346,20 @@ await checkSystemHealth();
     <div class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
+          <label for="searchQuery" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
           <input
+            id="searchQuery"
             type="text"
-            ;
             bind:value={searchQuery}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="e.g., intellectual property patent"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Limit</label>
+          <label for="searchLimit" class="block text-sm font-medium text-gray-700 mb-2">Limit</label>
           <input
+            id="searchLimit"
             type="number"
-            ;
             bind:value={searchLimit}
             min="1"
             max="20"
@@ -413,7 +405,7 @@ await checkSystemHealth();
             <div class="flex flex-wrap gap-2 text-xs text-gray-500">
               <span>Task ID: {result.taskId}</span>
               <span>•</span>
-              <span>Created: {new Date(result.createdAt).toLocaleString()}</span>
+              <span>Created: {result.createdAt ? new Date(result.createdAt).toLocaleString() : '—'}</span>
               {#if result.metadata?.caseId}
                 <span>•</span>
                 <span>Case: {result.metadata.caseId}</span>

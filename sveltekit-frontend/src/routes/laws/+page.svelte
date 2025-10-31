@@ -19,7 +19,9 @@
     // ...other page data fields if any...
   };
 
-  const { data } = $props() as { data: PageData };
+  // Safely read page props to avoid destructuring when $props() is undefined
+  const props = ($props() as { data?: PageData }) ?? {};
+  const data: PageData = props.data ?? { quickLinks: [] };
 
   let EnhancedFuseSearch = $state<any>(null);
   $effect(() => {
@@ -122,7 +124,7 @@
           class="flex-1 rounded-md border px-3 py-2"
         />
         <button
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition: disabled:opacity-50"
         >
@@ -189,14 +191,14 @@
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
                 <button
-                  onclick={() => handleAISummarizeResult(law)}
+                  on:click={() => handleAISummarizeResult(law)}
                   class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm"
                 >
                   <Bot class="h-4 w-4 mr-2" />
                   <span>AI Summary</span>
                 </button>
                 <button
-                  onclick={() => handleAIChatResult(law)}
+                  on:click={() => handleAIChatResult(law)}
                   class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
                 >
                   <MessageSquare class="h-4 w-4 mr-2" />
@@ -226,8 +228,6 @@
     </div>
   {/if}
 </div>
-      </div>
-    </div>
   {/if}
 </div>
 

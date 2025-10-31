@@ -6,8 +6,9 @@ import { cuidSchema } from '$lib/server/z-schemas';
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
+import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 // Configuration
-const OLLAMA_BASE_URL = 'http://localhost:11434';
+const OLLAMA_BASE_URL = getOllamaBaseUrl();
 const LEGAL_MODEL = 'gemma3-legal:latest';
 const EMBEDDING_MODEL = 'embeddinggemma:latest'; // Available in our Ollama instance
 // Request schemas

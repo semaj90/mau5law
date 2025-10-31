@@ -1,6 +1,19 @@
 <!-- Simple test homepage to verify routing works -->
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  // client-only values to avoid SSR window access
+  let currentUrl = 'SSR - Not available';
+  let currentTime = '';
+
+  onMount(() => {
+    if (browser) {
+      currentUrl = window.location.href;
+      currentTime = new Date().toLocaleString();
+    }
+  });
 </script>
 
 <div class="min-h-screen bg-[#EAE8E1] font-mono text-[#3D3D3D] p-8">
@@ -23,26 +36,25 @@
     <!-- Programmatic navigation buttons -->
     <div class="space-x-4 mt-6">
       <button
-        onclick={() => goto('/yorha-command-center')}
+        on:click={() => goto('/yorha-command-center')}
         class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
       >
         YoRHa Command Center (Button)
       </button>
       <button
-        onclick={() => goto('/evidenceboard')}
+        on:click={() => goto('/evidenceboard')}
         class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
       >
         Evidence Board (Button)
       </button>
-      <button onclick={() => goto('/endpoints')} class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
+      <button on:click={() => goto('/endpoints')} class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
         Endpoints (Button)
       </button>
     </div>
     <div class="mt-8 p-4 bg-gray-100 rounded">
       <h3 class="font-semibold">Debug Info:</h3>
-      <p>Current URL: {typeof window !== 'undefined' ? window.location.href : 'SSR - Not available'}</p>
-      <p>Time: {new Date().toLocaleString()}</p>
+      <p>Current URL: {currentUrl}</p>
+      <p>Time: {currentTime}</p>
     </div>
   </div>
 </div>
-;
