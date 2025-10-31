@@ -23,10 +23,11 @@ export interface AdminHealthData {
   database: string | number;
   storage: number;
   uptime: number;
-  timestamp: string;
+  timestamp: string | Date; // allow Date objects or ISO strings
 }
 
-export type { AdminHealthResponse as AdminHealth };
+// Replace the previous re-export with a simpler alias
+export type AdminHealth = AdminHealthResponse;
 
 // ============================================================================
 // SYSTEM METRICS TYPES
@@ -38,7 +39,7 @@ export interface SystemMetrics {
   disk: DiskMetrics;
   network?: NetworkMetrics;
   uptime: number;
-  timestamp: string;
+  timestamp: string | Date;
 }
 
 export interface CPUMetrics {
@@ -88,7 +89,7 @@ export interface AdminStatusResponse {
   status: AdminStatus;
   metrics: SystemMetrics;
   services: ServiceHealthStatus;
-  timestamp: string;
+  timestamp: string | Date;
   error?: string;
 }
 
@@ -140,7 +141,7 @@ export interface DatabaseStatus {
     nextScheduled?: string;
   };
   extensions: string[];
-  timestamp: string;
+  timestamp: string | Date;
 }
 
 export interface DatabaseQueryStats {
@@ -174,7 +175,7 @@ export interface CacheStatus {
   };
   keyCount: number;
   maxMemory?: number;
-  timestamp: string;
+  timestamp: string | Date;
 }
 
 // ============================================================================
@@ -191,7 +192,7 @@ export interface MessageQueueStatus {
     totalFailed: number;
     averageProcessingTime: number;
   };
-  timestamp: string;
+  timestamp: string | Date;
 }
 
 export interface QueueInfo {
@@ -222,7 +223,7 @@ export interface VectorStoreStatus {
     device?: string;
     memoryUsage?: number;
   };
-  timestamp: string;
+  timestamp: string | Date;
 }
 
 export interface IndexInfo {
@@ -241,7 +242,7 @@ export interface IndexInfo {
 export interface AdminConfigResponse {
   success: boolean;
   configuration: AdminConfiguration;
-  timestamp: string;
+  timestamp: string | Date;
   error?: string;
 }
 
@@ -318,7 +319,7 @@ export interface AuditLogResponse {
   success: boolean;
   logs: AuditLog[];
   pagination: AuditLogPagination;
-  timestamp: string;
+  timestamp: string | Date;
   error?: string;
 }
 
@@ -351,7 +352,7 @@ export interface AdminActionResponse {
   action: string;
   result: Record<string, unknown>;
   duration: number;
-  timestamp: string;
+  timestamp: string | Date;
   error?: string;
 }
 

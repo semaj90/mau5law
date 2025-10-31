@@ -16,10 +16,10 @@
   import Avatar from '$lib/components/ui/nes/Avatar.svelte';
   import DocumentUpload from '$lib/components/ai/rag/DocumentUpload.svelte';
 
-  // Svelte 5 runes: read the page data prop and coerce it to ProfilePageData
-  // This avoids TS treating `data` as the generic PageData shape that lacks profile/stats.
-  // Replace direct const use with destructuring form to avoid block-scoped rune errors.
-  let { data: propsData } = $props() as { data?: ProfilePageData } | undefined;
+  // Svelte 5 runes usage: $state and $derived are used for reactive state and derived values.
+  // Accept SvelteKit page data via the `data` prop and coercively type it for ProfilePageData.
+  const { data } = $props<{ data: unknown }>();
+  let propsData = data as ProfilePageData | undefined;
 
   type ProfilePageData = PageData & {
     profile?: Record<string, unknown> | null;

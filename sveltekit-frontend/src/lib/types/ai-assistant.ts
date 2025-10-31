@@ -78,7 +78,7 @@ export interface BackendHealth {
 export interface SearchResult {
   item: ChatMessage;
   score?: number;
-  matches?: any[];
+  matches?: unknown[]; // replaced any[] with unknown[]
 }
 export interface ContextualEmbedding {
   id: string;
@@ -96,7 +96,7 @@ export interface SemanticSearchResult {
   id: string;
   content: string;
   similarity: number;
-  metadata?: any;
+  metadata?: Record<string, unknown>; // replaced any
   context?: string;
 }
 // Postgres/pgvector types
@@ -116,7 +116,7 @@ export interface VectorSearchResult {
   content: string;
   similarity: number;
   timestamp: number;
-  metadata?: any;
+  metadata?: Record<string, unknown>; // replaced any
 }
 // Loki.js specific types
 export interface LokiMessage extends ChatMessage {
@@ -207,7 +207,7 @@ export interface WebGPUConfig {
 export interface GoMicroRequest {
   service: string;
   method: string;
-  payload: any;
+  payload: unknown; // replaced any
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   timeout?: number;
   retryPolicy?: {
@@ -217,7 +217,7 @@ export interface GoMicroRequest {
 }
 export interface GoMicroResponse {
   success: boolean;
-  data?: any;
+  data?: unknown; // replaced any
   error?: string;
   metadata?: {
     processingNodes: string[];
@@ -340,13 +340,13 @@ export interface AIAssistantProps {
 /**
  * Type guards for runtime validation
  */
-export const isChatMessage = (_value: unknown): value is ChatMessage => {
+export const isChatMessage = (value: unknown): value is ChatMessage => {
   return typeof value === 'object' && value !== null && 'id' in value && 'role' in value && 'content' in value;
 };
-export const isBackendResponse = (_value: unknown): value is BackendResponse => {
+export const isBackendResponse = (value: unknown): value is BackendResponse => {
   return typeof value === 'object' && value !== null && 'text' in value && 'backend' in value && 'model' in value;
 };
-export const isLegalContext = (_value: unknown): value is LegalContext => {
+export const isLegalContext = (value: unknown): value is LegalContext => {
   return typeof value === 'object' && value !== null && 'domain' in value && 'confidentiality' in value;
 };
 /**

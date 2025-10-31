@@ -1,11 +1,8 @@
 <!-- Legal AI Embedding & Search Test Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  interface Props {
-    // No props needed for this demo
-  }
-  let props: Props = $props();
+  // No onMount or props required for this component
+
   // State management with Svelte 5 runes
   let embeddingText = $state('Legal contract clause regarding intellectual property rights and patent licensing agreements');
   let searchQuery = $state('intellectual property patent');
@@ -18,8 +15,9 @@
   let cudaStatus = $state<CudaStatus>({ status: 'checking', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 });
   let isLoading = $state(false);
   let errorMessage = $state('');
-  const API_BASE = 'http://localhost:8095/api/v1'
-  const CUDA_BASE = 'http://localhost:8096/api/v1'
+  // Prefer public env vars (set PUBLIC_LEGAL_AI_BASE / PUBLIC_CUDA_BASE), fall back to localhost for dev
+  const API_BASE = import.meta.env.PUBLIC_LEGAL_AI_BASE || 'http://localhost:8095/api/v1';
+  const CUDA_BASE = import.meta.env.PUBLIC_CUDA_BASE || 'http://localhost:8096/api/v1';
   // Health check on component mount
   $effect(() => {
     (async () => {

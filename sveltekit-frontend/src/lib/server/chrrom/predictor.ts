@@ -2,7 +2,6 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Lightweight Markov-chain predictor for next-action precomputation (RNN-inspired)
 // Learns P(next|prev) from short user interaction sequences
 // Enhanced with Redis caching for persistence and performance
-import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
 type Action = string; // e.g., 'open:doc:123', 'hover:doc:123', 'search:term:indemnification'
 interface PredictionResult {
@@ -10,8 +9,9 @@ interface PredictionResult {
   p: number;
 }
 class MarkovPredictorWithRedis {
-  private redis: Redis;
-  private localTransitions = new Map<Action, Map<Action, number>();
+  // use a flexible type for the shared client to avoid typing mismatches
+  private redis: any;
+  private localTransitions = new Map<Action, Map<Action, number>>();
   private localLastByUser = new Map<string, Action>();
   private syncBatchSize = 50;
   private pendingUpdates = 0;
@@ -40,7 +40,7 @@ class MarkovPredictorWithRedis {
       this.cacheEnabled = false;
     });
     // Periodic sync to Redis
-    setInterval(() => this.syncToRedis(), 30000); // Sync every 30 seconds
+    setInterval(() => void this.syncToRedis(), 30000); // Sync every 30 seconds
   }
   async record(userId: string, action: Action) {
     const prev = this.localLastByUser.get(userId);
@@ -58,11 +58,12 @@ class MarkovPredictorWithRedis {
     // Update last action for user
     this.localLastByUser.set(userId, action);
     if (this.cacheEnabled) {
-      this.redis.setex(`last_action:${userId}`, 3600, action).catch(console.warn);
+      // ioredis has setex, but our shared client typing may differ - keep dynamic call
+      this.redis.setex?.(`last_action:${userId}`, 3600, action).catch?.(console.warn);
     }
     // Auto-sync if batch threshold reached
     if (this.pendingUpdates >= this.syncBatchSize) {
-      this.syncToRedis();
+      void this.syncToRedis();
     }
   }
   async predictNext(prev: Action, topK = 3): Promise<PredictionResult[]> {
@@ -71,10 +72,11 @@ class MarkovPredictorWithRedis {
     if (this.cacheEnabled) {
       try {
         const redisData = await this.redis.hgetall(`transitions:${prev}`);
-        if (Object.keys(redisData).length > 0) {
-          transitions = new Map();
+        if (redisData && Object.keys(redisData).length > 0) {
+          transitions = new Map<Action, number>();
           for (const [action, countStr] of Object.entries(redisData)) {
-            transitions.set(action, parseInt(countStr, 10);
+            const n = parseInt(countStr as string, 10);
+            transitions.set(action as Action, isNaN(n) ? 0 : n);
           }
         }
       } catch (error) {
@@ -83,22 +85,22 @@ class MarkovPredictorWithRedis {
     }
     // Fallback to local memory
     if (!transitions) {
-      transitions = this.localTransitions.get(prev);
+      transitions = this.localTransitions.get(prev) ?? new Map<Action, number>();
     }
     if (!transitions || transitions.size === 0) {
       return [];
     }
     const total = Array.from(transitions.values()).reduce((a, b) => a + b, 0) || 1;
-    return Array.from(transitions.entries()
-      .map(([action, count]) => ({ action, p: count / total })
+    return Array.from(transitions.entries())
+      .map(([action, count]) => ({ action, p: count / total }))
       .sort((a, b) => b.p - a.p)
       .slice(0, topK);
   }
   // Enhanced prediction with SIMD-accelerated similarity
   async predictNextWithSimilarity(
-    prev: Action;
+    prev: Action,
     context: { docId?: string; query?: string },
-    topK = 3;
+    topK = 3
   ): Promise<PredictionResult[]> {
     const basepredictions = await this.predictNext(prev, topK * 2);
     if (!context.query && !context.docId) {
@@ -106,7 +108,7 @@ class MarkovPredictorWithRedis {
     }
     // Use CUDA service for semantic similarity if available
     try {
-      const cudaResponse = await fetch('http://localhost:8097/api/v1/simd/capabilities')
+      const cudaResponse = await fetch('http://localhost:8097/api/v1/simd/capabilities');
       if (cudaResponse.ok) {
         // Enhanced predictions with semantic similarity
         return this.enhancePredictionsWithSimilarity(basepredictions, context, topK);
@@ -117,9 +119,9 @@ class MarkovPredictorWithRedis {
     return basepredictions.slice(0, topK);
   }
   private async enhancePredictionsWithSimilarity(
-    predictions: PredictionResult[];
+    predictions: PredictionResult[],
     context: { docId?: string; query?: string },
-    topK: number;
+    topK: number
   ): Promise<PredictionResult[]> {
     // Boost predictions that match context
     const enhanced = predictions.map(pred => {
@@ -131,31 +133,29 @@ class MarkovPredictorWithRedis {
       if (context.query && actionContext.query) {
         // Simple keyword overlap boost (could use CUDA similarity here)
         const overlap = this.calculateKeywordOverlap(context.query, actionContext.query);
-        boost *= (1.0 + overlap * 0.3);
+        boost *= 1.0 + overlap * 0.3;
       }
       return {
         ...pred,
-        p: pred.p * boost
-      }
+        p: pred.p * boost,
+      };
     });
     // Re-sort and normalize
     enhanced.sort((a, b) => b.p - a.p);
-    const total = enhanced.reduce((sum, pred) => sum + pred.p, 0);
-    return enhanced
-      .slice(0, topK)
-      .map(pred => ({ ...pred, p: pred.p / total });
+    const total = enhanced.reduce((sum, pred) => sum + pred.p, 0) || 1;
+    return enhanced.slice(0, topK).map(pred => ({ ...pred, p: pred.p / total }));
   }
   private calculateKeywordOverlap(query1: string, query2: string): number {
-    const words1 = new Set(query1.toLowerCase().split(/\s+/);
-    const words2 = new Set(query2.toLowerCase().split(/\s+/);
-    const intersection = new Set([...words1].filter(x => words2.has(x));
+    const words1 = new Set(query1.toLowerCase().split(/\s+/));
+    const words2 = new Set(query2.toLowerCase().split(/\s+/));
+    const intersection = new Set([...words1].filter(x => words2.has(x)));
     const union = new Set([...words1, ...words2]);
-    return union.size > 0 ? intersection.size / union.size: 0;
+    return union.size > 0 ? intersection.size / union.size : 0;
   }
   private async updateRedisTransition(prev: Action, action: Action) {
     try {
-      await this.redis.hincrby(`transitions:${prev}`, action, 1);
-      await this.redis.expire(`transitions:${prev}`, 86400); // 24 hour TTL
+      await this.redis.hincrby?.(`transitions:${prev}`, action, 1);
+      await this.redis.expire?.(`transitions:${prev}`, 86400); // 24 hour TTL
     } catch (error) {
       console.warn('Failed to update Redis transition:', error);
     }
@@ -188,18 +188,16 @@ class MarkovPredictorWithRedis {
     redisConnected: boolean;
   }> {
     let redisConnected = false;
-    let totalRedisKeys = 0;
     if (this.cacheEnabled) {
       try {
         await this.redis.ping();
         redisConnected = true;
-        const keys = await this.redis.keys('transitions:*');
-        totalRedisKeys = keys.length;
+        const keys = (await this.redis.keys?.('transitions:*')) ?? [];
       } catch (error) {
         redisConnected = false;
       }
     }
-    const uniqueActions = new Set();
+    const uniqueActions = new Set<string>();
     let totalTransitions = 0;
     for (const transitions of this.localTransitions.values()) {
       for (const [action, count] of transitions.entries()) {
@@ -213,20 +211,20 @@ class MarkovPredictorWithRedis {
       cacheEnabled: this.cacheEnabled,
       lastSync: this.lastSync,
       pendingUpdates: this.pendingUpdates,
-      redisConnected
-    }
+      redisConnected,
+    };
   }
   // Cleanup method
   async cleanup() {
     await this.syncToRedis();
-    await this.redis.quit();
+    await this.redis.quit?.();
   }
 }
 export const predictor = new MarkovPredictorWithRedis();
 export function mapActionToCHRContext(a: Action): { docId?: string; query?: string } {
   // Simple mapping conventions
-  if (a.startsWith('open:doc:')) return { docId: a.split(':')[2] }
-  if (a.startsWith('hover:doc:')) return { docId: a.split(':')[2] }
-  if (a.startsWith('search:term:')) return { query: decodeURIComponent(a.substring('search:term:'.length)) }
-  return {}
+  if (a.startsWith('open:doc:')) return { docId: a.split(':')[2] };
+  if (a.startsWith('hover:doc:')) return { docId: a.split(':')[2] };
+  if (a.startsWith('search:term:')) return { query: decodeURIComponent(a.substring('search:term:'.length)) };
+  return {};
 }

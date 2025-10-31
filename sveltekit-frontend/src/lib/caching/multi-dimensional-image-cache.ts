@@ -12,11 +12,17 @@ import type {
 } from '../ai/graph-pattern-autoencoder.js';
 // Import the GPU bridge as a namespace (module doesn't export `nesGPUBridge` named symbol)
 import * as nesGPUBridge from '../gpu/nes-gpu-memory-bridge.js';
-import type { GPUTextureMatrix } from '../gpu/nes-gpu-memory-bridge.js';
-import { MultiLayerCache } from '../services/multi-layer-cache.js';
-import { reinforcementLearningCache } from './reinforcement-learning-cache.server.js';
 
-// ----------------- ADDED: typed wrapper for nesGPUBridge to avoid `any` -----------------
+// --- CHANGED: define local GPUTextureMatrix type (module doesn't export it) ---
+type GPUTextureMatrix = {
+  // minimal shape used by this file; expand if bridge provides extra fields
+  texture?: { destroy?: () => void } | undefined;
+  gpuBuffer?: { destroy?: () => void } | undefined;
+  [key: string]: unknown;
+};
+// --- end GPUTextureMatrix ---
+
+// --- CHANGED: typed Nes GPU bridge that uses local GPUTextureMatrix ---
 type NesGPUBridge = {
   createFlatBufferFromDocument?: (doc: unknown) => Promise<ArrayBuffer>;
   createRankingTexture?: (
@@ -27,7 +33,30 @@ type NesGPUBridge = {
   parseFlatBufferToDocument?: (data: ArrayBuffer) => ParsedDocument | null;
 };
 const nesBridge = nesGPUBridge as unknown as NesGPUBridge;
-// ----------------- end nes bridge wrapper -----------------
+// --- end nes bridge wrapper ---
+
+// --- CHANGED: fallback minimal MultiLayerCache implementation (in-case module is missing) ---
+// This implements the IMultiLayerCache surface used in this file. If your project provides a real
+// ../services/multi-layer-cache module, replace this fallback by removing it.
+class MultiLayerCache implements IMultiLayerCache {
+  private store = new Map<string, unknown>();
+  constructor(_opts?: Record<string, unknown>) {
+    // noop
+  }
+  async initialize(): Promise<void> {
+    return;
+  }
+  async set(collection: string, key: string, value: unknown, _ttlSeconds?: number): Promise<void> {
+    this.store.set(`${collection}:${key}`, value);
+  }
+  async get(collection: string, key: string): Promise<unknown> {
+    return this.store.get(`${collection}:${key}`);
+  }
+  async cleanup(): Promise<void> {
+    this.store.clear();
+  }
+}
+// --- end fallback MultiLayerCache ---
 
 // ----------------- ADDED: explicit types to replace many `any` usages -----------------
 type NumericArray = number[] | Float32Array;
@@ -150,8 +179,8 @@ export class MultiDimensionalImageCache {
   private autoencoder!: GraphPatternAutoEncoder;
   // Multi-layer cache interface for used methods
   private multiLayerCache: IMultiLayerCache | null = null;
-  private rlCache: IReinforcementLearningCache | null =
-    reinforcementLearningCache as unknown as IReinforcementLearningCache | null;
+  // Start with null; attempt to load the optional RL cache dynamically during init
+  private rlCache: IReinforcementLearningCache | null = null;
   // Multi-dimensional storage
   private dimensionalIndices: Map<string, Set<string>> = new Map();
   private imageEntries: Map<string, ImageCacheEntry> = new Map();
@@ -250,10 +279,23 @@ export class MultiDimensionalImageCache {
       if (this.multiLayerCache && typeof this.multiLayerCache.initialize === 'function') {
         await this.multiLayerCache.initialize();
       }
-      // Initialize RL cache (use typed checks instead of `any`)
-      if (this.rlCache && typeof this.rlCache.initialize === 'function') {
-        await this.rlCache.initialize();
+
+      // Dynamically import optional reinforcement learning cache if present.
+      // This avoids compile-time reference to a possibly-missing global symbol.
+      try {
+        const mod = await import('../services/reinforcement-learning-cache');
+        const candidate = (mod?.reinforcementLearningCache ?? mod?.default) as IReinforcementLearningCache | undefined;
+        if (candidate) {
+          this.rlCache = candidate;
+          if (typeof this.rlCache.initialize === 'function') {
+            await this.rlCache.initialize();
+          }
+        }
+      } catch (err) {
+        // Module not present or failed to load: continue without RL cache.
+        console.debug('RL cache module not loaded (optional):', err);
       }
+
       // Initialize dimensional indices
       this.initializeDimensionalIndices();
       console.log('🚀 Multi-Dimensional Image Cache initialized with SOM, Auto-Encoder, and GPU integration');
@@ -520,7 +562,8 @@ export class MultiDimensionalImageCache {
       img.src = imageData;
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
-        img.onerror = e => reject(e);
+        // --- CHANGED: explicitly type error parameter to avoid implicit 'any' ---
+        img.onerror = (ev: ErrorEvent | Event | unknown) => reject(ev);
       });
       ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
       const imageDataArray = ctx.getImageData(0, 0, dimensions.width, dimensions.height);

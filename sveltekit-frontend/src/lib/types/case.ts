@@ -1,5 +1,6 @@
 // Legal Case Management Types
-export interface Case {
+
+export interface LegalCase {
   id: string;
   title: string;
   description: string;
@@ -10,13 +11,17 @@ export interface Case {
   assignedLawyerId?: string;
   jurisdiction?: string;
   courtLevel?: 'district' | 'appellate' | 'supreme';
-  dateCreated: Date;
-  dateModified: Date;
-  dueDate?: Date;
+  dateCreated: string | Date;
+  dateModified: string | Date;
+  dueDate?: string | Date;
   estimatedHours?: number;
   actualHours?: number;
   metadata?: Record<string, unknown>;
 }
+
+// Backwards-compatible alias for imports that expect `Case`
+export type Case = LegalCase;
+
 export interface CaseForm {
   id?: string;
   title: string;
@@ -28,9 +33,9 @@ export interface CaseForm {
   assignedLawyerId?: string;
   jurisdiction?: string;
   courtLevel?: 'district' | 'appellate' | 'supreme';
-  dateCreated?: Date;
-  dateModified?: Date;
-  dueDate?: Date;
+  dateCreated?: string | Date;
+  dateModified?: string | Date;
+  dueDate?: string | Date;
   estimatedHours?: number;
   actualHours?: number;
   metadata?: Record<string, unknown>;
@@ -59,12 +64,12 @@ export interface TimelineEvent {
   type: 'filing' | 'hearing' | 'evidence_added' | 'document_received' | 'communication' | 'milestone' | 'deadline';
   title: string;
   description?: string;
-  date: Date;
+  date: string | Date;
   participants?: string[];
   documents?: string[];
   metadata?: Record<string, unknown>;
   createdBy: string;
-  createdAt: Date;
+  createdAt: string | Date;
 }
 // Case Analytics and Metrics
 export interface CaseMetrics {
@@ -74,7 +79,7 @@ export interface CaseMetrics {
   totalHours: number;
   timelineEvents: number;
   collaborators: number;
-  lastActivity: Date;
+  lastActivity: string | Date;
   progressPercentage: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   confidenceScore: number;
@@ -92,7 +97,7 @@ export interface LegalPrecedent {
   id: string;
   title: string;
   court: string;
-  date: Date;
+  date: string | Date;
   citationKey: string;
   relevanceScore: number;
   summary: string;
@@ -104,7 +109,7 @@ export interface LegalStatute {
   code: string;
   section: string;
   jurisdiction: string;
-  effectiveDate: Date;
+  effectiveDate: string | Date;
   summary: string;
   relevanceScore: number;
 }
@@ -113,7 +118,7 @@ export interface LegalRegulation {
   title: string;
   agency: string;
   cfr?: string;
-  effectiveDate: Date;
+  effectiveDate: string | Date;
   summary: string;
   relevanceScore: number;
 }

@@ -15,17 +15,7 @@ export type PracticeArea =
   | 'environmental_law'
   | 'securities_law'
   | 'healthcare_law';
-export type Jurisdiction =
-  | 'US'
-  | 'federal'
-  | 'state'
-  | 'local'
-  | 'international'
-  | 'EU'
-  | 'UK'
-  | 'CA'
-  | 'AU';
-}
+export type Jurisdiction = 'US' | 'federal' | 'state' | 'local' | 'international' | 'EU' | 'UK' | 'CA' | 'AU';
 export interface EnhancedSearchOptions {
   query?: string;
   practiceArea?: PracticeArea;
@@ -34,20 +24,20 @@ export interface EnhancedSearchOptions {
   dateRange?: {
     from: Date;
     to: Date;
-  }
+  };
   maxResults?: number;
   limit?: number;
   minSimilarity?: number;
   includeMetadata?: boolean;
-  sortBy?: "relevance" | "date" | "title";
+  sortBy?: 'relevance' | 'date' | 'title';
   useCache?: boolean;
   temperature?: number;
   useGPU?: boolean;
-  ragMode?: "basic" | "enhanced" | "hybrid";
+  ragMode?: 'basic' | 'enhanced' | 'hybrid';
   includeContext?: boolean;
   filters?: {
     [key: string]: unknown;
-  }
+  };
 }
 export interface EnhancedSearchResult {
   id: string;
@@ -65,7 +55,7 @@ export interface EnhancedSearchResult {
     citations?: string[];
     createdAt?: Date;
     updatedAt?: Date;
-  }
+  };
   highlights?: {
     field: string;
     matches: string[];
@@ -76,7 +66,7 @@ export interface EnhancedSearchResult {
     keyInsights?: string[];
     risks?: string[];
     recommendations?: string[];
-  }
+  };
 }
 export interface AIAnalysisResult {
   summary: string;
@@ -92,14 +82,14 @@ export interface VectorSearchOptions {
   embedding?: number[];
   limit?: number;
   threshold?: number;
-  filters?: { [key: string]: any }
+  filters?: Record<string, unknown>;
   includeMetadata?: boolean;
 }
 export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
 }
 // Enhanced AI Processing Types
 export interface EnhancedProcessingOptions {
@@ -109,7 +99,7 @@ export interface EnhancedProcessingOptions {
   parallelProcessing?: boolean;
   maxConcurrency?: number;
   includeAnalysis?: boolean;
-  analysisDepth?: "basic" | "detailed" | "comprehensive";
+  analysisDepth?: 'basic' | 'detailed' | 'comprehensive';
 }
 export interface ProcessingResult {
   success: boolean;
@@ -117,7 +107,7 @@ export interface ProcessingResult {
   error?: string;
   processingTime: number;
   cacheHit?: boolean;
-  source?: "go-microservice" | "local-ai" | "cache";
+  source?: 'go-microservice' | 'local-ai' | 'cache';
 }
 // AI Model Configuration
 export interface AIModelConfig {
@@ -141,7 +131,7 @@ export interface LegalDocumentAnalysis {
     locations: string[];
     dates: string[];
     amounts: string[];
-  }
+  };
   legalConcepts: string[];
   citations: string[];
   riskFactors: string[];

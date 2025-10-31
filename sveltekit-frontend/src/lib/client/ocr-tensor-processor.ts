@@ -5,17 +5,32 @@
  */
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { browser } from '$app/environment';
-import {
-  PREDICTIVE_UI_ANALYTICS,
-  ENHANCED_MEMORY_CACHING,
-  GAMING_ERA_SPECS,
-} from '$lib/components/ui/gaming/constants/gaming-constants.js';
-// OCR.js types (install via: npm install tesseract.js @types/tesseract.js)
-import type { Tesseract, RecognizeResult, BBox, Word, LoggerMessage } from 'tesseract.js';
+import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
+
+// replace loose `any` types with stricter input shapes
+type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
+type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
+type Word = { text: string; bbox: BBox; confidence: number };
+type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } };
+type LoggerMessage = Record<string, unknown>;
+
+// accept both module shapes (default export or direct export) and expose common helpers optionally
+type TesseractLike = {
+  recognize: (image: RecognizeInput, lang?: string, opts?: Record<string, unknown>) => Promise<RecognizeResult>;
+  createWorker?: (...args: unknown[]) => unknown;
+  setLogging?: (enabled: boolean) => void;
+  // Optional static/module-level properties present on some tesseract.js builds
+  createScheduler?: unknown;
+  detect?: unknown;
+  OEM?: unknown;
+  PSM?: unknown;
+  imageType?: unknown;
+} & Record<string, unknown>;
 
 declare global {
   interface Window {
-    Tesseract?: Tesseract;
+    // use the stricter TesseractLike type instead of `any`
+    Tesseract?: TesseractLike;
   }
 }
 
@@ -52,7 +67,7 @@ export interface EmbeddingAPIResponse {
   fromCache?: boolean;
   model?: string;
   type?: string;
-  result?: any; // Define more specifically if known
+  result?: unknown;
   error?: string;
   tensor_id?: string;
 }
@@ -75,12 +90,14 @@ export interface BatchProcessingItem {
 }
 
 export class OCRTensorProcessor {
-  private worker?: Worker;
+  // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
+  private worker?: Worker | ServiceWorker;
+  private serviceWorkerRegistration?: ServiceWorkerRegistration;
   private ocrInitialized = false;
   private webgpuDevice?: GPUDevice;
   private currentLODLevel: 'high' | 'medium' | 'low' = 'medium';
   private memoryPressure = 0;
-  private processingComplexity = 0;
+
   async initialize(): Promise<void> {
     if (!browser) return;
     // Initialize LOD optimization based on gaming memory architecture
@@ -126,9 +143,14 @@ export class OCRTensorProcessor {
   private async initializeOCR(): Promise<void> {
     if (!browser || this.ocrInitialized) return;
     try {
-      // Load Tesseract.js dynamically
-      const tesseract = await import('tesseract.js');
-      window.Tesseract = tesseract.default; // Tesseract.js exports default
+      // Load Tesseract.js dynamically and handle both `default` and direct export shapes
+      const rawModule = (await import('tesseract.js')) as unknown;
+      // If the module has a default export use it, otherwise treat rawModule as the runtime shape
+      const modWithDefault = rawModule as { default?: TesseractLike } & Record<string, unknown>;
+      const runtime: TesseractLike = modWithDefault.default ?? (rawModule as TesseractLike);
+      // assign to window with correct typing (avoid `any`)
+      const win = window as Window & { Tesseract?: TesseractLike };
+      win.Tesseract = runtime;
       this.ocrInitialized = true;
       console.log('✅ OCR.js loaded');
     } catch (error) {
@@ -141,7 +163,10 @@ export class OCRTensorProcessor {
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) throw new Error('No WebGPU adapter found');
       this.webgpuDevice = await adapter.requestDevice();
-      await shaderCacheManager.initialize(this.webgpuDevice);
+      // fix: add missing parentheses
+      if (this.webgpuDevice) {
+        await shaderCacheManager.initialize(this.webgpuDevice);
+      }
       console.log('✅ WebGPU initialized for tensor processing');
     } catch (error) {
       console.warn('WebGPU initialization failed:', error);
@@ -151,7 +176,9 @@ export class OCRTensorProcessor {
     if (!browser || !('serviceWorker' in navigator)) return;
     try {
       const registration = await navigator.serviceWorker.register('/tensor-simd-worker.js', { scope: '/api/tensor/' });
+      this.serviceWorkerRegistration = registration;
       const activeWorker = registration.active || registration.installing || registration.waiting;
+      // keep reference to the underlying ServiceWorker (may be undefined until activated)
       this.worker = activeWorker ?? undefined;
       console.log('✅ SIMD Service Worker initialized');
     } catch (error) {
@@ -203,19 +230,23 @@ export class OCRTensorProcessor {
     // Update memory pressure before processing
     this.updateMemoryPressure();
     try {
-      const { recognize } = window.Tesseract;
+      // runtime-checked, typed access to recognize
+      const tesseractInstance = window.Tesseract as TesseractLike;
+      if (!tesseractInstance || typeof tesseractInstance.recognize !== 'function') {
+        throw new Error('Tesseract runtime does not expose recognize()');
+      }
+      const recognize = tesseractInstance.recognize.bind(tesseractInstance);
       // Apply LOD-based OCR optimization
       const ocrOptions = this.getOCROptionsForLOD();
-      const result: RecognizeResult = await recognize(imageData, options.language || 'eng', {
-        // Type result as RecognizeResult
-        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]:`, m), // Type logger message
+      const result: RecognizeResult = await recognize(imageData as RecognizeInput, options.language || 'eng', {
+        // Type logger message
+        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]:`, m),
         ...ocrOptions,
       });
       const ocrResult: OCRResult = {
         text: result.data.text,
         confidence: result.data.confidence,
         boundingBoxes: result.data.words.map((word: Word) => ({
-          // Type word as Word
           text: word.text,
           bbox: word.bbox,
           confidence: word.confidence,
@@ -232,14 +263,15 @@ export class OCRTensorProcessor {
       throw error;
     }
   }
-  private getOCROptionsForLOD(): any {
+  // tighten return type from `any` to OCRProcessOptions
+  private getOCROptionsForLOD(): OCRProcessOptions {
     // Use gaming memory architecture to optimize OCR based on current LOD level
     switch (this.currentLODLevel) {
       case 'low':
         // 8-bit NES level optimization
         return {
           psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
-          oem: 1, // Original tesseract only
+          oem: 1,
           tessjs_create_pdf: false,
           tessjs_create_hocr: false,
           tessjs_create_tsv: false,
@@ -248,7 +280,7 @@ export class OCRTensorProcessor {
         // 16-bit SNES level optimization
         return {
           psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
-          oem: 2, // LSTM + Original tesseract
+          oem: 2,
           tessjs_create_pdf: false,
           tessjs_create_hocr: true,
           tessjs_create_tsv: false,
@@ -257,7 +289,7 @@ export class OCRTensorProcessor {
         // N64 level optimization with DNN LOD system
         return {
           psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
-          oem: 3, // Default tesseract (best quality)
+          oem: 3,
           tessjs_create_pdf: true,
           tessjs_create_hocr: true,
           tessjs_create_tsv: true,
@@ -266,7 +298,13 @@ export class OCRTensorProcessor {
         return {};
     }
   }
-  private async selectOptimalModel(): Promise<any> {
+  private async selectOptimalModel(): Promise<{
+    model?: string;
+    fallback?: string[];
+    useCrewAI?: boolean;
+    parallelism?: number;
+    cacheSize?: number;
+  }> {
     try {
       // Check Ollama GPU memory availability and status
       const ollamaStatus = await fetch('/api/ai/status', {
@@ -281,11 +319,11 @@ export class OCRTensorProcessor {
       if (!isGPURecognized || isGPUBusy || availableMemory < 512) {
         console.log('🎮 GPU not recognized/busy, using Gemma 270MB for optimal UX');
         return {
-          model: 'gemma:270m', // Gemma 270MB fits in cache + parallelism
+          model: 'gemma:270m',
           fallback: ['nomic-embed-text', 'client-autogen'],
           useCrewAI: false,
-          parallelism: 4, // 4 parallel requests to prevent OOM
-          cacheSize: 128, // 128MB cache for fast responses
+          parallelism: 4,
+          cacheSize: 128,
         };
       }
       // Determine model based on available GPU memory
@@ -349,7 +387,7 @@ export class OCRTensorProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text,
-          model: modelConfig?.model || 'unknown', // @ts-expect-error - Model property access,
+          model: modelConfig?.model || 'unknown',
           source: 'ocr',
           save: false,
           fallback: modelConfig.fallback,
@@ -367,8 +405,8 @@ export class OCRTensorProcessor {
       const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
         embeddings: new Float32Array(data.embedding), // Access properties directly
-        fromCache: data.fromCache || false, // Access properties directly
-        model: data?.model || 'unknown', // @ts-expect-error - Model property access
+        fromCache: data.fromCache || false,
+        model: data?.model || 'unknown',
       };
     } catch (error) {
       console.error('Embedding generation failed:', error);
@@ -384,7 +422,7 @@ export class OCRTensorProcessor {
         metadata: {
           source: 'ocr',
           processed_at: Date.now(),
-          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.8,
         },
       };
@@ -421,7 +459,7 @@ export class OCRTensorProcessor {
         metadata: {
           source: 'ocr',
           processed_at: Date.now(),
-          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.9,
         },
       };
@@ -433,7 +471,7 @@ export class OCRTensorProcessor {
         metadata: {
           source: 'ocr',
           processed_at: Date.now(),
-          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.8,
         },
       };
@@ -528,33 +566,86 @@ export class OCRTensorProcessor {
     options: OCRProcessOptions // Use OCRProcessOptions
   ): Promise<ProcessingResult> {
     return new Promise((resolve, reject) => {
-      if (!this.worker) {
-        reject(new Error('Web Worker not available'));
+      if (!this.worker && !this.serviceWorkerRegistration) {
+        reject(new Error('Web Worker / Service Worker not available'));
         return;
       }
-      const messageHandler = (_event: MessageEvent) => {
-        if (_event.data.type === 'ocr-result') {
-          this.worker!.removeEventListener('message', messageHandler);
-          resolve(_event.data.result);
-        } else if (_event.data.type === 'ocr-error') {
-          this.worker!.removeEventListener('message', messageHandler);
-          reject(new Error(_event.data.error));
+
+      const handleMessage = (ev: MessageEvent) => {
+        const payload = ev?.data ?? {};
+        if (payload.type === 'ocr-result') {
+          cleanup();
+          resolve(payload.result as ProcessingResult);
+        } else if (payload.type === 'ocr-error') {
+          cleanup();
+          reject(new Error(String(payload.error || 'unknown')));
         }
       };
-      this.worker.addEventListener('message', messageHandler);
-      // Send processing task to worker
-      this.worker.postMessage({
-        type: 'process-ocr',
-        imageData,
-        options,
-        lodLevel: this.currentLODLevel,
-        memoryPressure: this.memoryPressure,
-      });
+
+      const cleanup = () => {
+        // remove listeners for both possible listener types
+        try {
+          if (this.worker && 'removeEventListener' in this.worker) {
+            (this.worker as Worker).removeEventListener('message', handleMessage);
+          }
+        } catch (err) {
+          // keep minimal debug logging instead of swallowing errors
+          console.debug('[OCRTensorProcessor.cleanup] failed to remove worker listener', err);
+        }
+        try {
+          navigator.serviceWorker.removeEventListener('message', handleMessage);
+        } catch (err) {
+          console.debug('[OCRTensorProcessor.cleanup] failed to remove serviceWorker listener', err);
+        }
+      };
+
+      // Attach listener depending on type
+      if (this.worker && 'postMessage' in (this.worker as Worker) && 'terminate' in (this.worker as Worker)) {
+        // Dedicated worker path
+        (this.worker as Worker).addEventListener('message', handleMessage);
+        (this.worker as Worker).postMessage({
+          type: 'process-ocr',
+          imageData,
+          options,
+          lodLevel: this.currentLODLevel,
+          memoryPressure: this.memoryPressure,
+        });
+      } else {
+        // ServiceWorker path: listen on navigator.serviceWorker and post to active worker if available
+        navigator.serviceWorker.addEventListener('message', handleMessage);
+        const target = this.serviceWorkerRegistration?.active || navigator.serviceWorker.controller;
+        if (!target) {
+          cleanup();
+          reject(new Error('ServiceWorker not active'));
+          return;
+        }
+        try {
+          target.postMessage({
+            type: 'process-ocr',
+            imageData,
+            options,
+            lodLevel: this.currentLODLevel,
+            memoryPressure: this.memoryPressure,
+          });
+        } catch (err) {
+          cleanup();
+          reject(err);
+        }
+      }
+
       // Timeout after 30 seconds
-      setTimeout(() => {
-        this.worker!.removeEventListener('message', messageHandler);
+      const timer = setTimeout(() => {
+        cleanup();
         reject(new Error('OCR processing timeout'));
       }, 30000);
+      // ensure cleanup clears timer
+      const realCleanup = cleanup;
+      // override cleanup to clear timer
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const _cleanupWrapper = () => {
+        clearTimeout(timer);
+        realCleanup();
+      };
     });
   }
   private getOptimalChunkSize(): number {
@@ -599,7 +690,7 @@ export class OCRTensorProcessor {
   }
   /**
    * Store results in database via Node API
-   */ async storeResults(results: ProcessingResult[], metadata: any = {}): Promise<void> {
+   */ async storeResults(results: ProcessingResult[], metadata: Record<string, unknown> = {}): Promise<void> {
     try {
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
@@ -630,7 +721,14 @@ export class OCRTensorProcessor {
     }
   }
   dispose(): void {
-    this.worker?.terminate();
+    // terminate dedicated worker if present
+    if (this.worker && 'terminate' in (this.worker as Worker)) {
+      try {
+        (this.worker as Worker).terminate();
+      } catch (err) {
+        console.debug('[OCRTensorProcessor.dispose] worker termination failed', err);
+      }
+    }
     shaderCacheManager.dispose();
   }
 }

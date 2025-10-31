@@ -7,19 +7,18 @@
 // ============================================================================
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-}
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>;
+};
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type NonEmptyArray<T> = [T, ...T[]];
 export type Prettify<T> = {
   [K in keyof T]: T[K];
-} & {}
+};
 export type DeepReadonly<T> = {
   readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
-}
+};
 // ============================================================================
 // API RESPONSE TYPES
 // ============================================================================
-}
 export interface BaseResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -35,7 +34,7 @@ export interface PaginatedResponse<T = unknown> extends BaseResponse<T[]> {
     totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  }
+  };
 }
 export interface ErrorResponse {
   success: false;
@@ -47,7 +46,6 @@ export interface ErrorResponse {
 // ============================================================================
 // DATABASE ENTITY TYPES
 // ============================================================================
-}
 export interface TimestampedEntity {
   createdAt: Date;
   updatedAt: Date;
@@ -91,7 +89,6 @@ export interface DocumentMetadata {
 // ============================================================================
 // AI/ML TYPES
 // ============================================================================
-}
 export interface EmbeddingResult {
   vector: number[];
   model: string;
@@ -117,7 +114,6 @@ export interface SearchResult {
 // ============================================================================
 // XSTATE MACHINE TYPES
 // ============================================================================
-}
 export interface BaseMachineContext {
   error?: string;
   loading?: boolean;
@@ -146,12 +142,11 @@ export interface ChatMessage {
     model?: string;
     processingTime?: number;
     confidence?: number;
-  }
+  };
 }
 // ============================================================================
 // UPLOAD/FILE TYPES
 // ============================================================================
-}
 export interface FileMetadata {
   filename: string;
   size: number;
@@ -177,7 +172,6 @@ export interface UploadResult extends BaseResponse<DocumentEntity> {
 // ============================================================================
 // EVENT TYPES
 // ============================================================================
-}
 export interface BaseEvent {
   type: string;
   timestamp: Date;
@@ -195,7 +189,6 @@ export interface ChatEvent extends BaseEvent {
 // ============================================================================
 // VALIDATION TYPES
 // ============================================================================
-}
 export interface ValidationError {
   field: string;
   message: string;
@@ -209,7 +202,6 @@ export interface ValidationResult {
 // ============================================================================
 // CONFIGURATION TYPES
 // ============================================================================
-}
 export interface AIConfig {
   model: string;
   temperature?: number;

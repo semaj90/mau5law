@@ -2,7 +2,7 @@
  * Type-safe API Response Schemas for Bits UI SSR
  */
 // Base API Response Structure
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean;
   data: T;
   meta: {
@@ -31,7 +31,7 @@ export interface User {
   permissions: string[];
   isActive: boolean;
   emailVerified?: string;
-  metadata: { [key: string]: any };
+  metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -125,7 +125,7 @@ export interface Case {
   department?: string;
   jurisdiction?: string;
   tags: string[];
-  metadata: { [key: string]: any };
+  metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -141,7 +141,7 @@ export interface Evidence {
   hash?: string;
   chainOfCustody: ChainOfCustodyEntry[];
   tags: string[];
-  metadata: { [key: string]: any };
+  metadata: Record<string, unknown>;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -162,10 +162,10 @@ export interface AIAnalysis {
   type: 'sentiment' | 'entity_extraction' | 'document_classification' | 'similarity' | 'summarization';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress?: number;
-  results?: { [key: string]: any };
+  results?: Record<string, unknown>;
   confidence?: number;
   model?: string;
-  parameters?: { [key: string]: any };
+  parameters?: Record<string, unknown>;
   createdBy: string;
   createdAt: string;
   completedAt?: string;
@@ -173,7 +173,7 @@ export interface AIAnalysis {
 // Search and Query Schemas
 export interface SearchQuery {
   query: string;
-  filters?: { [key: string]: any };
+  filters?: Record<string, unknown>;
   sort?: {
     field: string;
     direction: 'asc' | 'desc';
@@ -183,7 +183,7 @@ export interface SearchQuery {
     limit: number;
   };
 }
-export interface SearchResults<T = any> {
+export interface SearchResults<T = unknown> {
   items: T[];
   totalCount: number;
   page: number;
@@ -241,7 +241,7 @@ export interface GraphNode {
   type: 'database' | 'service' | 'component';
   label: string;
   position: { x: number; y: number; z: number };
-  metrics: { [key: string]: any };
+  metrics: Record<string, unknown>;
   status: 'healthy' | 'degraded' | 'unhealthy';
 }
 export interface GraphEdge {
@@ -263,54 +263,54 @@ export interface ErrorResponse {
   error: string;
 }
 // Type Guards for Runtime Validation
-export function isAPIResponse<T>(obj: any): obj is APIResponse<T> {
+export function isAPIResponse<T>(obj: unknown): obj is APIResponse<T> {
+  if (!obj || typeof obj !== 'object') return false;
+  const o = obj as Record<string, unknown>;
+  const meta = o.meta as Record<string, unknown> | undefined;
   return (
-    obj &&
-    typeof obj === 'object' &&
-    typeof obj.success === 'boolean' &&
-    'data' in obj &&
-    'meta' in obj &&
-    obj.meta &&
-    typeof obj.meta.timestamp === 'string' &&
-    typeof obj.meta.cached === 'boolean' &&
-    (obj.meta.source === 'ssr' || obj.meta.source === 'api')
+    typeof o.success === 'boolean' &&
+    'data' in o &&
+    !!meta &&
+    typeof meta.timestamp === 'string' &&
+    typeof meta.cached === 'boolean' &&
+    (meta.source === 'ssr' || meta.source === 'api')
   );
 }
-export function isUser(obj: any): obj is User {
+export function isUser(obj: unknown): obj is User {
+  if (!obj || typeof obj !== 'object') return false;
+  const o = obj as Record<string, unknown>;
   return (
-    obj &&
-    typeof obj === 'object' &&
-    typeof obj.id === 'string' &&
-    typeof obj.email === 'string' &&
-    typeof obj.firstName === 'string' &&
-    typeof obj.lastName === 'string' &&
-    typeof obj.role === 'string' &&
-    Array.isArray(obj.practiceAreas) &&
-    Array.isArray(obj.permissions)
+    typeof o.id === 'string' &&
+    typeof o.email === 'string' &&
+    typeof o.firstName === 'string' &&
+    typeof o.lastName === 'string' &&
+    typeof o.role === 'string' &&
+    Array.isArray(o.practiceAreas) &&
+    Array.isArray(o.permissions)
   );
 }
-export function isCase(obj: any): obj is Case {
+export function isCase(obj: unknown): obj is Case {
+  if (!obj || typeof obj !== 'object') return false;
+  const o = obj as Record<string, unknown>;
   return (
-    obj &&
-    typeof obj === 'object' &&
-    typeof obj.id === 'string' &&
-    typeof obj.title === 'string' &&
-    typeof obj.status === 'string' &&
-    typeof obj.priority === 'string' &&
-    typeof obj.createdBy === 'string' &&
-    Array.isArray(obj.tags)
+    typeof o.id === 'string' &&
+    typeof o.title === 'string' &&
+    typeof o.status === 'string' &&
+    typeof o.priority === 'string' &&
+    typeof o.createdBy === 'string' &&
+    Array.isArray(o.tags)
   );
 }
-export function isEvidence(obj: any): obj is Evidence {
+export function isEvidence(obj: unknown): obj is Evidence {
+  if (!obj || typeof obj !== 'object') return false;
+  const o = obj as Record<string, unknown>;
   return (
-    obj &&
-    typeof obj === 'object' &&
-    typeof obj.id === 'string' &&
-    typeof obj.caseId === 'string' &&
-    typeof obj.title === 'string' &&
-    typeof obj.type === 'string' &&
-    typeof obj.createdBy === 'string' &&
-    Array.isArray(obj.chainOfCustody) &&
-    Array.isArray(obj.tags)
+    typeof o.id === 'string' &&
+    typeof o.caseId === 'string' &&
+    typeof o.title === 'string' &&
+    typeof o.type === 'string' &&
+    typeof o.createdBy === 'string' &&
+    Array.isArray(o.chainOfCustody) &&
+    Array.isArray(o.tags)
   );
 }

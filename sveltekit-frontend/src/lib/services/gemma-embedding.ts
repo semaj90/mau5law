@@ -1,12 +1,11 @@
-// @ts-nocheck - Advanced experimental service
-/**
- * Gemma Embeddings Service
- * Integrates with Ollama's Gemma model for high-quality embeddings
- */
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+
+type Metadata = Record<string, unknown>;
+
 interface GemmaEmbeddingResult {
   success: boolean;
   embedding?: number[];
-  metadata?: any;
+  metadata?: Metadata;
   error?: string;
   model?: string;
   processingTime?: number;
@@ -73,12 +72,13 @@ export class GemmaEmbeddingService {
   ];
 
   constructor(
-    ollamaHost: string = 'http://localhost:11434',
+    ollamaHost?: string,
     primaryModel: string = 'embeddinggemma:latest', // Or 'gemma3-legal:latest'
     fallbackModel: string = 'nomic-embed-text:latest',
     timeout: number = 10000 // 10 seconds
   ) {
-    this.ollamaHost = ollamaHost;
+    // prefer supplied host, otherwise use central helper (safe for server-only usage)
+    this.ollamaHost = ollamaHost || getOllamaEndpoint();
     this.primaryModel = primaryModel;
     this.fallbackModel = fallbackModel;
     this.timeout = timeout;
@@ -90,18 +90,34 @@ export class GemmaEmbeddingService {
    * Refresh available models from Ollama
    */
   private async refreshAvailableModels(): Promise<void> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
     try {
       const response = await fetch(`${this.ollamaHost}/api/tags`, {
         method: 'GET',
-        // Use AbortSignal.timeout if available, otherwise undefined
-        signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(5000) : undefined,
+        signal: controller.signal,
       });
       if (response.ok) {
         const data = await response.json();
-        this.availableModels = Array.isArray(data?.models) ? data.models.map((m: any) => m.name) : [];
+        // data.models might be string[] or { name: string }[]
+        if (Array.isArray(data?.models)) {
+          // Helper to safely extract a model name from unknown entries
+          const extractModelName = (entry: unknown): string => {
+            if (typeof entry === 'string') return entry;
+            if (entry && typeof entry === 'object') {
+              const obj = entry as Record<string, unknown>;
+              if ('name' in obj && typeof obj.name === 'string') return obj.name;
+            }
+            return String(entry);
+          };
+
+          this.availableModels = data.models.map((m: unknown) => extractModelName(m));
+        }
       }
-    } catch (error) {
-      console.warn('Could not refresh available models:', error);
+    } catch (error: unknown) {
+      console.warn('Could not refresh available models:', error instanceof Error ? error.message : String(error));
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
   private getBestAvailableModel(): string {
@@ -124,7 +140,7 @@ export class GemmaEmbeddingService {
   /**
    * Generate a single embedding for a given text
    */
-  async generateEmbedding(text: string, metadata: any = {}): Promise<GemmaEmbeddingResult> {
+  async generateEmbedding(text: string, metadata: Metadata = {}): Promise<GemmaEmbeddingResult> {
     const startTime = Date.now();
     try {
       await this.refreshAvailableModels();
@@ -137,9 +153,11 @@ export class GemmaEmbeddingService {
       if (selectedModel !== this.fallbackModel && this.availableModels.includes(this.fallbackModel)) {
         modelsToTry.push(this.fallbackModel);
       }
-      let lastError: any = null;
+      let lastError: unknown = null;
       // Try models in order of preference
       for (const model of modelsToTry) {
+        const controller = new AbortController();
+        const t = setTimeout(() => controller.abort(), this.timeout);
         try {
           console.log(`🧠 Trying embedding model: ${model}`);
           const response = await fetch(`${this.ollamaHost}/api/embed`, {
@@ -151,7 +169,7 @@ export class GemmaEmbeddingService {
               model,
               input: text.trim(),
             }),
-            signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(this.timeout) : undefined,
+            signal: controller.signal,
           });
           if (!response.ok) {
             throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
@@ -161,9 +179,9 @@ export class GemmaEmbeddingService {
           // Extract embedding from Ollama response
           let embedding: number[] = [];
           if (Array.isArray(data?.embeddings) && Array.isArray(data.embeddings)) {
-            embedding = data.embeddings;
+            embedding = data.embeddings as number[];
           } else if (Array.isArray(data?.embedding)) {
-            embedding = data.embedding;
+            embedding = data.embedding as number[];
           } else {
             throw new Error('Invalid embedding response format');
           }
@@ -185,16 +203,19 @@ export class GemmaEmbeddingService {
             model,
             processingTime,
           };
-        } catch (error: any) {
-          console.warn(`❌ Model ${model} failed:`, error?.message ?? error);
-          lastError = error;
-          continue; // Try next model
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`❌ Model ${model} failed:`, msg);
+          lastError = err;
+          // try next model
+        } finally {
+          clearTimeout(t);
         }
       }
       // All models failed
       return {
         success: false,
-        error: `All embedding models failed. Last error: ${lastError?.message ?? String(lastError)}`,
+        error: `All embedding models failed. Last error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
         metadata: {
           modelsAttempted: modelsToTry,
           ...metadata,
@@ -202,10 +223,11 @@ export class GemmaEmbeddingService {
         model: selectedModel,
         processingTime: Date.now() - startTime,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: `Embedding generation failed: ${error?.message ?? String(error)}`,
+        error: `Embedding generation failed: ${msg}`,
         metadata,
         model: this.getBestAvailableModel(),
         processingTime: Date.now() - startTime,
@@ -216,7 +238,7 @@ export class GemmaEmbeddingService {
    * Generate batch embeddings with optimized processing
    */
   async generateBatchEmbeddings(
-    documents: Array<{ id?: string; text: string; metadata?: any }>,
+    documents: Array<{ id?: string; text: string; metadata?: Metadata }>,
     options: { batchSize?: number; concurrency?: number } = {}
   ): Promise<GemmaBatchResult> {
     const startTime = Date.now();
@@ -229,7 +251,7 @@ export class GemmaEmbeddingService {
         };
       }
       const results: GemmaEmbeddingResult[] = [];
-      const batches: Array<Array<{ id?: string; text: string; metadata?: any }>> = [];
+      const batches: Array<Array<{ id?: string; text: string; metadata?: Metadata }>> = [];
       // Create batches
       for (let i = 0; i < documents.length; i += batchSize) {
         batches.push(documents.slice(i, i + batchSize));
@@ -245,7 +267,12 @@ export class GemmaEmbeddingService {
             if (r.status === 'fulfilled') {
               return r.value as GemmaEmbeddingResult;
             } else {
-              return { success: false, error: r.reason?.message ?? String(r.reason) } as GemmaEmbeddingResult;
+              // r.reason may be unknown
+              const reason = (r as PromiseRejectedResult).reason;
+              return {
+                success: false,
+                error: reason instanceof Error ? reason.message : String(reason),
+              } as GemmaEmbeddingResult;
             }
           });
         });
@@ -265,17 +292,19 @@ export class GemmaEmbeddingService {
           totalProcessingTime,
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        error: `Batch processing failed: ${error?.message ?? String(error)}`,
+        error: `Batch processing failed: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
   /**
    * Health check for Gemma embedding service with hierarchy info
    */
-  async healthCheck(): Promise<GemmaHealthResult & { modelHierarchy?: ModelHierarchy }> {
+  async healthCheck(): Promise<
+    GemmaHealthResult & { modelHierarchy?: ModelHierarchy; modelInfo?: GemmaModelInfo['modelInfo'] }
+  > {
     try {
       // Test Ollama connectivity
       const controller = new AbortController();
@@ -286,9 +315,14 @@ export class GemmaEmbeddingService {
           method: 'GET',
           signal: controller.signal,
         });
+      } catch (err) {
+        // ensure timeout cleared and rethrow to be handled by outer catch
+        clearTimeout(timeoutId);
+        throw err;
       } finally {
         clearTimeout(timeoutId);
       }
+
       if (!versionResponse.ok) {
         return {
           success: false,
@@ -296,10 +330,13 @@ export class GemmaEmbeddingService {
           error: `Ollama not responding: ${versionResponse.status}`,
         };
       }
+
       const versionData = await versionResponse.json();
+
       // Refresh and get available models
       await this.refreshAvailableModels();
       const bestModel = this.getBestAvailableModel();
+
       // Check which models from hierarchy are available
       const modelStatus = this.modelHierarchy.map((model, index) => ({
         model,
@@ -308,62 +345,95 @@ export class GemmaEmbeddingService {
         type: this.getModelPerformance(model).type,
         speed: this.getModelPerformance(model).speed,
       }));
+
       const availableCount = modelStatus.filter(m => m.available).length;
       const hasGemma = modelStatus.some(m => m.type === 'gemma' && m.available);
       const hasNomic = modelStatus.some(m => m.type === 'nomic' && m.available);
+
+      const hierarchy: ModelHierarchy = {
+        bestModel,
+        modelsStatus: modelStatus,
+        availableCount,
+        totalCount: this.modelHierarchy.length,
+        hasGemmaModels: hasGemma,
+        hasFallback: hasNomic,
+        recommendation: hasGemma
+          ? 'Using fast Gemma models with nomic fallback'
+          : hasNomic
+            ? 'Using reliable nomic-embed-text (no Gemma models available)'
+            : 'No embedding models available',
+      };
+
+      // Optionally fetch model info for primaryModel (non-blocking for health)
+      let modelInfoResult: GemmaModelInfo['modelInfo'] | undefined;
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 5000);
+        const resp = await fetch(`${this.ollamaHost}/api/show`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: this.primaryModel }),
+          signal: ctrl.signal,
+        }).finally(() => clearTimeout(t));
+        if (resp.ok) {
+          const data = await resp.json();
+          const details = data?.details || {};
+          modelInfoResult = {
+            name: data?.name || this.primaryModel,
+            family: details?.family || 'unknown',
+            parameterSize: details?.parameter_size || 'unknown',
+            quantization: details?.quantization_level || 'unknown',
+            dimensions: this.estimateDimensions(details?.family, data?.name),
+            capabilities: ['text-embedding', 'semantic-search', 'document-analysis'],
+          };
+        } else {
+          // non-fatal: log and continue
+          console.warn(`Model info request returned ${resp.status}`);
+        }
+      } catch (err) {
+        console.warn('Could not fetch model info:', err instanceof Error ? err.message : String(err));
+      }
+
       return {
         success: true,
         available: availableCount > 0,
         model: bestModel,
         version: versionData.version,
-        modelHierarchy: {
-          bestModel,
-          modelsStatus: modelStatus,
-          availableCount,
-          totalCount: this.modelHierarchy.length,
-          hasGemmaModels: hasGemma,
-          hasFallback: hasNomic,
-          recommendation: hasGemma
-            ? 'Using fast Gemma models with nomic fallback'
-            : hasNomic
-              ? 'Using reliable nomic-embed-text (no Gemma models available)'
-              : 'No embedding models available',
-        },
+        modelHierarchy: hierarchy,
+        modelInfo: modelInfoResult,
         error:
           availableCount === 0
             ? `No embedding models available. Install models: ${this.modelHierarchy.join(', ')}`
             : undefined,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
         available: false,
-        error: `Health check failed: ${error?.message ?? String(error)}`,
+        error: `Model info retrieval failed: ${msg}`,
       };
     }
   }
   /**
-   * Get detailed model information
+   * Retrieve detailed information about the specified model
    */
-  async getModelInfo(): Promise<GemmaModelInfo> {
+  async getModelInfo(modelName: string): Promise<GemmaModelInfo> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      let response: Response;
-      try {
-        response = await fetch(`${this.ollamaHost}/api/show`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: this.primaryModel,
-          }),
-          signal: controller.signal,
-        });
-      } finally {
-        clearTimeout(timeoutId);
-      }
+      const response = await fetch(`${this.ollamaHost}/api/show`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: modelName,
+        }),
+        signal: controller.signal,
+      });
       if (!response.ok) {
         throw new Error(`Model info request failed: ${response.status} ${response.statusText}`);
       }
@@ -372,7 +442,7 @@ export class GemmaEmbeddingService {
       return {
         success: true,
         modelInfo: {
-          name: data?.name || this.primaryModel,
+          name: data?.name || modelName,
           family: details?.family || 'unknown',
           parameterSize: details?.parameter_size || 'unknown',
           quantization: details?.quantization_level || 'unknown',
@@ -386,6 +456,8 @@ export class GemmaEmbeddingService {
         success: false,
         error: `Model info retrieval failed: ${msg}`,
       };
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
   /**

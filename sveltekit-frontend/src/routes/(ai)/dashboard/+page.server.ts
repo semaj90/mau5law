@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Require authentication to access dashboard
-  if (!locals.user || !locals.session) {
+  if (!locals.user) {
     throw redirect(303, '/login');
   }
 
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     assistantSessions: 8,
     evidenceUploaded: 156,
     tasksCompleted: 89,
-    recentActivity: 24
+    recentActivity: 24,
   };
 
   const recentCases = [
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       caseType: 'Employment Dispute',
       status: 'open',
       priority: 'High',
-      lastUpdated: '2 hours ago'
+      lastUpdated: '2 hours ago',
     },
     {
       id: 'case_002',
@@ -36,7 +36,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       caseType: 'Criminal Defense',
       status: 'investigating',
       priority: 'Critical',
-      lastUpdated: '5 hours ago'
+      lastUpdated: '5 hours ago',
     },
     {
       id: 'case_003',
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       caseType: 'Real Estate',
       status: 'pending',
       priority: 'Medium',
-      lastUpdated: '1 day ago'
+      lastUpdated: '1 day ago',
     },
     {
       id: 'case_004',
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       caseType: 'Corporate Law',
       status: 'open',
       priority: 'High',
-      lastUpdated: '3 hours ago'
+      lastUpdated: '3 hours ago',
     },
     {
       id: 'case_005',
@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       caseType: 'Intellectual Property',
       status: 'investigating',
       priority: 'Medium',
-      lastUpdated: '12 hours ago'
+      lastUpdated: '12 hours ago',
     },
     {
       id: 'case_006',
@@ -68,14 +68,13 @@ export const load: PageServerLoad = async ({ locals }) => {
       caseType: 'Commercial Dispute',
       status: 'closed',
       priority: 'Low',
-      lastUpdated: '2 days ago'
-    }
+      lastUpdated: '2 days ago',
+    },
   ];
 
   return {
     user: locals.user,
-    session: locals.session,
     stats,
-    recentCases
+    recentCases,
   };
 };

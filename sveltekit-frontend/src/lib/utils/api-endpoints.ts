@@ -8,18 +8,15 @@
  * Retrieves the Ollama API endpoint.
  * @returns {string} The Ollama API URL.
  */
+import { getOllamaEndpoint as sharedGetOllamaEndpoint, DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
+
 export function getOllamaEndpoint(): string {
-  // In a SvelteKit frontend, environment variables prefixed with VITE_ are exposed to the client.
-  // For server-side code (e.g., +page.server.ts), process.env can be used directly.
-  // This utility is designed to be used on both client and server, so we check both.
-  if (typeof process !== 'undefined' && process.env.OLLAMA_URL) {
-    return process.env.OLLAMA_URL;
+  // Use the shared helper; if it throws, return the module-level default constant.
+  try {
+    return sharedGetOllamaEndpoint();
+  } catch {
+    return DEFAULT_OLLAMA;
   }
-  if (import.meta.env.VITE_OLLAMA_URL) {
-    return import.meta.env.VITE_OLLAMA_URL;
-  }
-  // Fallback for local development without explicit env var
-  return 'http://localhost:11434';
 }
 
 /**

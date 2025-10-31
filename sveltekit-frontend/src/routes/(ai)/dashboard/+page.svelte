@@ -20,6 +20,12 @@
     return '?';
   }
 
+  // add this helper so we don't access a property that may not exist on PageData.user
+  function getUserRole(user: any): string {
+    if (!user) return '';
+    return (user as any).role ?? '';
+  }
+
   // Use $derived correctly: pass a function deriving from reactive inputs
   const stats = $derived(() => data.stats ?? {
     activeCases: 12,
@@ -203,7 +209,7 @@
       {#if getUserName(data.user)}
         <div class="user-greeting">
           <span class="user-name">{getUserName(data.user)}</span>
-          <span class="user-role">{data.user.role}</span>
+          <span class="user-role">{getUserRole(data.user)}</span>
         </div>
       {/if}
     </div>
@@ -220,7 +226,7 @@
         <div class="user-info">
           <p class="user-status">Welcome back,</p>
           <h2 class="user-display-name">{getUserName(data.user) || data.user?.email}</h2>
-          <p class="user-role-info">{data.user?.role} • {data.user?.email}</p>
+          <p class="user-role-info">{getUserRole(data.user) || 'User'} • {data.user?.email}</p>
         </div>
       </CardContent>
     </Card>

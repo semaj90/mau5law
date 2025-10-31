@@ -26,7 +26,7 @@
   }
 
   interface FixSuggestion {
-    suggestion string;
+    suggestion: string;
     successRate: number;
     similarError: string;
     relevance: number;
@@ -183,7 +183,7 @@
       <span class="agentic-subtitle">OCR → Embeddings → RAG</span>
     </h2>
 
-    <button class="refresh-btn" onclick={fetchStatus} disabled={loading}>
+    <button class="refresh-btn" on:click={fetchStatus} disabled={loading}>
       {loading ? '🔄' : '↻'} Refresh
     </button>
   </div>
@@ -192,7 +192,7 @@
   {#if error}
     <div class="error-alert">
       ❌ {error}
-      <button onclick={() => (error = '')}>×</button>
+      <button on:click={() => (error = '')}>×</button>
     </div>
   {/if}
 
@@ -232,30 +232,30 @@
     <div
       class="drop-zone"
       class:drag-active={dragActive}
-      ondrop={handleDrop}
-      ondragover={handleDragOver}
-      ondragleave={handleDragLeave}
+      on:drop={handleDrop}
+      on:dragover={handleDragOver}
+      on:dragleave={handleDragLeave}
       role="button"
       tabindex="0"
     >
       {#if selectedFile}
         <div class="file-selected">
           📄 {selectedFile.name}
-          <button onclick={() => (selectedFile = null)}>×</button>
+          <button on:click={() => (selectedFile = null)}>×</button>
         </div>
       {:else}
         <div class="drop-message">
           🖼️ Drop error screenshot here or
           <label class="file-input-label">
             browse files
-            <input type="file" accept="image/*" onchange={handleFileSelect} />
+            <input type="file" accept="image/*" on:change={handleFileSelect} />
           </label>
         </div>
       {/if}
     </div>
 
     {#if selectedFile}
-      <button class="upload-btn" onclick={uploadScreenshot} disabled={loading}>
+      <button class="upload-btn" on:click={uploadScreenshot} disabled={loading}>
         {loading ? '🔄 Processing...' : '🚀 Analyze Screenshot'}
       </button>
     {/if}
@@ -267,7 +267,7 @@
 
     <div class="query-input-group">
       <input type="text" bind:value={errorQuery} placeholder="Paste error message here..." class="query-input" />
-      <button class="query-btn" onclick={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
+      <button class="query-btn" on:click={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
         {loading ? '🔄' : '🔍'} Find Fixes
       </button>
     </div>
@@ -339,7 +339,7 @@
 
   .agentic-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -387,7 +387,7 @@
     border-radius: 0.5rem;
     margin-bottom: 1rem;
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
   }
 
@@ -420,7 +420,7 @@
 
   .status-item {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     padding: 0.5rem;
     background: var(--nier-bg-tertiary, #2a2a2a);
     border-radius: 0.25rem;
@@ -493,7 +493,7 @@
   .file-input-label {
     color: var(--nier-accent-cool, #00ccff);
     cursor: pointer;
-    text-decoration underline;
+    text-decoration: underline;
   }
 
   .file-input-label input {
@@ -531,7 +531,7 @@
   }
 
   .query-input {
-    flex: 1,
+    flex: 1;
     padding: 0.75rem;
     background: var(--nier-bg-tertiary, #2a2a2a);
     border: 1px solid var(--nier-border-primary, #333);
@@ -565,7 +565,7 @@
 
   .fix-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
   }

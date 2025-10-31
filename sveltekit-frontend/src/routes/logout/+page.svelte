@@ -5,7 +5,7 @@
   onMount(() => {
     (async () => {
       try {
-        const apiBase = import.meta.env?.PUBLIC_API_BASE || '/api';
+        const apiBase = import.meta.env.PUBLIC_API_BASE || '/api';
         const response = await fetch(`${apiBase}/auth/logout`, {
           method: 'POST',
           headers: {
@@ -36,11 +36,5 @@
   <div class="text-center space-y-4">
     <h2 class="text-2xl font-semibold">Logging out...</h2>
     <p>Please wait while we log you out securely.</p>
-  </div>
-</div>
-  </div>
-</div>
-      </div>
-    </div>
   </div>
 </div>

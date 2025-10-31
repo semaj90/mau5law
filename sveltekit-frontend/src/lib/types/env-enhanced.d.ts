@@ -118,18 +118,18 @@ export interface EnhancedEnv {
   LOG_LEVEL: string;
   ENABLE_LOGGING: string;
 }
-// Environment helper functions
-export const envHelper = {
-  // Get environment variable with fallback
-  get: (key: string, defaultValue: string = ''): string => {
-    if (typeof process !== 'undefined' && process.env) {
-      return process.env[key] || defaultValue;
-    }
-    return defaultValue;
-  },
-  // Get boolean environment variable
-  getBool: (key: string, defaultValue: boolean = false): boolean => {
-    const value = envHelper.get(key);
+// Declare the runtime helper signatures (implementation should be in env-helper.ts)
+export declare const envHelper: {
+  get(key: string, defaultValue?: string): string | undefined;
+  getBool(key: string, defaultValue?: boolean): boolean;
+  getNumber(key: string, defaultValue?: number): number;
+  getRequired(key: string): string;
+  getDatabaseUrl(): string;
+  getRedisUrl(): string;
+  getOllamaUrl(): string;
+};
+// Export types
+export type { EnhancedEnv };
     if (!value) return defaultValue;
     return value.toLowerCase() === 'true' || value === '1';
   },

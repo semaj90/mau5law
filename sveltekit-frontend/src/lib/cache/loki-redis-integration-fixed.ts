@@ -14,6 +14,32 @@ import { EventEmitter } from 'events';
 import crypto from 'crypto';
 // Conditional imports to avoid circular dependencies
 const redisServicePromise = import('$lib/server/redis-service.js').then(m => m.redisService).catch(() => null);
+
+// Define a type for the Redis client to avoid `any`
+interface RedisClient {
+  initialize?(): Promise<void>;
+  getClient?(): RedisClient;
+  getSubscriber?(): RedisClient;
+  psubscribe(pattern: string, ...args: unknown[]): Promise<unknown>;
+  subscribe(channel: string, ...args: unknown[]): Promise<unknown>;
+  on(event: string, listener: (...args: any[]) => void): this;
+  setex(key: string, seconds: number, value: string): Promise<unknown>;
+  set(key: string, value: string, ...args: unknown[]): Promise<unknown>;
+  get(key: string): Promise<string | null>;
+  expire(key: string, seconds: number): Promise<unknown>;
+  publish(channel: string, message: string): Promise<unknown>;
+  keys(pattern: string): Promise<string[]>;
+  del(...keys: string[]): Promise<unknown>;
+  quit(): Promise<unknown>;
+}
+
+// Define a type for the NES Memory module
+interface NESMemory {
+  allocateDocument(document: CachedDocument, data: ArrayBuffer, options: { compress: boolean; preferredBank: string }): Promise<boolean>;
+  getDocument(documentId: string): (Partial<CachedDocument> & { compressed?: boolean; accessCount?: number; [key: string]: any }) | null;
+  getMemoryStats(): { documentCount?: number; usedRAM?: number; usedCHR?: number; usedPRG?: number; bankSwitches?: number };
+}
+
 // Define LegalDocument interface locally to avoid import issues
 export interface LegalDocument {
   id: string;
@@ -104,11 +130,11 @@ export interface CacheStats {
 }
 export class LokiRedisCache extends EventEmitter {
   private loki: Loki | null = null;
-  private redis: any = null;
-  private subscriber: any = null;
-  private nesMemory: any = null;
+  private redis: RedisClient | null = null;
+  private subscriber: RedisClient | null = null;
+  private nesMemory: NESMemory | null = null;
   // Loki collections by document type
-  private collections: Map<string, Collection<CachedDocument>> = new Map();
+  private collections: Map<string, Collection<any>> = new Map();
   // Performance tracking
   private stats = {
     loki: { collections: 0, documents: 0, memoryUsage: 0, queries: 0, hits: 0, misses: 0 },
@@ -118,6 +144,11 @@ export class LokiRedisCache extends EventEmitter {
   };
   private responseTimeTracker: number[] = [];
   private isInitialized = false;
+
+  public get isReady(): boolean {
+    return this.isInitialized;
+  }
+
   async initialize(): Promise<void> {
     try {
       await this.loadServices();
@@ -127,8 +158,9 @@ export class LokiRedisCache extends EventEmitter {
       this.isInitialized = true;
       this.emit('initialized');
       console.log('✅ Loki.js + Redis cache initialized successfully');
-    } catch (error: any) {
-      console.error('❌ Cache initialization failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Cache initialization failed:', message);
       throw error;
     }
   }
@@ -144,8 +176,9 @@ export class LokiRedisCache extends EventEmitter {
       console.log('⚠️ NES Memory integration disabled');
       this.nesMemory = null;
       console.log('✅ Cache services loaded');
-    } catch (error: any) {
-      console.warn('⚠️ Some cache services failed to load:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn('⚠️ Some cache services failed to load:', message);
       // Continue without failing services
     }
   }
@@ -170,7 +203,7 @@ export class LokiRedisCache extends EventEmitter {
                   unique: ['id'],
                 });
               }
-              this.collections.set(type, collection as any);
+              this.collections.set(type, collection);
             }
             // Search results collection
             const searchCollection =
@@ -178,12 +211,13 @@ export class LokiRedisCache extends EventEmitter {
               this.loki!.addCollection('search_results', {
                 indices: ['query', 'timestamp'],
               });
-            this.collections.set('searches', searchCollection as any);
+            this.collections.set('searches', searchCollection);
             this.stats.loki.collections = this.collections.size;
             console.log(`✅ Loki initialized with ${this.collections.size} collections`);
             resolve();
-          } catch (error: any) {
-            reject(new Error(`Loki collection setup failed: ${error.message}`));
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            reject(new Error(`Loki collection setup failed: ${message}`));
           }
         },
       });
@@ -211,8 +245,9 @@ export class LokiRedisCache extends EventEmitter {
       }
       this.stats.redis.connected = true;
       console.log('✅ Redis clients connected');
-    } catch (error: any) {
-      console.error('❌ Redis connection failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Redis connection failed:', message);
       // Fall back to memory-only mode
       this.redis = null;
       this.subscriber = null;
@@ -227,9 +262,10 @@ export class LokiRedisCache extends EventEmitter {
       if (typeof this.subscriber.psubscribe === 'function') {
         await this.subscriber.psubscribe('legal_ai:document:*');
         if (typeof this.subscriber.on === 'function') {
-          this.subscriber.on('pmessage', (pattern: string, channel: string, message: string) => {
+          this.subscriber.on('pmessage', (_pattern: string, channel: string, message: string) => {
             this.handleRedisMessage(message, channel).catch(error => {
-              console.error('Redis message handler error:', error.message);
+              const errMessage = error instanceof Error ? error.message : String(error);
+              console.error('Redis message handler error:', errMessage);
             });
           });
         }
@@ -241,20 +277,22 @@ export class LokiRedisCache extends EventEmitter {
           this.subscriber.on('message', (channel: string, message: string) => {
             if (channel === 'legal_ai:search:invalidate') {
               this.invalidateSearchCache(JSON.parse(message)).catch(error => {
-                console.error('Search invalidation error:', error.message);
+                const errMessage = error instanceof Error ? error.message : String(error);
+                console.error('Search invalidation error:', errMessage);
               });
             }
           });
         }
       }
       console.log('✅ Redis synchronization configured');
-    } catch (error: any) {
-      console.error('❌ Failed to setup Redis synchronization:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Failed to setup Redis synchronization:', message);
     }
   }
-  private async handleRedisMessage(message: string, channel: string): Promise<void> {
+  private async handleRedisMessage(message: string, _channel: string): Promise<void> {
     try {
-      const data: any = JSON.parse(message);
+      const data: { operation: string; documentId: string; document?: CachedDocument } = JSON.parse(message);
       if (!data || !data.operation || !data.documentId) return;
       const { documentId, operation, document } = data;
       // Update local Loki cache based on Redis changes
@@ -277,8 +315,9 @@ export class LokiRedisCache extends EventEmitter {
           break;
       }
       this.emit('documentSynced', { documentId, operation });
-    } catch (error: any) {
-      console.error('❌ Failed to handle Redis message:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Failed to handle Redis message:', message);
       this.stats.overall.syncConflicts++;
     }
   }
@@ -303,8 +342,9 @@ export class LokiRedisCache extends EventEmitter {
       }
       this.updateStats('store', Date.now() - startTime);
       this.emit('documentStored', { documentId: document.id });
-    } catch (error: any) {
-      console.error(`❌ Failed to store document ${document.id}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Failed to store document ${document.id}:`, message);
       throw error;
     }
   }
@@ -350,8 +390,9 @@ export class LokiRedisCache extends EventEmitter {
           JSON.stringify({ documentId: document.id, operation: 'create', document })
         );
       }
-    } catch (error: any) {
-      console.error(`❌ Redis storage failed for ${document.id}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Redis storage failed for ${document.id}:`, message);
     }
   }
   private shouldUseNESMemory(document: CachedDocument): boolean {
@@ -377,8 +418,9 @@ export class LokiRedisCache extends EventEmitter {
           this.stats.nes.documentsStored++;
         }
       }
-    } catch (error: any) {
-      console.error(`❌ NES storage failed for ${document.id}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ NES storage failed for ${document.id}:`, message);
     }
   }
   private selectNESBank(document: CachedDocument): string {
@@ -429,8 +471,9 @@ export class LokiRedisCache extends EventEmitter {
       this.stats.loki.misses++;
       this.stats.redis.misses++;
       return null;
-    } catch (error: any) {
-      console.error(`❌ Failed to get document ${documentId}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Failed to get document ${documentId}:`, message);
       return null;
     }
   }
@@ -453,12 +496,13 @@ export class LokiRedisCache extends EventEmitter {
         value = await this.redis.get(key);
       }
       if (value && typeof value === 'string') {
-        const parsed = JSON.parse(value) as any;
+        const parsed = JSON.parse(value) as { document: CachedDocument };
         this.stats.redis.operations++;
-        return parsed.document as CachedDocument;
+        return parsed.document;
       }
-    } catch (error: any) {
-      console.error(`❌ Redis get error for ${documentId}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Redis get error for ${documentId}:`, message);
     }
     return null;
   }
@@ -471,15 +515,16 @@ export class LokiRedisCache extends EventEmitter {
           return {
             ...nesDoc,
             cacheTimestamp: Date.now(),
-            accessCount: (nesDoc as any).accessCount || 1,
+            accessCount: nesDoc.accessCount || 1,
             cacheLocation: 'nes',
             compressed: nesDoc.compressed || false,
             syncStatus: 'synced',
           };
         }
       }
-    } catch (error: any) {
-      console.error(`❌ NES get error for ${documentId}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ NES get error for ${documentId}:`, message);
     }
     return null;
   }
@@ -498,7 +543,7 @@ export class LokiRedisCache extends EventEmitter {
     } = {}
   ): Promise<SearchResult[]> {
     const startTime = Date.now();
-    const { limit = 50, useSemanticSearch = false, cacheResults = true } = options;
+    const { limit = 50, cacheResults = true } = options;
     try {
       // Check search cache first
       const cacheKey = this.generateSearchCacheKey(query, filters, options);
@@ -513,7 +558,7 @@ export class LokiRedisCache extends EventEmitter {
         if (type === 'searches') continue;
         if (filters.type && !filters.type.includes(type)) continue;
         // Build Loki.js query
-        let lokiQuery: any = {};
+        const lokiQuery: Record<string, any> = {};
         if (filters.riskLevel) {
           lokiQuery.riskLevel = { $in: filters.riskLevel };
         }
@@ -551,12 +596,13 @@ export class LokiRedisCache extends EventEmitter {
       }
       this.updateStats('search', Date.now() - startTime);
       return results;
-    } catch (error: any) {
-      console.error('❌ Search failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Search failed:', message);
       return [];
     }
   }
-  private calculateRelevanceScore(document: CachedDocument, query: string): number {
+  private calculateRelevanceScore(document: CachedDocument, _query: string): number {
     let score = 0;
     // Base score from document priority and confidence
     score += document.priority * 0.01;
@@ -584,7 +630,20 @@ export class LokiRedisCache extends EventEmitter {
     score += Math.max(0, 10 - daysSinceCache);
     return score;
   }
-  private generateSearchCacheKey(query: string, filters: any, options: any): string {
+  private generateSearchCacheKey(
+    query: string,
+    filters: {
+      type?: string[];
+      riskLevel?: string[];
+      confidenceMin?: number;
+      priorityMin?: number;
+    },
+    options: {
+      limit?: number;
+      useSemanticSearch?: boolean;
+      cacheResults?: boolean;
+    }
+  ): string {
     const hashInput = JSON.stringify({ query, filters, options });
     return `search:${crypto.createHash('md5').update(hashInput).digest('hex')}`;
   }
@@ -595,8 +654,9 @@ export class LokiRedisCache extends EventEmitter {
       if (cached && typeof cached === 'string') {
         return JSON.parse(cached) as SearchResult[];
       }
-    } catch (error: any) {
-      console.error('❌ Search cache retrieval failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Search cache retrieval failed:', message);
     }
     return null;
   }
@@ -612,13 +672,14 @@ export class LokiRedisCache extends EventEmitter {
           await this.redis.expire(key, CACHE_CONFIG.redis.ttl.searches);
         }
       }
-    } catch (error: any) {
-      console.error('❌ Search cache storage failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Search cache storage failed:', message);
     }
   }
   private async evictLokiDocuments(): Promise<void> {
     // Find least recently used documents across all collections
-    const candidates: Array<any> = [];
+    const candidates: { collection: Collection<CachedDocument>; document: CachedDocument }[] = [];
     for (const collection of this.collections.values()) {
       if (!collection) continue;
       try {
@@ -628,8 +689,9 @@ export class LokiRedisCache extends EventEmitter {
             candidates.push({ collection, document: doc });
           }
         }
-      } catch (error: any) {
-        console.error('Error reading collection for eviction:', error.message);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Error reading collection for eviction:', message);
       }
     }
     // Sort by access patterns (LRU + priority)
@@ -647,13 +709,14 @@ export class LokiRedisCache extends EventEmitter {
         collection.remove(document);
         this.stats.loki.documents--;
         evicted++;
-      } catch (error: any) {
-        console.error(`Failed to evict document ${document.id}:`, error.message);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error(`Failed to evict document ${document.id}:`, message);
       }
     }
     console.log(`🗑️ Evicted ${evicted} documents from Loki cache`);
   }
-  private async invalidateSearchCache(criteria: any): Promise<void> {
+  private async invalidateSearchCache(_criteria: unknown): Promise<void> {
     if (!this.redis) return;
     try {
       if (typeof this.redis.keys === 'function' && typeof this.redis.del === 'function') {
@@ -664,8 +727,9 @@ export class LokiRedisCache extends EventEmitter {
           console.log(`🗑️ Invalidated ${keys.length} search cache entries`);
         }
       }
-    } catch (error: any) {
-      console.error('❌ Search cache invalidation failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Search cache invalidation failed:', message);
     }
   }
   private updateLocalDocument(documentId: string, document: CachedDocument): void {
@@ -700,7 +764,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     }
   }
-  private addLocalDocument(_document: CachedDocument): void {
+  private addLocalDocument(document: CachedDocument): void {
     const collection = this.collections.get(document.type);
     if (collection) {
       collection.insert({
@@ -711,7 +775,7 @@ export class LokiRedisCache extends EventEmitter {
       this.stats.loki.documents++;
     }
   }
-  private updateStats(operation: string, responseTime: number): void {
+  private updateStats(_operation: string, responseTime: number): void {
     this.responseTimeTracker.push(responseTime);
     if (this.responseTimeTracker.length > 1000) {
       this.responseTimeTracker = this.responseTimeTracker.slice(-1000);
@@ -741,8 +805,9 @@ export class LokiRedisCache extends EventEmitter {
           memoryUsage: (nesStats.usedRAM || 0) + (nesStats.usedCHR || 0) + (nesStats.usedPRG || 0),
           bankSwitches: nesStats.bankSwitches || 0,
         };
-      } catch (error: any) {
-        console.error('Error getting NES stats:', error.message);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Error getting NES stats:', message);
       }
     }
   }
@@ -750,7 +815,7 @@ export class LokiRedisCache extends EventEmitter {
     return JSON.parse(JSON.stringify(this.stats));
   }
   // Public methods for accessing cached data
-  async get(_key: string): Promise<string | null> {
+  async get(key: string): Promise<string | null> {
     if (!this.redis) return null;
     try {
       const value = await this.redis.get(`${CACHE_CONFIG.redis.keyPrefix}${key}`);
@@ -761,13 +826,14 @@ export class LokiRedisCache extends EventEmitter {
         this.stats.redis.misses++;
       }
       return value;
-    } catch (error: any) {
-      console.error(`❌ Redis get error for ${key}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Redis get error for ${key}:`, message);
       this.stats.redis.misses++;
       return null;
     }
   }
-  async set(_key: string, value: string, ttl?: number): Promise<void> {
+  async set(key: string, value: string, ttl?: number): Promise<void> {
     if (!this.redis) return;
     try {
       const fullKey = `${CACHE_CONFIG.redis.keyPrefix}${key}`;
@@ -780,8 +846,9 @@ export class LokiRedisCache extends EventEmitter {
         }
       }
       this.stats.redis.operations++;
-    } catch (error: any) {
-      console.error(`❌ Redis set error for ${key}:`, error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Redis set error for ${key}:`, message);
     }
   }
   async clear(): Promise<void> {
@@ -822,8 +889,9 @@ export class LokiRedisCache extends EventEmitter {
         overall: { hitRatio: 0, avgResponseTime: 0, totalDocuments: 0, syncConflicts: 0 },
       };
       console.log('✅ Cache cleared successfully');
-    } catch (error: any) {
-      console.error('❌ Failed to clear cache:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Failed to clear cache:', message);
       throw error;
     }
   }
@@ -852,8 +920,9 @@ export class LokiRedisCache extends EventEmitter {
       this.collections.clear();
       this.isInitialized = false;
       console.log('✅ Loki.js + Redis cache destroyed');
-    } catch (error: any) {
-      console.error('❌ Cache destruction failed:', error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('❌ Cache destruction failed:', message);
       throw error;
     }
   }

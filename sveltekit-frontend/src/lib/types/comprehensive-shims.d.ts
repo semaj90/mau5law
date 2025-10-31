@@ -108,15 +108,95 @@ declare global {
   }
 } // end declare global
 
-// Module augmentations (outside declare global)
-declare module '$lib/server/messaging/rabbitmq-service.js' {
-  export const QUEUES: Record<string, string>;
-}
-declare module '$lib/server/messaging/rabbitmq-service' {
-  // Also declare the non-.js import variant used in some parts of the codebase
-  export const QUEUES: Record<string, string>;
+// -----------------------------
+// New: NodeJS.ProcessEnv typings
+// -----------------------------
+declare namespace NodeJS {
+  interface ProcessEnv {
+    // Primary DBs & infra (Docker-first, local fallback allowed)
+    DATABASE_URL?: string;            // e.g. postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+    ADMIN_DATABASE_URL?: string;
+
+    // Redis
+    REDIS_URL?: string;               // e.g. redis://:redis@redis:6379/0
+    REDIS_HOST?: string;
+    REDIS_PORT?: string;
+    REDIS_PASSWORD?: string;
+
+    // Qdrant / Ollama / MinIO / Neo4j
+    QDRANT_URL?: string;              // e.g. http://qdrant:6333
+    OLLAMA_URL?: string;              // e.g. http://ollama:11434
+    MINIO_ENDPOINT?: string;
+    MINIO_ACCESS_KEY?: string;
+    MINIO_SECRET_KEY?: string;
+    NEO4J_URI?: string;
+    NEO4J_USER?: string;
+    NEO4J_PASSWORD?: string;
+
+    // Add any other env keys used across the repo as optional strings
+    [key: string]: string | undefined;
+  }
 }
 
+// -----------------------------
+// Module augmentations (extended)
+// -----------------------------
+// RabbitMQ service export (support both import forms used in repo)
+declare module '$lib/server/messaging/rabbitmq-service' {
+  /**
+   * Named export map of queue names
+   * Example usage:
+   *   import { QUEUES } from '$lib/server/messaging/rabbitmq-service';
+   */
+  export const QUEUES: Record<string, string>;
+
+  /**
+   * Default export convenience for some import sites
+   *   import QUEUES from '$lib/server/messaging/rabbitmq-service';
+   */
+  const _default: Record<string, string>;
+  export default _default;
+}
+
+declare module '$lib/server/messaging/rabbitmq-service.js' {
+  // same shape for the .js import variant
+  export const QUEUES: Record<string, string>;
+  const _default: Record<string, string>;
+  export default _default;
+}
+
+// Lightweight db client helper signature (centralized factory pattern)
+declare module '$lib/server/db/client' {
+  /**
+   * Returns the effective DATABASE_URL (reads process.env with safe fallback).
+   */
+  export function getDatabaseUrl(): string;
+
+  /**
+   * Create or return a pooled DB client instance. Use `unknown` to avoid runtime-specific types here;
+   * callers can narrow to the concrete client type (pg, drizzle, etc.).
+   */
+  export function createDbClient(): unknown;
+}
+
+// Redis cache helper typings (minimal surface used across repo)
+declare module '$lib/server/cache/redis' {
+  // Simplified redis client interface used in the repo
+  export interface SimpleRedisClient {
+    get(key: string): Promise<string | null>;
+    set(key: string, value: string, mode?: string, duration?: number): Promise<'OK' | null>;
+    hget(key: string, field: string): Promise<string | null>;
+    hset(key: string, field: string, value: string): Promise<number>;
+    del(...keys: string[]): Promise<number>;
+    expire(key: string, seconds: number): Promise<number>;
+    quit?(): Promise<void>;
+  }
+
+  export function createRedisClient(): SimpleRedisClient;
+  export const defaultRedisClient: SimpleRedisClient | null;
+}
+
+// Keep existing module augmentations below (if any)
 declare module '$lib/utils/webgpu-array-utils' {
   // strengthen types: expect Float32Array in/out for numeric array ops
   export function adaptiveQuantization(data: Float32Array): Float32Array;

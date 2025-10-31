@@ -4,9 +4,7 @@
    * Features: File upload, RAG, embeddings, CUDA, Redis, self-prompting
    * Fallbacks: TensorRT → Ollama → Mock AI
    */
-  import { onMount } from 'svelte';
   import NesTypewriterStream from '$lib/components/chat/nes-typewriter-stream.svelte';
-  import { chatStore, chatActions } from '\/stores/chat.svelte';
 
   // Svelte 5 runes - production state management
   let messages = $state<

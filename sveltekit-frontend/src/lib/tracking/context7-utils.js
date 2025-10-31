@@ -9,7 +9,10 @@ export class Context7Helper {
       '#get-library-docs bits-ui/dialog',
       '#get-library-docs bits-ui/context-menu',
     ];
-    console.log('Context7 queries for Bits UI:', queries);
+    // append a topic-specific query when provided
+    if (topic && typeof topic === 'string') {
+      queries.push(`#get-library-docs bitsui/${topic}`);
+    }
     return queries;
   }
   static async getSvelteKitDoc(topic = '') {
@@ -19,14 +22,18 @@ export class Context7Helper {
       '#get-library-docs sveltekit/routing',
       '#get-library-docs sveltekit/stores',
     ];
-    console.log('Context7 queries for SvelteKit:', queries);
+    if (topic && typeof topic === 'string') {
+      queries.push(`#get-library-docs sveltekit/${topic}`);
+    }
     return queries;
   }
-  static mcpKeywords = {
-    context7: ['#context7', '#get-library-docs', '#resolve-library-id', '#microsoft-docs'],
-    memory: ['#memory', '#create_entities', '#create_relations', '#read_graph', '#search_nodes'],
-    codebase: ['#codebase', '#directory_tree', '#read_multiple_files'],
-  };
+  static get mcpKeywords() {
+    return {
+      context7: ['#context7', '#get-library-docs', '#resolve-library-id', '#microsoft-docs'],
+      memory: ['#memory', '#create_entities', '#create_relations', '#read_graph', '#search_nodes'],
+      codebase: ['#codebase', '#directory_tree', '#read_multiple_files'],
+    };
+  }
   static generatePrompts(context) {
     const prompts = [];
     if (context.needsDocs) {

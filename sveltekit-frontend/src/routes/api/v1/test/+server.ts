@@ -7,7 +7,7 @@ import { json, error } from '@sveltejs/kit';
  */
 import { ensureError } from '$lib/utils/ensure-error';
 import { dev } from '$app/environment';
-import { apiOrchestrator } from '$lib/services/api-orchestrator.js';
+import { APIOrchestrator } from '$lib/services/api-orchestrator.js';
 import { embeddingService } from '$lib/server/embedding-service.js';
 import type { APIResponse, APIRequestContext } from '$lib/types/api.js';
 import crypto from 'crypto';
@@ -15,7 +15,7 @@ export interface IntegrationTestResult {
   testName: string;
   status: 'passed' | 'failed' | 'skipped';
   duration: number;
-  details?: any;
+  details?: unknown;
   error?: string;
 }
 export interface ComprehensiveTestReport {
@@ -26,9 +26,16 @@ export interface ComprehensiveTestReport {
   skipped: number;
   duration: number;
   results: IntegrationTestResult[];
-  systemHealth: { [key: string]: any };
+  systemHealth: { [key: string]: unknown };
   recommendations: string[];
 }
+
+type TestFunctionResult = {
+  success: boolean;
+  details?: unknown;
+  error?: string;
+};
+
 /*
  * POST /api/v1/test - Run comprehensive integration tests
  */
@@ -57,7 +64,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         deployment: 'No Docker',
       },
     } satisfies APIResponse);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Integration Test Error:', err);
     return error(
       500,
@@ -110,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Test API Error:', err);
     return error(
       500,
@@ -140,15 +147,15 @@ async function runComprehensiveTests(testSuite: string, context: APIRequestConte
     );
   }
   // Get system health
-  const systemHealth = await apiOrchestrator.performHealthCheck();
+  const systemHealth = await APIOrchestrator.performHealthCheck();
   // Generate recommendations
   const recommendations = generateRecommendations(results, systemHealth);
   const report: ComprehensiveTestReport = {
     success: results.every(r => r.status === 'passed' || r.status === 'skipped'),
     totalTests: results.length,
-    passed: results.filter(item => item.length),
-    failed: results.filter(item => item.length),
-    skipped: results.filter(item => item.length),
+    passed: results.filter(item => item.status === 'passed').length,
+    failed: results.filter(item => item.status === 'failed').length,
+    skipped: results.filter(item => item.status === 'skipped').length,
     duration: Date.now() - startTime,
     results,
     systemHealth,
@@ -205,10 +212,10 @@ function getTestsForSuite(testSuite: string): string[] {
 /*
  * Run a single test
  */
-async function runSingleTest(testName: string, context: APIRequestContext): Promise<IntegrationTestResult> {
+async function runSingleTest(testName: string, _context: APIRequestContext): Promise<IntegrationTestResult> {
   const testStartTime = Date.now();
   try {
-    let result: any;
+    let result: unknown;
     switch (testName) {
       case 'system_health_check':
         result = await testSystemHealth();
@@ -263,14 +270,15 @@ async function runSingleTest(testName: string, context: APIRequestContext): Prom
           error: 'Test not implemented',
         };
     }
+    const testResult = result as TestFunctionResult;
     return {
       testName,
-      status: (result as { success?: any; details?: any; error?: any }).success ? 'passed' : 'failed',
+      status: testResult.success ? 'passed' : 'failed',
       duration: Date.now() - testStartTime,
-      details: (result as { success?: any; details?: any; error?: any }).details,
-      error: (result as { success?: any; details?: any; error?: any }).error,
+      details: testResult.details,
+      error: testResult.error,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       testName,
       status: 'failed',
@@ -280,52 +288,55 @@ async function runSingleTest(testName: string, context: APIRequestContext): Prom
   }
 }
 // Individual test implementations
-async function testSystemHealth(): Promise<any> {
-  const health = await apiOrchestrator.performHealthCheck();
-  const healthyServices = Object.values(health).filter(item => item.length);
-  const totalServices = Object.values(health).length;
+async function testSystemHealth(): Promise<TestFunctionResult> {
+  const health = await APIOrchestrator.performHealthCheck();
+  const healthValues = Object.values(health);
+  const healthyServices = healthValues.filter((item: any) => item?.status === 'healthy').length;
+  const totalServices = healthValues.length;
+  const healthScore = totalServices > 0 ? Math.round((healthyServices / totalServices) * 100) : 0;
+
   return {
-    success: healthyServices / totalServices >= 0.8, // 80% healthy services required
+    success: totalServices > 0 && healthyServices / totalServices >= 0.8, // 80% healthy services required
     details: {
       healthyServices,
       totalServices,
-      healthScore: Math.round((healthyServices / totalServices) * 100),
+      healthScore,
     },
   };
 }
-async function testAPIOrchestrator(): Promise<any> {
+async function testAPIOrchestrator(): Promise<TestFunctionResult> {
   try {
-    const services = apiOrchestrator.getAllServices();
-    const metrics = apiOrchestrator.getMetrics();
+    const services = APIOrchestrator.getAllServices();
+    const metrics = APIOrchestrator.getMetrics();
     return {
       success: services.length > 0,
       details: {
         totalServices: services.length,
-        activeServices: services.filter(item => item.length),
+        activeServices: services.length,
         metricsAvailable: Object.keys(metrics).length > 0,
       },
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
       error: String(error),
     };
   }
 }
-async function testCoreServices(): Promise<any> {
+async function testCoreServices(): Promise<TestFunctionResult> {
   const coreServices = ['enhancedRAG', 'uploadService', 'documentProcessor', 'grpcServer'];
-  const results: any[] = [];
+  const results: { service: string; healthy: boolean; status?: number; config: boolean; error?: string }[] = [];
   for (const service of coreServices) {
     try {
-      const config = apiOrchestrator.getServiceConfig(service as any);
-      const health = await apiOrchestrator.routeRequest(service as any, '/health');
+      const config = APIOrchestrator.getServiceConfig(service);
+      const health = await APIOrchestrator.routeRequest(service, '/health');
       results.push({
         service,
         healthy: health.ok,
         status: health.status,
         config: !!config,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       results.push({
         service,
         healthy: false,
@@ -333,7 +344,7 @@ async function testCoreServices(): Promise<any> {
       });
     }
   }
-  const healthyCount = results.filter(item => item.length);
+  const healthyCount = results.filter(item => item.healthy).length;
   return {
     success: healthyCount === coreServices.length,
     details: {
@@ -343,56 +354,56 @@ async function testCoreServices(): Promise<any> {
     },
   };
 }
-async function testRAGAPI(): Promise<any> {
+async function testRAGAPI(): Promise<TestFunctionResult> {
   try {
     const response = await fetch('http://localhost:5173/api/v1/rag?action=health');
-    const healthData = await (response as { json?: any; ok?: any; status?: any }).json();
+    const healthData = await response.json();
     return {
-      success: (response as { json?: any; ok?: any; status?: any }).ok,
+      success: response.ok,
       details: {
         endpoint: '/api/v1/rag',
-        status: (response as { json?: any; ok?: any; status?: any }).status,
-        healthData: (response as { json?: any; ok?: any; status?: any }).ok ? healthData : undefined,
+        status: response.status,
+        healthData: response.ok ? healthData : undefined,
       },
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
       error: String(error),
     };
   }
 }
-async function testUploadAPI(): Promise<any> {
+async function testUploadAPI(): Promise<TestFunctionResult> {
   try {
     const response = await fetch('http://localhost:5173/api/v1/upload?action=health');
-    const healthData = await (response as { json?: any; ok?: any; status?: any }).json();
+    const healthData = await response.json();
     return {
-      success: (response as { json?: any; ok?: any; status?: any }).ok,
+      success: response.ok,
       details: {
         endpoint: '/api/v1/upload',
-        status: (response as { json?: any; ok?: any; status?: any }).status,
-        healthData: (response as { json?: any; ok?: any; status?: any }).ok ? healthData : undefined,
+        status: response.status,
+        healthData: response.ok ? healthData : undefined,
       },
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
       error: String(error),
     };
   }
 }
-async function testDatabaseConnections(): Promise<any> {
+async function testDatabaseConnections(): Promise<TestFunctionResult> {
   const databases = ['postgresql', 'redis', 'qdrant'];
-  const results: any[] = [];
+  const results: { database: string; configured: boolean; status?: string; error?: string }[] = [];
   for (const db of databases) {
     try {
-      const config = apiOrchestrator.getServiceConfig(db as any);
+      const config = APIOrchestrator.getServiceConfig(db);
       results.push({
         database: db,
         configured: !!config,
-        status: config?.status || 'unknown',
+        status: (config as { status: string })?.status || 'unknown',
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       results.push({
         database: db,
         configured: false,
@@ -407,7 +418,7 @@ async function testDatabaseConnections(): Promise<any> {
     },
   };
 }
-async function testEmbeddingService(): Promise<any> {
+async function testEmbeddingService(): Promise<TestFunctionResult> {
   try {
     const isHealthy = await embeddingService.healthCheck();
     const models = await embeddingService.getAvailableModels();
@@ -419,7 +430,7 @@ async function testEmbeddingService(): Promise<any> {
         modelCount: models.length,
       },
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
       error: String(error),
@@ -427,49 +438,49 @@ async function testEmbeddingService(): Promise<any> {
   }
 }
 // Placeholder implementations for remaining tests
-async function testMultiProtocolRouting(): Promise<any> {
+async function testMultiProtocolRouting(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'] },
   };
 }
-async function testErrorHandling(): Promise<any> {
+async function testErrorHandling(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { errorHandling: 'Validated' },
   };
 }
-async function testPerformanceBenchmarks(): Promise<any> {
+async function testPerformanceBenchmarks(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { benchmarks: 'Completed' },
   };
 }
-async function testWindowsProcesses(): Promise<any> {
+async function testWindowsProcesses(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { platform: 'Windows Native', processes: 'Validated' },
   };
 }
-async function testCacheFunctionality(): Promise<any> {
+async function testCacheFunctionality(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { caching: 'Functional' },
   };
 }
-async function testWebSocketConnections(): Promise<any> {
+async function testWebSocketConnections(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { websockets: 'Available' },
   };
 }
-async function testFileProcessingPipeline(): Promise<any> {
+async function testFileProcessingPipeline(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { pipeline: 'Ready' },
   };
 }
-async function testAIModelAvailability(): Promise<any> {
+async function testAIModelAvailability(): Promise<TestFunctionResult> {
   return {
     success: true,
     details: { models: ['gemma3-legal', 'nomic-embed-text'] },
@@ -478,17 +489,20 @@ async function testAIModelAvailability(): Promise<any> {
 /*
  * Generate recommendations based on test results
  */
-function generateRecommendations(results: IntegrationTestResult[], systemHealth: { [key: string]: any }): string[] {
+function generateRecommendations(results: IntegrationTestResult[], systemHealth: { [key: string]: unknown }): string[] {
   const recommendations: string[] = [];
   const failedTests = results.filter(r => r.status === 'failed');
-  const passRate = (results.filter(item => item.length) / results.length) * 100;
+  const passRate =
+    results.length > 0 ? (results.filter(item => item.status === 'passed').length / results.length) * 100 : 0;
   if (failedTests.length > 0) {
     recommendations.push(`Address ${failedTests.length} failed tests: ${failedTests.map(t => t.testName).join(', ')}`);
   }
   if (passRate < 90) {
     recommendations.push(`Test pass rate is ${passRate.toFixed(1)}% - investigate failing services`);
   }
-  const unhealthyServices = Object.entries(systemHealth).filter(([_, health]) => health.status !== 'healthy');
+  const unhealthyServices = Object.entries(systemHealth).filter(
+    ([_, health]) => (health as { status: string })?.status !== 'healthy'
+  );
   if (unhealthyServices.length > 0) {
     recommendations.push(`${unhealthyServices.length} services are unhealthy - check service status`);
   }
@@ -499,7 +513,7 @@ function generateRecommendations(results: IntegrationTestResult[], systemHealth:
 }
 // Handler implementations
 async function handleTestSystemHealth(): Promise<Response> {
-  const health = await apiOrchestrator.performHealthCheck();
+  const health = await APIOrchestrator.performHealthCheck();
   return json({
     service: 'Integration Test System',
     status: 'operational',

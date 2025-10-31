@@ -2,7 +2,6 @@
  * Type definitions for embedding operations
  * Enhanced for WASM + Web Workers + GPU AI
  */
-}
 export interface EmbeddingRequest {
   text: string;
   model?: string;
@@ -23,18 +22,18 @@ export interface EmbeddingMetadata {
   textLength?: number;
   attempt?: number;
   timestamp?: string;
-  originalMetadata?: any;
-  [key: string]: any;
+  originalMetadata?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 export interface BatchEmbeddingRequest {
   texts: string[];
   model?: string;
   startTime?: number;
-  documents?: Array<any>;
+  documents?: VectorDocument[]; // use VectorDocument instead of any
   options?: {
     batchSize?: number;
     maxConcurrent?: number;
-  }
+  };
 }
 export interface TextPreprocessingResult {
   cleanText: string;
@@ -55,13 +54,13 @@ export interface WASMEmbeddingConfig {
 }
 export interface BatchEmbeddingResponse {
   success: boolean;
-  results: Array<any>;
+  results: EmbeddingResponse[]; // concrete response items instead of any
   summary: {
     total: number;
     successful: number;
     failed: number;
     processingTime: string;
-  }
+  };
 }
 export interface VectorDocument {
   id: string;
@@ -72,8 +71,8 @@ export interface VectorDocument {
     type?: string;
     source?: string;
     createdAt?: string;
-    [key: string]: any;
-  }
+    [key: string]: unknown;
+  };
 }
 export interface SimilaritySearchOptions {
   limit?: number;
@@ -90,6 +89,6 @@ export interface SimilaritySearchResult {
   content?: string;
   distance: number;
   similarity?: number;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   createdAt?: string;
 }

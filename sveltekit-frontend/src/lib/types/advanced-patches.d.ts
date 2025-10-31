@@ -2,7 +2,8 @@
 declare global {
   namespace Fuse {
     interface FuseOptions<T> {
-      keys?: (string | { name: string; weight: number })[];
+      // Use T so the generic is not unused; restrict to string keys
+      keys?: (Extract<keyof T, string> | { name: Extract<keyof T, string>; weight: number })[];
       threshold?: number;
       includeScore?: boolean;
       distance?: number;
@@ -35,7 +36,7 @@ declare global {
   }
   namespace ChatRequest {
     interface Request {
-      messages: any[];
+      messages: unknown[]; // replace `any` with `unknown` to avoid Unexpected any error
       stream?: boolean;
     }
   }

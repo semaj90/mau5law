@@ -2,7 +2,6 @@
  * 🤖 AUTOMATED RESOLUTION TYPE DEFINITIONS
  * Type definitions for automated barrel store generation and missing import resolution
  */
-}
 export interface MissingImportAnalysis {
   missingFunctions: Set<string>;
   missingClasses: Set<string>;
@@ -52,7 +51,8 @@ export interface ParameterInfo {
   type: string;
   description: string;
   optional?: boolean;
-  default?: any;
+  // Changed from `any` to `unknown` to avoid unexpected any lint/type errors
+  default?: unknown;
 }
 export interface ExampleResult {
   name: string;
@@ -210,15 +210,4 @@ export interface DependencyAnalysis {
   versionConflicts: string[];
   devDependencies: string[];
   peerDependencies: string[];
-}
-// Export all types for barrel store
-export {
-  MissingImportAnalysis,
-  BarrelStoreGeneration,
-  WebFetchResolution,
-  Context7Integration,
-  TypeScriptErrorPattern,
-  ErrorResolutionStrategy,
-  AutomatedResolutionResult,
-  EnhancedErrorAnalysis
 }

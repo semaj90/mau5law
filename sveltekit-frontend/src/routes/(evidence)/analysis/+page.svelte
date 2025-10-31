@@ -1,14 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
-  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the new utility
+  // If migrating to a UI kit with named exports, use curly braces for consistency:
+  // import { WebGPUEvidenceGraphVisualization } from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization';
+  // For now, keep default import as the module doesn't provide a named export
+  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization';
 
-  let showWebGPUDemo = false;
-  let webGPUSupported = false;
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+
+  // Use Svelte 5 reactive state API so updates trigger reactivity
+  let showWebGPUDemo = $state(false);
+  let webGPUSupported = $state(false);
 
   // Sample analysis for WebGPU demo
   const sampleAnalysis = {
@@ -110,12 +113,6 @@
     ],
   };
 
-  // Example of how to use the centralized Ollama endpoint (for server-side or API routes)
-  // If this page were to make a direct API call, you would use this:
-  // const ollamaApiUrl = getOllamaEndpoint();
-  // console.log('Ollama API URL:', ollamaApiUrl);
-  // fetch(`${ollamaApiUrl}/api/generate`, { /* ... */ });
-
   $effect(() => {
     // Check WebGPU support
     webGPUSupported = !!navigator.gpu;
@@ -123,6 +120,23 @@
   function toggleWebGPUDemo() {
     showWebGPUDemo = !showWebGPUDemo;
   }
+
+  // add these new variables for binding and unsubscribing from the custom Button
+  let webgpuButton: any;
+  let webgpuButtonUnsub: (() => void) | undefined;
+
+  $effect(() => {
+    // attach the click listener when the component instance becomes available
+    if (webgpuButton && typeof webgpuButton.$on === 'function') {
+      // cleanup any previous subscription first
+      webgpuButtonUnsub?.();
+      webgpuButtonUnsub = webgpuButton.$on('click', toggleWebGPUDemo);
+      return () => {
+        webgpuButtonUnsub?.();
+        webgpuButtonUnsub = undefined;
+      };
+    }
+  });
 </script>
 
 <svelte:head>
@@ -177,18 +191,15 @@
   </div>
   <!-- Main Evidence Analysis Dashboard -->
   <div class="dashboard-section">
-    <EvidenceAnalysisDashboard />
-  </div>
   <!-- WebGPU Demo Section -->
-  <Card class="webgpu-demo-section">
-    <CardHeader>
-      <div class="demo-header">
-        <CardTitle>🚀 WebGPU 3D Evidence Graph</CardTitle>
-        <Button onclick={toggleWebGPUDemo} variant="primary">
-          {showWebGPUDemo ? 'Hide' : 'Show'} WebGPU Demo
-        </Button>
-      </div>
-    </CardHeader>
+  <Card class="mb-8">
+    <!-- Per project guideline: UI kits (Bits-UI, etc.) export named components, not default; see .github/copilot-instructions.md -->
+    <div class="demo-header">
+      <Button bind:this={webgpuButton} variant="primary">
+        {showWebGPUDemo ? 'Hide' : 'Show'} WebGPU Demo
+      </Button>
+    </div>
+    <CardHeader />
     <CardContent>
       {#if !webGPUSupported}
         <div class="webgpu-warning">
@@ -202,10 +213,16 @@
         </div>
       {:else if showWebGPUDemo}
         <div class="webgpu-demo">
-          <WebGPUEvidenceGraphVisualization analysis={sampleAnalysis} relatedAnalyses={[]} />
-        </div>
-      {:else}
-        <div class="demo-placeholder">
+          <!-- Use component directly in Svelte 5 (runes): components are dynamic by default -->
+-          <WebGPUEvidenceGraphVisualization
+-            analysis={sampleAnalysis}
+-            relatedAnalyses={[]}
+-          />
++          <!-- Use svelte:component and cast the imported value to avoid instance-vs-constructor TS errors -->
++          <svelte:component this={(WebGPUEvidenceGraphVisualization as unknown) as any}
++            analysis={sampleAnalysis}
++            relatedAnalyses={[]}
++          />
           <div class="placeholder-content">
             <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -269,8 +286,10 @@
     </CardContent>
   </Card>
 </div>
+</div>
 
-<style>
+<!-- Replace the broken style section below with a single PostCSS style block -->
+<style lang="postcss">
   .evidence-analysis-page {
     @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6 space-y-8;
     /* If using Uno.css, these could be replaced by utility classes directly in the markup */
@@ -300,7 +319,8 @@
   .dashboard-section {
     @apply mb-8;
   }
-  .webgpu-demo-section {
+  /* these classes are applied to component instances (Card), make them global so Svelte doesn't mark them unused */
+  :global(.webgpu-demo-section) {
     @apply mb-8;
   }
   .demo-header {
@@ -346,7 +366,8 @@
     content: '⚡';
     @apply mr-2;
   }
-  .tech-specs {
+  /* these classes are applied to component instances (Card), make them global so Svelte doesn't mark them unused */
+  :global(.tech-specs) {
     @apply mb-8;
   }
   .specs-grid {

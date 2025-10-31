@@ -39,8 +39,34 @@ export interface DatabaseSyncTestData {
     testingEnvironment: boolean;
   };
 }
-export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSyncTestData> => {
+export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promise<DatabaseSyncTestData> => {
   const startTime = Date.now();
+
+  // --- Move helpers to function body root (accessible everywhere in load) ---
+  function parseCountRow(row: unknown): number {
+    if (!row || typeof row !== 'object') return 0;
+    const r = row as Record<string, unknown>;
+    const v = r['count'] ?? r['count'];
+    if (typeof v === 'number') return v;
+    if (typeof v === 'bigint') return Number(v);
+    if (typeof v === 'string') {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+  }
+
+  function parseNumericField(value: unknown): number {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'bigint') return Number(value);
+    if (typeof value === 'string') {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+  }
+  // --- end helpers ---
+
   try {
     // Test service availability with detailed error handling
     const [ollamaAvailable, ollamaModels] = await Promise.allSettled([
@@ -113,38 +139,36 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
               totalProcessed: 0,
             },
           ];
-    // Calculate document counts per session
-    const sessionsWithCounts = await Promise.all(
-      sessions.map(async session => {
-        try {
-          const [{ count: docCount }] = await db
-            .select({ count: count() })
-            .from(legalDocuments)
-            .where(eq(legalDocuments.sessionId, session.id));
-          return {
-            id: session.id,
-            sessionName: session.sessionName || `Test Session ${session.id.slice(0, 8)}`,
-            messageCount: session.messageCount || 0,
-            lastActivity:
-              session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
-            documentsProcessed: Number(docCount) || 0,
-          };
-        } catch (error) {
-          console.warn(`Failed to count documents for session ${session.id}:`, error);
-          return {
-            id: session.id,
-            sessionName: session.sessionName || `Test Session ${session.id.slice(0, 8)}`,
-            messageCount: session.messageCount || 0,
-            lastActivity: session.lastActivity?.toISOString() || new Date().toISOString(),
-            documentsProcessed: 0,
-          };
-        }
-      })
-    );
-    // Calculate metrics
-    const metricsData = metrics[0];
-    const cacheHitRate =
-      metricsData.totalProcessed > 0 ? (metricsData.cacheHits / metricsData.totalProcessed) * 100 : 0;
+
+    // Build a normalized sessionsWithCounts object (used below)
+    const sessionsWithCounts = Array.isArray(sessions)
+      ? sessions.map((s: any) => ({
+          id: s.id,
+          sessionName: s.sessionName ?? s.session_name ?? 'untitled',
+          messageCount: parseNumericField(
+            (s as Record<string, unknown>).messageCount ?? (s as Record<string, unknown>).message_count
+          ),
+          lastActivity: s.lastActivity ?? s.updatedAt ?? null,
+          createdAt: s.createdAt ?? null,
+        }))
+      : [];
+
+    // Extract safe numeric values
+    const totalDocumentsCount = parseCountRow(Array.isArray(counts) ? counts[0] : undefined);
+    const totalSessionsCount = parseCountRow(Array.isArray(counts) ? counts[1] : undefined);
+    const documentsTodayCount = parseCountRow(Array.isArray(todayDocs) ? todayDocs[0] : undefined);
+
+    const metricsData = (Array.isArray(metrics) && metrics[0]) || {
+      avgProcessingTime: 0,
+      cacheHits: 0,
+      totalProcessed: 0,
+    };
+
+    const avgProcessingTimeNumeric = parseNumericField((metricsData as Record<string, unknown>).avgProcessingTime);
+    const cacheHitsNumeric = parseNumericField((metricsData as Record<string, unknown>).cacheHits);
+    const totalProcessedNumeric = parseNumericField((metricsData as Record<string, unknown>).totalProcessed);
+
+    const cacheHitRate = totalProcessedNumeric > 0 ? (cacheHitsNumeric / totalProcessedNumeric) * 100 : 0;
     // Test database connectivity
     let postgresqlAvailable = true;
     try {
@@ -187,16 +211,16 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           lastChecked: new Date().toISOString(),
         },
         testingMetrics: {
-          totalDocuments: Number((counts[0] as any)?.count) || 0,
-          totalSessions: Number((counts[1] as any)?.count) || 0,
-          documentsToday: Number((todayDocs[0] as any)?.count) || 0,
-          averageProcessingTime: Math.round(metricsData.avgProcessingTime || 0),
+          totalDocuments: totalDocumentsCount,
+          totalSessions: totalSessionsCount,
+          documentsToday: documentsTodayCount,
+          averageProcessingTime: Math.round(avgProcessingTimeNumeric || 0),
           cacheHitRate: Math.round(cacheHitRate * 100) / 100,
         },
       },
       meta: {
-        totalDocuments: Number((counts[0] as any)?.count) || 0,
-        totalSessions: Number((counts[1] as any)?.count) || 0,
+        totalDocuments: totalDocumentsCount,
+        totalSessions: totalSessionsCount,
         serverRenderTime,
         testingEnvironment: true,
       },

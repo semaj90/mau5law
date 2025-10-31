@@ -7,13 +7,13 @@ import { predictiveAnalytics } from '$lib/services/predictive-analytics-service'
 import { json } from '@sveltejs/kit'
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { caseId, consoleTheme = 'n64' } = await request.json()
+    const { caseId, consoleTheme = 'n64' } = await request.json();
     if (!caseId) {
-      return json({ error: 'Case ID is required' }, { status: 400 })
+      return json({ error: 'Case ID is required' }, { status: 400 });
     }
-    console.log(`🔮 Predicting outcome for case ${caseId} (theme: ${consoleTheme})`)
+    console.log(`🔮 Predicting outcome for case ${caseId} (theme: ${consoleTheme})`);
     // Get prediction using your new service
-    const prediction = await predictiveAnalytics.predictCaseOutcome(caseId, consoleTheme)
+    const prediction = await predictiveAnalytics.predictCaseOutcome(caseId, consoleTheme);
     return json({
       success: true,
       prediction,
@@ -21,16 +21,17 @@ export const POST: RequestHandler = async ({ request }) => {
       processingInfo: {
         service: 'predictive-analytics-service',
         version: '1.0.0',
-        integrations: ['vector-search', 'recommendation-engine', 'ollama-ai']
-      }
-    })
-  } catch (error) {
-    console.error('Prediction API error:', error)
-    return json({
+        integrations: ['vector-search', 'recommendation-engine', 'ollama-ai'],
+      },
+    });
+  } catch (error: unknown) {
+    console.error('Prediction API error:', error);
+    return json(
+      {
         error: 'Failed to generate case prediction',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },)
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    )
+    );
   }
 }

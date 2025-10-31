@@ -1,11 +1,10 @@
-import stream from 'stream';
-// AI Chat Type Definitions
+/* AI Chat Type Definitions */
 export interface AIMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: Date;
-  metadata?: { [key: string]: any };
+  metadata?: Record<string, unknown>; // replaced `any` with safer type
 }
 export interface AIChat {
   id: string;
@@ -35,7 +34,7 @@ export interface AIProvider {
   stream(prompt: string, options?: AICompletionOptions): AsyncIterable<AIStreamResponse>;
   embed(text: string): Promise<number[]>;
 }
-export type AIModelType = 'gpt-4' | 'gpt-3.5-turbo' | 'claude' | 'gemma' | 'llama' | 'custom';
+export type AIModelType = 'gpt-4.1' | 'gpt-4.0' | 'gpt-5.0-mini' | 'claude' | 'gemma' | 'llama' | 'custom';
 export interface AIConfig {
   provider: 'openai' | 'anthropic' | 'ollama' | 'custom';
   model: AIModelType;

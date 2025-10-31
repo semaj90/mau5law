@@ -1,108 +1,161 @@
-import { OLLAMA_BASE_URL } from '$env/static/private';
+import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
 
-export const EMBEDDING_MODEL = 'nomic-embed-text'; // As per project instructions
+// default embedding model per project instructions
+export const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text';
+export const EMBEDDING_GEMMA = 'embeddinggemma:latest';
 
 /**
- * Generates a vector embedding for the given text using Ollama.
- * @param text The text to embed.
- * @returns A promise that resolves to an array of numbers representing the embedding.
+ * Resolve Ollama base URL from envs or fallback to DEFAULT_OLLAMA.
  */
-export async function generateEmbedding(text: string): Promise<number[]> {
-  try {
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: EMBEDDING_MODEL,
-        prompt: text,
-      }),
-    });
+function OllamaGetEndpoint(): string {
+  // Prefer docker/service env first, then public, then default helper
+  return (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || DEFAULT_OLLAMA).replace(/\/+$/, '');
+}
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Ollama embedding failed: ${response.status} ${response.statusText} - ${errorBody}`);
-    }
-
-    const data = await response.json();
-    if (!data.embedding || !Array.isArray(data.embedding)) {
-      throw new Error('Invalid embedding response from Ollama.');
-    }
-    return data.embedding;
-  } catch (error) {
-    console.error('Error generating embedding:', error);
-    throw error;
-  }
+// helper type-guard
+function isNumberArray(v: unknown): v is number[] {
+  return Array.isArray(v) && (v as unknown[]).every(item => typeof item === 'number');
 }
 
 /**
- * Summarizes the given text using Ollama.
- * This is a placeholder implementation and might need a specific LLM model for summarization.
- * @param text The text to summarize.
- * @returns A promise that resolves to the summarized text.
+ * Generate an embedding for text using Ollama.
+ * - model defaults to EMBEDDING_MODEL but can be overridden (e.g., EMBEDDING_GEMMA).
+ * - returns the embedding array or throws on unexpected responses.
  */
-export async function summarizeText(text: string): Promise<string> {
-  try {
-    // This is a basic placeholder. For actual summarization, you'd typically use a specific LLM.
-    // For now, we'll use a simple prompt with a general model like 'gemma3' if available,
-    // or just return a truncated version if Ollama is not configured for summarization.
-    const SUMMARIZATION_MODEL = 'gemma3'; // Or another suitable LLM from your Ollama setup
+export async function generateEmbedding(text: string, model: string = EMBEDDING_MODEL): Promise<number[]> {
+  const base = OllamaGetEndpoint();
+  const url = `${base}/api/embeddings`;
+  const body = { model, input: text };
 
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: SUMMARIZATION_MODEL,
-        prompt: `Summarize the following text concisely:\n\n${text}`,
-        stream: false,
-        options: {
-          temperature: 0.3,
-          num_predict: 150, // Limit response length for summarization
-        },
-      }),
-    });
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`Ollama embedding request failed: ${res.status} ${res.statusText} ${errText}`);
+  }
+  // safer typed fallback instead of `as any`
+  const data: unknown = await res.json().catch((): unknown => ({}));
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Ollama summarization failed: ${response.status} ${response.statusText} - ${errorBody}`);
+  if (typeof data === 'object' && data !== null) {
+    const obj = data as Record<string, unknown>;
+
+    // { data: [{ embedding: [...] }] }
+    if (Array.isArray(obj.data)) {
+      const first = obj.data[0] as unknown;
+      if (typeof first === 'object' && first !== null) {
+        const firstObj = first as Record<string, unknown>;
+        if (isNumberArray(firstObj.embedding)) return firstObj.embedding;
+      }
     }
 
-    const data = await response.json();
-    if (!data.response) {
-      throw new Error('Invalid summarization response from Ollama.');
+    // { embedding: [...] }
+    if (isNumberArray(obj.embedding)) return obj.embedding;
+
+    // { embeddings: [...] } -> take first
+    if (Array.isArray(obj.embeddings)) {
+      const e0 = obj.embeddings[0] as unknown;
+      if (isNumberArray(e0)) return e0;
     }
-    return data.response.trim();
-  } catch (error) {
-    console.warn('Warning: Error summarizing text with Ollama. Returning truncated text instead.', error);
-    // Fallback: return a truncated version of the original text
+
+    // defensive: { vector: [...] }
+    if (isNumberArray(obj.vector)) return obj.vector;
+  }
+
+  throw new Error('Unexpected embedding response shape from Ollama');
+}
+
+/**
+ * Summarize text using Ollama generate endpoint.
+ * - model defaults to 'gemma3' but can be overridden.
+ * - best-effort extraction from multiple response shapes.
+ */
+export async function summarizeText(text: string, model = 'gemma3'): Promise<string> {
+  const base = OllamaGetEndpoint();
+  const url = `${base}/api/generate`;
+  const prompt = `Summarize the following text concisely:\n\n${text}`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      model,
+      prompt,
+      stream: false,
+      options: { temperature: 0.3, num_predict: 150 },
+    }),
+  });
+
+  if (!res.ok) {
+    // fallback: return truncated original text
+    const err = await res.text().catch(() => '');
+    console.warn('Ollama summarization failed:', res.status, err);
     return text.substring(0, 300) + (text.length > 300 ? '...' : '');
   }
+
+  // safer typed fallback instead of `as any`
+  const data: unknown = await res.json().catch((): unknown => ({}));
+
+  if (typeof data === 'object' && data !== null) {
+    const obj = data as Record<string, unknown>;
+
+    // { response: '...' }
+    if (typeof obj.response === 'string') return obj.response.trim();
+
+    // { output: [{ content: '...' }] }
+    if (Array.isArray(obj.output)) {
+      const out0 = obj.output[0] as unknown;
+      if (typeof out0 === 'object' && out0 !== null) {
+        const outObj = out0 as Record<string, unknown>;
+        if (typeof outObj.content === 'string') return outObj.content.trim();
+      }
+    }
+
+    // { choices: [{ text: '...' }] }
+    if (Array.isArray(obj.choices)) {
+      const c0 = obj.choices[0] as unknown;
+      if (typeof c0 === 'object' && c0 !== null) {
+        const cObj = c0 as Record<string, unknown>;
+        if (typeof cObj.text === 'string') return cObj.text.trim();
+      }
+    }
+
+    // last resort: any top-level string field
+    for (const v of Object.values(obj)) {
+      if (typeof v === 'string' && v.length > 0) return v.trim();
+    }
+  }
+
+  // fallback truncate
+  return text.substring(0, 300) + (text.length > 300 ? '...' : '');
 }
 
-import fetch from 'node-fetch';
-
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-
+/**
+ * Minimal wrapper client for common usage elsewhere in the codebase.
+ */
 export const ollamaClient = {
-  async embedText(text: string): Promise<number[] | null> {
+  /**
+   * Embed text, returns embedding array or null on failure.
+   */
+  async embedText(text: string, model?: string): Promise<number[] | null> {
     try {
-      const url = `${OLLAMA_URL}/embed`; // hypothetical embed endpoint
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'gemma3-legal', input: text }),
-      });
-
-      if (!res.ok) {
-        console.warn('Ollama embed request failed', res.status);
-        return null;
-      }
-
-      const data = await res.json();
-      // Expect { embedding: number[] }
-      return Array.isArray(data?.embedding) ? data.embedding : null;
+      return await generateEmbedding(text, model);
     } catch (err) {
       console.warn('ollamaClient.embedText error', err);
       return null;
+    }
+  },
+  /**
+   * Summarize text, returns string (always returns something).
+   */
+  async summarize(text: string, model?: string): Promise<string> {
+    try {
+      return await summarizeText(text, model);
+    } catch (err) {
+      console.warn('ollamaClient.summarize error', err);
+      return text.substring(0, 300) + (text.length > 300 ? '...' : '');
     }
   },
 };

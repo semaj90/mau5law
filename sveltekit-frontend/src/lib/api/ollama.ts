@@ -46,14 +46,12 @@ export interface OllamaEmbeddingsRequest {
 export interface OllamaEmbeddingsResponse {
   embedding: number[];
 }
+import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
+
 function getDefaultHost(): string {
-  // Prefer Vite env (SSG/SSR-safe), then window.ollamaHost, then localhost
-  const envHost = (import.meta as ImportMeta).env?.VITE_OLLAMA_HOST;
-  if (envHost) return envHost;
-  if (typeof window !== 'undefined' && window.ollamaHost) {
-    return window.ollamaHost;
-  }
-  return 'http://localhost:11434';
+  // Delegate host resolution to the centralized helper which prefers Vite env,
+  // Node env and falls back to localhost. This keeps client/server behavior consistent.
+  return getOllamaEndpoint();
 }
 async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
   const host = getDefaultHost();

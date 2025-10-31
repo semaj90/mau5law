@@ -34,7 +34,9 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface Case {
+// NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
+// Update imports/usages to use `DBCase` instead of `Case`.
+export interface DBCase {
   id: string;
   title: string;
   description: string | null;
@@ -55,7 +57,9 @@ export interface CaseMetadata {
   [key: string]: unknown;
 }
 
-export interface Evidence {
+// NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
+// Update imports/usages to use `DBEvidence` instead of `Evidence`.
+export interface DBEvidence {
   id: string;
   caseId: string;
   title: string;
@@ -197,11 +201,12 @@ export interface DeleteQueryResult {
 // SPECIFIC DOMAIN QUERY RESULTS
 // ============================================================================
 
-export interface CaseQueryResult extends QueryResult<Case> {}
-export interface CaseListResult extends ListQueryResult<Case> {}
+// NOTE: Updated to reference DBCase / DBEvidence
+export interface CaseQueryResult extends QueryResult<DBCase> {}
+export interface CaseListResult extends ListQueryResult<DBCase> {}
 
-export interface EvidenceQueryResult extends QueryResult<Evidence> {}
-export interface EvidenceListResult extends ListQueryResult<Evidence> {}
+export interface EvidenceQueryResult extends QueryResult<DBEvidence> {}
+export interface EvidenceListResult extends ListQueryResult<DBEvidence> {}
 
 export interface UserQueryResult extends QueryResult<User> {}
 export interface UserListResult extends ListQueryResult<User> {}
@@ -219,7 +224,9 @@ export interface AnalysisResultListResult extends ListQueryResult<AnalysisResult
 // VECTOR SEARCH TYPES
 // ============================================================================
 
-export interface VectorSearchResult {
+// NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
+// Update imports/usages to use `DBVectorSearchResult`.
+export interface DBVectorSearchResult {
   id: string;
   title: string;
   content: string;
@@ -230,7 +237,7 @@ export interface VectorSearchResult {
 
 export interface VectorSearchQueryResult {
   success: boolean;
-  results?: VectorSearchResult[];
+  results?: DBVectorSearchResult[];
   query: string;
   queryEmbedding?: number[];
   totalResults: number;

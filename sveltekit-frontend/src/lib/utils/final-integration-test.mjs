@@ -7,6 +7,8 @@
 
 import { execSync } from 'child_process';
 import fs from 'fs';
+// Use shared default to avoid hardcoded Ollama literal
+import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
 
 console.log('🎯 FINAL END-TO-END SYSTEM INTEGRATION TEST\n');
 console.log('=' .repeat(70));
@@ -92,7 +94,8 @@ function checkFileContains(filePath, searchString) {
 
 function checkOllamaService() {
   try {
-    execSync('curl -s http://localhost:11434/api/tags', { timeout: 3000 });
+    const base = process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || DEFAULT_OLLAMA;
+    execSync(`curl -s ${base.replace(/\/$/, '')}/api/tags`, { timeout: 3000 });
     return true;
   } catch {
     return false;
@@ -102,28 +105,28 @@ function checkOllamaService() {
 // Enhanced flow connectivity tests
 async function testConnectedFlows() {
   console.log('🔄 Testing Connected Flows:\n');
-  
+
   const flowTests = [
     {
       name: 'AI Summary Flow',
       description: 'Local LLM → Enhanced RAG → User Activity → XState Synthesis',
       components: [
         './src/routes/api/summaries/+server.ts',
-        './src/lib/machines/aiSummaryMachine.ts', 
+        './src/lib/machines/aiSummaryMachine.ts',
         './src/lib/stores/enhancedLokiStore.ts',
-        './static/workers/summaries-sw.js'
+        './static/workers/summaries-sw.js',
       ],
-      connected: true
+      connected: true,
     },
     {
-      name: 'Vector Search Flow', 
+      name: 'Vector Search Flow',
       description: 'PostgreSQL pgvector ↔ Qdrant ↔ Vector Service → Search APIs',
       components: [
         './src/lib/server/services/vector-service.ts',
         './src/lib/server/services/qdrant-service.ts',
-        './src/routes/api/vector/search/+server.ts'
+        './src/routes/api/vector/search/+server.ts',
       ],
-      connected: true
+      connected: true,
     },
     {
       name: 'Evidence Processing Flow',
@@ -131,106 +134,102 @@ async function testConnectedFlows() {
       components: [
         './src/routes/api/evidence/upload/+server.ts',
         './src/lib/components/ai/EvidenceCanvas.svelte',
-        './static/workers/legal-document-processor.js'
+        './static/workers/legal-document-processor.js',
       ],
-      connected: true
+      connected: true,
     },
     {
       name: 'SSR Hydration Flow',
       description: 'Server Context → Client Hydration → UI State Management',
-      components: [
-        './src/routes/+layout.server.ts',
-        './src/hooks.client.ts',
-        './src/lib/stores/ai-store.ts'
-      ],
-      connected: true
+      components: ['./src/routes/+layout.server.ts', './src/hooks.client.ts', './src/lib/stores/ai-store.ts'],
+      connected: true,
     },
     {
       name: 'NVIDIA/GPU Processing Flow',
       description: 'Service Worker → NVIDIA Triton → GPU Acceleration → Fallbacks',
-      components: [
-        './static/workers/summaries-sw.js' 
-      ],
+      components: ['./static/workers/summaries-sw.js'],
       connected: true,
-      note: 'NVIDIA integration in Service Worker - requires GPU runtime'
-    }
+      note: 'NVIDIA integration in Service Worker - requires GPU runtime',
+    },
   ];
-  
+
   let flowsPassing = 0;
-  
+
   for (const flow of flowTests) {
     const allComponentsExist = flow.components.every(component => fs.existsSync(component));
     const status = allComponentsExist && flow.connected ? '✅ CONNECTED' : '⚠️  PARTIAL';
-    
+
     console.log(`${status} ${flow.name}`);
     console.log(`    ${flow.description}`);
-    
+
     if (flow.note) {
       console.log(`    💡 ${flow.note}`);
     }
-    
-    console.log(`    Components: ${flow.components.filter(c => fs.existsSync(c)).length}/${flow.components.length} exist`);
-    
+
+    console.log(
+      `    Components: ${flow.components.filter(c => fs.existsSync(c)).length}/${flow.components.length} exist`
+    );
+
     if (allComponentsExist && flow.connected) {
       flowsPassing++;
     }
-    
+
     console.log('');
   }
-  
+
   return { flowsPassing, totalFlows: flowTests.length };
 }
 
 // Run comprehensive integration test
 async function runComprehensiveTest() {
   console.log('🚀 Starting Comprehensive Integration Test\n');
-  
+
   let totalTests = 0;
   let totalPassed = 0;
-  
+
   // Test each category
   for (const category of INTEGRATION_TESTS) {
     console.log(`${category.category}:`);
-    
+
     let categoryPassed = 0;
-    
+
     for (const test of category.tests) {
       const passed = test.check();
       const status = passed ? '✅' : '❌';
       console.log(`  ${status} ${test.name}`);
-      
+
       if (passed) {
         categoryPassed++;
         totalPassed++;
       }
       totalTests++;
     }
-    
+
     console.log(`  📊 Category Score: ${categoryPassed}/${category.tests.length}\n`);
   }
-  
+
   // Test connected flows
   const flowResults = await testConnectedFlows();
-  
+
   // Generate comprehensive report
-  console.log('=' .repeat(70));
+  console.log('='.repeat(70));
   console.log('📊 COMPREHENSIVE INTEGRATION TEST RESULTS');
-  console.log('=' .repeat(70));
-  
+  console.log('='.repeat(70));
+
   console.log(`🧪 Component Tests: ${totalPassed}/${totalTests} passed`);
   console.log(`🔄 Connected Flows: ${flowResults.flowsPassing}/${flowResults.totalFlows} operational`);
-  
-  const overallScore = ((totalPassed / totalTests) + (flowResults.flowsPassing / flowResults.totalFlows)) / 2;
-  
+
+  const overallScore = (totalPassed / totalTests + flowResults.flowsPassing / flowResults.totalFlows) / 2;
+
   console.log(`\n🎯 OVERALL INTEGRATION SCORE: ${Math.round(overallScore * 100)}%`);
-  
+
   // System status determination
   if (overallScore >= 0.9) {
     console.log('🟢 SYSTEM STATUS: FULLY INTEGRATED');
     console.log('🏆 EXCELLENT - All major systems connected and operational!');
     console.log('🚀 Ready for production deployment');
   } else if (overallScore >= 0.8) {
-    console.log('🟡 SYSTEM STATUS: WELL INTEGRATED'); 
+    console.log('🟡 SYSTEM STATUS: WELL INTEGRATED');
     console.log('✅ GOOD - Most systems connected, minor components need attention');
     console.log('🔧 Ready for testing with minor fixes needed');
   } else if (overallScore >= 0.6) {
@@ -242,14 +241,14 @@ async function runComprehensiveTest() {
     console.log('❌ NEEDS WORK - Significant integration issues');
     console.log('🛠️  Major integration work required');
   }
-  
+
   // Specific recommendations
   console.log('\n💡 RECOMMENDATIONS:');
-  
+
   if (!checkOllamaService()) {
     console.log('• Install LLM model: ollama pull gemma2:2b');
   }
-  
+
   const missingComponents = [];
   for (const category of INTEGRATION_TESTS) {
     for (const test of category.tests) {
@@ -258,23 +257,23 @@ async function runComprehensiveTest() {
       }
     }
   }
-  
+
   if (missingComponents.length > 0 && missingComponents.length <= 5) {
     console.log('• Complete missing components:', missingComponents.join(', '));
   }
-  
+
   if (overallScore >= 0.8) {
     console.log('• System ready for end-to-end testing');
     console.log('• Consider load testing with multiple concurrent users');
   }
-  
+
   return {
     overallScore,
     totalPassed,
     totalTests,
     flowsPassing: flowResults.flowsPassing,
     totalFlows: flowResults.totalFlows,
-    systemReady: overallScore >= 0.8
+    systemReady: overallScore >= 0.8,
   };
 }
 

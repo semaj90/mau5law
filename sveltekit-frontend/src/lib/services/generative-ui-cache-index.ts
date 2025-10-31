@@ -11,8 +11,8 @@
  */
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
 import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js';
-import { createRedisInstance } from '$lib/server/redis.js';
-import { Redis as IORedis } from 'ioredis'; // Changed from 'type IORedis from 'ioredis';'
+import createRedisInstance from '$lib/server/redis.js';
+import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';'
 
 // Generative UI component metadata
 export interface UIComponentMetadata {
@@ -71,7 +71,7 @@ export interface IndexStats {
 }
 
 export class GenerativeUICacheIndex {
-  private redis: IORedis;
+  private redis: Redis;
   private hmmPredictor: InstanceType<typeof BitmapHMMSOMPredictor>;
   private qloraService: QLoRAReinforcementLearningService;
   private componentIndex: Map<string, CachedUIComponent> = new Map();
@@ -83,7 +83,7 @@ export class GenerativeUICacheIndex {
   constructor(
     hmmPredictor?: typeof BitmapHMMSOMPredictor,
     qloraService?: QLoRAReinforcementLearningService,
-    redis?: IORedis
+    redis?: Redis
   ) {
     this.redis = redis || createRedisInstance();
     this.hmmPredictor = hmmPredictor ? new hmmPredictor() : new BitmapHMMSOMPredictor();
@@ -102,15 +102,18 @@ export class GenerativeUICacheIndex {
     await this.qloraService.initialize();
 
     // Setup WebGPU for compute acceleration
-    if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-      try {
-        const adapter = await navigator.gpu.requestAdapter();
-        if (adapter) {
-          this.webgpuDevice = await adapter.requestDevice();
-          console.log('✅ WebGPU acceleration enabled');
+    if (typeof navigator !== 'undefined') {
+      const nav = navigator as Navigator & { gpu?: GPU };
+      if (nav.gpu) {
+        try {
+          const adapter = await nav.gpu.requestAdapter();
+          if (adapter) {
+            this.webgpuDevice = await adapter.requestDevice();
+            console.log('✅ WebGPU acceleration enabled');
+          }
+        } catch (error) {
+          console.warn('WebGPU not available:', error);
         }
-      } catch (error) {
-        console.warn('WebGPU not available:', error);
       }
     }
 
@@ -197,7 +200,7 @@ export class GenerativeUICacheIndex {
    */
   async searchComponents(query: SearchQuery): Promise<SearchResult[]> {
     const startTime = performance.now();
-    const results: SearchResult[] = [];
+    // removed unused `results` variable
     const resultMap = new Map<string, SearchResult>();
 
     // Text-based search using embeddings
@@ -483,9 +486,11 @@ export class GenerativeUICacheIndex {
   }
 
   private generateSVG(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
-    const width = params.width || 200;
-    const height = params.height || 100;
-    const color = params.color || '#4A90E2';
+    // Coerce width/height to numbers to avoid TS arithmetic errors
+    const p = params as Record<string, unknown>;
+    const width = Number(p.width as number | string) || 200;
+    const height = Number(p.height as number | string) || 100;
+    const color = String((p.color as string) ?? '#4A90E2');
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
       <rect x="0" y="0" width="${width}" height="${height}" fill="${color}" opacity="0.8"/>
       <text x="${width / 2}" y="${height / 2}" text-anchor="middle" font-size="14" fill="white" dy=".3em">
@@ -507,7 +512,8 @@ export class GenerativeUICacheIndex {
   }
 
   private generateWebGLShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
-    const color = this.hexToRgb((params.color as string | undefined) || '#4A90E2');
+    const p = params as Record<string, unknown>;
+    const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
     return `
       precision mediump float;
       uniform vec2 resolution;
@@ -522,7 +528,8 @@ export class GenerativeUICacheIndex {
   }
 
   private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
-    const color = this.hexToRgb((params.color as string | undefined) || '#4A90E2');
+    const p = params as Record<string, unknown>;
+    const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
     return `
       struct Uniforms {
         resolution: vec2<f32>,
@@ -592,26 +599,43 @@ export class GenerativeUICacheIndex {
     return Math.min(10, complexity);
   }
 
+  // Centralized dependency keys for maintainability
+  private static readonly DEPENDENCY_KEYS = [
+    { key: 'd3', value: 'd3' },
+    { key: 'threejs', value: 'three' },
+    { key: 'webgl', value: 'webgl' },
+    { key: 'webgpu', value: 'webgpu' },
+  ];
+
+  /**
+   * Extracts a list of dependency names from the given generation parameters.
+   * @param params - The generation parameters object to inspect for known dependency keys.
+   * @returns An array of dependency strings (e.g., ['d3', 'three']) found in the input.
+   */
   private extractDependencies(params: Record<string, unknown>): string[] {
-    const deps = [];
-    if (params.d3) deps.push('d3');
-    if (params.threejs) deps.push('three');
-    if (params.webgl) deps.push('webgl');
-    if (params.webgpu) deps.push('webgpu');
+    const deps: string[] = [];
+    const p = params as Record<string, unknown>;
+    for (const dep of GenerativeUICacheIndex.DEPENDENCY_KEYS) {
+      // explicit check avoids redundant double-negation and is clearer for unknown typed values
+      if (p[dep.key] !== undefined && p[dep.key] !== null) deps.push(dep.value);
+    }
     return deps;
   }
 
-  private calculateMemoryFootprint(representations: any): number {
+  private calculateMemoryFootprint(representations: CachedUIComponent['representations']): number {
     return JSON.stringify(representations).length * 2; // Rough estimate in bytes
   }
 
-  private calculatePredictionScore(componentId: string, prediction: any): number {
+  private calculatePredictionScore(componentId: string, prediction: unknown): number {
     // Calculate how likely this component is to be needed
     const baseScore = Math.random() * 0.5 + 0.3; // 0.3-0.8 base range
+    const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined;
     if (
-      prediction &&
-      prediction.recommendedAssets &&
-      prediction.recommendedAssets.some((asset: any) => componentId.includes(asset.type))
+      pred &&
+      Array.isArray(pred.recommendedAssets) &&
+      pred.recommendedAssets.some(
+        asset => typeof asset === 'object' && typeof asset.type === 'string' && componentId.includes(asset.type)
+      )
     ) {
       return Math.min(1, baseScore + 0.3);
     }
@@ -680,15 +704,27 @@ export class GenerativeUICacheIndex {
     }
   }
 
-  private async recordInteraction(componentId: string, context: any, action: string): Promise<void> {
+  private async recordInteraction(
+    componentId: string,
+    context: Record<string, unknown>,
+    action: string
+  ): Promise<void> {
     await this.hmmPredictor.recordInteraction(action, { ...context, componentId });
-    // Collect feedback for QLoRA training
-    await this.qloraService.collectFeedback({
-      prompt: `generate component ${componentId}`,
-      response: 'Component generated successfully',
-      outcome: 'positive',
-      context: context
-    });
+    // Collect feedback for QLoRA training - call with 4 args to match expected signature
+    // (prompt, response, outcome, context)
+    try {
+      await (
+        this.qloraService.collectFeedback as unknown as (
+          prompt: string,
+          response: string,
+          outcome: string,
+          ctx: Record<string, unknown>
+        ) => Promise<unknown>
+      )(`generate component ${componentId}`, 'Component generated successfully', 'positive', context);
+    } catch (err) {
+      // non-fatal: if QLoRA signature differs, swallow error to avoid breaking generation flow
+      console.warn('QLoRA feedback failed:', err);
+    }
   }
 
   private async calculateCacheHitRate(): Promise<number> {
@@ -751,13 +787,19 @@ export class GenerativeUICacheIndex {
 
   private async loadIndexFromRedis(): Promise<void> {
     try {
+      type RedisLike = {
+        scan(cursor: string, match: string, pattern: string, count: number): Promise<[string, string[]]>;
+        mget(keys: string[]): Promise<Array<string | null>>;
+      };
+      const redisClient = this.redis as unknown as RedisLike;
+
       let cursor = '0';
       let loaded = 0;
       do {
-        const [nextCursor, keys] = await this.redis.scan(cursor, 'MATCH', 'ui_component:*', 'COUNT', 100);
+        const [nextCursor, keys] = await redisClient.scan(cursor, 'MATCH', 'ui_component:*', 100);
         cursor = nextCursor;
-        if (keys.length > 0) {
-          const data = await this.redis.mget(keys);
+        if (keys && keys.length > 0) {
+          const data = await redisClient.mget(keys);
           for (const item of data) {
             if (item) {
               const component: CachedUIComponent = JSON.parse(item);
@@ -777,11 +819,17 @@ export class GenerativeUICacheIndex {
 
   // Helper for Redis with fallback
   private async setRedis(key: string, value: string, ttlSeconds: number): Promise<void> {
+    type RedisWriteLike = {
+      set(key: string, value: string, mode?: string, duration?: number): Promise<unknown>;
+      setex(key: string, seconds: number, value: string): Promise<unknown>;
+    };
+    const redisClient = this.redis as unknown as RedisWriteLike;
     try {
-      await (this.redis as any).set(key, value, 'EX', ttlSeconds);
+      // prefer modern signature (SET key value EX seconds)
+      await redisClient.set(key, value, 'EX', ttlSeconds);
     } catch (e) {
       // Fallback for older ioredis versions
-      await (this.redis as any).setex(key, ttlSeconds, value);
+      await redisClient.setex(key, ttlSeconds, value);
     }
   }
 
@@ -799,5 +847,4 @@ export class GenerativeUICacheIndex {
         }
       : { r: 0.5, g: 0.5, b: 0.5 };
   }
-}
 }
