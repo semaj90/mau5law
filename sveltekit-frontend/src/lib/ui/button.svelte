@@ -5,6 +5,8 @@
 </script>
 
 <script lang="ts">
+	import { cn } from '$lib/utils'; // Import cn utility
+
 	// (keep instance-level props as before)
 	export let type: 'button' | 'submit' | 'reset' = 'button';
 	export let variant: 'primary' | 'secondary' | 'ghost' = 'primary';
@@ -24,7 +26,14 @@
 
 	$: bySize = size === 'sm' ? 'h-8 px-3 text-sm' : size === 'lg' ? 'h-12 px-6 text-base' : 'h-10 px-4 text-sm';
 
-	$: classes = `${base} ${byVariant} ${bySize} disabled:opacity-60 disabled:cursor-not-allowed ${className}`.trim();
+	// Use cn for merging classes, aligning with other UI components
+	$: classes = cn(
+		base,
+		byVariant,
+		bySize,
+		disabled && 'opacity-60 cursor-not-allowed', // Apply disabled styles conditionally
+		className
+	);
 </script>
 
 <button

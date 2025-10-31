@@ -87,22 +87,23 @@ export class PaletteAnimationController {
           this.transitions.set(`${key}[${index}]`, {
             from,
             to,
-            current: from;
-            progress: 0
+            current: from, // Changed from semicolon to comma
+            progress: 0,
           });
         });
       } else if (typeof fromColor === 'string' && typeof toColor === 'string') {
         this.transitions.set(key, {
           from: fromColor,
           to: toColor,
-          current: fromColor;
-          progress: 0
+          current: fromColor, // Changed from semicolon to comma
+          progress: 0,
         });
       }
     });
   }
   private updateColorTransitions(progress: number): void {
-    for (const [key, transition] of this.transitions) {
+    for (const [$, transition] of this.transitions) {
+      // Renamed 'key' to '$'
       transition.progress = progress;
       transition.current = this.interpolateColor(transition.from, transition.to, progress);
     }
@@ -151,7 +152,7 @@ export class PaletteAnimationController {
     }
   }
   private applyPreTransitionEffects(effects: AnimationEffect[]): void {
-    const root = document.documentElement;
+    // const root = document.documentElement; // Removed unused variable
     for (const effect of effects) {
       switch (effect.type) {
         case 'scanlines':
@@ -310,7 +311,7 @@ export class PaletteAnimationController {
     for (const [key, transition] of this.transitions) {
       if (key.includes('[')) {
         // Handle accent color arrays
-        const [baseKey, indexStr] = key.split('[');
+        const [$, indexStr] = key.split('['); // Renamed 'baseKey' to '$'
         const index = parseInt(indexStr.replace(']', ''));
         root.style.setProperty(`--console-accent-${index}`, transition.current);
       } else {
