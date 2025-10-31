@@ -13,6 +13,48 @@ const asNumber = (rows: CountRow[] | undefined): number => {
   return 0;
 };
 
+// add a minimal local DB/type shape for the operations used in this file
+type UserRow = {
+	id: string;
+	email: string;
+	name?: string;
+	firstName?: string;
+	lastName?: string;
+	role?: string;
+	avatarUrl?: string;
+};
+
+// --- REPLACED: corrupted SelectQueryShape/garbage ---
+// Provide a small, accurate DB interface used in this module.
+type FromResult = Promise<CountRow[]> & {
+  // allow chaining .where(...) on the result of .from(...)
+  where: (cond: unknown) => Promise<CountRow[]>;
+};
+
+type SelectChain = {
+  from: (table: unknown) => FromResult;
+};
+
+type DB = {
+  query: {
+    users: {
+      findFirst: (opts: {
+        columns: {
+          id?: boolean;
+          email?: boolean;
+          name?: boolean;
+          firstName?: boolean;
+          lastName?: boolean;
+          role?: boolean;
+          avatarUrl?: boolean;
+        };
+        where?: unknown;
+      }) => Promise<UserRow | null>;
+    };
+  };
+  select: (cols: Record<string, unknown>) => SelectChain;
+};
+
 export const load: PageServerLoad = async ({ locals }) => {
   const userId = locals.user?.id;
   if (!userId) {
@@ -22,16 +64,12 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   }
 
-  // use the imported clients/schemas directly to preserve types and avoid unsafe `any` casts.
-  // TODO: replace these `any` assertions with proper exported DB/schema types (e.g. AppDatabase, TableSchemas).
-  // Cast to `any` to satisfy TypeScript until the DB client/schema exports include
-  // concrete types. This silences `unknown` issues while preserving runtime behavior.
-  // Replace `any` with the actual exported types from $lib/server/db/drizzle and schema files.
-  const _db = db as any;
-  const _users = users as any;
-  const _cases = cases as any;
-  const _evidence = evidence as any;
-  const _criminals = criminals as any;
+  // replace unsafe `any` casts with a typed assertion and `unknown` where appropriate
+  const _db = db as unknown as DB;
+  const _users = users as unknown;
+  const _cases = cases as unknown;
+  const _evidence = evidence as unknown;
+  const _criminals = criminals as unknown;
 
   // use the typed-like `_db` and `_users/_cases/...` for the WHERE clause and selects
   const profile = await _db.query.users.findFirst({

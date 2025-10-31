@@ -1,113 +1,166 @@
 import Loki from 'lokijs';
 import { browser } from '$app/environment';
-// Client-side data storage and synchronization with Loki.js
-// Provides offline capability and instant search/filtering
+
+// Define a base interface for documents stored in LokiJS
+export interface LokiDocument {
+  $loki?: number; // LokiJS internal ID
+  meta?: {
+    created: number;
+    revision: number;
+    updated: number;
+    version: number;
+  };
+  _created?: number; // Custom timestamp for creation
+  _updated?: number; // Custom timestamp for last update
+  _synced?: boolean; // Custom flag for sync status
+  _imported?: boolean; // Custom flag for imported status
+  id?: string | number; // Optional ID for external reference, used for lookups
+  title?: string; // Common fields for global search
+  content?: string; // Common fields for global search
+  description?: string; // Common fields for global search
+  _id?: string | number; // Explicitly define _id as string | number
+  primaryKey?: string | number; // Explicitly define primaryKey as string | number
+  [key: string]: unknown; // Allow arbitrary properties for flexibility
 }
+
+// Corrected imports for LokiJS types
+// import type { Collection, Query, Chain, PersistenceMethod } from 'lokijs'; // Removed this line
+
+export interface SyncOperation {
+  operation: 'insert' | 'update' | 'delete';
+  collection: string;
+  document: LokiDocument | { id?: string | number };
+  timestamp: number;
+}
+
+// Define the configuration interface for LokiClientStorage
 export interface LokiStorageConfig {
   dbName: string;
   collections: {
     [key: string]: {
       indices?: string[];
-  unique?: string[];
-  ttl?: number;
-  transforms?: any[];
-    }
-  }
-  persistenceMethod?: 'localStorage' | 'indexedDB' | 'memory';
+      unique?: string[];
+      ttl?: number;
+    };
+  };
+  persistenceMethod?: Loki.PersistenceMethod | null; // Use Loki.PersistenceMethod
   autoload?: boolean;
   autosave?: boolean;
   autosaveInterval?: number;
 }
+
 export class LokiClientStorage {
   private db: Loki | null = null;
-  private collections = new Map<string, Collection<any>();
-  private config: LokiStorageConfig;
-  private isInitialized = false;
-  private syncQueue: any[] = [];
+  private config: LokiStorageConfig; // Added missing declaration
+  private collections: Map<string, Loki.Collection<LokiDocument>> = new Map(); // Use Loki.Collection
+  private isInitialized: boolean = false; // Added missing declaration
+  private syncQueue: SyncOperation[] = []; // Added missing declaration
+
   constructor(config: LokiStorageConfig) {
-    this.config = {
-      persistenceMethod: 'localStorage',
-      autoload: true;
-      autosave: true,
-      autosaveInterval: 4000,
-      ...config
+    this.config = config;
+    if (browser && this.config.autoload) {
+      this.initialize().catch(console.error);
     }
   }
-  // Initialize database and collections
+
   async initialize(): Promise<void> {
-    if (!browser || this.isInitialized) return;
+    if (this.isInitialized) {
+      return;
+    }
+
+    if (!browser) {
+      console.warn('LokiClientStorage is designed for browser environments. Skipping initialization.');
+      return;
+    }
+
     return new Promise((resolve, reject) => {
-      try {
-        this.db = new Loki(this.config.dbName, {
-          persistenceMethod: this.config.persistenceMethod,
-          autoload: this.config.autoload,
-          autosave: this.config.autosave,
-          autosaveInterval: this.config.autosaveInterval,
-          autoloadCallback: () => {
-            this.initializeCollections();
+      this.db = new Loki(this.config.dbName, {
+        persistenceMethod: (this.config.persistenceMethod || 'indexeddb') as Loki.PersistenceMethod, // Use Loki.PersistenceMethod
+        autoload: this.config.autoload,
+        autosave: this.config.autosave,
+        autosaveInterval: this.config.autosaveInterval,
+        autoloadCallback: (err) => {
+          if (err) {
+            console.error('LokiJS autoload error:', err);
+            reject(err);
+          } else {
+            this._ensureCollections();
             this.isInitialized = true;
             resolve();
-          },
-          autosaveCallback: () => {
-            console.log('📾 Loki database auto-saved');
           }
-        });
-        // If not autoloading, initialize immediately
-        if (!this.config.autoload) {
-          this.initializeCollections();
-          this.isInitialized = true;
-          resolve();
-        }
-      } catch (error) {
-        console.error('Failed to initialize Loki database:', error);
-        reject(error);
+        },
+        // Add error handling for autosave
+        autosaveCallback: () => {
+          // console.log('LokiJS autosave completed.');
+        },
+        throttledSaves: true, // Enable throttled saves for better performance
+      });
+
+      // If autoload is explicitly false, or if it's a new database, ensure collections are still created
+      if (!this.config.autoload && this.db && !this.db.collections.length) {
+        this._ensureCollections();
+        this.isInitialized = true;
+        resolve();
       }
     });
   }
-  // Initialize all configured collections
-  private initializeCollections(): void {
-    if (!this.db) return;
-    for (const [collectionName, collectionConfig] of Object.entries(this.config.collections)) {
-      let collection = this.db.getCollection(collectionName);
-      if (!collection) {
-        collection = this.db.addCollection(collectionName, {
-          indices: collectionConfig.indices || [],
-          unique: collectionConfig.unique || [],
-          ttl: collectionConfig.ttl,
-          transforms: collectionConfig.transforms || []
-        });
-        console.log(`✅ Created Loki collection: ${collectionName}`);
+
+  private _ensureCollections(): void {
+    if (!this.db) {
+      throw new Error('Loki database not initialized.');
+    }
+    for (const collectionName in this.config.collections) {
+      if (Object.prototype.hasOwnProperty.call(this.config.collections, collectionName)) {
+        const collectionConfig = this.config.collections[collectionName];
+        let collection = this.db.getCollection(collectionName);
+        if (!collection) {
+          collection = this.db.addCollection(collectionName, {
+            indices: collectionConfig.indices,
+            unique: collectionConfig.unique,
+            ttl: collectionConfig.ttl,
+            autoupdate: true, // Ensure autoupdate is enabled for meta properties
+          });
+        }
+        if (collection) {
+          this.collections.set(collectionName, collection as Collection<LokiDocument>);
+        }
       }
-      this.collections.set(collectionName, collection);
     }
   }
+
   // Get collection by name
-  getCollection(name: string): Collection<any> | null {
-    return this.collections.get(name) || null;
+  getCollection<T extends LokiDocument>(name: string): Loki.Collection<T> | null {
+    // Use generic T
+    return (this.collections.get(name) as Loki.Collection<T>) || null; // Cast to specific generic type
   }
+
   // Insert document into collection
-  async insert(collectionName: string, document: any): Promise<any> {
+  async insert<T extends LokiDocument>(collectionName: string, document: T): Promise<T> {
+    // Use generic T
     await this.ensureInitialized();
-    const collection = this.getCollection(collectionName);
+    const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) {
       throw new Error(`Collection ${collectionName} not found`);
     }
     // Add metadata
-    const docWithMeta = {
+    const docWithMeta: T = {
+      // Ensure docWithMeta is of type T
       ...document,
       _created: Date.now(),
       _updated: Date.now(),
-      _synced: false
-    }
+      _synced: false,
+    };
     const result = collection.insert(docWithMeta);
     // Queue for server sync
     this.queueForSync('insert', collectionName, result);
     return result;
   }
+
   // Update document in collection
-  async update(collectionName: string, document: any): Promise<any> {
+  async update<T extends LokiDocument>(collectionName: string, document: T): Promise<T> {
+    // Use generic T
     await this.ensureInitialized();
-    const collection = this.getCollection(collectionName);
+    const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) {
       throw new Error(`Collection ${collectionName} not found`);
     }
@@ -118,152 +171,224 @@ export class LokiClientStorage {
     this.queueForSync('update', collectionName, result);
     return result;
   }
+
   // Delete document from collection
-  async remove(collectionName: string, documentOrId: any): Promise<boolean> {
+  async remove<T extends LokiDocument>(collectionName: string, documentOrId: T | number | string): Promise<boolean> {
+    // Use generic T
     await this.ensureInitialized();
-    const collection = this.getCollection(collectionName);
+    const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) {
       throw new Error(`Collection ${collectionName} not found`);
     }
-    const doc = typeof documentOrId === 'object' ? documentOrId : collection.get(documentOrId);
+    let doc: T | null = null;
+    if (typeof documentOrId === 'object') {
+      doc = documentOrId;
+    } else {
+      doc = collection.get(documentOrId);
+    }
+
     if (!doc) return false;
     // Queue for server sync before removing
     this.queueForSync('delete', collectionName, doc);
     collection.remove(doc);
     return true;
   }
+
   // Find documents with query
-  find(collectionName: string, query: any = {}): any[] {
-    const collection = this.getCollection(collectionName);
+  find<T extends LokiDocument>(collectionName: string, query: Loki.Query<T> = {}): T[] {
+    // Use explicit import for Query
+    const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) return [];
     return collection.find(query);
   }
+
   // Find one document
-  findOne(collectionName: string, query: any = {}): any | null {
-    const collection = this.getCollection(collectionName);
+  findOne<T extends LokiDocument>(collectionName: string, query: Loki.Query<T> = {}): T | null {
+    // Use explicit import for Query
+    const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) return null;
     return collection.findOne(query) || null;
   }
+
   // Advanced querying with chaining
-  chain(collectionName: string): any {
-    const collection = this.getCollection(collectionName);
+  chain<T extends LokiDocument>(collectionName: string): Loki.Chain<T> {
+    // Use explicit import for Chain
+    const collection = this.getCollection<T>(collectionName); // Use generic T
     if (!collection) throw new Error(`Collection ${collectionName} not found`);
     return collection.chain();
   }
+
   // Sync with server
   async syncWithServer(apiEndpoint: string = '/api/sync'): Promise<void> {
-    if (!browser || this.syncQueue.length === 0) return;
+    const operationsToSend = [...this.syncQueue]; // Store a copy of the queue
+    this.syncQueue.splice(0); // Clear the queue
     try {
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({,
-          operations: this.syncQueue.splice(),0) // Clear queue while sending
-        })
+        body: JSON.stringify({
+          operations: operationsToSend,
+        }),
       });
-      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-        throw new Error(`Sync failed: ${(response as { ok?: any; status?: any); json?: any }).status}`);
+      if (!response.ok) {
+        throw new Error(`Sync failed: ${response.status}`);
       }
-      const result = await (response as { ok?: any; status?: any; json?: any }).json();
-      if ((result as { server_updates?: any }).server_updates) {
-        await this.applyServerUpdates((result as { server_updates?: any )}).server_updates);
+      const result: { server_updates?: SyncOperation[] } = await response.json(); // Type result
+      if (result.server_updates) {
+        await this.applyServerUpdates(result.server_updates);
       }
       console.log('📡 Sync completed successfully');
     } catch (error) {
       console.error('Sync failed:', error);
       // Re-queue failed operations
-      this.syncQueue.unshift(...this.syncQueue);
+      this.syncQueue.unshift(...operationsToSend); // Restore original failed operations
     }
   }
+
   // Apply updates from server
-  private async applyServerUpdates(updates: any[]): Promise<void> {
+  private async applyServerUpdates(updates: SyncOperation[]): Promise<void> {
+    // Type updates
     for (const update of updates) {
-      const collection = this.getCollection(update.collection);
+      const collection = this.getCollection<LokiDocument>(update.collection); // Use LokiDocument
       if (!collection) continue;
       switch (update.operation) {
-        case 'insert':
-          collection.insert({ ...update.document, _synced: true });
+        case 'insert': {
+          // Wrap in block
+          const docToInsert = update.document as LokiDocument; // Cast to LokiDocument
+          collection.insert({ ...docToInsert, _synced: true });
           break;
-        case 'update':
-          const existing = collection.findOne({ id: update.document.id });
+        }
+        case 'update': {
+          // Wrap in block
+          const docToUpdate = update.document as LokiDocument; // Cast to LokiDocument
+          const existing = collection.findOne({ id: docToUpdate.id });
           if (existing) {
-            Object.assign(existing, { ...update.document, _synced: true });
+            Object.assign(existing, { ...docToUpdate, _synced: true });
             collection.update(existing);
           }
           break;
-        case 'delete':
-          const toDelete = collection.findOne({ id: update.document_id });
+        }
+        case 'delete': {
+          // Wrap in block
+          const docIdToDelete = (update.document as { id: string | number | undefined }).id; // Extract ID
+          const toDelete = collection.findOne({ id: docIdToDelete });
           if (toDelete) {
             collection.remove(toDelete);
           }
           break;
+        }
       }
     }
   }
+
+  // Helper to extract document ID robustly
+  private extractDocumentId(document: LokiDocument): string | number | undefined {
+    return document.id ?? document._id ?? document['primaryKey'] ?? document.$loki;
+  }
+
   // Queue operation for server sync
-  private queueForSync(operation: string, collection: string, document: any): void {
+  private queueForSync<T extends LokiDocument>(
+    operation: SyncOperation['operation'],
+    collectionName: string,
+    document: T
+  ): void {
+    // Use generic T
     this.syncQueue.push({
       operation,
-      collection,
-      document: operation === 'delete' ? { id: document.id || document.$loki } : document;
-      timestamp: Date.now()
+      collection: collectionName,
+      document: operation === 'delete' ? { id: this.extractDocumentId(document) } : document,
+      timestamp: Date.now(),
     });
     // Auto-sync if queue gets large
     if (this.syncQueue.length >= 10) {
       this.syncWithServer().catch(console.error);
     }
   }
+
   // Get statistics about local data
-  getStats(): any {
-    const stats: any = {
-      collections: { [key: string]: any },
+  getStats(): {
+    // Specific return type
+    collections: { [key: string]: { document_count: number; unsynced_count: number } };
+    total_documents: number;
+    unsynced_operations: number;
+    database_size: number;
+  } {
+    const stats = {
+      collections: {} as { [key: string]: { document_count: number; unsynced_count: number } }, // Corrected object initialization
       total_documents: 0,
       unsynced_operations: this.syncQueue.length,
-      database_size: 0
-    }
+      database_size: 0,
+    };
+
     for (const [name, collection] of this.collections) {
       const count = collection.count();
-      const unsynced = collection.find({ _synced: false }).length;
+      const unsyncedCount = collection.find({ _synced: false }).length;
       stats.collections[name] = {
-        document_count: count
-        unsynced_count: unsynced
-      }
+        document_count: count,
+        unsynced_count: unsyncedCount,
+      };
       stats.total_documents += count;
     }
+
     // Estimate database size
-    if (this.db && browser && localStorage) {
+    // NOTE: This estimation only works for 'localStorage' persistence method.
+    // For other methods like 'indexedDB', this does not reflect the actual database size.
+    if (this.db && browser && localStorage && this.config.persistenceMethod === 'localStorage') {
       const dbData = localStorage.getItem(this.config.dbName);
-      stats.database_size = dbData ? dbData.length: 0;
+      stats.database_size = dbData ? dbData.length : 0;
     }
     return stats;
   }
-  // Search across all collections
-  globalSearch(query: string, collections?: string[]): any[] {
-    const searchCollections = collections || Array.from(this.collections.keys();
-    const results: any[] = [];
+
+  // Search across all collections with optional full-text search and result limit
+  globalSearch(
+    query: string,
+    collections?: string[],
+    options?: { useFullText?: boolean; limit?: number }
+  ): (LokiDocument & { _collection: string; _relevance: number })[] {
+    const searchCollections = collections || Array.from(this.collections.keys());
+    const results: (LokiDocument & { _collection: string; _relevance: number })[] = [];
+    const useFullText = options?.useFullText ?? false;
+    const limit = options?.limit ?? 100;
+
     for (const collectionName of searchCollections) {
-      const collection = this.getCollection(collectionName);
+      const collection = this.getCollection<LokiDocument>(collectionName);
       if (!collection) continue;
-      // Simple text search across all fields
-      const matches = collection.find({
-        $or: [)
-          { title: { $regex: new RegExp(query, 'i') } },
-          { content: { $regex: new RegExp(query, 'i') } },
-          { description: { $regex: new RegExp(query, 'i') } }
-        ]
-      });
-      results.push(...matches.map(doc => ({
-        ...doc,
-        _collection: collectionName
-        _relevance: this.calculateRelevance(doc, query)
-      });
+
+      let matches: LokiDocument[] = [];
+      if (useFullText && typeof collection.fullTextSearch === 'function') {
+        // Use Loki's built-in full-text search if available and indexed
+        const ftsResults = collection.fullTextSearch(query);
+        matches = ftsResults.map((r: { doc: LokiDocument }) => r.doc); // Explicitly type 'r'
+      } else {
+        // Fallback to regex search
+        matches = collection.find({
+          $or: [
+            { title: { $regex: new RegExp(query, 'i') } },
+            { content: { $regex: new RegExp(query, 'i') } },
+            { description: { $regex: new RegExp(query, 'i') } },
+          ],
+        });
+      }
+
+      results.push(
+        ...matches.map(doc => ({
+          ...doc,
+          _collection: collectionName,
+          _relevance: this.calculateRelevance(doc, query),
+        }))
+      );
     }
-    return results.sort((a, b) => b._relevance - a._relevance);
+    return results.sort((a, b) => b._relevance - a._relevance).slice(0, limit);
   }
+
   // Calculate relevance score for search results
-  private calculateRelevance(_document: any, query: string): number {
+  private calculateRelevance(
+    document: { title?: string; content?: string; description?: string; _updated?: number }, // Explicit type for document
+    query: string
+  ): number {
     let score = 0;
     const queryLower = query.toLowerCase();
     // Title matches are most important
@@ -279,11 +404,12 @@ export class LokiClientStorage {
       score += 3;
     }
     // Boost recent documents
-    if (document._updated && Date.now() - document._updated < 86400000) { // 24 hours>
+    if (document._updated && Date.now() - document._updated < 86400000) {
       score += 2;
     }
     return score;
   }
+
   // Clear all data (useful for logout)
   async clearAll(): Promise<void> {
     if (!this.db) return;
@@ -295,52 +421,66 @@ export class LokiClientStorage {
       localStorage.removeItem(this.config.dbName);
     }
   }
+
   // Export data for backup
-  exportData(): any {
-    const exportData: any = {
+  exportData(): {
+    // Specific return type
+    metadata: {
+      exported_at: string;
+      database_name: string;
+    };
+    collections: { [key: string]: LokiDocument[] };
+  } {
+    const exportData = {
       metadata: {
         exported_at: new Date().toISOString(),
-        database_name: this.config.dbName
+        database_name: this.config.dbName,
       },
-      collections: { [key: string]: any }
-    }
+      collections: {} as { [key: string]: LokiDocument[] }, // Corrected object initialization
+    };
     for (const [name, collection] of this.collections) {
       exportData.collections[name] = collection.find();
     }
     return exportData;
   }
+
   // Import data from backup
-  async importData(data: any): Promise<void> {
+  async importData(data: { collections?: { [key: string]: LokiDocument[] } }): Promise<void> {
+    // Specific parameter type
     await this.ensureInitialized();
-    for (const [collectionName, documents] of Object.entries((data as { collections?: any }).collections)) {
-      const collection = this.getCollection(collectionName);
+    if (!data.collections) return; // Handle case where collections might be missing
+    for (const [collectionName, documents] of Object.entries(data.collections)) {
+      const collection = this.getCollection<LokiDocument>(collectionName); // Use LokiDocument
       if (!collection) continue;
       // Clear existing data
       collection.clear();
       // Insert imported documents
-      for (const doc of documents as any[]) {
+      for (const doc of documents) {
+        // Type doc
         collection.insert({
           ...doc,
-          _imported: true
-          _synced: false
+          _imported: true,
+          _synced: false,
         });
       }
     }
     console.log('📥 Data imported successfully');
   }
+
   // Ensure database is initialized
   private async ensureInitialized(): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
     }
   }
+
   // Graceful shutdown
   async close(): Promise<void> {
     if (!this.db) return;
     // Final sync before closing
     await this.syncWithServer().catch(console.error);
     // Save database
-    if (this.config.autosave) {
+    if (this.config.autosave && this.db.autosave) { // Added check for this.db.autosave
       this.db.saveDatabase();
     }
     this.db = null;
@@ -348,43 +488,56 @@ export class LokiClientStorage {
     this.isInitialized = false;
   }
 }
+
 // Predefined configurations for legal AI platform
 export const legalAIStorageConfig: LokiStorageConfig = {
   dbName: 'legal_ai_client_db',
   collections: {
     cases: {
       indices: ['id', 'title', 'status', 'created_at'],
-      unique: ['id']
+      unique: ['id'],
     },
     documents: {
       indices: ['id', 'case_id', 'title', 'document_type', 'created_at'],
-      unique: ['id']
+      unique: ['id'],
     },
     evidence: {
       indices: ['id', 'case_id', 'priority', 'type'],
-      unique: ['id']
+      unique: ['id'],
     },
     search_history: {
       indices: ['user_id', 'query', 'timestamp'],
-      ttl: 604800000 // 7 days
+      ttl: 604800000, // 7 days
     },
     chat_messages: {
       indices: ['session_id', 'user_id', 'timestamp'],
-      ttl: 2592000000 // 30 days
+      ttl: 2592000000, // 30 days
     },
     user_preferences: {
       indices: ['user_id'],
-      unique: ['user_id']
-    }
+      unique: ['user_id'],
+    },
   },
   persistenceMethod: 'localStorage',
-  autoload: true;
-  autosave: true
-  autosaveInterval: 5000
-}
+  autoload: true,
+  autosave: true,
+  autosaveInterval: 5000,
+};
+
 // Singleton instance for the legal AI platform
 export const lokiStorage = new LokiClientStorage(legalAIStorageConfig);
+
 // Initialize on module load in browser
-if (browser) {
-  lokiStorage.initialize().catch(console.error);
-}
+// The constructor already handles autoload if browser is true.
+// This explicit call is redundant if autoload is true in config.
+// If autoload is false, you might want to call it manually later.
+// if (browser) {
+//   lokiStorage.initialize().catch(console.error);
+// }
+// Initialize on module load in browser
+// The constructor already handles autoload if browser is true.
+// This explicit call is redundant if autoload is true in config.
+// If autoload is false, you might want to call it manually later.
+// if (browser) {
+//   lokiStorage.initialize().catch(console.error);
+// }

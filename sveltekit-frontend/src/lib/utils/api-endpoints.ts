@@ -1,22 +1,18 @@
 /**
  * Centralized utility functions for retrieving API endpoints.
- * Prioritizes Docker service names from environment variables,
- * with localhost fallbacks for local development without Docker Compose.
+ * Prioritizes Docker service hostnames from environment variables,
+ * with localhost fallbacks for local development.
  */
 
 /**
- * Retrieves the Ollama API endpoint.
- * @returns {string} The Ollama API URL.
+ * Returns the Ollama API endpoint.
+ * Prefers the OLLAMA_URL environment variable, falls back to http://localhost:11434.
+ * @returns {string} The Ollama API endpoint URL.
  */
-import { getOllamaEndpoint as sharedGetOllamaEndpoint, DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
-
 export function getOllamaEndpoint(): string {
-  // Use the shared helper; if it throws, return the module-level default constant.
-  try {
-    return sharedGetOllamaEndpoint();
-  } catch {
-    return DEFAULT_OLLAMA;
-  }
+  // Use process.env.OLLAMA_URL if available (e.g., in a Docker Compose environment),
+  // otherwise default to the local development endpoint.
+  return process.env.OLLAMA_URL || 'http://localhost:11434';
 }
 
 /**
@@ -68,6 +64,10 @@ export function getNeo4jUri(): string {
  * Returns the base URL for the backend API.
  * Prefers process.env.VITE_BACKEND_API_URL, falls back to /api.
  */
+export function getBackendApiUrl(path: string = ''): string {
+  const baseUrl = import.meta.env.VITE_BACKEND_API_URL || '/api';
+  return `${baseUrl}${path}`;
+}
 export function getBackendApiUrl(path: string = ''): string {
   const baseUrl = import.meta.env.VITE_BACKEND_API_URL || '/api';
   return `${baseUrl}${path}`;
