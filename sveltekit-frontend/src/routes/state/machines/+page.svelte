@@ -8,14 +8,27 @@ https://svelte.dev/e/expected_token -->
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
 
-  // component state (Svelte 5 runes)
-  let mounted = $state(false);
-  let machines = $state([]);
-  let selectedMachine = $state(null);
-  let loading = $state(true);
+  // Define Machine shape so TS can infer types (fixes never[])
+  interface Machine {
+    id: string;
+    name: string;
+    status: 'running' | 'idle' | 'error' | string;
+    currentState: string;
+    transitions: string[];
+    lastUpdated: string;
+    instances: number;
+    // allow extra props if needed
+    [key: string]: any;
+  }
+
+  // component state (Svelte 5 runes) with explicit generics
+  let mounted = $state<boolean>(false);
+  let machines = $state<Machine[]>([]);
+  let selectedMachine = $state<Machine | null>(null);
+  let loading = $state<boolean>(true);
 
   // Mock machine registry data - replace with actual XState registry
-  const mockMachines = [
+  const mockMachines: Machine[] = [
     {
       id: 'auth-machine',
       name: 'Authentication State Machine',
@@ -65,7 +78,7 @@ https://svelte.dev/e/expected_token -->
       // In production: const response = await fetch('/api/state/machines')
       // For now, use mock data
       await new Promise(resolve => setTimeout(resolve, 500));
-      machines = mockMachines; // fixed typo
+      machines = mockMachines;
     } catch (error) {
       console.error('Failed to load state machines:', error);
     } finally {

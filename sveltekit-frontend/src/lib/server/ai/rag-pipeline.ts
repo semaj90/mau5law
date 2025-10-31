@@ -35,13 +35,13 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import type { Document as LangChainDocument } from '@langchain/core/documents';
 const postgres = require('postgres');
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { OLLAMA_CONFIG, getOllamaEndpoint } from '$lib/services/providers/ollama/config';
+import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 // Import schema directly (same path used across project). If it fails at runtime we degrade gracefully.
 // Configuration
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';
 const EMBEDDING_DIMENSIONS = 768;
 const LLM_MODEL = 'gemma3-legal:latest';
-const OLLAMA_BASE_URL = OLLAMA_CONFIG.baseUrl;
+const OLLAMA_BASE_URL = getOllamaBaseUrl();
 // Initialize PostgreSQL connection
 const sql = postgres({
   host: process.env.DATABASE_HOST || 'localhost',

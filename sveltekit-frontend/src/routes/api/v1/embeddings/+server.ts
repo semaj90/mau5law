@@ -6,6 +6,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { generateEmbedding, generateEmbeddings } from '$lib/server/services/embedding-service';
+import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 /**
  * POST /api/v1/embeddings - Generate embeddings using multiple models
@@ -99,12 +100,12 @@ export const GET: RequestHandler = async () => {
 
   try {
     // Check Ollama service availability
-    const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+    const ollamaBase = getOllamaBaseUrl();
     let ollamaAvailable = false;
     let availableModels: string[] = [];
 
     try {
-      const response = await fetch(`${ollamaUrl}/api/tags`, {
+      const response = await fetch(getOllamaEndpoint('api/tags'), {
         signal: AbortSignal.timeout(5000),
       });
       if (response.ok) {
@@ -180,11 +181,11 @@ export const GET: RequestHandler = async () => {
  * Generate embedding using Ollama API
  */
 async function generateEmbedding(text: string, model: string, retries: number = 3): Promise<number[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+  const ollamaBase = getOllamaBaseUrl();
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await fetch(`${ollamaUrl}/api/embeddings`, {
+      const response = await fetch(getOllamaEndpoint('api/embeddings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

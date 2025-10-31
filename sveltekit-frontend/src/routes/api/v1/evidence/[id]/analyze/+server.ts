@@ -7,6 +7,7 @@ import { json, error, type RequestHandler } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
+import { getOllamaBaseUrl } from '$lib/utils/ollama-endpoint';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 // Analysis request schema
@@ -30,7 +31,7 @@ const AnalysisRequestSchema = z.object({
     .optional(),
 });
 // Configuration for AI services
-const OLLAMA_BASE_URL = 'http://localhost:11434';
+const OLLAMA_BASE_URL = getOllamaBaseUrl();
 const CUDA_SERVICE_URL = 'http://localhost:8096';
 const LEGAL_MODEL = 'gemma3-legal:latest';
 

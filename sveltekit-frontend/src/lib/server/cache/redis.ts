@@ -5,11 +5,11 @@
  * - Fully ESM-safe for SvelteKit 2 + Node 22
  */
 
-import { createClient, type RedisClientType } from 'redis';
-import { getRedisUrl, getRedisPassword } from '$lib/config/env.server';
 import { gzipSync, gunzipSync } from 'zlib';
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
+import { createClient, type RedisClientType } from 'redis';
+import { getRedisUrl } from '$lib/config/env.server';
 
 /* -------------------------------------------------------------------------- */
 /*  Error Formatting Utility                                                  */
@@ -30,11 +30,16 @@ export function formatError(e: unknown): string {
 /*  Types + Env Setup                                                         */
 /* -------------------------------------------------------------------------- */
 
-type RedisClient = InstanceType<typeof Redis>;
+// Use the official RedisClientType from the redis package for clarity and compatibility.
+// Declare a single local alias to avoid merged declaration conflicts.
+type RedisClient = RedisClientType | null;
 
 const IS_SERVER = typeof window === 'undefined';
+// prefer env helper, fall back to process envs and localhost
 const REDIS_URL =
-  process.env.REDIS_URL || `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`;
+  process.env.REDIS_URL ||
+  getRedisUrl?.() ||
+  `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`;
 
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const MEMORY_CACHE_MAX_SIZE = 1000;
@@ -50,29 +55,36 @@ const memoryCache = new Map<string, MemoryEntry>();
 /*  Lazy Redis Client Init (server-only)                                      */
 /* -------------------------------------------------------------------------- */
 
-let rawRedisClient: RedisClient | null = null;
+let rawRedisClient: RedisClient = null;
 if (IS_SERVER) {
-  rawRedisClient = new Redis({
-    url: REDIS_URL,
-    lazyConnect: true,
-    // enableOfflineQueue is an ioredis option in some versions; keep if available
-    enableOfflineQueue: true,
-    maxRetriesPerRequest: 3,
-    retryStrategy(times: number) {
-      return Math.min(times * 100, 2000);
-    },
-  });
+  try {
+    // guard createClient to avoid "possibly 'undefined'" errors
+    if (typeof createClient === 'function') {
+      // createClient is the node-redis v4 factory; use socket.reconnectStrategy for retry timing
+      rawRedisClient = createClient({
+        url: REDIS_URL,
+        socket: {
+          // simple reconnect strategy: linear-backoff capped at 2s
+          reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000),
+        },
+      });
 
-  // `on` and `connect` may not be recognized by the ambient type in some setups;
-  // narrow to the minimal runtime shape to avoid `any` while keeping runtime behavior.
-  const maybeEmitter = rawRedisClient as unknown as { on?: (evt: string, cb: (err: unknown) => void) => void };
-  maybeEmitter.on?.('error', (err: unknown) => console.warn('Redis error:', formatError(err)));
+      // handle runtime errors
+      rawRedisClient.on('error', (err: unknown) => console.warn('Redis error:', formatError(err)));
 
-  // call connect if present
-  const maybeConnector = rawRedisClient as unknown as { connect?: () => Promise<void> };
-  void maybeConnector.connect?.().catch(() => {
-    console.warn('⚠️ Redis connect failed — using in-memory fallback.');
-  });
+      // attempt connection, but don't crash if it fails — fall back to in-memory cache
+      void rawRedisClient.connect().catch(() => {
+        console.warn('⚠️ Redis connect failed — using in-memory fallback.');
+        rawRedisClient = null;
+      });
+    } else {
+      console.warn('⚠️ redis.createClient is not available — using in-memory fallback.');
+      rawRedisClient = null;
+    }
+  } catch (e: unknown) {
+    console.warn('⚠️ Redis client creation failed — using in-memory fallback.', formatError(e));
+    rawRedisClient = null;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -98,10 +110,12 @@ class CacheService {
   public client: RedisClient | null = rawRedisClient;
 
   private isRedisReady(): boolean {
-    // avoid `any` by narrowing to the minimal known shape
-    const maybeStatus = this.client as unknown as { status?: string } | null;
-    const status = maybeStatus?.status;
-    return !!status && status !== 'end' && status !== 'close';
+    // node-redis exposes `isOpen` boolean when connected
+    try {
+      return !!(this.client && (this.client as RedisClient).isOpen);
+    } catch {
+      return false;
+    }
   }
 
   private encode<T>(val: T): string {
@@ -173,15 +187,15 @@ class CacheService {
       if (this.isRedisReady()) {
         const rc = this.client as unknown as RedisLike;
         try {
-          // some clients accept "EX", some accept options object
-          // using optional chaining on both forms
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          await rc.set?.(key, payload, 'EX', seconds);
-        } catch {
+          // node-redis v4 accepts EX option object form
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           await rc.set?.(key, payload, { EX: seconds });
+        } catch {
+          // fallback to argument form if available
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          await rc.set?.(key, payload, 'EX', seconds);
         }
         return;
       }
@@ -285,8 +299,10 @@ class CacheService {
 
   async close() {
     try {
-      const maybeQuit = this.client as unknown as { quit?: () => Promise<void> };
+      const maybeQuit = this.client as unknown as { quit?: () => Promise<void>; disconnect?: () => Promise<void> };
+      // node-redis v4 uses quit() and disconnect()
       await maybeQuit.quit?.();
+      await maybeQuit.disconnect?.();
     } catch {
       /* ignore */
     }
@@ -327,44 +343,6 @@ export const getCachedShader = (key: string) => cache.getShader(key);
 
 export default cache;
 
-/* -------------------------------------------------------------------------- */
-/*  Redis Client Singleton                                                    */
-/* -------------------------------------------------------------------------- */
-
-import { createClient, type RedisClientType } from 'redis';
-import { getRedisUrl, getRedisPassword } from '$lib/config/env.server';
-import crypto from 'crypto';
-
-let redisClient: RedisClientType | null = null;
-
-export async function getRedisClient(): Promise<RedisClientType> {
-  if (!redisClient) {
-    const redisUrl = getRedisUrl();
-    try {
-      redisClient = createClient({
-        url: redisUrl,
-        password: getRedisPassword(), // Use password from env if not in URL
-      });
-      redisClient.on('error', err => console.error('Redis Client Error', err));
-      await redisClient.connect();
-      console.log('Redis client connected.');
-    } catch (error) {
-      console.error('Failed to connect to Redis:', error);
-      // Fallback or throw error based on application needs
-      throw error;
-    }
-  }
-  return redisClient;
-}
-
-export async function closeRedisClient() {
-  if (redisClient && redisClient.isReady) {
-    await redisClient.quit();
-    redisClient = null;
-    console.log('Redis client disconnected.');
-  }
-}
-
 // --- Langcache specific functions ---
 
 /**
@@ -397,10 +375,9 @@ export async function setLangCache<T>(
   data: LangCacheEntry<T>,
   ttl: number = 3600
 ): Promise<void> {
-  const client = await getRedisClient();
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
-  await client.set(key, JSON.stringify(data), { EX: ttl });
+  await cache.set(key, data, ttl * 1000); // ttl is in seconds, cache.set expects ms
 }
 
 /**
@@ -410,11 +387,9 @@ export async function setLangCache<T>(
  * @returns The cached data or null if not found.
  */
 export async function getLangCache<T>(model: string, prompt: string): Promise<LangCacheEntry<T> | null> {
-  const client = await getRedisClient();
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
-  const cached = await client.get(key);
-  return cached ? JSON.parse(cached) : null;
+  return cache.get<LangCacheEntry<T>>(key);
 }
 
 /**
@@ -423,8 +398,7 @@ export async function getLangCache<T>(model: string, prompt: string): Promise<La
  * @param prompt The original prompt.
  */
 export async function deleteLangCache(model: string, prompt: string): Promise<void> {
-  const client = await getRedisClient();
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
-  await client.del(key);
+  await cache.del(key);
 }

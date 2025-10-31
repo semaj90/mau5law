@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state and $derived are available in runes mode via types, not runtime imports
-  import Card from '$lib/components/ui/card';
+  import { Card } from '$lib/components/ui/card';
   import Button from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
@@ -257,7 +257,7 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <ButtonComponent class="header-btn bits-btn bits-btn" on:click={() => (showNewPersonModal = true)}>
+        <ButtonComponent class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </ButtonComponent>
@@ -390,7 +390,7 @@
       <div class="empty-state">
         <div class="empty-icon">👤</div>
         <div class="empty-title">No Persons Found</div>
-        <div class="empty-subtitle">
+        <div class="empty-subtitle>
           {searchQuery ? 'Try adjusting your search criteria' : 'Add persons of interest to begin tracking'}
         </div>
       </div>
@@ -405,8 +405,8 @@
     role="button"
     tabindex="0"
     aria-label="Close person modal"
-    on:click={() => (showNewPersonModal = false)}
-    on:keydown={(e: KeyboardEvent) => {
+    onclick={() => (showNewPersonModal = false)}
+    onkeydown={(e) => {
       // Close on Enter / Space / Escape for keyboard users
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
         showNewPersonModal = false;
@@ -420,13 +420,13 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
       tabindex="-1"
-      on:click={(e: MouseEvent) => e.stopPropagation()}
-      on:keydown={(e: KeyboardEvent) => e.stopPropagation()}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
     >
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
         <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
-        <button class="close-btn" aria-label="Close" type="button" on:click={() => (showNewPersonModal = false)}
+        <button class="close-btn" aria-label="Close" type="button" onclick={() => (showNewPersonModal = false)}
           >×</button
         >
       </header>
@@ -499,7 +499,7 @@
         <ButtonComponent
           class="bits-btn"
           variant="ghost"
-          on:click={() => {
+          onclick={() => {
             showNewPersonModal = false;
             newPerson = {
               name: '',
@@ -514,7 +514,7 @@
         >
           CANCEL
         </ButtonComponent>
-        <ButtonComponent class="bits-btn" on:click={handleAddPerson}>ADD PERSON</ButtonComponent>
+        <ButtonComponent class="bits-btn" onclick={handleAddPerson}>ADD PERSON</ButtonComponent>
       </footer>
     </div>
   </div>

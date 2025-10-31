@@ -19,8 +19,19 @@ const redisClient = createClient({
   password: 'redis',
 });
 
-// Ollama configuration
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+// Ollama configuration - prefer project helper when available
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+let OLLAMA_URL = process.env.OLLAMA_URL || process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
+try {
+  // prefer local project helper if available (best-effort)
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { getOllamaBaseUrl } = require('../src/lib/utils/ollama-endpoint');
+  if (getOllamaBaseUrl && typeof getOllamaBaseUrl === 'function') {
+    OLLAMA_URL = getOllamaBaseUrl();
+  }
+} catch (e) {
+  // ignore - fall back to env or default
+}
 
 console.log('🚀 Testing Recursive Evidence Chain Processing');
 console.log('================================================\n');

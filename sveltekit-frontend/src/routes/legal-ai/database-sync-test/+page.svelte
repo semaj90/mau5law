@@ -684,27 +684,19 @@
     font-weight: 600;
     color: #555;
   }
-  .result-item code {
+  /* Replaced unused `.result-item .value` selectors with explicit input selectors that match the template */
+  .result-item input[readonly] {
     background: #e9ecef;
     padding: 0.25rem 0.5rem;
     border-radius: 3px;
     font-family: monospace;
     font-size: 0.9rem;
+    border: 1px solid transparent;
   }
-  .cache-status.hit {
+  /* Apply "hit" appearance to the readonly input (template uses class:hit on the cache-hit input) */
+  .result-item input.hit {
     color: #28a745;
     font-weight: 600;
-  }
-  .result-content {
-    margin-top: 2rem;
-  }
-  .result-content h4 {
-    color: #0066cc;
-    margin: 1.5rem 0 0.75rem 0;
-  }
-  .entities-list {
-    columns: 2;
-    column-gap: 2rem;
   }
   /* Error Display */
   .error-display {
@@ -761,4 +753,3 @@
     }
   }
 </style>
-

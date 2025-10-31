@@ -192,7 +192,8 @@
     return result?.summary || 'Summary generation failed';
   }
 
-  const OLLAMA_BASE = 'http://localhost:11434';
+  import { getOllamaEndpoint, getOllamaBaseUrl } from '$lib/utils/ollama-endpoint';
+  const OLLAMA_BASE = getOllamaBaseUrl();
   const OLLAMA_MODEL = 'embeddinggemma:latest';
   const PREFERRED_DIM = 1536; // prefer pgvector-friendly dimension
 
@@ -200,9 +201,9 @@
     // Try Ollama embeddings with a few common endpoint shapes, fall back gracefully
     const shortText = (text || '').substring(0, 10000);
     const attempts = [
-      { url: `${OLLAMA_BASE}/embeddings`, body: { model: OLLAMA_MODEL, input: shortText } },
-      { url: `${OLLAMA_BASE}/api/embeddings`, body: { model: OLLAMA_MODEL, input: shortText } },
-      { url: `${OLLAMA_BASE}/api/embed`, body: { model: OLLAMA_MODEL, text: shortText } },
+      { url: getOllamaEndpoint('embeddings'), body: { model: OLLAMA_MODEL, input: shortText } },
+      { url: getOllamaEndpoint('api/embeddings'), body: { model: OLLAMA_MODEL, input: shortText } },
+      { url: getOllamaEndpoint('api/embed'), body: { model: OLLAMA_MODEL, text: shortText } },
     ];
 
     for (const attempt of attempts) {

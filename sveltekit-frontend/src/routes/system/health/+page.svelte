@@ -90,8 +90,10 @@
 		if ((coordinator as any)?.success && (coordinator as any).data) {
 			const data = (coordinator as any).data;
 			// use the snapshot from the coordinator store (if present) for per-service status
-			const servicesMap = systemStatusSnapshot?.services instanceof Map ? systemStatusSnapshot.services : new Map();
+			const servicesMap = systemStatusSnapshot?.services instanceof Map ? systemStatusSnapshot.services : new Map<string, ServiceStatus>();
 			const errors = systemStatusSnapshot?.errors || [];
+			// cast entries once so TypeScript understands tuple shape in subsequent filters/maps
+			const serviceEntries = Array.from(servicesMap.entries()) as [string, ServiceStatus][];
 			return {
 				timestamp: now,
 				overall_status: mapHealthStatus(data.systemHealth),
@@ -108,18 +110,12 @@
 				services: mapServicesToHealthFormat(servicesMap),
 				summary: {
 					critical_services: errors.map((e: any) => e.description || String(e)),
-					degraded_services: Array.from(servicesMap.entries())
-						.filter(([_, status]) => status?.status === 'degraded')
-						.map(([id, _]) => {
-							const service = masterServiceCoordinator.services.find(s => s.id === id);
-							return service?.displayName || id;
-						}),
-					offline_services: Array.from(servicesMap.entries())
-						.filter(([_, status]) => status?.status === 'failed' || status?.status === 'unknown')
-						.map(([id, _]) => {
-							const service = masterServiceCoordinator.services.find(s => s.id === id);
-							return service?.displayName || id;
-						})
+					degraded_services: serviceEntries
+						.filter(([, status]) => status?.status === 'degraded')
+						.map(([id]) => masterServiceCoordinator.services.find(s => s.id === id)?.displayName || id),
+					offline_services: serviceEntries
+						.filter(([, status]) => status?.status === 'failed' || status?.status === 'unknown')
+						.map(([id]) => masterServiceCoordinator.services.find(s => s.id === id)?.displayName || id)
 				},
 				recommendations: generateRecommendations()
 			}
@@ -160,13 +156,15 @@
 		}
 	}
 	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
-		return Array.from(services.entries()).map(([id, status]) => {
+		const entries = Array.from(services.entries()) as [string, ServiceStatus][];
+		return entries.map(([id, status]) => {
 			const service = masterServiceCoordinator.services.find(s => s.id === id);
 			return {
 				name: service?.displayName || id,
 				url: service ? `http://localhost:${service.port}` : '',
 				status: mapServiceStatus(status?.status || 'unknown'),
-				responseTime: status?.responseTime,
+				// coerce null -> undefined so the type matches ServiceHealth.responseTime?: number
+				responseTime: typeof status?.responseTime === 'number' ? status?.responseTime : undefined,
 				lastCheck: status?.lastCheck || Date.now(),
 				details: {
 					tier: service?.tier,

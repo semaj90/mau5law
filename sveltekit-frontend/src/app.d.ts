@@ -18,21 +18,26 @@ declare const process: Process;
 // This declares nomicEmbedText as an optional function on the global scope,
 // resolving the TypeScript error without changing the runtime logic.
 declare const nomicEmbedText: ((text: string) => Promise<number[]>) | undefined;
-}
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
-	namespace App {
-		interface Locals {
-			db: import('$lib/server/db/client').DbClient; // Use the actual type returned by getDbClient
-			redis: Awaited<ReturnType<typeof import('$lib/server/cache/redis').getRedisClient>>;
-			rabbitmqChannel: Awaited<ReturnType<typeof import('$lib/server/messaging/rabbitmq').getRabbitMQChannel>>;
-		}
-		// interface PageData {}
-		// interface Error {}
-		// interface Platform {}
-	}
+  namespace App {
+    interface Locals {
+      db: import('$lib/server/db/client').DbClient; // Use the actual type returned by getDbClient
+      redis: Awaited<ReturnType<typeof import('$lib/server/cache/redis').getRedisClient>>;
+      rabbitmqChannel: Awaited<ReturnType<typeof import('$lib/server/messaging/rabbitmq').getRabbitMQChannel>>;
+      // optional authenticated user helper commonly used in routes
+      user?: {
+        id: string;
+        email: string;
+        // add other user props as needed
+      };
+    }
+    // interface PageData {}
+    // interface Error {}
+    // interface Platform {}
+  }
 }
 
 export {};

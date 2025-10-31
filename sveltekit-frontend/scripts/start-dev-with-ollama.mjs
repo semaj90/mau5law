@@ -29,6 +29,56 @@ const OLLAMA_URLS = [
   'http://localhost:11436',
 ];
 
+/**
+ * Build a prioritized list of Ollama URL candidates.
+ * Attempts to read from a project helper first (if available), then env vars, then defaults.
+ */
+async function getPreferredOllamaUrls() {
+  const urls = [];
+
+  // Try to dynamically import the project's centralized helper if present (best-effort)
+  try {
+    // The helper may not be compiled to JS in this environment; fail silently if not importable
+    const mod = await import('../src/lib/utils/ollama-endpoint.js').catch(() => null);
+    if (mod) {
+      if (typeof mod.getOllamaBaseUrl === 'function') {
+        const base = mod.getOllamaBaseUrl();
+        if (base) urls.push(base.replace(/\/$/, ''));
+      } else if (typeof mod.default === 'function') {
+        try {
+          const base = mod.default();
+          if (base) urls.push(base.replace(/\/$/, ''));
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+  } catch (e) {
+    // ignore - this is best-effort only
+  }
+
+  // Environment overrides
+  const envCandidates = [
+    process.env.OLLAMA_URL,
+    process.env.OLLAMA_ENDPOINT,
+    process.env.VITE_OLLAMA_URL,
+    process.env.VITE_OLLAMA_ENDPOINT,
+  ].filter(Boolean);
+
+  for (const e of envCandidates) {
+    const normalized = String(e).replace(/\/$/, '');
+    if (!urls.includes(normalized)) urls.push(normalized);
+  }
+
+  // Finally, append known local defaults
+  for (const u of OLLAMA_URLS) {
+    const normalized = u.replace(/\/$/, '');
+    if (!urls.includes(normalized)) urls.push(normalized);
+  }
+
+  return urls;
+}
+
 // Colors for console output
 const colors = {
   reset: '\x1b[0m',
@@ -62,7 +112,8 @@ async function checkOllamaRunning(url = OLLAMA_URLS[0]) {
  * Find running Ollama instance
  */
 async function findOllamaInstance() {
-  for (const url of OLLAMA_URLS) {
+  const candidates = await getPreferredOllamaUrls();
+  for (const url of candidates) {
     if (await checkOllamaRunning(url)) {
       log(`✅ Found Ollama running at ${url}`, colors.green);
       return url;

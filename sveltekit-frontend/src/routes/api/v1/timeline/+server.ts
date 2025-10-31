@@ -11,6 +11,40 @@
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { resolveUser } from '$lib/server/auth/utils'; // Import resolveUser
+import { getGpuOrchestratorUrl } from '$lib/utils/gpu-orchestrator-endpoint'; // Import new helper
+
+// Define interfaces for the AI extracted timeline data
+interface TimelineEvent {
+  date: string; // ISO format date string
+  date_confidence: number;
+  event_type: string;
+  description: string;
+  importance_score: number;
+  participants: string[];
+  location: string | null;
+  evidence_references: string[];
+  legal_significance: string;
+  id?: string; // Added for mock data, might be generated later
+}
+
+interface TimelineDateRange {
+  earliest: string;
+  latest: string;
+}
+
+interface TimelineConfidenceSummary {
+  overall_confidence: number;
+  extraction_quality: 'high' | 'medium' | 'low' | 'fallback';
+  missing_context: string[];
+}
+
+interface TimelineData {
+  timeline_events: TimelineEvent[];
+  date_range: TimelineDateRange;
+  confidence_summary: TimelineConfidenceSummary;
+}
 
 // Timeline request schemas
 const TimelineExtractionSchema = z.object({
@@ -40,12 +74,15 @@ const TimelineQuerySchema = z.object({
 });
 
 // Configuration for AI analysis
-const OLLAMA_BASE_URL = 'http://localhost:11434';
 const LEGAL_MODEL_GPU = 'gemma3-legal:latest';
 const LEGAL_MODEL_FALLBACK = 'gemma3:270m';
 
 // AI Integration
-async function extractTimelineWithAI(content: string, documentType: string, options: any) {
+async function extractTimelineWithAI(
+  content: string,
+  documentType: string,
+  _options: (typeof TimelineExtractionSchema._type)['extractionOptions'] // Renamed to _options and typed
+): Promise<TimelineData> {
   const model = await getOptimalModel();
 
   const extractionPrompt = `You are a legal AI assistant specializing in chronological analysis. Extract all temporal events from this legal document and provide a structured timeline.
@@ -88,7 +125,7 @@ Provide your analysis in this exact JSON format:
 }`;
 
   try {
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+    const response = await fetch(getOllamaEndpoint('api/generate'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -111,7 +148,7 @@ Provide your analysis in this exact JSON format:
     const data = await response.json();
 
     // Parse AI response
-    let timelineData;
+    let timelineData: TimelineData; // Explicitly type timelineData
     try {
       const jsonMatch = data.response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -119,25 +156,30 @@ Provide your analysis in this exact JSON format:
       } else {
         throw new Error('No JSON found in AI response');
       }
-    } catch (parseError) {
+    } catch (parseError: unknown) {
+      // Type parseError as unknown
+      console.warn('Failed to parse AI response JSON, falling back:', parseError);
       // Fallback timeline generation
       timelineData = generateFallbackTimeline(content, documentType);
     }
 
     return timelineData;
-  } catch (error) {
+  } catch (error: unknown) {
+    // Type error as unknown
     console.error('AI timeline extraction failed:', error);
     return generateFallbackTimeline(content, documentType);
   }
 }
 
 // Fallback timeline generation
-function generateFallbackTimeline(content: string, documentType: string) {
+function generateFallbackTimeline(content: string, documentType: string): TimelineData {
   // Basic regex-based date extraction as fallback
-  const dateRegex = /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}|\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}|[A-Za-z]+ \d{1,2}, \d{4})/g;
+  // Fixed unnecessary escape for forward slash in character class; keep hyphen last to be literal
+  const dateRegex = /(\d{1,2}[/-]\d{1,2}[/-]\d{4}|\d{4}[/-]\d{1,2}[/-]\d{1,2}|[A-Za-z]+ \d{1,2}, \d{4})/g;
   const dates = content.match(dateRegex) || [];
 
-  const events = dates.map((dateStr, index) => ({
+  const events: TimelineEvent[] = dates.map((dateStr: string, _index: number) => ({
+    // Typed dateStr and _index
     date: new Date(dateStr).toISOString(),
     date_confidence: 0.6,
     event_type: 'extracted_date',
@@ -166,9 +208,15 @@ function generateFallbackTimeline(content: string, documentType: string) {
 // GPU detection helper
 async function detectGPU(): Promise<boolean> {
   try {
-    // removed unused response assignment
+    // Check the health of the GPU orchestrator service
+    const response = await fetch(getGpuOrchestratorUrl('/health'), {
+      // Use helper here
+      signal: AbortSignal.timeout(5000), // Short timeout for health check
+    });
     return response.ok;
-  } catch {
+  } catch (e: unknown) {
+    // Type e as unknown
+    console.warn('GPU orchestrator health check failed:', e);
     return false;
   }
 }
@@ -185,7 +233,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication (allow test mode)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
-    if (!isTestMode && (!locals.session || !locals.user)) {
+    // Cast locals to App.Locals to ensure it has the user property
+    const user = resolveUser(locals as any); // cast to any to avoid missing App types
+
+    if (!isTestMode && !user) {
+      // Check if not in test mode AND no user
       return json({ message: 'Authentication required' }, { status: 401 });
     }
 
@@ -193,13 +245,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { caseId, content, documentType, extractionOptions } = TimelineExtractionSchema.parse(body);
 
     // Extract timeline using AI
-    const timelineData = await extractTimelineWithAI(content, documentType, extractionOptions);
+    const timelineData: TimelineData = await extractTimelineWithAI(content, documentType, extractionOptions); // Explicitly type timelineData
 
     // Process and enhance the timeline
-    const processedEvents = timelineData.timeline_events
-      .filter(event => event.date_confidence >= extractionOptions.confidenceThreshold)
+    const processedEvents: TimelineEvent[] = timelineData.timeline_events
+      .filter((event: TimelineEvent) => event.date_confidence >= extractionOptions.confidenceThreshold) // Typed event
       .slice(0, extractionOptions.maxEvents)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      .sort((a: TimelineEvent, b: TimelineEvent) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Typed a, b
 
     return json({
       success: true,
@@ -222,7 +274,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Type error as unknown
     console.error('Timeline extraction failed:', error);
 
     if (error instanceof z.ZodError) {
@@ -238,7 +291,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         message: 'Timeline extraction failed',
-        details: error.message || 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error', // Type narrowing for error message
       },
       { status: 500 }
     );
@@ -252,12 +305,23 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication (allow test mode)
     const isTestMode = url.searchParams.get('test-mode') === 'true';
-    if (!isTestMode && (!locals.session || !locals.user)) {
+    // Cast locals to App.Locals to ensure it has the user property
+    const user = resolveUser(locals as any); // cast to any to avoid missing App types
+
+    if (!isTestMode && !user) {
+      // Check if not in test mode AND no user
       return json({ message: 'Authentication required' }, { status: 401 });
     }
 
     const queryParams = Object.fromEntries(url.searchParams);
-    const { caseId, startDate, endDate, eventTypes, minImportance, format } = TimelineQuerySchema.parse(queryParams);
+    const {
+      caseId,
+      startDate,
+      endDate,
+      eventTypes,
+      minImportance,
+      format: _format,
+    } = TimelineQuerySchema.parse(queryParams); // Renamed format to _format
 
     // Mock timeline data for now - in production, query database
     const mockTimeline = {
@@ -285,7 +349,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           evidence_references: ['REPORT-001'],
           legal_significance: 'Medium - procedural requirement',
         },
-      ],
+      ] as TimelineEvent[], // Cast mock events to TimelineEvent[]
       summary: {
         total_events: 2,
         date_range: {
@@ -298,22 +362,22 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     };
 
     // Apply filters
-    let filteredEvents = mockTimeline.events;
+    let filteredEvents: TimelineEvent[] = mockTimeline.events; // Explicitly type filteredEvents
 
     if (startDate) {
-      filteredEvents = filteredEvents.filter(event => new Date(event.date) >= new Date(startDate));
+      filteredEvents = filteredEvents.filter((event: TimelineEvent) => new Date(event.date) >= new Date(startDate));
     }
 
     if (endDate) {
-      filteredEvents = filteredEvents.filter(event => new Date(event.date) <= new Date(endDate));
+      filteredEvents = filteredEvents.filter((event: TimelineEvent) => new Date(event.date) <= new Date(endDate));
     }
 
     if (eventTypes && eventTypes.length > 0) {
-      filteredEvents = filteredEvents.filter(event => eventTypes.includes(event.event_type));
+      filteredEvents = filteredEvents.filter((event: TimelineEvent) => eventTypes.includes(event.event_type));
     }
 
     if (minImportance > 0) {
-      filteredEvents = filteredEvents.filter(event => event.importance_score >= minImportance);
+      filteredEvents = filteredEvents.filter((event: TimelineEvent) => event.importance_score >= minImportance);
     }
 
     const response = {
@@ -329,7 +393,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       success: true,
       data: response,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Type error as unknown
     console.error('Timeline query failed:', error);
 
     if (error instanceof z.ZodError) {
@@ -345,9 +410,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       {
         message: 'Timeline query failed',
-        details: error.message || 'Unknown error',
+        details: error instanceof Error ? error.message : 'Unknown error', // Type narrowing for error message
       },
       { status: 500 }
     );
   }
+};
 };

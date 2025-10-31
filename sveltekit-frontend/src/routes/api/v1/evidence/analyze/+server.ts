@@ -7,12 +7,16 @@ import { cuidSchema } from '$lib/server/z-schemas';
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
-import { getUserId } from '$lib/server/auth/utils';
+import { getUserId, type LocalsWithUser } from '$lib/server/auth/utils';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { getCudaServiceUrl } from '$lib/utils/cuda-endpoint'; // Import new helper
+
 // Configuration for running services
-const OLLAMA_BASE_URL = 'http://localhost:11434';
-const CUDA_SERVICE_URL = 'http://localhost:8096';
+const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('/api/generate');
+const CUDA_SERVICE_URL = getCudaServiceUrl(); // Use the new helper
 const LEGAL_MODEL_GPU = 'gemma3-legal:latest'; // Primary model with GPU
 const LEGAL_MODEL_FALLBACK = 'gemma3:270m'; // Fallback for no GPU
+
 // Request schemas
 const AnalyzeEvidenceSchema = z.object({
   evidenceId: cuidSchema,
@@ -20,17 +24,18 @@ const AnalyzeEvidenceSchema = z.object({
   content: z.string().optional(),
   type: z.enum(['document', 'image', 'video', 'audio', 'other']),
 });
-const SimilarEvidenceSchema = z.object({
+const $SimilarEvidenceSchema = z.object({
   evidenceId: cuidSchema,
   embedding: z.array(z.number()).optional(),
   content: z.string().optional(),
   limit: z.number().min(1).max(20).default(5),
 });
-const SuggestionSchema = z.object({
+const $SuggestionSchema = z.object({
   query: z.string(),
   context: z.string().optional(),
   type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal'),
 });
+
 // Types
 interface OllamaResponse {
   model: string;
@@ -57,8 +62,15 @@ interface AIAnalysisResult {
 // GPU detection helper
 async function detectGPU(): Promise<boolean> {
   try {
-    // removed unused response assignment
-    return response.ok;
+    // Probe CUDA service health endpoint (if available) with a short timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1500);
+    try {
+      const res = await fetch(`${CUDA_SERVICE_URL}/health`, { signal: controller.signal });
+      return !!res?.ok;
+    } finally {
+      clearTimeout(timeout);
+    }
   } catch {
     return false;
   }
@@ -76,7 +88,7 @@ async function queryOllama(prompt: string, model?: string): Promise<string> {
     model = await getOptimalModel();
   }
   try {
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+    const response = await fetch(OLLAMA_GENERATE_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -91,22 +103,23 @@ async function queryOllama(prompt: string, model?: string): Promise<string> {
         },
       }),
     });
-    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(
-        `Ollama request failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} - ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
-      );
+    if (!response.ok) {
+      const bodyText = await response.text().catch(() => '');
+      throw new Error(`Ollama request failed: ${response.status} ${response.statusText} ${bodyText}`);
     }
-    const data: OllamaResponse = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-    return (data as { response?: any }).response;
+    const data: OllamaResponse = await response.json();
+    return data.response;
   } catch (error) {
     console.error('Ollama query failed:', error);
-    throw new Error(`AI service unavailable: ${error}`);
+    throw new Error(`AI service unavailable: ${String(error)}`);
   }
 }
+
 // CUDA service helper for embeddings and similarity
 async function getCudaEmbedding(text: string): Promise<number[] | null> {
   try {
     const response = await fetch(`${CUDA_SERVICE_URL}/process`, {
+      // Use helper here
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -116,17 +129,18 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
         max_length: 512,
       }),
     });
-    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-      console.warn('CUDA service unavailable for embeddings');
+    if (!response.ok) {
+      console.warn('CUDA service unavailable for embeddings:', response.status, response.statusText);
       return null;
     }
-    const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-    return (result as { embedding?: any }).embedding || null;
+    const result = await response.json();
+    return result?.embedding ?? null;
   } catch (error) {
     console.warn('CUDA embedding failed:', error);
     return null;
   }
 }
+
 /*
  * POST /api/v1/evidence/analyze
  * Analyze evidence with AI using the legal model
@@ -135,7 +149,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication (allow test mode in development)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
-    if (!isTestMode && (!locals.session || !locals.user)) {
+    // locals may have different runtime types across handlers; use LocalsWithUser for checks
+    if (
+      !isTestMode &&
+      (!(locals as unknown as LocalsWithUser).session || !(locals as unknown as LocalsWithUser).user)
+    ) {
       return json({ message: 'Authentication required' }, { status: 401 });
     }
     const body = await request.json();
@@ -197,10 +215,10 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         embedding,
         processedAt: new Date().toISOString(),
         model: await getOptimalModel(),
-        userId: isTestMode ? 'test-user' : getUserId(locals),
+        userId: isTestMode ? 'test-user' : getUserId(locals as unknown as LocalsWithUser),
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Evidence analysis failed:', error);
     if (error instanceof z.ZodError) {
       return json(
@@ -211,10 +229,11 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         { status: 400 }
       );
     }
+    const details = (error as Error)?.message ?? 'Unknown error';
     return json(
       {
         message: 'Analysis failed',
-        details: error.message || 'Unknown error',
+        details,
       },
       { status: 500 }
     );

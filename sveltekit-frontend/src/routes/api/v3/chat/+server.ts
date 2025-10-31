@@ -144,7 +144,7 @@ interface HealthCheckResults {
 async function performHealthChecks(): Promise<HealthCheckResults> {
   const results: HealthCheckResults = { ollama: false, database: false };
   try {
-    const ollamaResponse = await fetch('http://localhost:11434/api/version', {
+    const ollamaResponse = await fetch(getOllamaEndpoint('api/version'), {
       signal: AbortSignal.timeout(3000),
     });
     results.ollama = ollamaResponse.ok;

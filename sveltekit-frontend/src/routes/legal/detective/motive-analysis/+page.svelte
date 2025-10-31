@@ -1,33 +1,93 @@
 <!-- Detective Mode: Motive Analysis Enhancement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { page } from '$app/state';
-  import Button from '$lib/components/ui/Button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { page } from '$app/stores';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import Alert from '$lib/components/ui/alert/Alert.svelte';
-  import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
+  import { Progress } from '$lib/components/ui/progress';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import { glyphShaderCache } from '$lib/cache/glyph-shader-cache-bridge';
+  import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes
-  let activeTab = $state('profile');
-  let analysisInProgress = $state(false);
-  let analysisProgress = $state(0);
-  let caseId = $state('');
-  let suspectProfile = $state(null);
-  let motiveMatrix = $state([]);
-  let timelineEvents = $state([]);
-  let relationshipMap = $state([]);
-  let psychologicalProfile = $state(null);
-  let riskAssessment = $state(null);
-  let evidenceCorrelation = $state([]);
-  let behaviorPatterns = $state([]);
-  let motiveTriggers = $state([]);
-  let investigativeRecommendations = $state([]);
+  let activeTab: string = $state('profile');
+  let analysisInProgress: boolean = $state(false);
+  let analysisProgress: number = $state(0);
+  let caseId: string = $state('');
+
+  // Typed domain objects to avoid `never` in templates
+  interface BehaviorPattern {
+    pattern: string;
+    confidence: number;
+    timeline: string[];
+    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | string;
+  }
+  interface PsychologicalProfile {
+    primaryTraits: string[];
+    riskFactors: string[];
+    protectiveFactors: string[];
+    assessmentScore: Record<string, number>;
+    recommendations: string[];
+  }
+  interface RiskAssessment {
+    overallLevel: string;
+    immediateThreat: string;
+    escalationPotential: string;
+    publicSafety?: string;
+    factors: Record<string, { score: number; trend: string }>;
+    timeline: { immediate: string; shortTerm: string; longTerm: string };
+  }
+  interface Recommendation {
+    priority: string;
+    action: string;
+    rationale?: string;
+    resources?: string[];
+  }
+  interface EvidenceItem {
+    id: string;
+    type?: string;
+    relevance?: string;
+    correlationScore?: number;
+    motiveSupport?: string[];
+    timelinePosition?: string;
+  }
+  interface SuspectProfile {
+    id: string;
+    name: string;
+    relationship: string;
+    opportunityScore: number;
+    meansScore: number;
+    motiveScore: number;
+    overallThreatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    psychologicalMarkers: string[];
+    behaviorAnalysis: {
+      aggression: number;
+      deception: number;
+      impulsivity: number;
+      planning: number;
+    };
+    timeline: TimelineEvent[];
+  }
+  interface TimelineEvent {
+    timestamp: string;
+    event: string;
+    significance: 'LOW' | 'MEDIUM' | 'HIGH';
+    evidenceIds: string[];
+    correlationScore: number;
+  }
+  interface MotiveAnalysis {
+    category: 'FINANCIAL' | 'REVENGE' | 'JEALOUSY' | 'POWER' | 'FEAR' | 'MENTAL_HEALTH' | string;
+    description: string;
+    probability: number;
+    supportingEvidence: string[];
+    contradictingEvidence: string[];
+    psychologicalBasis: string;
+    triggerEvents: string[];
+  }
+
   // Detective AI system state
   let detectiveSystem = $state({
     status: 'idle',
@@ -42,46 +102,50 @@
     nesRAM: { used: 0, total: 2048 },
     chrROM: { used: 0, total: 8192 },
     glyphCache: { hitRate: 0, entries: 0 },
-    gpuUtilization 0
+    gpuUtilization: 0
   });
-  interface SuspectProfile {
-    id: string;
-    name: string;
-    relationship: string;
-    opportunityScore: number;
-    meansScore: number;
-    motiveScore: number;
-    overallThreatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-    psychologicalMarkers: string[];
-    behaviorAnalysis: {
-      aggression number;
-      deception number;
-      impulsivity: number;
-      planning: number;
-    }
-    timeline: TimelineEvent[];
-  }
-  interface TimelineEvent {
-    timestamp: string;
-    event: string;
-    significance: 'LOW' | 'MEDIUM' | 'HIGH';
-    evidenceIds: string[];
-    correlationScore: number;
-  }
-  interface MotiveAnalysis {
-    category: 'FINANCIAL' | 'REVENGE' | 'JEALOUSY' | 'POWER' | 'FEAR' | 'MENTAL_HEALTH';
-    description string;
-    probability: number;
-    supportingEvidence: string[];
-    contradictingEvidence: string[];
-    psychologicalBasis: string;
-    triggerEvents: string[];
-  }
+
+  let suspectProfile: SuspectProfile | null = $state(null);
+  let motiveMatrix: MotiveAnalysis[] = $state([]);
+  let timelineEvents: TimelineEvent[] = $state([]);
+  let relationshipMap = $state([]);
+  let psychologicalProfile: PsychologicalProfile | null = $state(null);
+  let riskAssessment: RiskAssessment | null = $state(null);
+  let evidenceCorrelation: EvidenceItem[] = $state([]);
+  let behaviorPatterns: BehaviorPattern[] = $state([]);
+  let motiveTriggers = $state([]);
+  let investigativeRecommendations: Recommendation[] = $state([]);
+
+  // helper for safely iterating riskAssessment.factors without 'unknown'
+  let riskFactorEntries: Array<[string, { score: number; trend: string }]> = $state([]);
+
+  // replace legacy reactive statement `$:` with runes-friendly `$effect`
   $effect(() => {
-    caseId = page.url.searchParams.get('case') || 'CASE-2024-001';
-    initializeDetectiveMode();
-    startSystemMonitoring();
+    if (riskAssessment) {
+      riskFactorEntries = Object.entries(riskAssessment.factors) as Array<
+        [string, { score: number; trend: string }]
+      >;
+    } else {
+      riskFactorEntries = [];
+    }
   });
+
+  // monitor interval handle so we can cleanup on destroy
+  let _monitorInterval: ReturnType<typeof setInterval> | undefined;
+
+  onMount(() => {
+    // read reactive page store value
+    caseId = $page?.url?.searchParams?.get('case') || 'CASE-2024-001';
+    initializeDetectiveMode();
+    _monitorInterval = startSystemMonitoring();
+    return () => {
+      if (_monitorInterval) clearInterval(_monitorInterval);
+    };
+  });
+  onDestroy(() => {
+    if (_monitorInterval) clearInterval(_monitorInterval);
+  });
+
   async function initializeDetectiveMode() {
     detectiveSystem.status = 'initializing';
     detectiveSystem.processingStage = 'Loading detective AI systems...';
@@ -89,7 +153,7 @@
     await nesMemoryBridge.initialize({
       mode: 'detective',
       optimizeFor: 'pattern-recognition',
-      cacheRegions: ['motive-patterns', 'behavioral-profiles', 'evidence-correlation'];
+      cacheRegions: ['motive-patterns', 'behavioral-profiles', 'evidence-correlation']
     });
     // Initialize Glyph Shader Cache for visual analysis
     await glyphShaderCache.loadPatterns([
@@ -104,12 +168,25 @@
   }
   async function loadCaseData() {
     try {
-      // removed unused response assignment
+      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api';
+      const response = await fetch(`${apiBase}/cases/${caseId}`);
       const caseData = await response.json();
       if (caseData.success) {
         suspectProfile = caseData.suspects[0] || generateMockSuspectProfile();
         timelineEvents = caseData.timeline || generateMockTimeline();
-        evidenceCorrelation = caseData.evidence || [];
+
+        // normalize external evidence payloads to EvidenceItem[] (accept evidenceId or id)
+        evidenceCorrelation = (caseData.evidence || []).map((e: any) => {
+          return {
+            id: e.id ?? e.evidenceId ?? String(Math.random()).slice(2),
+            type: e.type ?? e.category ?? undefined,
+            relevance: e.relevance ?? undefined,
+            correlationScore: e.correlationScore ?? e.score ?? undefined,
+            motiveSupport: e.motiveSupport ?? e.supportingMotives ?? [],
+            timelinePosition: e.timelinePosition ?? e.timestamp ?? undefined
+          } as EvidenceItem;
+        });
+
         detectiveSystem.totalEvidence = evidenceCorrelation.length;
         detectiveSystem.profiledSuspects = caseData.suspects?.length || 1;
       }
@@ -166,7 +243,8 @@
     detectiveSystem.motiveConfidence = calculateOverallConfidence();
   }
   function startSystemMonitoring() {
-    setInterval(() => {
+    // return the interval id so caller can clear it
+    return setInterval(() => {
       // Update NES-GPU metrics
       memoryMetrics.nesRAM.used = Math.floor(Math.random() * 1800) + 200;
       memoryMetrics.chrROM.used = Math.floor(Math.random() * 7000) + 1000;
@@ -204,39 +282,40 @@
       protectiveFactors: ['Family support', 'Employment stability'],
       assessmentScore: {
         violence: 78,
-        manipulation 65,
+        manipulation: 65,
         impulsivity: 89,
-        planning: 45,
+        planning: 45
       },
       recommendations: [
         'Psychological evaluation required',
         'Monitor for escalation triggers',
         'Consider restraining order'
-      ];
-    }
+      ]
+    };
   }
-  async function correlateEvidence() {
+  // correlateEvidence must return EvidenceItem[] (use `id` not `evidenceId`)
+  async function correlateEvidence(): Promise<EvidenceItem[]> {
     return [
       {
-        evidenceId: 'E001',
+        id: 'E001',
         type: 'Digital Communication',
         correlationScore: 0.92,
         motiveSupport: ['REVENGE', 'FINANCIAL'],
-        timelinePosition '2024-01-15T10:30:00Z',
+        timelinePosition: '2024-01-15T10:30:00Z'
       },
       {
-        evidenceId: 'E002',
+        id: 'E002',
         type: 'Financial Records',
         correlationScore: 0.78,
         motiveSupport: ['FINANCIAL'],
-        timelinePosition '2024-01-20T14:15:00Z',
+        timelinePosition: '2024-01-20T14:15:00Z'
       },
       {
-        evidenceId: 'E003',
+        id: 'E003',
         type: 'Witness Statement',
         correlationScore: 0.85,
         motiveSupport: ['REVENGE', 'JEALOUSY'],
-        timelinePosition '2024-02-01T09:00:00Z',
+        timelinePosition: '2024-02-01T09:00:00Z'
       }
     ];
   }
@@ -244,30 +323,30 @@
     return [
       {
         category: 'FINANCIAL',
-        description 'Significant financial pressures and potential monetary gain',
+        description: 'Significant financial pressures and potential monetary gain',
         probability: 0.82,
         supportingEvidence: ['Bank records show debt', 'Insurance policy discovered', 'Recent job loss'],
         contradictingEvidence: ['Alternative income sources', 'Family financial support'],
         psychologicalBasis: 'Desperation-driven decision making',
-        triggerEvents: ['Foreclosure notice', 'Business failure'];
+        triggerEvents: ['Foreclosure notice', 'Business failure']
       },
       {
         category: 'REVENGE',
-        description 'Personal vendetta based on perceived injustices',
+        description: 'Personal vendetta based on perceived injustices',
         probability: 0.74,
         supportingEvidence: ['Threatening messages', 'History of conflict', 'Public humiliation'],
         contradictingEvidence: ['Recent reconciliation attempts', 'Third-party mediation'],
         psychologicalBasis: 'Narcissistic injury and rage',
-        triggerEvents: ['Court loss', 'Public embarrassment'];
+        triggerEvents: ['Court loss', 'Public embarrassment']
       },
       {
         category: 'MENTAL_HEALTH',
-        description 'Psychological breakdown affecting judgment',
+        description: 'Psychological breakdown affecting judgment',
         probability: 0.68,
         supportingEvidence: ['Medication changes', 'Behavioral changes', 'Social isolation'],
         contradictingEvidence: ['Treatment compliance', 'Support system'],
         psychologicalBasis: 'Severe depression with psychotic features',
-        triggerEvents: ['Treatment discontinuation', 'Stressor accumulation'];
+        triggerEvents: ['Treatment discontinuation', 'Stressor accumulation']
       }
     ];
   }
@@ -294,21 +373,21 @@
     return [
       {
         priority: 'IMMEDIATE',
-        action 'Increase surveillance and protective measures',
+        action: 'Increase surveillance and protective measures',
         rationale: 'High escalation potential with clear opportunity',
-        resources: ['Additional security', 'Real-time monitoring'];
+        resources: ['Additional security', 'Real-time monitoring']
       },
       {
         priority: 'URGENT',
-        action 'Psychological evaluation and intervention',
+        action: 'Psychological evaluation and intervention',
         rationale: 'Mental health factors significantly contributing to risk',
-        resources: ['Crisis intervention team', 'Mental health professionals'];
+        resources: ['Crisis intervention team', 'Mental health professionals']
       },
       {
         priority: 'IMPORTANT',
-        action 'Evidence preservation and documentation',
+        action: 'Evidence preservation and documentation',
         rationale: 'Strong evidentiary support for multiple motive categories',
-        resources: ['Forensic team', 'Digital evidence specialists'];
+        resources: ['Forensic team', 'Digital evidence specialists']
       }
     ];
   }
@@ -328,8 +407,8 @@
       overallThreatLevel: 'HIGH',
       psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'],
       behaviorAnalysis: {
-        aggression 78,
-        deception 65,
+        aggression: 78,
+        deception: 65,
         impulsivity: 89,
         planning: 45,
       },
@@ -397,18 +476,24 @@
       <p class="text-gray-600">Advanced AI-powered criminal motive analysis and risk assessment</p>
     </div>
     <div class="flex items-center gap-4">
-      <Badge variant="ghost">Case: {caseId}</Badge>
-      <Badge class={detectiveSystem.status === 'ready' ? 'bg-green-600' : detectiveSystem.status === 'analyzing' ? 'bg-blue-600' : 'bg-gray-600'}>
+      <Badge variant="outline">Case: {caseId}</Badge>
+      <Badge
+        class={detectiveSystem.status === 'ready'
+          ? 'bg-green-600'
+          : detectiveSystem.status === 'analyzing'
+            ? 'bg-blue-600'
+            : 'bg-gray-600'}
+      >
         {detectiveSystem.status.toUpperCase()}
       </Badge>
     </div>
   </div>
   <!-- System Status -->
-  <div>
-    <divHeader>
-      <divTitle>Detective AI System Status</h3>
-    </div>
-    <divContent>
+  <Card>
+    <CardHeader>
+      <CardTitle>Detective AI System Status</CardTitle>
+    </CardHeader>
+    <CardContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{detectiveSystem.totalEvidence}</div>
@@ -436,14 +521,14 @@
           <Progress value={analysisProgress} class="w-full" />
         {/if}
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
   <!-- NES-GPU Memory Metrics -->
-  <div>
-    <divHeader>
-      <divTitle>NES-GPU Memory Bridge Status</h3>
-    </div>
-    <divContent>
+  <Card>
+    <CardHeader>
+      <CardTitle>NES-GPU Memory Bridge Status</CardTitle>
+    </CardHeader>
+    <CardContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <div class="text-sm text-gray-600">NES RAM Usage</div>
@@ -466,8 +551,8 @@
           <Progress value={memoryMetrics.gpuUtilization} class="w-full mt-1" />
         </div>
       </div>
-    </div>
-  </div>
+    </CardContent>
+  </Card>
   <!-- Analysis Controls -->
   <div class="flex gap-4">
     <Button
@@ -475,15 +560,16 @@
       disabled={analysisInProgress || !suspectProfile}
       class="bg-blue-600 hover:bg-blue-700"
     >
-{analysisInProgress ? 'Analyzing...' : 'Start Motive Analysis'}
-    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'profile'}>
-      View Suspect Profile
-    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'motives'}>
-      Motive Matrix
-    </button>
-    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'risk'}>
-      Risk Assessment
-    </button>
+      {#if analysisInProgress}
+        Analyzing...
+      {:else}
+        Start Motive Analysis
+      {/if}
+    </Button>
+    <!-- use native onclick attribute to avoid deprecated directive warning -->
+    <button class="nes-btn" onclick={() => (activeTab = 'profile')}> View Suspect Profile </button>
+    <button class="nes-btn" onclick={() => (activeTab = 'motives')}> Motive Matrix </button>
+    <button class="nes-btn" onclick={() => (activeTab = 'risk')}> Risk Assessment </button>
   </div>
   <!-- Analysis Results -->
   <Tabs bind:value={activeTab} class="w-full">
@@ -496,11 +582,11 @@
     </TabsList>
     <TabsContent value="profile">
       {#if suspectProfile}
-        <div>
-          <divHeader>
-            <divTitle>Suspect Profile: {suspectProfile.name}</h3>
-          </div>
-          <divContent class="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Suspect Profile: {suspectProfile.name}</CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-4">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <div class="text-sm text-gray-600">Relationship</div>
@@ -530,7 +616,7 @@
               <div class="text-sm text-gray-600 mb-2">Psychological Markers</div>
               <div class="flex flex-wrap gap-2">
                 {#each suspectProfile.psychologicalMarkers as marker}
-                  <Badge variant="ghost">{marker}</Badge>
+                  <Badge class="bg-transparent border text-sm px-2 py-0.5">{marker}</Badge>
                 {/each}
               </div>
             </div>
@@ -567,26 +653,26 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       {/if}
     </TabsContent>
     <TabsContent value="motives">
       <div class="space-y-4">
         {#each motiveMatrix as motive}
-          <div>
-            <divHeader>
+          <Card>
+            <CardHeader>
               <div class="flex items-center justify-between">
-                <divTitle class="flex items-center gap-2">
+                <CardTitle class="flex items-center gap-2">
                   <Badge class={getMotiveColor(motive.category) + ' text-white'}>
                     {motive.category.replace('_', ' ')}
                   </Badge>
                   <span>Probability: {(motive.probability * 100).toFixed(1)}%</span>
-                </h3>
+                </CardTitle>
                 <Progress value={motive.probability * 100} class="w-32" />
               </div>
-            </div>
-            <divContent class="space-y-4">
+            </CardHeader>
+            <CardContent class="space-y-4">
               <p class="text-gray-700">{motive.description}</p>
               <div class="grid md:grid-cols-2 gap-4">
                 <div>
@@ -620,21 +706,21 @@
                 <div class="text-sm font-medium text-purple-700 mb-2">Trigger Events</div>
                 <div class="flex flex-wrap gap-2">
                   {#each motive.triggerEvents as trigger}
-                    <Badge variant="ghost" class="text-purple-700 border-purple-300">{trigger}</Badge>
+                    <Badge class="bg-transparent border text-sm px-2 py-0.5 text-purple-700">{trigger}</Badge>
                   {/each}
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         {/each}
       </div>
     </TabsContent>
     <TabsContent value="timeline">
-      <div>
-        <divHeader>
-          <divTitle>Event Timeline Analysis</h3>
-        </div>
-        <divContent>
+      <Card>
+        <CardHeader>
+          <CardTitle>Event Timeline Analysis</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div class="space-y-4">
             {#each timelineEvents as event}
               <div class="border-l-4 border-blue-500 pl-4">
@@ -652,17 +738,17 @@
               </div>
             {/each}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </TabsContent>
     <TabsContent value="risk">
       {#if riskAssessment}
         <div class="space-y-4">
-          <div>
-            <divHeader>
-              <divTitle>Risk Assessment Summary</h3>
-            </div>
-            <divContent>
+          <Card>
+            <CardHeader>
+              <CardTitle>Risk Assessment Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="text-center p-4 border rounded-lg">
                   <div class="text-lg font-bold text-red-600">{riskAssessment.overallLevel}</div>
@@ -681,7 +767,7 @@
                 <div>
                   <div class="text-sm font-medium mb-2">Risk Factor Analysis</div>
                   <div class="grid grid-cols-2 gap-4">
-                    {#each Object.entries(riskAssessment.factors) as [factor, data]}
+                    {#each riskFactorEntries as [factor, data]}
                       <div class="border rounded-lg p-3">
                         <div class="flex justify-between items-center mb-2">
                           <span class="font-medium capitalize">{factor}</span>
@@ -711,24 +797,30 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       {/if}
     </TabsContent>
     <TabsContent value="recommendations">
       <div class="space-y-4">
         {#each investigativeRecommendations as rec}
-          <div>
-            <divHeader>
+          <Card>
+            <CardHeader>
               <div class="flex items-center justify-between">
-                <divTitle>{rec.action}</h3>
-                <Badge class={rec.priority === 'IMMEDIATE' ? 'bg-red-600' : rec.priority === 'URGENT' ? 'bg-orange-600' : 'bg-blue-600'}>
+                <CardTitle>{rec.action}</CardTitle>
+                <Badge
+                  class={rec.priority === 'IMMEDIATE'
+                    ? 'bg-red-600'
+                    : rec.priority === 'URGENT'
+                      ? 'bg-orange-600'
+                      : 'bg-blue-600'}
+                >
                   {rec.priority}
                 </Badge>
               </div>
-            </div>
-            <divContent>
+            </CardHeader>
+            <CardContent>
               <div class="space-y-3">
                 <div>
                   <div class="text-sm font-medium text-gray-700">Rationale</div>
@@ -737,24 +829,24 @@
                 <div>
                   <div class="text-sm font-medium text-gray-700">Required Resources</div>
                   <div class="flex flex-wrap gap-2 mt-1">
-                    {#each rec.resources as resource}
-                      <Badge variant="ghost">{resource}</Badge>
+                    {#each rec.resources ?? [] as resource}
+                      <Badge class="bg-transparent border text-sm px-2 py-0.5">{resource}</Badge>
                     {/each}
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         {/each}
       </div>
     </TabsContent>
   </Tabs>
   {#if behaviorPatterns.length > 0}
-    <div>
-      <divHeader>
-        <divTitle>Behavioral Pattern Analysis</h3>
-      </div>
-      <divContent>
+    <Card>
+      <CardHeader>
+        <CardTitle>Behavioral Pattern Analysis</CardTitle>
+      </CardHeader>
+      <CardContent>
         <div class="grid gap-4">
           {#each behaviorPatterns as pattern}
             <div class="border rounded-lg p-4">
@@ -762,7 +854,7 @@
                 <div class="font-medium">{pattern.pattern}</div>
                 <div class="flex items-center gap-2">
                   <span class="text-sm">Confidence: {(pattern.confidence * 100).toFixed(1)}%</span>
-                  <Badge class={getThreatColor(pattern.riskLevel)}>{pattern.riskLevel}</Badge>
+                  <Badge class={getThreatColor(pattern.riskLevel) + ' text-white'}>{pattern.riskLevel}</Badge>
                 </div>
               </div>
               <div class="text-sm text-gray-600">
@@ -776,15 +868,15 @@
             </div>
           {/each}
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   {/if}
   {#if psychologicalProfile}
-    <div>
-      <divHeader>
-        <divTitle>Psychological Profile</h3>
-      </div>
-      <divContent class="space-y-4">
+    <Card>
+      <CardHeader>
+        <CardTitle>Psychological Profile</CardTitle>
+      </CardHeader>
+      <CardContent class="space-y-4">
         <div class="grid md:grid-cols-3 gap-4">
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Primary Traits</div>
@@ -811,33 +903,9 @@
             </div>
           </div>
         </div>
-        <Separator />
-        <div>
-          <div class="text-sm font-medium text-gray-700 mb-3">Assessment Scores</div>
-          <div class="grid grid-cols-2 gap-4">
-            {#each Object.entries(psychologicalProfile.assessmentScore) as [metric, score]}
-              <div>
-                <div class="flex justify-between text-sm mb-1">
-                  <span class="capitalize">{metric}</span>
-                  <span>{score}/100</span>
-                </div>
-                <Progress value={score} class="w-full" />
-              </div>
-            {/each}
-          </div>
-        </div>
-        <div>
-          <div class="text-sm font-medium text-gray-700 mb-2">Professional Recommendations</div>
-          <ul class="space-y-1">
-            {#each psychologicalProfile.recommendations as rec}
-              <li class="flex items-center gap-2 text-sm">
-                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                {rec}
-              </li>
-            {/each}
-          </ul>
-        </div>
-      </div>
-    </div>
+        <!-- ...any additional psychological profile UI elements can be added here... -->
+      </CardContent>
+    </Card>
   {/if}
-</div>;
+
+</div>
