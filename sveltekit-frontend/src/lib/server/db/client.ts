@@ -1,15 +1,15 @@
-import postgres from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { env } from '$env/dynamic/private';
-import * as schema from './schema-postgres.js';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+import * as schema from './schema'; // Import the combined schema
 
-/**
- * True when running in development mode (NODE_ENV === 'development')
- */
-const isDev: boolean = process.env.NODE_ENV === 'development';
+// Prioritize Docker service name, fallback to local dev port 5434
+const connectionString =
+  process.env.DATABASE_URL ||
+  'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 
-/**
+const pool = new Pool({ connectionString, max: 10, idleTimeoutMillis: 30000 });
+
+export const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
  * Returns the main application database URL.
  */
 function getDatabaseUrl(): string {

@@ -3,13 +3,16 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
-  import type { DocumentCache, VectorSearchCache } from '$lib/db/client-db.js';
-  let { documentId = $bindable()  }: { documentId = $bindable() : unknown } = $props(); // string
-  let { isVisible = $bindable()  }: { isVisible = $bindable() : unknown } = $props(); // false
-  let { onClose = $bindable()  }: { onClose = $bindable() : unknown } = $props(); // () => void = () =>
+
+  // Correct prop destructuring and types for Svelte 5
+  let {
+    documentId = '',
+    isVisible = false,
+    onClose = () => {}
+  }: { documentId?: string; isVisible?: boolean; onClose?: () => void } = $props();
+
   // Reactive state management
   const documentData = writable<any>(null);
   const isLoading = writable<boolean>(false);
@@ -23,12 +26,14 @@ https://svelte.dev/e/js_parse_error -->
   let showGPUAnalysis = $state(false);
   let cacheHitTime = $state(0);
   let serverFetchTime = $state(0);
+
   // Node click handler with cache-first strategy
   async function loadDocumentDetails(docId: string, forceRefresh = false) {
     if (!docId) return;
     const startTime = performance.now();
     isLoading.set(true);
     errorMessage.set(null);
+
     try {
       // THE FAST PATH: Check IndexedDB cache first
       if (!forceRefresh) {
@@ -41,6 +46,7 @@ https://svelte.dev/e/js_parse_error -->
           displayDocumentDetails(cachedDocument);
           loadingSource.set(null);
           isLoading.set(false);
+
           // Check if cache is still fresh (5 minutes)
           const cacheAge = Date.now() - new Date(cachedDocument.lastAccessed).getTime();
           const cacheTimeout = 5 * 60 * 1000; // 5 minutes
@@ -55,48 +61,55 @@ https://svelte.dev/e/js_parse_error -->
           console.log('❌ CACHE MISS! Document not in IndexedDB');
         }
       }
+
       // THE SLOW PATH: Fetch from server
       await fetchAndCacheDocument(docId, forceRefresh);
     } catch (error) {
       console.error('Document loading failed:', error);
-      errorMessage.set(error instanceof Error ? error.message: 'Failed to load document');
+      errorMessage.set(error instanceof Error ? error.message : 'Failed to load document');
       isLoading.set(false);
       loadingSource.set(null);
     }
   }
+
   // Server fetch with caching
   async function fetchAndCacheDocument(docId: string, includeGPU = false) {
     const serverStartTime = performance.now();
     loadingSource.set('server');
     console.log('🌐 Fetching from server with full analysis...');
     const url = `/api/document/${docId}${includeGPU ? '?gpu=true' : ''}`;
-    // removed unused response assignment
+
+    // perform network request
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
-    serverFetchTime = performance.now() - serverStartTim;
+    serverFetchTime = performance.now() - serverStartTime;
     console.log(`🚀 Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
-    console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time}`);
-    // IMPORTANT: Cache the fetched data for next time!
-    const cacheEntry: DocumentCache = {
-      id: Date.now(), // Auto-increment ID for IndexedDB
-      documentId: docId
-      title: data.document.title,
-      content: data.document.content,
-      documentType: data.document.document_type,
+    console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
+
+    // Build a safe cache entry (cast to any to avoid strict schema mismatch here)
+    const doc = (data && (data.document ?? data)) as any;
+    const cacheEntry: any = {
+      id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
+      documentId: docId,
+      title: doc.title ?? '',
+      content: doc.content ?? '',
+      documentType: doc.document_type ?? doc.documentType ?? 'unknown',
       metadata: {
-        ...data.document.metadata,
-        related_documents: data.related_documents,
-        graph_connections: data.graph_connections,
-        case_associations: data.case_associations,
-        gpu_analysis: data.gpu_analysis,
-        enhanced_metadata: data.enhanced_metadata
+        ...(doc.metadata ?? {}),
+        related_documents: data.related_documents ?? [],
+        graph_connections: data.graph_connections ?? [],
+        case_associations: data.case_associations ?? [],
+        gpu_analysis: data.gpu_analysis ?? null,
+        enhanced_metadata: data.enhanced_metadata ?? null
       },
-      hash: data.document.content_hash || `hash_${Date.now()}`,
-      lastAccessed: new Date(),
-      cacheSize: JSON.stringify(length)
-    }
+      hash: doc.content_hash ?? `hash_${Date.now()}`,
+      lastAccessed: new Date().toISOString(),
+      cacheSize: JSON.stringify((doc.content && doc.content.length) || 0)
+    };
+
     // Store in IndexedDB with error handling
     try {
       await legalDB.documentCache.put(cacheEntry);
@@ -104,35 +117,44 @@ https://svelte.dev/e/js_parse_error -->
     } catch (cacheError) {
       console.warn('⚠️ Failed to cache document:', cacheError);
     }
+
     // Update UI with server data
     displayDocumentDetails(data);
     loadingSource.set(null);
     isLoading.set(false);
   }
+
   // Display document details (unified function for cache and server data)
   function displayDocumentDetails(data: unknown) {
-    // Handle both cached format and direct server response format
-    const doc = data.document || data;
-    const metadata = data.metadata || ;
+    const obj = data as any;
+    const doc = obj.document ?? obj;
+    const metadata = obj.metadata ?? obj;
+
     documentData.set({
-      id: doc.id || doc.documentId,
-      title: doc.title,
-      content: doc.content,
-      document_type: doc.document_type || doc.documentType,
-      file_path: doc.file_path,
-      created_at: doc.created_at,
-      updated_at: doc.updated_at;
+      id: doc.id ?? doc.documentId ?? null,
+      title: doc.title ?? '',
+      content: doc.content ?? '',
+      document_type: doc.document_type ?? doc.documentType ?? 'unknown',
+      file_path: doc.file_path ?? null,
+      created_at: doc.created_at ?? null,
+      updated_at: doc.updated_at ?? null
     });
-    relatedDocuments.set(data.related_documents || metadata.related_documents || []);
-    graphConnections.set(data.graph_connections || metadata.graph_connections || []);
-    caseAssociations.set(data.case_associations || metadata.case_associations || []);
-    gpuAnalysis.set(data.gpu_analysis || metadata.gpu_analysis);
-    processingMetrics.set(data.enhanced_metadata || metadata.enhanced_metadata);
+
+    relatedDocuments.set(obj.related_documents ?? metadata.related_documents ?? []);
+    graphConnections.set(obj.graph_connections ?? metadata.graph_connections ?? []);
+    caseAssociations.set(obj.case_associations ?? metadata.case_associations ?? []);
+    gpuAnalysis.set(obj.gpu_analysis ?? metadata.gpu_analysis ?? null);
+    processingMetrics.set(obj.enhanced_metadata ?? metadata.enhanced_metadata ?? null);
   }
-  // Reactive updates when documentId changes
-  // TODO: Convert to $derived: if (documentId && isVisible) {
-    loadDocumentDetails(documentId)
-  }
+
+  // Reactive updates when documentId or visibility changes
+  // CHANGED: use Svelte 5 rune $effect instead of legacy $:
+  $effect(() => {
+    if (documentId && isVisible) {
+      loadDocumentDetails(documentId);
+    }
+  });
+
   // GPU Analysis toggle
   async function toggleGPUAnalysis() {
     if (!showGPUAnalysis && documentId) {
@@ -143,6 +165,7 @@ https://svelte.dev/e/js_parse_error -->
       gpuAnalysis.set(null);
     }
   }
+
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -150,7 +173,9 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
+
   function formatDuration(ms: number): string {
+    if (!ms) return '0ms';
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }

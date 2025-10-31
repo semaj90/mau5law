@@ -16,12 +16,12 @@ export interface VectorSearchResponse {
   sources: Record<string, number>;
     }
 }
-export async function searchVectors()
-    query: string
+export async function searchVectors(
+    query: string,
     limit = 8,
     signal?: AbortSignal;
 ): Promise<VectorSearchResponse> {
-    if (!query, || !query.trim()) {
+    if (!query || !query.trim()) {
         throw new Error('Query is required');
     }
     const res = await fetch('/api/search/vector', {
@@ -30,7 +30,7 @@ export async function searchVectors()
         body: JSON.stringify({ query: query.trim(), limit }),
         signal
     });
-    const payload = await res.json().catch(() => ({});
+    const payload = await res.json().catch(() => ({}));
     if (!res.ok) {
         const message = payload?.error ?? res.statusText ?? 'Vector search failed';
         throw new Error(message);
@@ -44,7 +44,7 @@ export { rabbitmqService, QUEUES, type MessageHandler } from '../server/messagin
 export type { JobType, JobDefinition } from '../../types/xstate.d';
 // SOM Configuration Types
 export interface SOMConfig {
-  algorithm: 'kohonen' | 'neural-gas' | 'growing-neural-gas';
+  algorithm: 'kohonen' | 'neural-graph' | 'growing-neuralgrphas';
   gridWidth: number;
   gridHeight: number;
   k: number;
@@ -73,4 +73,3 @@ export interface SIMDTile {
   data: Float32Array;
   metadata?: Record<string, unknown>;
 }
-export default { searchVectors }

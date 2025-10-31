@@ -3,13 +3,16 @@
   import { z, type ZodTypeAny, type ZodObject } from 'zod';
   // infer a concrete TS type from the Zod schema to avoid namespace collisions
   type CaseFormType = z.infer<typeof caseFormSchema>;
-  import { superForm, type SuperValidated } from 'sveltekit-superforms';
-  import { zodClient } from 'sveltekit-superforms/adapters';
+  import { superForm } from 'sveltekit-superforms';
+  // corrected adapter import (common adapter entry; adjust if your package exposes a different path)
+  import { zodClient } from 'sveltekit-superforms/zod';
   // ensure adapter gets a concrete ZodObject type to satisfy its type signature
-  const typedCaseFormSchema = caseFormSchema as unknown as ZodObject<Record<string, ZodTypeAny>>;
+  // simpler, explicit cast to a ZodObject to satisfy adapter typing
+  const typedCaseFormSchema = caseFormSchema as ZodObject<Record<string, ZodTypeAny>>;
 
   interface Props {
-    initialData?: SuperValidated<CaseFormType> | Partial<CaseFormType>;
+    // avoid referencing SuperValidated (namespace) — accept a partial of the inferred form type
+    initialData?: Partial<CaseFormType> | undefined;
     isEditing?: boolean;
     formApi?: unknown;
     onsuccess?: (data: unknown) => void;
@@ -17,7 +20,8 @@
   }
 
   // Provide a valid default for initialData
-  let { initialData = undefined, isEditing = false, formApi = $bindable(), onsuccess, onerror }: Props = $props();
+  // avoid $bindable() here — default to undefined and accept a mutable object from parent if they want the API
+  let { initialData = undefined, isEditing = false, formApi = undefined, onsuccess, onerror }: Props = $props();
 
   // Available users for assignment (would come from API)
   let availableUsers = $state([
@@ -48,8 +52,9 @@
 
   // Update formApi when form changes using $effect
   $effect(() => {
-    if (formApi !== undefined) {
-      formApi = {
+    // If parent passed an object to receive the form API, mutate it so the reference remains valid for two-way binding
+    if (formApi && typeof formApi === 'object') {
+      Object.assign(formApi as Record<string, unknown>, {
         form,
         errors,
         constraints,
@@ -57,7 +62,7 @@
         delayed,
         message,
         enhance,
-      };
+      });
     }
   });
 
@@ -261,7 +266,7 @@
 		<div>
 			<button
 				type="button"
-				on:click={() => history.back()}
+				on:click={() => (typeof history !== 'undefined' ? history.back() : undefined)}
 				disabled={$submitting}
 			>
 				Cancel

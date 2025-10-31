@@ -3,10 +3,13 @@
 // and avoids conflicting with upstream full WebGPU definitions.
 
 declare global {
+  // Basic usage flags and map modes (we only need numeric values)
   interface GPUBufferUsage {
     [key: string]: number;
   }
-  interface GPUMapMode { READ: number }
+  interface GPUMapMode {
+    READ: number;
+  }
 
   interface GPUAdapter {
     requestDevice(options?: any): Promise<GPUDevice>;
@@ -17,7 +20,13 @@ declare global {
   }
 
   interface GPUQueue {
-    writeBuffer(buffer: GPUBuffer, bufferOffset: number, data: ArrayBuffer, dataOffset?: number, size?: number): void;
+    writeBuffer(
+      buffer: GPUBuffer,
+      bufferOffset: number,
+      data: ArrayBuffer | ArrayBufferView,
+      dataOffset?: number,
+      size?: number
+    ): void;
     submit(commandBuffers: any[]): void;
     onSubmittedWorkDone(): Promise<void>;
   }
@@ -29,15 +38,13 @@ declare global {
     createComputePipeline(descriptor: any): GPUComputePipeline;
     createBindGroup(descriptor: any): any;
     createCommandEncoder(): any;
-    requestAdapter?: any;
     destroy?(): void;
   }
 
   interface GPUBuffer {
     destroy(): void;
-    // mapAsync and getMappedRange are present on mapped buffers returned by mapAsync
     mapAsync?(mode: number, offset?: number, size?: number): Promise<void>;
-    getMappedRange?(): ArrayBuffer;
+    getMappedRange?(offset?: number, size?: number): ArrayBuffer;
     unmap?(): void;
   }
 

@@ -1,14 +1,13 @@
 <script lang="ts">
   import { X } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  // import Button from '$lib/components/ui/button/Button.svelte';
   import PoiImageUpload from './PoiImageUpload.svelte';
 
   interface Props {
     open?: boolean;
   }
 
-  let { open = false }: Props = $props();
-  let isOpen = $state(false);
+  let { open = $bindable(false) }: Props = $props();
 
   let formData = $state({
     name: '',
@@ -19,6 +18,7 @@
   });
 
   let tempPoiId = $state('');
+  let createdPoiName = $state(''); // To hold name after form reset
   let loading = $state(false);
   let message = $state('');
   let messageType = $state<'success' | 'error'>('success');
@@ -28,11 +28,20 @@
       loading = true;
       message = '';
 
-      // Generate temporary ID for image upload (would use real ID from backend)
-      tempPoiId = `poi-${Date.now()}`;
+      const response = await fetch('/api/poi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-      // In a real implementation, you would send to API here
-      console.log('Submitting POI:', { ...formData, id: tempPoiId });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to create POI' }));
+        throw new Error(errorData.message || 'An unknown error occurred.');
+      }
+
+      const createdPoi = await response.json();
+      tempPoiId = createdPoi.id;
+      createdPoiName = formData.name; // Persist name for image upload component
 
       message = 'POI created successfully. Now upload a photo if desired.';
       messageType = 'success';
@@ -46,7 +55,7 @@
         status: 'Person of Interest',
       };
     } catch (error) {
-      message = 'Failed to create POI';
+      message = error instanceof Error ? error.message : 'Failed to create POI';
       messageType = 'error';
     } finally {
       loading = false;
@@ -54,23 +63,23 @@
   }
 
   function closeModal() {
-    isOpen = false;
+    open = false;
   }
 </script>
 
 <!-- Modal Trigger Button -->
 <slot name="trigger">
-  <Button
-    onclick={() => (isOpen = true)}
+  <button
+    onclick={() => (open = true)}
     class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
   >
     + Add Person
-  </Button>
+  </button>
 </slot>
 
 <!-- Modal Overlay & Content -->
-{#if isOpen}
-  <div class="fixed inset-0 z-40 bg-black/50" onclick={() => (isOpen = false)} />
+{#if open}
+  <div class="fixed inset-0 z-40 bg-black/50" onclick={() => (open = false)} />
   <div class="fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white shadow-lg p-6 max-h-[90vh] overflow-y-auto">
     <!-- Close Button -->
     <div class="flex items-center justify-between mb-6">
@@ -157,28 +166,28 @@
         <div class="border-t pt-6">
           <PoiImageUpload
             poiId={tempPoiId}
-            poiName={formData.name}
+            poiName={createdPoiName}
           />
         </div>
       {/if}
 
       <!-- Action Buttons -->
       <div class="flex gap-4 pt-6 border-t">
-        <Button
+        <button
           type="submit"
           disabled={loading || !formData.name}
           class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
         >
           {loading ? 'Creating...' : 'Create POI'}
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
           onclick={closeModal}
           disabled={loading}
           class="flex-1 px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 disabled:opacity-50"
         >
           Close
-        </Button>
+        </button>
       </div>
     </form>
   </div>

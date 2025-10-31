@@ -5,91 +5,170 @@
   import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte';
-  // Icons
-  import {
-    Search, BookOpen, Scale, FileText, Brain, Zap,
-    Filter, SortAsc, Eye, ExternalLink, Download,
-    Star, Bookmark, Clock, AlertCircle, CheckCircle,
-    Library, Gavel, Users, Calendar, MapPin, Link
-  } from 'lucide-svelte';
+  // Icons (import only icons actually used to avoid type errors)
+  import Search from 'lucide-svelte/icons/search';
+  import BookOpen from 'lucide-svelte/icons/book-open';
+  import Brain from 'lucide-svelte/icons/brain';
+  import Filter from 'lucide-svelte/icons/filter';
+  import FileText from 'lucide-svelte/icons/file-text';
+  import Bookmark from 'lucide-svelte/icons/bookmark';
+  import Star from 'lucide-svelte/icons/star';
+  import Clock from 'lucide-svelte/icons/clock';
+  import Library from 'lucide-svelte/icons/library';
+  import Gavel from 'lucide-svelte/icons/gavel';
+  import Calendar from 'lucide-svelte/icons/calendar';
+  import Link from 'lucide-svelte/icons/link';
+  import ExternalLink from 'lucide-svelte/icons/external-link';
+  import Eye from 'lucide-svelte/icons/eye';
   // Svelte 5 runes
-  let searchQuery = $state('');
-  let searchResults = $state([]);
-  let isSearching = $state(false);
-  let selectedFilters = $state({
-    jurisdiction '',
+
+  // --- ADDED: explicit types to avoid `never` / `unknown` inference errors ---
+  interface DocumentResult {
+    id: string;
+    title: string;
+    citation: string;
+    fullCitation?: string;
+    court?: string;
+    jurisdiction?: string;
+    dateDecided?: string;
+    documentType?: string;
+    precedentialValue?: string;
+    summary?: string;
+    keyTopics?: string[];
+    relevanceScore?: number;
+    citedBy?: number;
+    isBookmarked?: boolean;
+    url?: string;
+  }
+
+  type Citation = {
+    id: string;
+    title: string;
+    citation: string;
+    savedAt: Date;
+  };
+
+  type ResearchQuery = {
+    query: string;
+    filters: {
+      jurisdiction?: string;
+      court?: string;
+      documentType?: string;
+      dateRange?: string;
+      precedentialValue?: string;
+      [k: string]: any;
+    };
+    timestamp: Date;
+    mode: string;
+  };
+
+  type ResearchSession = {
+    id: string | null;
+    startTime: Date;
+    queries: ResearchQuery[];
+    findings: any[];
+  };
+  // --- END ADDED ---
+
+  let searchQuery = $state<string>('');
+  let searchResults = $state<DocumentResult[]>([]);
+  let isSearching = $state<boolean>(false);
+  let selectedFilters = $state<{
+    jurisdiction: string;
+    court: string;
+    documentType: string;
+    dateRange: string;
+    precedentialValue: string;
+  }>({
+    jurisdiction: '',
     court: '',
     documentType: '',
     dateRange: '',
-    precedentialValue: '';
+    precedentialValue: ''
   });
-  let sortBy = $state('relevance');
-  let currentPage = $state(1);
-  let totalResults = $state(0);
-  let savedCitations = $state([]);
-  let showCitationDialog = $state(false);
-  let selectedDocument = $state(null);
-  let researchSession = $state({
-    id: null
+  let sortBy = $state<string>('relevance');
+  let currentPage = $state<number>(1);
+  let totalResults = $state<number>(0);
+  let savedCitations = $state<Citation[]>([]);
+  let showCitationDialog = $state<boolean>(false);
+  let selectedDocument = $state<DocumentResult | null>(null);
+  let researchSession = $state<ResearchSession>({
+    id: null,
     startTime: new Date(),
     queries: [],
-    findings: [],
+    findings: []
   });
   // Advanced search options
-  let advancedSearch = $state(false);
-  let searchMode = $state('semantic'); // semantic, boolean, phrase
-  let aiSuggestions = $state([]);
-  let relatedTopics = $state([]);
+  let advancedSearch = $state<boolean>(false);
+  let searchMode = $state<'semantic' | 'boolean' | 'phrase'>('semantic'); // semantic, boolean, phrase
+  let aiSuggestions = $state<string[]>([]);
+  let relatedTopics = $state<string[]>([]);
   // Filter options from database
-  let filterOptions = $state({
+  let filterOptions = $state<{
+    jurisdictions: string[];
+    courts: string[];
+    documentTypes: string[];
+    precedentialValues: string[];
+  }>({
     jurisdictions: ['Federal', 'State', 'Local', 'International'],
     courts: ['Supreme Court', 'Court of Appeals', 'District Court', 'Bankruptcy Court'],
     documentTypes: ['case', 'statute', 'regulation', 'brief', 'opinion'],
-    precedentialValues: ['High', 'Medium', 'Low', 'Informational'];
+    precedentialValues: ['High', 'Medium', 'Low', 'Informational']
   });
+
   $effect(() => {
     (async () => {
-await initializeResearchSession();
-    await loadSavedCitations();
-    await loadAISuggestions();
+      await initializeResearchSession();
+      await loadSavedCitations();
+      await loadAISuggestions();
     })();
   });
+
   async function initializeResearchSession() {
     researchSession.id = `research_${Date.now()}`;
     console.log('🔍 Legal Research Session Started:', researchSession.id);
   }
+
   async function performSearch() {
     if (!searchQuery.trim()) return;
     isSearching = true;
+    // record query with correct property names and commas
     researchSession.queries.push({
-      query: searchQuery;
+      query: searchQuery,
       filters: { ...selectedFilters },
       timestamp: new Date(),
-      mode: searchMod;
-    });
+      mode: searchMode
+    } as ResearchQuery);
     try {
       const searchPayload = {
-        query: searchQuery
-        mode: searchMode
-        filters: selectedFilters
-        sort: sortBy;
-        page: currentPage;
-        limit: 20,
+        query: searchQuery,
+        mode: searchMode,
+        filters: selectedFilters,
+        sort: sortBy,
+        page: currentPage,
+        limit: 20
+      };
+      // Guarded call to nesGPUBridge if available
+      try {
+        if (nesGPUBridge && typeof (nesGPUBridge as any).storeCHRROMPattern === 'function') {
+          await (nesGPUBridge as any).storeCHRROMPattern(`search_${Date.now()}`, { query: searchQuery });
+        }
+      } catch (e) {
+        console.warn('nesGPUBridge.storeCHRROMPattern failed or unavailable', e);
       }
-      // Store search pattern in CHR-ROM for fast retrieval
-      await nesGPUBridge.storeCHRROMPattern(`search_${Date.now()}`, {/* JSX syntax converted to Svelte */});
       const response = await fetch('/api/legal/research/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(searchPayload);
+        body: JSON.stringify(searchPayload)
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        searchResults = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).results || [];
-        totalResults = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).total || 0;
-        relatedTopics = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).relatedTopics || [];
-        // Generate AI suggestions based on results
-        await generateAISuggestions((data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).results.slice(0, 5));
+      if (response.ok) {
+        const data = await response.json();
+        const results = (data && data.results) || [];
+        searchResults = results;
+        totalResults = data?.total ?? 0;
+        relatedTopics = data?.relatedTopics ?? [];
+        // Generate AI suggestions based on results (guard when results is array)
+        await generateAISuggestions(Array.isArray(results) ? results.slice(0, 5) : []);
       } else {
         // Mock data for demo
         searchResults = generateMockResults(searchQuery);
@@ -103,15 +182,15 @@ await initializeResearchSession();
       isSearching = false;
     }
   }
-  function generateMockResults(query) {
+  function generateMockResults(query: string) {
     return [
       {
         id: '1',
         title: 'Smith v. Johnson - Contract Dispute Resolution',
-        citation '123 F.3d 456 (9th Cir. 2019)',
-        fullCitation 'Smith v. Johnson, 123 F.3d 456 (9th Cir. 2019)',
+        citation: '123 F.3d 456 (9th Cir. 2019)',
+        fullCitation: 'Smith v. Johnson, 123 F.3d 456 (9th Cir. 2019)',
         court: '9th Circuit Court of Appeals',
-        jurisdiction 'Federal',
+        jurisdiction: 'Federal',
         dateDecided: '2019-03-15',
         documentType: 'case',
         precedentialValue: 'High',
@@ -120,15 +199,15 @@ await initializeResearchSession();
         relevanceScore: 0.94,
         citedBy: 47,
         isBookmarked: false,
-        url: '/legal/documents/smith-v-johnson-2019',
+        url: '/legal/documents/smith-v-johnson-2019'
       },
       {
         id: '2',
         title: 'Federal Rules of Civil Procedure § 26(b)(1)',
-        citation 'Fed. R. Civ. P. 26(b)(1)',
-        fullCitation 'Federal Rules of Civil Procedure Rule 26(b)(1) (2020)',
+        citation: 'Fed. R. Civ. P. 26(b)(1)',
+        fullCitation: 'Federal Rules of Civil Procedure Rule 26(b)(1) (2020)',
         court: 'Federal Rules',
-        jurisdiction 'Federal',
+        jurisdiction: 'Federal',
         dateDecided: '2020-12-01',
         documentType: 'regulation',
         precedentialValue: 'High',
@@ -137,15 +216,15 @@ await initializeResearchSession();
         relevanceScore: 0.89,
         citedBy: 234,
         isBookmarked: true,
-        url: '/legal/documents/frcp-26-b-1',
+        url: '/legal/documents/frcp-26-b-1'
       },
       {
         id: '3',
         title: 'Legal Brief: Motion for Summary Judgment Template',
-        citation 'Practice Guide Ch. 7',
-        fullCitation 'Federal Practice Guide, Chapter 7: Summary Judgment Motions (2023)',
+        citation: 'Practice Guide Ch. 7',
+        fullCitation: 'Federal Practice Guide, Chapter 7: Summary Judgment Motions (2023)',
         court: 'Practice Guide',
-        jurisdiction 'Federal',
+        jurisdiction: 'Federal',
         dateDecided: '2023-01-01',
         documentType: 'brief',
         precedentialValue: 'Medium',
@@ -154,13 +233,13 @@ await initializeResearchSession();
         relevanceScore: 0.82,
         citedBy: 12,
         isBookmarked: false,
-        url: '/legal/documents/summary-judgment-template',
+        url: '/legal/documents/summary-judgment-template'
       }
     ];
   }
-  async function generateAISuggestions(results) {
+  async function generateAISuggestions(results: DocumentResult[]) {
     // Extract key terms and generate related search suggestions
-    const topics = results.flatMap(r => r.keyTopics || []);
+    const topics = results.flatMap((r) => r.keyTopics || []);
     const uniqueTopics = [...new Set(topics)];
     aiSuggestions = [
       `Related cases on ${uniqueTopics[0] || 'similar topics'}`,
@@ -171,17 +250,22 @@ await initializeResearchSession();
   }
   async function loadSavedCitations() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        savedCitations = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).citations || [];
+      const response = await fetch('/api/legal/research/citations');
+      if (response.ok) {
+        const data = await response.json();
+        savedCitations = (data?.citations ?? []) as Citation[];
+      } else {
+        // fallback mock
+        savedCitations = [
+          { id: '1', title: 'Miranda v. Arizona', citation: '384 U.S. 436 (1966)', savedAt: new Date(Date.now() - 86400000) },
+          { id: '2', title: 'Brown v. Board of Education', citation: '347 U.S. 483 (1954)', savedAt: new Date(Date.now() - 172800000) }
+        ];
       }
     } catch (error) {
       console.error('Failed to load saved citations:', error);
-      // Mock saved citations
       savedCitations = [
-        { id: '1', title: 'Miranda v. Arizona', citation '384 U.S. 436 (1966)', savedAt: new Date(Date.now() - 86400000) },
-        { id: '2', title: 'Brown v. Board of Education', citation '347 U.S. 483 (1954)', savedAt: new Date(Date.now() - 172800000) }
+        { id: '1', title: 'Miranda v. Arizona', citation: '384 U.S. 436 (1966)', savedAt: new Date(Date.now() - 86400000) },
+        { id: '2', title: 'Brown v. Board of Education', citation: '347 U.S. 483 (1954)', savedAt: new Date(Date.now() - 172800000) }
       ];
     }
   }
@@ -193,63 +277,65 @@ await initializeResearchSession();
       'Evidence standards in federal court'
     ];
   }
-  async function saveCitation(document) {
+  async function saveCitation(document: DocumentResult) {
     try {
       const response = await fetch('/api/legal/research/citations/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           documentId: document.id,
-          citation document.citation,
+          citation: document.citation,
           title: document.title,
-          notes: '';
+          notes: ''
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
+      if (response.ok) {
         document.isBookmarked = true;
         savedCitations = [
           {
             id: document.id,
             title: document.title,
-            citation document.citation,
-            savedAt: new Date() ;
+            citation: document.citation,
+            savedAt: new Date()
           },
           ...savedCitations
         ];
+      } else {
+        // optimistic UI fallback
+        document.isBookmarked = true;
       }
     } catch (error) {
       console.error('Failed to save citation', error);
-      // Optimistic update for demo
       document.isBookmarked = true;
     }
   }
-  function openCitationDialog(document) {
+  function openCitationDialog(document: DocumentResult) {
     selectedDocument = document;
     showCitationDialog = true;
   }
   function clearFilters() {
     selectedFilters = {
-      jurisdiction '',
+      jurisdiction: '',
       court: '',
       documentType: '',
       dateRange: '',
-      precedentialValue: '';
-    }
+      precedentialValue: ''
+    };
   }
-  function formatDate(dateString) {
+  function formatDate(dateString: any) {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
+      day: 'numeric'
     });
   }
-  function getRelevanceColor(score) {
+  function getRelevanceColor(score: number) {
     if (score >= 0.9) return 'text-green-600 bg-green-100';
     if (score >= 0.8) return 'text-blue-600 bg-blue-100';
     if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
     return 'text-gray-600 bg-gray-100';
   }
-  function getPrecedentialColor(value) {
+  function getPrecedentialColor(value: string) {
     switch (value) {
       case 'High': return 'text-red-600 bg-red-100';
       case 'Medium': return 'text-yellow-600 bg-yellow-100';
@@ -306,7 +392,7 @@ await initializeResearchSession();
                 <Search class="h-5 w-5 text-gray-400" />
               </div>
               <input
-                type="search";
+                type="search"
                 bind:value={searchQuery}
                 onkeydown={(e) => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
@@ -331,9 +417,9 @@ await initializeResearchSession();
             <div class="flex items-center space-x-4">
               <span class="text-sm font-medium text-gray-700">Search Mode:</span>
               {#each [
-                { id: 'semantic', label: 'AI Semantic', icon Brain },
-                { id: 'boolean', label: 'Boolean', icon Filter },
-                { id: 'phrase', label: 'Exact Phrase', icon FileText }
+                { id: 'semantic', label: 'AI Semantic', icon: Brain },
+                { id: 'boolean', label: 'Boolean', icon: Filter },
+                { id: 'phrase', label: 'Exact Phrase', icon: FileText }
               ] as mode}
                 <button
                   onclick={() => searchMode = mode.id}
@@ -402,7 +488,7 @@ await initializeResearchSession();
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each aiSuggestions as suggestion}
                 <button
-                  onclick={() => { searchQuery = suggestion; performSearch(), }}
+                  onclick={() => { searchQuery = suggestion; performSearch(); }}
                   class="text-left p-2 text-sm text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
                 >
                   {suggestion}
@@ -440,13 +526,15 @@ await initializeResearchSession();
                     <p class="text-sm text-gray-600 font-mono">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citation}</p>
                   </div>
                   <div class="flex items-center space-x-2 ml-4">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getRelevanceColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).relevanceScore)}">
-                      {Math.round.relevanceScore * 100)}% match
+                    <span
+                      class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getRelevanceColor(((result as any).relevanceScore ?? 0))}
+                    >
+                      {Math.round(((result as any).relevanceScore ?? 0) * 100)}% match
                     </span>
                     <button
                       onclick={() => saveCitation(result)}
-                      class="p-1 text-gray-400 hover: text-yellow-500 transition-colors";
-                      class:text-yellow-500={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).isBookmarked}
+                      class="p-1 text-gray-400 transition-colors hover:text-yellow-500"
+                      class:text-yellow-500={(result as any).isBookmarked}
                     >
                       <Bookmark class="h-4 w-4" />
                     </button>
@@ -469,7 +557,7 @@ await initializeResearchSession();
                     </div>
                   </div>
                   <div class="flex items-center space-x-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getPrecedentialColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue)}">
+                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getPrecedentialColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue)}>
                       {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue} Precedent
                     </span>
                     <button
@@ -499,7 +587,7 @@ await initializeResearchSession();
             {#if totalResults > 20}
               <div class="flex items-center justify-center space-x-2 mt-8">
                 <button
-                  onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(), }}
+                  onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(); }}
                   disabled={currentPage <= 1}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -509,7 +597,7 @@ await initializeResearchSession();
                   Page {currentPage} of {Math.ceil(totalResults / 20)}
                 </span>
                 <button
-                  onclick={() => { currentPage = currentPage + 1; performSearch(), }}
+                  onclick={() => { currentPage = currentPage + 1; performSearch(); }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -581,7 +669,7 @@ await initializeResearchSession();
               <div class="space-y-2 max-h-32 overflow-y-auto">
                 {#each researchSession.queries.slice(-5) as query}
                   <button
-                    onclick={() => { searchQuery = query.query; performSearch(), }}
+                    onclick={() => { searchQuery = query.query; performSearch(); }}
                     class="w-full text-left p-2 text-xs text-gray-600 hover:bg-gray-50 rounded border border-gray-200"
                   >
                     {query.query}
@@ -598,7 +686,7 @@ await initializeResearchSession();
             <div class="space-y-2">
               {#each relatedTopics as topic}
                 <button
-                  onclick={() => { searchQuery = topic; performSearch(), }}
+                  onclick={() => { searchQuery = topic; performSearch(); }}
                   class="w-full text-left p-2 text-sm text-blue-600 hover:bg-blue-50 rounded"
                 >
                   {topic}
@@ -664,7 +752,7 @@ await initializeResearchSession();
             Close
           </button>
           <button
-            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false, }}
+            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1 inline" />
@@ -681,4 +769,4 @@ await initializeResearchSession();
       </div>
     </div>
   {/if}
-</HeadlessDialog>;
+</HeadlessDialog>

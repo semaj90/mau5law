@@ -1,8 +1,23 @@
-/// <reference types="vite/client" />
 /**
  * Chrome Windows 3D Acceleration & Browser Performance Utilities
- * Optimizes performance for Chrome on Windows with hardware acceleration
+ * (moved out of component files; pure TS module)
  */
+
+/// <reference types="vite/client" />
+
+// Define LayoutShift interface if not globally available
+interface LayoutShift extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+  sources: Array<LayoutShiftAttribution>;
+}
+
+interface LayoutShiftAttribution {
+  node?: Node;
+  previousRect: DOMRectReadOnly;
+  currentRect: DOMRectReadOnly;
+}
+
 // Check if browser supports GPU acceleration
 export function supportsGPUAcceleration(): boolean {
   if (typeof window === 'undefined') return false;
@@ -43,7 +58,7 @@ export class BrowserPerformanceMonitor {
   }
   private initializePerformanceMonitoring(): void {
     if (typeof window === 'undefined' || !window.PerformanceObserver) return;
-    this.performanceObserver = new PerformanceObserver(list => {
+    this.performanceObserver = new PerformanceObserver((list: PerformanceObserverEntryList) => {
       for (const entry of list.getEntries()) {
         // Track paint metrics for Chrome Windows
         if (entry.entryType === 'paint') {
@@ -51,7 +66,7 @@ export class BrowserPerformanceMonitor {
         }
         // Track layout shifts (important for 3D acceleration)
         if (entry.entryType === 'layout-shift') {
-          const value = (entry as any).value;
+          const value = (entry as LayoutShift).value; // Cast to LayoutShift
           if (value) {
             this.metrics.set('cumulative-layout-shift', (this.metrics.get('cumulative-layout-shift') || 0) + value);
           }
@@ -63,7 +78,8 @@ export class BrowserPerformanceMonitor {
       this.performanceObserver.observe({
         entryTypes: ['paint', 'layout-shift'],
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.warn('Performance monitoring not available:', error);
     }
   }
@@ -82,26 +98,38 @@ export class BrowserPerformanceMonitor {
     this.metrics.clear();
   }
 }
+
+// Define a specific interface for browser errors
+interface BrowserError {
+  message: string;
+  source: string;
+  line: number;
+  column: number;
+  timestamp: number;
+}
+
 // Browser error handling and reporting
 export class BrowserErrorHandler {
-  private errors: Array<any> = [];
+  private errors: BrowserError[] = []; // Changed from Array<any> to BrowserError[]
   constructor() {
     this.initializeErrorHandling();
   }
   private initializeErrorHandling(): void {
     if (typeof window === 'undefined') return;
     // Global error handler
-    window.addEventListener('error', (_event: any) => {
+    window.addEventListener('error', (event: ErrorEvent) => {
+      // Changed _event: any to event: ErrorEvent
       this.logError({
         message: event.message,
-        source: event.filename || 'unknown',
-        line: event.lineno || 0,
-        column: event.colno || 0,
+        source: (event as ErrorEvent).filename || 'unknown',
+        line: (event as ErrorEvent).lineno || 0,
+        column: (event as ErrorEvent).colno || 0,
         timestamp: Date.now(),
       });
     });
     // Promise rejection handler
-    window.addEventListener('unhandledrejection', (_event: any) => {
+    window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+      // Changed _event: any to event: PromiseRejectionEvent
       this.logError({
         message: `Unhandled Promise Rejection: ${event.reason}`,
         source: 'promise',
@@ -111,7 +139,8 @@ export class BrowserErrorHandler {
       });
     });
   }
-  private logError(error: (typeof this.errors)[0]): void {
+  private logError(error: BrowserError): void {
+    // Changed (typeof this.errors)[0] to BrowserError
     this.errors.push(error);
     // Keep only last 10 errors
     if (this.errors.length > 10) {
@@ -122,7 +151,8 @@ export class BrowserErrorHandler {
       console.error('Browser Error:', error);
     }
   }
-  getErrors(): typeof this.errors {
+  getErrors(): BrowserError[] {
+    // Changed typeof this.errors to BrowserError[]
     return [...this.errors];
   }
   clearErrors(): void {
@@ -147,7 +177,7 @@ export class BrowserErrorHandler {
       recommendations.push('For best performance, use Chrome on Windows');
     }
     return {
-      browser: navigator.userAgent,
+      browser: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
       gpuSupport: supportsGPUAcceleration(),
       hardwareAcceleration: isChromeWindows(),
       errors: this.errors.length,
@@ -155,6 +185,7 @@ export class BrowserErrorHandler {
     };
   }
 }
+
 // Singleton instances
 export const performanceMonitor = new BrowserPerformanceMonitor();
 export const errorHandler = new BrowserErrorHandler();
@@ -180,6 +211,7 @@ export function initializeChromeWindowsOptimizations(): void {
   // Log performance and compatibility info
   setTimeout(() => {
     const report = errorHandler.getCompatibilityReport();
+    // keep lightweight logging; components can import and use report
     console.log('🎯 Chrome Windows Optimization Report:', report);
     if (report.recommendations.length > 0) {
       console.log('💡 Recommendations:', report.recommendations);

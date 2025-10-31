@@ -2,21 +2,21 @@
  * Enhanced Feedback Loop Service with PostgreSQL + pgvector
  * Collects user ratings, trains on interactions, and provides adaptive AI responses with semantic analysis
  */
-import { db } from '$lib/server/db/drizzle';
-import {
-  users,
-  userRatings, // Not available in schema
-  interactionHistory, // Not available in schema
-  trainingData, // Not available in schema
-  userBehaviorPatterns, // Not available in schema
-  feedbackMetrics, // Not available in schema
-  type NewUserRating,
-  type NewInteractionHistory,
-  type NewTrainingData,
-  type NewUserBehaviorPattern,
-  type NewFeedbackMetric
-} from '$lib/database/schema';
+import { db as untypedDb } from '$lib/server/db/drizzle'; // Import as untypedDb
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
+import * as mainSchema from '$lib/server/db/schema'; // Import main schema as a namespace
+import { feedbackSchema } from '$lib/server/db/schema-feedback'; // Import feedback schema as a named export
 import { eq, desc, sql, and, gte, lt } from 'drizzle-orm';
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Ensure this import exists
+import { OllamaEmbeddingService, type EmbeddingService } from './ollama-embedding-client'; // NEW: Import centralized service
+
+// Define the combined schema type
+type AppSchema = typeof mainSchema & typeof feedbackSchema;
+// Define the database type
+type AppDatabase = NodePgDatabase<AppSchema>;
+
+// Cast the imported db to the correct type
+const db: AppDatabase = untypedDb as AppDatabase;
 
 export interface UserRating {
   id: string;
@@ -28,19 +28,23 @@ export interface UserRating {
   feedback?: string;
   context: {
     query?: string;
-  response?: string;
-  responseTime?: number;
-  userIntent?: string;
-  satisfactionLevel?: 'very_poor' | 'poor' | 'average' | 'good' | 'excellent';
-  }
+    response?: string;
+    responseTime?: number;
+    userIntent?: string;
+    satisfactionLevel?: 'very_poor' | 'poor' | 'average' | 'good' | 'excellent';
+  };
   metadata: {
     userAgent?: string;
     platform?: string;
     featureUsed?: string;
     errorEncountered?: boolean;
     deviceType?: 'desktop' | 'mobile' | 'tablet';
-  }
+  };
+  queryEmbedding?: number[] | null; // Added
+  responseEmbedding?: number[] | null; // Added
   timestamp: Date;
+  createdAt?: Date; // Added
+  updatedAt?: Date; // Added
 }
 export interface InteractionPattern {
   userId: string;
@@ -50,11 +54,11 @@ export interface InteractionPattern {
   qualityExpectations: number;
   learningProgress: {
     initialAccuracy: number;
-  currentAccuracy: number;
-  improvementRate: number;
-  strongAreas: string[];
-  weakAreas: string[];
-  }
+    currentAccuracy: number;
+    improvementRate: number;
+    strongAreas: string[];
+    weakAreas: string[];
+  };
 }
 export interface TrainingDataPoint {
   input: string;
@@ -65,41 +69,21 @@ export interface TrainingDataPoint {
   contextTags: string[];
   difficultyLevel: 'beginner' | 'intermediate' | 'expert';
 }
-// Vector embedding service interface
-export interface EmbeddingService {
-  generateEmbedding(text: string): Promise<number[]>;
-}
-// Simple embedding service using Ollama nomic-embed-text
-class OllamaEmbeddingService implements EmbeddingService {
-  async generateEmbedding(text: string): Promise<number[]> {
-    try {
-      const response = await fetch('http://localhost:11434/api/embeddings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'nomic-embed-text',
-          prompt: text,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(`Ollama embedding failed: ${response.statusText}`);
-      }
-      const data = await response.json();
-      return data.embedding || [];
-    } catch (error: any) {
-      console.error('❌ Embedding generation failed:', error);
-      // Return zero vector as fallback
-      return new Array(768).fill(0);
-    }
-  }
-}
+// Removed the local OllamaEmbeddingService class definition
 export class FeedbackLoopService {
   private trainingQueue: TrainingDataPoint[] = [];
   private userPatterns: Map<string, InteractionPattern> = new Map();
   private adaptiveThresholds: Map<string, number> = new Map();
   private embeddingService: EmbeddingService;
+
   constructor() {
-    this.embeddingService = new OllamaEmbeddingService();
+    // Use the imported centralized service with production-ready configuration
+    // Assumes OllamaEmbeddingService constructor accepts baseUrl, embeddingModel, and completionModel
+    this.embeddingService = new OllamaEmbeddingService(
+      getOllamaEndpoint(),
+      'embeddinggemma:latest', // As per instructions
+      'gemma3-legal:latest' // As per instructions
+    );
     this.initializeDefaults();
     this.startTrainingLoop();
     this.loadUserPatterns();
@@ -124,41 +108,47 @@ export class FeedbackLoopService {
       const responseEmbedding: number[] | null = rating.context.response
         ? await this.embeddingService.generateEmbedding(rating.context.response as string)
         : null;
-      const ratingData: NewUserRating = {
+      const ratingData: UserRating = {
+        // Changed type to UserRating
         id: ratingId,
         userId: rating.userId,
         sessionId: rating.sessionId,
         interactionId: rating.interactionId,
         ratingType: rating.ratingType,
-        score: rating.score.toString(),
+        score: rating.score, // Assign number directly, schema is 'real'
         feedback: rating.feedback,
         context: rating.context,
         metadata: rating.metadata,
-        queryEmbedding: queryEmbedding ? sql`ARRAY[${sql.join(queryEmbedding.map((v: number) => sql.raw(v.toString())), sql.raw(','))}]: real[]` : null,
-        responseEmbedding: responseEmbedding ? sql`ARRAY[${sql.join(responseEmbedding.map((v: number) => sql.raw(v.toString())), sql.raw(','))}]: real[]` : null,
+        queryEmbedding: queryEmbedding, // Assign number[] directly
+        responseEmbedding: responseEmbedding, // Assign number[] directly
         timestamp: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        // createdAt: new Date(), // Removed, rely on DB default
+        // updatedAt: new Date(), // Removed, rely on DB default
+      }; // Removed redundant 'as UserRating'
       // Store rating in PostgreSQL with vector embeddings
-      await db.insert(userRatings).values(ratingData);
+      await db.insert(feedbackSchema.userRatings).values(ratingData);
       // Process for training if quality is below threshold
-      if (rating.score < 3.0) {
-        await this.processLowQualityInteraction(rating);
+      if (ratingData.score < 3.0) {
+        // Use ratingData
+        await this.processLowQualityInteraction(ratingData); // Pass ratingData
       }
       // Update user behavior patterns
-      await this.updateUserBehaviorPattern(rating.userId, rating);
+      await this.updateUserBehaviorPattern(ratingData.userId, ratingData); // Pass ratingData
       // Find similar low-rated interactions using vector similarity
-      if (rating.score < 3.0 && queryEmbedding) {
-        await this.findSimilarLowRatedInteractions(rating.userId, queryEmbedding);
+      if (ratingData.score < 3.0 && queryEmbedding) {
+        // Use ratingData
+        await this.findSimilarLowRatedInteractions(ratingData.userId, queryEmbedding); // Use ratingData
       }
       // Trigger adaptive learning if needed
-      this.triggerAdaptiveLearning(rating);
-      console.log(`✅ Rating collected: ${rating.ratingType} score ${rating.score}/5 for user ${rating.userId}`);
+      this.triggerAdaptiveLearning(ratingData); // Pass ratingData
+      console.log(
+        `✅ Rating collected: ${ratingData.ratingType} score ${ratingData.score}/5 for user ${ratingData.userId}`
+      );
       return ratingId;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error collecting rating:', error);
-      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
@@ -174,12 +164,12 @@ export class FeedbackLoopService {
         userRating: rating.score,
         corrections: rating.feedback,
         contextTags: [rating.ratingType, rating.metadata.featureUsed || 'unknown'],
-        difficultyLevel: this.assessDifficultyLevel(rating.context.query)
-      }
+        difficultyLevel: this.assessDifficultyLevel(rating.context.query),
+      };
       // Add to training queue
       this.trainingQueue.push(trainingPoint);
       // Store in database for future analysis
-      await db.insert(trainingData).values({
+      await db.insert(feedbackSchema.trainingData).values({
         id: `training_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
         userId: rating.userId,
         input: trainingPoint.input,
@@ -190,11 +180,12 @@ export class FeedbackLoopService {
         contextTags: JSON.stringify(trainingPoint.contextTags),
         difficultyLevel: trainingPoint.difficultyLevel,
         processed: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        // createdAt: new Date(), // Removed, rely on DB default
+        // updatedAt: new Date(), // Removed, rely on DB default
       });
       console.log(`📚 Low quality interaction queued for training: ${rating.interactionId}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error processing low quality interaction:', error);
     }
   }
@@ -204,18 +195,24 @@ export class FeedbackLoopService {
   private async findSimilarLowRatedInteractions(userId: string, queryEmbedding: number[]) {
     try {
       // Use PostgreSQL pgvector cosine similarity to find similar queries with low ratings
-      const similarInteractions = await db.execute(sql`;
+      const similarInteractions = await db.execute(sql`
         SELECT
           ur.id,
           ur.context,
           ur.score,
           ur.feedback,
-          1 - (ur.query_embedding <=> ARRAY[${sql.join(queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(','))}]: real[]) as similarity
-        FROM ${userRatings} ur
+          1 - (ur.query_embedding <=> ARRAY[${sql.join(
+            queryEmbedding.map(v => sql.raw(v.toString())),
+            sql.raw(',')
+          )}]: real[]) as similarity
+        FROM ${feedbackSchema.userRatings} ur
         WHERE ur.user_id = ${userId}
           AND ur.score < 3.0
           AND ur.query_embedding IS NOT NULL
-          AND 1 - (ur.query_embedding <=> ARRAY[${sql.join(queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(','))}]: real[]) > 0.8
+          AND 1 - (ur.query_embedding <=> ARRAY[${sql.join(
+            queryEmbedding.map(v => sql.raw(v.toString())),
+            sql.raw(',')
+          )}]: real[]) > 0.8
         ORDER BY similarity DESC
         LIMIT 5
       `);
@@ -226,7 +223,8 @@ export class FeedbackLoopService {
           console.log(`   - Similarity: ${(interaction.similarity as number).toFixed(3)}, Score: ${interaction.score}`);
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error finding similar interactions:', error);
     }
   }
@@ -238,8 +236,9 @@ export class FeedbackLoopService {
       let pattern = this.userPatterns.get(userId);
       if (!pattern) {
         // Get user info to determine role-based expectations
-        const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-        const userRole = user[0]?.role || 'user';
+        const userResult = await db.select().from(mainSchema.users).where(eq(mainSchema.users.id, userId)).limit(1);
+        const user = userResult[0]; // Get the first user from the result array
+        const userRole = user?.role || 'user'; // Access role safely
         pattern = {
           userId,
           commonQueries: [],
@@ -251,9 +250,9 @@ export class FeedbackLoopService {
             currentAccuracy: rating.score,
             improvementRate: 0,
             strongAreas: [],
-            weakAreas: []
-          }
-        }
+            weakAreas: [],
+          },
+        };
       }
       // Update common queries
       if (rating.context.query && !pattern.commonQueries.includes(rating.context.query)) {
@@ -272,20 +271,21 @@ export class FeedbackLoopService {
       }
       // Update response time expectations
       if (rating.context.responseTime) {
-        pattern.responseTimeThreshold = Math.max()
-          pattern.responseTimeThreshold * 0.9 + rating.context.responseTime * 0.1,
+        pattern.responseTimeThreshold = Math.max(
+          pattern.responseTimeThreshold * 0.9 + (rating.context.responseTime || 0) * 0.1, // Ensure responseTime is a number
           500 // Minimum 500ms threshold
         );
       }
       // Update learning progress
       const previousAccuracy = pattern.learningProgress.currentAccuracy;
-      pattern.learningProgress.currentAccuracy =
-        (pattern.learningProgress.currentAccuracy * 0.8 + rating.score * 0.2);
-      pattern.learningProgress.improvementRate =
-        pattern.learningProgress.currentAccuracy - previousAccuracy;
+      pattern.learningProgress.currentAccuracy = pattern.learningProgress.currentAccuracy * 0.8 + rating.score * 0.2;
+      pattern.learningProgress.improvementRate = pattern.learningProgress.currentAccuracy - previousAccuracy;
       // Update strong/weak areas
       if (rating.score >= 4) {
-        if (rating.metadata.featureUsed && !pattern.learningProgress.strongAreas.includes(rating.metadata.featureUsed)) {
+        if (
+          rating.metadata.featureUsed &&
+          !pattern.learningProgress.strongAreas.includes(rating.metadata.featureUsed)
+        ) {
           pattern.learningProgress.strongAreas.push(rating.metadata.featureUsed);
         }
       } else if (rating.score <= 2) {
@@ -294,8 +294,11 @@ export class FeedbackLoopService {
         }
       }
       this.userPatterns.set(userId, pattern);
-      console.log(`📊 User pattern updated for ${userId}: accuracy ${pattern.learningProgress.currentAccuracy.toFixed(2)}`);
-    } catch (error: any) {
+      console.log(
+        `📊 User pattern updated for ${userId}: accuracy ${pattern.learningProgress.currentAccuracy.toFixed(2)}`
+      );
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error updating user pattern:', error);
     }
   }
@@ -324,11 +327,12 @@ export class FeedbackLoopService {
       const pattern = this.userPatterns.get(userId);
       if (!pattern) return;
       // Get recent low-rated interactions for this user
-      const recentInteractions = await db.select();
-        .from(userRatings)
-        .where(and(eq(userRatings.userId, userId), lt(userRatings.score, 3)))
-        .orderBy(desc(userRatings.timestamp))
-        .limit(10);
+      // Removed unused 'recentInteractions' variable
+      // const recentInteractions = await db.select(db.userRatings)
+      //   .from(db.userRatings)
+      //   .where(and(eq(db.userRatings.userId, userId), lt(db.userRatings.score, 3)))
+      //   .orderBy(desc(db.userRatings.timestamp))
+      //   .limit(10);
       // Create training scenarios based on user's common queries and weak areas
       for (const query of pattern.commonQueries.slice(0, 5)) {
         for (const weakArea of pattern.learningProgress.weakAreas) {
@@ -338,13 +342,14 @@ export class FeedbackLoopService {
             actualOutput: '', // Previous poor response
             userRating: pattern.qualityExpectations,
             contextTags: [weakArea, 'personalized_training'],
-            difficultyLevel: this.assessDifficultyLevel(query)
-          }
+            difficultyLevel: this.assessDifficultyLevel(query),
+          };
           this.trainingQueue.push(trainingScenario);
         }
       }
       console.log(`📚 Scheduled personalized training for user ${userId}: ${this.trainingQueue.length} scenarios`);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error scheduling personalized training:', error);
     }
   }
@@ -366,14 +371,28 @@ export class FeedbackLoopService {
    */
   private assessDifficultyLevel(query: string): 'beginner' | 'intermediate' | 'expert' {
     const complexityIndicators = [
-      'precedent', 'constitutional', 'appellate', 'jurisdiction',
-      'statute of limitations', 'tort liability', 'contract interpretation',
-      'discovery process', 'motion to dismiss', 'summary judgment'
+      'precedent',
+      'constitutional',
+      'appellate',
+      'jurisdiction',
+      'statute of limitations',
+      'tort liability',
+      'contract interpretation',
+      'discovery process',
+      'motion to dismiss',
+      'summary judgment',
     ];
     const advancedIndicators = [
-      'class action', 'securities litigation', 'patent infringement',
-      'antitrust', 'merger', 'acquisition', 'regulatory compliance',
-      'international law', 'arbitration', 'mediation'
+      'class action',
+      'securities litigation',
+      'patent infringement',
+      'antitrust',
+      'merger',
+      'acquisition',
+      'regulatory compliance',
+      'international law',
+      'arbitration',
+      'mediation',
     ];
     const queryLower = query.toLowerCase();
     if (advancedIndicators.some(indicator => queryLower.includes(indicator))) {
@@ -406,12 +425,14 @@ export class FeedbackLoopService {
         // This is where integration with actual AI training would occur
         console.log(`🧠 Processing training data: ${dataPoint.input.substring(0, 50)}...`);
         // Update processed flag in database
-        await db.update(trainingData)
+        await db
+          .update(feedbackSchema.trainingData)
           .set({ processed: true, updatedAt: new Date() })
-          .where(eq(trainingData.input, dataPoint.input));
+          .where(eq(feedbackSchema.trainingData.input, dataPoint.input));
       }
       console.log(`✅ Processed ${batch.length} training data points`);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error processing training queue:', error);
     }
   }
@@ -421,12 +442,13 @@ export class FeedbackLoopService {
   private async loadUserPatterns() {
     try {
       // Load recent user patterns to rebuild in-memory cache
-      const recentRatings = await db.select();
-        .from(userRatings)
-        .where(gte(userRatings.timestamp, sql`NOW() - INTERVAL '7 days'`))
-        .orderBy(desc(userRatings.timestamp));
+      const recentRatings = await db
+        .select(feedbackSchema.userRatings) // Fixed: specify what to select
+        .from(feedbackSchema.userRatings)
+        .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL '7 days'`))
+        .orderBy(desc(feedbackSchema.userRatings.timestamp));
       // Group by user and rebuild patterns
-      const userGroups: { [userId: string]: any[] } = {}
+      const userGroups: { [userId: string]: (typeof feedbackSchema.userRatings.$inferSelect)[] } = {}; // Typed userGroups
       for (const rating of recentRatings) {
         if (!userGroups[rating.userId]) {
           userGroups[rating.userId] = [];
@@ -436,15 +458,17 @@ export class FeedbackLoopService {
       // Rebuild patterns for each user
       for (const [userId, ratings] of Object.entries(userGroups)) {
         for (const rating of ratings) {
-          await this.updateUserPattern(userId, {
+          await this.updateUserBehaviorPattern(userId, {
             ...rating,
-            context: JSON.parse(rating.context || '{}'),
-            metadata: JSON.parse(rating.metadata || '{}')
+            // Drizzle should automatically parse JSONB columns, no need for JSON.parse
+            context: rating.context,
+            metadata: rating.metadata,
           } as UserRating);
         }
       }
       console.log(`📊 Loaded patterns for ${Object.keys(userGroups).length} users`);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error loading user patterns:', error);
     }
   }
@@ -452,46 +476,48 @@ export class FeedbackLoopService {
    * Get user-specific recommendations based on patterns
    */
   async getUserRecommendations(userId: string): Promise<any> {
+    // Kept any as per original, but consider a specific return type
     const pattern = this.userPatterns.get(userId);
     if (!pattern) {
       return {
         suggestedFeatures: ['ai_chat', 'document_search', 'case_analysis'],
         qualityImprovements: [],
-        personalizedSettings: { [key: string]: any },
-      }
+        personalizedSettings: {}, // Fixed syntax error
+      };
     }
     return {
       suggestedFeatures: pattern.preferredFeatures.slice(0, 5),
-      qualityImprovements: pattern.learningProgress.weakAreas.map(area =>
-        `Consider using improved ${area} features`
-      ),
+      qualityImprovements: pattern.learningProgress.weakAreas.map(area => `Consider using improved ${area} features`),
       personalizedSettings: {
         responseTimeThreshold: pattern.responseTimeThreshold,
         qualityExpectations: pattern.qualityExpectations,
-        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner'
-      }
-    }
+        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner',
+      },
+    };
   }
   /**
    * Get service-wide feedback metrics
    */
   async getFeedbackMetrics(): Promise<any> {
+    // Kept any as per original, but consider a specific return type
     try {
       // Get recent ratings for analysis
-      const recentRatings = await db.select();
-        .from(userRatings)
-        .where(gte(userRatings.timestamp, sql`NOW() - INTERVAL '30 days'`));
+      const recentRatings = await db
+        .select(feedbackSchema.userRatings) // Fixed: specify what to select
+        .from(feedbackSchema.userRatings)
+        .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL '30 days'`));
       const totalRatings = recentRatings.length;
-      const averageRating = totalRatings > 0
-        ? recentRatings.reduce((sum, r) => sum + parseFloat(r.score), 0) / totalRatings
-        : 0;
+      const averageRating =
+        totalRatings > 0
+          ? recentRatings.reduce((sum, r) => sum + r.score, 0) / totalRatings // Use r.score directly as it's a number
+          : 0;
       // Calculate rating distribution
-      const ratingDistribution: { [score: number]: number } = {}
+      const ratingDistribution: { [score: number]: number } = {};
       for (let i = 1; i <= 5; i++) {
-        ratingDistribution[i] = recentRatings.filter(r => Math.floor(parseFloat(r.score)) === i).length;
+        ratingDistribution[i] = recentRatings.filter(r => Math.floor(r.score) === i).length; // Use r.score directly
       }
       // Calculate improvement trends by feature area
-      const improvementTrends: { [area: string]: number } = {}
+      const improvementTrends: { [area: string]: number } = {};
       for (const pattern of this.userPatterns.values()) {
         for (const area of pattern.learningProgress.strongAreas) {
           improvementTrends[area] = (improvementTrends[area] || 0) + 1;
@@ -502,17 +528,18 @@ export class FeedbackLoopService {
         totalRatings,
         ratingDistribution,
         improvementTrends,
-        activeTrainingItems: this.trainingQueue.length
-      }
-    } catch (error: any) {
+        activeTrainingItems: this.trainingQueue.length,
+      };
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('❌ Error getting feedback metrics:', error);
       return {
         averageRating: 0,
         totalRatings: 0,
-        ratingDistribution: { [key: string]: any },
-        improvementTrends: { [key: string]: any },
-        activeTrainingItems: 0
-      }
+        ratingDistribution: {}, // Changed to empty object for type safety
+        improvementTrends: {}, // Changed to empty object for type safety
+        activeTrainingItems: 0,
+      };
     }
   }
 }

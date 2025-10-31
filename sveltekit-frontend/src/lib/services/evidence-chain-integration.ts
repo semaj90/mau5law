@@ -6,6 +6,8 @@
 // Evidence Chain Integration Service - corrected and type-safe implementation
 
 import type { EvidenceItem } from '../types/api.js';
+import { OllamaEmbeddingService } from './ollamaEmbeddingService'; // NEW: Import centralized Ollama embedding service
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // NEW: Ensure getOllamaEndpoint is imported for potential direct use or clarity
 
 export interface RecursiveEvidenceChainResult {
   evidenceId: string;
@@ -57,14 +59,12 @@ export class EvidenceChainIntegrationService {
     string,
     { resolve: (value: any) => void; reject: (err: any) => void; timeout?: number }
   >();
+  private ollamaEmbeddingService: OllamaEmbeddingService; // NEW: Instance of OllamaEmbeddingService
 
   constructor() {
     this.initializeWorker();
+    this.ollamaEmbeddingService = new OllamaEmbeddingService(); // NEW: Initialize Ollama embedding service
   }
-
-  private initializeWorker(): void {
-    // Guard for server-side environment or missing Worker support
-    if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       this.worker = null;
       return;
     }

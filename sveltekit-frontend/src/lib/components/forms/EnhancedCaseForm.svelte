@@ -16,26 +16,47 @@
     user?: User | undefined;
   } = $props();
 
+  // New: explicit FormData interface for the form to avoid depending on Case shape
+  interface FormData {
+    title: string;
+    description?: string;
+    caseNumber: string;
+    name?: string;
+    incidentDate?: string | null;
+    location?: string;
+    priority: string;
+    status: string;
+    category?: string;
+    dangerScore: number;
+    estimatedValue?: number | string | null;
+    jurisdiction?: string;
+    leadProsecutor?: string;
+    assignedTeam: string[];
+    tags: string[];
+    metadata: Record<string, any>;
+  }
+
   // Form data matching the database schema
-  let formData = $state({
-    title: case_?.title || "",
-    description: case_?.description || "",
-    caseNumber: case_?.caseNumber || "",
-    name: case_?.name || "",
+  let formData = $state<FormData>({
+    title: case_?.title ?? "",
+    description: case_?.description ?? "",
+    caseNumber: case_?.caseNumber ?? "",
+    name: case_?.name ?? "",
     incidentDate: case_?.incidentDate
-      ? new Date(case_.incidentDate).toISOString().split("T")[0]
+      ? new Date(case_!.incidentDate as string | Date).toISOString().split("T")[0]
       : "",
-    location: case_?.location || "",
-    priority: case_?.priority || "medium",
-    status: case_?.status || "open",
-    category: case_?.category || "",
+    location: case_?.location ?? "",
+    priority: case_?.priority ?? "medium",
+    status: case_?.status ?? "open",
+    category: case_?.category ?? "",
     dangerScore: case_?.dangerScore ?? 0,
     estimatedValue: case_?.estimatedValue ?? "",
-    jurisdiction: case_?.jurisdiction || "",
-    leadProsecutor: case_?.leadProsecutor || user?.id || "",
-    assignedTeam: case_?.assignedTeam || [],
-    tags: case_?.tags || [],
-    metadata: case_?.metadata || {}
+    jurisdiction: case_?.jurisdiction ?? "",
+    leadProsecutor: case_?.leadProsecutor ?? (user?.id ?? ""),
+    // support either assignedTeam or legacy assignedTo
+    assignedTeam: case_?.assignedTeam ?? case_?.assignedTo ?? [],
+    tags: case_?.tags ?? [],
+    metadata: case_?.metadata ?? {}
   });
 
   let loading = $state(false);
@@ -62,7 +83,8 @@
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
-      notifications.add({
+      // notifications store doesn't have a precise type here; cast to any
+      (notifications as any).add({
         type: "error",
         title: "Validation Error",
         message: "Please fix the form errors before submitting."
@@ -111,18 +133,15 @@
         body: JSON.stringify(apiData)
       });
 
-      let savedCase;
-      try {
-        savedCase = await response.json();
-      } catch (e) {
-        throw new Error("Server returned invalid response");
-      }
+      // explicitly type parsed response to avoid implicit any
+      type SavedCaseResponse = Case & { error?: string };
+      const savedCase = (await response.json()) as SavedCaseResponse;
 
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
       }
 
-      notifications.add({
+      (notifications as any).add({
         type: "success",
         title: case_ ? "Case Updated" : "Case Created",
         message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
@@ -131,7 +150,7 @@
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (err) {
       console.error("Error saving caseItem:", err);
-      notifications.add({
+      (notifications as any).add({
         type: "error",
         title: "Save Error",
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."

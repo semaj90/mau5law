@@ -16,27 +16,59 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit'; // Changed import to @sveltejs/kit
+
+// Define an interface for a basic legal document
+interface Law {
+  title: string;
+  code: string;
+  description: string;
+  [key: string]: unknown; // Allow other properties from basic search results
+}
+
+// Define an interface for an AI-enhanced legal document
+interface EnhancedLaw extends Law {
+  aiRelevanceScore: number;
+  aiInsights: string;
+}
+
+// Define an interface for the AI analysis result
+interface AIAnalysisResult {
+  summary: string;
+  concepts: string[];
+  suggestions: string[];
+  rankings: number[];
+}
+
+// Define an interface for the enhanced AI analysis result returned by enhanceWithAI
+interface AIAnalysisResultEnhanced {
+  laws: EnhancedLaw[];
+  summary: string;
+  suggestions: string[];
+  concepts: string[];
+}
+
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
-    const { query, jurisdiction = 'all', category = 'all', useAI = true } = await request.json()
+    const { query, jurisdiction = 'all', category = 'all', useAI = true } = await request.json();
     if (!query || query.trim().length === 0) {
-      return json({ error: 'Search query is required' }, { status: 400 })
+      return json({ error: 'Search query is required' }, { status: 400 });
     }
     // First, get basic search results
     const searchParams = new URLSearchParams({
       q: query,
       jurisdiction,
       category,
-      limit: '20'
-    })
-    const basicSearchResponse = await fetch(`/api/laws/search?${searchParams}`)
-    const basicResults = await basicSearchResponse.json()
+      limit: '20',
+    });
+    const basicSearchResponse = await fetch(`/api/laws/search?${searchParams}`);
+    const basicResults = await basicSearchResponse.json();
     if (!useAI) {
-      return json(basicResults)
+      return json(basicResults);
     }
     // Enhance with AI analysis
-    const aiEnhancedResults = await enhanceWithAI(query, basicResults.laws || [], fetch)
+    const aiEnhancedResults = await enhanceWithAI(query, basicResults.laws || [], fetch);
     return json({
       success: true,
       laws: aiEnhancedResults.laws,
@@ -47,20 +79,27 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       filters: { jurisdiction, category },
       enhanced: true,
       timestamp: new Date().toISOString(),
-    })
-  } catch (error: any) {
-    console.error('AI legal search error:', error)
-    return json({
+    });
+  } catch (error: unknown) {
+    // Changed 'any' to 'unknown'
+    console.error('AI legal search error:', error);
+    return json(
+      {
         success: false,
         error: 'AI search failed',
         laws: [],
-        count: 0
-      }, )
-      { status: 500 }
-    )
+        count: 0,
+      },
+      { status: 500 } // Corrected json return syntax
+    );
   }
-}
-async function enhanceWithAI(query: string, laws: any[], fetch: Function): Promise<any> {
+};
+async function enhanceWithAI(
+  query: string,
+  laws: Law[],
+  fetch: typeof globalThis.fetch
+): Promise<AIAnalysisResultEnhanced> {
+  // Replaced 'any[]' with 'Law[]', 'Function' with 'typeof globalThis.fetch', and 'any' with 'AIAnalysisResultEnhanced'
   try {
     // Use AI to analyze the query and provide legal context
     const aiAnalysisPrompt = `Analyze this legal search query and provide insights:
@@ -72,30 +111,48 @@ Please provide:
 2. Key legal concepts involved
 3. Additional search suggestions
 4. Relevance ranking of the found laws
-Format your response as JSON with these fields: summary, concepts, suggestions, rankings`
+Format your response as JSON with these fields: summary, concepts, suggestions, rankings`;
     const aiResponse = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
-        model: 'gemma3-legal:latest'
-      })
-    })
-    let aiAnalysis = null
+        model: 'gemma3-legal:latest',
+      }),
+    });
+    let aiAnalysis: AIAnalysisResult | null = null; // Typed aiAnalysis
     if (aiResponse.ok) {
-      const aiData = await aiResponse.json()
+      const aiData = await aiResponse.json();
       try {
         // Try to parse AI response as JSON
-        aiAnalysis = JSON.parse(aiData.response || '{}')
+        const parsedData = JSON.parse(aiData.response || '{}');
+        // Ensure parsedData conforms to AIAnalysisResult structure
+        if (
+          parsedData &&
+          typeof parsedData.summary === 'string' &&
+          Array.isArray(parsedData.concepts) &&
+          Array.isArray(parsedData.suggestions) &&
+          Array.isArray(parsedData.rankings)
+        ) {
+          aiAnalysis = parsedData;
+        } else {
+          // Fallback if parsed JSON is not in expected format
+          aiAnalysis = {
+            summary: aiData.response?.substring(0, 200) || 'AI analysis unavailable',
+            concepts: extractLegalConcepts(query),
+            suggestions: generateSuggestions(query),
+            rankings: laws.map((_, index) => index),
+          };
+        }
       } catch {
         // If not valid JSON, create a basic analysis
         aiAnalysis = {
           summary: aiData.response?.substring(0, 200) || 'AI analysis unavailable',
           concepts: extractLegalConcepts(query),
           suggestions: generateSuggestions(query),
-          rankings: laws.map((_, index) => index)
-        }
+          rankings: laws.map((_, index) => index),
+        };
       }
     }
     // If AI analysis failed, use fallback analysis
@@ -104,48 +161,50 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
         summary: `Search results for "${query}" - found ${laws.length} relevant laws`,
         concepts: extractLegalConcepts(query),
         suggestions: generateSuggestions(query),
-        rankings: laws.map((_, index) => index)
-      }
+        rankings: laws.map((_, index) => index),
+      };
     }
     // Reorder laws based on AI rankings if available
-    let reorderedLaws = [...laws]
+    let reorderedLaws: Law[] = [...laws]; // Explicitly type reorderedLaws
     if (aiAnalysis.rankings && Array.isArray(aiAnalysis.rankings)) {
       try {
-        reorderedLaws = aiAnalysis.rankings.map((_index: number) => laws[index]).filter(Boolean)
+        reorderedLaws = aiAnalysis.rankings.map((_index: number) => laws[_index]).filter(Boolean); // Corrected index usage
       } catch {
-        reorderedLaws = laws
+        reorderedLaws = laws;
       }
     }
     // Add AI confidence scores to laws
-    const enhancedLaws = reorderedLaws.map((law, index) => ({
+    const enhancedLaws: EnhancedLaw[] = reorderedLaws.map((law, index) => ({
+      // Explicitly type enhancedLaws
       ...law,
-      aiRelevanceScore: Math.max(0.9 - (index * 0.1), 0.1),
-      aiInsights: generateLawInsights(law, query)
-    })
+      aiRelevanceScore: Math.max(0.9 - index * 0.1, 0.1),
+      aiInsights: generateLawInsights(law, query),
+    })); // Added missing closing parenthesis
     return {
       laws: enhancedLaws,
       summary: aiAnalysis.summary || 'AI analysis complete',
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
-      concepts: aiAnalysis.concepts || extractLegalConcepts(query)
-    }
-  } catch (error: any) {
-    console.error('AI enhancement error:', error)
+      concepts: aiAnalysis.concepts || extractLegalConcepts(query),
+    };
+  } catch (error: unknown) {
+    // Changed 'any' to 'unknown'
+    console.error('AI enhancement error:', error);
     // Return basic enhancement on AI failure
     return {
       laws: laws.map(law => ({
         ...law,
         aiRelevanceScore: 0.8,
-        aiInsights: generateLawInsights(law, query)
+        aiInsights: generateLawInsights(law, query),
       })),
       summary: `Found ${laws.length} laws related to "${query}"`,
       suggestions: generateSuggestions(query),
-      concepts: extractLegalConcepts(query)
-    }
+      concepts: extractLegalConcepts(query),
+    };
   }
 }
 function extractLegalConcepts(query: string): string[] {
-  const concepts = []
-  const lowerQuery = query.toLowerCase()
+  const concepts: string[] = []; // Explicitly typed as string[]
+  const lowerQuery = query.toLowerCase();
   const conceptMap = {
     'murder': ['homicide', 'intent', 'malice aforethought', 'criminal law'],
     'contract': ['agreement', 'consideration', 'offer', 'acceptance', 'civil law'],
@@ -153,64 +212,65 @@ function extractLegalConcepts(query: string): string[] {
     'search': ['fourth amendment', 'warrant', 'probable cause', 'constitutional law'],
     'robbery': ['theft', 'force', 'fear', 'felony', 'criminal law'],
     'corporation': ['business entity', 'filing', 'articles', 'corporate law'],
-    'property': ['ownership', 'title', 'real estate', 'civil law']
-  }
+    'property': ['ownership', 'title', 'real estate', 'civil law'],
+  };
   for (const [keyword, relatedConcepts] of Object.entries(conceptMap)) {
     if (lowerQuery.includes(keyword)) {
-      concepts.push(...relatedConcepts)
+      concepts.push(...relatedConcepts);
     }
   }
   return [...new Set(concepts)]; // Remove duplicates
 }
 function generateSuggestions(query: string): string[] {
-  const suggestions = []
-  const lowerQuery = query.toLowerCase()
+  const suggestions: string[] = []; // Explicitly typed as string[]
+  const lowerQuery = query.toLowerCase();
   if (lowerQuery.includes('murder') || lowerQuery.includes('homicide')) {
     suggestions.push(
       'What are the degrees of murder in California?',
       'What is the difference between murder and manslaughter?',
       'What evidence is needed to prove intent to kill?'
-    )
+    );
   } else if (lowerQuery.includes('contract')) {
     suggestions.push(
       'What makes a contract legally binding?',
       'How can a contract be breached?',
       'What are the remedies for contract violations?'
-    )
+    );
   } else if (lowerQuery.includes('evidence')) {
     suggestions.push(
       'What makes evidence admissible in court?',
       'How do I establish chain of custody?',
       'What is the hearsay rule?'
-    )
+    );
   } else if (lowerQuery.includes('search')) {
     suggestions.push(
       'When is a warrant required for a search?',
       'What constitutes probable cause?',
       'What are the exceptions to the warrant requirement?'
-    )
+    );
   } else {
     suggestions.push(
       'What are the elements of this legal concept?',
       'What precedent cases apply?',
       'What evidence is needed to prove this?'
-    )
+    );
   }
-  return suggestions.slice(0, 3)
+  return suggestions.slice(0, 3);
 }
-function generateLawInsights(law: any, query: string): string {
-  const lowerQuery = query.toLowerCase()
-  const lowerTitle = law.title.toLowerCase()
+function generateLawInsights(law: Law, query: string): string {
+  // Replaced 'any' with 'Law'
+  const lowerQuery = query.toLowerCase();
+  const lowerTitle = law.title.toLowerCase();
   if (lowerQuery.includes('element') && lowerTitle.includes('murder')) {
-    return 'Key elements: unlawful killing, human being, malice aforethought'
+    return 'Key elements: unlawful killing, human being, malice aforethought';
   } else if (lowerQuery.includes('penalty') || lowerQuery.includes('sentence')) {
-    return 'Refers to penalties and sentencing guidelines for this offense'
+    return 'Refers to penalties and sentencing guidelines for this offense';
   } else if (lowerQuery.includes('procedure')) {
-    return 'Outlines procedural requirements and court processes'
+    return 'Outlines procedural requirements and court processes';
   } else if (lowerQuery.includes('contract') && lowerTitle.includes('contract')) {
-    return 'Establishes fundamental requirements for valid contracts'
+    return 'Establishes fundamental requirements for valid contracts';
   } else {
-    return 'Relevant to your search query - consider context and application'
+    return 'Relevant to your search query - consider context and application';
   }
 }
-export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const POST = redisOptimized.search(originalPOSTHandler); // Changed aiSearch to search

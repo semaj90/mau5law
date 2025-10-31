@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { indexedDBService } from '$lib/services/indexeddb-service';
 
-  let status = 'idle';
+  let status = $state('idle');
   let docId = 'test-' + Date.now();
   let syncedDoc: any = null;
 

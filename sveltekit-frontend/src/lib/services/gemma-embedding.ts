@@ -466,15 +466,12 @@ export class GemmaEmbeddingService {
   private estimateDimensions(family?: string, modelName?: string): number {
     const dimensionMap: { [key: string]: number } = {
       'nomic-bert': 768,
-      'gemma3': 2048,
-      'gemma2': 2048,
-      'gemma': 2048,
-      'llama': 4096,
+      'gemma3': 4096, // This is for the LLM, not the embedding model
     };
     // Check specific model names first
     if (modelName) {
-      if (modelName.includes('embeddinggemma')) return 1536;
-      if (modelName.includes('gemma3-legal')) return 1536;
+      if (modelName.includes('embeddinggemma')) return 384; // Changed from 1536 to 384
+      if (modelName.includes('gemma3-legal')) return 384; // Changed from 1536 to 384
       if (modelName.includes('nomic-embed-text')) return 768;
     }
     // Check by family
@@ -494,10 +491,10 @@ export class GemmaEmbeddingService {
     type: 'gemma' | 'nomic' | 'other';
   } {
     if (modelName.includes('embeddinggemma')) {
-      return { speed: 'fast', quality: 'high', dimensions: 1536, type: 'gemma' };
+      return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to 384
     }
     if (modelName.includes('gemma3-legal')) {
-      return { speed: 'fast', quality: 'high', dimensions: 1536, type: 'gemma' };
+      return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to 384
     }
     if (modelName.includes('nomic-embed-text')) {
       return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic' };

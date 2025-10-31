@@ -1,4 +1,3 @@
-import http from 'http';
 /**
  * gRPC Protobuf QUIC Vector Proxy Integration
  * High-performance vector operations with Go microservices
@@ -9,7 +8,7 @@ export interface VectorOperation {
   vectorId?: string;
   embedding?: number[];
   query?: string;
-  metadata?: { [key: string]: any };
+  metadata?: Record<string, unknown>; // Changed from any
   threshold?: number;
   limit?: number;
 }
@@ -44,14 +43,68 @@ export interface ProtocolConfig {
   };
 }
 
+// New interfaces for better type safety
+export interface VectorSearchRequestSchema {
+  query: string;
+  embedding: string; // 'repeated float' in protobuf, but here it's a string representation
+  limit: string; // 'int32'
+  threshold: string; // 'float'
+  metadata_filters: string; // 'map<string, string>'
+  use_gpu: string; // 'bool'
+}
+
+export interface VectorSearchResultSchema {
+  id: string;
+  score: string; // 'float'
+  metadata: string; // 'map<string, string>'
+  content: string;
+}
+
+export interface VectorSearchResponseSchema {
+  results: string; // 'repeated VectorSearchResult'
+  total_found: string; // 'int32'
+  processing_time_ms: string; // 'int32'
+  gpu_utilized: string; // 'bool'
+}
+
+export interface ProtobufSchema {
+  VectorSearchRequest: VectorSearchRequestSchema;
+  VectorSearchResponse: VectorSearchResponseSchema;
+  VectorSearchResult: VectorSearchResultSchema;
+}
+
+export interface PerformanceStats {
+  count: number;
+  avg: number;
+  min: number;
+  max: number;
+  p50: number;
+  p95: number;
+  p99: number;
+}
+
+export interface HealthStatus {
+  status: 'disabled' | 'healthy' | 'error' | 'unreachable';
+  latency?: number;
+  httpStatus?: number;
+  error?: string;
+}
+
+export interface LlamaCppParseResult {
+  parsed: string;
+  entities: unknown[];
+  summary: string;
+  confidence: number;
+  gpuUtilization: number;
+}
+
 /**
  * Multi-protocol vector proxy with automatic fallback
  */
 export class GRPCQuicVectorProxy {
   private config: ProtocolConfig;
-  private protobufSchema: any = null;
-  private grpcClient: any = null;
-  private quicClient: any = null;
+  private protobufSchema: ProtobufSchema | null = null; // Changed from any
+  // Removed unused grpcClient and quicClient properties
   private performanceMetrics = new Map<string, number[]>();
 
   constructor(config: Partial<ProtocolConfig> = {}) {
@@ -89,7 +142,8 @@ export class GRPCQuicVectorProxy {
       // Test protocol availability and select best option
       await this.detectAvailableProtocols();
       console.log('✅ Vector proxy initialized with multi-protocol support');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any
       console.error('❌ Vector proxy initialization failed:', error);
       throw error;
     }
@@ -98,9 +152,11 @@ export class GRPCQuicVectorProxy {
   /**
    * Load protobuf schema definition
    */
-  private async loadProtobufSchema(): Promise<any> {
+  private async loadProtobufSchema(): Promise<ProtobufSchema> {
+    // Changed from any
     // Mock protobuf schema for legal AI vector operations
-    const schema = {
+    const schema: ProtobufSchema = {
+      // Explicitly type schema
       VectorSearchRequest: {
         query: 'string',
         embedding: 'repeated float',
@@ -146,7 +202,8 @@ export class GRPCQuicVectorProxy {
           console.log(`⚠️ ${protocol.toUpperCase()}: HTTP ${response.status}`);
           this.config[protocol].enabled = false;
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        // Changed from any
         console.log(`🔴 ${protocol.toUpperCase()}: Unavailable`);
         this.config[protocol].enabled = false;
       }
@@ -176,8 +233,9 @@ export class GRPCQuicVectorProxy {
           latency,
           protocol,
         };
-      } catch (error: any) {
-        console.warn(`⚠️ ${protocol.toUpperCase()} failed, trying next protocol:`, error.message);
+      } catch (error: unknown) {
+        // Changed from any
+        console.warn(`⚠️ ${protocol.toUpperCase()} failed, trying next protocol:`, (error as Error).message);
         continue;
       }
     }
@@ -217,7 +275,7 @@ export class GRPCQuicVectorProxy {
    */
   private async executeQuicOperation(
     operation: VectorOperation,
-    config: any
+    config: ProtocolConfig['quic'] // Changed from any
   ): Promise<Omit<VectorResult, 'latency' | 'protocol'>> {
     // QUIC implementation (using HTTP/3 simulation for now)
     const response = await fetch(`${config.url}/api/quic/vector`, {
@@ -253,7 +311,7 @@ export class GRPCQuicVectorProxy {
    */
   private async executeGrpcOperation(
     operation: VectorOperation,
-    config: any
+    config: ProtocolConfig['grpc'] // Changed from any
   ): Promise<Omit<VectorResult, 'latency' | 'protocol'>> {
     // gRPC implementation (HTTP/2 with protobuf simulation)
     const response = await fetch(`${config.url}/api/grpc/vector`, {
@@ -293,7 +351,7 @@ export class GRPCQuicVectorProxy {
    */
   private async executeHttpOperation(
     operation: VectorOperation,
-    config: any
+    config: ProtocolConfig['http'] // Changed from any
   ): Promise<Omit<VectorResult, 'latency' | 'protocol'>> {
     const response = await fetch(`${config.url}/api/vector`, {
       method: 'POST',
@@ -350,7 +408,7 @@ export class GRPCQuicVectorProxy {
   async storeVector(
     vectorId: string,
     embedding: number[],
-    metadata: { [key: string]: any } = {}
+    metadata: Record<string, unknown> = {} // Changed from any
   ): Promise<VectorResult> {
     const operation: VectorOperation = {
       operation: 'store',
@@ -391,10 +449,11 @@ export class GRPCQuicVectorProxy {
       try {
         const opResult = await this.executeVectorOperation(op);
         results.push(opResult);
-      } catch (error: any) {
+      } catch (error: unknown) {
+        // Changed from any
         results.push({
           success: false,
-          error: error.message,
+          error: (error as Error).message,
           latency: 0,
           protocol: 'http',
           gpuAccelerated: false,
@@ -422,8 +481,9 @@ export class GRPCQuicVectorProxy {
   /**
    * Get performance statistics
    */
-  getPerformanceStats() {
-    const stats: { [key: string]: any } = {};
+  getPerformanceStats(): Record<string, PerformanceStats> {
+    // Changed from any
+    const stats: Record<string, PerformanceStats> = {}; // Changed from any
     for (const [protocol, latencies] of this.performanceMetrics) {
       if (latencies.length === 0) continue;
       const sorted = [...latencies].sort((a, b) => a - b);
@@ -463,8 +523,9 @@ export class GRPCQuicVectorProxy {
   /**
    * Health check all protocols
    */
-  async healthCheck(): Promise<Record<string, any>> {
-    const health: { [key: string]: any } = {};
+  async healthCheck(): Promise<Record<string, HealthStatus>> {
+    // Changed from any
+    const health: Record<string, HealthStatus> = {}; // Changed from any
     const protocols = ['quic', 'grpc', 'http'] as const;
     for (const protocol of protocols) {
       if (!this.config[protocol].enabled) {
@@ -482,10 +543,11 @@ export class GRPCQuicVectorProxy {
           latency,
           httpStatus: response.status,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
+        // Changed from any
         health[protocol] = {
           status: 'unreachable',
-          error: error.message,
+          error: (error as Error).message,
         };
       }
     }
@@ -513,7 +575,7 @@ export class GRPCQuicVectorProxy {
       threshold: options.threshold || 0.7,
       metadata: {
         use_gpu: options.useGPU !== false,
-        force_protocol: options.forceProtocol,
+        preferred_protocol: options.forceProtocol, // Changed to preferred_protocol for consistency
       },
     };
     return this.executeVectorOperation(operation);
@@ -522,7 +584,8 @@ export class GRPCQuicVectorProxy {
   /**
    * Store vector with optimized protocol
    */
-  async store(vectorId: string, embedding: number[], metadata: { [key: string]: any } = {}): Promise<VectorResult> {
+  async store(vectorId: string, embedding: number[], metadata: Record<string, unknown> = {}): Promise<VectorResult> {
+    // Changed from any
     const operation: VectorOperation = {
       operation: 'store',
       vectorId,
@@ -547,7 +610,8 @@ export class GRPCQuicVectorProxy {
       contextSize?: number;
       temperature?: number;
     } = {}
-  ): Promise<any> {
+  ): Promise<LlamaCppParseResult> {
+    // Changed from any
     console.log('⚡ Calling llama.cpp GPU parsing via Go microservice...');
     try {
       const response = await fetch(`${this.config.grpc.url}/api/llama-cpp-parse`, {
@@ -581,7 +645,8 @@ export class GRPCQuicVectorProxy {
         confidence: result.confidence || 0.8,
         gpuUtilization: result.gpu_utilization || 0,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any
       console.error('❌ llama.cpp GPU parsing failed:', error);
       throw error;
     }
@@ -664,7 +729,7 @@ export class LegalVectorOperations {
     evidenceId: string,
     content: string,
     embedding: number[],
-    metadata: { [key: string]: any }
+    metadata: Record<string, unknown> // Changed from any
   ): Promise<VectorResult> {
     return vectorProxy.store(evidenceId, embedding, {
       ...metadata,
@@ -682,7 +747,7 @@ export class LegalVectorOperations {
       id: string;
       content: string;
       embedding: number[];
-      metadata: any;
+      metadata: Record<string, unknown>; // Changed from any
     }>
   ): Promise<VectorResult[]> {
     const operations: VectorOperation[] = documents.map(doc => ({
@@ -707,5 +772,7 @@ export class LegalVectorOperations {
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(16);
+  }
+}
   }
 }

@@ -1,7 +1,8 @@
 <!-- Evidence Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
+  // the module exports a default builder (adjusted per compile hint)
+  import createLegalEvidenceAnalyzer from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
   import {
     Card,
     CardHeader,
@@ -10,11 +11,12 @@
     Button,
     Input
   } from '$lib/components/ui/enhanced-bits';
+
   interface EvidenceItem {
     id: string;
     type: 'email' | 'transcript' | 'financial' | 'document' | 'audio' | 'video';
     title: string;
-    description string;
+    description: string;
     dateCreated: string;
     source: string;
     hash: string;
@@ -24,8 +26,9 @@
     authenticity: 'verified' | 'pending' | 'disputed' | 'invalid';
     privileged: boolean;
     redacted: boolean;
-    metadata?: { [key: string]: any }
+    metadata?: { [key: string]: any };
   }
+
   interface Props {
     evidence?: EvidenceItem[];
     onAnalyze?: (evidenceId: string) => Promise<void>;
@@ -33,25 +36,29 @@
     onExport?: (evidenceIds: string[], format: string) => void;
   }
   let { evidence = [], onAnalyze, onUpload, onExport }: Props = $props();
+
   // Enhanced-Bits builder for evidence
   const evidenceBuilder = createLegalEvidenceAnalyzer({
     caseType: 'criminal',
     urgency: 'high',
     aiModel: 'gemma3',
   });
+
+  // Svelte 5 runes / reactive primitives (keep existing project pattern)
   let selectedEvidence = $state<Set<string>>(new Set());
   let searchTerm = $state('');
   let filterType = $state<string>('all');
   let sortBy = $state<'date' | 'relevance' | 'type' | 'authenticity'>('relevance');
   let isAnalyzing = $state(false);
   let showUpload = $state(false);
+
   // Sample evidence data if none provided
   let evidenceData = $state<EvidenceItem[]>(evidence.length > 0 ? evidence : [
     {
       id: 'ev-001',
       type: 'email',
       title: 'Email Exchange - Project Termination',
-      description 'Email correspondence discussing abrupt project termination and payment disputes',
+      description: 'Email correspondence discussing abrupt project termination and payment disputes',
       dateCreated: '2024-03-15T10:30:00Z',
       source: 'company-email-server',
       hash: 'sha256:a1b2c3d4e5f6...',
@@ -60,7 +67,7 @@
       relevanceScore: 0.92,
       authenticity: 'verified',
       privileged: false,
-      redacted: false;
+      redacted: false,
       metadata: {
         from: 'john.doe@company.com',
         to: 'legal@contractor.com',
@@ -71,7 +78,7 @@
       id: 'ev-002',
       type: 'financial',
       title: 'Bank Transfer Records',
-      description 'Financial records showing payment discrepancies and unauthorized transactions',
+      description: 'Financial records showing payment discrepancies and unauthorized transactions',
       dateCreated: '2024-03-10T14:22:00Z',
       source: 'bank-api-export',
       hash: 'sha256:f6e5d4c3b2a1...',
@@ -80,18 +87,18 @@
       relevanceScore: 0.88,
       authenticity: 'verified',
       privileged: true,
-      redacted: true;
+      redacted: true,
       metadata: {
         account: '****-1234',
         amount: '$25,000.00',
-        institution 'First National Bank',
+        institution: 'First National Bank',
       }
     },
     {
       id: 'ev-003',
       type: 'transcript',
       title: 'Board Meeting Minutes - March 2024',
-      description 'Transcript of emergency board meeting discussing contractor issues',
+      description: 'Transcript of emergency board meeting discussing contractor issues',
       dateCreated: '2024-03-12T09:00:00Z',
       source: 'meeting-recorder',
       hash: 'sha256:1a2b3c4d5e6f...',
@@ -100,14 +107,15 @@
       relevanceScore: 0.85,
       authenticity: 'pending',
       privileged: true,
-      redacted: false;
+      redacted: false,
       metadata: {
         attendees: 7,
-        duration '2h 15m',
+        duration: '2h 15m',
         recorder: 'Legal Counsel',
       }
     }
   ]);
+
   // Filtered and sorted evidence
   let filteredEvidence = $derived(() => {
     let filtered = evidenceData;
@@ -116,7 +124,7 @@
       filtered = filtered.filter(item =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        item.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
     // Filter by type
@@ -129,7 +137,7 @@
         case 'date':
           return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
         case 'relevance':
-          return b.relevanceScore - a.relevanceScor;
+          return b.relevanceScore - a.relevanceScore;
         case 'type':
           return a.type.localeCompare(b.type);
         case 'authenticity':
@@ -140,6 +148,7 @@
     });
     return filtered;
   });
+
   // Evidence type statistics
   let evidenceStats = $derived(() => {
     const stats = evidenceData.reduce((acc, item) => {
@@ -151,9 +160,10 @@
       verified: evidenceData.filter(e => e.authenticity === 'verified').length,
       privileged: evidenceData.filter(e => e.privileged).length,
       redacted: evidenceData.filter(e => e.redacted).length,
-      byType: stat;
+      byType: stats
     }
   });
+
   function toggleSelection(evidenceId: string) {
     const newSelection = new Set(selectedEvidence);
     if (newSelection.has(evidenceId)) {
@@ -161,8 +171,9 @@
     } else {
       newSelection.add(evidenceId);
     }
-    selectedEvidence = newSelectio;
+    selectedEvidence = newSelection;
   }
+
   function selectAll() {
     selectedEvidence = new Set(filteredEvidence.map(e => e.id));
   }
@@ -210,13 +221,16 @@
       disputed: { color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)' },
       invalid: { color: '#6b7280', background: 'rgba(107, 114, 128, 0.1)' }
     }
-    return styles[authenticity] || styles.pending;
+    return (styles as any)[authenticity] || styles.pending;
   }
-  async function handleFileUpload(_event: Event) {
-    // removed unused target assignment
-    if (target.files && onUpload) {
+
+  async function handleFileUpload(event: Event) {
+    const input = event.target as HTMLInputElement | null;
+    if (!input) return;
+    const files = input.files;
+    if (files && onUpload) {
       try {
-        await onUpload(target.files);
+        await onUpload(files);
         showUpload = false;
       } catch (error) {
         console.error('Upload failed:', error);
@@ -254,7 +268,7 @@
             📤 Upload Evidence
           </Button>
           {#if selectedEvidence.size > 0}
-            <div class="bulk-actions" transitionfade>
+            <div class="bulk-actions" transition:fade>
               <Button onclick={() => exportSelected('pdf')} variant="outline">
                 📄 Export PDF ({selectedEvidence.size})
               </Button>
@@ -267,7 +281,7 @@
     <CardContent>
       <!-- Upload Section -->
       {#if showUpload}
-        <div class="upload-section" transitionfly={{ y: -20, duration 300 }}>
+        <div class="upload-section" transition:fly={{ y: -20, duration: 300 }}>
           <div class="upload-area">
             <input
               type="file"
@@ -338,7 +352,7 @@
           <div
             class="evidence-item"
             class:selected={selectedEvidence.has(evidence.id)}
-            transitionscale={evidenceBuilder.animations.enter}
+            transition:scale={evidenceBuilder.animations.enter}
           >
             <div class="evidence-header">
               <div class="evidence-select">
@@ -441,7 +455,7 @@
           </div>
         {/each}
         {#if filteredEvidence.length === 0}
-          <div class="no-evidence" transitionfade>
+          <div class="no-evidence" transition:fade>
             <span class="no-evidence-icon">🔍</span>
             <h3>No Evidence Found</h3>
             <p>No evidence matches your current search and filter criteria.</p>
@@ -469,7 +483,7 @@
   }
   .evidence-title {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -517,12 +531,12 @@
     background: rgba(255, 255, 255, 0.02);
   }
   .upload-area {
-    position relative;
+    position: relative;
     text-align: center;
   }
   .file-input {
-    position absolute;
-    inset: 0,
+    position: absolute;
+    inset: 0;
     opacity: 0;
     cursor: pointer;
   }
@@ -547,7 +561,7 @@
   }
   .controls-section {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     gap: 1rem;

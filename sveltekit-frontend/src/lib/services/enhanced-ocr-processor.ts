@@ -92,11 +92,33 @@ export class EnhancedOCRProcessor extends EventEmitter {
     this.maxConcurrentWorkers = Math.max(1, maxWorkers);
     this.tempDir = tempDir;
     this.legalKeywords = new Set([
-      'contract', 'agreement', 'defendant', 'plaintiff', 'evidence', 'testimony',
-      'witness', 'attorney', 'counsel', 'court', 'jurisdiction', 'liability',
-      'indemnification', 'confidential', 'privileged', 'attorney-client',
-      'whereas', 'hereinafter', 'subpoena', 'deposition', 'affidavit', 'statute',
-      'regulation', 'settlement', 'damages', 'breach', 'negligence'
+      'contract',
+      'agreement',
+      'defendant',
+      'plaintiff',
+      'evidence',
+      'testimony',
+      'witness',
+      'attorney',
+      'counsel',
+      'court',
+      'jurisdiction',
+      'liability',
+      'indemnification',
+      'confidential',
+      'privileged',
+      'attorney-client',
+      'whereas',
+      'hereinafter',
+      'subpoena',
+      'deposition',
+      'affidavit',
+      'statute',
+      'regulation',
+      'settlement',
+      'damages',
+      'breach',
+      'negligence',
     ]);
     this.initializeWorkers().catch((err: unknown) => this.emit('error', err));
   }
@@ -106,7 +128,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       await fs.mkdir(this.tempDir, { recursive: true });
       for (let i = 0; i < this.maxConcurrentWorkers; i++) {
         // createWorker resolves to the tesseract worker; cast to extended worker type so optional helpers are available
-        const workerInstance = await createWorker() as unknown as TesseractExtendedWorker;
+        const workerInstance = (await createWorker()) as unknown as TesseractExtendedWorker;
         await workerInstance.load();
         await workerInstance.loadLanguage('eng');
         await workerInstance.initialize('eng');
@@ -116,15 +138,15 @@ export class EnhancedOCRProcessor extends EventEmitter {
           status: 'idle',
           language: 'eng',
           processedPages: 0,
-          errors: 0
+          errors: 0,
         };
         this.workers.push(cfg);
       }
       this.initialized = true;
-      this.emit("initialized", `${this.workers.length} OCR workers ready`);
+      this.emit('initialized', `${this.workers.length} OCR workers ready`);
       this.runQueue(); // Start processing the queue
     } catch (error: unknown) {
-      this.emit("error", `Failed to initialize OCR workers: ${String(error)}`);
+      this.emit('error', `Failed to initialize OCR workers: ${String(error)}`);
       throw error;
     }
   }
@@ -138,7 +160,8 @@ export class EnhancedOCRProcessor extends EventEmitter {
     while (this.processingQueue.length > 0) {
       // Dequeue the task first
       const task = this.processingQueue.shift(); // Removed '!' for safer handling
-      if (!task) { // Added explicit check for undefined task
+      if (!task) {
+        // Added explicit check for undefined task
         // This should ideally not happen if length > 0, but provides robustness
         break;
       }
@@ -169,11 +192,11 @@ export class EnhancedOCRProcessor extends EventEmitter {
     const filename = path.basename(filePath);
     try {
       const stats = await fs.stat(filePath);
-      this.emit("processing:start", { filename, size: stats.size });
+      this.emit('processing:start', { filename, size: stats.size });
       const mimeType = this.getMimeType(filename);
       let result: OCRResult;
 
-      if (mimeType === "application/pdf") {
+      if (mimeType === 'application/pdf') {
         result = await this.processPDFEnhanced(filePath, options);
       } else {
         result = await this.processImageEnhanced(filePath, options);
@@ -204,10 +227,10 @@ export class EnhancedOCRProcessor extends EventEmitter {
         }
       }
 
-      this.emit("processing:complete", result);
+      this.emit('processing:complete', result);
       return result;
     } catch (error: unknown) {
-      this.emit("processing:error", { filename, error: String(error) });
+      this.emit('processing:error', { filename, error: String(error) });
       throw error;
     }
   }
@@ -221,9 +244,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
       if (options.parallel && pageImages.length > 1) {
         // Simplified map callback, removing redundant explicit types as they are inferred
-        const tasks = pageImages.map((imagePath, index) =>
-          this.processImagePageEnhanced(imagePath, options, index)
-        );
+        const tasks = pageImages.map((imagePath, index) => this.processImagePageEnhanced(imagePath, options, index));
         const settled = await Promise.allSettled(tasks);
         for (const s of settled) {
           if (s.status === 'fulfilled') {
@@ -244,7 +265,8 @@ export class EnhancedOCRProcessor extends EventEmitter {
             confidenceBySection.push(res.confidence || 0);
             totalConfidence += res.confidence || 0;
             this.emit('page:processed', { page: i + 1, total: pageImages.length, confidence: res.confidence || 0 });
-          } catch (err: unknown) { // Explicitly type err
+          } catch (err: unknown) {
+            // Explicitly type err
             this.emit('page:error', { page: i + 1, error: String(err) });
             resultsText.push('');
             confidenceBySection.push(0);
@@ -257,24 +279,24 @@ export class EnhancedOCRProcessor extends EventEmitter {
       // Assign the result to a variable with an explicit type to help the compiler
       // and use explicit property assignment for 'confidenceBySection'.
       const ocrResult: OCRResult = {
-        text: resultsText.join("\n\n"),
+        text: resultsText.join('\n\n'),
         confidence: pageImages.length > 0 ? totalConfidence / pageImages.length : 0,
         pages: pageImages.length,
         processingTime: 0,
         metadata: {
           filename: path.basename(filePath),
           fileSize: 0,
-          mimeType: "application/pdf",
+          mimeType: 'application/pdf',
           pageCount: pageImages.length,
-          language: options.language || "eng"
+          language: options.language || 'eng',
         },
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
           confidenceBySection: confidenceBySection, // Explicitly assign the variable
           extractedDates: [],
-          extractedNumbers: []
-        }
+          extractedNumbers: [],
+        },
       };
       return ocrResult;
     } catch (error: unknown) {
@@ -291,7 +313,9 @@ export class EnhancedOCRProcessor extends EventEmitter {
       const result = await this.processImagePageEnhanced(processedImagePath, options, 0);
 
       if (processedImagePath !== filePath) {
-        await fs.unlink(processedImagePath).catch(() => { /* ignore */ });
+        await fs.unlink(processedImagePath).catch(() => {
+          /* ignore */
+        });
       }
 
       return {
@@ -303,22 +327,26 @@ export class EnhancedOCRProcessor extends EventEmitter {
           filename: path.basename(filePath),
           fileSize: 0,
           mimeType: this.getMimeType(filePath),
-          language: options.language || "eng"
+          language: options.language || 'eng',
         },
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
           confidenceBySection: [result.confidence || 0],
           extractedDates: [],
-          extractedNumbers: []
-        }
+          extractedNumbers: [],
+        },
       };
     } catch (error: unknown) {
       throw new Error(`Enhanced image processing failed: ${String(error)}`);
     }
   }
 
-  private async processImagePageEnhanced(imagePath: string, options: ProcessingOptions, pageIndex: number): Promise<{ text: string; confidence: number }> {
+  private async processImagePageEnhanced(
+    imagePath: string,
+    options: ProcessingOptions,
+    pageIndex: number
+  ): Promise<{ text: string; confidence: number }> {
     if (!this.initialized) {
       return new Promise((resolve, reject) => {
         this.processingQueue.push({ imagePath, options, pageIndex, resolve, reject });
@@ -328,11 +356,15 @@ export class EnhancedOCRProcessor extends EventEmitter {
     return this.processImagePageNow(imagePath, options, pageIndex);
   }
 
-  private async processImagePageNow(imagePath: string, options: ProcessingOptions, pageIndex: number): Promise<{ text: string; confidence: number }> {
+  private async processImagePageNow(
+    imagePath: string,
+    options: ProcessingOptions,
+    pageIndex: number
+  ): Promise<{ text: string; confidence: number }> {
     const workerCfg = this.getAvailableWorker();
     if (!workerCfg) {
       // This case should ideally be handled by the queue, but as a fallback
-      throw new Error("No OCR workers available (queue logic failed or not initialized)");
+      throw new Error('No OCR workers available (queue logic failed or not initialized)');
     }
     workerCfg.status = 'busy';
     try {
@@ -342,7 +374,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         await worker.setParameters({
           tessedit_pageseg_mode: (options.psm ?? 6) as number,
           tessedit_ocr_engine_mode: (options.oem ?? 3) as number,
-          preserve_interword_spaces: '1'
+          preserve_interword_spaces: '1',
         });
       }
       if (options.language && options.language !== workerCfg.language) {
@@ -365,9 +397,11 @@ export class EnhancedOCRProcessor extends EventEmitter {
           if (workerCfg.worker.terminate) {
             await workerCfg.worker.terminate();
           }
-        } catch (e: unknown) { /* ignore */ }
+        } catch (e: unknown) {
+          /* ignore */
+        }
         try {
-          const newWorkerInstance = await createWorker() as unknown as TesseractExtendedWorker;
+          const newWorkerInstance = (await createWorker()) as unknown as TesseractExtendedWorker;
           await newWorkerInstance.load();
           await newWorkerInstance.loadLanguage(workerCfg.language);
           await newWorkerInstance.initialize(workerCfg.language);
@@ -375,7 +409,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           workerCfg.status = 'idle';
           workerCfg.errors = 0;
         } catch (resetError: unknown) {
-          this.emit("worker:reset:failed", { workerId: workerCfg.id, error: String(resetError) });
+          this.emit('worker:reset:failed', { workerId: workerCfg.id, error: String(resetError) });
         }
       }
       throw new Error(`OCR failed for page ${pageIndex}: ${String(error)}`);
@@ -405,15 +439,20 @@ export class EnhancedOCRProcessor extends EventEmitter {
   private cleanLegalText(text: string): string {
     return text
       .replace(/\r\n/g, '\n')
-      .replace(/\s+/g, " ")
-      .replace(/\n\s*\n/g, "\n")
-      // Use RegExp constructor (string) so the forward slash doesn't need to be escaped,
-      // and remove unnecessary escapes for '*' and '+' inside the character class.
-      .replace(new RegExp("[^\\w\\s.:!?'\"(){}$%&/*+=<>|\\\\@#^_`~-]", "g"), '')
+      .replace(/\s+/g, ' ')
+      .replace(/\n\s*\n/g, '\n')
+      .replace(new RegExp('[^\\w\\s.:!?\'"(){}$%&/*+=<>|\\\\@#^_`~-]', 'g'), '')
       .trim();
   }
 
-  private async performLegalAnalysis(text: string): Promise<{ legalKeywords: string[]; documentStructure: string[]; extractedDates: string[]; extractedNumbers: string[]; }> {
+  private async performLegalAnalysis(
+    text: string
+  ): Promise<{
+    legalKeywords: string[];
+    documentStructure: string[];
+    extractedDates: string[];
+    extractedNumbers: string[];
+  }> {
     const lower = text.toLowerCase();
     const legalKeywords = Array.from(this.legalKeywords).filter(k => lower.includes(k));
     const documentStructure = this.extractDocumentStructure(text);
@@ -433,17 +472,23 @@ export class EnhancedOCRProcessor extends EventEmitter {
   private getMimeType(filename: string): string {
     const ext = path.extname(filename).toLowerCase();
     switch (ext) {
-      case '.pdf': return 'application/pdf';
-      case '.png': return 'image/png';
+      case '.pdf':
+        return 'application/pdf';
+      case '.png':
+        return 'image/png';
       case '.jpg':
-      case '.jpeg': return 'image/jpeg';
+      case '.jpeg':
+        return 'image/jpeg';
       case '.tiff':
-      case '.tif': return 'image/tiff';
-      default: return 'application/octet-stream';
+      case '.tif':
+        return 'image/tiff';
+      default:
+        return 'application/octet-stream';
     }
   }
 
-  private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> { // Renamed 'options' to '_options'
+  private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> {
+    // Renamed 'options' to '_options'
     // This is a mock implementation. In a real scenario, you'd use a library
     // like 'pdf-poppler' or 'imagemagick' to convert PDF pages to images.
     console.warn(`Simulating PDF conversion for ${filePath}. This is a placeholder.`);
@@ -459,13 +504,15 @@ export class EnhancedOCRProcessor extends EventEmitter {
   }
 
   private async cleanupImages(imagePaths: string[]): Promise<void> {
-    await Promise.all(imagePaths.map(async (p) => {
-      try {
-        await fs.unlink(p);
-      } catch (error: unknown) {
-        console.warn(`Failed to delete temporary image ${p}: ${String(error)}`);
-      }
-    }));
+    await Promise.all(
+      imagePaths.map(async p => {
+        try {
+          await fs.unlink(p);
+        } catch (error: unknown) {
+          console.warn(`Failed to delete temporary image ${p}: ${String(error)}`);
+        }
+      })
+    );
   }
 
   private async detectConfidentiality(text: string): Promise<'public' | 'confidential' | 'privileged'> {
@@ -485,12 +532,14 @@ export class EnhancedOCRProcessor extends EventEmitter {
     const lines = text.split('\n');
     lines.forEach(line => {
       const trimmed = line.trim();
-      if (trimmed.length > 0 && trimmed.length < 80 && (
-        trimmed.toUpperCase() === trimmed || // ALL CAPS
-        trimmed.endsWith(':') ||
-        /^\d+\.\s/.test(trimmed) || // Numbered list item
-        /^[A-Z]\.\s/.test(trimmed) // Lettered list item
-      )) {
+      if (
+        trimmed.length > 0 &&
+        trimmed.length < 80 &&
+        (trimmed.toUpperCase() === trimmed || // ALL CAPS
+          trimmed.endsWith(':') ||
+          /^\d+\.\s/.test(trimmed) || // Numbered list item
+          /^[A-Z]\.\s/.test(trimmed)) // Lettered list item
+      ) {
         structure.push(trimmed);
       }
     });
@@ -498,15 +547,15 @@ export class EnhancedOCRProcessor extends EventEmitter {
   }
 
   private extractDates(text: string): string[] {
-    // fixed: removed unnecessary escape before '/' inside character class
-    const dateRegex = /\b(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{2,4}|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4})\b/gi;
+    const dateRegex =
+      /\b(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{2,4}|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4})\b/gi;
     const matches = text.match(dateRegex);
     return matches ? Array.from(new Set(matches)) : [];
   }
 
   private extractNumbers(text: string): string[] {
-    // fixed: removed unnecessary escape before '/' inside character class
-    const numberRegex = /(?:\b\d{3,}(?:,\d{3})*(?:\.\d+)?\b|\b\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}\b|\b[A-Z]{2,}\s\d{2,}\b)/gi;
+    const numberRegex =
+      /(?:\b\d{3,}(?:,\d{3})*(?:\.\d+)?\b|\b\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}\b|\b[A-Z]{2,}\s\d{2,}\b)/gi;
     const matches = text.match(numberRegex);
     return matches ? Array.from(new Set(matches)) : [];
   }

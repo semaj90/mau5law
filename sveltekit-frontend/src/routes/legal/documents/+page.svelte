@@ -68,45 +68,52 @@ https://svelte.dev/e/js_parse_error -->
   // Computed properties
   let documentStats = $derived(() => {
     const total = documents.length;
-    const processing = documents.filter(item => item.length);
-    const completed = documents.filter(item => item.length);
-    const withAI = documents.filter(item => item.length);
-    return { total, processing, completed, withAI }
+    const processing = documents.filter(item =>
+      item.processingStatus &&
+      (item.processingStatus.ocr === 'processing' ||
+       item.processingStatus.analysis === 'processing' ||
+       item.processingStatus.embeddings === 'processing')
+    ).length;
+    const completed = documents.filter(item =>
+      item.status === 'final' ||
+      (item.processingStatus && item.processingStatus.analysis === 'completed')
+    ).length;
+    const withAI = documents.filter(item => !!item.aiAnalysis).length;
+    return { total, processing, completed, withAI };
   });
   $effect(() => {
     (async () => {
-await loadDocuments();
+      await loadDocuments();
     })();
   });
   async function loadDocuments() {
     try {
       loading = true;
-      // removed unused response assignment
-      if (response.ok) {
+      // Try real API, fallback to mockDocuments
+      const response = await fetch('/api/documents');
+      if (response?.ok) {
         const data = await response.json();
-        documents = data.documents || [];
-        filterDocuments();
+        documents = data?.documents ?? mockDocuments;
       } else {
-        // Fallback to mock data for development
-        documents = mockDocument;
-        filterDocuments();
+        documents = mockDocuments;
       }
+      filterDocuments();
     } catch (error) {
       console.error('Error loading documents:', error);
-      documents = mockDocument;
+      documents = mockDocuments;
       filterDocuments();
     } finally {
       loading = false;
     }
   }
   function filterDocuments() {
-    let filtered = document;
-    if (searchQuery.trim()) {
+    let filtered = [...documents];
+    if (searchQuery?.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(doc =>
-        doc.title.toLowerCase().includes(query) ||
-        doc.author.toLowerCase().includes(query) ||
-        doc.tags.some(tag => tag.toLowerCase().includes(query))
+        doc.title?.toLowerCase().includes(query) ||
+        doc.author?.toLowerCase().includes(query) ||
+        (doc.tags || []).some(tag => tag.toLowerCase().includes(query))
       );
     }
     if (statusFilter !== 'all') {
@@ -194,40 +201,36 @@ await loadDocuments();
     }
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (!bytes) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   }
   // File upload handlers
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    const file = target.files?.[0];
+  function handleFileSelect(event: Event) {
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0] ?? null;
     if (file) {
-      uploadFile = fil;
-      if (!uploadTitle) {
-        uploadTitle = file.name.replace(/\.[^/.]+$/, '');
-      }
+      uploadFile = file;
+      if (!uploadTitle) uploadTitle = file.name.replace(/\.[^/.]+$/, '');
     }
   }
-  function handleDragOver(_event: DragEvent) {
+  function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-  function handleDragLeave(_event: DragEvent) {
+  function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
-  function handleDrop(_event: DragEvent) {
+  function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    const file = event.dataTransfer?.files?.[0];
+    const file = event.dataTransfer?.files?.[0] ?? null;
     if (file) {
-      uploadFile = fil;
-      if (!uploadTitle) {
-        uploadTitle = file.name.replace(/\.[^/.]+$/, '');
-      }
+      uploadFile = file;
+      if (!uploadTitle) uploadTitle = file.name.replace(/\.[^/.]+$/, '');
     }
   }
   async function uploadDocument() {
@@ -244,7 +247,7 @@ await loadDocuments();
       formData.append('type', uploadType);
       formData.append('caseId', uploadCaseId);
       formData.append('tags', uploadTags);
-      formData.append('enableAI', enableAIProcessing.toString();
+      formData.append('enableAI', enableAIProcessing.toString());
       const response = await fetch('/api/documents/upload', {
         method: 'POST',
         body: formData
@@ -321,14 +324,15 @@ await loadDocuments();
         </p>
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" onclick={() =>
-goto('/legal/documents/templates')}>
+        <!-- fixed: properly closed Button tags and valid onclick handlers -->
+        <Button class="bits-btn" variant="ghost" on:click={() => goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
-        <Button class="bits-btn" onclick={() =>
-showUploadDialog = true}>
+        </Button>
+        <Button class="bits-btn" on:click={() => (showUploadDialog = true)}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
+        </Button>
       </div>
     </div>
     <!-- Statistics Overview -->
@@ -356,10 +360,6 @@ showUploadDialog = true}>
           <div.Title class="text-sm font-medium">Completed</div.Title>
           <CheckCircle class="h-4 w-4 text-green-500" />
         </div.Header>
-        <div.Content>
-          <div class="text-2xl font-bold text-green-600">{documentStats.completed}</div>
-        </div>
-      </div>
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
           <div.Title class="text-sm font-medium">AI Analyzed</div.Title>

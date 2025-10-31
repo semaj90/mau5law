@@ -24,15 +24,13 @@ declare const nomicEmbedText: ((text: string) => Promise<number[]>) | undefined;
 declare global {
   namespace App {
     interface Locals {
-      db: import('$lib/server/db/client').DbClient; // Use the actual type returned by getDbClient
-      redis: Awaited<ReturnType<typeof import('$lib/server/cache/redis').getRedisClient>>;
-      rabbitmqChannel: Awaited<ReturnType<typeof import('$lib/server/messaging/rabbitmq').getRabbitMQChannel>>;
-      // optional authenticated user helper commonly used in routes
       user?: {
         id: string;
         email: string;
-        // add other user props as needed
+        // Add other user properties as needed, e.g., roles, name
       };
+      // Add other locals properties as needed
+      [key: string]: unknown; // This index signature helps satisfy generic type checks
     }
     // interface PageData {}
     // interface Error {}

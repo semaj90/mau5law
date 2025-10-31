@@ -1,17 +1,21 @@
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
-https://svelte.dev/e/const_tag_invalid_placement -->
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Legal Precedent Card for Legal AI App -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { Scale, Calendar, MapPin, ExternalLink, BookOpen, Star, TrendingUp, Users } from 'lucide-svelte';
+  import Scale from 'lucide-svelte/icons/scale.svelte';
+  import Calendar from 'lucide-svelte/icons/calendar.svelte';
+  import MapPin from 'lucide-svelte/icons/map-pin.svelte';
+  import ExternalLink from 'lucide-svelte/icons/external-link.svelte';
+  import BookOpen from 'lucide-svelte/icons/book-open.svelte';
+  import Star from 'lucide-svelte/icons/star.svelte';
+  import TrendingUp from 'lucide-svelte/icons/trending-up.svelte';
+  import Users from 'lucide-svelte/icons/users.svelte';
   import { cn } from '$lib/utils';
+
   export interface LegalPrecedent {
     id: string;
     caseNumber: string;
     caseName: string;
     court: string;
-    jurisdiction 'federal' | 'state' | 'local' | 'international';
+    jurisdiction: 'federal' | 'state' | 'local' | 'international';
     date: Date;
     judge: string;
     summary: string;
@@ -29,6 +33,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     sourceUrl?: string;
     pdfUrl?: string;
   }
+
   export interface LegalPrecedentCardProps {
     precedent: LegalPrecedent;
     currentCaseId?: string;
@@ -41,6 +46,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewRelated?: (caseId: string) => void;
     class?: string;
   }
+
   let {
     precedent,
     currentCaseId,
@@ -51,66 +57,78 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewFull,
     onAddToCase,
     onViewRelated,
-    class: className = '';
+    class: className = ''
   }: LegalPrecedentCardProps = $props();
+
   let expanded = $state(false);
-  // Precedent type configurations
+
+  // Precedent type configurations (use className to avoid JS reserved word)
   const precedentTypeConfig = {
     binding: {
       label: 'Binding Precedent',
-      class: 'bg-green-500/20 text-green-400 border-green-500/30',
-      priority: 1,
+      className: 'bg-green-500/20 text-green-400 border-green-500/30',
+      priority: 1
     },
     persuasive: {
       label: 'Persuasive Authority',
-      class: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      priority: 2,
+      className: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      priority: 2
     },
     distinguishable: {
       label: 'Distinguishable',
-      class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      priority: 3,
+      className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      priority: 3
     }
-  }
+  };
+
   // Jurisdiction configurations
   const jurisdictionConfig = {
-    federal: { label: 'Federal', icon Scale, color: 'text-blue-400' },
-    state: { label: 'State', icon MapPin, color: 'text-green-400' },
-    local: { label: 'Local', icon MapPin, color: 'text-yellow-400' },
-    international: { label: 'International', icon Scale, color: 'text-purple-400' }
-  }
-  // Calculate relevance level
-  let relevanceLevel = $derived(() => {
+    federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
+    state: { label: 'State', icon: MapPin, color: 'text-green-400' },
+    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
+    international: { label: 'International', icon: Scale, color: 'text-purple-400' }
+  };
+
+  // Reactive derived values (avoid using {@const} in template)
+  $: relevanceLevel = (() => {
     if (precedent.relevanceScore >= 90) return 'high';
     if (precedent.relevanceScore >= 70) return 'medium';
     return 'low';
-  });
-  // Calculate similarity level (if provided)
-  let similarityLevel = $derived(() => {
-    if (!precedent.similarityScore) return null;
+  })();
+
+  $: similarityLevel = (() => {
+    if (precedent.similarityScore == null) return null;
     if (precedent.similarityScore >= 80) return 'high';
     if (precedent.similarityScore >= 60) return 'medium';
     return 'low';
-  });
+  })();
+
+  $: jurisdictionInfo = jurisdictionConfig[precedent.jurisdiction] ?? { label: '', icon: Scale, color: '' };
+  $: JurisdictionIcon = jurisdictionInfo.icon;
+
   function formatDate(date: Date): string {
-    return date.toLocaleDateString('en-US', {
+    return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
+      day: 'numeric'
     });
   }
+
   function getAgeInYears(date: Date): number {
-    const now = new Date());
-    return now.getFullYear() - date.getFullYear();
+    const now = new Date();
+    const d = new Date(date);
+    return now.getFullYear() - d.getFullYear();
   }
+
   function truncateText(text: string, maxLength: number): string {
+    if (!text) return '';
     if (text.length <= maxLength) return text;
-    return text.substring.trim() + '...';
+    return text.substring(0, maxLength).trim() + '...';
   }
 </script>
 
 <div
-  className={cn(
+  class={cn(
     'legal-precedent-card bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
     interactive && 'hover:border-yorha-primary/30 transition-colors',
     precedent.overruled && 'opacity-75',
@@ -132,7 +150,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
       <!-- Precedent Type Badge -->
       <span
-        className={cn(
+        class={cn(
           'px-2 py-1 text-xs font-mono rounded border shrink-0',
           precedentTypeConfig[precedent.precedentType].className
         )}
@@ -144,8 +162,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <div class="flex items-center justify-between text-xs font-mono">
       <div class="flex items-center gap-4 text-yorha-text-secondary">
         <div class="flex items-center gap-1">
-          {@const jurisdictionInfo = jurisdictionConfig[precedent.jurisdiction]}
-          {@const JurisdictionIcon = jurisdictionInfo.icon}
           <JurisdictionIcon class={cn('w-3 h-3', jurisdictionInfo.color)} />
           {jurisdictionInfo.label}
         </div>
@@ -170,8 +186,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 similarityLevel === 'high'
                   ? 'text-green-400'
                   : similarityLevel === 'medium'
-                    ? 'text-yellow-400'
-                    : 'text-red-400'
+                  ? 'text-yellow-400'
+                  : 'text-red-400'
               )}
             >
               {precedent.similarityScore}%
@@ -187,8 +203,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 relevanceLevel === 'high'
                   ? 'text-green-400'
                   : relevanceLevel === 'medium'
-                    ? 'text-yellow-400'
-                    : 'text-red-400'
+                  ? 'text-yellow-400'
+                  : 'text-red-400'
               )}
             >
               {precedent.relevanceScore}%
@@ -297,7 +313,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <!-- Expand/Collapse -->
       {#if expandable}
         <button
-          onclick={() => (expanded = !expanded)}
+          on:click={() => (expanded = !expanded)}
           class="text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
         >
           {expanded ? 'Show Less' : 'Show More'}
@@ -331,7 +347,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
         {#if onViewFull && interactive}
           <button
-            onclick={() => onViewFull?.(precedent)}
+            on:click={() => onViewFull?.(precedent)}
             class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
           >
             Full Details
@@ -339,7 +355,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
         {#if onAddToCase && interactive && currentCaseId}
           <button
-            onclick={() => onAddToCase?.(precedent)}
+            on:click={() => onAddToCase?.(precedent)}
             class="px-2 py-1 text-xs font-mono bg-green-500/10 text-green-400 border border-green-500/20 rounded hover:bg-green-500/20 transition-colors"
           >
             Add to Case

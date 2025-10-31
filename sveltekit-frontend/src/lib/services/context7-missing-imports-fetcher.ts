@@ -30,10 +30,14 @@ type ApiRefEntry = {
 };
 
 export class Context7MissingImportsFetcher {
-  private mcpServerUrl = 'http://localhost:4001'; // MCP server endpoint
+  private mcpServerUrl: string; // MCP server endpoint
   private cache: Map<string, Context7McpResponse> = new Map();
   private libraryMappings: Map<string, string> = new Map();
   constructor() {
+    // Use environment variable for production-ready endpoint, with localhost fallback for dev.
+    // Per instructions, Context7 MCP is on port 8777.
+    this.mcpServerUrl =
+      (typeof process !== 'undefined' ? process.env.CONTEXT7_MCP_URL : undefined) || 'http://localhost:8777';
     this.initializeLibraryMappings();
   }
   /**
@@ -74,7 +78,7 @@ export class Context7MissingImportsFetcher {
   private async fetchSvelteCompleteDocs(analysis: MissingImportAnalysis): Promise<LibraryDocs> {
     const svelteTopics = this.determineSvelteTopics(analysis);
     try {
-      const response = await this.fetchContext7Docs('/svelte/svelte', svelteTopics).catch(
+      const response = await this.fetchContext7Docs('/websites/svelte_dev', svelteTopics).catch(
         () =>
           ({
             library: 'svelte',
@@ -232,6 +236,7 @@ export class Context7MissingImportsFetcher {
       'jsonb',
       'uuid',
       'vector',
+      'relations',
       'eq',
       'ne',
       'gt',
@@ -256,10 +261,12 @@ export class Context7MissingImportsFetcher {
    */
   private determineSvelteTopics(analysis: MissingImportAnalysis): string[] {
     const topics = [];
-    if (['$state', '$derived', '$effect'].some(r => analysis.missingFunctions.has(r))) {
+    if (
+      ['$state', '$derived', '$effect', '$props', '$bindable', '$inspect'].some(r => analysis.missingFunctions.has(r))
+    ) {
       topics.push('runes');
     }
-    if (['onMount', 'onDestroy', 'beforeUpdate'].some(l => analysis.missingFunctions.has(l))) {
+    if (['onMount', 'onDestroy', 'beforeUpdate', 'afterUpdate'].some(l => analysis.missingFunctions.has(l))) {
       topics.push('lifecycle');
     }
     if (['createEventDispatcher'].some(e => analysis.missingFunctions.has(e))) {
@@ -277,6 +284,9 @@ export class Context7MissingImportsFetcher {
     }
     if (['vector'].some(v => analysis.missingFunctions.has(v))) {
       topics.push('pgvector');
+    }
+    if (['relations'].some(r => analysis.missingFunctions.has(r))) {
+      topics.push('relations');
     }
     return topics.length > 0 ? topics : ['postgresql', 'queries', 'schema'];
   }
@@ -460,12 +470,14 @@ export class Context7MissingImportsFetcher {
     };
   }
   private initializeLibraryMappings(): void {
-    this.libraryMappings.set('svelte', '/svelte/svelte');
-    this.libraryMappings.set('sveltekit', '/svelte/kit');
+    this.libraryMappings.set('svelte', '/websites/svelte_dev');
+    this.libraryMappings.set('sveltekit', '/sveltejs/kit');
     this.libraryMappings.set('drizzle-orm', '/drizzle-team/drizzle-orm');
     this.libraryMappings.set('xstate', '/statelyai/xstate');
     this.libraryMappings.set('redis', '/redis/redis');
     this.libraryMappings.set('postgresql', '/postgres/postgres');
+    this.libraryMappings.set('qdrant', '/qdrant/qdrant');
+    this.libraryMappings.set('rabbitmq', '/rabbitmq/rabbitmq');
   }
 }
 // Export singleton instance

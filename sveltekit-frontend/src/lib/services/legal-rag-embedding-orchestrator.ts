@@ -3,6 +3,58 @@
 // Integrates multiple embedding models for different legal content types
 import { multiEmbeddingVectorService } from './multi-embedding-vector-service.js';
 import type { SearchQuery } from './multi-embedding-vector-service.js';
+import { redis } from '$lib/server/cache/redis'; // Import Redis client
+import { db } from '$lib/server/db/client'; // Import Drizzle client
+import * as schema from '$lib/server/db/schema'; // Import Drizzle schema
+import { eq } from 'drizzle-orm'; // Import Drizzle utility for equality checks
+
+// Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js
+// This is a common pattern for vector search services.
+declare module './multi-embedding-vector-service.js' {
+  export interface SearchQuery {
+    query_embedding?: number[];
+  }
+}
+
+// Define types for better clarity and type safety
+export interface EmbeddingResult {
+  vector: number[];
+  model: string;
+  // Add other relevant metadata if available from multiEmbeddingVectorService
+}
+
+export interface EmbeddingsBundle {
+  case_context: number[];
+  legal_domain: number[];
+  jurisdictional: number[];
+  temporal: number[];
+  models_used: string[];
+}
+
+export interface VectorSearchResultItem {
+  id: string;
+  content: string;
+  metadata?: Record<string, unknown>;
+  similarity_scores?: Record<string, number>;
+  // Add other properties returned by the vector search service
+}
+
+export interface VectorSearchResult {
+  results: VectorSearchResultItem[];
+  // Add other properties like total, took_ms, etc.
+}
+
+export interface SearchOptions {
+  query_type?: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
+  jurisdiction_filter?: string;
+  practice_area_filter?: string;
+  date_range?: { start: Date; end: Date };
+  max_results?: number;
+  include_related_cases?: boolean;
+  include_statutory_authority?: boolean;
+  include_regulations?: boolean;
+  confidence_threshold?: number;
+}
 
 export interface LegalCase {
   id: string;
@@ -86,9 +138,15 @@ export interface RAGContext {
 }
 
 class LegalRAGEmbeddingOrchestrator {
-  private caseCache: Map<string, LegalCase> = new Map();
-  private lawCache: Map<string, LegalLaw> = new Map();
-  private ragCache: Map<string, { context: RAGContext; timestamp: Date }> = new Map();
+  // Removed in-memory caches, now using Redis as per instructions
+  // private caseCache: Map<string, LegalCase> = new Map();
+  // private lawCache: Map<string, LegalLaw> = new Map();
+  // private ragCache: Map<string, { context: RAGContext; timestamp: Date }> = new Map();
+
+  constructor() {
+    // The constructor no longer initializes in-memory maps.
+    // Redis client is imported and used directly.
+  }
 
   // Embedding strategies by legal content type
   private embeddingStrategies: Record<string, {
@@ -99,36 +157,36 @@ class LegalRAGEmbeddingOrchestrator {
     temporal_weight: number;
   }> = {
     'case-law': {
-      primary_model: 'legal-bert',
-      hybrid_models: ['gemma3-legal', 'custom-legal'],
+      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest
+      hybrid_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
       metadata_schema: 'legal-case',
       boost_fields: ['case_type', 'jurisdiction', 'practice_area'],
       temporal_weight: 0.8
     },
     'statute': {
-      primary_model: 'custom-legal',
-      hybrid_models: ['legal-bert', 'bge-large'],
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest
+      hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'citation',
       boost_fields: ['jurisdiction', 'law_type', 'effective_date'],
       temporal_weight: 0.6
     },
     'regulation': {
-      primary_model: 'legal-bert',
-      hybrid_models: ['custom-legal', 'nomic-embed'],
+      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest
+      hybrid_models: ['embeddinggemma:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'citation',
       boost_fields: ['jurisdiction', 'enforcement_frequency'],
       temporal_weight: 0.7
     },
     'case-document': {
-      primary_model: 'gemma3-legal',
-      hybrid_models: ['all-minilm-l6-v2', 'nomic-embed'],
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest
+      hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'document',
       boost_fields: ['document_type', 'case_id', 'relevance_score'],
       temporal_weight: 0.9
     },
     'user-query': {
-      primary_model: 'all-minilm-l6-v2',
-      hybrid_models: ['legal-bert', 'nomic-embed'],
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest
+      hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'user-query',
       boost_fields: ['intent', 'practice_area'],
       temporal_weight: 1.0
@@ -173,9 +231,18 @@ class LegalRAGEmbeddingOrchestrator {
     const startTime = this.nowMs();
     const cacheKey = `rag:${caseId}:${this.hashQuery(query)}:${JSON.stringify(options)}`;
 
-    const cached = this.ragCache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp.getTime() < 300000) {
-      return cached.context;
+    // Attempt to retrieve from Redis cache
+    const cachedRaw = await redis.get(cacheKey);
+    if (cachedRaw) {
+      try {
+        const cached = JSON.parse(cachedRaw) as { context: RAGContext; timestamp: string };
+        if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5 minutes TTL
+          return cached.context;
+        }
+      } catch (parseError) {
+        console.warn('Failed to parse RAG context from Redis cache:', parseError);
+        // Continue to re-generate if parsing fails
+      }
     }
 
     try {
@@ -220,7 +287,8 @@ class LegalRAGEmbeddingOrchestrator {
         }
       };
 
-      this.ragCache.set(cacheKey, { context: ragContext, timestamp: new Date() });
+      // Store in Redis cache
+      await redis.set(cacheKey, JSON.stringify({ context: ragContext, timestamp: new Date().toISOString() }), 'EX', 300); // 5 minutes TTL
       return ragContext;
     } catch (error) {
       console.error('Legal RAG retrieval error:', error);
@@ -241,39 +309,41 @@ class LegalRAGEmbeddingOrchestrator {
     const svc = multiEmbeddingVectorService as unknown;
 
     const inputs = [
-      { text: `${contextualQuery} [Case Context: ${legalCase.case_summary}]`, type: 'contextual', opts: { optimizeFor: 'accuracy' } },
-      { text: `${contextualQuery} [Practice Area: ${legalCase.practice_area}]`, type: 'user-query', opts: { preferredModels: ['legal-bert', 'custom-legal'] } },
-      { text: `${contextualQuery} [Jurisdiction: ${legalCase.jurisdiction}] [Court: ${legalCase.court}]`, type: 'citation', opts: { optimizeFor: 'accuracy' } },
-      { text: `${contextualQuery} [Filing Date: ${legalCase.filing_date.toISOString()}]`, type: 'user-query', opts: { optimizeFor: 'balanced' } }
+      { text: `${contextualQuery} [Case Context: ${legalCase.case_summary}]`, type: 'contextual', opts: { optimizeFor: 'accuracy', model: strategy.primary_model } },
+      { text: `${contextualQuery} [Practice Area: ${legalCase.practice_area}]`, type: 'legal_domain', opts: { preferredModels: strategy.hybrid_models } },
+      { text: `${contextualQuery} [Jurisdiction: ${legalCase.jurisdiction}] [Court: ${legalCase.court}]`, type: 'jurisdictional', opts: { optimizeFor: 'accuracy', model: strategy.primary_model } },
+      { text: `${contextualQuery} [Filing Date: ${legalCase.filing_date.toISOString()}]`, type: 'temporal', opts: { optimizeFor: 'balanced', model: strategy.primary_model } }
     ];
 
-    const promises = inputs.map(i => {
+    const promises = inputs.map(async i => {
       try {
         const svcAny = svc as any;
         if (typeof svcAny.generateEmbeddings === 'function') {
-          return svcAny.generateEmbeddings(i.text, i.type, i.opts);
+          // Assuming generateEmbeddings returns { primary: EmbeddingResult, secondary?: EmbeddingResult[] }
+          const result = await svcAny.generateEmbeddings(i.text, i.type, i.opts);
+          return result?.primary as EmbeddingResult | null; // Extract primary embedding
         }
       } catch (err) {
         // log and continue
         // eslint-disable-next-line no-console
         console.debug('generateEmbeddings call failed for input', i.type, err);
       }
-      return Promise.resolve(null);
+      return null;
     });
 
     const [caseContext, legalDomain, jurisdictional, temporal] = await Promise.all(promises);
 
     return {
-      case_context: caseContext?.primary?.vector || [],
-      legal_domain: legalDomain?.primary?.vector || [],
-      jurisdictional: jurisdictional?.primary?.vector || [],
-      temporal: temporal?.primary?.vector || [],
+      case_context: caseContext?.vector || [],
+      legal_domain: legalDomain?.vector || [],
+      jurisdictional: jurisdictional?.vector || [],
+      temporal: temporal?.vector || [],
       models_used: [
-        caseContext?.primary?.model || (strategy?.primary_model ?? 'unknown'),
-        legalDomain?.primary?.model || (strategy?.hybrid_models?.[0] ?? 'unknown'),
-        jurisdictional?.primary?.model || 'unknown',
-        temporal?.primary?.model || 'unknown'
-      ]
+        caseContext?.model || (strategy?.primary_model ?? 'unknown'),
+        legalDomain?.model || (strategy?.hybrid_models?.[0] ?? 'unknown'),
+        jurisdictional?.model || 'unknown',
+        temporal?.model || 'unknown'
+      ].filter(Boolean) // Filter out 'unknown' if a model was actually used
     };
   }
 
@@ -328,8 +398,11 @@ class LegalRAGEmbeddingOrchestrator {
   // Search for relevant laws using optimized embeddings
   private async searchRelevantLaws(queryEmbeddings: EmbeddingsBundle, legalCase: LegalCase, options: SearchOptions): Promise<LegalLaw[]> {
     const searchQuery: SearchQuery = {
-      query: '',
-      embedding_models: ['legal-bert', 'custom-legal'],
+      query: '', // Query text might be empty if only embedding is used
+      query_embedding: this.mergeEmbeddings([
+        queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional, queryEmbeddings.temporal
+      ]),
+      embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
       metadata_filters: {
         jurisdiction: options.jurisdiction_filter || legalCase.jurisdiction,
         law_type: this.determineLawTypes(options.query_type as string),
@@ -343,10 +416,6 @@ class LegalRAGEmbeddingOrchestrator {
       user_context: { userId: 'system', sessionId: 'legal-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
     };
 
-    (searchQuery as unknown as Record<string, unknown>).query_embedding = this.mergeEmbeddings([
-      queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional, queryEmbeddings.temporal
-    ]);
-
     const searchResult = await this.callVectorSearch(searchQuery);
     return this.convertToLegalLaws(searchResult?.results || []);
   }
@@ -356,7 +425,10 @@ class LegalRAGEmbeddingOrchestrator {
     if (!options?.include_related_cases) return [];
     const searchQuery: SearchQuery = {
       query: '',
-      embedding_models: ['gemma3-legal', 'legal-bert'],
+      query_embedding: this.mergeEmbeddings([
+        queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional
+      ]),
+      embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
       metadata_filters: { jurisdiction: legalCase.jurisdiction, practice_area: legalCase.practice_area, case_type: legalCase.case_type, status: 'closed' },
       schema_types: ['legal-case'],
       hybrid_weights: { semantic: 0.25, legal: 0.35, contextual: 0.25, temporal: 0.15 },
@@ -366,10 +438,6 @@ class LegalRAGEmbeddingOrchestrator {
       user_context: { userId: 'system', sessionId: 'case-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
     };
 
-    (searchQuery as unknown as Record<string, unknown>).query_embedding = this.mergeEmbeddings([
-      queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional
-    ]);
-
     const searchResult = await this.callVectorSearch(searchQuery);
     return this.convertToLegalCases(searchResult?.results || []);
   }
@@ -378,7 +446,10 @@ class LegalRAGEmbeddingOrchestrator {
   private async searchRelevantDocuments(queryEmbeddings: EmbeddingsBundle, caseId: string, options: SearchOptions): Promise<unknown[]> {
     const searchQuery: SearchQuery = {
       query: '',
-      embedding_models: ['gemma3-legal', 'all-minilm-l6-v2'],
+      query_embedding: this.mergeEmbeddings([
+        queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.temporal
+      ]),
+      embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'nomic-embed-text'], // Updated models
       metadata_filters: { case_id: caseId, document_type: this.determineDocumentTypes(options?.query_type as string) },
       schema_types: ['document', 'evidence'],
       hybrid_weights: { semantic: 0.4, legal: 0.3, contextual: 0.25, temporal: 0.05 },
@@ -387,10 +458,6 @@ class LegalRAGEmbeddingOrchestrator {
       boost_recent: true,
       user_context: { userId: 'system', sessionId: 'document-search', caseId }
     };
-
-    (searchQuery as unknown as Record<string, unknown>).query_embedding = this.mergeEmbeddings([
-      queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.temporal
-    ]);
 
     const searchResult = await this.callVectorSearch(searchQuery);
     return searchResult?.results || [];
@@ -556,53 +623,77 @@ class LegalRAGEmbeddingOrchestrator {
 
   // Database access methods (placeholders)
   private async getCaseById(caseId: string): Promise<LegalCase | null> {
-    if (this.caseCache.has(caseId)) return this.caseCache.get(caseId)!;
-
-    const placeholder: LegalCase = {
-      id: caseId,
-      title: 'Sample Legal Case',
-      jurisdiction: 'Federal',
-      practice_area: 'Civil Rights',
-      case_type: 'civil',
-      status: 'active',
-      filing_date: new Date(),
-      parties: {
-        plaintiff: ['John Doe'],
-        defendant: ['Acme Corp'],
-        counsel: ['Jane Attorney']
-      },
-      court: 'U.S. District Court',
-      judge: undefined,
-      docket_number: '2024-CV-123',
-      related_laws: [],
-      key_issues: ['Constitutional Law', 'Due Process'],
-      case_summary: 'A civil rights case involving due process claims.',
-      legal_precedents: [],
-      evidence_ids: [],
-      document_ids: [],
-      metadata: {
-        complexity_score: 0.7,
-        precedent_value: 0.6
+    const cacheKey = `case:${caseId}`;
+    const cachedCase = await redis.get(cacheKey);
+    if (cachedCase) {
+      try {
+        return JSON.parse(cachedCase) as LegalCase;
+      } catch (parseError) {
+        console.warn('Failed to parse cached case data from Redis:', parseError);
+        // Continue to fetch from DB if parsing fails
       }
-    };
+    }
 
-    this.caseCache.set(caseId, placeholder);
-    return placeholder;
+    // Fetch from PostgreSQL using Drizzle ORM
+    // Assuming 'cases' is a table in your schema and has a 'case_id' column
+    const caseData = await db.query.cases.findFirst({ where: eq(schema.cases.id, caseId) });
+
+    if (caseData) {
+      // Map Drizzle ORM result to LegalCase interface
+      const legalCase: LegalCase = {
+        id: caseData.id,
+        title: caseData.title,
+        description: caseData.description ?? undefined,
+        priority: caseData.priority as LegalCase['priority'] ?? undefined,
+        status: caseData.status as LegalCase['status'] ?? 'active',
+        incidentDate: caseData.incidentDate ?? undefined,
+        location: caseData.location ?? undefined,
+        userId: caseData.userId ?? undefined,
+        jurisdiction: caseData.jurisdiction,
+        practice_area: caseData.practiceArea,
+        case_type: caseData.caseType as LegalCase['case_type'],
+        filing_date: new Date(caseData.filingDate),
+        parties: (caseData.parties as LegalCase['parties']) || { plaintiff: [], defendant: [], counsel: [] },
+        court: caseData.court ?? 'Unknown Court',
+        judge: caseData.judge ?? undefined,
+        docket_number: caseData.docketNumber ?? '',
+        related_laws: (caseData.relatedLaws as string[]) || [],
+        key_issues: (caseData.keyIssues as string[]) || [],
+        case_summary: caseData.caseSummary ?? '',
+        legal_precedents: (caseData.legalPrecedents as string[]) || [],
+        evidence_ids: (caseData.evidenceIds as string[]) || [],
+        document_ids: (caseData.documentIds as string[]) || [],
+        metadata: (caseData.metadata as LegalCase['metadata']) || { complexity_score: 0, precedent_value: 0 }
+      };
+
+      // Cache the result in Redis for 1 hour (3600 seconds)
+      await redis.set(cacheKey, JSON.stringify(legalCase), 'EX', 3600);
+      return legalCase;
+    }
+
+    return null; // Case not found
   }
 
   // Public API methods
   async getPerformanceMetrics() {
     const perf = {
-      cacheStats: { cases: this.caseCache.size, laws: this.lawCache.size, ragContexts: this.ragCache.size },
-      embeddingStrategies: Object.keys(this.embeddingStrategies),
-      multiEmbeddingMetrics: null as unknown
+      cacheStats: {
+        // In-memory caches removed, Redis handles caching
+        // cases: this.caseCache.size,
+        // laws: this.lawCache.size,
+        // ragContexts: this.ragCache.size
+        // Placeholder for Redis stats if needed
+        redis_status: await redis.ping().then(() => 'connected').catch(() => 'disconnected'),
+        embeddingStrategies: Object.keys(this.embeddingStrategies),
+        multiEmbeddingMetrics: null as unknown
+      }
     };
 
     const svcAny = multiEmbeddingVectorService as unknown as Record<string, unknown>;
     if (typeof svcAny.getPerformanceMetrics === 'function') {
       try {
         // @ts-ignore dynamic call
-        perf.multiEmbeddingMetrics = await (svcAny.getPerformanceMetrics as Function)();
+        perf.cacheStats.multiEmbeddingMetrics = await (svcAny.getPerformanceMetrics as Function)();
       } catch (err) {
         // eslint-disable-next-line no-console
         console.debug('multiEmbeddingVectorService.getPerformanceMetrics failed', err);
@@ -613,9 +704,10 @@ class LegalRAGEmbeddingOrchestrator {
   }
 
   async clearCache(): Promise<void> {
-    this.caseCache.clear();
-    this.lawCache.clear();
-    this.ragCache.clear();
+    // In-memory caches removed. For Redis, you might clear specific keys or flushall.
+    // For now, this method will not perform any action on Redis to avoid accidental data loss.
+    // If a specific cache clearing mechanism for Redis is desired, it should be implemented here.
+    console.warn('clearCache() called. In-memory caches have been removed. Redis cache clearing not implemented here.');
   }
 
   getEmbeddingStrategies() {

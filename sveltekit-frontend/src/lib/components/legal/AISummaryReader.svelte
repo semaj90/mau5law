@@ -1,8 +1,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { aiSummaryMachine, type SummarySection } from '$lib/machines/aiSummaryMachine';
-  import { useMachine } from '@xstate/svelte';
-  import { Brain, FileText, Pause, Play, Settings, SkipBack, SkipForward, Square, Zap } from 'lucide-svelte';
+  // Replace '@xstate/svelte' with a small local adapter using xstate interpreter + svelte store
+  import interpret from 'xstate';
+  import { readable } from 'svelte/store';
+  // Import lucide icons as individual Svelte components (path-based default exports)
+  import Brain from 'lucide-svelte/icons/brain.svelte';
+  import FileText from 'lucide-svelte/icons/file-text.svelte';
+  import Pause from 'lucide-svelte/icons/pause.svelte';
+  import Play from 'lucide-svelte/icons/play.svelte';
+  import Settings from 'lucide-svelte/icons/settings.svelte';
+  import SkipBack from 'lucide-svelte/icons/skip-back.svelte';
+  import SkipForward from 'lucide-svelte/icons/skip-forward.svelte';
+  import Square from 'lucide-svelte/icons/square.svelte';
+  import Zap from 'lucide-svelte/icons/zap.svelte';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
 
@@ -23,22 +34,32 @@
     compact?: boolean;
   } = $props();
 
-  const { snapshot: state, send } = useMachine(aiSummaryMachine);
+  // Minimal local useMachine replacement:
+  // start the machine interpreter and expose a Svelte readable store `state` and a `send` function.
+  const _service = interpret(aiSummaryMachine).start();
+  const state = readable(_service.getSnapshot(), (set) => {
+    const unsub = _service.subscribe((next) => set(next));
+    return () => {
+      unsub();
+      _service.stop();
+    };
+  });
+  const send = (event: unknown) => _service.send(event);
 
   // Reactive state helpers using Svelte 5 $derived
-  let isLoading = $derived(
+  let isLoading = $derived(() =>
     $state.matches('loading') ||
-      $state.matches('generating') ||
-      $state.matches('analyzing') ||
-      $state.matches('synthesizing')
+    $state.matches('generating') ||
+    $state.matches('analyzing') ||
+    $state.matches('synthesizing')
   );
 
-  let isReady = $derived($state.matches('ready'));
-  let isReading = $derived($state.matches('ready.reading'));
-  let isPlaying = $derived($state.context?.isPlaying ?? false);
-  let progress = $derived($state.context?.progress ?? 0);
-  let error = $derived($state.context?.error ?? null);
-  let currentSection = $derived($state.context?.sections?.[$state.context?.currentSection ?? 0] ?? null);
+  let isReady = $derived(() => $state.matches('ready'));
+  let isReading = $derived(() => $state.matches('ready.reading'));
+  let isPlaying = $derived(() => $state.context?.isPlaying ?? false);
+  let progress = $derived(() => $state.context?.progress ?? 0);
+  let error = $derived(() => $state.context?.error ?? null);
+  let currentSection = $derived(() => $state.context?.sections?.[$state.context?.currentSection ?? 0] ?? null);
 
   // Voice synthesis
   let speechSynthesis: SpeechSynthesis | null = null;
@@ -103,7 +124,7 @@
     }
   }
 
-  function speakSection(section SummarySection) {
+  function speakSection(section: SummarySection) {
     if (!speechSynthesis || !$state.context?.voiceEnabled || !section) return;
     speechSynthesis.cancel();
     currentUtterance = new SpeechSynthesisUtterance(section.content);
@@ -157,7 +178,7 @@
   }
 </script>
 
-<div class="ai-summary-reader" class:compact>
+<div class="ai-summary-reader" class:compact={compact}>
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
     <!-- Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-200">
@@ -179,7 +200,7 @@
       <div class="flex items-center gap-2">
         <!-- Voice Toggle -->
         <button
-          onclick={toggleVoice}
+          on:click={toggleVoice}
           class="p-2 rounded-md hover:bg-gray-100 transition-colors"
           class:text-blue-600={$state.context?.voiceEnabled}
           class:text-gray-400={!$state.context?.voiceEnabled}
@@ -216,7 +237,7 @@
           </div>
         </div>
       {:else if error}
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4" transitionfade>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4" in:fade>
           <div class="flex items-center gap-2">
             <div class="text-red-600">⚠️</div>
             <div>
@@ -225,7 +246,7 @@
             </div>
           </div>
           <button
-            onclick={() => send({ type: 'RETRY' })}
+            on:click={() => send({ type: 'RETRY' })}
             class="mt-3 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
           >
             Retry
@@ -235,7 +256,7 @@
         <div class="space-y-6">
           <!-- Summary Overview -->
           {#if $state.context?.summary}
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" transitionfly={{ y: 20, duration 300 }}>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" in:fly={{ y: 20, duration: 300 }}>
               <h4 class="font-medium text-blue-900 mb-2">Executive Summary</h4>
               <p class="text-blue-800">{$state.context.summary}</p>
             </div>
@@ -245,7 +266,7 @@
           {#if ($state.context?.keyInsights ?? []).length > 0}
             <div
               class="bg-green-50 border border-green-200 rounded-lg p-4"
-              transitionfly={{ y: 20, duration 300, delay: 100 }}
+              in:fly={{ y: 20, duration: 300, delay: 100 }}
             >
               <h4 class="font-medium text-green-900 mb-3">Key Insights</h4>
               <ul class="space-y-2">
@@ -263,7 +284,7 @@
           <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
             <div class="flex items-center gap-3">
               <button
-                onclick={toggleReading}
+                on:click={toggleReading}
                 class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 disabled={!currentSection}
               >
@@ -276,7 +297,7 @@
                 {/if}
               </button>
               <button
-                onclick={stopReading}
+                on:click={stopReading}
                 class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                 disabled={!isReading}
               >
@@ -284,14 +305,14 @@
               </button>
               <div class="flex items-center gap-1">
                 <button
-                  onclick={previousSection}
+                  on:click={previousSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                   disabled={$state.context?.currentSection === 0}
                 >
                   <SkipBack class="w-4 h-4" />
                 </button>
                 <button
-                  onclick={nextSection}
+                  on:click={nextSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                   disabled={$state.context?.currentSection >= ($state.context?.sections?.length ?? 1) - 1}
                 >
@@ -309,7 +330,7 @@
 
           <!-- Progress Bar -->
           {#if isReading}
-            <div class="bg-gray-200 rounded-full h-2" transitionfade>
+            <div class="bg-gray-200 rounded-full h-2" in:fade>
               <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
             </div>
           {/if}
@@ -318,7 +339,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {#each $state.context?.sections ?? [] as section, index}
               <button
-                onclick={() => jumpToSection(index)}
+                on:click={() => jumpToSection(index)}
                 class="text-left p-3 border rounded-lg transition-all hover:shadow-md"
                 class:border-blue-500={index === ($state.context?.currentSection ?? 0)}
                 class:bg-blue-50={index === ($state.context?.currentSection ?? 0)}
@@ -345,7 +366,7 @@
 
           <!-- Current Section Content -->
           {#if currentSection}
-            <div class="bg-white border border-gray-200 rounded-lg p-6" transitionfly={{ y: 20, duration 300 }}>
+            <div class="bg-white border border-gray-200 rounded-lg p-6" in:fly={{ y: 20, duration: 300 }}>
               <div class="flex items-center justify-between mb-4">
                 <h4 class="text-xl font-semibold text-gray-900">
                   {currentSection.title}
@@ -392,7 +413,7 @@
           <!-- Analysis Actions -->
           <div class="flex flex-wrap gap-3">
             <button
-              onclick={analyzeDocument}
+              on:click={analyzeDocument}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               disabled={isLoading}
             >
@@ -400,7 +421,7 @@
               Analyze Document
             </button>
             <button
-              onclick={synthesizeInsights}
+              on:click={synthesizeInsights}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               disabled={isLoading}
             >
@@ -411,7 +432,7 @@
 
           <!-- Analysis Results -->
           {#if ($state.context?.analysisResults ?? []).length > 0}
-            <div class="space-y-4" transitionfly={{ y: 20, duration 300 }}>
+            <div class="space-y-4" in:fly={{ y: 20, duration: 300 }}>
               <h4 class="text-lg font-semibold text-gray-900">Analysis Results</h4>
               {#each $state.context.analysisResults as result}
                 <div class="border border-gray-200 rounded-lg p-4">
@@ -444,11 +465,11 @@
 
           <!-- Synthesis Results -->
           {#if $state.context?.synthesisData}
-            <div class="space-y-6" transitionfly={{ y: 20, duration 300 }}>
+            <div class="space-y-6" in:fly={{ y: 20, duration: 300 }}>
               <h4 class="text-lg font-semibold text-gray-900">Synthesis & Strategic Analysis</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
-                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-blue-900 mb-3">Main Themes</h5>
                     <ul class="space-y-2">
                       {#each $state.context.synthesisData.mainThemes as theme}
@@ -459,7 +480,7 @@
                       {/each}
                     </ul>
                   </div>
-                  <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-green-900 mb-3">Supporting Evidence</h5>
                     <ul class="space-y-2">
                       {#each $state.context.synthesisData.supportingEvidence as evidence}
@@ -472,7 +493,7 @@
                   </div>
                 </div>
                 <div class="space-y-4">
-                  <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-yellow-900 mb-3">Gaps & Contradictions</h5>
                     <div class="space-y-3">
                       {#if ($state.context.synthesisData.gaps ?? []).length > 0}
@@ -499,7 +520,7 @@
                       {/if}
                     </div>
                   </div>
-                  <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div class="bg-purple-50 border border-purple-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-purple-900 mb-3">Legal Implications</h5>
                     <ul class="space-y-2">
                       {#each $state.context.synthesisData.legalImplications as implication}
@@ -564,6 +585,6 @@
     margin-bottom: 1rem;
   }
   .prose p:last-child {
-    margin-bottom: 0,
+    margin-bottom: 0;
   }
 </style>

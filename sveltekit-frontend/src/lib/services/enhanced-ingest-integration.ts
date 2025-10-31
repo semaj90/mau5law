@@ -417,7 +417,7 @@ export class EnhancedIngestService {
     // Simple iterative parsing to demonstrate usage of patterns
     // This is a placeholder and would be replaced by a more sophisticated NLP pipeline
     for (const pattern of sectionPatterns) {
-      let match;
+      let match: RegExpExecArray | null; // Explicitly type 'match'
       while ((match = pattern.exec(content)) !== null) {
         const sectionTitle = match[1].trim();
         const sectionContent = content.substring(match.index, pattern.lastIndex).trim(); // Capture content based on match
@@ -430,7 +430,7 @@ export class EnhancedIngestService {
               title: currentSection.title, // Use title from previous section or default
               content: precedingContent,
               type: currentSection.type,
-              context: currentSection.context
+              context: currentSection.context,
             });
           }
         }
@@ -440,7 +440,7 @@ export class EnhancedIngestService {
           title: sectionTitle,
           content: sectionContent,
           type: this.inferSectionType(pattern), // Helper to infer type from pattern
-          context: 'legal_document' // Specific context
+          context: 'legal_document', // Specific context
         });
         lastIndex = pattern.lastIndex;
         currentSection = sections[sections.length - 1]; // Update current section for subsequent content

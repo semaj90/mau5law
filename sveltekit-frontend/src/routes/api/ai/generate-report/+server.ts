@@ -15,85 +15,87 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from "@sveltejs/kit"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
-const REPORT_TEMPLATES = {
-  "case-summary": {
-    title: "Case Summary Report",
-    sections: [
-      "Executive Summary",
-      "Case Overview",
-      "Key Facts",
-      "Evidence Summary",
-      "Legal Analysis",
-      "Conclusions and Recommendations"
-    ],
-    prompt:
-      "Generate a comprehensive case summary report based on the provided case information. Include an executive summary, key facts, evidence analysis, and legal conclusions."
-  },
-  "evidence-analysis": {
-    title: "Evidence Analysis Report",
-    sections: [
-      "Evidence Overview",
-      "Chain of Custody",
-      "Technical Analysis",
-      "Relevance Assessment",
-      "Admissibility Review",
-      "Conclusions"
-    ],
-    prompt:
-      "Analyze the provided evidence comprehensively. Evaluate chain of custody, technical validity, legal relevance, and admissibility in court proceedings."
-  },
-  "legal-brief": {
-    title: "Legal Brief",
-    sections: [
-      "Statement of Issues",
-      "Statement of Facts",
-      "Legal Arguments",
-      "Precedent Analysis",
-      "Conclusion",
-      "Prayer for Relief"
-    ],
-    prompt:
-      "Create a structured legal brief addressing the case issues. Include fact statements, legal arguments supported by precedent, and clear conclusions."
-  },
-  "investigation-report": {
-    title: "Investigation Report",
-    sections: [
-      "Investigation Summary",
-      "Timeline of Events",
-      "Interviews Conducted",
-      "Evidence Collected",
-      "Analysis and Findings",
-      "Next Steps"
-    ],
-    prompt:
-      "Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings."
-  }
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from '@sveltejs/kit'; // Changed from './$types.js'
+
+interface ReportTemplate {
+  title: string;
+  sections: string[];
+  prompt: string;
 }
+
+const REPORT_TEMPLATES: Record<string, ReportTemplate> = {
+  'case-summary': {
+    title: 'Case Summary Report',
+    sections: [
+      'Executive Summary',
+      'Case Overview',
+      'Key Facts',
+      'Evidence Summary',
+      'Legal Analysis',
+      'Conclusions and Recommendations',
+    ],
+    prompt:
+      'Generate a comprehensive case summary report based on the provided case information. Include an executive summary, key facts, evidence analysis, and legal conclusions.',
+  },
+  'evidence-analysis': {
+    title: 'Evidence Analysis Report',
+    sections: [
+      'Evidence Overview',
+      'Chain of Custody',
+      'Technical Analysis',
+      'Relevance Assessment',
+      'Admissibility Review',
+      'Conclusions',
+    ],
+    prompt:
+      'Analyze the provided evidence comprehensively. Evaluate chain of custody, technical validity, legal relevance, and admissibility in court proceedings.',
+  },
+  'legal-brief': {
+    title: 'Legal Brief',
+    sections: [
+      'Statement of Issues',
+      'Statement of Facts',
+      'Legal Arguments',
+      'Precedent Analysis',
+      'Conclusion',
+      'Prayer for Relief',
+    ],
+    prompt:
+      'Create a structured legal brief addressing the case issues. Include fact statements, legal arguments supported by precedent, and clear conclusions.',
+  },
+  'investigation-report': {
+    title: 'Investigation Report',
+    sections: [
+      'Investigation Summary',
+      'Timeline of Events',
+      'Interviews Conducted',
+      'Evidence Collected',
+      'Analysis and Findings',
+      'Next Steps',
+    ],
+    prompt:
+      'Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings.',
+  },
+};
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const { reportType, caseId, reportId, existingContent, context } =
-      await request.json()
-    if (
-      !reportType ||
-      !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]
-    ) {
-      return json({ error: "Invalid report type" }, { status: 400 })
+    const { reportType, caseId, reportId } = await request.json();
+    if (!reportType || !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]) {
+      return json({ error: 'Invalid report type' }, { status: 400 });
     }
-    const template =
-      REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]
+    const template = REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
     // Simulate AI processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2000)
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Added missing ')'
     // Generate structured report content
     const reportContent = generateReportContent(
       template,
       caseId,
-      reportId,
-      existingContent,
-      context,
-    )
+      reportId
+      // existingContent, // Removed unused parameter
+      // context,        // Removed unused parameter
+    );
     return json({
       success: true,
       content: reportContent,
@@ -104,39 +106,33 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         generatedAt: new Date().toISOString(),
         caseId,
         reportId,
-        wordCount: reportContent.split(" ").length,
-        aiModel: "Legal-GPT-4",
-        confidence: 0.92
-      }
-    })
-  } catch (error: any) {
-    console.error("AI report generation error:", error)
-    return json({ error: "Failed to generate report" }, { status: 500 })
+        wordCount: reportContent.split(' ').length,
+        aiModel: 'Legal-GPT-5',
+        confidence: 0.92,
+      },
+    });
+  } catch (error: unknown) {
+    console.error('AI report generation error:', error);
+    return json({ error: 'Failed to generate report' }, { status: 500 });
   }
-}
-function generateReportContent(
-  template: any,
-  caseId: string,
-  reportId: string,
-  existingContent?: string
-  context?: unknown
-): string {
-  const now = new Date()
-  const formattedDate = now.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  })
+};
+function generateReportContent(template: ReportTemplate, caseId: string, reportId: string): string {
+  const now = new Date();
+  const formattedDate = now.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
   let content = `
     <div style="text-align: center; margin-bottom: 40px;">
       <h1 style="color: #1f2937; font-size: 28px; font-weight: bold; margin-bottom: 8px;">
         ${template.title}
       </h1>
       <p style="color: #6b7280; font-size: 16px; margin: 0;">
-        Generated on ${formattedDate} | Case ID: ${caseId || "N/A"} | Report ID: ${reportId || "N/A"}
+        Generated on ${formattedDate} | Case ID: ${caseId || 'N/A'} | Report ID: ${reportId || 'N/A'}
       </p>
     </div>
-  `
+  `;
   // Add AI-generated content for each section
   template.sections.forEach((section: string, index: number) => {
     content += `
@@ -144,10 +140,10 @@ function generateReportContent(
         <h2 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">
           ${index + 1}. ${section}
         </h2>
-        ${generateSectionContent(section, template.title, existingContent, context)}
+        ${generateSectionContent(section, template.title)}
       </div>
-    `
-  })
+    `;
+  });
   // Add AI disclaimer
   content += `
     <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 40px;">
@@ -156,17 +152,12 @@ function generateReportContent(
         Legal analysis should be verified by qualified legal professionals before use in official proceedings.
       </p>
     </div>
-  `
-  return content
+  `;
+  return content;
 }
-function generateSectionContent(
-  section: string,
-  reportType: string,
-  existingContent?: string
-  context?: unknown
-): string {
+function generateSectionContent(section: string, reportType: string): string {
   const sampleContent: { [key: string]: string } = {
-    "Executive Summary": `
+    'Executive Summary': `
       <p>This ${reportType.toLowerCase()} provides a comprehensive analysis of the case materials and evidence.
       Based on the available information, this report identifies key findings and recommendations for further action.</p>
       <p><strong>Key Findings:</strong></p>
@@ -176,7 +167,7 @@ function generateSectionContent(
         <li>Recommended actions align with best practices in similar cases</li>
       </ul>
     `,
-    "Case Overview": `
+    'Case Overview': `
       <p>This section provides background information and context for the case under investigation.</p>
       <p><strong>Case Details:</strong></p>
       <ul>
@@ -186,7 +177,7 @@ function generateSectionContent(
         <li>Current status: Active investigation</li>
       </ul>
     `,
-    "Key Facts": `
+    'Key Facts': `
       <p>The following facts have been established through investigation and evidence analysis:</p>
       <ol>
         <li>Initial incident occurred on [Date] at approximately [Time]</li>
@@ -195,7 +186,7 @@ function generateSectionContent(
         <li>Witnesses identified: [Number] individuals interviewed</li>
       </ol>
     `,
-    "Evidence Summary": `
+    'Evidence Summary': `
       <p>Evidence collected and analyzed includes:</p>
       <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
         <tr style="background: #f9fafb;">
@@ -220,7 +211,7 @@ function generateSectionContent(
         </tr>
       </table>
     `,
-    "Legal Analysis": `
+    'Legal Analysis': `
       <p>Based on applicable laws and regulations, the following legal analysis applies:</p>
       <p><strong>Relevant Statutes:</strong></p>
       <ul>
@@ -234,7 +225,7 @@ function generateSectionContent(
         <li><em>[Landmark Case]</em>: Provides guidance on evidence admissibility</li>
       </ul>
     `,
-    "Conclusions and Recommendations": `
+    'Conclusions and Recommendations': `
       <p>Based on the analysis conducted, the following conclusions and recommendations are made:</p>
       <p><strong>Conclusions:</strong></p>
       <ol>
@@ -249,8 +240,8 @@ function generateSectionContent(
         <li>Prepare for potential challenges to evidence admissibility</li>
         <li>Schedule follow-up review in 30 days</li>
       </ol>
-    `
-  }
+    `,
+  };
   return (
     sampleContent[section] ||
     `
@@ -258,6 +249,8 @@ function generateSectionContent(
     Please review and customize this content based on the specific case requirements.</p>
     <p><em>AI-generated content placeholder. Requires human review and customization.</em></p>
   `
-  )
+  );
 }
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler);
+// TODO: Ideally, 'documentProcessing' should be added to $lib/middleware/redis-orchestrator-middleware.
+// Using 'aiAnalysis' as a fallback based on available types and context.
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

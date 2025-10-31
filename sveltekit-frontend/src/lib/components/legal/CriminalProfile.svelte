@@ -1,202 +1,189 @@
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
-https://svelte.dev/e/const_tag_invalid_placement -->
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Criminal Profile Component for Legal AI App -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { User, Calendar, MapPin, AlertTriangle, Shield, Eye, FileText, Fingerprint, Camera } from 'lucide-svelte';
+  // Removed invalid runes import and problematic lucide-svelte named imports
   import { cn } from '$lib/utils';
-  export interface CriminalRecord {
-    id: string;
-    offense: string;
-    date: Date;
-    jurisdiction string;
-    disposition ;
-'convicted' | 'acquitted' | 'dismissed' | 'pending' | 'sealed';
-    sentence?: string;
+
+  // --- CHANGED: Add minimal TS interfaces to avoid "undefined" property access errors ---
+  interface CriminalRecord {
+    id?: string;
+    offense?: string;
+    date?: string | Date;
+    jurisdiction?: string;
     caseNumber?: string;
+    disposition?: keyof typeof dispositionConfig;
+    sentence?: string;
   }
-  export interface BiometricData {
-    fingerprints?: string[];
-    dnaProfile?: string;
-    facialRecognition?: string;
-    voicePrint?: string;
-  }
-  export interface CriminalProfile {
-    id: string;
-    personalInfo: {
-      firstName: string;
-      lastName: string;
+
+  interface CriminalProfile {
+    id?: string;
+    personalInfo?: {
+      firstName?: string;
+      lastName?: string;
+      dateOfBirth?: string | Date;
       aliases?: string[];
-      dateOfBirth: Date;
       placeOfBirth?: string;
-      gender: 'male' | 'female' | 'other' | 'unknown';
+      gender?: string;
       height?: string;
       weight?: string;
       eyeColor?: string;
       hairColor?: string;
       distinguishingMarks?: string[];
-    }
-    identification {
+    };
+    identification?: {
+      mugshots?: string[];
       ssn?: string;
       driverLicense?: string;
       passport?: string;
-      mugshots?: string[];
-      biometrics?: BiometricData;
-    }
-    address: {
-      current?: string;
-      previous?: string[];
-      knownAssociates?: string[];
-    }
-    criminalHistory: CriminalRecord[];
-    riskAssessment: {
-      riskLevel: 'low' | 'medium' | 'high' | 'extreme';
-      flightRisk: boolean;
-      violentHistory: boolean;
-      reoffenseRisk: number; // 0-100
-      lastUpdated: Date;
-    }
-    currentStatus: 'at_large' | 'incarcerated' | 'on_parole' | 'probation' | 'deceased' | 'cleared';
-    warrants?: Array;
+      biometrics?: {
+        fingerprints?: any[];
+        dnaProfile?: boolean;
+        facialRecognition?: boolean;
+      };
+    };
+    currentStatus?: keyof typeof statusConfig;
+    riskAssessment?: { riskLevel?: keyof typeof riskConfig; flightRisk?: boolean; violentHistory?: boolean };
+    warrants?: any[];
+    criminalHistory?: CriminalRecord[];
     notes?: string;
   }
-  export interface CriminalProfileProps {
-    profile: CriminalProfil;
-    viewMode?: 'full' | 'summary' | 'identification';
-    showSensitiveInfo?: boolean;
-    interactive?: boolean;
-    onViewFullRecord?: (recordId: string) => void;
-    onUpdateProfile?: (profile: CriminalProfile) => void;
-    onViewMugshot?: (mugshotUrl: string) => void;
-    class?: string;
-  }
-  let {
-    profile,
-    viewMode = 'full',
-    showSensitiveInfo = false,
-    interactive = true,
-    onViewFullRecord,
-    onUpdateProfile,
-    onViewMugshot,
-    class: className = '';
-  }: CriminalProfileProps = $props();
-  // Risk level configurations
+
+  // --- CHANGED: Exported props made safe and renamed `class` -> `className` to avoid TS/Svelte edge cases ---
+  export let profile: CriminalProfile | undefined = undefined;
+  export let viewMode: 'full' | 'summary' | 'identification' = 'full';
+  export let showSensitiveInfo = false;
+  export let interactive = true;
+  export let onViewFullRecord: ((recordId: string) => void) | undefined;
+  export let onUpdateProfile: ((profile: CriminalProfile) => void) | undefined;
+  export let onViewMugshot: ((mugshotUrl: string) => void) | undefined;
+  export let className: string = '';
+
+  // Configs - consistent property names
   const riskConfig = {
-    low: { label: 'Low Risk', class: 'bg-green-500/20 text-green-400 border-green-500/30' },
-    medium: { label: 'Medium Risk', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    high: { label: 'High Risk', class: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
-    extreme: { label: 'Extreme Risk', class: 'bg-red-500/20 text-red-400 border-red-500/30' }
-  }
-  // Status configurations
+    low: { label: 'Low Risk', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    medium: { label: 'Medium Risk', className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
+    high: { label: 'High Risk', className: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+    extreme: { label: 'Extreme Risk', className: 'bg-red-500/20 text-red-400 border-red-500/30' }
+  };
+
   const statusConfig = {
-    at_large: { label: 'At Large', class: 'bg-red-500/20 text-red-400', icon AlertTriangle },
-    incarcerated: { label: 'Incarcerated', class: 'bg-gray-500/20 text-gray-400', icon Shield },
-    on_parole: { label: 'On Parole', class: 'bg-yellow-500/20 text-yellow-400', icon Eye },
-    probation { label: 'Probation', class: 'bg-blue-500/20 text-blue-400', icon FileText },
-    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon User },
-    cleared: { label: 'Cleared', class: 'bg-green-500/20 text-green-400', icon Shield }
-  }
-  // Disposition configurations
+    at_large: { label: 'At Large', className: 'bg-red-500/20 text-red-400', icon: '⚠️' },
+    incarcerated: { label: 'Incarcerated', className: 'bg-gray-500/20 text-gray-400', icon: '🔒' },
+    on_parole: { label: 'On Parole', className: 'bg-yellow-500/20 text-yellow-400', icon: '👁️' },
+    probation: { label: 'Probation', className: 'bg-blue-500/20 text-blue-400', icon: '📄' },
+    deceased: { label: 'Deceased', className: 'bg-gray-500/20 text-gray-400', icon: '⚰️' },
+    cleared: { label: 'Cleared', className: 'bg-green-500/20 text-green-400', icon: '✅' }
+  };
+
   const dispositionConfig = {
-    convicted: { label: 'Convicted', class: 'bg-red-500/20 text-red-400' },
-    acquitted: { label: 'Acquitted', class: 'bg-green-500/20 text-green-400' },
-    dismissed: { label: 'Dismissed', class: 'bg-blue-500/20 text-blue-400' },
-    pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400' },
-    sealed: { label: 'Sealed', class: 'bg-gray-500/20 text-gray-400' }
+    convicted: { label: 'Convicted', className: 'bg-red-500/20 text-red-400' },
+    acquitted: { label: 'Acquitted', className: 'bg-green-500/20 text-green-400' },
+    dismissed: { label: 'Dismissed', className: 'bg-blue-500/20 text-blue-400' },
+    pending: { label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400' },
+    sealed: { label: 'Sealed', className: 'bg-gray-500/20 text-gray-400' }
+  };
+
+  // helpers
+  function toDate(d: string | Date): Date {
+    return d instanceof Date ? d : new Date(d);
   }
-  // Calculate age
-  let age = $derived(() => {
-    const today = new Date());
-    const birthDate = profile.personalInfo.dateOfBirth;
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return ag;
-  });
-  // Active warrants
-  let activeWarrants = $derived(() => {
-    return profile.warrants?.filter(warrant => warrant.status === 'active') || [];
-  });
-  // Recent criminal activity
-  let recentRecords = $derived(() => {
-    return profile.criminalHistory
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
+
+  function computeAge(dob: string | Date): number {
+    const b = toDate(dob);
+    const today = new Date();
+    let a = today.getFullYear() - b.getFullYear();
+    const m = today.getMonth() - b.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < b.getDate())) a--;
+    return a;
+  }
+
+  // Replace $derived runes with reactive statements
+  let age: number | undefined;
+  $: age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined;
+
+  let activeWarrants: any[] = [];
+  $: activeWarrants = (profile?.warrants ?? []).filter((w: any) => w?.status === 'active');
+
+  let recentRecords: CriminalRecord[] = [];
+  $: recentRecords =
+    (profile?.criminalHistory ?? [])
+      .slice()
+      .sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime())
       .slice(0, 5);
-  });
-  function formatDate(date: Date): string {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+
+  let firstMugshot: string | undefined;
+  $: firstMugshot =
+    profile?.identification?.mugshots && profile.identification.mugshots.length > 0
+      ? profile.identification.mugshots[0]
+      : undefined;
+
+  // Replace icons with emoji/icon fallbacks to avoid lucide-svelte export issues
+  let statusInfo: { label: string; className: string; icon?: string } = statusConfig.cleared;
+  $: statusInfo = statusConfig[profile?.currentStatus ?? 'cleared'] ?? statusConfig.cleared;
+
+  function formatDate(date: string | Date): string {
+    return toDate(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
-  function maskSSN(ssn: string): string {
-    if (!showSensitiveInfo) {
-      return `***-**-${ssn.slice(-4)}`;
-    }
-    return s;
+
+  function maskSSN(ssn?: string): string {
+    if (!ssn) return '';
+    if (!showSensitiveInfo) return `***-**-${ssn.slice(-4)}`;
+    return ssn;
   }
+
   function getFullName(): string {
-    const { firstName, lastName } = profile.personalInfo;
-    return `${firstName} ${lastName}`;
+    const { firstName = '', lastName = '' } = profile?.personalInfo ?? {};
+    return `${firstName} ${lastName}`.trim();
   }
 </script>
 
 <div
-  className={cn(
+  class={cn(
     'criminal-profile bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
-    profile.currentStatus === 'at_large' && 'border-red-500/30',
+    profile?.currentStatus === 'at_large' && 'border-red-500/30',
     className
   )}
 >
   <!-- Profile Header -->
-  <div class={cn('p-4 border-b border-yorha-border', profile.currentStatus === 'at_large' && 'bg-red-500/5')}>
+  <div class={cn('p-4 border-b border-yorha-border', profile?.currentStatus === 'at_large' && 'bg-red-500/5')}>
     <div class="flex items-start gap-4">
       <!-- Profile Photo/Mugshot -->
       <div class="shrink-0">
-        {#if profile.identification.mugshots?.length}
+        {#if firstMugshot}
           <button
-            onclick={() => onViewMugshot?.(profile.identification.mugshots[0])}
+            on:click={() => onViewMugshot?.(firstMugshot)}
             class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded overflow-hidden hover:border-yorha-primary/30 transition-colors group"
+            type="button"
           >
-            <div
-              class="w-full h-full flex items-center justify-center text-yorha-text-secondary group-hover:text-yorha-primary"
-            >
-              <Camera class="w-6 h-6" />
+            <div class="w-full h-full flex items-center justify-center text-yorha-text-secondary group-hover:text-yorha-primary">
+              <!-- camera emoji fallback -->
+              <span class="text-xl">🖼️</span>
             </div>
           </button>
         {:else}
-          <div
-            class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center justify-center"
-          >
-            <User class="w-8 h-8 text-yorha-text-secondary" />
+          <div class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center justify-center">
+            <!-- user emoji fallback -->
+            <span class="text-2xl">👤</span>
           </div>
         {/if}
       </div>
+
       <!-- Profile Info -->
       <div class="flex-1 min-w-0">
         <div class="flex items-start justify-between mb-2">
           <div>
-            <h2 class="text-xl font-bold text-yorha-text-primary font-mono">
-              {getFullName()}
-            </h2>
-            <div class="text-sm text-yorha-text-secondary font-mono">
-              ID: {profile.id} • Age: {age}
-            </div>
+            <h2 class="text-xl font-bold text-yorha-text-primary font-mono">{getFullName()}</h2>
+            <div class="text-sm text-yorha-text-secondary font-mono">ID: {profile?.id} • Age: {age}</div>
           </div>
-          <!-- Current Status -->
-          {@const statusInfo = statusConfig[profile.currentStatus]}
-          {@const StatusIcon = statusInfo.icon}
+
+          <!-- Current Status (computed reactively in script) -->
           <div class="flex items-center gap-2">
-            <span className={cn('px-3 py-1 text-xs font-mono rounded border', statusInfo.className)}>
-              <StatusIcon class="w-3 h-3 inline mr-1" />
+            <span class={cn('px-3 py-1 text-xs font-mono rounded border', statusInfo.className)}>
+              {#if statusInfo.icon}<span class="inline mr-1">{statusInfo.icon}</span>{/if}
               {statusInfo.label}
             </span>
           </div>
         </div>
+
         <!-- Aliases -->
         {#if profile.personalInfo.aliases?.length}
           <div class="mb-2">
@@ -206,12 +193,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </span>
           </div>
         {/if}
+
         <!-- Risk Assessment -->
         <div class="flex items-center gap-4 text-xs font-mono">
           <div class="flex items-center gap-2">
             <span class="text-yorha-text-secondary">Risk Level:</span>
-            <span className={cn('px-2 py-0.5 rounded border', riskConfig[profile.riskAssessment.riskLevel].className)}>
-              {riskConfig[profile.riskAssessment.riskLevel].label}
+            <span class={cn('px-2 py-0.5 rounded border', riskConfig[profile.riskAssessment.riskLevel]?.className)}>
+              {riskConfig[profile.riskAssessment.riskLevel]?.label}
             </span>
           </div>
           {#if profile.riskAssessment.flightRisk}
@@ -225,11 +213,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
       </div>
     </div>
+
     <!-- Active Warrants Alert -->
     {#if activeWarrants.length > 0}
       <div class="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded">
         <div class="flex items-center gap-2 text-red-400 font-medium text-sm font-mono mb-1">
-          <AlertTriangle class="w-4 h-4" />
+          <!-- alert emoji fallback -->
+          <span class="text-sm">⚠️</span>
           {activeWarrants.length} Active Warrant{activeWarrants.length !== 1 ? 's' : ''}
         </div>
         {#each activeWarrants as warrant}
@@ -240,6 +230,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     {/if}
   </div>
+
   <!-- Profile Content -->
   <div class="p-4 space-y-4">
     <!-- Personal Information -->
@@ -286,6 +277,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </div>
           {/if}
         </div>
+
         <!-- Distinguishing Marks -->
         {#if profile.personalInfo.distinguishingMarks?.length}
           <div class="mt-3">
@@ -303,6 +295,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     {/if}
+
     <!-- Identification -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
@@ -327,12 +320,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </div>
           {/if}
         </div>
+
         <!-- Biometric Data -->
         {#if profile.identification.biometrics}
           <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
             {#if profile.identification.biometrics.fingerprints?.length}
               <div class="flex items-center gap-2">
-                <Fingerprint class="w-4 h-4 text-yorha-text-secondary" />
+                <span class="text-yorha-text-secondary">🔎</span>
                 <span class="text-yorha-text-primary">
                   {profile.identification.biometrics.fingerprints.length} fingerprint record{profile.identification
                     .biometrics.fingerprints.length !== 1
@@ -343,13 +337,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             {/if}
             {#if profile.identification.biometrics.dnaProfile}
               <div class="flex items-center gap-2 text-yorha-text-primary">
-                <Shield class="w-4 h-4 text-yorha-text-secondary" />
+                <span class="text-yorha-text-secondary">🧬</span>
                 DNA profile on file
               </div>
             {/if}
             {#if profile.identification.biometrics.facialRecognition}
               <div class="flex items-center gap-2 text-yorha-text-primary">
-                <Camera class="w-4 h-4 text-yorha-text-secondary" />
+                <span class="text-yorha-text-secondary">📸</span>
                 Facial recognition data
               </div>
             {/if}
@@ -357,6 +351,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     {/if}
+
     <!-- Criminal History -->
     {#if viewMode === 'full' || viewMode === 'summary'}
       <div>
@@ -382,12 +377,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     </div>
                   </div>
                   <span
-                    className={cn(
+                    class={cn(
                       'px-2 py-1 text-xs font-mono rounded border',
-                      dispositionConfig[record.disposition].className
+                      dispositionConfig[record.disposition]?.className
                     )}
                   >
-                    {dispositionConfig[record.disposition].label}
+                    {dispositionConfig[record.disposition]?.label}
                   </span>
                 </div>
                 {#if record.sentence}
@@ -397,8 +392,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 {/if}
                 {#if interactive && onViewFullRecord}
                   <button
-                    onclick={() => onViewFullRecord?.(record.id)}
+                    on:click={() => onViewFullRecord?.(record.id)}
                     class="mt-2 text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
+                    type="button"
                   >
                     View Full Record
                   </button>
@@ -416,6 +412,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     {/if}
+
     <!-- Additional Notes -->
     {#if profile.notes && viewMode === 'full'}
       <div>
@@ -428,13 +425,42 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     {/if}
   </div>
+
   <!-- Footer Actions -->
   {#if interactive && onUpdateProfile}
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
       <div class="flex justify-end">
         <button
-          onclick={() => onUpdateProfile?.(profile)}
+          on:click={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
+          type="button"
+        >
+          Update Profile
+        </button>
+      </div>
+    </div>
+  {/if}
+</div>
+
+<style>
+  .criminal-profile {
+    transition: all 0.2s ease;
+  }
+</style>
+          </p>
+        </div>
+      </div>
+    {/if}
+  </div>
+
+  <!-- Footer Actions -->
+  {#if interactive && onUpdateProfile}
+    <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
+      <div class="flex justify-end">
+        <button
+          on:click={() => onUpdateProfile?.(profile)}
+          class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
+          type="button"
         >
           Update Profile
         </button>

@@ -18,26 +18,33 @@
 import { aiHistory } from '$lib/db/schema/aiHistory';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm/pg-core'; // Changed from 'drizzle-orm'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from '@sveltejs/kit'; // Changed from './$types.js'
 import { getUserId } from '$lib/server/auth/utils';
+
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     const { prompt, response, embedding } = await request.json();
     const userId = getUserId(locals) || 'anonymous';
     await db.insert(aiHistory).values({ prompt, response, embedding, userId });
     return json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Changed 'any' to 'unknown'
+    console.error('Failed to save AI history:', error);
     return json({ error: 'Failed to save AI history' }, { status: 500 });
   }
 };
-const originalGETHandler: RequestHandler = async ({ url, locals }) => {
+
+const originalGETHandler: RequestHandler = async ({ url: _url, locals }) => {
+  // Renamed 'url' to '_url' and used 'url: _url' for correct destructuring
   try {
     const userId = getUserId(locals) || 'anonymous';
     const history = await db.select().from(aiHistory).where(eq(aiHistory.userId, userId));
     return json({ history });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Changed 'any' to 'unknown'
+    console.error('Failed to fetch AI history:', error);
     return json({ error: 'Failed to fetch AI history' }, { status: 500 });
   }
 };

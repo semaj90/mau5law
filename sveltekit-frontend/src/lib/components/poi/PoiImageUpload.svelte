@@ -1,14 +1,15 @@
 <script lang="ts">
   import { Upload, Camera, X } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import { Button } from '$lib/components/ui/button';
 
   interface Props {
     poiId: string;
     poiName?: string;
     currentImage?: string;
+    onUploadComplete?: (data: { imageUrl: string; [key: string]: any }) => void;
   }
 
-  let { poiId, poiName = 'Person of Interest', currentImage }: Props = $props();
+  let { poiId, poiName = 'Person of Interest', currentImage, onUploadComplete }: Props = $props();
 
   let uploading = $state(false);
   let message = $state('');
@@ -69,6 +70,7 @@
         // Reset input
         if (fileInput) fileInput.value = '';
         // Emit event or callback could be added here for parent component
+        onUploadComplete?.(data);
       } else {
         message = data.error?.message || 'Upload failed';
         messageType = 'error';

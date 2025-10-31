@@ -7,14 +7,39 @@ import { ollamaService } from './ollamaService';
 import { aiAutoTaggingService } from './ai-auto-tagging-service';
 import { createMachine, assign } from 'xstate';
 import Fuse from 'fuse.js';
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the utility
 
 // Add missing external/internal types referenced in the file
+type SemanticSearchResultRow = {
+  id?: string | number;
+  _id?: string | number;
+  title?: string;
+  name?: string;
+  description: string | null; // Explicitly allow null
+  content?: string;
+  similarity?: number;
+  score?: number;
+  type?: string | RAGSource['type'];
+  [k: string]: unknown;
+};
+
+// Define SearchDoc interface
+export interface SearchDoc {
+  id: string;
+  title: string;
+  content: string;
+  tags?: string[];
+  summary?: string;
+  type?: RAGSourceType;
+  [key: string]: unknown; // Allow additional properties
+}
+
 type AiSearchResult = {
   id?: string | number;
   _id?: string | number;
   title?: string;
   name?: string;
-  description?: string;
+  description?: string | null; // Allow null or undefined
   content?: string;
   similarity?: number;
   score?: number;
@@ -87,6 +112,17 @@ type RagContext = {
 
 type RagEvent = { type: 'QUERY'; query: string } | { type: 'RETRY' } | { type: 'RESET' };
 
+// Add a minimal interface for ollamaService to satisfy TypeScript
+interface OllamaService {
+  generate(options: {
+    model: string;
+    prompt: string;
+    format: string;
+    stream?: boolean;
+  }): Promise<{ response?: string; output?: string; [key: string]: unknown }>;
+  embed(options: { model: string; text: string }): Promise<number[]>;
+}
+
 export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
   {
     id: 'ragPipeline',
@@ -104,7 +140,7 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           QUERY: {
             target: 'retrieving',
             actions: assign({
-              query: (_, event: any) => event.query,
+              query: (_, event) => event.query, // event type inferred from RagEvent
               sources: () => [] as RAGSource[],
               answer: () => '',
               error: () => null,
@@ -117,12 +153,16 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           src: 'retrieveDocuments',
           onDone: {
             target: 'ranking',
-            actions: assign({ sources: (_, event: any) => event.data as RAGSource[] }),
+            actions: assign({ sources: (_, event) => event.data as RAGSource[] }), // event type inferred
           },
           onError: {
             target: 'error',
             actions: assign({
-              error: (_, e: any) => e?.data?.message ?? e?.message ?? String(e) ?? 'Retrieval failed',
+              error: (_, e) =>
+                (e as { data?: { message?: string }; message?: string }).data?.message ??
+                (e as Error).message ??
+                String(e) ??
+                'Retrieval failed', // Type assertion for error
             }),
           },
         },
@@ -132,12 +172,16 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           src: 'rankSources',
           onDone: {
             target: 'generating',
-            actions: assign({ sources: (_, event: any) => event.data as RAGSource[] }),
+            actions: assign({ sources: (_, event) => event.data as RAGSource[] }), // event type inferred
           },
           onError: {
             target: 'error',
             actions: assign({
-              error: (_, e: any) => e?.data?.message ?? e?.message ?? String(e) ?? 'Ranking failed',
+              error: (_, e) =>
+                (e as { data?: { message?: string }; message?: string }).data?.message ??
+                (e as Error).message ??
+                String(e) ??
+                'Ranking failed', // Type assertion for error
             }),
           },
         },
@@ -148,15 +192,19 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           onDone: {
             target: 'complete',
             actions: assign({
-              answer: (_, event: any) => (event.data as RAGQueryResult).answer,
-              confidence: (_, event: any) => (event.data as RAGQueryResult).confidence,
+              answer: (_, event) => (event.data as RAGQueryResult).answer, // event type inferred
+              confidence: (_, event) => (event.data as RAGQueryResult).confidence, // event type inferred
               error: () => null,
             }),
           },
           onError: {
             target: 'error',
             actions: assign({
-              error: (_, e: any) => e?.data?.message ?? e?.message ?? String(e) ?? 'Answer failed',
+              error: (_, e) =>
+                (e as { data?: { message?: string }; message?: string }).data?.message ??
+                (e as Error).message ??
+                String(e) ??
+                'Answer failed', // Type assertion for error
             }),
           },
         },
@@ -166,7 +214,7 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           QUERY: {
             target: 'retrieving',
             actions: assign({
-              query: (_, event: any) => event.query,
+              query: (_, event) => event.query, // event type inferred
               sources: () => [] as RAGSource[],
               answer: () => '',
               error: () => null,
@@ -204,7 +252,7 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
   {
     // wire named services to the instance methods on enhancedRAGPipeline
     services: {
-      retrieveDocuments: async ctx => {
+      retrieveDocuments: async (ctx: RagContext) => {
         // supply sensible defaults; callers can override by sending specific options if desired
         const opts = {
           useSemanticSearch: true,
@@ -215,7 +263,7 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
         };
         return enhancedRAGPipeline.retrieveDocuments(ctx.query, opts);
       },
-      rankSources: async ctx => {
+      rankSources: async (ctx: RagContext) => {
         const opts = {
           useSemanticSearch: true,
           useMemoryGraph: true,
@@ -225,32 +273,12 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
         };
         return enhancedRAGPipeline.rankSources(ctx.sources ?? [], ctx.query, opts);
       },
-      generateAnswer: async ctx => {
+      generateAnswer: async (ctx: RagContext) => {
         return enhancedRAGPipeline.generateAnswer(ctx.query, ctx.sources ?? []);
       },
     },
   }
 );
-
-// Add concrete types for search documents and memory entries
-type SearchDoc = {
-  id: string;
-  title?: string;
-  content?: string;
-  tags?: string[] | string;
-  summary?: string;
-  type?: RAGSource['type'];
-};
-
-type MemoryEntry = {
-  query: string;
-  answer: string;
-  confidence: number;
-  timestamp: string;
-  sourceIds: string[];
-  // allow optional additional metadata
-  [key: string]: unknown;
-};
 
 // Add strict cluster types
 type ClusterItem = {
@@ -264,31 +292,43 @@ type Cluster = {
   items: ClusterItem[];
 };
 
-class EnhancedRAGPipeline {
-  // Replace loose any types with concrete types
-  private fuseIndex: Fuse<SearchDoc> | null = null;
-  private memoryGraph: Map<string, MemoryEntry> = new Map();
+// Define the EnhancedRAGPipeline class
+export class EnhancedRAGPipeline {
+  private fuseIndex: Fuse<SearchDoc> | undefined;
+  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string; sourceIds: string[]; [key: string]: unknown }>();
+  private TRITON_CHECK_TTL_MS = 30_000; // Time-to-live for Triton health check cache (default: 30 seconds).
 
-  // Add Triton / TensorRT configuration (local Triton server)
-  private TRITON_URL = 'http://localhost:8000'; // Triton HTTP endpoint
+  // Triton / TensorRT configuration constants.
+  // These control the endpoints and model names used for GPU-accelerated inference.
+  // Override via environment variables in production (e.g., process.env.TRITON_URL).
+  private TRITON_URL = EnhancedRAGPipeline.getTritonEndpoint(); // Triton HTTP endpoint (default: http://triton:8000)
+  // Model name for embedding generation (can be changed for different deployments).
   private TRITON_EMBED_MODEL = 'embedding_gemma_trt'; // Triton model name for embeddings
+  // Model name for clustering (can be changed for different deployments).
   private TRITON_CLUSTER_MODEL = 'kmeans_trt'; // Triton model / ensemble for clustering
 
-  // Triton LLM model name (if you deploy a TensorRT-backed LLM) and cached availability flag
+  // Centralized endpoint helper (project guideline).
+  // Reads TRITON_URL from environment or defaults to Docker service name.
+  static getTritonEndpoint(): string {
+    return (typeof process !== 'undefined' && process.env?.TRITON_URL) || 'http://triton:8000';
+  }
+
+  // Triton LLM model name (if you deploy a TensorRT-backed LLM).
+  // Override via environment variable or configuration for different models.
   private TRITON_LLM_MODEL = 'gemma3_legal_trt';
+  // Cached availability flag for Triton server health checks.
   private tritonAvailable: boolean | null = null;
   private tritonLastChecked = 0;
-  private TRITON_CHECK_TTL_MS = 30_000; // cache availability for 30s
 
-  constructor() {
-    this.initializeFuseSearch();
+  constructor(initialDocuments: SearchDoc[] = []) {
+    this.initializeFuseSearch(initialDocuments);
   }
 
   /**
    * Initialize Fuse.js for client-side fuzzy search
    */
-  private initializeFuseSearch() {
-    this.fuseIndex = new Fuse<SearchDoc>([], {
+  private initializeFuseSearch(documents: SearchDoc[] = []) {
+    this.fuseIndex = new Fuse<SearchDoc>(documents, {
       keys: ['title', 'content', 'tags', 'summary'],
       threshold: 0.3,
       includeScore: true,
@@ -321,16 +361,17 @@ class EnhancedRAGPipeline {
         await this.updateMemoryGraph(query, answer, rankedSources);
       }
       return answer;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any to unknown
       console.error('RAG query failed:', error);
-      throw new Error(`RAG pipeline error: ${error?.message ?? String(error ?? 'unknown')}`);
+      throw new Error(`RAG pipeline error: ${(error as Error)?.message ?? String(error ?? 'unknown')}`);
     }
   }
 
   /**
    * Retrieve documents using multiple search strategies
    */
-  private async retrieveDocuments(query: string, options: RAGSynthesisOptions): Promise<RAGSource[]> {
+  public async retrieveDocuments(query: string, options: RAGSynthesisOptions): Promise<RAGSource[]> {
     const sources: RAGSource[] = [];
 
     // Semantic search (server-side embeddings) - guard service
@@ -339,10 +380,11 @@ class EnhancedRAGPipeline {
         const results = await aiAutoTaggingService.semanticSearch(query, Math.max(1, options.maxSources));
         if (Array.isArray(results)) {
           sources.push(
-            ...results.map((r: AiSearchResult) => ({
+            ...results.map((r: SemanticSearchResultRow) => ({
+              // Changed type from AiSearchResult to SemanticSearchResultRow
               id: String(r.id ?? r._id ?? Math.random()),
               title: String(r.title ?? r.name ?? 'Untitled'),
-              content: String(r.description ?? r.content ?? ''),
+              content: String(r.description ?? r.content ?? ''), // Handle null/undefined
               // normalized & clamped relevance to avoid NaN/out-of-range values
               relevance: EnhancedRAGPipeline.parseSimilarity(r.similarity ?? r.score ?? 0.5),
               type: normalizeSourceType(r.type),
@@ -388,7 +430,7 @@ class EnhancedRAGPipeline {
   /**
    * Rank sources using multiple scoring functions
    */
-  private async rankSources(sources: RAGSource[], query: string, options: RAGSynthesisOptions): Promise<RAGSource[]> {
+  public async rankSources(sources: RAGSource[], query: string, options: RAGSynthesisOptions): Promise<RAGSource[]> {
     // Remove duplicates by ID
     const uniqueSources = sources.filter((source, index, self) => index === self.findIndex(s => s.id === source.id));
 
@@ -420,7 +462,7 @@ class EnhancedRAGPipeline {
   /**
    * Generate comprehensive answer using gemma3-legal (via local Ollama)
    */
-  private async generateAnswer(query: string, sources: RAGSource[]): Promise<RAGQueryResult> {
+  public async generateAnswer(query: string, sources: RAGSource[]): Promise<RAGQueryResult> {
     const context = sources
       .map(s => `[${s.type.toUpperCase()}] ${s.title}\n${String(s.content ?? '').substring(0, 500)}...\n`)
       .join('\n');
@@ -436,36 +478,33 @@ class EnhancedRAGPipeline {
       // 0) Prefer Triton-backed LLM generation if available
       try {
         if (await this.isTritonReady()) {
-          try {
-            responseText = await this.tritonGenerate(prompt);
-          } catch (err) {
-            console.debug('Triton LLM generation failed, falling back to Ollama:', err);
-            responseText = null;
-          }
+          responseText = await this.tritonGenerate(prompt);
         }
       } catch (err) {
-        // ignore and continue to Ollama fallback
+        console.debug('Triton LLM generation failed, falling back to Ollama:', err);
+        responseText = null; // Ensure responseText is reset on Triton failure
       }
 
-      // Preferred service wrapper
-      if (!responseText && typeof ollamaService?.generate === 'function') {
+      // 1) Try preferred service wrapper (ollamaService)
+      if (!responseText && ollamaService) {
         try {
           const res = await ollamaService.generate({
             model: 'gemma3-legal:latest',
             prompt,
             format: 'json',
+            stream: false, // Assuming non-streaming for direct JSON response
           });
-          // support multiple shapes
-          responseText = typeof res === 'string' ? res : (res?.response ?? res?.output ?? JSON.stringify(res));
+          responseText = res?.response ?? res?.output ?? JSON.stringify(res);
         } catch (err) {
           console.warn('ollamaService.generate failed:', err);
         }
       }
 
-      // Fallback to local Ollama HTTP if no service or it failed
+      // 2) Fallback to direct HTTP Ollama API call
       if (!responseText) {
         try {
-          const r = await fetch('http://localhost:11434/api/generate', {
+          const ollamaApiUrl = getOllamaEndpoint();
+          const r = await fetch(`${ollamaApiUrl}/api/generate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -487,7 +526,7 @@ class EnhancedRAGPipeline {
       }
 
       // Robust JSON parsing
-      let parsed: any = {};
+      let parsed: Record<string, unknown> = {};
       if (responseText) {
         try {
           parsed = JSON.parse(responseText);
@@ -516,8 +555,7 @@ class EnhancedRAGPipeline {
           : [];
 
       // embedding generation (guarded)
-      let embedding: number[] = [];
-      embedding = await this.getEmbedding(answerText);
+      const embedding = await this.getEmbedding(answerText);
 
       return {
         answer: answerText,
@@ -527,7 +565,7 @@ class EnhancedRAGPipeline {
         suggestedActions,
         embedding,
       };
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Generation failed:', err);
       return {
         answer: 'Could not generate a response. Review sources manually.',
@@ -543,7 +581,7 @@ class EnhancedRAGPipeline {
   /**
    * Search memory graph for related concepts
    */
-  private async searchMemoryGraph(query: string): Promise<RAGSource[]> {
+  public async searchMemoryGraph(query: string): Promise<RAGSource[]> {
     const results: RAGSource[] = [];
     for (const [key, value] of this.memoryGraph.entries()) {
       if (key.toLowerCase().includes(query.toLowerCase())) {
@@ -560,10 +598,14 @@ class EnhancedRAGPipeline {
   }
 
   /**
-   * Update memory graph with new query-answer pair
+   * Update memory graph with new query-answer pair (LRU eviction)
    */
-  private async updateMemoryGraph(query: string, answer: RAGQueryResult, sources: RAGSource[]) {
+  private memoryGraphOrder: string[] = [];
+  public async updateMemoryGraph(query: string, answer: RAGQueryResult, sources: RAGSource[]) {
     const memoryKey = query.toLowerCase().substring(0, 50);
+    if (!this.memoryGraph.has(memoryKey)) {
+      this.memoryGraphOrder.push(memoryKey);
+    }
     this.memoryGraph.set(memoryKey, {
       query,
       answer: answer.answer,
@@ -571,17 +613,19 @@ class EnhancedRAGPipeline {
       timestamp: new Date().toISOString(),
       sourceIds: sources.map(s => s.id),
     });
-    // Keep memory graph size manageable
-    if (this.memoryGraph.size > 1000) {
-      const firstKey = this.memoryGraph.keys().next().value;
-      this.memoryGraph.delete(firstKey);
+    // LRU eviction: remove oldest if over limit
+    while (this.memoryGraph.size > 1000) {
+      const oldestKey = this.memoryGraphOrder.shift();
+      if (oldestKey !== undefined) {
+        this.memoryGraph.delete(oldestKey);
+      }
     }
   }
 
   /**
    * Update Fuse.js index with new documents
    */
-  updateSearchIndex(documents: SearchDoc[]) {
+  public updateSearchIndex(documents: SearchDoc[]) {
     if (this.fuseIndex) {
       this.fuseIndex.setCollection(documents);
     }
@@ -590,7 +634,7 @@ class EnhancedRAGPipeline {
   /**
    * Self-organizing map for document clustering (placeholder)
    */
-  async createDocumentMap(documents: SearchDoc[]): Promise<Cluster[]> {
+  public async createDocumentMap(documents: SearchDoc[]): Promise<Cluster[]> {
     // Attempt to generate embeddings (prefer Triton) then request clustering from Triton
     const embeddings = await Promise.all(
       documents.map(async doc => {
@@ -622,7 +666,7 @@ class EnhancedRAGPipeline {
   /**
    * Check Triton server readiness (cached briefly)
    */
-  private async isTritonReady(): Promise<boolean> {
+  public async isTritonReady(): Promise<boolean> {
     const now = Date.now();
     if (this.tritonAvailable !== null && now - this.tritonLastChecked < this.TRITON_CHECK_TTL_MS) {
       return this.tritonAvailable;
@@ -646,7 +690,7 @@ class EnhancedRAGPipeline {
    * Call Triton HTTP inference for embeddings.
    * Returns embedding array or [] on failure.
    */
-  private async tritonInferEmbedding(text: string): Promise<number[]> {
+  public async tritonInferEmbedding(text: string): Promise<number[]> {
     // avoid hitting Triton if it's not available
     if (!(await this.isTritonReady())) return [];
     try {
@@ -682,14 +726,14 @@ class EnhancedRAGPipeline {
       const json = await res.json().catch(() => ({}));
       // Triton responses vary; try common shapes: outputs[0].data (flat numeric), outputs[0].contents, or raw outputs
       const out = json.outputs?.[0];
-      const data: any = out?.data ?? out?.contents ?? json?.outputs ?? null;
+      const data: unknown = out?.data ?? out?.contents ?? json?.outputs ?? null; // Changed from any to unknown
       if (data == null) return [];
 
       // normalize to number array
       if (Array.isArray(data)) {
         // may be nested arrays or flat
-        const flat = data.flat ? (data as any[]).flat(Infinity) : (data as any[]);
-        const nums = flat.map((n: any) => Number(n)).filter((n: number) => !Number.isNaN(n));
+        const flat = data.flat(Infinity); // Removed redundant check and type assertion
+        const nums = flat.map((n: unknown) => Number(n)).filter((n: number) => !Number.isNaN(n)); // Changed from any to unknown
         return nums;
       }
 
@@ -703,7 +747,7 @@ class EnhancedRAGPipeline {
   /**
    * Ask Triton to cluster embeddings (returns Cluster[] or empty on failure)
    */
-  private async tritonCluster(embeddings: number[][], documents: SearchDoc[], k = 5): Promise<Cluster[]> {
+  public async tritonCluster(embeddings: number[][], documents: SearchDoc[], k = 5): Promise<Cluster[]> {
     if (!embeddings?.length || !embeddings[0]?.length) return [];
 
     if (!(await this.isTritonReady())) return [];
@@ -750,12 +794,13 @@ class EnhancedRAGPipeline {
 
       const json = await res.json().catch(() => ({}));
       // Expect cluster assignments as integers in outputs[0].data
-      const assignments = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? null;
+      const assignments: unknown = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? null; // Changed from any to unknown
       if (!assignments || !Array.isArray(assignments)) return [];
 
-      const assignFlat = assignments.flat ? (assignments as any[]).flat() : (assignments as any[]);
+      const assignFlat = assignments.flat(); // Removed redundant check and type assertion
       const clusterMap = new Map<number, ClusterItem[]>();
-      assignFlat.forEach((c: any, idx: number) => {
+      assignFlat.forEach((c: number, idx: number) => {
+        // Changed from any to number
         const cid = Number(c);
         if (Number.isNaN(cid)) return;
         const item: ClusterItem = { document: documents[idx], embedding: embeddings[idx], clusterId: cid };
@@ -779,7 +824,7 @@ class EnhancedRAGPipeline {
   /**
    * Generate text using Triton-backed LLM (best-effort). Returns string or null.
    */
-  private async tritonGenerate(prompt: string): Promise<string | null> {
+  public async tritonGenerate(prompt: string): Promise<string | null> {
     if (!(await this.isTritonReady())) return null;
     try {
       const model = this.TRITON_LLM_MODEL;
@@ -813,15 +858,9 @@ class EnhancedRAGPipeline {
         console.debug('Triton generate failed:', res.status, await res.text().catch(() => '<no-body>'));
         return null;
       }
-
       const json = await res.json().catch(() => ({}));
-      // Try to extract textual output
-      const out = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? json?.outputs ?? null;
-      if (!out) return null;
-      // If nested array, flatten and join strings
-      const flat = Array.isArray(out) ? (out as any[]).flat(Infinity) : [out];
-      const text = flat.map(t => String(t)).join(' ');
-      return text || null;
+      const output = json.outputs?.[0]?.data?.[0] ?? null;
+      return typeof output === 'string' ? output : null;
     } catch (err) {
       console.debug('tritonGenerate error:', err);
       return null;
@@ -829,9 +868,9 @@ class EnhancedRAGPipeline {
   }
 
   /**
-   * High-level embedding method: try Triton, then ollamaService, then HTTP fallback.
+   * Get embedding for a given text, preferring Triton, then ollamaService, then direct Ollama HTTP.
    */
-  private async getEmbedding(text: string): Promise<number[]> {
+  public async getEmbedding(text: string): Promise<number[]> {
     // Prefer Triton
     try {
       const t = await this.tritonInferEmbedding(text);
@@ -842,8 +881,8 @@ class EnhancedRAGPipeline {
 
     // Try friendly service wrapper
     try {
-      if (typeof ollamaService?.embed === 'function') {
-        const res = await ollamaService.embed({ model: 'gemma3-legal:latest', text });
+      if (ollamaService) {
+        const res = await ollamaService.embed({ model: 'embeddinggemma:latest', text }); // Changed model
         if (Array.isArray(res) && res.length) return res.map(Number).filter(n => !Number.isNaN(n));
       }
     } catch (err) {
@@ -852,10 +891,11 @@ class EnhancedRAGPipeline {
 
     // HTTP Ollama embed fallback
     try {
-      const r = await fetch('http://localhost:11434/api/embed', {
+      const ollamaApiUrl = getOllamaEndpoint(); // Use the imported utility
+      const r = await fetch(`${ollamaApiUrl}/api/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'gemma3-legal:latest', text }),
+        body: JSON.stringify({ model: 'embeddinggemma:latest', text }), // Changed model
       });
       if (r.ok) {
         const j = await r.json().catch(() => null);
@@ -872,7 +912,7 @@ class EnhancedRAGPipeline {
   /**
    * Simple fallback k-means clustering (few iterations) for small datasets.
    */
-  private simpleCluster(embeddings: number[][], documents: SearchDoc[], k = 5): Cluster[] {
+  public simpleCluster(embeddings: number[][], documents: SearchDoc[], k = 5): Cluster[] {
     if (!embeddings?.length || !embeddings[0]?.length) {
       // one cluster with everything as a fallback
       return [
@@ -924,7 +964,7 @@ class EnhancedRAGPipeline {
       }
     }
 
-    const clusterMap = new Map<number, ClusterItem[]>();
+    const clusterMap = new Map<number, ClusterItem[]>(); // Corrected type here
     for (let i = 0; i < embeddings.length; i++) {
       const cid = assign[i] ?? 0;
       const arr = clusterMap.get(cid) ?? [];
@@ -935,13 +975,13 @@ class EnhancedRAGPipeline {
     return Array.from(clusterMap.entries()).map(([clusterId, items]) => ({ clusterId, items }));
   }
 
-  // Add this static helper so other code can safely parse/clamp similarity scores
+  /**
+   * Normalize a similarity or relevance value to the [0, 1] range.
+   * Converts input to a number, clamps to 0-1, and returns 0 for non-finite values.
+   */
   static parseSimilarity(value: unknown): number {
     const n = Number(value ?? 0);
     if (!Number.isFinite(n)) return 0;
     return Math.min(Math.max(n, 0), 1);
   }
 }
-
-// export an instance for convenience
-export const enhancedRAGPipeline = new EnhancedRAGPipeline();

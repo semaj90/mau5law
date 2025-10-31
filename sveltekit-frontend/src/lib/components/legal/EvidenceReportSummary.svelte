@@ -1,20 +1,4 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  interface Props {
-    evidenceId: string;
-    caseId: string;
-    reportData: EvidenceReport;
-    allowExport: boolean
-  }
-  let { evidenceId,
-    caseId,
-    reportData,
-    allowExport = true
-   }: { evidenceId,
-    caseId,
-    reportData,
-    allowExport = true
-  : unknown } = $props();
   import { aiSummaryMachine } from "$lib/machines/aiSummaryMachine";
   import { useMachine } from "@xstate/svelte";
   import {
@@ -27,7 +11,8 @@
     Target,
   } from "lucide-svelte";
   import AISummaryReader from "./AISummaryReader.svelte";
-  interface EvidenceReport {
+
+  export interface EvidenceReport {
     id: string;
     title: string;
     type:
@@ -39,36 +24,36 @@
       | "witness_statement";
     status: "pending" | "in_progress" | "completed" | "reviewed" | "challenged";
     priority: "low" | "medium" | "high" | "critical";
-    createdAt: string
-    updatedAt: string
+    createdAt: string;
+    updatedAt: string;
     analyst: {
       name: string;
       credentials: string;
       department: string;
-    }
+    };
     evidence: {
       itemNumber: string;
-      description string
+      description: string;
       chainOfCustody: string[];
-      dateCollected: string
-      location string;
-    }
+      dateCollected: string;
+      location: string;
+    };
     methodology: {
       procedures: string[];
       tools: string[];
       standards: string[];
-    }
+    };
     findings: {
-      summary: string
+      summary: string;
       keyPoints: string[];
       confidence: number;
       limitations: string[];
-    }
+    };
     legalImplications: {
       charges: string[];
       precedents: string[];
       challengePoints: string[];
-    }
+    };
     attachments: {
       id: string;
       name: string;
@@ -76,15 +61,24 @@
       size: number;
     }[];
   }
+
+  // Export props (Svelte pattern)
+  export let evidenceId!: string;
+  export let caseId!: string;
+  export let reportData!: EvidenceReport;
+  export let allowExport: boolean = true;
+
   const { state, send } = useMachine(aiSummaryMachine);
-  // Generate comprehensive content for AI analysis
-  let analysisContent = $derived(generateAnalysisContent(reportData));
+
+  // reactive derived content so it updates when reportData changes
+  $: analysisContent = generateAnalysisContent(reportData);
+
   function generateAnalysisContent(report: EvidenceReport): string {
     return `
   EVIDENCE ANALYSIS REPORT
   Case ID: ${caseId}
   Evidence Item: ${report.evidence.itemNumber}
-  Report Type: ${report.type.replace.toUpperCase()}
+  Report Type: ${report.type.replace(/_/g, " ").toUpperCase()}
   Priority Level: ${report.priority.toUpperCase()}
   Status: ${report.status.toUpperCase()}
   ANALYST INFORMATION
@@ -92,9 +86,9 @@
   Credentials: ${report.analyst.credentials}
   Department: ${report.analyst.department}
   EVIDENCE DETAILS
-  Description ${report.evidence.description}
+  Description: ${report.evidence.description}
   Collection Date: ${report.evidence.dateCollected}
-  Collection Location ${report.evidence.location}
+  Collection Location: ${report.evidence.location}
   Chain of Custody: ${report.evidence.chainOfCustody.join(" → ")}
   METHODOLOGY
   Procedures: ${report.methodology.procedures.join(", ")}
@@ -115,6 +109,7 @@
   ${report.attachments.map((att) => `• ${att.name} (${att.type})`).join("\n")}
     `.trim();
   }
+
   function getStatusColor(status: string) {
     switch (status) {
       case "completed":
@@ -163,13 +158,14 @@
         return "📋";
     }
   }
+
   function exportReport() {
     const content = `# Evidence Analysis Report Export\n\n${analysisContent}`;
     const blob = new Blob([content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `evidence-report-${evidenceId}-${new Date().toISOString.split("T")[0]}.md`;
+    a.download = `evidence-report-${evidenceId}-${new Date().toISOString().split("T")[0]}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -198,7 +194,7 @@
         <div class="text-right">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 rounded-full text-sm font-medium {getStatusColor(reportData.status)}">
-              {reportData.status.replace.toUpperCase()}
+              {reportData.status.toUpperCase()}
             </span>
           </div>
           <div class="px-3 py-1 border rounded-full text-sm font-medium {getPriorityColor(reportData.priority)}">
@@ -207,7 +203,7 @@
         </div>
         {#if allowExport}
           <button
-            onclick={exportReport}
+            on:click={exportReport}
             class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
             title="Export Report"
           >
@@ -455,6 +451,10 @@
 <style>
   .evidence-report-summary {
     max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
     margin-left: auto;
     margin-right: auto;
   }

@@ -1,76 +1,40 @@
 <script lang="ts">
-  import { superForm } from 'sveltekit-superforms/client';
-  import { zod } from 'sveltekit-superforms/adapters';
-  import type { ZodTypeAny, ZodObject, ZodRawShape } from 'zod'; // <-- added ZodObject & ZodRawShape
-  import { DocumentUploadSchema } from './schema';
+  // Removed superForm / zod / Zod types imports (client-side superforms caused invalid bindings)
   import { Search, Upload, Tag, FileText, Database } from 'lucide-svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import {
-    storeDocumentLocal,
-    searchDocumentsLocal,
-    hybridSearchLocal,
-    getStorageStats,
-    type RAGDocument,
-  } from '$lib/storage/rag-storage';
-
-  const { data } = $props();
-
-  // Superforms client is client-only and will throw if run during SSR when nested objects are present.
-  // Create safe defaults and initialize the client-side superForm inside onMount.
-  let form = $state<Record<string, any>>({});
-  let enhance = $state<any>(undefined);
-  let submitting = $state(false);
-
   import { onMount } from 'svelte';
 
-  onMount(() => {
-    const sf = superForm(data?.form as any, {
-      // Cast the schema to a ZodObject to satisfy the adapter's expected type
-      validators: zod(DocumentUploadSchema as unknown as ZodObject<ZodRawShape>),
-      SPA: true,
-      // Allow nested data structures (required when server form contains objects/arrays)
-      dataType: 'json'
-    });
+  // receive data from load()
+  export let data: any;
 
-    form = sf.form;
-    enhance = sf.enhance;
-    // subscribe to the readable store instead of assigning it directly
-    const unsub = sf.submitting.subscribe((v) => {
-      submitting = v;
-    });
-    // cleanup when component unmounts
-    return () => {
-      unsub();
-    };
-  });
-
-  // State using Svelte 5 runes
-  let selectedFile = $state<File | null>(null);
-  let tags = $state('');
-  let uploading = $state(false);
-  let uploadResult = $state<any>(null);
-  let searchQuery = $state('');
-  let searchTags = $state('');
-  let searching = $state(false);
-  let searchResults = $state<any[]>([]);
-  let searchType = $state<'hybrid' | 'vector' | 'fuzzy'>('hybrid');
-  let systemStatus = $state<any>(null);
-  let documents = $state<any[]>([]);
-  let loadingDocuments = $state(false);
-  let deletingId = $state<string | null>(null);
-  let activeTab = $state<'upload' | 'documents' | 'search'>('upload');
+  // client state (explicitly declared to avoid undefined accesses)
+  let submitting = false;
+  let loadingDocuments = false;
+  let documents: Array<any> = [];
+  let selectedFile: File | null = null;
+  let tags = '';
+  let uploading = false;
+  let uploadResult: any = null;
+  let searchQuery = '';
+  let searchTags = '';
+  let searchType: 'hybrid' | 'vector' | 'fuzzy' = 'hybrid';
+  let searching = false;
+  let searchResults: Array<any> = [];
+  let systemStatus: any = null;
+  let activeTab: 'upload' | 'documents' | 'search' = 'upload';
+  let deletingId: string | null = null;
 
   // Load documents on mount
   async function loadDocuments() {
     loadingDocuments = true;
     try {
       const res = await fetch('/api/rag/documents?limit=50');
-      const data = await res.json();
-      if (data.success) {
-        documents = data.documents || [];
+      const json = await res.json();
+      if (json.success) {
+        documents = json.documents || [];
       } else {
         documents = [];
-        console.error('Failed to load documents:', data.error);
+        console.error('Failed to load documents:', json.error);
       }
     } catch (error) {
       console.error('Failed to load documents:', error);
@@ -89,13 +53,13 @@
     deletingId = id;
     try {
       const res = await fetch(`/api/rag/documents/${id}`, { method: 'DELETE' });
-      const data = await res.json();
+      const json = await res.json();
 
-      if (data.success) {
+      if (json.success) {
         documents = documents.filter(d => d.id !== id);
         alert('Document deleted successfully');
       } else {
-        alert(`Failed to delete document: ${data.error}`);
+        alert(`Failed to delete document: ${json.error}`);
       }
     } catch (error) {
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -108,8 +72,8 @@
   async function checkStatus() {
     try {
       const res = await fetch('/api/rag/status');
-      const data = await res.json();
-      systemStatus = data;
+      const json = await res.json();
+      systemStatus = json;
     } catch (error) {
       console.error('Status check failed:', error);
       systemStatus = { healthy: false, error: 'Connection failed' };
@@ -119,8 +83,10 @@
   // Handle file selection
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
+    if (target?.files && target.files[0]) {
       selectedFile = target.files[0];
+    } else {
+      selectedFile = null;
     }
   }
 
@@ -143,23 +109,25 @@
         body: formData,
       });
 
-      const data = await res.json();
+      const json = await res.json();
 
       if (res.ok) {
-        uploadResult = { success: true, ...data };
+        uploadResult = { success: true, ...json };
         selectedFile = null;
         tags = '';
 
-        // Reset file input
-        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        // Reset file input if present
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement | null;
         if (fileInput) fileInput.value = '';
       } else {
-        uploadResult = { success: false, error: data.error || 'Upload failed' };
+        uploadResult = { success: false, error: json.error || 'Upload failed' };
       }
     } catch (error) {
       uploadResult = { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     } finally {
       uploading = false;
+      // reload documents after upload attempt (optional)
+      await loadDocuments();
     }
   }
 
@@ -187,13 +155,13 @@
         }),
       });
 
-      const data = await res.json();
+      const json = await res.json();
 
-      if (data.success) {
-        searchResults = data.results || [];
+      if (json.success) {
+        searchResults = json.results || [];
       } else {
         searchResults = [];
-        console.error('Search failed:', data.error);
+        console.error('Search failed:', json.error);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -204,7 +172,7 @@
   }
 
   // Initialize
-  $effect(() => {
+  onMount(() => {
     checkStatus();
     loadDocuments();
   });
@@ -212,10 +180,11 @@
 
 <h1 class="text-2xl font-bold mb-4">Upload Document to RAG</h1>
 
-<form use:enhance method="POST" enctype="multipart/form-data" class="space-y-3 border p-4 rounded">
+<!-- Server action form: use plain POST multipart form (no superForm client-side binding) -->
+<form method="POST" enctype="multipart/form-data" class="space-y-3 border p-4 rounded" on:submit={() => (submitting = true)}>
   <label class="block">
     <span>Title</span>
-    <input name="title" bind:value={form.title} class="border p-2 w-full rounded" />
+    <input name="title" value={data?.form?.data?.title ?? ''} class="border p-2 w-full rounded" />
   </label>
 
   <label class="block">
@@ -225,7 +194,7 @@
 
   <label class="block">
     <span>Tags (comma-separated)</span>
-    <input name="tags" placeholder="case, contract" bind:value={form.tags} class="border p-2 w-full rounded" />
+    <input name="tags" placeholder="case, contract" value={data?.form?.data?.tags ?? ''} class="border p-2 w-full rounded" />
   </label>
 
   <button type="submit" disabled={submitting} class="bg-blue-600 text-white px-3 py-1 rounded">
@@ -278,7 +247,7 @@
       <button
         class="nes-btn"
         class:is-primary={activeTab === 'upload'}
-        onclick={() => activeTab = 'upload'}
+        on:click={() => activeTab = 'upload'}
         style="background: {activeTab === 'upload' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
       >
         📤 Upload
@@ -286,7 +255,7 @@
       <button
         class="nes-btn"
         class:is-primary={activeTab === 'documents'}
-        onclick={() => activeTab = 'documents'}
+        on:click={() => activeTab = 'documents'}
         style="background: {activeTab === 'documents' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
       >
         📚 Documents ({documents.length})
@@ -294,7 +263,7 @@
       <button
         class="nes-btn"
         class:is-primary={activeTab === 'search'}
-        onclick={() => activeTab = 'search'}
+        on:click={() => activeTab = 'search'}
         style="background: {activeTab === 'search' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
       >
         🔍 Search
@@ -322,7 +291,7 @@
           id="file-input"
           type="file"
           accept=".txt,.md,.json,.csv,text/*"
-          onchange={handleFileSelect}
+          on:change={handleFileSelect}
           style="padding: 0.5rem; width: 100%; background: #212529; border: 2px solid #d4af37; color: #d4af37;"
         />
       </div>
@@ -353,7 +322,7 @@
 
       <!-- Upload Button -->
       <Button
-        onclick={uploadFile}
+        on:click={uploadFile}
         disabled={!selectedFile || uploading}
         class="nes-btn is-success"
         style="width: 100%;"
@@ -403,7 +372,7 @@
           class="nes-input is-dark"
           placeholder="What are you looking for?"
           bind:value={searchQuery}
-          onkeydown={e => e.key === 'Enter' && searchDocuments()}
+          on:keydown={e => e.key === 'Enter' && searchDocuments()}
           style="width: 100%;"
         />
       </div>
@@ -448,7 +417,7 @@
 
       <!-- Search Button -->
       <Button
-        onclick={searchDocuments}
+        on:click={searchDocuments}
         disabled={!searchQuery.trim() || searching}
         class="nes-btn is-primary"
         style="width: 100%;"
@@ -478,23 +447,27 @@
           {#each documents as doc (doc.id)}
             <div class="nes-container" style="background: #0f1214; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
               <!-- Document Header -->
-              <div style="display: flex; justify-content: space-betweennn; align-items: start; gap: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
                 <div style="flex: 1;">
                   <h3 style="color: #d4af37; margin: 0 0 0.5rem 0; word-break: break-word;">
-                    📄 {doc.filename}
+                    📄 {doc?.filename ?? 'Untitled'}
                   </h3>
                   <p style="color: #9ca3af; font-size: 0.75rem; margin: 0;">
-                    {new Date(doc.createdAt).toLocaleDateString()} · {doc.chunks} chunks
+                    {#if doc?.createdAt}
+                      {new Date(doc.createdAt).toLocaleDateString()} · {doc.chunks ?? 0} chunks
+                    {:else}
+                      {doc.chunks ?? 0} chunks
+                    {/if}
                   </p>
                 </div>
                 <div class="nes-badge">
-                  <span class="is-success">{doc.fileSize > 0 ? (doc.fileSize / 1024).toFixed(1) : 0}KB</span>
+                  <span class="is-success">{doc?.fileSize > 0 ? (doc.fileSize / 1024).toFixed(1) : '0'}KB</span>
                 </div>
               </div>
 
               <!-- Status and Tags -->
               <div>
-                {#if doc.tags && doc.tags.length > 0}
+                {#if doc?.tags && doc.tags.length > 0}
                   <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
                     {#each doc.tags.slice(0, 3) as tag}
                       <span class="nes-badge">
@@ -509,14 +482,14 @@
                   </div>
                 {/if}
                 <div class="nes-badge">
-                  <span class="is-primary">{doc.status || 'completed'}</span>
+                  <span class="is-primary">{doc?.status ?? 'completed'}</span>
                 </div>
               </div>
 
               <!-- Document Summary -->
               <div style="background: #1a1d20; padding: 0.75rem; border: 1px solid #4a5568; flex: 1;">
                 <p style="color: #d4af37; font-size: 0.75rem; margin: 0; line-height: 1.4; max-height: 3.5em; overflow: hidden; text-overflow: ellipsis;">
-                  {doc.summary}
+                  {doc?.summary ?? ''}
                 </p>
               </div>
 
@@ -525,11 +498,11 @@
                 <button
                   class="nes-btn is-primary"
                   style="flex: 1; font-size: 0.75rem; padding: 0.5rem;"
-                  onclick={() => {
-                    const url = `/api/rag/documents/${doc.id}`;
+                  on:click={() => {
+                    const url = `/api/rag/documents/${doc?.id}`;
                     fetch(url).then(r => r.json()).then(data => {
                       console.log('Document details:', data);
-                      alert(`Document: ${data.document.filename}\nChunks: ${data.chunks.length}\nStatus: ${data.document.status}`);
+                      alert(`Document: ${data?.document?.filename ?? 'Unknown'}\nChunks: ${data?.chunks?.length ?? 0}\nStatus: ${data?.document?.status ?? 'unknown'}`);
                     });
                   }}
                 >
@@ -537,11 +510,11 @@
                 </button>
                 <button
                   class="nes-btn is-error"
-                  disabled={deletingId === doc.id}
+                  disabled={deletingId === doc?.id}
                   style="flex: 1; font-size: 0.75rem; padding: 0.5rem;"
-                  onclick={() => deleteDocument(doc.id)}
+                  on:click={() => deleteDocument(doc?.id)}
                 >
-                  {deletingId === doc.id ? '⏳' : '🗑️'} Delete
+                  {deletingId === doc?.id ? '⏳' : '🗑️'} Delete
                 </button>
               </div>
             </div>
@@ -570,7 +543,7 @@
             class="nes-input is-dark"
             placeholder="What are you looking for?"
             bind:value={searchQuery}
-            onkeydown={e => e.key === 'Enter' && searchDocuments()}
+            on:keydown={e => e.key === 'Enter' && searchDocuments()}
             style="width: 100%;"
           />
         </div>
@@ -615,7 +588,7 @@
 
         <!-- Search Button -->
         <Button
-          onclick={searchDocuments}
+          on:click={searchDocuments}
           disabled={!searchQuery.trim() || searching}
           class="nes-btn is-primary"
           style="width: 100%;"
@@ -648,7 +621,7 @@
           <div style="display: flex; flex-direction: column; gap: 1rem;">
             {#each searchResults as result, index}
               <div class="nes-container" style="background: #0f1214; padding: 1rem;">
-                <div style="display: flex; justify-content: space-betweennn; align-items: start; margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
                   <div>
                     <h4 style="color: #d4af37; margin: 0 0 0.25rem 0;">
                       {index + 1}. {result.filename}
@@ -677,6 +650,33 @@
 
                 {#if result.content}
                   <p style="color: #d4af37; font-size: 0.875rem; margin: 0.5rem 0 0 0; line-height: 1.5;">
+                    {result.content.slice(0, 200)}...
+                  </p>
+                {/if}
+
+                {#if result.createdAt}
+                  <p style="color: #6b7280; font-size: 0.75rem; margin: 0.5rem 0 0 0;">
+                    📅 {new Date(result.createdAt).toLocaleDateString()}
+                  </p>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+    </div>
+  {/if}
+</div>
+
+<style>
+  @import 'nes.css/css/nes.min.css';
+
+  :global(body) {
+    background: #212529;
+    color: #d4af37;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
+</style>
                     {result.content.slice(0, 200)}...
                   </p>
                 {/if}

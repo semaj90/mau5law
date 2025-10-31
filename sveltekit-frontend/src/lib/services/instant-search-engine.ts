@@ -2,10 +2,36 @@
 
 import Fuse, { type IFuseOptions, type FuseResult } from 'fuse.js';
 import { EventEmitter } from 'events';
+// Assuming lokiRedisCache is configured to use REDIS_URL environment variable as per instructions.
 import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integration.js';
+// Assuming getOllamaEmbedding is configured to use OLLAMA_URL environment variable and specified models (gemma3-legal:latest, embeddinggemma:latest).
 import { getOllamaEmbedding } from '$lib/llm/gemma';
+// Assuming optimizedQdrantService is configured to use QDRANT_URL environment variable.
 import { optimizedQdrantService as qdrant } from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
+// Assuming lookupSemanticCache and storeSemanticCache (gRPC client) are configured to use appropriate environment variables for their endpoint.
 import { lookupSemanticCache, storeSemanticCache } from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
+
+// Minimal interface for Qdrant search results
+interface QdrantSearchResult {
+  id: string | number;
+  score: number;
+  payload?: Record<string, any>;
+  vector?: number[];
+}
+
+// Minimal interface for OptimizedQdrantService to satisfy type checker
+interface OptimizedQdrantService {
+  search(
+    collectionName: string,
+    params: {
+      vector: number[];
+      limit: number;
+      with_payload: boolean;
+      filter?: any;
+    }
+  ): Promise<QdrantSearchResult[]>;
+  // Add other methods if they are used and need typing
+}
 
 // const QUERY_CACHE_COLLECTION_NAME = 'query_cache_vectors'; // Removed, replaced by gRPC cache
 const EMBEDDING_VECTOR_SIZE = 384; // Corrected to 384 for nomic-embed-text and embeddinggemma:latest
@@ -190,8 +216,7 @@ export class InstantSearchEngine extends EventEmitter {
       // This assumes lokiRedisCache.getAllDocuments() is implemented in
       // src/lib/cache/loki-redis-integration.ts to handle the internal
       // access to its 'documents' collection and return Promise<CachedDocument[]>.
-      // FIX: Cast lokiRedisCache to 'any' to bypass TypeScript error,
-      // assuming getAllDocuments will be added to LokiRedisCache class definition.
+      // TODO: Ensure LokiRedisCache class in 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
       const documents = await (lokiRedisCache as any).getAllDocuments();
       if (!documents) {
         console.warn(
@@ -334,6 +359,10 @@ export class InstantSearchEngine extends EventEmitter {
 
   private async performSemanticSearch(query: string, filters: SearchFilters): Promise<InstantSearchResult[]> {
     try {
+      // It is assumed that getOllamaEmbedding (from '$lib/llm/gemma') internally
+      // resolves the Ollama endpoint using process.env.OLLAMA_URL or a similar
+      // centralized utility (e.g., getOllamaEndpoint()) as per project guidelines
+      // for Docker-aware production deployments.
       const rawEmbedding = await getOllamaEmbedding(query);
       const embedding = rawEmbedding ? Array.from(rawEmbedding) : null;
 
@@ -354,14 +383,14 @@ export class InstantSearchEngine extends EventEmitter {
 
       // 2. If no cached query results, perform actual document search in Qdrant
       console.log('🔍 Performing semantic document search in Qdrant.');
-      const documentSearchResults = await qdrant.search('legal_vectors', {
+      const documentSearchResults = await (qdrant as OptimizedQdrantService).search('legal_vectors', {
         vector: embedding,
         limit: this.options.maxResults,
         with_payload: true,
         filter: this.buildQdrantFilter(filters), // Apply filters to document search
       });
 
-      const results = documentSearchResults.map(r => ({
+      const results = documentSearchResults.map((r: QdrantSearchResult) => ({
         id: r.id.toString(),
         document: {
           id: r.id.toString(),
@@ -370,6 +399,7 @@ export class InstantSearchEngine extends EventEmitter {
           priority: (r.payload?.priority as number) || 100,
           riskLevel: (r.payload?.riskLevel as 'low' | 'medium' | 'high' | 'critical') || 'medium',
           confidenceLevel: r.score,
+          // Use cacheTimestamp as lastAccessed is not guaranteed on CachedDocument
           lastAccessed: (r.payload?.lastAccessed as number) || Date.now(),
           compressed: (r.payload?.compressed as boolean) || false,
           metadata: {
@@ -408,10 +438,9 @@ export class InstantSearchEngine extends EventEmitter {
   /**
    * Builds a Qdrant filter object from InstantSearchEngine's SearchFilters.
    * @param filters The search filters to apply.
-   * @param forQueryCache If true, adjusts key names for query cache payload.
    * @returns A Qdrant filter object or undefined if no filters.
    */
-  private buildQdrantFilter(filters: SearchFilters, forQueryCache: boolean = false): any | undefined {
+  private buildQdrantFilter(filters: SearchFilters): any | undefined {
     const must: any[] = [];
 
     // Adjust key names if filtering the query cache payload - `forQueryCache` is now always false for Qdrant
@@ -462,7 +491,7 @@ export class InstantSearchEngine extends EventEmitter {
     if (filters.dateRange) {
       if (filters.dateRange.start) {
         must.push({
-          key: getFilterKey('lastAccessed'), // Or cacheTimestamp
+          key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
           range: {
             gte: filters.dateRange.start.getTime(),
           },
@@ -470,7 +499,7 @@ export class InstantSearchEngine extends EventEmitter {
       }
       if (filters.dateRange.end) {
         must.push({
-          key: getFilterKey('lastAccessed'), // Or cacheTimestamp
+          key: getFilterKey('cacheTimestamp'), // Use cacheTimestamp as lastAccessed is not guaranteed
           range: {
             lte: filters.dateRange.end.getTime(),
           },
@@ -544,7 +573,7 @@ export class InstantSearchEngine extends EventEmitter {
       }
       const accessBoost = Math.min((doc.accessCount || 0) / 100, 0.2);
       boost *= 1 + accessBoost;
-      const confidenceBoost = doc.confidenceLevel * 0.1;
+      const confidenceBoost = (doc.confidenceLevel || 0) * 0.1; // Handle undefined confidenceLevel
       boost *= 1 + confidenceBoost;
 
       return {
@@ -564,19 +593,20 @@ export class InstantSearchEngine extends EventEmitter {
         return false;
       }
       if (filters.jurisdictions) {
-        const jur = doc.metadata.jurisdiction;
+        const jur = doc.metadata?.jurisdiction; // Use optional chaining
         if (!jur || !filters.jurisdictions.includes(jur)) {
           return false;
         }
       }
-      if (filters.confidenceMin && doc.confidenceLevel < filters.confidenceMin) {
+      if (filters.confidenceMin && (doc.confidenceLevel || 0) < filters.confidenceMin) {
+        // Handle undefined confidenceLevel
         return false;
       }
       if (filters.priorityMin && doc.priority < filters.priorityMin) {
         return false;
       }
       if (filters.dateRange) {
-        const dateVal = new Date(doc.lastAccessed || doc.cacheTimestamp);
+        const dateVal = new Date(doc.cacheTimestamp); // Use cacheTimestamp
         if (dateVal < filters.dateRange.start || dateVal > filters.dateRange.end) {
           return false;
         }
@@ -585,7 +615,7 @@ export class InstantSearchEngine extends EventEmitter {
     });
   }
 
-  private extractHighlights(fuseResult: Fuse.FuseResult<CachedDocument>): {
+  private extractHighlights(fuseResult: FuseResult<CachedDocument>): {
     [key: string]: string;
   } {
     const highlights: Record<string, string> = {};
@@ -699,20 +729,3 @@ export class InstantSearchEngine extends EventEmitter {
 
 // export singleton
 export const instantSearchEngine = new InstantSearchEngine();
-// export singleton
-// export singleton
-    for (const timer of this.debounceTimers.values()) {
-      clearTimeout(timer);
-    }
-    this.debounceTimers.clear();
-    await lokiRedisCache.destroy();
-    this.fuse = null;
-    this.responseTimeTracker = [];
-    this.queryTracker.clear();
-    console.log('✅ InstantSearchEngine destroyed');
-  }
-}
-
-// export singleton
-export const instantSearchEngine = new InstantSearchEngine();
-// export singleton

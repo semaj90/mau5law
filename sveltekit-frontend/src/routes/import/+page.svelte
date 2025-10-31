@@ -44,15 +44,16 @@
   let fileInput: HTMLInputElement = $state();
   // Supported file types
   const supportedTypes = [
-    { value: 'all', label: 'Complete Export (All Data)' icon: Database },
-    { value: 'cases', label: 'Cases Only' icon: FileText },
-    { value: 'evidence', label: 'Evidence Only' icon: FileText },
-    { value: 'participants', label: 'Participants Only' icon: Users },
+    { value: 'all', label: 'Complete Export (All Data)', icon: Database },
+    { value: 'cases', label: 'Cases Only', icon: FileText },
+    { value: 'evidence', label: 'Evidence Only', icon: FileText },
+    { value: 'participants', label: 'Participants Only', icon: Users },
   ];
+
   // Example data formats
   const exampleFormats = {
     cases: {
-      json `[
+      json: `[
   {
     "id": "optional-existing-id",
     "title": "Case Title",
@@ -61,13 +62,13 @@
     "priority": "low|medium|high|urgent",
     "created_at": "2024-01-01T00:00:00Z"
   }
-  ]`,
+]`,
       csv: `title,description,status,priority
-  "Fraud Investigation","Corporate fraud case","active","high"
-  "Theft Case","Retail theft investigation","pending","medium"`,
+"Fraud Investigation","Corporate fraud case","active","high"
+"Theft Case","Retail theft investigation","pending","medium"`,
     },
     evidence: {
-      json `[
+      json: `[
   {
     "case_id": "case-uuid",
     "type": "document|photo|video|audio|other",
@@ -75,10 +76,10 @@
     "file_path": "optional-file-path",
     "metadata": {"key": "value"}
   }
-  ]`,
+]`,
       csv: `case_id,type,description,file_path
-  "case-uuid","document","Contract document","/files/contract.pdf"
-  "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
+"case-uuid","document","Contract document","/files/contract.pdf"
+"case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
     },
   };
   $effect(() => {
@@ -338,7 +339,7 @@
                   </ButtonComponent>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <ButtonComponent variant="ghost" size="sm" onclick={() => clearImport()}>
+                  <ButtonComponent variant="ghost" size="sm" on:click={() => clearImport()}>
                     <X class="h-4 w-4" />
                     Remove
                   </ButtonComponent>
@@ -352,7 +353,7 @@
                 <p class="text-lg font-medium">Drop your file here</p>
                 <p class="text-sm text-gray-500">or click to browse</p>
               </div>
-              <ButtonComponent variant="ghost" onclick={() => fileInput?.click()}>Select File</ButtonComponent>
+              <ButtonComponent variant="ghost" on:click={() => fileInput?.click()}>Select File</ButtonComponent>
             </div>
           {/if}
         </div>
@@ -361,7 +362,7 @@
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          onchange={handleFileInput}
+          on:change={handleFileInput}
           class="hidden"
           aria-label="Select import file"
         />
@@ -481,7 +482,7 @@
       <!-- Action Buttons -->
       {#if importFile}
         <div class="flex gap-2 justify-end">
-          <ButtonComponent onclick={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
+          <ButtonComponent on:click={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
             {#if isImporting}
               <div class="i-lucide-loader-2 animate-spin mr-2"></div>
               Importing...
@@ -491,7 +492,7 @@
             {/if}
           </ButtonComponent>
           <Tooltip content="Clear current import and start over">
-            <ButtonComponent variant="ghost" onclick={() => clearImport()}>
+            <ButtonComponent variant="ghost" on:click={() => clearImport()}>
               <X class="h-4 w-4 mr-2" />
               Cancel
             </ButtonComponent>
@@ -512,21 +513,20 @@
             <h4 class="font-medium">Cases</h4>
             <div class="flex gap-2 mt-2">
               <Tooltip content="Download JSON example for cases">
-                <!-- @ts-ignore -->
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('cases', 'json')}
+                  on:click={() => downloadExampleTemplate('cases', 'json')}
                 >
                   JSON
                 </ButtonComponent>
               </Tooltip>
+
               <Tooltip content="Download CSV example for cases">
-                <!-- @ts-ignore -->
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('cases', 'csv')}
+                  on:click={() => downloadExampleTemplate('cases', 'csv')}
                 >
                   CSV
                 </ButtonComponent>
@@ -537,21 +537,20 @@
             <h4 class="font-medium">Evidence</h4>
             <div class="flex gap-2 mt-2">
               <Tooltip content="Download JSON example for evidence">
-                <!-- @ts-ignore -->
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('evidence', 'json')}
+                  on:click={() => downloadExampleTemplate('evidence', 'json')}
                 >
                   JSON
                 </ButtonComponent>
               </Tooltip>
+
               <Tooltip content="Download CSV example for evidence">
-                <!-- @ts-ignore -->
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  onclick={() => downloadExampleTemplate('evidence', 'csv')}
+                  on:click={() => downloadExampleTemplate('evidence', 'csv')}
                 >
                   CSV
                 </ButtonComponent>
@@ -599,6 +598,7 @@
   /* Example UnoCSS drag and drop styles */
   /* border-blue-400, bg-blue-50, border-gray-300 are already used via class bindings above */
   /* Add any additional custom styles here if needed */
+</style>
 </style>
             <Download class="h-4 w-4 mr-2" />
             Export Data

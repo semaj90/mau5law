@@ -354,3 +354,47 @@ export class GoTensorWebSocketClient {
     }
   }
 }
+
+// Minimal go-tensor-service-client implementation to satisfy imports and provide sensible defaults.
+
+export function mockTensorData(dim: number): Float32Array {
+	// returns a deterministic-ish Float32Array for testing
+	const arr = new Float32Array(dim);
+	for (let i = 0; i < dim; i++) {
+		arr[i] = Math.sin(i + 1) * 0.5 + 0.5;
+	}
+	return arr;
+}
+
+export function generateTensorRequest(documentId: string, tensor: Float32Array, operation = 'analyze') {
+	// small helper to shape requests similarly to how the frontend expects
+	return {
+		id: documentId,
+		operation,
+		dim: tensor.length,
+		data: Array.from(tensor),
+		timestamp: Date.now()
+	};
+}
+
+/**
+ * Lightweight client wrapper. Keep this minimal; production code should centralize
+ * endpoints via env helpers (see copilot-instructions.md) and handle errors/retries.
+ */
+export const goTensorService = {
+	async analyze(request: ReturnType<typeof generateTensorRequest>, opts?: { timeout?: number }) {
+		try {
+			const response = await fetch('/api/tensor', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ operation: request.operation, documentId: request.id, data: request.data, options: opts })
+			});
+			if (!response.ok) {
+				throw new Error(`tensor service responded ${response.status}`);
+			}
+			return await response.json();
+		} catch (err) {
+			return { success: false, error: (err as Error).message };
+		}
+	}
+};

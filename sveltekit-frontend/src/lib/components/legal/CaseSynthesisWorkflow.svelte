@@ -5,16 +5,14 @@ https: //svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   interface Props {
     caseId: string;
-    documents: CaseDocument[] ;
-    evidenceReports: EvidenceReport[] ;
+    documents: CaseDocument[];
+    evidenceReports: EvidenceReport[];
   }
-  let { caseId,
+  let {
+    caseId,
     documents = [],
     evidenceReports = []
-   }: { caseId,
-    documents = [],
-    evidenceReports = []
-  : unknown } = $props();
+  }: Props = $props();
   import { useMachine } from '@xstate/svelte';
   import { createMachine, assign } from 'xstate';
   import AISummaryReader from './AISummaryReader.svelte';
@@ -41,22 +39,22 @@ https: //svelte.dev/e/js_parse_error -->
     content: string;
     metadata: {
       dateCreated: string;
-      author: string
+      author: string; // Added comma
       relevanceScore: number;
-    }
+    };
   }
   interface EvidenceReport {
-    id: string
-    title: string
-    type: string
-    status: string
-    priority: string
-    createdAt: string
-    updatedAt: string
+    id: string; // Added comma
+    title: string; // Added comma
+    type: string; // Added comma
+    status: string; // Added comma
+    priority: string; // Added comma
+    createdAt: string; // Added comma
+    updatedAt: string; // Added comma
     analyst: unknown;
     evidence: unknown;
     methodology: unknown;
-    findings: unknown
+    findings: unknown; // Added comma
     legalImplications: unknown;
     attachments: unknown[];
   }
@@ -88,10 +86,10 @@ https: //svelte.dev/e/js_parse_error -->
     significance: 'critical' | 'high' | 'medium' | 'low';
   }
   interface StrengthAssessment {
-    overall: number
-    evidenceQuality: number
-    legalBasis: number
-    witnessCredibility: number
+    overall: number; // Added comma
+    evidenceQuality: number; // Added comma
+    legalBasis: number; // Added comma
+    witnessCredibility: number; // Added comma
     expertOpinions: number;
     areas: {
       name: string;
@@ -111,14 +109,14 @@ https: //svelte.dev/e/js_parse_error -->
       issue: string;
       likelihood: number;
       impact: number;
-      mitigation string;
+      mitigation: string; // Added colon
     }[];
-    overallRisk: number
+    overallRisk: number;
   }
   interface Recommendation {
     priority: 'immediate' | 'high' | 'medium' | 'low';
     category: 'evidence' | 'legal' | 'procedural' | 'strategic';
-    action string;
+    action: string; // Added colon
     rationale: string;
     timeline: string;
   }
@@ -131,14 +129,14 @@ https: //svelte.dev/e/js_parse_error -->
       evidenceReports,
       selectedItems: [],
       synthesisMode: 'thematic',
-      synthesisResult: null
+      synthesisResult: null, // Added comma
       progressStage: 'selecting',
-      error: null;
+      error: null, // Added comma
       loading: false,
     },
     states: {
       idle: {
-        on {
+        on: { // Added colon
           SELECT_ITEMS: {
             actions: assign({
               selectedItems: ({ event }) => event.items,
@@ -158,7 +156,7 @@ https: //svelte.dev/e/js_parse_error -->
             target: 'complete',
             actions: assign({
               synthesisResult: ({ event }) => event.data,
-              loading: false
+              loading: false, // Added comma
               progressStage: 'complete',
             })
           },
@@ -172,20 +170,20 @@ https: //svelte.dev/e/js_parse_error -->
         }
       },
       complete: {
-        on {
+        on: { // Added colon
           RESTART: {
             target: 'idle',
             actions: assign({
               selectedItems: [],
-              synthesisResult: null
+              synthesisResult: null, // Added comma
               progressStage: 'selecting',
-              error: null;
+              error: null, // Added comma
             })
           }
         }
       },
       error: {
-        on {
+        on: { // Added colon
           RETRY: {
             target: 'synthesizing',
             actions: assign({ error: null, loading: true })
@@ -194,9 +192,9 @@ https: //svelte.dev/e/js_parse_error -->
             target: 'idle',
             actions: assign({
               selectedItems: [],
-              synthesisResult: null
+              synthesisResult: null, // Added comma
               progressStage: 'selecting',
-              error: null;
+              error: null, // Added comma
             })
           }
         }
@@ -290,19 +288,19 @@ https: //svelte.dev/e/js_parse_error -->
                     issue: "Technical complexity may confuse jury",
                     likelihood: 0.6,
                     impact: 0.7,
-                    mitigation "Prepare clear visual aids and expert testimony in plain language",
+                    mitigation: "Prepare clear visual aids and expert testimony in plain language", // Added colon
                   },
                   {
                     issue: "Defense may challenge digital evidence authenticity",
                     likelihood: 0.8,
                     impact: 0.8,
-                    mitigation "Ensure robust chain of custody documentation and expert certification",
+                    mitigation: "Ensure robust chain of custody documentation and expert certification", // Added colon
                   },
                   {
                     issue: "Witness credibility concerns",
                     likelihood: 0.4,
                     impact: 0.6,
-                    mitigation "Prepare witnesses thoroughly and focus on corroborating physical evidence",
+                    mitigation: "Prepare witnesses thoroughly and focus on corroborating physical evidence", // Added colon
                   }
                 ],
                 overallRisk: 0.35
@@ -311,21 +309,21 @@ https: //svelte.dev/e/js_parse_error -->
                 {
                   priority: "immediate",
                   category: "evidence",
-                  action "Conduct additional forensic analysis of backup systems",
+                  action: "Conduct additional forensic analysis of backup systems", // Added colon
                   rationale: "May reveal additional evidence of data destruction attempts",
                   timeline: "Within 2 weeks",
                 },
                 {
                   priority: "high",
                   category: "legal",
-                  action "Prepare technical expert for jury testimony",
+                  action: "Prepare technical expert for jury testimony", // Added colon
                   rationale: "Complex digital evidence requires clear expert explanation",
                   timeline: "Before trial preparation",
                 },
                 {
                   priority: "medium",
                   category: "strategic",
-                  action "Consider plea negotiations based on cooperation",
+                  action: "Consider plea negotiations based on cooperation", // Added colon
                   rationale: "Defendant may provide information about broader criminal network",
                   timeline: "After initial evidence presentation",
                 }
@@ -340,7 +338,7 @@ https: //svelte.dev/e/js_parse_error -->
                 "Coordinate with financial crimes unit for additional investigation",
                 "Prepare comprehensive trial presentation materials",
                 "Conduct mock trial with focus group for jury reactions"
-              ];
+              ], // Added comma
             });
           }, 3000);
         });
@@ -350,11 +348,11 @@ https: //svelte.dev/e/js_parse_error -->
   const { state, send } = useMachine(synthesisMachine);
   let selectedDocuments = new Set<string>();
   let selectedReports = new Set<string>();
-  let allItems = $derived([])
+  let allItems = $derived([ // Added opening square bracket
     ...documents.map(d => ({ id: d.id, type: 'document', title: d.title, data: d })),
     ...evidenceReports.map(r => ({ id: r.id, type: 'report', title: r.title, data: r }))
-  ];
-  let selectedCount = $derived(selectedDocuments.size + selectedReports.size)
+  ]);
+  let selectedCount = $derived(selectedDocuments.size + selectedReports.size);
   function toggleSelection(id: string, type: 'document' | 'report') {
     if (type === 'document') {
       if (selectedDocuments.has(id)) {
@@ -403,19 +401,19 @@ https: //svelte.dev/e/js_parse_error -->
   - Legal Basis: ${Math.round(synthesis.strengthAssessment.legalBasis * 100)}%
   ## Legal Strategy
   ### Primary Charges
-  ${synthesis.legalStrategy.primaryCharges.map.join('\n')}
+  ${synthesis.legalStrategy.primaryCharges.map(charge => charge).join('\n')}
   ### Prosecution Approach
   ${synthesis.legalStrategy.prosecutionApproach}
   ## Recommendations
   ${synthesis.recommendations.map(rec => `### ${rec.priority.toUpperCase()} - ${rec.action}\n${rec.rationale}\n`).join('\n')}
   ## Next Steps
-  ${synthesis.nextSteps.map.join('\n')}
+  ${synthesis.nextSteps.map(step => step).join('\n')}
   `;
     const blob = new Blob([content], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `case-synthesis-${caseId}-${new Date().toISOString.split('T')[0]}.md`;
+    a.download = `case-synthesis-${caseId}-${new Date().toISOString().split('T')[0]}.md`; // Added parentheses to toISOString()
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -581,7 +579,7 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   {:else if $state.matches('complete') && $state.context.synthesisResult}
     <!-- Synthesis Results -->
-    <div class="space-y-6" transitionfly={{ y: 20, duration 300 }}>
+    <div class="space-y-6" transition:fly={{ y: 20, duration: 300 }}>
       <!-- Executive Summary -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
@@ -651,7 +649,7 @@ https: //svelte.dev/e/js_parse_error -->
                   {Math.round(area.score * 100)}%
                 </span>
               </div>
-              <p class="text-gray-700 text-sm">{a(rea as CustomEvent).details}</p>
+              <p class="text-gray-700 text-sm">{area.details}</p>
             </div>
           {/each}
         </div>
@@ -787,5 +785,7 @@ https: //svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
+</div>
+;
 </div>
 ;

@@ -3,7 +3,9 @@
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
-  import type { Snippet } from 'svelte';
+
+  // children is rendered via {@render children?.()} so use a callable type
+  type Snippet = () => any;
 
   // Define User interface to match +page.server.ts
   interface User {
@@ -19,7 +21,7 @@
     showNavigation?: boolean;
     showSidebar?: boolean;
     variant?: 'legal' | 'yorha' | 'minimal' | 'admin';
-    user?: User | null; // Update user type to be more specific
+    user?: User | null;
     hideHeader?: boolean;
     fullWidth?: boolean;
   }
@@ -36,38 +38,41 @@
   let sidebarOpen = $state(false);
   let mounted = $state(false);
   let currentPath = $derived($page.url.pathname);
+
   // Auto-detect optimal layout based on route
   let layoutVariant = $derived(() => {
-    if (currentPath.startsWith('/yorha')) return 'yorha';
-    if (currentPath.startsWith('/demo')) return 'yorha';
-    if (currentPath.startsWith('/admin')) return 'admin';
-    if (currentPath.startsWith('/auth')) return 'minimal';
+    const p = currentPath ?? '/';
+    if (p.startsWith('/yorha')) return 'yorha';
+    if (p.startsWith('/demo')) return 'yorha';
+    if (p.startsWith('/admin')) return 'admin';
+    if (p.startsWith('/auth')) return 'minimal';
     return variant;
   });
+
   // Define a type alias for navigation items
   type NavItem = {
     href: string;
     label: string;
-    icon string;
+    icon: string;
     active?: boolean;
   };
 
   // Navigation items based on layout variant
   let navigationItems = $derived<NavItem[]>(() => {
     const baseItems: NavItem[] = [
-      { href: '/', label: 'Home', icon '🏠' },
-      { href: '/cases', label: 'Cases', icon '📋' },
-      { href: '/evidence', label: 'Evidence', icon '🔍' },
+      { href: '/', label: 'Home', icon: '🏠' },
+      { href: '/cases', label: 'Cases', icon: '📋' },
+      { href: '/evidence', label: 'Evidence', icon: '🔍' },
     ];
     const yorhaItems: NavItem[] = [
-      { href: '/yorha', label: 'YoRHa Terminal', icon '⚡' },
-      { href: '/yorha/dashboard', label: 'Command Center', icon '🎮' },
-      { href: '/demo', label: 'Demos', icon '🚀' },
+      { href: '/yorha', label: 'YoRHa Terminal', icon: '⚡' },
+      { href: '/yorha/dashboard', label: 'Command Center', icon: '🎮' },
+      { href: '/demo', label: 'Demos', icon: '🚀' },
     ];
     const adminItems: NavItem[] = [
-      { href: '/admin', label: 'Admin', icon '⚙️' },
-      { href: '/admin/users', label: 'Users', icon '👥' },
-      { href: '/admin/performance', label: 'Performance', icon '📊' },
+      { href: '/admin', label: 'Admin', icon: '⚙️' },
+      { href: '/admin/users', label: 'Users', icon: '👥' },
+      { href: '/admin/performance', label: 'Performance', icon: '📊' },
     ];
     switch (layoutVariant) {
       case 'yorha':
@@ -80,9 +85,11 @@
         return baseItems;
     }
   });
+
   function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
   }
+
   $effect(() => {
     mounted = true;
   });
@@ -117,6 +124,7 @@
       </div>
     </header>
   {/if}
+
   <div class="layout-body">
     {#if showSidebar}
       <aside class="layout-sidebar" class:open={sidebarOpen}>
@@ -132,6 +140,7 @@
         </div>
       </aside>
     {/if}
+
     <main class="layout-main" class:with-sidebar={showSidebar}>
       <div class="main-content">
         {#if mounted}
@@ -146,6 +155,7 @@
       </div>
     </main>
   </div>
+
   {#if layoutVariant === 'yorha'}
     <div class="yorha-scan-lines"></div>
   {/if}
@@ -156,7 +166,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    position relative;
+    position: relative;
     background: var(--nes-bg-color, #fff);
   }
   .enhanced-layout[data-variant='yorha'] {
@@ -173,9 +183,9 @@
     border-bottom: 2px solid var(--nes-primary-color, #000);
     background: var(--nes-bg-color, #fff);
     padding: 1rem;
-    position sticky;
+    position: sticky;
     top: 0;
-    z-index: 100,
+    z-index: 100;
   }
   .enhanced-layout[data-variant='yorha'] .layout-header {
     background: #1a1a1a;
@@ -184,7 +194,7 @@
   .header-container {
     display: flex;
     align-items: center;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -217,7 +227,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    text-decoration none;
+    text-decoration: none;
     color: inherit;
     border-radius: 4px;
     transition: all 0.2s ease;
@@ -248,9 +258,9 @@
     display: none;
   }
   .layout-body {
-    flex: 1,
+    flex: 1;
     display: flex;
-    position relative;
+    position: relative;
   }
   .layout-sidebar {
     width: 250px;
@@ -258,8 +268,8 @@
     border-right: 2px solid var(--nes-primary-color, #000);
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
     height: 100vh;
     z-index: 90;
@@ -280,7 +290,7 @@
     margin-top: 1rem;
   }
   .layout-main {
-    flex: 1,
+    flex: 1;
     padding: 2rem;
     transition: margin-left 0.3s ease;
   }
@@ -300,10 +310,10 @@
   }
   /* YoRHa scan lines effect */
   .yorha-scan-lines {
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: linear-gradient(
       transparent 50%,
@@ -313,7 +323,7 @@
     );
     background-size: 100% 4px;
     pointer-events: none;
-    z-index: 1,
+    z-index: 1;
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -332,12 +342,12 @@
   }
   @media (min-width: 1024px) {
     .layout-sidebar {
-      position static;
+      position: static;
       transform: none;
-      padding-top: 0,
+      padding-top: 0;
     }
     .layout-main.with-sidebar {
-      margin-left: 0,
+      margin-left: 0;
     }
   }
 </style>
