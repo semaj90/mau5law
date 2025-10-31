@@ -10,6 +10,7 @@
     Button,
     Input
   } from '$lib/components/ui/enhanced-bits';
+
   interface BriefSection {
     id: string;
     type: 'header' | 'introduction' | 'facts' | 'argument' | 'conclusion' | 'signature';
@@ -20,15 +21,17 @@
     aiSuggestions?: string[];
     status: 'draft' | 'review' | 'approved';
   }
+
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'secondary';
-    citation string;
+    citation: string;
     shortForm: string;
     pinpoint?: string;
     verified: boolean;
     relevanceScore: number;
   }
+
   interface Brief {
     id: string;
     title: string;
@@ -40,21 +43,25 @@
     sections: BriefSection[];
     status: 'draft' | 'review' | 'filed';
     collaborators: string[];
-    version number;
+    version: number;
   }
+
   interface Props {
     brief?: Brief;
     onSave?: (brief: Brief) => Promise<void>;
     onCitationCheck?: (citations: Citation[]) => Promise<Citation[]>;
-    onAISuggestion?: (section BriefSection) => Promise<string[]>;
+    onAISuggestion?: (section: BriefSection) => Promise<string[]>;
   }
+
   let { brief, onSave, onCitationCheck, onAISuggestion }: Props = $props();
+
   // Enhanced-Bits builder for briefs
   const briefBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
     aiModel: 'gemma3',
   });
+
   let briefData = $state<Brief>(brief || {
     id: 'brief-001',
     title: 'Motion for Summary Judgment',
@@ -65,7 +72,7 @@
     wordLimit: 8000,
     status: 'draft',
     collaborators: ['Legal Counsel', 'Associate Attorney'],
-    version 1,
+    version: 1,
     sections: [
       {
         id: 'intro',
@@ -76,10 +83,10 @@
           {
             id: 'cit-1',
             type: 'statute',
-            citation 'Cal. Code Civ. Proc. § 437c',
+            citation: 'Cal. Code Civ. Proc. § 437c',
             shortForm: '§ 437c',
-            verified: true
-            relevanceScore: 0.95,
+            verified: true,
+            relevanceScore: 0.95
           }
         ],
         wordCount: 145,
@@ -87,7 +94,7 @@
         aiSuggestions: [
           'Consider adding specific grounds for summary judgment',
           'Include brief overview of material facts'
-        ];
+        ]
       },
       {
         id: 'facts',
@@ -96,25 +103,30 @@
         content: 'The undisputed material facts establish that on March 15, 2024, Defendant breached its contractual obligations...',
         citations: [],
         wordCount: 89,
-        status: 'draft',
+        status: 'draft'
       }
     ]
   });
+
   let selectedSection = $state<string>('intro');
   let isAutoSaving = $state(false);
   let citationPanel = $state(false);
+
   let wordCount = $derived(() =>
     briefData.sections.reduce((total, section) => total + section.wordCount, 0)
   );
+
   let wordCountStatus = $derived(() => {
     const percentage = (wordCount / briefData.wordLimit) * 100;
     if (percentage > 100) return 'over';
     if (percentage > 90) return 'warning';
     return 'normal';
   });
+
   let currentSection = $derived(() =>
     briefData.sections.find(s => s.id === selectedSection)
   );
+
   async function saveBrief() {
     if (!onSave) return;
     isAutoSaving = true;
@@ -127,18 +139,20 @@
       isAutoSaving = false;
     }
   }
+
   async function checkCitations() {
     if (!onCitationCheck || !currentSection) return;
     try {
       const verifiedCitations = await onCitationCheck(currentSection.citations);
       const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
       if (sectionIndex >= 0) {
-        briefData.sections[sectionIndex].citations = verifiedCitation;
+        briefData.sections[sectionIndex].citations = verifiedCitations;
       }
     } catch (error) {
       console.error('Citation check failed:', error);
     }
   }
+
   async function getAISuggestions(sectionId: string) {
     if (!onAISuggestion) return;
     const section = briefData.sections.find(s => s.id === sectionId);
@@ -147,25 +161,27 @@
       const suggestions = await onAISuggestion(section);
       const sectionIndex = briefData.sections.findIndex(s => s.id === sectionId);
       if (sectionIndex >= 0) {
-        briefData.sections[sectionIndex].aiSuggestions = suggestion;
+        briefData.sections[sectionIndex].aiSuggestions = suggestions;
       }
     } catch (error) {
       console.error('AI suggestion failed:', error);
     }
   }
+
   function addSection() {
-    const newSection BriefSection = {
+    const newSection: BriefSection = {
       id: `section-${Date.now()}`,
       type: 'argument',
       title: 'New Argument Section',
       content: '',
       citations: [],
       wordCount: 0,
-      status: 'draft',
-    }
+      status: 'draft'
+    };
     briefData.sections.push(newSection);
     selectedSection = newSection.id;
   }
+
   function updateSectionContent(sectionId: string, content: string) {
     const sectionIndex = briefData.sections.findIndex(s => s.id === sectionId);
     if (sectionIndex >= 0) {
@@ -173,50 +189,55 @@
       briefData.sections[sectionIndex].wordCount = content.split(/\s+/).filter(word => word.length > 0).length;
     }
   }
+
   function addCitation() {
     if (!currentSection) return;
-    const newCitation Citation = {
+    const newCitation: Citation = {
       id: `cit-${Date.now()}`,
       type: 'case',
-      citation '',
+      citation: '',
       shortForm: '',
-      verified: false
-      relevanceScore: 0,
-    }
+      verified: false,
+      relevanceScore: 0
+    };
     const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
     if (sectionIndex >= 0) {
       briefData.sections[sectionIndex].citations.push(newCitation);
     }
   }
+
   function getSectionIcon(type: BriefSection['type']): string {
-    const icons = {
+    const icons: Record<string, string> = {
       header: '📋',
-      introduction '🎯',
+      introduction: '🎯',
       facts: '📊',
       argument: '⚖️',
-      conclusion '🏁',
-      signature: '✍️',
-    }
+      conclusion: '🏁',
+      signature: '✍️'
+    };
     return icons[type] || '📄';
   }
+
   function getCitationIcon(type: Citation['type']): string {
-    const icons = {
+    const icons: Record<string, string> = {
       case: '⚖️',
       statute: '📜',
-      regulation '📋',
-      secondary: '📚',
-    }
+      regulation: '📋',
+      secondary: '📚'
+    };
     return icons[type] || '📄';
   }
+
   function getStatusColor(status: string) {
     const colors = {
       draft: '#6b7280',
       review: '#f59e0b',
       approved: '#10b981',
-      filed: '#3b82f6',
-    }
+      filed: '#3b82f6'
+    };
     return colors[status as keyof typeof colors] || colors.draft;
   }
+
   // Auto-save effect
   let saveTimeout: NodeJS.Timeout;
   $effect(() => {
@@ -231,51 +252,49 @@
 
 <div class="brief-editor">
   <!-- Brief Header -->
-  <Card
-    style="
-      border-color: {briefBuilder.styling.colors.primary}
-      border-width: {briefBuilder.styling.nes.borderWidth}
-    "
+  <div
+    style="border-style: solid; border-color: {briefBuilder.styling.colors.primary}; border-width: {briefBuilder.styling.nes.borderWidth}; border-radius: 8px;"
   >
-    <CardHeader>
-      <CardTitle class="brief-title">
-        <div class="title-section">
-          <span class="brief-icon">⚖️</span>
-          <div class="title-text">
-            <h2>{briefData.title}</h2>
-            <div class="brief-meta">
-              <span class="brief-type">{briefData.type.replace('_', ' ').toUpperCase()}</span>
-              <span class="brief-status" style="color: {getStatusColor(briefData.status)}">
-                {briefData.status.toUpperCase()}
-              </span>
-              <span class="version-info">v{briefData.version}</span>
-            </div>
-          </div>
-        </div>
-        <div class="brief-actions">
-          <div class="word-count-display">
-            <span class="word-count {wordCountStatus}">
-              {wordCount} / {briefData.wordLimit} words
-            </span>
-            <div class="word-progress">
-              <div
-                class="word-fill {wordCountStatus}"
-                style="width: {Math.min((wordCount / briefData.wordLimit) * 100, 100)}%"
-              ></div>
-            </div>
-          </div>
-          <Button
-            onclick={saveBrief}
-            disabled={isAutoSaving}
-            style="background: {briefBuilder.styling.colors.evidence}"
-          >
-            {isAutoSaving ? '💾 Saving...' : '💾 Save Brief'}
-          </Button>
-          <Button onclick={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
-        </div>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+    <Card>
+     <CardHeader>
+       <CardTitle class="brief-title">
+         <div class="title-section">
+           <span class="brief-icon">⚖️</span>
+           <div class="title-text">
+             <h2>{briefData.title}</h2>
+             <div class="brief-meta">
+               <span class="brief-type">{briefData.type.replace('_', ' ').toUpperCase()}</span>
+               <span class="brief-status" style="color: {getStatusColor(briefData.status)}">
+                 {briefData.status.toUpperCase()}
+               </span>
+               <span class="version-info">v{briefData.version}</span>
+             </div>
+           </div>
+         </div>
+         <div class="brief-actions">
+           <div class="word-count-display">
+             <span class="word-count {wordCountStatus}">
+               {wordCount} / {briefData.wordLimit} words
+             </span>
+             <div class="word-progress">
+               <div
+                 class="word-fill {wordCountStatus}"
+                 style="width: {Math.min((wordCount / briefData.wordLimit) * 100, 100)}%"
+               ></div>
+             </div>
+           </div>
+           <Button
+             onclick={saveBrief}
+             disabled={isAutoSaving}
+             style="background: {briefBuilder.styling.colors.evidence}"
+           >
+             {isAutoSaving ? '💾 Saving...' : '💾 Save Brief'}
+           </Button>
+           <Button onclick={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
+         </div>
+       </CardTitle>
+     </CardHeader>
+     <CardContent>
       <!-- Brief Details -->
       <div class="brief-details">
         <div class="detail-grid">
@@ -299,8 +318,9 @@
           </div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+     </CardContent>
+    </Card>
+  </div>
   <!-- Main Editor Layout -->
   <div class="editor-layout">
     <!-- Section Navigation -->
@@ -315,18 +335,18 @@
             class="section-item"
             class:active={selectedSection === section.id}
             onclick={() => (selectedSection = section.id)}
-            transitionfade
+            transition:fade
           >
-            <div class="section-header">
-              <span class="section-icon">{getSectionIcon(section.type)}</span>
-              <span class="section-title">{section.title}</span>
-              <span class="section-status" style="color: {getStatusColor(section.status)}"> ● </span>
-            </div>
-            <div class="section-meta">
-              <span class="word-count">{section.wordCount} words</span>
-              <span class="citation-count">{section.citations.length} citations</span>
-            </div>
-          </button>
+           <div class="section-header">
+             <span class="section-icon">{getSectionIcon(section.type)}</span>
+             <span class="section-title">{section.title}</span>
+             <span class="section-status" style="color: {getStatusColor(section.status)}"> ● </span>
+           </div>
+           <div class="section-meta">
+             <span class="word-count">{section.wordCount} words</span>
+             <span class="citation-count">{section.citations.length} citations</span>
+           </div>
+         </button>
         {/each}
       </div>
     </div>
@@ -352,7 +372,7 @@
           ></textarea>
           <!-- AI Suggestions Panel -->
           {#if currentSection.aiSuggestions && currentSection.aiSuggestions.length > 0}
-            <div class="suggestions-panel" transitionfly={{ x: 20, duration 300 }}>
+            <div class="suggestions-panel" transition:fly={{ x: 20, duration: 300 }}>
               <h4>🤖 AI Suggestions</h4>
               <ul class="suggestions-list">
                 {#each currentSection.aiSuggestions as suggestion}
@@ -370,7 +390,7 @@
           </div>
           <div class="citations-list">
             {#each currentSection.citations as citation (citation.id)}
-              <div class="citation-item" transitionscale>
+              <div class="citation-item" transition:scale>
                 <div class="citation-header">
                   <span class="citation-icon">{getCitationIcon(citation.type)}</span>
                   <span class="citation-type">{citation.type.toUpperCase()}</span>
@@ -404,7 +424,7 @@
     </div>
     <!-- Citation Panel -->
     {#if citationPanel}
-      <div class="citation-panel" transitionfly={{ x: 300, duration 300 }}>
+      <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
         <div class="panel-header">
           <h3>📚 All Citations</h3>
           <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>
@@ -443,7 +463,7 @@
   }
   .brief-title {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -494,9 +514,9 @@
     font-size: 0.875rem;
     font-weight: bold;
   }
-  .word-count.normal { color: var(--enhanced-bits-success), }
-  .word-count.warning { color: var(--enhanced-bits-warning), }
-  .word-count.over { color: var(--enhanced-bits-error), }
+  .word-count.normal { color: var(--enhanced-bits-success); }
+  .word-count.warning { color: var(--enhanced-bits-warning); }
+  .word-count.over { color: var(--enhanced-bits-error); }
   .word-progress {
     width: 120px;
     height: 4px;
@@ -509,9 +529,9 @@
     transition: width 300ms ease;
     border-radius: 2px;
   }
-  .word-fill.normal { background: var(--enhanced-bits-success), }
-  .word-fill.warning { background: var(--enhanced-bits-warning), }
-  .word-fill.over { background: var(--enhanced-bits-error), }
+  .word-fill.normal { background: var(--enhanced-bits-success); }
+  .word-fill.warning { background: var(--enhanced-bits-warning); }
+  .word-fill.over { background: var(--enhanced-bits-error); }
   .brief-details {
     padding: 1rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
@@ -555,7 +575,7 @@
   }
   .nav-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -621,7 +641,7 @@
   }
   .editor-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
@@ -641,7 +661,7 @@
     gap: 0.5rem;
   }
   .editor-content {
-    flex: 1,
+    flex: 1;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
@@ -679,7 +699,7 @@
   }
   .suggestions-list {
     list-style: none;
-    padding: 0,
+    padding: 0;
     margin: 0;
   }
   .suggestion-item {
@@ -695,7 +715,7 @@
   }
   .citations-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -760,7 +780,7 @@
   }
   .panel-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
   }
@@ -784,7 +804,7 @@
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .citation-text {
-    flex: 1,
+    flex: 1;
   }
   .citation-full {
     font-size: 0.875rem;
@@ -821,8 +841,7 @@
       grid-template-columns: 250px 1fr;
     }
     .citation-panel {
-      position fixed;
-d;
+      position: fixed;
       top: 20px;
       right: 20px;
       z-index: 100;
@@ -839,10 +858,10 @@ d;
       gap: 1rem;
     }
     .section-nav {
-      order: 2,
+      order: 2;
     }
     .content-editor {
-      order: 1,
+      order: 1;
     }
     .editor-content {
       grid-template-columns: 1fr;

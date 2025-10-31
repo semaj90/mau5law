@@ -23,19 +23,25 @@ https: //svelte.dev/e/js_parse_error -->
   interface Props {
     open?: boolean;
     evidence?: Evidence | null;
-    onevidenceUpdated?: (event?: unknown) => void;
-    onsaveAnalysis?: (event?: unknown) => void;
+    onEvidenceUpdated?: (event?: unknown) => void;
+    onSaveAnalysis?: (event?: unknown) => void;
     similarEvidence?: Array<any> | null;
   }
-  let { open = false, evidence = null, similarEvidence = null }: Props = $props();
+  let {
+    open = false,
+    evidence = null,
+    similarEvidence = null,
+    onEvidenceUpdated = () => {},
+    onSaveAnalysis = () => {},
+  }: Props = $props();
+
   import { fade, fly } from 'svelte/transition';
-  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
-  import Grid from '$lib/components/ui/grid/Grid.svelte';
-  import GridItem from '$lib/components/ui/grid/GridItem.svelte';
-  import Button from '$lib/components/ui/button';
-  import Input from '$lib/components/ui/Input.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   // Icons
-  import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles } from 'lucide-svelte';
+  import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles, Loader2 } from 'lucide-svelte';
+
   let isAnalyzing = $state(false);
   let newTags = $state<string>('');
   let analysisMode = $state<'quick' | 'detailed' | 'legal'>('detailed');
@@ -58,7 +64,7 @@ https: //svelte.dev/e/js_parse_error -->
       const result = (await response.json()) as any;
       if (result?.success && result.evidence) {
         evidence = { ...evidence, ...result.evidence };
-        onevidenceUpdated?.();
+        onEvidenceUpdated?.();
       }
     } catch (err) {
       console.error('Analysis failed:', err);
@@ -87,7 +93,7 @@ https: //svelte.dev/e/js_parse_error -->
       if (result?.success && result.evidence) {
         evidence = { ...evidence, tags: result.evidence.tags || evidence.tags || [] };
         newTags = '';
-        onevidenceUpdated?.();
+        onEvidenceUpdated?.();
       }
     } catch (err) {
       console.error('Tag update failed:', err);
@@ -109,189 +115,202 @@ https: //svelte.dev/e/js_parse_error -->
   function getRelevanceColor(relevance: number): string {
     if (relevance >= 8) return 'text-green-600';
     if (relevance >= 6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (relevance < 4) return 'text-red-600';
+    return 'text-gray-600';
   }
 </script>
 
-<Dialog.Root bind:open title="Evidence Analysis" description="AI-powered legal evidence analysis and tagging" size="xl">
-  {#snippet trigger()}
-    {@render trigger?.()}
-  {/snippet}
-  {#if evidence}
-    <div class="space-y-4">
-      <!-- Evidence Header -->
-      <div class="space-y-4">
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <FileText class="space-y-4" />
-          </div>
-          <div>
-            <h3 class="space-y-4">
-              {evidence.type} Evidence
-            </h3>
-            <p class="space-y-4">ID: {evidence.id}</p>
-          </div>
-        </div>
-        <div class="space-y-4">
-          <Button
-            class="bits-btn"
-            variant="secondary"
-            size="sm"
-            onclick={() => {
-              /* export handler placeholder */
-            }}
-          >
-            <Download class="inline-block" />
-            <span>Export</span>
-          </Button>
+<Dialog.Root bind:open>
+  <Dialog.Content class="max-w-5xl">
+    <Dialog.Header>
+      <Dialog.Title class="flex items-center gap-2">
+        <Brain class="w-6 h-6" />
+        Evidence Analysis
+      </Dialog.Title>
+      <Dialog.Description>AI-powered legal evidence analysis and tagging.</Dialog.Description>
+    </Dialog.Header>
 
-          <Button
-            class="bits-btn"
-            variant="primary"
-            size="sm"
-            onclick={() => analyzeEvidence()}
-            disabled={isAnalyzing}
-          >
-            {#if isAnalyzing}
-              <span>Analyzing...</span>
-            {:else}
-              <Brain class="inline-block" />
-              <span>Re-analyze</span>
-            {/if}
-          </Button>
+    {#if evidence}
+      <div class="p-1 md:p-4 space-y-6 max-h-[80vh] overflow-y-auto">
+        <!-- Evidence Header -->
+        <div class="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+          <div class="flex items-center gap-4">
+            <FileText class="w-10 h-10 text-gray-400 flex-shrink-0" />
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">{evidence.type} Evidence</h3>
+              <p class="text-sm text-gray-500">ID: {evidence.id}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              on:click={() => {
+                /* export handler placeholder */
+              }}
+            >
+              <Download class="w-4 h-4 mr-2" />
+              Export
+            </Button>
+
+            <Button
+              variant="default"
+              size="sm"
+              on:click={analyzeEvidence}
+              disabled={isAnalyzing}
+            >
+              {#if isAnalyzing}
+                <Loader2 class="w-4 h-4 mr-2 animate-spin" />
+                <span>Analyzing...</span>
+              {:else}
+                <Brain class="w-4 h-4 mr-2" />
+                <span>Re-analyze</span>
+              {/if}
+            </Button>
+          </div>
         </div>
-      </div>
-      <!-- Grid Layout -->
-      <Grid columns={12} gap="md" responsive={true}>
-        <!-- Evidence Content -->
-        <GridItem colSpan={8}>
-          <div class="space-y-4">
-            <h4 class="space-y-4">Evidence Content</h4>
-            <p class="space-y-4">
-              {evidence.content}
-            </p>
-          </div>
-        </GridItem>
-        <!-- Quick Stats -->
-        <GridItem colSpan={4}>
-          <div class="space-y-4">
-            <!-- Relevance Score -->
-            {#if evidence.analysis?.relevance}
-              <div class="space-y-4">
-                <div class="space-y-4">
-                  <span class="space-y-4">Relevance Score</span>
-                  <Scale class="space-y-4" />
-                </div>
-                <div class="space-y-4">
-                  {evidence.analysis.relevance}/10
-                </div>
+
+        <!-- Grid Layout -->
+        <div class="grid grid-cols-12 gap-6">
+          <!-- Left Column -->
+          <div class="col-span-12 lg:col-span-8 space-y-6">
+            <!-- Evidence Content -->
+            <div>
+              <h4 class="text-md font-semibold mb-2">Evidence Content</h4>
+              <div
+                class="text-sm p-4 bg-gray-50 rounded-lg border max-h-60 overflow-y-auto prose prose-sm max-w-none"
+              >
+                {evidence.content}
               </div>
-            {/if}
-            <!-- Admissibility -->
-            {#if evidence.analysis?.admissibility}
-              <div class="space-y-4">
-                <div class="space-y-4">
-                  <span class="space-y-4">Admissibility</span>
-                  <Zap class="space-y-4" />
-                </div>
-                <span class="space-y-4">
-                  {evidence.analysis.admissibility}
-                </span>
-              </div>
-            {/if}
-          </div>
-        </GridItem>
-        <!-- Analysis Section -->
-        {#if evidence.analysis}
-          <GridItem colSpan={12}>
-            <div class="space-y-4">
-              <h4 class="space-y-4">
-                <Sparkles class="space-y-4" />
-                AI Analysis
-              </h4>
-              <Grid columns={12} gap="md">
-                <!-- Summary -->
-                <GridItem colSpan={6}>
+            </div>
+
+            <!-- AI Analysis Section -->
+            {#if evidence.analysis}
+              <div transition:fade>
+                <h4 class="text-md font-semibold mb-2 flex items-center gap-2">
+                  <Sparkles class="w-5 h-5 text-primary" />
+                  AI Analysis
+                </h4>
+                <div class="border rounded-lg p-4 space-y-4 bg-white">
                   <div>
-                    <h5 class="space-y-4">Summary</h5>
-                    <p class="space-y-4">
-                      {evidence.analysis.summary}
-                    </p>
+                    <h5 class="font-semibold text-sm mb-1">Summary</h5>
+                    <p class="text-sm text-gray-700">{evidence.analysis.summary}</p>
                   </div>
-                </GridItem>
-                <!-- Key Points -->
-                <GridItem colSpan={6}>
                   <div>
-                    <h5 class="space-y-4">Key Points</h5>
-                    <ul class="space-y-4">
+                    <h5 class="font-semibold text-sm mb-1">Key Points</h5>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
                       {#each evidence.analysis.keyPoints as point}
-                        <li class="space-y-4">
-                          <span class="space-y-4"></span>
-                          {point}
-                        </li>
+                        <li>{point}</li>
                       {/each}
                     </ul>
                   </div>
-                </GridItem>
-                <!-- Legal Reasoning -->
-                <GridItem colSpan={12}>
                   <div>
-                    <h5 class="space-y-4">Legal Reasoning</h5>
-                    <p class="space-y-4">
-                      {evidence.analysis.reasoning}
-                    </p>
+                    <h5 class="font-semibold text-sm mb-1">Legal Reasoning</h5>
+                    <p class="text-sm text-gray-700">{evidence.analysis.reasoning}</p>
                   </div>
-                </GridItem>
-              </Grid>
-            </div>
-          </GridItem>
-        {/if}
-        <!-- Tags Section -->
-        <GridItem colSpan={8}>
-          <div class="space-y-4">
-            <h4 class="space-y-4">
-              <Tag class="space-y-4" />
-              Tags
-            </h4>
-            <!-- Existing Tags -->
-            <div class="space-y-4">
-              {#each evidence.tags || [] as tag}
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
-              {/each}
-              {#each evidence.analysis?.suggestedTags || [] as tag}
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
-                  {tag} <span class="text-xs text-gray-500"> (suggested)</span>
-                </span>
-              {/each}
-            </div>
-            <!-- Add Tags -->
-            <div class="space-y-4">
-              <Input bind:value={newTags} placeholder="Add tags (comma-separated)" class="space-y-4" />
-              <Button class="bits-btn" size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>Add</Button>
-            </div>
-          </div>
-        </GridItem>
-        <!-- Similar Evidence -->
-        <GridItem colSpan={4}>
-          <div class="space-y-4">
-            <h4 class="space-y-4">Similar Evidence</h4>
-            <div class="space-y-4">
-              {#each evidence.similarEvidence || [] as similar}
-                <div class="space-y-4">
-                  <div class="space-y-4">Similarity: {(similar.similarity * 100).toFixed(0)}%</div>
-                  <p class="space-y-4">
-                    {similar.content.substring(0, 80)}...
-                  </p>
                 </div>
-              {/each}
+              </div>
+            {/if}
+
+            <!-- Tags Section -->
+            <div>
+              <h4 class="text-md font-semibold mb-2 flex items-center gap-2">
+                <Tag class="w-5 h-5 text-gray-500" />
+                Tags
+              </h4>
+              <div class="flex flex-wrap gap-2 mb-4 empty:mb-0">
+                {#each evidence.tags || [] as tag}
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800"
+                    >{tag}</span
+                  >
+                {/each}
+                {#each evidence.analysis?.suggestedTags || [] as tag}
+                  <button
+                    class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  >
+                    {tag} <span class="text-xs text-gray-500">(suggested)</span>
+                  </button>
+                {/each}
+              </div>
+              <div class="flex items-center gap-2">
+                <Input
+                  bind:value={newTags}
+                  placeholder="Add tags (comma-separated)"
+                  class="flex-grow"
+                  on:keydown={(e) => e.key === 'Enter' && updateTags()}
+                />
+                <Button size="sm" on:click={updateTags} disabled={!newTags.trim()}>Add Tags</Button>
+              </div>
             </div>
           </div>
-        </GridItem>
-      </Grid>
-    </div>
-  {/if}
-  {#snippet footer({ close })}
-    <Button class="bits-btn" variant="secondary" onclick={() => close()}>Close</Button>
-    <Button class="bits-btn" variant="primary" onclick={() => onsaveAnalysis?.()}>Save Analysis</Button>
-  {/snippet}
-</Dialog.Root>;
+
+          <!-- Right Column -->
+          <div class="col-span-12 lg:col-span-4 space-y-6">
+            <!-- Quick Stats -->
+            <div class="p-4 border rounded-lg bg-gray-50/50 space-y-4">
+              <h4 class="text-md font-semibold">Quick Stats</h4>
+              {#if evidence.analysis?.relevance != null}
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <Scale class="w-4 h-4 text-gray-500" />
+                    Relevance Score
+                  </div>
+                  <div class="text-lg font-bold {getRelevanceColor(evidence.analysis.relevance)}">
+                    {evidence.analysis.relevance}/10
+                  </div>
+                </div>
+              {/if}
+              {#if evidence.analysis?.admissibility}
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <Zap class="w-4 h-4 text-gray-500" />
+                    Admissibility
+                  </div>
+                  <span
+                    class="px-2 py-1 text-xs font-semibold rounded-full capitalize {getAdmissibilityColor(
+                      evidence.analysis.admissibility
+                    )}"
+                  >
+                    {evidence.analysis.admissibility}
+                  </span>
+                </div>
+              {/if}
+            </div>
+
+            <!-- Similar Evidence -->
+            <div>
+              <h4 class="text-md font-semibold mb-2">Similar Evidence</h4>
+              <div class="space-y-2 max-h-80 overflow-y-auto pr-2">
+                {#if (evidence.similarEvidence || []).length > 0}
+                  {#each evidence.similarEvidence as similar}
+                    <div class="p-2 border rounded-md text-xs bg-white hover:border-primary transition-colors">
+                      <div class="font-semibold text-gray-800 mb-1">
+                        Similarity: {(similar.similarity * 100).toFixed(0)}%
+                      </div>
+                      <p class="text-gray-600 line-clamp-2">{similar.content}</p>
+                    </div>
+                  {/each}
+                {:else}
+                  <div
+                    class="text-center py-4 border-2 border-dashed rounded-lg text-sm text-gray-500"
+                  >
+                    No similar evidence found.
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {:else}
+      <div class="flex items-center justify-center h-64">
+        <p class="text-gray-500">No evidence loaded.</p>
+      </div>
+    {/if}
+
+    <Dialog.Footer>
+      <Button variant="outline" on:click={() => (open = false)}>Close</Button>
+      <Button on:click={() => onSaveAnalysis?.()}>Save Analysis</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>

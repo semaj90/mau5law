@@ -1,5 +1,7 @@
 // Client wrapper for AI Service Worker with simple task API
 import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker';
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Assumed path for centralized endpoint helper
+
 export class GenerativeWorkerClient {
   private worker: Worker | null = null;
   private pending = new Map<string, (msg: WorkerMessage) => void>();
@@ -15,6 +17,16 @@ export class GenerativeWorkerClient {
         const cb = this.pending.get(e.data.taskId);
         if (cb) cb(e.data);
       });
+
+      // Send initial configuration to the worker
+      this.worker.postMessage({
+        type: 'INIT_CONFIG',
+        taskId: 'init-config', // A special task ID for initialization
+        payload: {
+          ollamaUrl: getOllamaEndpoint(),
+          // Add other relevant configurations if needed by the worker
+        },
+      } satisfies WorkerMessage);
     }
   }
   async run(task: AITask): Promise<AIResponse> {

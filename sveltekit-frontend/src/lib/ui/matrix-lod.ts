@@ -33,15 +33,26 @@ export interface GPULoadMetrics {
   renderTime: number;
   activeBuffers: number;
 }
+
+// Define a minimal interface for HybridGPUContext to satisfy type checking
+interface HybridGPUContext {
+  getActiveContextType(): string;
+  executeCompute(
+    computeShader: string,
+    buffers: { [key: string]: Float32Array | Int32Array },
+    uniforms: { [key: string]: Float32Array | Int32Array | number | number[] }
+  ): Promise<{ [key: string]: Float32Array | Int32Array }>;
+}
+
 export class MatrixLODSystem {
   private gl: WebGL2RenderingContext;
   private lodCache: LODCache = {};
   private shaderProgram: WebGLProgram | null = null;
   private viewportFocus: ViewportFocus | null = null;
-  private gpuMetrics: GPULoadMetrics;
+  private gpuMetrics: GPULoadMetrics; // Initialized in constructor
   private aiAwarenessEnabled = true;
   // Hybrid GPU Context Integration
-  private hybridGPU: import('../gpu/hybrid-gpu-context').HybridGPUContext | null = null;
+  private hybridGPU: HybridGPUContext | null = null; // Use the defined interface
   private useHybridAcceleration = true;
   // GLSL Shaders for cubic filter blending
   private vertexShaderSource = `#version 300 es
@@ -127,7 +138,14 @@ export class MatrixLODSystem {
     }
     this.gl = gl;
     this.initializeShaders();
-    this.initializeGPUMetrics();
+    // Initialize gpuMetrics before calling startPerformanceMonitoring
+    this.gpuMetrics = {
+      frameRate: 60,
+      gpuUtilization: 0,
+      memoryUsage: 0,
+      renderTime: 0,
+      activeBuffers: 0,
+    };
     this.startPerformanceMonitoring();
     // Initialize hybrid GPU acceleration
     this.initializeHybridGPU(canvas);
@@ -137,8 +155,32 @@ export class MatrixLODSystem {
    */ private async initializeHybridGPU(canvas: HTMLCanvasElement): Promise<void> {
     if (!this.useHybridAcceleration) return;
     try {
-      const { createHybridGPUContext } = await import('../gpu/hybrid-gpu-context');
-      this.hybridGPU = await createHybridGPUContext(canvas, {
+      // Define factory type (returns either a HybridGPUContext or a Promise thereof)
+      type HybridGPUFactory = (
+        canvas: HTMLCanvasElement,
+        opts: {
+          preferWebGPU?: boolean;
+          allowWebGL2?: boolean;
+          allowWebGL1?: boolean;
+          requireCompute?: boolean;
+          lodSystemIntegration?: boolean;
+          nesMemoryOptimization?: boolean;
+        }
+      ) => Promise<HybridGPUContext> | HybridGPUContext;
+
+      // Robust dynamic import: handle multiple possible export shapes (named, alternative name, or default)
+      const mod: {
+        default?: HybridGPUFactory;
+        createHybridGPUContext?: HybridGPUFactory;
+      } = await import('../gpu/hybrid-gpu-context');
+
+      const factory: HybridGPUFactory | undefined = mod.default || mod.createHybridGPUContext;
+
+      if (!factory) {
+        throw new Error('Hybrid GPU context factory not found in module.');
+      }
+
+      this.hybridGPU = await factory(canvas, {
         preferWebGPU: true,
         allowWebGL2: true,
         allowWebGL1: true,
@@ -146,9 +188,10 @@ export class MatrixLODSystem {
         lodSystemIntegration: true,
         nesMemoryOptimization: true,
       });
-      console.log(`🚀 Matrix LOD System using ${this.hybridGPU.getActiveContextType()} acceleration`);
+
+      console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid'} acceleration`);
     } catch (error) {
-      console.warn('⚠️ Hybrid GPU initialization failed, using WebGL2 fallback:', error);
+      console.warn('⚠️ Hybrid GPU initialization failed or factory not found, using WebGL2 fallback:', error);
       this.useHybridAcceleration = false;
     }
   }
@@ -313,11 +356,12 @@ export class MatrixLODSystem {
       @group(0) @binding(0) var<storage, read> positions: array<vec2f>;
       @group(0) @binding(1) var<storage, read_write> lodLevels: array<f32>;
       @group(0) @binding(2) var<uniform> viewportFocus: vec3f; // x, y, radius
-      @group(0) @binding(3) var<uniform> aiSuggestions: array<i32, 64>;
+      @group(0) @binding(3) var<storage, read> aiSuggestions: array<i32>; // Changed to storage for dynamic size
+      @group(0) @binding(4) var<uniform> aiAwarenessEnabled: f32; // 0.0 or 1.0
       @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= arrayLength(&positions)) { return }
+        if (index >= arrayLength(&positions)) { return; }
         let pos = positions[index];
         let focusCenter = viewportFocus.xy;
         let focusRadius = viewportFocus.z;
@@ -331,25 +375,40 @@ export class MatrixLODSystem {
           lodLevel = 1.0; // mid
         }
         // AI boost logic (simplified for GPU)
-        if (aiSuggestions[index % 64] > 0) {
+        if (aiAwarenessEnabled > 0.5 && index < arrayLength(&aiSuggestions) && aiSuggestions[index] > 0) {
           lodLevel = min(lodLevel + 1.0, 2.0);
         }
         lodLevels[index] = lodLevel;
       }
     `;
     try {
-      // Create AI suggestions buffer (simplified)
-      const aiSuggestionIndices = new Int32Array(64);
+      // Create AI suggestions buffer
+      const aiSuggestionIndices = new Int32Array(componentIds.length);
       componentIds.forEach((componentId, index) => {
-        if (index < 64 && this.viewportFocus!.aiSuggestions.includes(componentId)) {
+        if (this.viewportFocus!.aiSuggestions.includes(componentId)) {
           aiSuggestionIndices[index] = 1;
         }
       });
-      const results = await this.hybridGPU.executeCompute(computeShader, positions, positions.length);
-      // Note: executeCompute has a different signature, simplified call
-      // TODO: Update to properly handle viewportFocus and aiSuggestions data
-      const lodLevelsUnion = results as { lodLevels?: Float32Array } | Float32Array;
-      const lodLevels = (lodLevelsUnion as { lodLevels?: Float32Array }).lodLevels ?? (lodLevelsUnion as Float32Array);
+
+      // Execute compute shader with proper buffers and uniforms
+      const results = await this.hybridGPU.executeCompute(
+        computeShader,
+        {
+          positions: positions,
+          aiSuggestions: aiSuggestionIndices,
+          lodLevels: new Float32Array(componentIds.length), // Output buffer for lodLevels
+        },
+        {
+          viewportFocus: new Float32Array([
+            this.viewportFocus.centerX,
+            this.viewportFocus.centerY,
+            this.viewportFocus.radius,
+          ]),
+          aiAwarenessEnabled: this.aiAwarenessEnabled ? 1.0 : 0.0,
+        }
+      );
+
+      const lodLevels = results.lodLevels as Float32Array;
       // Apply calculated LOD levels
       componentIds.forEach((componentId, index) => {
         const levelValue = lodLevels[index];
@@ -385,8 +444,8 @@ export class MatrixLODSystem {
       } else if (normalizedDistance < 0.7) {
         lodLevel = 'mid';
       }
-      // AI boost for suggested elements
-      if (this.viewportFocus!.aiSuggestions.includes(componentId)) {
+      // AI boost for suggested elements, only if AI awareness is enabled
+      if (this.aiAwarenessEnabled && this.viewportFocus!.aiSuggestions.includes(componentId)) {
         if (lodLevel === 'low') lodLevel = 'mid';
         else if (lodLevel === 'mid') lodLevel = 'high';
       }
@@ -421,13 +480,8 @@ export class MatrixLODSystem {
   /**
    * Initialize GPU performance metrics
    */ private initializeGPUMetrics(): void {
-    this.gpuMetrics = {
-      frameRate: 60,
-      gpuUtilization: 0,
-      memoryUsage: 0,
-      renderTime: 0,
-      activeBuffers: 0,
-    };
+    // This method is no longer needed as gpuMetrics is initialized in the constructor
+    // Keeping it for now, but it's effectively a no-op after constructor initialization.
   }
   /**
    * Start performance monitoring loop

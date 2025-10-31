@@ -217,3 +217,29 @@ export * from './api';
 // Export the search module as a namespaced export to avoid duplicate top-level exports
 // Usage elsewhere: import type { search } from '$lib/types'; or `import type { LegalDocument } from '$lib/types/search'`
 export * as search from './search';
+
+export interface Case {
+  // core
+  id: string;
+  title?: string;
+  description?: string;
+
+  // form-related fields (added so components can access them safely)
+  caseNumber?: string;
+  name?: string;
+  incidentDate?: string | Date | null;
+  location?: string;
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  status?: 'open' | 'active' | 'pending' | 'closed' | 'archived';
+  category?: string;
+  dangerScore?: number;
+  estimatedValue?: number | string | null;
+  jurisdiction?: string;
+  leadProsecutor?: string;
+
+  // team / tags / metadata
+  assignedTeam?: string[];
+  assignedTo?: string[]; // legacy alias
+  tags?: string[];
+  metadata?: Record<string, any>;
+}

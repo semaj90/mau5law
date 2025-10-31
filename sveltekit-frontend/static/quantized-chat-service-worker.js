@@ -6,6 +6,9 @@ const CACHE_NAME = 'quantized-chat-cache-v1';
 const GRPMO_THINKING_CACHE = 'grpmo-thinking-cache';
 const CHR_ROM_CACHE = 'chr-rom-patterns';
 
+// Global variable for API base URL, defaults to current origin
+let chatApiBaseUrl = self.location.origin;
+
 // Initialize caches and GRPMO thinking system
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -13,18 +16,20 @@ self.addEventListener('install', (event) => {
       caches.open(CACHE_NAME),
       caches.open(GRPMO_THINKING_CACHE),
       caches.open(CHR_ROM_CACHE),
-      initializeGRPMOThinking(),
+      initializeGRPMOThinking(chatApiBaseUrl), // Pass the current base URL
     ])
   );
 });
 
 // GRPMO "Thinking" System - Predicts and pre-caches responses
 class GRPMOThinkingEngine {
-  constructor() {
+  constructor(apiBaseUrl) {
+    // Accept apiBaseUrl in constructor
     this.thinkingPatterns = new Map();
     this.userContextCache = new Map();
     this.quantizedPatterns = new Map();
     this.compressionRatios = new Map();
+    this.apiBaseUrl = apiBaseUrl; // Store it
   }
 
   // Initialize thinking patterns from user history
@@ -32,23 +37,20 @@ class GRPMOThinkingEngine {
     try {
       const historicalData = await this.fetchUserChatHistory();
       this.buildThinkingPatterns(historicalData);
-      console.log(
-        '🧠 GRPMO Thinking Engine initialized with',
-        this.thinkingPatterns.size,
-        'patterns'
-      );
+      console.log('🧠 GRPMO Thinking Engine initialized with', this.thinkingPatterns.size, 'patterns');
     } catch (error) {
       console.warn('GRPMO initialization failed:', error);
     }
   }
 
   // Predict likely user queries and pre-cache responses
-  predictNextQueries(currentQuery, userContext) {
+  predictNextQueries(currentQuery, _userContext) {
     const predictions = [];
     const queryEmbedding = this.generateQueryEmbedding(currentQuery);
 
     // Find similar historical patterns
-    for (const [pattern, data] of this.thinkingPatterns) {
+    for (const [$, data] of this.thinkingPatterns) {
+      // Changed _pattern to $
       const similarity = this.calculateSimilarity(queryEmbedding, data.embedding);
       if (similarity > 0.7) {
         predictions.push({
@@ -111,7 +113,7 @@ class GRPMOThinkingEngine {
 
     // Tokenize and convert common patterns to glyphs
     const tokens = this.tokenizeMarkdown(text);
-    const glyphs = tokens.map((token) => {
+    const glyphs = tokens.map(token => {
       if (!glyphMap.has(token)) {
         glyphMap.set(token, String.fromCharCode(32 + glyphCount));
         glyphCount++;
@@ -142,12 +144,10 @@ class GRPMOThinkingEngine {
     let tokens = [text];
 
     for (const pattern of patterns) {
-      tokens = tokens.flatMap((token) =>
-        typeof token === 'string' ? token.split(pattern) : [token]
-      );
+      tokens = tokens.flatMap(token => (typeof token === 'string' ? token.split(pattern) : [token]));
     }
 
-    return tokens.filter((token) => token && token.trim());
+    return tokens.filter(token => token && token.trim());
   }
 
   // Bit-level compression for quantized data
@@ -220,7 +220,8 @@ class GRPMOThinkingEngine {
 
   async fetchUserChatHistory() {
     try {
-      const response = await fetch('/api/chat/history?limit=100');
+      // Use the stored apiBaseUrl
+      const response = await fetch(`${this.apiBaseUrl}/api/chat/history?limit=100`);
       return await response.json();
     } catch (error) {
       console.warn('Could not fetch chat history:', error);
@@ -248,8 +249,9 @@ class GRPMOThinkingEngine {
 // Initialize GRPMO Thinking Engine
 let grpmoEngine;
 
-async function initializeGRPMOThinking() {
-  grpmoEngine = new GRPMOThinkingEngine();
+async function initializeGRPMOThinking(apiBaseUrl) {
+  // Accept apiBaseUrl here
+  grpmoEngine = new GRPMOThinkingEngine(apiBaseUrl); // Pass it to constructor
   await grpmoEngine.initialize();
 }
 
@@ -258,6 +260,7 @@ class CHRROMPatternCache {
   constructor() {
     this.patterns = new Map();
     this.renderCache = new Map();
+    this.cacheHits = 0; // Add cache hit counter
   }
 
   // Cache pre-rendered HTML patterns
@@ -284,6 +287,7 @@ class CHRROMPatternCache {
       return null;
     }
 
+    this.cacheHits++; // Increment on hit
     return pattern.html;
   }
 
@@ -319,7 +323,7 @@ class CHRROMPatternCache {
 const chrROMCache = new CHRROMPatternCache();
 
 // Main service worker event handlers
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
   // Intercept chat API requests
@@ -341,7 +345,7 @@ async function handleQuantizedChat(request) {
 
   // Check for instant cache hit
   const cacheKey = `chat:${userId}:${grpmoEngine.simpleHash(userQuery)}`;
-  const cachedResponse = chrROMCache.getPattern(cacheKey);
+  const cachedResponse = chrROMCache.getPattern(cacheKey); // This will now increment cacheHits
 
   if (cachedResponse) {
     console.log('⚡ Instant cache hit for query:', userQuery.slice(0, 50));
@@ -408,34 +412,41 @@ async function handleQuantizedChatStream(request) {
   const stream = new ReadableStream({
     async start(controller) {
       let fullResponse = '';
+      let doneReading = false; // Introduce a flag to control the loop
 
       try {
-        while (true) {
+        while (!doneReading) {
+          // Loop as long as we are not done reading
           const { done, value } = await reader.read();
-          if (done) break;
+          doneReading = done; // Update the flag with the actual 'done' status from the reader
 
-          const chunk = new TextDecoder().decode(value);
-          fullResponse += chunk;
+          if (value) {
+            // Process chunk only if a value exists
+            const chunk = new TextDecoder().decode(value);
+            fullResponse += chunk;
 
-          // Real-time markdown conversion
-          const htmlChunk = await chrROMCache.markdownToHTML(chunk);
+            // Real-time markdown conversion
+            const htmlChunk = await chrROMCache.markdownToHTML(chunk);
 
-          // Send quantized chunk
-          const quantizedChunk = grpmoEngine
-            ? grpmoEngine.quantizeResponse(chunk)
-            : { compressed: chunk, originalSize: chunk.length };
+            // Send quantized chunk
+            const quantizedChunk = grpmoEngine
+              ? grpmoEngine.quantizeResponse(chunk)
+              : { compressed: chunk, originalSize: chunk.length };
 
-          const processedChunk = JSON.stringify({
-            content: htmlChunk,
-            quantized: quantizedChunk,
-            streaming: true,
-          });
+            const processedChunk = JSON.stringify({
+              content: htmlChunk,
+              quantized: quantizedChunk,
+              streaming: true,
+            });
 
-          controller.enqueue(new TextEncoder().encode(processedChunk + '\n'));
+            controller.enqueue(new TextEncoder().encode(processedChunk + '\n'));
+          }
         }
 
-        // Cache complete response
+        // Cache complete response after the loop has finished
         if (fullResponse) {
+          // Note: request.json() here might fail if the request body has already been consumed by fetch(request).
+          // If userQuery and userId are critical, consider cloning the request or extracting them before fetch.
           const requestBody = await request.json().catch(() => ({}));
           const userQuery = requestBody.messages?.[requestBody.messages.length - 1]?.content || '';
           const userId = requestBody.userId || 'anonymous';
@@ -447,7 +458,7 @@ async function handleQuantizedChatStream(request) {
       } catch (error) {
         console.error('Stream processing error:', error);
       } finally {
-        controller.close();
+        controller.close(); // Ensure the controller is closed in all cases (success or error)
       }
     },
   });
@@ -509,12 +520,12 @@ async function decompressQuantizedResponse(quantizedData) {
 
   return glyphs
     .split('')
-    .map((glyph) => reverseGlyphMap[glyph] || glyph)
+    .map(glyph => reverseGlyphMap[glyph] || glyph)
     .join('');
 }
 
 // Background sync for thinking patterns
-self.addEventListener('sync', (event) => {
+self.addEventListener('sync', event => {
   if (event.tag === 'grpmo-thinking-sync') {
     event.waitUntil(syncThinkingPatterns());
   }
@@ -545,13 +556,23 @@ async function syncThinkingPatterns() {
 }
 
 // Performance monitoring
-self.addEventListener('message', (event) => {
+self.addEventListener('message', event => {
+  // Allow the main thread to set the API base URL
+  if (event.data && event.data.type === 'SET_API_BASE_URL' && event.data.url) {
+    chatApiBaseUrl = event.data.url;
+    // If engine is already initialized, update its base URL
+    if (grpmoEngine) {
+      grpmoEngine.apiBaseUrl = chatApiBaseUrl;
+      console.log('🔗 GRPMO Thinking Engine API base URL updated:', chatApiBaseUrl);
+    }
+  }
+
   if (event.data.type === 'GET_PERFORMANCE_METRICS') {
     const metrics = {
       chrROMCacheSize: chrROMCache.patterns.size,
       thinkingPatterns: grpmoEngine ? grpmoEngine.thinkingPatterns.size : 0,
       compressionRatios: grpmoEngine ? Object.fromEntries(grpmoEngine.compressionRatios) : {},
-      cacheHits: chrROMCache.patterns.size,
+      cacheHits: chrROMCache.cacheHits, // Use the actual cache hit counter
       timestamp: Date.now(),
     };
 

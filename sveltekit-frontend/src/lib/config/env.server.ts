@@ -140,7 +140,17 @@ const parsed = ConfigSchema.safeParse({
   NEO4J_USER: env.NEO4J_USER,
   NEO4J_PASSWORD: env.NEO4J_PASSWORD,
 
-  MINIO_URL: env.MINIO_URL || env.MINIO_ENDPOINT,
+  // Normalize MINIO entries for local development: allow bare host:port and prefix http://
+  MINIO_URL: (() => {
+    const raw = env.MINIO_URL || env.MINIO_ENDPOINT;
+    if (!raw) return undefined;
+    // If already looks like a URL, return as-is
+    if (/^https?:\/\//i.test(raw)) return raw;
+    // If looks like host:port, prefix http:// for local/dev convenience
+    if (/^[a-z0-9._-]+:\d+$/i.test(raw)) return `http://${raw}`;
+    // Fallback: in non-production, prefix http://; in production, leave undefined to fail validation
+    return env.NODE_ENV === 'production' ? raw : `http://${raw}`;
+  })(),
   MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY,
   MINIO_SECRET_KEY: env.MINIO_SECRET_KEY,
   MINIO_BUCKET: env.MINIO_BUCKET,

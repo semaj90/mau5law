@@ -3,7 +3,7 @@
 export interface WebGPUDevice {
   device: GPUDevice;
   adapter: GPUAdapter;
-  queue: GPUCommandQueue;
+  queue: GPUQueue;
   features: Set<string>;
   limits: GPUSupportedLimits;
 }
@@ -33,7 +33,7 @@ export interface WebGPUTensorOperation {
   operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize';
   inputTensors: WebGPUTensor[];
   outputTensor: WebGPUTensor;
-  parameters?: { [key: string]: any };
+  parameters?: Record<string, unknown>;
 }
 export interface WebGPUTensor {
   data: Float32Array | Uint32Array | Int32Array;
@@ -75,7 +75,7 @@ export interface WebGPULegalProcessor {
 export interface WebGPUProcessingResult {
   success: boolean;
   processedText: string;
-  metadata: { [key: string]: any };
+  metadata: Record<string, unknown>;
   performanceMetrics: WebGPUPerformanceMetrics;
 }
 export interface WebGPUEntityResult {
@@ -172,7 +172,7 @@ export interface WebGPUError extends Error {
   code: string;
   details: string;
   recoverable: boolean;
-  context: { [key: string]: any };
+  context: Record<string, unknown>;
 }
 export interface WebGPUValidationError extends WebGPUError {
   shaderSource?: string;
@@ -194,25 +194,8 @@ export interface WebGPUEventHandler {
 export type WebGPUDataType = 'f32' | 'i32' | 'u32' | 'f16';
 export type WebGPUOperationType = 'compute' | 'render' | 'copy';
 export type WebGPUShaderStage = 'vertex' | 'fragment' | 'compute';
-// Re-export WebGPU native types for convenience
-export type {
-  GPUDevice,
-  GPUAdapter,
-  GPUBuffer,
-  GPUTexture,
-  GPUShaderModule,
-  GPUComputePipeline,
-  GPURenderPipeline,
-  GPUCommandEncoder,
-  GPUComputePassEncoder,
-  GPURenderPassEncoder,
-  GPUBindGroup,
-  GPUBindGroupLayout,
-  GPUQueue,
-  GPUSupportedLimits,
-  GPUDeviceLostInfo,
-  GPUUncapturedErrorEvent,
-  GPUBufferUsage,
-  GPUTextureUsage,
-  GPUShaderStage as NativeGPUShaderStage,
-} from '@webgpu/types';
+// NOTE: Avoid re-declaring native GPU types here to prevent conflicts
+// with the official `@webgpu/types` package when it is installed.
+// The project should rely on `@webgpu/types` (installed via npm) for
+// low-level type declarations. This file exports higher-level, project
+// specific interfaces used across the frontend.

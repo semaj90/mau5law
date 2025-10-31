@@ -107,53 +107,31 @@ export class QdrantClient {
       with_vector: false
     };
     if (scoreThreshold !== undefined) body.score_threshold = scoreThreshold;
-
-    const json = await this.request('POST', endpoint, body);
-    // Qdrant search format: { result: [ { id, payload, vector?, score? }, ... ] }
-    const resultArray = (json as Record<string, unknown> | null)?.result as unknown[] | undefined;
-    const hits = Array.isArray(resultArray) ? resultArray : [];
-    return hits.map((h: unknown) => {
-      const obj = h as Record<string, unknown>;
-      return {
-        id: String(obj.id ?? ''),
-        vector: Array.isArray(obj.vector) ? (obj.vector as number[]) : [],
-        payload: (obj.payload as Record<string, unknown>) ?? {},
-        score: typeof obj.score === 'number' ? (obj.score as number) : undefined
-      };
-    });
+    const res = await this.request('POST', endpoint, body);
+    return (res as { result: QdrantPoint[] }).result || [];
   }
 
-  async upsert(collection: string, points: QdrantPoint[]): Promise<void> {
+  /**
+   * Upserts (inserts or updates) points into a Qdrant collection.
+   * @param collection The name of the collection.
+   * @param points An array of points to upsert.
+   */
+  async upsertPoints(collection: string, points: Omit<QdrantPoint, 'score'>[]): Promise<unknown> {
     const endpoint = `/collections/${encodeURIComponent(collection)}/points`;
-    const body = { points: points.map(p => ({ id: p.id, vector: p.vector, payload: p.payload })) };
-    await this.request('PUT', endpoint, body as Record<string, unknown>);
+    const body = {
+      points: points.map(p => ({
+        id: p.id,
+        vector: p.vector,
+        payload: p.payload,
+      })),
+    };
+    return this.request('PUT', endpoint, body);
   }
 
-  async createCollection(collection: string, vectorSize: number, distance: 'Cosine' | 'Euclidean' | 'Dot' = 'Cosine'): Promise<void> {
+  async getCollectionInfo(collection: string): Promise<QdrantCollectionInfo> {
     const endpoint = `/collections/${encodeURIComponent(collection)}`;
-    const body = { vectors: { size: vectorSize, distance } };
-    try {
-      await this.request('PUT', endpoint, body as Record<string, unknown>);
-    } catch (err) {
-      // ignore if already exists
-      const e = err as { message?: unknown } | Error;
-      const msg = String((e as { message?: unknown }).message ?? '');
-      if (!msg.includes('already exists')) throw err;
-    }
-  }
-
-  async collectionInfo(collection: string): Promise<QdrantCollectionInfo> {
-    const info = await this.request('GET', `/collections/${encodeURIComponent(collection)}`);
-    return (info as QdrantCollectionInfo) ?? {};
-  }
-
-  async healthCheck(): Promise<boolean> {
-    try {
-      const res = await fetch(`${this.baseUrl}/health`);
-      return res.ok;
-    } catch {
-      return false;
-    }
+    const res = await this.request('GET', endpoint);
+    return res as QdrantCollectionInfo;
   }
 }
 

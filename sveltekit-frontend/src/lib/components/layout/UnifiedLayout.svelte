@@ -1,33 +1,60 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
+  import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
   import NavBar from './NavBar.svelte';
-  import { onMount } from 'svelte';
-  import type { Snippet } from 'svelte';
+
   interface Props {
-    children?: Snippet;
+    children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
-    user?: unknown;
-    showSidebar?: boolean;
+    user?: any;
     title?: string;
     hideNav?: boolean;
   }
-  let { children, variant = 'full', user = null, showSidebar = true, title = '', hideNav = false }: Props = $props();
+
+  // safer: get props object and destructure (avoids TS/runtime issues)
+  const _props = $props() as Partial<Props> | undefined;
+  let children = _props?.children;
+  let variant: Props['variant'] = _props?.variant ?? 'full';
+  let user: any = _props?.user ?? null;
+  let title: string = _props?.title ?? '';
+  let hideNav: boolean = _props?.hideNav ?? false;
+
   let sidebarOpen = $state(false);
   let mounted = $state(false);
-  let currentPath = $derived($page.url.pathname);
-  // Auto-detect variant based on route
-  let autoVariant = $derived(() => {
-    if (currentPath.startsWith('/demo')) return 'demo';
-    if (currentPath.startsWith('/admin')) return 'admin';
-    if (currentPath.startsWith('/auth')) return 'minimal';
-    return variant;
-  });
-  // Check if we're in a demo route
-  let isDemoRoute = $derived(currentPath.startsWith('/demo'));
-  let isAuthRoute = $derived(currentPath.startsWith('/auth'));
-  let isAdminRoute = $derived(currentPath.startsWith('/admin'));
+  let autoVariant = $state(variant);
+
+  // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
+  function updateVariantFromPath(p: string) {
+    if (!p || typeof p !== 'string') {
+      autoVariant = variant;
+      return;
+    }
+    if (p.startsWith('/demo')) autoVariant = 'demo';
+    else if (p.startsWith('/admin')) autoVariant = 'admin';
+    else if (p.startsWith('/auth')) autoVariant = 'minimal';
+    else autoVariant = variant;
+  }
+
+  // subscribe if page is a readable store
+  if (page && typeof (page as any).subscribe === 'function') {
+    (page as any).subscribe(($p: any) => {
+      const p = $p?.url?.pathname ?? (browser && typeof location !== 'undefined' ? location.pathname : '/');
+      updateVariantFromPath(p);
+    });
+  } else {
+    // fallback once, and on mount use browser location if available
+    $effect(() => {
+      const p = browser && typeof location !== 'undefined' ? location.pathname : '/';
+      updateVariantFromPath(p);
+    });
+  }
+
+  // derived booleans (safe guards)
+  let isDemoRoute = $derived(() => autoVariant === 'demo');
+  let isAuthRoute = $derived(() => autoVariant === 'minimal');
+  let isAdminRoute = $derived(() => autoVariant === 'admin');
+
   $effect(() => {
     mounted = true;
   });
@@ -35,10 +62,13 @@
 
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
-    <NavBar bin sidebarOpen {user} variant={autoVariant} />
+    <!-- bind sidebarOpen so NavBar can toggle it -->
+    <NavBar bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
+
   <!-- Skip Navigation Link for Accessibility -->
-  <a href="#main-content" class="skip-nav"> Skip to main content </a>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
   <!-- Main Content Area -->
   <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay for Mobile -->
@@ -47,19 +77,20 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="sidebar-overlay nes-container is-dark"
-        onclick={() => (sidebarOpen = false)}
+        on:click={() => (sidebarOpen = false)}
         role="button"
         tabindex="0"
-        onkeydown={e => e.key === 'Enter' && (sidebarOpen = false)}
+        on:keydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
       ></div>
     {/if}
+
     <!-- Main Content -->
     <main
       id="main-content"
       class="main-content"
-      class:demo-theme={isDemoRoute}
-      class:admin-theme={isAdminRoute}
-      class:auth-theme={isAuthRoute}
+      class:demo-theme={$isDemoRoute}
+      class:admin-theme={$isAdminRoute}
+      class:auth-theme={$isAuthRoute}
       aria-label="Main content"
     >
       {#if title}
@@ -67,150 +98,119 @@
           <p class="title">{title}</p>
         </div>
       {/if}
+
       <div class="content-container">
         {#if mounted && children}
           {@render children()}
         {:else if mounted}
           <div class="loading-fallback nes-container is-rounded">
-            <p class="nes-text is-primary">Loading...</p>
-          </div>
-        {/if}
-      </div>
-    </main>
-  </div>
-</div>
+            <p class<script lang="ts">
+  // Svelte 5 runes are auto-imported
+  import { page } from '$app/state'; // replaced deprecated $app/stores import
+  import { browser } from '$app/environment';
+  import NavBar from './NavBar.svelte';
 
-<style>
-  /* Root Layout Styles */
-  .unified-layout {
-    min-height: 100vh;
-    background: linear-gradient(135deg, var(--nier-bg-primary, #0f0f23), var(--nier-bg-secondary, #1a1a2e));
-    color: var(--nier-text-primary, #e2e8f0);
-    font-family: 'JetBrains Mono', 'Press Start 2P', monospace;
+  interface Props {
+    children?: any;
+    variant?: 'full' | 'minimal' | 'demo' | 'admin';
+    user?: any;
+    title?: string;
+    hideNav?: boolean;
   }
 
-  /* Skip Navigation */
-  .skip-nav {
-    position absolute;
-    top: -40px;
-    left: 6px;
-    background: var(--n64-primary, #4a90e2);
-    color: white;
-    padding: 8px;
-    text-decoration none;
-    border-radius: 4px;
-    z-index: 100;
-    font-size: 14px;
-  }
-  .skip-nav:focus {
-    top: 6px;
-  }
+  // safer: get props object and destructure (avoids TS/runtime issues)
+  const _props = $props() as Partial<Props> | undefined;
+  let children = _props?.children;
+  let variant: Props['variant'] = _props?.variant ?? 'full';
+  let user: any = _props?.user ?? null;
+  let title: string = _props?.title ?? '';
+  let hideNav: boolean = _props?.hideNav ?? false;
 
-  /* Content Wrapper */
-  .content-wrapper {
-    display: flex;
-    min-height: calc(100vh - 64px); /* Account for navbar */
-    margin-top: 64px; /* Navbar height */
-  }
-  .content-wrapper.no-nav {
-    margin-top: 0;
-    min-height: 100vh;
-  }
+  let sidebarOpen = $state(false);
+  let mounted = $state(false);
+  let autoVariant = $state(variant);
 
-  /* Sidebar Overlay for Mobile */
-  .sidebar-overlay {
-    position fixed;
-    inset: 0,
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 25,
-    cursor: pointer;
-  }
-  @media (min-width: 768px) {
-    .sidebar-overlay {
-      display: none;
+  // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
+  function updateVariantFromPath(p: string) {
+    if (!p || typeof p !== 'string') {
+      autoVariant = variant;
+      return;
     }
+    if (p.startsWith('/demo')) autoVariant = 'demo';
+    else if (p.startsWith('/admin')) autoVariant = 'admin';
+    else if (p.startsWith('/auth')) autoVariant = 'minimal';
+    else autoVariant = variant;
   }
 
-  /* Main Content */
-  .main-content {
-    flex: 1,
-    padding: 1.5rem;
-    overflow-y: auto;
-    background: transparent;
+  // subscribe if page is a readable store
+  if (page && typeof (page as any).subscribe === 'function') {
+    (page as any).subscribe(($p: any) => {
+      const p = $p?.url?.pathname ?? (browser && typeof location !== 'undefined' ? location.pathname : '/');
+      updateVariantFromPath(p);
+    });
+  } else {
+    // fallback once, and on mount use browser location if available
+    $effect(() => {
+      const p = browser && typeof location !== 'undefined' ? location.pathname : '/';
+      updateVariantFromPath(p);
+    });
   }
 
-  /* Page Header */
-  .page-header {
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
-  }
-  .page-header .title {
-    color: white !important;
-    font-family: 'Press Start 2P', cursive !important;
-    font-size: 1rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 0 !important;
-  }
+  // derived booleans (safe guards)
+  let isDemoRoute = $derived(() => autoVariant === 'demo');
+  let isAuthRoute = $derived(() => autoVariant === 'minimal');
+  let isAdminRoute = $derived(() => autoVariant === 'admin');
 
-  /* Content Container */
-  .content-container {
-    max-width: 100%;
-    margin: 0 auto;
-  }
+  $effect(() => {
+    mounted = true;
+  });
+</script>
 
-  /* Loading Fallback */
-  .loading-fallback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    background: rgba(26, 26, 46, 0.8) !important;
-    border: 2px solid var(--n64-primary, #4a90e2) !important;
-  }
+<div class="unified-layout" data-variant={autoVariant}>
+  {#if !hideNav}
+    <!-- bind sidebarOpen so NavBar can toggle it -->
+    <NavBar bind:sidebarOpen {user} variant={autoVariant} />
+  {/if}
 
-  /* Theme Variants */
-  /* Demo Theme */
-  .main-content.demo-theme {
-    background: linear-gradient(135deg, rgba(74, 144, 226, 0.05), rgba(126, 227, 33, 0.05));
-  }
-  .main-content.demo-theme .content-container {
-    background: rgba(26, 26, 46, 0.3);
-    border-radius: 8px;
-    padding: 1.5rem;
-    border: 1px solid var(--n64-primary, #4a90e2);
-  }
+  <!-- Skip Navigation Link for Accessibility -->
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
 
-  /* Admin Theme */
-  .main-content.admin-theme {
-    background: linear-gradient(135deg, rgba(208, 2, 27, 0.05), rgba(245, 166, 35, 0.05));
-  }
-  .main-content.admin-theme .content-container {
-    background: rgba(46, 26, 26, 0.3);
-    border-radius: 8px;
-    padding: 1.5rem;
-    border: 1px solid var(--nes-error, #d0021b);
-  }
+  <!-- Main Content Area -->
+  <div class="content-wrapper" class:no-nav={hideNav}>
+    <!-- Sidebar Overlay for Mobile -->
+    {#if sidebarOpen && browser}
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div
+        class="sidebar-overlay nes-container is-dark"
+        on:click={() => (sidebarOpen = false)}
+        role="button"
+        tabindex="0"
+        on:keydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
+      ></div>
+    {/if}
 
-  /* Auth Theme */
-  .main-content.auth-theme {
-    background: linear-gradient(135deg, rgba(15, 15, 35, 0.9), rgba(26, 26, 46, 0.9));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 64px);
-  }
-  .main-content.auth-theme .content-container {
-    max-width: 400px;
-    width: 100%;
-    background: rgba(26, 26, 46, 0.8);
-    border-radius: 12px;
-    padding: 2rem;
-    border: 2px solid var(--n64-primary, #4a90e2);
-    backdrop-filter: blur(10px);
-  }
+    <!-- Main Content -->
+    <main
+      id="main-content"
+      class="main-content"
+      class:demo-theme={$isDemoRoute}
+      class:admin-theme={$isAdminRoute}
+      class:auth-theme={$isAuthRoute}
+      aria-label="Main content"
+    >
+      {#if title}
+        <div class="page-header nes-container with-title">
+          <p class="title">{title}</p>
+        </div>
+      {/if}
 
-  /* Layout Variants */
+      <div class="content-container">
+        {#if mounted && children}
+          {@render children()}
+        {:else if mounted}
+          <div class="loading-fallback nes-container is-rounded">
+            <p class
   /* Minimal Layout */
   [data-variant='minimal'] .main-content {
     padding: 1rem;

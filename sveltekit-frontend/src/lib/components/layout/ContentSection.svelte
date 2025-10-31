@@ -89,7 +89,7 @@
   });
 </script>
 
-<section class={sectionClass} {...restProps}>
+<section class={cn(sectionClass, className)} {...restProps}>
   {#if title || subtitle}
     <header class={headerClass}>
       {#if title}

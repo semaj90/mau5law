@@ -1,3 +1,5 @@
+import { getHealthEndpoint, getGpuMetricsEndpoint } from '$lib/utils/api-endpoints';
+
 /**
  * GPU Metrics Batcher - Client-side Performance Monitoring
  * Batches FPS, effect metrics, and GPU utilization data for optimal transmission
@@ -16,7 +18,7 @@ export interface GPUMetric {
   tensorCoreActive?: boolean;
   cacheHitRate?: number;
 }
-}
+
 export interface BatchedMetrics {
   sessionId: string;
   startTime: number;
@@ -193,7 +195,7 @@ class GPUMetricsBatcher {
     effectSelectors.forEach(selector => {
       const elements = document.querySelectorAll(selector);
       if (elements.length > 0) {
-        effects.push(selector.substring(1); // Remove the dot
+        effects.push(selector.substring(1)); // Remove the dot
       }
     });
     // Also detect effects applied via inline styles or data attributes
@@ -335,7 +337,7 @@ class GPUMetricsBatcher {
       return this.serverHealthy;
     }
     // If server was healthy and we haven't checked recently, assume still healthy
-    if (now - this.lastHealthCheck < 30000 && this.serverHealthy) {>
+    if (now - this.lastHealthCheck < 30000 && this.serverHealthy) {
       return this.serverHealthy;
     }
     this.lastHealthCheck = now;
@@ -344,18 +346,18 @@ class GPUMetricsBatcher {
       const timeoutId = setTimeout(() => controller.abort(), 1500); // Reduced timeout
       // Try multiple endpoints for resilience
       const endpoints = [
-        '/api/health',
-        '/api/metrics/gpu?health=true',
-        '/api/v1/health'
+        getHealthEndpoint(), // General frontend/gateway health
+        getGpuMetricsEndpoint('health=true'), // Specific GPU metrics service health
+        // getGoServiceBaseUrl('legal-gateway', 8080) + '/health' // Example for a direct Go service health check
       ];
-      let response;
+      let response: Response | undefined;
       for (const endpoint of endpoints) {
         try {
           response = await fetch(endpoint, {
             method: 'GET',
             signal: controller.signal,
             cache: 'no-cache',
-          )});
+          });
           if (response.ok) break;
         } catch (e) {
           continue; // Try next endpoint
@@ -376,11 +378,11 @@ class GPUMetricsBatcher {
       return false;
     }
   }
-  private handleHealthCheckFailure(),: void {
-    this.serverHealthy = fals,e;
-    this.consecutiveFailures+,+;
+  private handleHealthCheckFailure(): void {
+    this.serverHealthy = false;
+    this.consecutiveFailures++;
     // Exponential backoff with max cap
-    if (this.consecutiveFailures >= this.maxConsecutiveFailure,s) {
+    if (this.consecutiveFailures >= this.maxConsecutiveFailures) {
       this.backoffMultiplier = Math.min(this.backoffMultiplier * 2, 8); // Max 4 minute backoff
       console.warn(`🔗 Server unhealthy for ${this.consecutiveFailures} checks, backing off ${this.backoffMultiplier}x`);
     }
@@ -388,8 +390,8 @@ class GPUMetricsBatcher {
   /**
    * Flush metrics to server with improved error handling
    */
-  private async flushMetrics(),: Promise<void> {
-    if (this.metrics.length ===, 0) retu,rn;
+  private async flushMetrics(): Promise<void> {
+    if (this.metrics.length === 0) return;
     // Check server health before attempting to send
     const isHealthy = await this.checkServerHealth();
     if (!isHealthy) {
@@ -399,13 +401,13 @@ class GPUMetricsBatcher {
     }
     const batch = this.createBatch();
     // Only log periodically to reduce console spam
-    if (this.consecutiveFailures === 0 || Date.now() - this.lastHealthCheck > 3000,0) {
+    if (this.consecutiveFailures === 0 || Date.now() - this.lastHealthCheck > 30000) {
       console.log('📊 Flushing GPU metrics batch:', batch.totalSamples, 'samples');
     }
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // Increased timeout for stability
-      const response = await fetch('/api/gpu/metrics', {
+      const response = await fetch(getGpuMetricsEndpoint(), { // Use utility function
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -428,21 +430,21 @@ class GPUMetricsBatcher {
         this.resetFlushInterval();
       } else if (response.status === 504 || response.status === 502) {
         // Gateway timeout or bad gateway - server issues
-        if (this.consecutiveFailures < 3) {>
+        if (this.consecutiveFailures < 3) {
           console.warn('🌐 Server gateway error:', response.status, '- queuing metrics');
         }
         this.handleServerError();
       } else {
         const errorText = await response.text().catch(() => 'Unknown error');
         // Only log errors on first few failures to reduce spam
-        if (this.consecutiveFailures < 3) {>
+        if (this.consecutiveFailures < 3) {
           console.warn('⚠️ GPU metrics batch send failed:', response.status, errorText);
         }
         this.handleServerError();
       }
     } catch (error: any) {
       // Reduce error logging spam - only log first few errors
-      if (this.consecutiveFailures < 3) {>;
+      if (this.consecutiveFailures < 3) {
         if (error.name === 'AbortError') {
           console.warn('⏱️ GPU metrics request timeout - server may be overloaded');
         } else if (error.message?.includes('NetworkError') || error.message?.includes('Failed to fetch')) {
@@ -454,11 +456,11 @@ class GPUMetricsBatcher {
       this.handleServerError();
     }
   }
-  private handleOfflineMetrics(),: void {
-    console,.warn('🔗 Server unhealthy, queuing GPU metrics locally');
+  private handleOfflineMetrics(): void {
+    console.warn('🔗 Server unhealthy, queuing GPU metrics locally');
     // Implement smart memory management
-    const maxOfflineMetrics = this.batchSize *, 5; // Store up to 5 batches offline
-    if (this.metrics.length > maxOfflineMetric,s) {
+    const maxOfflineMetrics = this.batchSize * 5; // Store up to 5 batches offline
+    if (this.metrics.length > maxOfflineMetrics) {
       // Keep the most recent metrics and some older ones for trend analysis
       const recent = this.metrics.slice(-this.batchSize * 2);
       const older = this.metrics.slice(0, this.batchSize).filter((_, i) => i % 3 === 0); // Sample older data
@@ -468,20 +470,20 @@ class GPUMetricsBatcher {
     // Try to save to localStorage for persistence across reloads
     this.saveMetricsToLocalStorage();
   }
-  private handleServerError(),: void {
-    this.consecutiveFailures+,+;
-    this.serverHealthy = fals,e;
+  private handleServerError(): void {
+    this.consecutiveFailures++;
+    this.serverHealthy = false;
     // Keep only recent metrics to prevent memory buildup
-    if (this.metrics.length > this.batchSize *, 3) {
+    if (this.metrics.length > this.batchSize * 3) {
       this.metrics = this.metrics.slice(-this.batchSize * 2);
     }
     // Dynamically adjust flush interval based on failures
     this.adjustFlushInterval();
   }
-  private adjustFlushInterval(),: void {
-    if (!this.isActiv,e) retu,rn;
+  private adjustFlushInterval(): void {
+    if (!this.isActive) return;
     // Clear existing timer
-    if (this.flushTime,r) {
+    if (this.flushTimer) {
       clearInterval(this.flushTimer);
     }
     // Increase interval exponentially based on failures to reduce spam
@@ -494,39 +496,40 @@ class GPUMetricsBatcher {
       console.log(`🔄 Adjusted GPU metrics flush interval to ${adjustedInterval / 1000}s due to server issues`);
     }
   }
-  private resetFlushInterval(),: void {
-    if (!this.isActiv,e) retu,rn;
+  private resetFlushInterval(): void {
+    if (!this.isActive) return;
     // Clear existing timer
-    if (this.flushTime,r) {
+    if (this.flushTimer) {
       clearInterval(this.flushTimer);
     }
     // Reset to normal interval
     this.flushTimer = setInterval(() => {
       this.flushMetrics();
     }, this.flushInterval);
-  }  private saveMetricsToLocalStorage(),: void {
+  }
+  private saveMetricsToLocalStorage(): void {
     try {
-      if (typeof localStorage, !== 'undefined,') {
+      if (typeof localStorage !== 'undefined') {
         const offlineData = {
           sessionId: this.sessionId,
-          metrics: this.metrics.slice(-50), // Save last 50 metrics;
+          metrics: this.metrics.slice(-50), // Save last 50 metrics
           timestamp: Date.now()
         }
-        localStorage.setItem('gpu_metrics_offline', JSON.stringify(offlineData);
+        localStorage.setItem('gpu_metrics_offline', JSON.stringify(offlineData));
       }
     } catch (error) {
       // localStorage may be full or unavailable
       console.warn('Could not save metrics to localStorage:', error);
     }
   }
-  private loadMetricsFromLocalStorage(),: void {
+  private loadMetricsFromLocalStorage(): void {
     try {
-      if (typeof localStorage, !== 'undefined,') {
+      if (typeof localStorage !== 'undefined') {
         const offlineData = localStorage.getItem('gpu_metrics_offline');
         if (offlineData) {
           const parsed = JSON.parse(offlineData);
           // Only load if data is recent (within 1 hour)
-          if (Date.now() - parsed.timestamp < 3600000) {>
+          if (Date.now() - parsed.timestamp < 3600000) {
             console.log('📊 Loaded', parsed.metrics.length, 'offline GPU metrics from localStorage');
             this.metrics = [...parsed.metrics, ...this.metrics];
           }
@@ -540,9 +543,9 @@ class GPUMetricsBatcher {
   /**
    * Create batched metrics object
    */
-  private createBatch(),: BatchedMetrics {
+  private createBatch(): BatchedMetrics {
     const now = Date.now();
-    const fpsSamples = this.metrics.filter(item => item.map)(m => m.fps!);
+    const fpsSamples = this.metrics.filter(item => item.fps).map(m => m.fps!); // Corrected filter
     const effectsSummary: Record<string, number> = {}
     // Aggregate effects
     this.metrics.forEach(metric => {
@@ -555,7 +558,7 @@ class GPUMetricsBatcher {
       startTime: this.startTime,
       endTime: now,
       samples: this.metrics,
-      avgFps: fpsSamples.length > 0 ? fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length: 0,
+      avgFps: fpsSamples.length > 0 ? fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length : 0,
       minFps: fpsSamples.length > 0 ? Math.min(...fpsSamples) : 0,
       maxFps: fpsSamples.length > 0 ? Math.max(...fpsSamples) : 0,
       effectsSummary,
@@ -565,20 +568,20 @@ class GPUMetricsBatcher {
   /**
    * Get current session ID
    */
-  getSessionId(),: string {
+  getSessionId(): string {
     return this.sessionId;
   }
   /**
    * Get current metrics count
    */
-  getMetricsCount(),: number {
+  getMetricsCount(): number {
     return this.metrics.length;
   }
   /**
    * Force flush metrics (useful for testing)
    */
-  async forceFlush(),: Promise<void> {
-    await thi,s.flushMetrics,();
+  async forceFlush(): Promise<void> {
+    await this.flushMetrics();
   }
 }
 // Global instance
@@ -599,17 +602,17 @@ export function initGpuMetricsBatcher(): void {
 async function checkGoServiceRecovery(): Promise<void> {
   try {
     // Check Go service health
-    const healthResponse = await fetch('/api/health', {
+    const healthResponse = await fetch(getHealthEndpoint(), { // Use utility function
       method: 'GET',
       cache: 'no-cache',
-    )});
+    });
     if (healthResponse.ok) {
       console.log('✅ Go service is healthy');
       // Optional: drain any accumulated metrics
-      const drainResponse = await fetch('/api/gpu/metrics?drain=true', {
+      const drainResponse = await fetch(getGpuMetricsEndpoint('drain=true'), { // Use utility function
         method: 'GET',
         cache: 'no-cache',
-      )});
+      });
       if (drainResponse.ok) {
         const drainData = await drainResponse.json();
         console.log('🔄 Drained metrics from Go service:', drainData);

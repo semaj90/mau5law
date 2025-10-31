@@ -8,27 +8,14 @@ and AI-powered verification features.
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  interface Props {
-    evidenceId: string
-    caseId: string
-    userId: string
-    originalHash: string
-    onWorkflowComplete: ((result: unknown) ;
-    onWorkflowError: ((error: string) ;
-  }
-  let { evidenceId,
-    caseId,
-    userId,
-    originalHash,
-    onWorkflowComplete = > void) | undefined = undefined,
-    onWorkflowError = > void) | undefined = undefined
-   }: { evidenceId,
-    caseId,
-    userId,
-    originalHash,
-    onWorkflowComplete = > void) | undefined = undefined,
-    onWorkflowError = > void) | undefined = undefined
-  : unknown } = $props();
+  // Props (clean, explicit exports)
+  export let evidenceId: string;
+  export let caseId: string;
+  export let userId: string;
+  export let originalHash: string;
+  export let onWorkflowComplete: ((result: unknown) => void) | undefined;
+  export let onWorkflowError: ((error: string) => void) | undefined;
+
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent } from '$lib/state/evidenceCustodyMachine';
@@ -36,129 +23,145 @@ and AI-powered verification features.
   import IntegrityVerification from './IntegrityVerification.svelte';
   import CollaborationPanel from './CollaborationPanel.svelte';
   import WorkflowProgress from './WorkflowProgress.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  // Use named imports for UI kit components
+  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert';
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
   import { toast } from '$lib/components/ui/toast';
-  // Props
+
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));
   let currentState = $state(custodyActor.getSnapshot());
   let isWorkflowActive = $state(false);
-  // Reactive state derived from machine
-  let progress = $derived(currentState.context.progress)
-  let stage = $derived(currentState.context.workflowStage)
-  let integrityStatus = $derived(currentState.context.integrityStatus)
-  let activeCollaborators = $derived(currentState.context.activeCollaborators)
-  let custodyEvents = $derived(currentState.context.custodyEvents)
-  let requiresApproval = $derived(currentState.context.requiresApproval)
-  let error = $derived(currentState.context.error)
-  let warnings = $derived(currentState.context.warnings)
+
+  // Reactive state derived from machine (use arrow selectors)
+  let progress = $derived(() => currentState.context?.progress);
+  let stage = $derived(() => currentState.context?.workflowStage ?? 'idle');
+  let integrityStatus = $derived(() => currentState.context?.integrityStatus);
+  let activeCollaborators = $derived(() => currentState.context?.activeCollaborators ?? []);
+  let custodyEvents = $derived(() => currentState.context?.custodyEvents ?? []);
+  let requiresApproval = $derived(() => currentState.context?.requiresApproval);
+  let error = $derived(() => currentState.context?.error);
+  let warnings = $derived(() => currentState.context?.warnings ?? []);
+
   // UI state
   let isCollaborationExpanded = $state(false);
   let showIntegrityDetails = $state(false);
   let transferReason = $state('');
   let showTransferDialog = $state(false);
+
   // WebSocket for real-time updates
-  let wsConnection WebSocket | null = null;
+  let wsConnection: WebSocket | null = null;
+
   $effect(() => {
     // Start the state machine actor
     custodyActor.start();
+
     // Subscribe to state changes
-    custodyActor.subscribe((state) => {
-      currentState = stat;
-      isWorkflowActive = !['idle', 'completed', 'failed', 'rejected', 'cancelled'].includes(state.value as string);
+    const sub = custodyActor.subscribe((state) => {
+      currentState = state;
+      isWorkflowActive = !['idle', 'completed', 'failed', 'rejected', 'cancelled'].includes(String(state.value));
       // Handle workflow completion
       if (state.value === 'completed') {
         toast.success('Evidence custody workflow completed successfully');
         onWorkflowComplete?.(state.context);
-      } else if (['failed', 'rejected'].includes(state.value as string)) {
-        toast.error(`Workflow ${state.value}: ${state.context.error || 'Unknown error'}`);
-        onWorkflowError?.(state.context.error || 'Unknown error');
+      } else if (['failed', 'rejected'].includes(String(state.value))) {
+        toast.error(`Workflow ${state.value}: ${state.context?.error || 'Unknown error'}`);
+        onWorkflowError?.(state.context?.error || 'Unknown error');
       }
     });
+
     // Set up WebSocket connection for real-time collaboration
     setupWebSocketConnection();
+
     return () => {
+      sub.unsubscribe?.();
       custodyActor.stop();
       closeWebSocketConnection();
-    }
+    };
   });
+
   function startWorkflow() {
     custodyActor.send({
       type: 'START_CUSTODY_WORKFLOW',
       evidenceId,
       caseId,
       userId,
-      originalHash;
-    });
+      originalHash,
+    } as EvidenceCustodyEvent);
   }
+
   function retryWorkflow() {
-    custodyActor.send({ type: 'RETRY' });
+    custodyActor.send({ type: 'RETRY' } as EvidenceCustodyEvent);
   }
+
   function cancelWorkflow() {
     if (confirm('Are you sure you want to cancel the custody workflow? This action cannot be undone.')) {
-      custodyActor.send({ type: 'CANCEL_WORKFLOW' });
+      custodyActor.send({ type: 'CANCEL_WORKFLOW' } as EvidenceCustodyEvent);
     }
   }
+
   function approveWorkflow() {
-    custodyActor.send({ type: 'APPROVE_CUSTODY' });
+    custodyActor.send({ type: 'APPROVE_CUSTODY' } as EvidenceCustodyEvent);
   }
+
   function rejectWorkflow() {
     const reason = prompt('Please provide a reason for rejection');
     if (reason) {
-      custodyActor.send({ type: 'REJECT_CUSTODY', reason });
+      custodyActor.send({ type: 'REJECT_CUSTODY', reason } as EvidenceCustodyEvent);
     }
   }
+
   function startCustodyTransfer() {
     if (transferReason.trim()) {
       custodyActor.send({
         type: 'TRANSFER_CUSTODY',
-        newCustodian: userId;
-        reason transferReaso;
-      });
+        newCustodian: userId,
+        reason: transferReason,
+      } as EvidenceCustodyEvent);
       showTransferDialog = false;
       transferReason = '';
     }
   }
+
   function joinCollaboration() {
     custodyActor.send({
       type: 'JOIN_COLLABORATION',
       userId,
       role: 'investigator',
-    });
+    } as EvidenceCustodyEvent);
     isCollaborationExpanded = true;
   }
+
   function leaveCollaboration() {
     custodyActor.send({
       type: 'LEAVE_COLLABORATION',
-      userId;
-    });
+      userId,
+    } as EvidenceCustodyEvent);
   }
+
   function setupWebSocketConnection() {
     try {
-      wsConnection = new WebSocket(`ws://localhost:3000/api/websocket?room=custody-${evidenceId}`)
+      // derive URL from env/host in future; local dev fallback for now
+      wsConnection = new WebSocket(`ws://localhost:3000/api/websocket?room=custody-${evidenceId}`);
       wsConnection.onopen = () => {
         console.log('WebSocket connected for custody workflow');
-      }
+      };
       wsConnection.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        // Handle real-time collaboration updates
-        if (data.type === 'collaboration-update') {
-          // Update collaboration state based on WebSocket messages
-          handleCollaborationUpdate(data);
+        try {
+          const data = JSON.parse(event.data);
+          // Handle real-time collaboration updates
+          if (data.type === 'collaboration-update') {
+            handleCollaborationUpdate(data);
+          }
+        } catch (e) {
+          console.warn('Invalid WS message', e);
         }
-      }
-      wsConnection.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      }
+      };
+      wsConnection.onerror = (err) => {
+        console.error('WebSocket error:', err);
+      };
       wsConnection.onclose = () => {
         console.log('WebSocket connection closed');
         // Attempt to reconnect after a delay
@@ -167,18 +170,20 @@ and AI-powered verification features.
             setupWebSocketConnection();
           }
         }, 5000);
-      }
+      };
     } catch (error) {
       console.error('Failed to establish WebSocket connection', error);
     }
   }
+
   function closeWebSocketConnection() {
     if (wsConnection) {
       wsConnection.close();
       wsConnection = null;
     }
   }
-  function handleCollaborationUpdate(data: unknown) {
+
+  function handleCollaborationUpdate(data: any) {
     // Handle different types of collaboration updates
     switch (data.action) {
       case 'user-joined':
@@ -190,14 +195,17 @@ and AI-powered verification features.
       case 'annotation-added':
         toast.info('New annotation added');
         break;
+      default:
+        break;
     }
   }
+
   function getStatusIcon(status: string) {
     switch (status) {
       case 'verified':
-        return CheckCircl;
+        return CheckCircle;
       case 'compromised':
-        return AlertTriangl;
+        return AlertTriangle;
       case 'pending':
       case 'requires-attention':
         return Clock;
@@ -205,6 +213,7 @@ and AI-powered verification features.
         return Clock;
     }
   }
+
   function getStatusColor(status: string) {
     switch (status) {
       case 'verified':
@@ -219,8 +228,12 @@ and AI-powered verification features.
         return 'text-gray-600';
     }
   }
-  function getStageDisplayName(stage: string) {
-    return stage.split.map(word => word.charAt.toUpperCase() + word.slice(1)).join(' ');
+
+  function getStageDisplayName(stageStr: string) {
+    return String(stageStr || '')
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 </script>
 <!-- Main Custody Workflow Container -->
@@ -298,8 +311,9 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
-Start Custody Workflow
+            <Button on:click={startWorkflow} class="w-full bits-btn bits-btn">
+              Start Custody Workflow
+            </Button>
           </div>
         </div>
       {/if}
@@ -315,7 +329,7 @@ Start Custody Workflow
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() =>
+                on:click={() =>
 showIntegrityDetails = !showIntegrityDetails}
               >
                 {showIntegrityDetails ? 'Hide' : 'Show'} Details
@@ -359,32 +373,39 @@ showIntegrityDetails = !showIntegrityDetails}
           <div class="yorha-panel-content space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
-Approve Custody
-                <Button class="bits-btn" onclick={rejectWorkflow} variant="error">
-Reject Custody
+                <Button class="bits-btn" on:click={approveWorkflow} variant="success">
+                  Approve Custody
+                </Button>
+                <Button class="bits-btn" on:click={rejectWorkflow} variant="error">
+                  Reject Custody
+                </Button>
               </div>
             {/if}
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" onclick={() =>
+                <Button class="bits-btn" on:click={() =>
 showTransferDialog = true} variant="ghost">
                   Transfer Custody
+                </Button>
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn" onclick={joinCollaboration} variant="ghost">
-Join Collaboration
+                  <Button class="bits-btn" on:click={joinCollaboration} variant="ghost">
+                    Join Collaboration
+                  </Button>
                 {:else}
-                  <Button class="bits-btn" onclick={leaveCollaboration} variant="ghost">
-Leave Collaboration
+                  <Button class="bits-btn" on:click={leaveCollaboration} variant="ghost">
+                    Leave Collaboration
+                  </Button>
                 {/if}
               </div>
             {/if}
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" onclick={retryWorkflow}>
-Retry Workflow
-                <Button class="bits-btn" onclick={cancelWorkflow} variant="error">
-Cancel Workflow
+                <Button class="bits-btn" on:click={retryWorkflow}>
+                  Retry Workflow
+                </Button>
+                <Button class="bits-btn" on:click={cancelWorkflow} variant="error">
+                  Cancel Workflow
+                </Button>
               </div>
             {/if}
           </div>
@@ -405,7 +426,7 @@ Cancel Workflow
               type: 'ADD_ANNOTATION',
               userId,
               content,
-              positio;
+              position,
             });
           }}
         />
@@ -427,18 +448,20 @@ Cancel Workflow
         ></textarea>
         <div class="flex space-x-3">
           <Button
-            onclick={startCustodyTransfer}
+            on:click={startCustodyTransfer}
             disabled={!transferReason.trim()}
             class="flex-1 bits-btn bits-btn"
           >
-Transfer
+            Transfer
+          </Button>
           <Button class="bits-btn"
-            onclick={() =>
+            on:click={() =>
 showTransferDialog = false}
             variant="ghost"
             class="flex-1"
           >
             Cancel
+          </Button>
         </div>
       </div>
     </div>

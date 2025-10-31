@@ -2,9 +2,12 @@
  * User Management Database Operations
  * Complete CRUD with PostgreSQL + pgvector + Drizzle ORM
  */
-import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { eq, and, isNull, count, sql, desc, cosineDistance } from 'drizzle-orm';
-import postgres from 'postgres';
+// Removed: import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+// Removed: import postgres from 'postgres';
+import { eq, and, isNull, count, desc } from 'drizzle-orm';
+import { sql } from '../db/utils.js'; // Use sql from utils.js
+import { db } from './client.js'; // Import central db client
+import { arrayToPgVector } from './vector-operations.ts'; // Import for pgvector conversion
 import bcrypt from 'bcryptjs';
 import { nanoid } from 'nanoid';
 import type {
@@ -16,7 +19,7 @@ import type {
   UserActivity,
   NewUserActivity,
   FullUserProfile,
-} from './schema/user-management'; // changed: remove .js
+} from './schema/user-management';
 import {
   users,
   userProfiles,
@@ -26,27 +29,37 @@ import {
   updateUserSchema,
   insertProfileSchema,
   updateProfileSchema,
-} from './schema/user-management'; // changed: remove .js
+} from './schema/user-management';
+
 // ============================================================================
-// DATABASE CONNECTION
+// MISSING TYPES
 // ============================================================================
-const connectionString =
-  import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`;
-// Create connection with pgvector support
-// NOTE: removed complex custom `types` mapping here which can cause parse/type issues.
-// If you need custom pgvector serialization, re-introduce a tested mapping or
-// use a separate helper to handle vector serialization/parsing.
-const queryClient = postgres(connectionString, {
-  max: 20,
-  idle_timeout: 20,
-  connect_timeout: 10,
-  prepare: false,
-});
-// Use explicit PostgresJsDatabase type for correct transaction `tx` typing
-type Db = PostgresJsDatabase;
-const userDb = drizzle(queryClient) as Db;
-const db: Db = userDb;
+interface ActivityStats {
+  totalActions: number;
+  uniqueActions: number;
+  successRate: number;
+  topActions: { action: string; count: number }[];
+}
+
+interface StatsRow {
+  totalActions: number | null;
+  successRate: number | null;
+}
+
+interface TopActionRow {
+  action: string;
+  count: number | null;
+}
+
+interface UniqueActionsRow {
+  uniqueActions: number | null;
+}
+
+// ============================================================================
+// DATABASE CONNECTION (now handled by client.js)
+// ============================================================================
+// Removed local database connection setup
+
 // ============================================================================
 // USER AUTHENTICATION OPERATIONS
 // ============================================================================
@@ -81,10 +94,10 @@ export class UserAuthService {
         return { user: existingUser[0], success: false, error: 'User already exists' };
       }
       // Create user with transaction
-      const result = await userDb.transaction(async tx => {
+      const result = await db.transaction(async tx => {
         // Insert user
         const insertedUsers = await tx.insert(users).values(validatedUser).returning();
-        const newUser = (insertedUsers[0] as unknown) as User;
+        const newUser = insertedUsers[0] as unknown as User;
         // Create profile if profile data provided
         let profile: UserProfile | undefined;
         if (userData.profileData) {
@@ -93,7 +106,7 @@ export class UserAuthService {
             ...userData.profileData,
           });
           const insertedProfiles = await tx.insert(userProfiles).values(profileData).returning();
-          profile = (insertedProfiles[0] as unknown) as UserProfile;
+          profile = insertedProfiles[0] as unknown as UserProfile;
         }
         // Log registration activity
         await tx.insert(userActivityLog).values({
@@ -154,7 +167,7 @@ export class UserAuthService {
       const passwordValid = await bcrypt.compare(password, user.passwordHash);
       if (!passwordValid) {
         // Log failed login attempt
-        await userDb.insert(userActivityLog).values({
+        await db.insert(userActivityLog).values({
           userId: user.id,
           action: 'login_failed',
           resource: 'auth',
@@ -169,7 +182,7 @@ export class UserAuthService {
       // Create session
       const sessionId = nanoid(32);
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-      const insertedSessions = await userDb
+      const insertedSessions = await db
         .insert(userSessions)
         .values({
           userId: user.id,
@@ -183,11 +196,11 @@ export class UserAuthService {
           updatedAt: new Date(),
         })
         .returning();
-      const session = (insertedSessions[0] as unknown) as NewUserSession;
+      const session = insertedSessions[0] as unknown as NewUserSession;
       // Update last login time
       await db.update(users).set({ lastLoginAt: new Date(), updatedAt: new Date() }).where(eq(users.id, user.id));
       // Log successful login
-      await userDb.insert(userActivityLog).values({
+      await db.insert(userActivityLog).values({
         userId: user.id,
         action: 'login_success',
         resource: 'auth',
@@ -320,7 +333,7 @@ export class UserProfileService {
     updates: Partial<NewUser & NewUserProfile>
   ): Promise<{ user?: User; profile?: UserProfile; success: boolean; error?: string }> {
     try {
-      const result = await userDb.transaction(async tx => {
+      const result = await db.transaction(async tx => {
         let updatedUser: User | undefined;
         let updatedProfile: UserProfile | undefined;
         // Destructure typed updates to avoid any casts
@@ -384,14 +397,14 @@ export class UserProfileService {
               .set(validatedProfileUpdates)
               .where(eq(userProfiles.userId, userId))
               .returning();
-            updatedProfile = (updatedProfiles[0] as unknown) as UserProfile;
+            updatedProfile = updatedProfiles[0] as unknown as UserProfile;
           } else {
             // Create new profile
             const insertedProfiles = await tx
               .insert(userProfiles)
               .values({ userId, ...validatedProfileUpdates })
               .returning();
-            updatedProfile = (insertedProfiles[0] as unknown) as UserProfile;
+            updatedProfile = insertedProfiles[0] as unknown as UserProfile;
           }
         }
         // Log update activity
@@ -422,7 +435,7 @@ export class UserProfileService {
    */
   static async deleteUser(userId: number): Promise<{ success: boolean; error?: string }> {
     try {
-      await userDb.transaction(async tx => {
+      await db.transaction(async tx => {
         // Soft delete user
         await tx
           .update(users)
@@ -470,10 +483,11 @@ export class UserProfileService {
       if (currentUser.length === 0) return [];
       const embedding = (currentUser[0] as unknown as { embedding?: number[] }).embedding;
       if (!Array.isArray(embedding) || embedding.length === 0) return [];
+      const embeddingPgVector = arrayToPgVector(embedding); // Convert to pgvector string
       const similarRows = await db
         .select({
           user: users,
-          similarity: sql<number>`1 - (${cosineDistance(users.profileEmbedding, embedding)})`,
+          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})`,
         })
         .from(users)
         .where(
@@ -484,7 +498,7 @@ export class UserProfileService {
             isNull(users.deletedAt)
           )
         )
-        .orderBy(sql`1 - (${cosineDistance(users.profileEmbedding, embedding)}) DESC`)
+        .orderBy(sql`${users.profileEmbedding} <=> ${embeddingPgVector} ASC`) // Order by distance ascending for similarity descending
         .limit(limit);
       return similarRows.map(r => (r as unknown as { user: User }).user);
     } catch (error: unknown) {
@@ -502,7 +516,7 @@ export class UserActivityService {
    */
   static async logActivity(activity: NewUserActivity): Promise<void> {
     try {
-      await userDb.insert(userActivityLog).values({
+      await db.insert(userActivityLog).values({
         ...activity,
         timestamp: new Date(),
       });
@@ -589,7 +603,6 @@ export class UserActivityService {
 // ============================================================================
 // EXPORTS
 // ============================================================================
-export { userDb as db };
 export default {
   UserAuthService,
   UserProfileService,

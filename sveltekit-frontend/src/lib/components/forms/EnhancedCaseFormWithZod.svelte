@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -10,7 +10,6 @@ https://svelte.dev/e/js_parse_error -->
   import { enhance } from '$app/forms';
   import { onDestroy } from 'svelte';
   import type { Writable } from 'svelte/store';
-  import Button from '$lib/components/ui/Button.svelte';
   // NOTE: Removed Card* imports to avoid SvelteComponentTyped constructor/type mismatch.
   // Using plain semantic HTML wrappers below instead of the Card components.
 
@@ -70,7 +69,6 @@ https://svelte.dev/e/js_parse_error -->
   // replace the invalid destructure:
   // const { isValid, isSubmitting, progress } = formIntegration.form;
 
-  // === CHANGES: replace Svelte-5 runes with classic reactive variables ===
   // Use Svelte 5 $state runes so these mutating variables are reactive
   let isValid = $state<boolean>(true);
   let progress = $state<number>(0);
@@ -140,9 +138,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'pending', label: 'Pending', description: 'Awaiting review or action' },
     { value: 'closed', label: 'Closed', description: 'Case is completed' },
   ];
-  // Auto-save indicator
-  // let lastSaved = $state<Date | null>(null);
-  // let isAutoSaving = $state(false);
   // Enhanced file upload handler
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement | null;
@@ -627,5 +622,4 @@ https://svelte.dev/e/js_parse_error -->
 <style lang="postcss">
   /*$$__STYLE_CONTENT__$$*/
 </style>
-
 

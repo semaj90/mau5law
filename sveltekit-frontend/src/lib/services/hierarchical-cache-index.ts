@@ -8,49 +8,43 @@ import type { BitmapHiddenMarkovSOM } from './bitmap-hmm-som.js';
 import type { QLoRATrainingService } from './q-lora-training.js';
 
 export interface CacheLevel {
-  name: string,
-  maxSize: number,
-  ttl: number; // Time to live in milliseconds,
+  name: string;
+  maxSize: number;
+  ttl: number; // Time to live in milliseconds
   accessPattern: 'lru' | 'lfu' | 'fifo' | 'neural_priority';
-  compressionRatio: number,
+  compressionRatio: number;
   indexingStrategy: 'hash' | 'btree' | 'spatial' | 'temporal' | 'semantic';
-
-
 }
 
 export interface CacheEntry {
-  key: string,
-  value: any,
+  key: string;
+  value: any;
   metadata: {
-    timestamp: number,
-    accessCount: number,
-    lastAccess: number,
-    predictionConfidence: number,
-    neuralPriority: number,
-    spatialLocation?: { x: number; y: number }
+    timestamp: number;
+    accessCount: number;
+    lastAccess: number;
+    predictionConfidence: number;
+    neuralPriority: number;
+    spatialLocation?: { x: number; y: number };
     semanticTags: string[];
-    compressionRatio: number,
-    parentKey?: string,
+    compressionRatio: number;
+    parentKey?: string;
     childKeys: string[];
-  }
-  level: number,
-  size: number,
-
+  };
+  level: number;
+  size: number;
 }
 
 export interface SpatialIndex {
-  bounds: { minX: number; maxX: number; minY: number; maxY: number }
+  bounds: { minX: number; maxX: number; minY: number; maxY: number };
   quadrants: Map<string, string[]>; // quadrant -> cache keys
-  resolution: number,
-
+  resolution: number;
 }
 
 export interface TemporalIndex {
   timeSlots: Map<number, string[]>; // timestamp -> cache keys
   accessPatterns: Map<string, number[]>; // key -> access times
   seasonalPatterns: Map<string, number>; // pattern -> frequency
-
-
 }
 
 export interface SemanticIndex {
@@ -58,12 +52,11 @@ export interface SemanticIndex {
   documentFrequency: Map<string, number>;
   tfidfVectors: Map<string, Float32Array>;
   clusters: Map<string, string[]>; // cluster -> cache keys
-
 }
 
 export class HierarchicalCacheIndex {
   private levels: CacheLevel[];
-  private caches: Map<number, Map<string, CacheEntry>, = new Map();
+  private caches: Map<number, Map<string, CacheEntry>> = new Map();
   private spatialIndex: SpatialIndex;
   private temporalIndex: TemporalIndex;
   private semanticIndex: SemanticIndex;
@@ -85,48 +78,52 @@ export class HierarchicalCacheIndex {
       // L1: CHR-ROM Ultra-Fast Cache (WebGPU VRAM)
       {
         name: 'CHR_ROM_L1',
-        maxSize: 50 // 50 most critical assets
-        ttl: 60000 // 1 minute
+        maxSize: 50, // 50 most critical assets
+        ttl: 60000, // 1 minute
         accessPattern: 'neural_priority',
-        compressionRatio: 0.9 // 10% compression
-        indexingStrategy: 'spatial'
-      } // L2: Neural Prediction Cache (System RAM)
+        compressionRatio: 0.9, // 10% compression
+        indexingStrategy: 'spatial',
+      },
+      // L2: Neural Prediction Cache (System RAM)
       {
         name: 'NEURAL_PREDICTION_L2',
-        maxSize: 500 // 500 predictions
-        ttl: 300000 // 5 minutes
+        maxSize: 500, // 500 predictions
+        ttl: 300000, // 5 minutes
         accessPattern: 'lfu',
-        compressionRatio: 0.6 // 40% compression
-        indexingStrategy: 'semantic'
-      } // L3: SOM Cluster Cache (Redis)
+        compressionRatio: 0.6, // 40% compression
+        indexingStrategy: 'semantic',
+      },
+      // L3: SOM Cluster Cache (Redis)
       {
         name: 'SOM_CLUSTER_L3',
-        maxSize: 2000 // 2K clusters
-        ttl: 1800000 // 30 minutes
+        maxSize: 2000, // 2K clusters
+        ttl: 1800000, // 30 minutes
         accessPattern: 'lru',
-        compressionRatio: 0.4 // 60% compression
-        indexingStrategy: 'spatial'
-      } // L4: HMM State Cache (PostgreSQL)
+        compressionRatio: 0.4, // 60% compression
+        indexingStrategy: 'spatial',
+      },
+      // L4: HMM State Cache (PostgreSQL)
       {
         name: 'HMM_STATE_L4',
-        maxSize: 10000 // 10K states
-        ttl: 3600000 // 1 hour
+        maxSize: 10000, // 10K states
+        ttl: 3600000, // 1 hour
         accessPattern: 'fifo',
-        compressionRatio: 0.2 // 80% compression
-        indexingStrategy: 'temporal'
-      } // L5: Long-term Storage (Disk/MinIO)
+        compressionRatio: 0.2, // 80% compression
+        indexingStrategy: 'temporal',
+      },
+      // L5: Long-term Storage (Disk/MinIO)
       {
         name: 'LONG_TERM_L5',
-        maxSize: 100000 // 100K entries;
-        ttl: 86400000 // 24 hours
+        maxSize: 100000, // 100K entries;
+        ttl: 86400000, // 24 hours
         accessPattern: 'lru',
-        compressionRatio: 0.1 // 90% compression
-        indexingStrategy: 'hash'
-      }
+        compressionRatio: 0.1, // 90% compression
+        indexingStrategy: 'hash',
+      },
     ];
     // Initialize cache maps for each level
     for (let i = 0; i < this.levels.length; i++) {
-      this.caches.set(i, new Map<string, CacheEntry>();
+      this.caches.set(i, new Map<string, CacheEntry>());
     }
     console.log(`🏗️ Initialized ${this.levels.length} cache levels`);
   }
@@ -138,21 +135,21 @@ export class HierarchicalCacheIndex {
     this.spatialIndex = {
       bounds: { minX: 0, maxX: 100, minY: 0, maxY: 100 },
       quadrants: new Map(),
-      resolution: 10 // 10x10 grid
-    }
+      resolution: 10, // 10x10 grid
+    };
     // Temporal index for access patterns and predictions
     this.temporalIndex = {
       timeSlots: new Map(),
       accessPatterns: new Map(),
-      seasonalPatterns: new Map()
-    }
+      seasonalPatterns: new Map(),
+    };
     // Semantic index for legal document clustering
     this.semanticIndex = {
       termFrequency: new Map(),
       documentFrequency: new Map(),
       tfidfVectors: new Map(),
-      clusters: new Map()
-    }
+      clusters: new Map(),
+    };
     console.log('📊 Initialized spatial, temporal, and semantic indexes');
   }
   /**
@@ -166,15 +163,18 @@ export class HierarchicalCacheIndex {
   /**
    * Get value from hierarchical cache with intelligent prefetching
    */
-  async get(_key: string, context?: {
-    spatialHint?: { x: number; y: number }
-    semanticHint?: string[];
-    temporalHint?: number,
-    predictionContext?: any);
-  }): Promise<any> {
+  async get(
+    key: string,
+    context?: {
+      spatialHint?: { x: number; y: number };
+      semanticHint?: string[];
+      temporalHint?: number;
+      predictionContext?: any;
+    }
+  ): Promise<any> {
     const startTime = performance.now();
     // Try each cache level in order
-    for (let level = 0; leve,l < t,his.levels.le,ngth; l evel++) {
+    for (let level = 0; level < this.levels.length; level++) {
       const cache = this.caches.get(level)!;
       const entry = cache.get(key);
       if (entry && !this.isExpired(entry)) {
@@ -183,7 +183,7 @@ export class HierarchicalCacheIndex {
         entry.metadata.lastAccess = Date.now();
         // Promote to higher level if frequently accessed
         if (level > 0 && this.shouldPromote(entry)) {
-          await this.promoteEntry(entry, level - ),1);
+          await this.promoteEntry(entry, level - 1);
         }
         this.totalHits++;
         const hitTime = performance.now() - startTime;
@@ -201,22 +201,27 @@ export class HierarchicalCacheIndex {
       await this.set(key, value, {
         predictionConfidence: context?.predictionContext?.confidence || 0.5,
         spatialLocation: context?.spatialHint,
-        semanticTags: context?.semanticHint || [])});
+        semanticTags: context?.semanticHint || [],
+      });
     }
     return value;
   }
   /**
    * Set value in appropriate cache level with metadata
    */
-  async set(_key: string, valu,e: any, metada,ta: {
-    predictionConfidence?: number,
-    spatialLocation?: { x: number; y: number },
-    semanticTags?: string[];
-    compressionRatio?: number);
-  } = {}): Promise<void> {
-    const entr,y: CacheEntry = {
+  async set(
+    key: string,
+    value: any,
+    metadata: {
+      predictionConfidence?: number;
+      spatialLocation?: { x: number; y: number };
+      semanticTags?: string[];
+      compressionRatio?: number;
+    } = {}
+  ): Promise<void> {
+    const entry: CacheEntry = {
       key,
-      value: await this.compress(value, metadata.compressionRatio || 0.),6),
+      value: await this.compress(value, metadata.compressionRatio || 0.6),
       metadata: {
         timestamp: Date.now(),
         accessCount: 1,
@@ -226,24 +231,24 @@ export class HierarchicalCacheIndex {
         spatialLocation: metadata.spatialLocation,
         semanticTags: metadata.semanticTags || [],
         compressionRatio: metadata.compressionRatio || 0.6,
-        childKeys: []
+        childKeys: [],
       },
       level: this.selectOptimalLevel(key, metadata),
-      size: this.estimateSize(value)
-    }
+      size: this.estimateSize(value),
+    };
     // Store in selected level
-    const cache = this.caches.get(entry.level),!;
-    cache,.set(key, entry);
+    const cache = this.caches.get(entry.level)!;
+    cache.set(key, entry);
     // Update indexes
-    await thi,s.updateIndexes(entr,y);
+    await this.updateIndexes(entry);
     // Evict if necessary
-    await thi,s.evictIfNecessary(entry.leve,l);
-    console,.log(`💾 Cached ${key} at L${entry.level + 1} (priority: ${entry.metadata.neuralPriority.toFixed(3)})`);
+    await this.evictIfNecessary(entry.level);
+    console.log(`💾 Cached ${key} at L${entry.level + 1} (priority: ${entry.metadata.neuralPriority.toFixed(3)})`);
   }
   /**
    * Calculate neural priority based on HMM and Q-LoRA predictions
    */
-  private calculateNeuralPriority(_key: string, metadat,a: an,y): number {
+  private calculateNeuralPriority(key: string, metadata: any): number {
     let priority = 0.5; // Base priority
     // Prediction confidence boost
     if (metadata.predictionConfidence) {
@@ -262,32 +267,31 @@ export class HierarchicalCacheIndex {
     // Legal document type priority
     const legalBoost = this.calculateLegalPriority(key, metadata.semanticTags || []);
     priority += legalBoost * 0.3;
-    return Math.min(1.0, Math.max(0.0, priority);
+    return Math.min(1.0, Math.max(0.0, priority));
   }
   /**
    * Calculate spatial priority based on SOM neighborhood
    */
-  private calculateSpatialPriority(location: { x: numbe,r); y: number }): number {
+  private calculateSpatialPriority(location: { x: number; y: number }): number {
     // Higher priority for central SOM locations (more connections)
     const centerX = 50; // Assume 100x100 SOM grid
     const centerY = 50;
     const distance = Math.sqrt((location.x - centerX) ** 2 + (location.y - centerY) ** 2);
     const maxDistance = Math.sqrt(centerX ** 2 + centerY ** 2);
-    return 1.0 - (distance / maxDistance);
+    return 1.0 - distance / maxDistance;
   }
   /**
    * Calculate semantic priority based on legal importance
    */
   private calculateSemanticPriority(tags: string[]): number {
     const importantLegalTerms = ['contract', 'evidence', 'precedent', 'statute', 'judgment'];
-    const matches = tags.filter(item => item.includes)(term);
-    );
+    const matches = tags.filter(item => importantLegalTerms.some(term => item.includes(term)));
     return Math.min(1.0, matches.length / 3.0);
   }
   /**
    * Calculate legal document type priority
    */
-  private calculateLegalPriority(_key: string, tag,s: string[]): number {
+  private calculateLegalPriority(key: string, tags: string[]): number {
     const allTerms = [key.toLowerCase(), ...tags.map(t => t.toLowerCase())];
     // Critical legal documents get highest priority
     if (allTerms.some(term => ['supreme', 'constitutional', 'precedent'].includes(term))) {
@@ -306,7 +310,7 @@ export class HierarchicalCacheIndex {
   /**
    * Select optimal cache level based on metadata
    */
-  private selectOptimalLevel(_key: string, metadat,a: an,y): number {
+  private selectOptimalLevel(key: string, metadata: any): number {
     const priority = this.calculateNeuralPriority(key, metadata);
     // High priority items go to faster levels
     if (priority >= 0.9) return 0; // CHR-ROM
@@ -318,11 +322,11 @@ export class HierarchicalCacheIndex {
   /**
    * Compress value based on level requirements
    */
-  private async compress(_value: any, rati,o: numbe,r): Promise<any> {
+  private async compress(value: any, ratio: number): Promise<any> {
     if (ratio >= 0.9) return value; // Minimal compression
     // Simulate compression (would use actual compression algorithms)
     if (typeof value === 'object') {
-      const compressed = { ...value }
+      const compressed = { ...value };
       // Remove less important fields for higher compression
       if (ratio < 0.5) {
         delete compressed.debugInfo;
@@ -341,7 +345,7 @@ export class HierarchicalCacheIndex {
    */
   private async updateIndexes(entry: CacheEntry): Promise<void> {
     // Update spatial index
-    if (entry,.metadata.spatialLocatio,n) {
+    if (entry.metadata.spatialLocation) {
       const quadrant = this.getQuadrant(entry.metadata.spatialLocation);
       if (!this.spatialIndex.quadrants.has(quadrant)) {
         this.spatialIndex.quadrants.set(quadrant, []);
@@ -370,7 +374,7 @@ export class HierarchicalCacheIndex {
   /**
    * Get spatial quadrant for location
    */
-  private getQuadrant(location: { x: numbe,r); y: number }): string {
+  private getQuadrant(location: { x: number; y: number }): string {
     const qx = Math.floor(location.x / this.spatialIndex.resolution);
     const qy = Math.floor(location.y / this.spatialIndex.resolution);
     return `${qx},${qy}`;
@@ -394,15 +398,14 @@ export class HierarchicalCacheIndex {
    * Check if entry should be promoted to higher level
    */
   private shouldPromote(entry: CacheEntry): boolean {
-    const accessRate = entry.metadata.accessCount /;
-      Math.max(1, (Date.now() - entry.metadata.timestamp) / 60000); // accesses per minute
+    const accessRate = entry.metadata.accessCount / Math.max(1, (Date.now() - entry.metadata.timestamp) / 60000); // accesses per minute
     return accessRate > 2.0 && entry.metadata.neuralPriority > 0.7;
   }
   /**
    * Promote entry to higher cache level
    */
-  private async promoteEntry(entry: CacheEntry, targetLeve,l: numbe,r): Promise<void> {
-    if (targetLevel < 0 || targetLevel >= entry.leve,l) return)
+  private async promoteEntry(entry: CacheEntry, targetLevel: number): Promise<void> {
+    if (targetLevel < 0 || targetLevel >= entry.level) return;
     // Remove from current level
     const currentCache = this.caches.get(entry.level)!;
     currentCache.delete(entry.key);
@@ -420,16 +423,16 @@ export class HierarchicalCacheIndex {
    * Evict entries if cache level is full
    */
   private async evictIfNecessary(level: number): Promise<void> {
-    const cache = this.caches.get(level),!;
-    const levelConfig = this.levels[level,];
-    if (cache,.size <= levelConfig.maxSiz,e) retu,rn;) {
-    const entries = Array.from(cache.values();
+    const cache = this.caches.get(level)!;
+    const levelConfig = this.levels[level];
+    if (cache.size <= levelConfig.maxSize) return;
+    const entries = Array.from(cache.values());
     const toEvict = this.selectEntriesForEviction(entries, levelConfig);
     for (const entry of toEvict) {
       cache.delete(entry.key);
       // Try to demote to lower level instead of discarding
       if (level < this.levels.length - 1) {
-        await this.demoteEntry(entry, level + ),1);
+        await this.demoteEntry(entry, level + 1);
       }
     }
     console.log(`🗑️ Evicted ${toEvict.length} entries from L${level + 1}`);
@@ -437,25 +440,17 @@ export class HierarchicalCacheIndex {
   /**
    * Select entries for eviction based on access pattern
    */
-  private selectEntriesForEviction(entries: CacheEntry[], confi,g: CacheLeve,l): CacheEntry,[] {
+  private selectEntriesForEviction(entries: CacheEntry[], config: CacheLevel): CacheEntry[] {
     const excessCount = entries.length - config.maxSize + 1;
     switch (config.accessPattern) {
       case 'lru':
-        return entries;
-          .sort((a, b) => a.metadata.lastAccess - b.metadata.lastAccess)
-          .slice(0, excessCount);
+        return entries.sort((a, b) => a.metadata.lastAccess - b.metadata.lastAccess).slice(0, excessCount);
       case 'lfu':
-        return entries;
-          .sort((a, b) => a.metadata.accessCount - b.metadata.accessCount)
-          .slice(0, excessCount);
+        return entries.sort((a, b) => a.metadata.accessCount - b.metadata.accessCount).slice(0, excessCount);
       case 'fifo':
-        return entries;
-          .sort((a, b) => a.metadata.timestamp - b.metadata.timestamp)
-          .slice(0, excessCount);
+        return entries.sort((a, b) => a.metadata.timestamp - b.metadata.timestamp).slice(0, excessCount);
       case 'neural_priority':
-        return entries;
-          .sort((a, b) => a.metadata.neuralPriority - b.metadata.neuralPriority)
-          .slice(0, excessCount);
+        return entries.sort((a, b) => a.metadata.neuralPriority - b.metadata.neuralPriority).slice(0, excessCount);
       default:
         return entries.slice(0, excessCount);
     }
@@ -463,8 +458,8 @@ export class HierarchicalCacheIndex {
   /**
    * Demote entry to lower cache level
    */
-  private async demoteEntry(entry: CacheEntry, targetLeve,l: numbe,r): Promise<void> {
-    if (targetLevel >= this.levels.lengt,h) return)
+  private async demoteEntry(entry: CacheEntry, targetLevel: number): Promise<void> {
+    if (targetLevel >= this.levels.length) return;
     const targetLevelConfig = this.levels[targetLevel];
     entry.value = await this.compress(entry.value, targetLevelConfig.compressionRatio);
     entry.level = targetLevel;
@@ -475,10 +470,10 @@ export class HierarchicalCacheIndex {
   /**
    * Predictive prefetch based on neural topology patterns
    */
-  private async predictivePrefetch(_key: string, context?: any): Promise<void> {
-    if (this.prefetchQueue.length > 10,0) retu,rn; // Limit prefetch queue
+  private async predictivePrefetch(key: string, context?: any): Promise<void> {
+    if (this.prefetchQueue.length > 100) return; // Limit prefetch queue
     // HMM-based prefetch predictions
-    if (this.hmm && context?.spatialHin,t) {
+    if (this.hmm && context?.spatialHint) {
       const neighbors = await this.predictSpatialNeighbors(context.spatialHint);
       this.prefetchQueue.push(...neighbors);
     }
@@ -491,17 +486,17 @@ export class HierarchicalCacheIndex {
     const semanticSimilar = await this.findSemanticallyRelated(key);
     this.prefetchQueue.push(...semanticSimilar);
     // Process prefetch queue in background
-    setImmediate(() => this.processPrefetchQueue();
+    setImmediate(() => this.processPrefetchQueue());
   }
   /**
    * Predict spatial neighbors using SOM topology
    */
-  private async predictSpatialNeighbors(location: { x: numbe,r); y: number }): Promise<string[]> {
+  private async predictSpatialNeighbors(location: { x: number; y: number }): Promise<string[]> {
     const quadrant = this.getQuadrant(location);
-    const neighbor,s: stri,ng,[], = [];
+    const neighbors: string[] = [];
     // Get neighboring quadrants
     const [qx, qy] = quadrant.split(',').map(Number);
-    for (let dx = -,1; d,x <= 1; d x++) {
+    for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         const neighborQuadrant = `${qx + dx},${qy + dy}`;
         const keys = this.spatialIndex.quadrants.get(neighborQuadrant) || [];
@@ -513,11 +508,11 @@ export class HierarchicalCacheIndex {
   /**
    * Predict related keys using neural patterns
    */
-  private async predictRelatedKeys(_key: string, contex,t: an,y): Promise<string[]> {
+  private async predictRelatedKeys(key: string, context: any): Promise<string[]> {
     // Simplified prediction based on key patterns
-    const relate,d: stri,ng,[], = [];
+    const related: string[] = [];
     // Find keys with similar prefixes
-    for (const [level, cache], o,f t,his.caches.entri,es()) {
+    for (const [level, cache] of this.caches.entries()) {
       for (const cacheKey of cache.keys()) {
         if (cacheKey !== key && this.calculateKeySimilarity(key, cacheKey) > 0.7) {
           related.push(cacheKey);
@@ -530,26 +525,26 @@ export class HierarchicalCacheIndex {
   /**
    * Calculate similarity between cache keys
    */
-  private calculateKeySimilarity(key1: string, key,2: strin,g): number {
+  private calculateKeySimilarity(key1: string, key2: string): number {
     const commonChars = [...key1].filter(char => key2.includes(char)).length;
     return commonChars / Math.max(key1.length, key2.length);
   }
   /**
    * Find semantically related keys
    */
-  private async findSemanticallyRelated(_key: string): Promise<string[]> {
+  private async findSemanticallyRelated(key: string): Promise<string[]> {
     const keyVector = this.semanticIndex.tfidfVectors.get(key);
-    if (!keyVector), return [])
-    const relate,d: stri,ng,[], = [];
+    if (!keyVector) return [];
+    const related: string[] = [];
     const threshold = 0.7;
-    for (const [otherKey, otherVector], o,f t,his.semanticIndex.tfidfVectors.entri,es()) {
+    for (const [otherKey, otherVector] of this.semanticIndex.tfidfVectors.entries()) {
       if (otherKey !== key) {
         const similarity = this.cosineSimilarity(keyVector, otherVector);
         if (similarity > threshold) {
           related.push(otherKey);
         }
       }
-      if (related.length >= 5) break)
+      if (related.length >= 5) break;
     }
     return related;
   }
@@ -566,15 +561,15 @@ export class HierarchicalCacheIndex {
       normB += b[i] * b[i];
     }
     const norm = Math.sqrt(normA) * Math.sqrt(normB);
-    return norm > 0 ? dotProduct / norm : 0,
+    return norm > 0 ? dotProduct / norm : 0;
   }
   /**
    * Process prefetch queue in background
    */
   private async processPrefetchQueue(): Promise<void> {
-    const batchSize =, 5;
+    const batchSize = 5;
     const batch = this.prefetchQueue.splice(0, batchSize);
-    for (const key, o,f batch) {
+    for (const key of batch) {
       // Check if key is already cached
       let found = false;
       for (const cache of this.caches.values()) {
@@ -589,8 +584,8 @@ export class HierarchicalCacheIndex {
           const value = await this.fetchFromSource(key);
           if (value) {
             await this.set(key, value, {
-              predictionConfidence: 0.3 // Lower confidence for prefetched
-            )});
+              predictionConfidence: 0.3, // Lower confidence for prefetched
+            });
           }
         } catch (error) {
           console.warn(`Prefetch failed for ${key}:`, error);
@@ -601,31 +596,31 @@ export class HierarchicalCacheIndex {
   /**
    * Fetch value from original source (fallback)
    */
-  private async fetchFromSource(_key: string, context?: any): Promise<any> {
+  private async fetchFromSource(key: string, context?: any): Promise<any> {
     // Integration with reinforcement learning cache as fallback
     const cachedValue = await reinforcementLearningCache.get(key);
-    if (cachedValue), return cachedVal,ue)
+    if (cachedValue) return cachedValue;
     // Simulate source fetch (would integrate with actual data sources)
-    await new, Promise(resolve => setTimeout(resolve, Math.random() * 100 + 5,0);
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
     return {
       key,
       generated: true,
       timestamp: Date.now(),
       context: context || {},
-      source: 'hierarchical_cache_fallback'
-    }
+      source: 'hierarchical_cache_fallback',
+    };
   }
   /**
    * Check if cache entry is expired
    */
   private isExpired(entry: CacheEntry): boolean {
     const ttl = this.levels[entry.level].ttl;
-    return (Date.now() - entry.metadata.timestamp) > ttl;
+    return Date.now() - entry.metadata.timestamp > ttl;
   }
   /**
    * Estimate size of cached value
    */
-  private estimateSize(_value: any): number {
+  private estimateSize(value: any): number {
     return JSON.stringify(value).length;
   }
   /**
@@ -633,7 +628,7 @@ export class HierarchicalCacheIndex {
    */
   private startBackgroundTasks(): void {
     // Cleanup expired entries every minute
-    setInterval((), => {
+    setInterval(() => {
       this.cleanupExpiredEntries();
     }, 60000);
     // Optimize cache hierarchy every 5 minutes
@@ -642,18 +637,18 @@ export class HierarchicalCacheIndex {
     }, 300000);
     // Log statistics every 10 minutes
     setInterval(() => {
-      console.log('📊 Cache Statistics:', this.getStatistics();
+      console.log('📊 Cache Statistics:', this.getStatistics());
     }, 600000);
   }
   /**
    * Cleanup expired entries across all levels
    */
   private cleanupExpiredEntries(): void {
-    let totalCleaned =, 0;
-    for (let level = 0; leve,l < t,his.levels.le,ngth; l evel++) {
+    let totalCleaned = 0;
+    for (let level = 0; level < this.levels.length; level++) {
       const cache = this.caches.get(level)!;
-      const entries = Array.from(cache.values();
-      for (const entry of entries) {
+      for (const entry of Array.from(cache.values())) {
+        // Use Array.from to avoid issues with map modification during iteration
         if (this.isExpired(entry)) {
           cache.delete(entry.key);
           totalCleaned++;
@@ -669,10 +664,10 @@ export class HierarchicalCacheIndex {
    */
   private optimizeCacheHierarchy(): void {
     // Analyze access patterns and adjust cache sizes if needed
-    for (let level = 0; leve,l < t,his.levels.le,ngth; l evel++) {
+    for (let level = 0; level < this.levels.length; level++) {
       const cache = this.caches.get(level)!;
-      const entries = Array.from(cache.values();
-      if (entries.length === 0) continue)
+      const entries = Array.from(cache.values());
+      if (entries.length === 0) continue;
       // Calculate average access frequency
       const totalAccesses = entries.reduce((sum, entry) => sum + entry.metadata.accessCount, 0);
       const avgAccess = totalAccesses / entries.length;
@@ -681,7 +676,7 @@ export class HierarchicalCacheIndex {
         if (entry.metadata.accessCount > avgAccess * 1.5) {
           entry.metadata.neuralPriority = Math.min(1.0, entry.metadata.neuralPriority * 1.1);
         } else if (entry.metadata.accessCount < avgAccess * 0.5) {
-          entry.metadata.neuralPriority, = Math.max(0.0, entry.metadata.neuralPriority * 0.9);
+          entry.metadata.neuralPriority = Math.max(0.0, entry.metadata.neuralPriority * 0.9);
         }
       }
     }
@@ -691,27 +686,27 @@ export class HierarchicalCacheIndex {
    */
   getStatistics(): {
     levels: Array<any>;
-    hitRate: number,
-    totalHits: number,
-    totalMisses: number,
+    hitRate: number;
+    totalHits: number;
+    totalMisses: number;
     indexSizes: {
-      spatial: number,
-      temporal: number,
-      semantic: number,
-    }
+      spatial: number;
+      temporal: number;
+      semantic: number;
+    };
   } {
     const levelStats = this.levels.map((config, level) => {
-      const cache = this.caches.get(level)!);
+      const cache = this.caches.get(level)!;
       const entries = Array.from(cache.values());
-      const avgPriority = entries.length > 0 ?;
-        entries.reduce((sum, e) => sum + e.metadata.neuralPriority, 0) / entries.length,:, 0);
+      const avgPriority =
+        entries.length > 0 ? entries.reduce((sum, e) => sum + e.metadata.neuralPriority, 0) / entries.length : 0;
       return {
         name: config.name,
         entries: cache.size,
         maxSize: config.maxSize,
         utilization: cache.size / config.maxSize,
-        avgNeuralPriority: avgPriority
-      });
+        avgNeuralPriority: avgPriority,
+      };
     });
     const hitRate = this.totalHits / Math.max(1, this.totalHits + this.totalMisses);
     return {
@@ -722,7 +717,8 @@ export class HierarchicalCacheIndex {
       indexSizes: {
         spatial: this.spatialIndex.quadrants.size,
         temporal: this.temporalIndex.timeSlots.size,
-        semantic: this.semanticIndex.tfidfVectors.size
-      }
-    }
+        semantic: this.semanticIndex.tfidfVectors.size,
+      },
+    };
   }
+}

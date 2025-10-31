@@ -1,8 +1,7 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { Badge } from '$lib/components/ui/badge';
-  import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
-  import { onMount } from "svelte";
+  // keep only known-safe lucide icons, avoid problematic exports (Bot/Sparkles/Clock/Tags)
+  import { Search, FileText, Users } from 'lucide-svelte';
   import Fuse from 'fuse.js';
   interface Props {
     selectedNode?: unknown;
@@ -21,15 +20,25 @@
   let searchQuery = $state('');
   let searchResults = $state<any[]>([]);
   let fuse = $state<Fuse<any> | null>(null);
-  let aiInsights = $state({
+
+  // explicitly type insight shapes to avoid `never` element inference
+  type Connection = { entity?: string; description?: string; [k: string]: any };
+  type Similar = { name?: string; reason?: string; id?: string; [k: string]: any };
+  type Action = { title?: string; description?: string; [k: string]: any };
+  let aiInsights = $state<{
+    connections: Connection[];
+    similarEvidence: Similar[];
+    timeline: any[];
+    suggestedActions: Action[];
+  }>({
     connections: [],
     similarEvidence: [],
     timeline: [],
-    suggestedActions: [],
+    suggestedActions: []
   });
 
-  // safe alias for template usage to avoid 'unknown' property errors
-  let selectedNodeAny: any = null;
+  // safe alias for template usage; make reactive so template updates when selectedNode changes
+  let selectedNodeAny = $state<any | null>(null);
   $effect(() => {
     selectedNodeAny = selectedNode as any;
   });
@@ -137,7 +146,8 @@
 <div class="ai-assistant-panel space-y-6 p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
   <!-- Header -->
   <div class="flex items-center gap-3">
-    <Bot class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+    <!-- use emoji to avoid icon export mismatch -->
+    <span class="text-2xl">🤖</span>
     <h2 class="text-xl font-bold text-gray-900 dark:text-white">AI Assistant</h2>
     {#if processingStatus}
       <div class="flex items-center gap-2 text-sm">
@@ -236,7 +246,8 @@
         <div class="flex gap-2">
           <!-- native button in place of custom Button -->
           <button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60">
-            <Sparkles class="w-4 h-4 mr-2 inline-block" />
+            <!-- small sparkle emoji instead of Sparkles icon -->
+            <span class="mr-2 inline-block">✨</span>
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
           </button>
           <button class="bits-btn px-3 py-2 rounded border border-gray-200 dark:border-gray-700 bg-transparent" onclick={generateInsights} disabled={isProcessing}>
@@ -248,7 +259,7 @@
         {#if selectedNodeAny?.aiTags}
           <div class="space-y-3 p-4 border border-gray-200 dark:border-gray-600 rounded-md">
             <h4 class="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-              <Bot class="w-4 h-4" />
+              <span>🤖</span>
               AI Analysis Results
             </h4>
             {#if selectedNodeAny?.aiSummary}
@@ -265,10 +276,7 @@
                 <div class="flex flex-wrap gap-2">
                   {#each selectedNodeAny.aiTags.tags as tag}
                     <!-- removed variant prop to satisfy Badge typing; fallback to simple span if Badge signature differs -->
-                    <Badge>
-                      <Tags class="w-3 h-3 mr-1" />
-                      {tag}
-                    </Badge>
+                    <Badge>{tag}</Badge>
                   {/each}
                 </div>
               </div>
@@ -276,7 +284,7 @@
           </div>
         {:else}
           <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-            <Bot class="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <div class="text-4xl mx-auto mb-2 opacity-50">🤖</div>
             <p class="text-sm">No AI analysis available yet</p>
           </div>
         {/if}
@@ -289,7 +297,7 @@
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center gap-2">
-          <Sparkles class="w-5 h-5" />
+          <span class="inline-block">✨</span>
           AI Insights
         </h3>
       </div>
@@ -343,7 +351,7 @@
         {#if aiInsights.suggestedActions.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <Clock class="w-4 h-4" />
+              <span>⏰</span>
               Suggested Actions
             </h4>
             <div class="space-y-2">

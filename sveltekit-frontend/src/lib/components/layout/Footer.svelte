@@ -1,25 +1,30 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   interface Props {
     variant?: 'full' | 'minimal' | 'demo';
     showQuickLinks?: boolean;
   }
   let { variant = 'full', showQuickLinks = true }: Props = $props();
   let currentYear = new Date().getFullYear();
-  let currentPath = $derived($page.url.pathname);
-  let isDemoRoute = $derived(currentPath?.startsWith('/demo') ?? false);
+  // reactive values derived from the SvelteKit page store
+  let currentPath = '';
+  let isDemoRoute = false;
+  // use Svelte 5 runes $effect to derive reactive values from the page store
+  $effect(() => {
+    currentPath = $page?.url?.pathname ?? '';
+    isDemoRoute = currentPath.startsWith('/demo');
+  });
   const quickLinks = [
-    { path: '/help', label: 'Help', icon '❓' },
-    { path: '/privacy', label: 'Privacy', icon '🔒' },
-    { path: '/terms', label: 'Terms', icon '📄' },
-    { path: '/contact', label: 'Contact', icon '📧' },
+    { path: '/help', label: 'Help', icon: '❓' },
+    { path: '/privacy', label: 'Privacy', icon: '🔒' },
+    { path: '/terms', label: 'Terms', icon: '📄' },
+    { path: '/contact', label: 'Contact', icon: '📧' }
   ];
   const socialLinks = [
-    { href: '#', label: 'GitHub', icon '🔗' },
-    { href: '#', label: 'Documentation', icon '📚' },
-    { href: '#', label: 'Community', icon '👥' },
+    { href: '#', label: 'GitHub', icon: '🔗' },
+    { href: '#', label: 'Documentation', icon: '📚' },
+    { href: '#', label: 'Community', icon: '👥' }
   ];
 </script>
 
@@ -257,7 +262,7 @@
     justify-content: flex-start !important;
     padding: 0.25rem 0.5rem !important;
     font-size: 0.5rem !important;
-    text-decoration none !important;
+    text-decoration: none !important;
   }
   .resource-icon {
     margin-right: 0.5rem;
@@ -270,7 +275,7 @@
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
     padding-top: 0.5rem;
@@ -293,7 +298,7 @@
   /* Minimal Footer */
   .minimal-footer {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;

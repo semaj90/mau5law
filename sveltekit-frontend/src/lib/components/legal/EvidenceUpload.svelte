@@ -3,8 +3,16 @@
   Integrates with GPU processing, metadata extraction, and legal document analysis
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  const { maxFiles = 10, maxFileSize = 100 * 1024 * 1024, acceptedTypes = [
+  // Note: createEventDispatcher has deprecation notes in newer Svelte versions;
+  // keep using it here for backward compatibility but plan a migration if you upgrade major Svelte.
+  import { createEventDispatcher } from 'svelte';
+  import { generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
+  import { fade, fly, scale } from 'svelte/transition';
+
+  // Props (use export let pattern)
+  export let maxFiles: number = 10;
+  export let maxFileSize: number = 100 * 1024 * 1024; // 100MB
+  export let acceptedTypes: string[] = [
     'image/*',
     'application/pdf',
     'text/plain',
@@ -13,13 +21,16 @@
     'video/mp4',
     'audio/mpeg',
     'audio/wav'
-  ], enableGPUProcessing = true, enableAIAnalysis = true } = $props();
-  import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
-  import { fade, fly, scale } from 'svelte/transition';
+  ];
+  export let enableGPUProcessing: boolean = true;
+  export let enableAIAnalysis: boolean = true;
+
+  const dispatch = createEventDispatcher();
+
   // Types
   interface EvidenceFile {
     id: string;
-    file: Fil;
+    file: File;
     status: 'pending' | 'uploading' | 'processing' | 'analyzing' | 'completed' | 'error';
     progress: number;
     metadata?: {
@@ -30,7 +41,8 @@
       aiAnalysis?: string;
       confidence?: number;
       tags?: string[];
-    }
+      processingTime?: number;
+    };
     error?: string;
     uploadUrl?: string;
   }
@@ -41,26 +53,26 @@
     processing: number;
     averageTime: number;
   }
-  // Props
-   // 100MB
-  // Event dispatcher
+
   // State
-  let dragActive = $state(false);
-  let files: EvidenceFile[] = $state([]);
-  let isProcessing = $state(false);
-  let processingStats: ProcessingStats = $state({,
+  let dragActive = false;
+  let files: EvidenceFile[] = [];
+  let isProcessing = false;
+  let processingStats: ProcessingStats = {
     totalFiles: 0,
     completed: 0,
     failed: 0,
     processing: 0,
     averageTime: 0,
-  });
-  // Drag and drop handlers
+  };
+
+  // Drag and drop handlers (unchanged logic, kept for clarity)
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
   }
-  function handleDragLeave() {
+  function handleDragLeave(e?: DragEvent) {
+    if (e) e.preventDefault();
     dragActive = false;
   }
   function handleDragOver(e: DragEvent) {
@@ -73,6 +85,7 @@
       addFiles(Array.from(e.dataTransfer.files));
     }
   }
+
   // File selection handler
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -81,17 +94,18 @@
       input.value = ''; // Reset input
     }
   }
+
   // Add files to processing queue
   function addFiles(newFiles: File[]) {
     const validFiles = newFiles.filter(file => {
       // Check file count
       if (files.length >= maxFiles) {
-        ondispatch?.({ message: `Maximum ${maxFiles} files allowed` });
+        dispatch('message', { message: `Maximum ${maxFiles} files allowed` });
         return false;
       }
       // Check file size
       if (file.size > maxFileSize) {
-        ondispatch?.({
+        dispatch('message', {
           message: `File "${file.name}" exceeds ${formatFileSize(maxFileSize)} limit`
         });
         return false;
@@ -99,28 +113,30 @@
       // Check file type
       const isValidType = acceptedTypes.some(type => {
         if (type.endsWith('/*')) {
+          // 'image/*' -> 'image/'
           return file.type.startsWith(type.replace('/*', '/'));
         }
-        return file.type === typ;
+        return file.type === type;
       });
       if (!isValidType) {
-        ondispatch?.({
+        dispatch('message', {
           message: `File type "${file.type}" not supported for "${file.name}"`
         });
         return false;
       }
       return true;
     });
+
     // Add valid files
-    const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({,
-      id: `evidence_${Date.now()}_${Math.random().toString().substr(2, 9)}`,
+    const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({
+      id: `evidence_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       file,
       status: 'pending',
       progress: 0,
       metadata: {
         type: getFileType(file.type),
         size: file.size,
-        mimeType: file.typ;
+        mimeType: file.type
       }
     }));
     files = [...files, ...evidenceFiles];
@@ -129,6 +145,7 @@
       processFiles();
     }
   }
+
   // Determine file type
   function getFileType(mimeType: string): 'document' | 'image' | 'video' | 'audio' {
     if (mimeType.startsWith('image/')) return 'image';
@@ -136,6 +153,7 @@
     if (mimeType.startsWith('audio/')) return 'audio';
     return 'document';
   }
+
   // Process all pending files
   async function processFiles() {
     if (isProcessing) return;
@@ -148,7 +166,7 @@
     processingStats.totalFiles = files.length;
     processingStats.processing = pendingFiles.length;
     // Process files concurrently (max 3 at a time)
-    const processingPromises = [];
+    const processingPromises: Promise<void>[] = [];
     const maxConcurrent = 3;
     for (let i = 0; i < pendingFiles.length; i += maxConcurrent) {
       const batch = pendingFiles.slice(i, i + maxConcurrent);
@@ -163,8 +181,9 @@
     processingStats.failed = files.filter(f => f.status === 'error').length;
     processingStats.processing = 0;
     isProcessing = false;
-    ondispatch?.({ files, stats: processingStats });
+    dispatch('update', { files, stats: processingStats });
   }
+
   // Process individual file
   async function processFile(evidenceFile: EvidenceFile) {
     try {
@@ -174,14 +193,14 @@
       evidenceFile.progress = 10;
       files = [...files]; // Trigger reactivity
       const uploadResult = await uploadFile(evidenceFile);
-      evidenceFile.uploadUrl = uploadResult.url;
+      evidenceFile.uploadUrl = uploadResult?.url;
       evidenceFile.progress = 30;
       // Step 2: Extract metadata and text
       evidenceFile.status = 'processing';
       evidenceFile.progress = 50;
       files = [...files];
       const extractionResult = await extractMetadata(evidenceFile);
-      evidenceFile.metadata = { ...evidenceFile.metadata, ...extractionResult }
+      evidenceFile.metadata = { ...evidenceFile.metadata, ...extractionResult };
       evidenceFile.progress = 70;
       // Step 3: AI Analysis (if enabled)
       if (enableAIAnalysis) {
@@ -189,32 +208,36 @@
         evidenceFile.progress = 80;
         files = [...files];
         const analysisResult = await performAIAnalysis(evidenceFile);
-        evidenceFile.metadata = { ...evidenceFile.metadata, ...analysisResult }
+        evidenceFile.metadata = { ...evidenceFile.metadata, ...analysisResult };
       }
       // Step 4: Complete
       evidenceFile.status = 'completed';
       evidenceFile.progress = 100;
       const processingTime = Date.now() - startTime;
+      processingStats.completed = processingStats.completed + 1;
       processingStats.averageTime =
-        (processingStats.averageTime * processingStats.completed + processingTime) /
-        (processingStats.completed + 1);
+        (processingStats.averageTime * (processingStats.completed - 1) + processingTime) /
+        processingStats.completed;
       files = [...files];
-      ondispatch?.({ file: evidenceFile });
-    } catch (error) {
+      dispatch('file', { file: evidenceFile });
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       evidenceFile.status = 'error';
-      evidenceFile.error = error instanceof Error ? error.message: 'Processing failed';
+      evidenceFile.error = error.message;
       files = [...files];
-      ondispatch?.({
+      processingStats.failed = processingStats.failed + 1;
+      dispatch('error', {
         message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
-        file: evidenceFile ;
+        file: evidenceFile
       });
     }
   }
+
   // Upload file to server
   async function uploadFile(evidenceFile: EvidenceFile): Promise<any> {
     const formData = new FormData();
     formData.append('file', evidenceFile.file);
-    formData.append('metadata', JSON.stringify(evidenceFile.metadata));
+    formData.append('metadata', JSON.stringify(evidenceFile.metadata ?? {}));
     const response = await fetch('/api/evidence/upload', {
       method: 'POST',
       body: formData
@@ -224,6 +247,7 @@
     }
     return await response.json();
   }
+
   // Extract metadata from file
   async function extractMetadata(evidenceFile: EvidenceFile): Promise<any> {
     // Simulate metadata extraction
@@ -231,7 +255,7 @@
     const extractedMetadata: any = {
       extractedText: '',
       tags: [],
-    }
+    };
     // Mock text extraction based on file type
     switch (evidenceFile.metadata?.type) {
       case 'document':
@@ -250,6 +274,7 @@
     }
     return extractedMetadata;
   }
+
   // Perform AI analysis using tensor service
   async function performAIAnalysis(evidenceFile: EvidenceFile): Promise<any> {
     if (!enableGPUProcessing) {
@@ -257,8 +282,8 @@
       return {
         aiAnalysis: `AI analysis of ${evidenceFile.file.name} completed`,
         confidence: Math.random() * 0.3 + 0.7,
-        tags: [...(evidenceFile.metadata?.tags || []), 'ai-analyzed'];
-      }
+        tags: [...(evidenceFile.metadata?.tags || []), 'ai-analyzed'],
+      };
     }
     try {
       // Generate tensor data for analysis
@@ -268,21 +293,23 @@
       const response = await fetch('/api/tensor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          operation 'analyze',
+        body: JSON.stringify({
+          operation: 'analyze',
           documentId: evidenceFile.id,
           data: Array.from(tensorData),
           options: { timeout: 15000 }
         })
       });
       const result = await response.json();
-      if (result.success && result.data.result) {
+      if (result?.success && result?.data?.result) {
+        const confidence = result.data.result.metadata?.confidence ?? 0.85;
+        const processingTime = result.data.result.processingTime ?? 0;
         return {
-          aiAnalysis: `GPU-accelerated analysis completed with ${result.data.result.metadata?.confidence || 85}% confidence`,
-          confidence: result.data.result.metadata?.confidence || 0.85,
+          aiAnalysis: `GPU-accelerated analysis completed with ${(confidence * 100).toFixed(1)}% confidence`,
+          confidence,
           tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'],
-          processingTime: result.data.result.processingTim;
-        }
+          processingTime
+        };
       }
       throw new Error('Analysis failed');
     } catch (error) {
@@ -290,14 +317,16 @@
       return {
         aiAnalysis: `Fallback analysis of ${evidenceFile.file.name} (tensor service unavailable)`,
         confidence: Math.random() * 0.2 + 0.6,
-        tags: [...(evidenceFile.metadata?.tags || []), 'mock-analyzed'];
-      }
+        tags: [...(evidenceFile.metadata?.tags || []), 'mock-analyzed'],
+      };
     }
   }
+
   // Remove file
   function removeFile(id: string) {
     files = files.filter(f => f.id !== id);
   }
+
   // Clear all files
   function clearAll() {
     files = [];
@@ -308,8 +337,10 @@
       failed: 0,
       processing: 0,
       averageTime: 0,
-    }
+    };
+    dispatch('cleared');
   }
+
   // Utility functions
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -321,7 +352,9 @@
   function getStatusColor(status: string): string {
     switch (status) {
       case 'completed': return '#10b981';
-      case 'processing': case 'uploading': case 'analyzing': return '#3b82f6';
+      case 'processing':
+      case 'uploading':
+      case 'analyzing': return '#3b82f6';
       case 'error': return '#ef4444';
       default: return '#6b7280';
     }
@@ -341,14 +374,16 @@
 <div class="evidence-upload">
   <!-- Upload Zone -->
   <div
-    class="upload-zone {dragActive ? 'drag-active' : ''} {files.length > 0 ? 'has-files' : ''}"
+    class="upload-zone"
+    class:drag-active={dragActive}
+    class:has-files={files.length > 0}
     role="button"
     tabindex="0"
     aria-label="Evidence upload area"
-    ondragenter={handleDragEnter}
-    ondragleave={handleDragLeave}
-    ondragover={handleDragOver}
-    ondrop={handleDrop}
+    on:dragenter={handleDragEnter}
+    on:dragleave={handleDragLeave}
+    on:dragover={handleDragOver}
+    on:drop={handleDrop}
   >
     <div class="upload-content">
       <div class="upload-icon">
@@ -383,21 +418,21 @@
         type="file"
         multiple
         accept={acceptedTypes.join(',')}
-        onchange={handleFileSelect}
+        on:change={handleFileSelect}
         style="display: none"
       />
-      <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
+      <button class="browse-button" on:click={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
   </div>
   <!-- Processing Stats -->
   {#if files.length > 0}
-    <div class="processing-stats" in:fade={{ duration 300 }}>
+    <div class="processing-stats" in:fade={{ duration: 300 }}>
       <div class="stats-header">
         <h4>📊 Processing Statistics</h4>
         {#if files.length > 1}
-          <button class="clear-button" onclick={clearAll}> 🗑️ Clear All </button>
+          <button class="clear-button" on:click={clearAll}> 🗑️ Clear All </button>
         {/if}
       </div>
       <div class="stats-grid">
@@ -428,10 +463,10 @@
   {/if}
   <!-- File List -->
   {#if files.length > 0}
-    <div class="file-list" in:fade={{ duration 300 }}>
+    <div class="file-list" in:fade={{ duration: 300 }}>
       <h4>📂 Evidence Files ({files.length})</h4>
       {#each files as file (file.id)}
-        <div class="file-item" in:fly={{ x: -20, duration 300 }} out:scale={{ duration 200 }}>
+        <div class="file-item" in:fly={{ x: -20, duration: 300 }} out:scale={{ duration: 200 }}>
           <div class="file-info">
             <div class="file-header">
               <span class="file-icon">{getStatusIcon(file.status)}</span>
@@ -444,7 +479,7 @@
                   {/if}
                 </div>
               </div>
-              <button class="remove-button" onclick={() => removeFile(file.id)}> ❌ </button>
+              <button class="remove-button" on:click={() => removeFile(file.id)}> ❌ </button>
             </div>
             {#if file.progress > 0 && file.status !== 'completed'}
               <div class="progress-bar">
@@ -507,7 +542,7 @@
     cursor: pointer;
     margin-bottom: 2rem;
   }
-  .upload-zone:hover, .upload-zone: focus {
+  .upload-zone:hover, .upload-zone:focus {
     border-color: #3b82f6;
     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     outline: none;
@@ -576,7 +611,7 @@
     gap: 0.5rem;
     margin: 0 auto;
   }
-  .browse-buttonhover {
+  .browse-button:hover {
     background: #2563eb;
     transform: translateY(-1px);
   }
@@ -589,7 +624,7 @@
   }
   .stats-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -678,7 +713,7 @@
   }
   .file-details {
     flex: 1;
-    min-width: 0,
+    min-width: 0;
   }
   .file-name {
     font-weight: 600;
@@ -698,7 +733,7 @@
     opacity: 0.7;
     transition: opacity 0.2s ease;
   }
-  .remove-buttonhover {
+  .remove-button:hover {
     opacity: 1;
   }
   .progress-bar {

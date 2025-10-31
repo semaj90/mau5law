@@ -9,7 +9,7 @@ import { gzipSync, gunzipSync } from 'zlib';
 import { Buffer } from 'buffer';
 import crypto from 'crypto';
 import { createClient, type RedisClientType } from 'redis';
-import { getRedisUrl } from '$lib/config/env.server';
+import { env } from '$env/dynamic/private';
 
 /* -------------------------------------------------------------------------- */
 /*  Error Formatting Utility                                                  */
@@ -38,7 +38,6 @@ const IS_SERVER = typeof window === 'undefined';
 // prefer env helper, fall back to process envs and localhost
 const REDIS_URL =
   process.env.REDIS_URL ||
-  getRedisUrl?.() ||
   `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`;
 
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -401,4 +400,5 @@ export async function deleteLangCache(model: string, prompt: string): Promise<vo
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
   await cache.del(key);
+}
 }

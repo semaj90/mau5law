@@ -18,6 +18,7 @@ import { sql } from 'drizzle-orm';
 
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
+export * from './schema-gpu-cache';
 
 // Exported table definition used by the advanced-analysis endpoint
 export const analysisResults = pgTable('analysis_results', {
@@ -43,28 +44,17 @@ export const cases = pgTable('cases', {
 });
 
 export const evidence = pgTable('evidence', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  caseId: uuid('case_id')
-    .references(() => cases.id)
-    .notNull(),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description'),
-  evidenceType: varchar('evidence_type', { length: 100 }).notNull(),
-  subType: varchar('sub_type', { length: 100 }),
-  summary: text('summary'),
-  aiSummary: text('ai_summary'),
-  aiAnalysis: jsonb('ai_analysis'),
-  tags: jsonb('tags'),
-  chainOfCustody: jsonb('chain_of_custody'),
-  uploadedBy: uuid('uploaded_by').notNull(),
-  isAdmissible: boolean('is_admissible').default(true),
-  confidentialityLevel: varchar('confidential_level', { length: 50 }),
-  collectedAt: timestamp('collected_at'),
-  location: text('location'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  embedding: vector('embedding', { dimensions: 768 }), // ADDED: Embedding column for pgvector
-  metadata: jsonb('metadata'), // ADDED: Metadata column for AI analysis results
+  id: text('id').primaryKey().notNull().default(sql`gen_random_uuid()`),
+  caseId: text('case_id').notNull(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  summary: text('summary').notNull(),
+  documentType: text('document_type').notNull(), // e.g., 'legal_brief', 'contract', 'email'
+  source: text('source'), // e.g., 'email_archive', 'uploaded_file'
+  embedding: real('embedding').array().notNull(), // pgvector requires real[] type
+  metadata: jsonb('metadata').default({}), // Store additional structured data
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const documents = pgTable('documents', cols => ({
@@ -147,6 +137,17 @@ export const reports = pgTable('reports', {
   userId: text('user_id').notNull(),
   title: text('title').notNull(),
   content: text('content').notNull(),
+  summary: text('summary'),
+  tags: jsonb('tags').$type<string[]>().default([]),
+  autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
+  embedding: vector('embedding', { dimensions: 1536 }),
+  sourceUri: text('source_uri'), // Optional: link to MinIO object
+  isFavorite: boolean('is_favorite').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+console.log('📝 Drizzle ORM schema defined');
   summary: text('summary'),
   tags: jsonb('tags').$type<string[]>().default([]),
   autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),

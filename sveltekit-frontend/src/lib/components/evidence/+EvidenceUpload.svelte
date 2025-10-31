@@ -3,9 +3,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (ondragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <script lang="ts">
   import type { Evidence } from '$lib/data/types';
+  import { createEventDispatcher } from 'svelte';
+
+  // optional callback prop (keeps compatibility with existing callers)
+  export let ondispatch: ((payload: any) => void) | undefined = undefined;
+  const dispatch = createEventDispatcher();
+
   let dragActive = false;
   let files: FileList | null = null;
   let uploadProgress = 0;
+
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
@@ -17,14 +24,23 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     e.preventDefault();
     dragActive = false;
     if (e.dataTransfer?.files) {
-      files = e.dataTransfer.file;
+      files = e.dataTransfer.files;
       handleUpload();
     }
   }
+
+  // handle input change from the hidden file input
+  let fileInput: HTMLInputElement | null = null;
+  function handleInputChange(e: Event) {
+    const target = e.currentTarget as HTMLInputElement | null;
+    files = target?.files ?? null;
+    handleUpload();
+  }
+
   async function handleUpload() {
     if (!files?.length) return;
     const formData = new FormData();
-    Array.from.forEach(file => {
+    Array.from(files).forEach((file: File) => {
       formData.append('files', file);
     });
     try {
@@ -33,10 +49,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         body: formData,
       });
       if (!response.ok) throw new Error('Upload failed');
-      const evidence = await response.json();
+      const evidence = (await response.json()) as Evidence;
       ondispatch?.(evidence);
+      dispatch('upload', evidence);
     } catch (error) {
-      dispatch('error', error instanceof Error ? error.message : 'Upload failed');
+      const message = error instanceof Error ? error.message : 'Upload failed';
+      dispatch('error', { message });
     }
   }
 </script>
@@ -47,10 +65,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   role="button"
   tabindex="0"
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
-  ondragenter={handleDragEnter}
-  ondragleave={handleDragLeave}
-  ondragover|preventDefault
-  ondrop={onkeydown}
+  on:dragenter={handleDragEnter}
+  on:dragleave={handleDragLeave}
+  on:dragover|preventDefault
+  on:drop={handleDrop}
+  on:click={() => fileInput?.click()}
+  on:keydown={(e: KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInput?.click();
+    }
+  }}
 >
   <div class="upload-content">
     <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -64,10 +89,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <input
       type="file"
       multiple
-      onchange={e => {
-        files = e.currentTarget.file;
-        handleUpload();
-      }}
+      bind:this={fileInput}
+      on:change={handleInputChange}
       style="display: none"
     />
   </div>
@@ -103,7 +126,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   .progress-bar {
     margin-top: 1rem;
-    background-color: #ee;
+    background-color: #eee;
     border-radius: 4px;
     overflow: hidden;
   }

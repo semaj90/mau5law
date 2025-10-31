@@ -1,5 +1,6 @@
 import { cuidSchema } from '$lib/server/z-schemas';
-import { redis } from '$lib/server/redis-client';
+import { z } from 'zod';
+import { json, type RequestHandler } from '@sveltejs/kit';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,10 +18,18 @@ import { redis } from '$lib/server/redis-client';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from "$lib/server/services/ai-service.js"
+import { aiService } from '$lib/server/services/ai-service.js';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+
+// Define a type for the AI query result to avoid using 'any'
+type ProcessQueryResult = {
+  response?: unknown;
+  confidence?: number;
+  contextUsed?: unknown;
+  queryId?: string;
+};
+
 const querySchema = z.object({
   query: z.string().min(1).max(5000),
   caseId: cuidSchema.optional(),
@@ -36,76 +45,71 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 })
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
     // Parse and validate request
-    const body = await request.json()
-    const validatedData = querySchema.parse(body)
+    const body = await request.json();
+    const validatedData = querySchema.parse(body);
     // Process AI query
-    const result = await aiService.processQuery(
+    const result = (await aiService.processQuery(
       validatedData.query,
-      getUserId(locals),
+      locals.user.id,
       validatedData.caseId,
       validatedData.options
-    )
+    )) as ProcessQueryResult;
     return json({
       success: true,
       data: {
-        response: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).response,
-        confidence: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).confidence,
-        contextUsed: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).contextUsed,
-        queryId: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).queryId
-      }
-    })
-  } catch (error: any) {
-    console.error('AI query API error:', error)
+        response: result.response,
+        confidence: result.confidence,
+        contextUsed: result.contextUsed,
+        queryId: result.queryId,
+      },
+    });
+  } catch (error) {
+    console.error('AI query API error:', error);
     if (error instanceof z.ZodError) {
-      return json({
+      return json(
+        {
           error: 'Validation failed',
-          details: error.errors
-        }, )
+          details: error.errors,
+        },
         { status: 400 }
-      )
+      );
     }
-    return json({
+    return json(
+      {
         error: 'AI query processing failed',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      }, )
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    )
+    );
   }
-}
+};
 // Get similar queries for suggestions
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 })
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
-    const query = url.searchParams.get('q')
+    const query = url.searchParams.get('q');
     if (!query) {
-      return json({ error: 'Query parameter required' }, { status: 400 })
+      return json({ error: 'Query parameter required' }, { status: 400 });
     }
     // Generate embedding for the query
-    const embedding = await aiService.getOrCreateEmbedding(query)
+    const embedding = await aiService.getOrCreateEmbedding(query);
     // Find similar queries
-    const similarQueries = await aiService.findSimilarQueries(
-      embedding,
-      getUserId(locals),
-      5
-    )
+    const similarQueries = await aiService.findSimilarQueries(embedding, locals.user.id, 5);
     return json({
       success: true,
       data: {
-        suggestions: similarQueries
-      }
-    })
-  } catch (error: any) {
-    console.error('Similar queries API error:', error)
-    return json(
-      { error: 'Failed to get query suggestions' }, )
-      { status: 500 }
-    )
+        suggestions: similarQueries,
+      },
+    });
+  } catch (error) {
+    console.error('Similar queries API error:', error);
+    return json({ error: 'Failed to get query suggestions' }, { status: 500 });
   }
-}
-export const POST = redisOptimized.aiSearch(originalPOSTHandler)
-export const GET = redisOptimized.aiSearch(originalGETHandler);
+};
+export const POST = redisOptimized.search(originalPOSTHandler);
+export const GET = redisOptimized.search(originalGETHandler);

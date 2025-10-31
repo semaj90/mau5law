@@ -25,17 +25,16 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
  * Legacy API compatibility for getLibraryDocs
  * Fetches documentation using MCP Context7.2
  */
-export async function getLibraryDocs(
-  libraryId: string,
-  topic?: string
-  tokens?: number;
-): Promise<string> {
+export async function getLibraryDocs(libraryId: string, topic?: string, tokens?: number): Promise<string> {
   try {
-    // removed unused response assignment
+    const response = await mcpContext72GetLibraryDocs(libraryId, {
+      topic: topic || 'general',
+      maxTokens: tokens || 2048,
+    });
     return response.content;
   } catch (error) {
     console.error('Failed to get library docs:', error);
-    return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message: 'Unknown error'}`;
+    return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message : 'Unknown error'}`;
   }
 }
 // Re-export MCP functions for direct usage

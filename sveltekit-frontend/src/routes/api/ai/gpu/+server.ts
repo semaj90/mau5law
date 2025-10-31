@@ -15,18 +15,16 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { nvidiaLlamaService } from '$lib/services/nvidiaLlamaService'
-import { gpuServiceIntegration } from '$lib/services/gpu-service-integration'
-import { unifiedWASMGPUOrchestrator } from '$lib/services/unified-wasm-gpu-orchestrator'
-import { llvmWasmBridge } from '$lib/wasm/llvm-wasm-bridge'
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import nvidiaLlamaService from '$lib/services/nvidiaLlamaService';
+import gpuServiceIntegration from '$lib/services/gpu-service-integration';
+import llvmWasmBridge from '$lib/wasm/llvm-wasm-bridge';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
 /*
  * Unified GPU API Endpoint
  * Handles all GPU-related operations: NVIDIA LLaMA, WASM-LLVM, WebGPU, and NES Bridge
  */
-}
 export interface GPUApiRequest {
 	operation: 'llama_generate' | 'wasm_compile' | 'wasm_execute' | 'gpu_compute' | 'health' | 'hybrid'
 	data?: any
@@ -51,75 +49,77 @@ export interface GPUApiResponse {
 	metadata: { [key: string]: any }
 }
 // Health check for all GPU services
-async function checkGPUHealth(): Promise<{ [key: string]: any }, {
-	const health: { [key: string]: any } = {}
-	try {
-		// Check NVIDIA LLaMA service
-		const nvidiaStats = await nvidiaLlamaService.getGpuMetrics()
-		health.nvidia_llama = {
-			available: true,
-			status: 'healthy',
-			...nvidiaStats
-		}
-	} catch (error: any) {
-		health.nvidia_llama = {
-			available: false,
-			status: 'error',
-			error: error instanceof Error ? error.message: 'Unknown error'
-		}
-	}
-	try {
-		// Check GPU Service Integration
-		await gpuServiceIntegration.initialize()
-		const status = gpuServiceIntegration.getServiceStatus()
-		health.gpu_service_integration = {
-			available: status.available,
-			status: status.initialized ? 'healthy' : 'initializing',
-			performance: status.performance
-		}
-	} catch (error: any) {
-		health.gpu_service_integration = {
-			available: false,
-			status: 'error',
-			error: error instanceof Error ? error.message: 'Unknown error'
-		}
-	}
-	try {
-		// Check WASM-LLVM Bridge
-		health.wasm_llvm = {
-			available: true, // Always available with fallback
-			status: 'healthy',
-			capabilities: ['legal_processing', 'vector_computation', 'fallback_cpu']
-		}
-	} catch (error: any) {
-		health.wasm_llvm = {
-			available: false,
-			status: 'error',
-			error: error instanceof Error ? error.message: 'Unknown error'
-		}
-	}
-	try {
-		// Check external WASM-LLVM service (port 8225)
-		const response = await fetch('http://localhost:8225/health')
-		if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
-			const serviceHealth = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json()
-			health.wasm_llvm_service = {
-				available: true,;
-				status: 'healthy',
-				...serviceHealth
-			}
-		} else {
-			throw new Error(`Service responded with status ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}`)
-		}
-	} catch (error: any) {
-		health.wasm_llvm_service = {
-			available: false,
-			status: 'error',
-			note: 'External WASM-LLVM service not running on port 8225',
-			error: error instanceof Error ? error.message: 'Unknown error'
-		}
-	}
-	return health
+async function checkGPUHealth(): Promise<{ [key: string]: any }> {
+  const health: { [key: string]: any } = {};
+  try {
+    // Check NVIDIA LLaMA service
+    const nvidiaStats = await nvidiaLlamaService.getGpuMetrics();
+    health.nvidia_llama = {
+      available: true,
+      status: 'healthy',
+      ...nvidiaStats,
+    };
+  } catch (error: any) {
+    health.nvidia_llama = {
+      available: false,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+  try {
+    // Check GPU Service Integration
+    await gpuServiceIntegration.initialize();
+    const status = gpuServiceIntegration.getServiceStatus();
+    health.gpu_service_integration = {
+      available: status.available,
+      status: status.initialized ? 'healthy' : 'initializing',
+      performance: status.performance,
+    };
+  } catch (error: any) {
+    health.gpu_service_integration = {
+      available: false,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+  try {
+    // Check WASM-LLVM Bridge
+    health.wasm_llvm = {
+      available: true, // Always available with fallback
+      status: 'healthy',
+      capabilities: ['legal_processing', 'vector_computation', 'fallback_cpu'],
+    };
+  } catch (error: any) {
+    health.wasm_llvm = {
+      available: false,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+  try {
+    // Check external WASM-LLVM service (port 8225)
+    const response = await fetch('http://localhost:8225/health');
+    if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+      const serviceHealth = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
+      health.wasm_llvm_service = {
+        available: true,
+        status: 'healthy',
+        ...serviceHealth,
+      };
+    } else {
+      throw new Error(
+        `Service responded with status ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}`
+      );
+    }
+  } catch (error: any) {
+    health.wasm_llvm_service = {
+      available: false,
+      status: 'error',
+      note: 'External WASM-LLVM service not running on port 8225',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+  return health;
 }
 // Hybrid operation routing
 async function performHybridOperation(data: any, options: any = {}): Promise<GPUApiResponse> {
@@ -225,12 +225,12 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 			// Generic GPU processing
 			try {
 				const task = await gpuServiceIntegration.processTask({
-					id: `task_${Date.now()}`,
-					type: operationType as any,
-					data,
-					priority: options.priority || 'medium',
-					metadata: { [key,: strin,g]: any }
-				})
+          id: `task_${Date.now()}`,
+          type: operationType as any,
+          data,
+          priority: options.priority || 'medium',
+          metadata: (data as any)?.metadata || {},
+        });
 				result = task.result
 				serviceUsed = 'gpu_service_integration'
 				memoryUsed = task.memoryUsed || 0
@@ -346,13 +346,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					}
 				} catch (error: any) {
 					response = {
-						success: false,
-						operation,
-						error: error instanceof Error ? error.message: 'LLaMA generation failed',
-						serviceUsed: 'nvidia_llama',
-						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-						metadata: { [key,: strin,g]: any }
-					}
+            success: false,
+            operation,
+            error: error instanceof Error ? error.message : 'LLaMA generation failed',
+            serviceUsed: 'nvidia_llama',
+            performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
+            metadata: {},
+          };
 				}
 				break
 			case 'wasm_compile':
@@ -384,13 +384,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					}
 				} catch (error: any) {
 					response = {
-						success: false,
-						operation,
-						error: error instanceof Error ? error.message: 'WASM operation failed',
-						serviceUsed: 'wasm_llvm_service',
-						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-						metadata: { [key,: strin,g]: any }
-					}
+            success: false,
+            operation,
+            error: error instanceof Error ? error.message : 'WASM operation failed',
+            serviceUsed: 'wasm_llvm_service',
+            performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
+            metadata: {},
+          };
 				}
 				break
 			case 'gpu_compute':
@@ -416,13 +416,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					}
 				} catch (error: any) {
 					response = {
-						success: false,
-						operation,
-						error: error instanceof Error ? error.message: 'GPU compute failed',
-						serviceUsed: 'gpu_service_integration',
-						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-						metadata: { [key,: strin,g]: any }
-					}
+            success: false,
+            operation,
+            error: error instanceof Error ? error.message : 'GPU compute failed',
+            serviceUsed: 'gpu_service_integration',
+            performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
+            metadata: {},
+          };
 				}
 				break
 			case 'hybrid':
@@ -454,14 +454,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		return json(response)
 	} catch (error: any) {
 		console.error('GPU API POST error:', error)
-		return json({
-			success: false,
-			operation: 'unknown',
-			error: error instanceof Error ? error.message: 'Unknown error',
-			serviceUsed: 'error',
-			performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
-			metadata: { [key,: strin,g]: any }
-		}, { status: 500 })
+		return json(
+      {
+        success: false,
+        operation: 'unknown',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        serviceUsed: 'error',
+        performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
+        metadata: {},
+      },
+      { status: 500 }
+    );
 	}
 }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
