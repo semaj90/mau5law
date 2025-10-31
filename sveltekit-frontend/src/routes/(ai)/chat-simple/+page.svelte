@@ -12,7 +12,9 @@
   async function checkServiceHealth() {
     try {
       connectionStatus = 'connecting';
-      // removed unused response assignment
+      // perform actual fetch to the health endpoint
+      const response = await fetch('http://localhost:8086/api/health');
+      if (!response.ok) throw new Error(`Health check failed: ${response.status}`);
       const data = await response.json();
       connectionStatus = data.status === 'ok' ? 'connected' : 'disconnected';
       return data;
@@ -26,7 +28,8 @@
   async function sendMessage() {
     if (!currentMessage.trim() || isLoading) return;
     const userMessage = {
-      id: Date.now.toString(),
+      // fixed Date.now usage
+      id: Date.now().toString(),
       role: 'user' as const,
       content: currentMessage.trim(),
       timestamp: new Date(),
@@ -73,15 +76,15 @@
       }, 100);
     }
   }
-  // Handle enter key
-  function handleKeydown(_event: KeyboardEvent) {
+  // Handle enter key - accept typed event and avoid global 'event'
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-  // Initialize
-  $effect(() => {
+  // Initialize using onMount
+  onMount(() => {
     checkServiceHealth();
     messages = [
       {

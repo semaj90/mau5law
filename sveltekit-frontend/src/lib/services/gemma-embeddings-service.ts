@@ -2,9 +2,9 @@
  * Gemma Embeddings Service with PostgreSQL pgvector Integration
  * High-performance embedding generation and vector indexing
  */
-import { createServiceConfig, redisKeys } from '$lib/config/redis-config';
+import { createServiceConfig } from '$lib/config/redis-config';
 import { db } from '$lib/server/db/connection';
-import { createRedisInstance, type RedisClient } from '$lib/server/redis';
+import createRedisInstance from '$lib/server/redis';
 import { sql } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 import { createHash } from 'crypto';
@@ -14,8 +14,9 @@ const OLLAMA_ENDPOINT = getOllamaEndpoint();
 const GEMMA_EMBEDDING_MODEL = env.GEMMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
 const EMBEDDING_DIMENSIONS = 512; // Gemma embeddings standard dimension (512-dim GPU-accelerated)
 // Redis clients
-const gemmaRedis: RedisClient = createRedisInstance(createServiceConfig('GEMMA_EMBEDDINGS'));
-// const pgvectorRedis: RedisClient = createRedisInstance(createServiceConfig('PGVECTOR_CACHE')); // Removed as it was unused
+const gemmaRedis = createRedisInstance(createServiceConfig('GEMMA_EMBEDDINGS'));
+// Local Redis key helper (avoid depending on external redisKeys that lacks gemmaEmbedding)
+const gemmaEmbeddingKey = (textHash: string) => `gemma:embedding:${textHash}`;
 export interface EmbeddingRequest {
   text: string;
   model?: string;
@@ -44,7 +45,7 @@ export interface VectorSearchResult {
   id: string;
   similarity: number;
   content: string;
-  metadata: { [key: string]: any };
+  metadata: Record<string, unknown>;
   document_type: string;
 }
 export interface VectorIndexStats {
@@ -63,6 +64,8 @@ class GemmaEmbeddingsService {
    * Initialize the service and ensure database tables exist
    */
   private async initialize(): Promise<void> {
+    // avoid duplicate initialization; read isInitialized here to satisfy linter and logic
+    if (this.isInitialized) return;
     try {
       // Ensure pgvector extension is enabled
       await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
@@ -282,7 +285,7 @@ class GemmaEmbeddingsService {
   async batchGenerateEmbeddings(
     texts: string[],
     options: {
-      document_type?: string;
+      document_type?: EmbeddingRequest['document_type'];
       metadata?: Record<string, unknown>;
       model?: string;
     } = {}
@@ -295,7 +298,7 @@ class GemmaEmbeddingsService {
       const batchPromises = batch.map(text =>
         this.generateEmbedding({
           text,
-          document_type: options.document_type as any,
+          document_type: options.document_type,
           metadata: options.metadata,
           model: options.model,
         })
@@ -304,7 +307,7 @@ class GemmaEmbeddingsService {
       results.push(...batchResults);
       // Small delay between batches to prevent rate limiting
       if (i + batchSize < texts.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms pause
       }
     }
     return results;
@@ -348,7 +351,8 @@ class GemmaEmbeddingsService {
    */
   private async getCachedEmbedding(textHash: string): Promise<EmbeddingResponse | null> {
     try {
-      const cached = await gemmaRedis.get(redisKeys.gemmaEmbedding(textHash));
+      // use local key helper
+      const cached = await gemmaRedis.get(gemmaEmbeddingKey(textHash));
       return cached ? JSON.parse(cached) : null;
     } catch (error) {
       console.warn('Failed to get cached embedding:', error);
@@ -361,7 +365,7 @@ class GemmaEmbeddingsService {
   private async cacheEmbedding(textHash: string, response: EmbeddingResponse): Promise<void> {
     try {
       await gemmaRedis.setex(
-        redisKeys.gemmaEmbedding(textHash),
+        gemmaEmbeddingKey(textHash),
         172800, // 48 hours TTL
         JSON.stringify(response)
       );

@@ -19,7 +19,8 @@ declare module 'lucia' {
     value: string;
     attributes: CookieAttributes & { path: string };
   }
-  export class Lucia {
+  // Use interface instead of class to avoid duplicate identifier if Lucia is declared elsewhere.
+  export interface Lucia {
     createSessionCookie(sessionId: string): SessionCookie;
     createBlankSessionCookie(): SessionCookie;
   }
@@ -35,3 +36,6 @@ declare module '@sveltejs/kit' {
     expires?: Date;
   }
 }
+
+// Add this to ensure the file is a module and avoid accidental global/duplicate declarations
+export {};

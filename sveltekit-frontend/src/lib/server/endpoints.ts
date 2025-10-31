@@ -1,7 +1,15 @@
+// Docker-first endpoint helpers for server code
+export function getEnvUrl(envName: string, dockerHost: string, localFallback?: string): string {
+  // prefer process.env, then docker host, then optional local fallback
+  return process.env[envName] || dockerHost || localFallback || '';
+}
+
 export function getOllamaEndpoint(): string {
-  // Docker service name first, then envs, then localhost fallback
-  // Prefer OLLAMA_URL (runtime) then import.meta.env equivalents
-  // Use common docker port for Ollama when inside compose
-  const fromEnv = (process.env.OLLAMA_URL || (typeof import.meta !== 'undefined' ? import.meta.env?.OLLAMA_URL || import.meta.env?.OLLAMA_BASE_URL : undefined)) as string | undefined;
-  return fromEnv || 'http://ollama:11435';
+  // docker-first with optional local fallback
+  return getEnvUrl('OLLAMA_URL', 'http://ollama:11434', 'http://localhost:11434');
+}
+
+export function getEnhancedRagEndpoint(): string {
+  // keep docker-first pattern for other services
+  return getEnvUrl('ENHANCED_RAG_URL', 'http://enhanced-rag:8094', 'http://localhost:8094');
 }

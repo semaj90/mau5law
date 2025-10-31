@@ -3,7 +3,7 @@ export interface ChatMessage {
   id: string;
   content: string;
   role: 'user' | 'assistant' | 'system';
-  timestamp: Date;
+  timestamp: string | Date; // was Date -> allow JSON string from server
   sessionId?: string;
   metadata?: {
     model?: string;
@@ -20,8 +20,8 @@ export interface ChatMessage {
 export interface ChatSession {
   id: string;
   model: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string | Date; // was Date
+  updatedAt?: string | Date; // was Date
   messageCount?: number;
   isActive?: boolean;
   metadata?: {
@@ -39,16 +39,16 @@ export interface ChatState {
 }
 export interface OllamaResponse {
   model: string;
-  created_at: string;
+  createdAt: string | Date; // maps from created_at
   response: string;
   done: boolean;
   context?: number[];
-  total_duration?: number;
-  load_duration?: number;
-  prompt_eval_count?: number;
-  prompt_eval_duration?: number;
-  eval_count?: number;
-  eval_duration?: number;
+  totalDuration?: number; // maps from total_duration
+  loadDuration?: number; // maps from load_duration
+  promptEvalCount?: number; // maps from prompt_eval_count
+  promptEvalDuration?: number; // maps from prompt_eval_duration
+  evalCount?: number; // maps from eval_count
+  evalDuration?: number; // maps from eval_duration
 }
 export interface ChatRequest {
   message: string;

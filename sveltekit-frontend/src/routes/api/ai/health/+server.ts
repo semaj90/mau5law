@@ -1,75 +1,102 @@
-import { json } from '@sveltejs/kit'
-import { logger } from "$lib/server/logger"
-import type { RequestHandler } from './$types.js'
-import { apiSuccess, apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response'
-// Mock Ollama service for now - replace with actual service when available
+import { logger } from '$lib/server/logger';
+import type { RequestHandler } from './$types.js';
+import { apiSuccess, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
+import { getOllamaUrl } from '$lib/server/env-helper';
+// derive Ollama URL from centralized helper (has safe fallbacks)
+const ollamaUrl = getOllamaUrl();
+
+// Mock/adapter for Ollama service health & model listing (robust, timeouted)
 const ollamaService = {
   async isHealthy(): Promise<boolean> {
     try {
-      const response = await fetch('http://localhost:11434/api/version', {
-        signal: AbortSignal.timeout(5000)
-      })
-      return response.ok
-    } catch {
-      return false
+      const res = await fetch(`${ollamaUrl}/api/version`, { signal: AbortSignal.timeout(5000) });
+      return res.ok;
+    } catch (err: unknown) {
+      // log safely even when err isn't an Error
+      logger?.warn?.('Ollama health check failed', String(err));
+      return false;
     }
   },
-  async listModels(): Promise<Array<any>, {
+  // returns array of unknown shapes; resilient parsing without using `any`
+  async listModels(): Promise<unknown[]> {
     try {
-      const response = await fetch('http://localhost:11434/api/tags')
-      if (response.ok) {
-        const data = await response.json()
-        return data.models || []
+      const res = await fetch(`${ollamaUrl}/api/models`, { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) return [];
+      const data = (await res.json()) as unknown;
+      if (Array.isArray(data)) return data;
+      if (data && typeof data === 'object') {
+        const obj = data as Record<string, unknown>;
+        if (Array.isArray(obj['models'])) return obj['models'] as unknown[];
+        if (Array.isArray(obj['tags'])) return obj['tags'] as unknown[];
       }
-      return []
-    } catch {
-      return []
+      return [];
+    } catch (err: unknown) {
+      logger?.warn?.('Failed to list Ollama models', String(err));
+      return [];
+    }
+  },
+};
+
+export const GET: RequestHandler = withErrorHandling(async event => {
+  const requestId = getRequestId(event);
+  // Check Ollama health with model list
+  const ollamaStartTime = Date.now();
+  const ollamaHealthy = await ollamaService.isHealthy();
+  const ollamaResponseTime = Date.now() - ollamaStartTime;
+  let availableModels: string[] = [];
+  if (ollamaHealthy) {
+    try {
+      const models = await ollamaService.listModels();
+      // safe stringifier for model entries (unknown)
+      const stringifyModel = (m: unknown): string => {
+        if (typeof m === 'string') return m;
+        if (m && typeof m === 'object') {
+          const obj = m as Record<string, unknown>;
+          const name = obj['name'];
+          const id = obj['id'];
+          if (typeof name === 'string') return name;
+          if (typeof id === 'string') return id;
+          try {
+            return JSON.stringify(obj);
+          } catch {
+            return String(obj);
+          }
+        }
+        return String(m);
+      };
+      availableModels = models.map(stringifyModel);
+    } catch (error: unknown) {
+      logger?.warn?.('Failed to list Ollama models', String(error));
     }
   }
-}
-export const GET: RequestHandler = withErrorHandling(async (event) => {
-  const requestId = getRequestId(event)
-  // Check Ollama health with model list
-  const ollamaStartTime = Date.now()
-  const ollamaHealthy = await ollamaService.isHealthy()
-  const ollamaResponseTime = Date.now() - ollamaStartTime
-    let availableModels: string[] = []
-    if (ollamaHealthy) {
-      try {
-        const models = await ollamaService.listModels()
-        availableModels = models.map((m) => m.name)
-      } catch (error: any) {
-        logger.warn("Failed to list Ollama models", error)
-      }
-    }
-    // System information
-    const memoryUsage = process.memoryUsage()
-    const memoryMB = Math.round(memoryUsage.rss / 1024 / 1024)
-    const checks = {
-      ollama: {
-        healthy: ollamaHealthy,
-        models: availableModels,
-        responseTime: ollamaResponseTime,
-        url: "http:,//localhost:11434"
-      },
-      system: {
-        memory: `${memoryMB}MB`,
-        uptime: `${Math.round((process.uptime() / 3600) * 100) / 100}h`,
-        nodeVersion: process.version
-      },
-      docker: {
-        containers: 0, // TODO: Add actual Docker container count
-      },
-      timestamp: new Date().toISOString()
-    }
-    const overallStatus = ollamaHealthy ? "healthy" : "degraded"
-    const healthData = {
-      status: overallStatus,
-      services: checks,
-      message:
-        overallStatus === "healthy"
-          ? `All systems operational (${availableModels.length} models available)`
-          : "Ollama service not available"
-    }
-    return apiSuccess(healthData, undefined, requestId)
+  // System information
+  const memoryUsage = process.memoryUsage();
+  const memoryMB = Math.round(memoryUsage.rss / 1024 / 1024);
+  const checks = {
+    ollama: {
+      healthy: ollamaHealthy,
+      models: availableModels,
+      responseTime: ollamaResponseTime,
+      url: ollamaUrl,
+    },
+    system: {
+      memory: `${memoryMB}MB`,
+      uptime: `${Math.round((process.uptime() / 3600) * 100) / 100}h`,
+      nodeVersion: process.version,
+    },
+    docker: {
+      containers: 0, // TODO: Add actual Docker container count
+    },
+    timestamp: new Date().toISOString(),
+  };
+  const overallStatus = ollamaHealthy ? 'healthy' : 'degraded';
+  const healthData = {
+    status: overallStatus,
+    services: checks,
+    message:
+      overallStatus === 'healthy'
+        ? `All systems operational (${availableModels.length} models available)`
+        : 'Ollama service not available',
+  };
+  return apiSuccess(healthData, undefined, requestId);
 });

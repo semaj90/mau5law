@@ -22,4 +22,5 @@ export const GPUMetricEnhancedFields = [
   'temperatureC',
   'powerW',
 ];
-export default GPUMetricEnhanced;
+// Replace invalid default export of a type with a runtime value export
+export default GPUMetricEnhancedFields;

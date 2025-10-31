@@ -1,5 +1,5 @@
 // AI Workflow Types - Ollama Gemma3-Legal + TensorRT-LLM Triton Integration
-import type { SnapshotFrom, Actor } from 'xstate';
+import type { Actor } from 'xstate';
 
 // ============================================================================
 // Document & Content Types
@@ -195,8 +195,14 @@ export type WorkflowEvent =
 // XState Actor Types
 // ============================================================================
 
-export type WorkflowActor = Actor<any>; // Will be typed with actual machine
-export type WorkflowSnapshot = SnapshotFrom<WorkflowActor>;
+export type WorkflowActor = Actor<WorkflowEvent>; // typed with the workflow event union
+// Use a simple, explicit snapshot shape rather than SnapshotFrom (not exported in some xstate versions)
+export type WorkflowSnapshot = {
+  value?: string;
+  context: WorkflowContext;
+  // optional lightweight shape for nested actors / metadata
+  actors?: Record<string, unknown>;
+};
 
 // ============================================================================
 // Cache Types

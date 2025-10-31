@@ -102,7 +102,7 @@ export interface AIResponse {
   confidence?: number;
   executionTime?: number;
   fromCache?: boolean;
-  metadata?: { [key: string]: any };
+  metadata?: Record<string, unknown>;
 }
 export interface ConversationHistory {
   id: string;
@@ -372,7 +372,7 @@ export interface Case {
   aiSummary?: string;
   aiTags?: string[];
   aiAnalysis?: CaseAIAnalysis;
-  metadata?: { [key: string]: any };
+  metadata?: Record<string, unknown>;
   createdBy?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -447,7 +447,7 @@ export interface NamedEntity {
   confidence: number;
   startIndex?: number;
   endIndex?: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: unknown };
 }
 export interface Topic {
   name: string;
@@ -561,8 +561,8 @@ export interface Milestone {
 // PRODUCTION API SYSTEM - SVELTEKIT 2 UNIFIED INTEGRATION
 // ============================================================================
 // Core API Response Interface (Enhanced)
-export interface APIResponse<T = any> extends ApiResponse<T> {
-  metadata?: { [key: string]: any };
+export interface APIResponse<T = unknown> extends ApiResponse<T> {
+  metadata?: Record<string, unknown>;
   requestId?: string;
   processingTime?: number;
   timestamp?: string;
@@ -676,9 +676,9 @@ export interface ClusterMetrics {
     port: number;
     timestamp: string;
   };
-  events: Array<any>;
-  workers: Array<any>;
-  deferredQueue: Array<any>;
+  events: unknown[];
+  workers: unknown[];
+  deferredQueue: unknown[];
 } // <-- added missing closing brace
 
 // Performance Metrics Interface
@@ -1000,7 +1000,7 @@ export interface ErrorResponse {
   success: false;
   error: {
     message: string;
-    details?: any; // Can be ZodError details, or a simple string
+    details?: unknown; // Can be ZodError details, or a simple string
   };
   timestamp: string;
 }

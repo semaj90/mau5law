@@ -2,9 +2,16 @@ import { cuidSchema } from '$lib/server/z-schemas';
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { caseTimeline } from '$lib/server/db/schemas/cases-schema';
 import db from '$lib/server/db/unified-client';
-import { eq, and } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm/expressions';
 import { z } from 'zod';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+
+// add a local type describing the auth-aware locals used by these handlers
+type LocalsWithAuth = {
+  // session and user may be present on locals depending on your auth hooks
+  session?: Record<string, unknown> | null;
+  user?: { id: string; [key: string]: unknown } | null;
+};
 
 // Schema for updating timeline events
 const UpdateTimelineEventSchema = z.object({
@@ -38,46 +45,37 @@ const UpdateTimelineEventSchema = z.object({
  * Retrieve a specific timeline event
  */
 export const GET: RequestHandler = async ({ params, locals }) => {
-  try {
-    if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    }
-    const { user } = locals;
+  // cast locals to the auth-aware shape
+  const authLocals = locals as LocalsWithAuth;
 
-    const eventId = params.eventId;
-    if (!eventId) {
-      return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
-    }
-
-    // Get the timeline event
-    const [timelineEvent] = await db
-      .runtime()
-      .select()
-      .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
-      .limit(1);
-
-    if (!timelineEvent) {
-      return error(404, makeHttpErrorPayload({ message: 'Timeline event not found', code: 'NOT_FOUND' }));
-    }
-
-    return json({
-      success: true,
-      data: {
-        event: timelineEvent,
-      },
-    });
-  } catch (err: unknown) {
-    console.error('Get timeline event error:', err);
-    return error(
-      500,
-      makeHttpErrorPayload({
-        message: 'Failed to retrieve timeline event',
-        code: 'FETCH_FAILED',
-        details: err instanceof Error ? err.message : String(err),
-      })
-    );
+  if (!authLocals.session || !authLocals.user) {
+    return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
   }
+  const { user } = authLocals;
+
+  const eventId = params.eventId;
+  if (!eventId) {
+    return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
+  }
+
+  // Get the timeline event
+  const [timelineEvent] = await db
+    .runtime()
+    .select()
+    .from(caseTimeline)
+    .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+    .limit(1);
+
+  if (!timelineEvent) {
+    return error(404, makeHttpErrorPayload({ message: 'Timeline event not found', code: 'NOT_FOUND' }));
+  }
+
+  return json({
+    success: true,
+    data: {
+      event: timelineEvent,
+    },
+  });
 };
 
 /**
@@ -85,11 +83,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
  * Update a specific timeline event
  */
 export const PUT: RequestHandler = async ({ params, locals, request }) => {
+  // cast locals to the auth-aware shape
+  const authLocals = locals as LocalsWithAuth;
+
   try {
-    if (!locals.session || !locals.user) {
+    if (!authLocals.session || !authLocals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
-    const { user } = locals;
+    const { user } = authLocals;
 
     const eventId = params.eventId;
     if (!eventId) {
@@ -138,17 +139,13 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
       },
     });
   } catch (err: unknown) {
-    console.error('Update timeline event error:', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
-        makeHttpErrorPayload({
-          message: 'Invalid input data',
-          code: 'INVALID_DATA',
-          details: err.errors,
-        })
+        makeHttpErrorPayload({ message: 'Invalid update payload', code: 'VALIDATION_ERROR', details: err.errors })
       );
     }
+    console.error('Update timeline event error:', err);
     return error(
       500,
       makeHttpErrorPayload({
@@ -165,11 +162,14 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
  * Delete a specific timeline event
  */
 export const DELETE: RequestHandler = async ({ params, locals }) => {
+  // cast locals to the auth-aware shape
+  const authLocals = locals as LocalsWithAuth;
+
   try {
-    if (!locals.session || !locals.user) {
+    if (!authLocals.session || !authLocals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
-    const { user } = locals;
+    const { user } = authLocals;
 
     const eventId = params.eventId;
     if (!eventId) {

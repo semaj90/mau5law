@@ -203,35 +203,43 @@
   <div class="capabilities">
     <h2>🧠 AI Capabilities</h2>
     <div class="capabilities-grid">
-      <Card class="capability-card">
+      <Card>
         <CardContent>
-          <div class="capability-icon">📄</div>
-          <h3>Document Analysis</h3>
-          <p>Advanced analysis of legal documents, contracts, and evidence</p>
+          <div class="capability-card">
+            <div class="capability-icon">📄</div>
+            <h3>Document Analysis</h3>
+            <p>Advanced analysis of legal documents, contracts, and evidence</p>
+          </div>
         </CardContent>
       </Card>
 
-      <Card class="capability-card">
+      <Card>
         <CardContent>
-          <div class="capability-icon">🔍</div>
-          <h3>Case Research</h3>
-          <p>Legal precedent search and case law analysis</p>
+          <div class="capability-card">
+            <div class="capability-icon">🔍</div>
+            <h3>Case Research</h3>
+            <p>Legal precedent search and case law analysis</p>
+          </div>
         </CardContent>
       </Card>
 
-      <Card class="capability-card">
+      <Card>
         <CardContent>
-          <div class="capability-icon">⚡</div>
-          <h3>GPU Acceleration</h3>
-          <p>CUDA-powered processing for faster inference</p>
+          <div class="capability-card">
+            <div class="capability-icon">⚡</div>
+            <h3>GPU Acceleration</h3>
+            <p>CUDA-powered processing for faster inference</p>
+          </div>
         </CardContent>
       </Card>
 
-      <Card class="capability-card">
+      <Card>
         <CardContent>
-          <div class="capability-icon">🎯</div>
-          <h3>RAG System</h3>
-          <p>Retrieval augmented generation with legal knowledge base</p>
+          <div class="capability-card">
+            <div class="capability-icon">🎯</div>
+            <h3>RAG System</h3>
+            <p>Retrieval augmented generation with legal knowledge base</p>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -298,13 +306,13 @@
     transition: all 0.2s;
   }
 
-  .quick-buttonhover:not(:disabled) {
+  .quick-button:hover:not(:disabled) {
     background: rgba(0, 204, 255, 0.2);
     border-color: var(--text-primary, #00ccff);
     transform: translateY(-1px);
   }
 
-  .quick-buttondisabled {
+  .quick-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -334,7 +342,8 @@
   }
 
   .message.user {
-    flex-direction row-reverse;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
   }
 
   .message-icon {
@@ -345,7 +354,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
 
   .message.user .message-icon {
@@ -411,7 +420,7 @@
   }
 
   .message-input {
-    flex: 1,
+    flex: 1;
     background: var(--surface-primary, #0a0a0a);
     border: 1px solid rgba(0, 204, 255, 0.3);
     border-radius: 4px;
@@ -442,12 +451,12 @@
     transition: all 0.2s;
   }
 
-  .send-buttonhover:not(:disabled) {
+  .send-button:hover:not(:disabled) {
     transform: scale(1.05);
     box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
   }
 
-  .send-buttondisabled {
+  .send-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }

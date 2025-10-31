@@ -1,21 +1,33 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
-  import FormField from '$lib/headless/FormField.svelte'; // Add this import
-  // Icons
-  import {
-    Brain, Cpu, Database, Zap, Monitor, Activity, Clock,
-    BarChart, CheckCircle, AlertTriangle, Settings, Play,
-    Square, RefreshCw, Eye, Layers, Network, HardDrive
-  } from 'lucide-svelte';
-  import { fade, fly } from 'svelte/transition'; // keep transitions (apply to elements)
-  // Svelte 5 runes for reactive state
-  let processingQueue = $state([]);
-  let activeJobs = $state([]);
-  let completedJobs = $state([]);
+  import FormField from '$lib/headless/FormField.svelte';
+  import { fade, fly } from 'svelte/transition';
+
+  // Add Job type so $state infers properly (prevents 'never' issues)
+  type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
+  interface Job {
+    id: string;
+    documentId: string;
+    analysisType: string;
+    priority: string;
+    status: JobStatus;
+    progress: number;
+    createdAt?: string;
+    startedAt?: string;
+    completedAt?: string;
+    useGPU?: boolean;
+    bankId?: number | null;
+    gpuLayers?: number;
+    results?: { confidence: number; entities: number; risks?: number };
+  }
+
+  // Use explicit generics so TS doesn't infer `never`
+  let processingQueue = $state<Job[]>([]);
+  let activeJobs = $state<Job[]>([]);
+  let completedJobs = $state<Job[]>([]);
   let systemMetrics = $state({
     nesMemory: { usedRAM: 0, totalRAM: 2048, usedCHR: 0, totalCHR: 8192 },
     gpuUtilization: 0,
@@ -39,7 +51,6 @@
     useGPU: true,
     errors: {} as Record<string, string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
   });
-  let selectedBankView = $state('RAM');
   let realTimeStats = $state(true);
   $effect(() => {
     initializeNESGPUBridge();
@@ -73,9 +84,10 @@
   }
   async function updateSystemMetrics() {
     try {
-      // Get NES-GPU bridge performance metrics
-      const nesGPUMetrics = nesGPUBridge.getPerformanceMetrics();
-      const glyphStats = await glyphShaderCacheBridge.getGlyphCacheStats();
+      // Guard calls on nesGPUBridge which may not implement these exact methods
+      const nesGPUMetrics = (nesGPUBridge as any).getPerformanceMetrics?.();
+      const glyphStats = await glyphShaderCacheBridge.getGlyphCacheStats?.() ?? { cacheHitRate: 0, averageRenderTime: 0 };
+
       systemMetrics = {
         nesMemory: {
           usedRAM: Math.min(2048, systemMetrics.nesMemory.usedRAM + (Math.random() - 0.5) * 50),
@@ -85,15 +97,15 @@
         },
         gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
-        glyphCacheHitRate: glyphStats.cacheHitRate * 100,
+        glyphCacheHitRate: (glyphStats.cacheHitRate || 0) * 100,
         bankSwitchingFreq: nesGPUMetrics?.activeBankMappings ? Object.keys(nesGPUMetrics.activeBankMappings).length : 0,
-        chrRomPatterns: nesGPUMetrics.textureCacheSize
+        chrRomPatterns: nesGPUMetrics?.textureCacheSize ?? 0
       };
       performanceStats = {
         totalDocumentsProcessed: performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
-        averageProcessingTime: glyphStats.averageRenderTime,
+        averageProcessingTime: glyphStats.averageRenderTime || 0,
         successRate: Math.max(85, Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)),
-        memoryEfficiency: nesGPUMetrics.memoryEfficiencyRatio
+        memoryEfficiency: nesGPUMetrics?.memoryEfficiencyRatio ?? 0
       }
     } catch (error) {
       console.error('Failed to update metrics:', error);
@@ -161,7 +173,8 @@
       }
     ];
   }
-  async function submitProcessingJob(event) {
+  async function submitProcessingJob(event: Event) {
+    // typed event to avoid implicit any
     event.preventDefault();
     if (!newJobForm.documentId.trim()) {
       newJobForm.errors = { documentId: ['Document ID is required'] };
@@ -171,7 +184,7 @@
     newJobForm.errors = {} as Record<string, string[]>;
     try {
       // Create processing job with NES-GPU optimization
-      const job = {
+      const job: Job = {
         id: `job_${Date.now()}`,
         documentId: newJobForm.documentId,
         analysisType: newJobForm.analysisType,
@@ -181,10 +194,10 @@
         createdAt: new Date().toISOString(),
         useGPU: newJobForm.useGPU,
         bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
-      }
-      // Store in CHR-ROM pattern cache if high priority
+      };
+      // Store in CHR-ROM pattern cache if high priority (guarded)
       if (newJobForm.priority === 'high' && newJobForm.useGPU) {
-        await nesGPUBridge.storeCHRROMPattern(`job_${job.id}`, {});
+        await (nesGPUBridge as any).storeCHRROMPattern?.(`job_${job.id}`, {});
       }
       processingQueue = [...processingQueue, job];
       showJobDialog = false;
@@ -224,7 +237,9 @@
       default: return 'text-gray-600 bg-gray-100';
     }
   }
-  function formatTimeAgo(timestamp: string) {
+  // changed: accept undefined and return a safe placeholder
+  function formatTimeAgo(timestamp?: string) {
+    if (!timestamp) return '—';
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -255,36 +270,38 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
-          <Brain class="w-8 h-8 text-blue-600" />
+          <!-- replaced icon component with emoji span -->
+          <span class="w-8 h-8 text-blue-600">🧠</span>
           AI Processing Dashboard
         </h1>
         <p class="text-gray-600 mt-2">Real-time legal document processing with NES-GPU memory bridge optimization</p>
       </div>
       <div class="flex items-center gap-3">
         <button
-          on:click={() => (realTimeStats = !realTimeStats)}
+          onclick={() => (realTimeStats = !realTimeStats)}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          <Monitor class="w-4 h-4" />
+          <span class="w-4 h-4">🖥️</span>
           Real-time: {realTimeStats ? 'ON' : 'OFF'}
         </button>
         <button
-          on:click={() => (showJobDialog = true)}
+          onclick={() => (showJobDialog = true)}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
-          <Play class="w-4 h-4" />
+          <span class="w-4 h-4">▶️</span>
           New Processing Job
         </button>
       </div>
     </div>
   </div>
+
   <!-- System Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- NES Memory Usage -->
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-sm font-medium text-gray-900">NES Memory Banks</h3>
-        <HardDrive class="w-5 h-5 text-gray-400" />
+        <span class="w-5 h-5 text-gray-400">💾</span>
       </div>
       <div class="space-y-3">
         <div>
@@ -317,7 +334,7 @@
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-sm font-medium text-gray-900">GPU Processing</h3>
-        <Cpu class="w-5 h-5 text-gray-400" />
+        <span class="w-5 h-5 text-gray-400">🖥️</span>
       </div>
       <div class="text-center">
         <div class="text-3xl font-bold text-gray-900">{Math.round(systemMetrics.gpuUtilization)}%</div>
@@ -331,7 +348,7 @@
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-sm font-medium text-gray-900">Glyph Cache</h3>
-        <Database class="w-5 h-5 text-gray-400" />
+        <span class="w-5 h-5 text-gray-400">🗄️</span>
       </div>
       <div class="text-center">
         <div class="text-3xl font-bold text-gray-900">{Math.round(systemMetrics.glyphCacheHitRate)}%</div>
@@ -345,7 +362,7 @@
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-sm font-medium text-gray-900">Bank Switching</h3>
-        <Network class="w-5 h-5 text-gray-400" />
+        <span class="w-5 h-5 text-gray-400">🔀</span>
       </div>
       <div class="text-center">
         <div class="text-3xl font-bold text-gray-900">{systemMetrics.bankSwitchingFreq}</div>
@@ -356,13 +373,14 @@
       </div>
     </div>
   </div>
+
   <!-- Processing Queues -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Queue -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
         <h3 class="text-lg font-medium text-gray-900 flex items-center gap-2">
-          <Clock class="w-5 h-5" />
+          <span class="w-5 h-5">⏰</span>
           Queue ({processingQueue.length})
         </h3>
       </div>
@@ -379,7 +397,7 @@
               {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
             </div>
             <div class="flex justify-end mt-2">
-              <button on:click={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
+              <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800" type="button">
                 Cancel
               </button>
             </div>
@@ -387,17 +405,18 @@
         {/each}
         {#if processingQueue.length === 0}
           <div class="text-center py-8 text-gray-500">
-            <Clock class="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <span class="w-8 h-8 mx-auto mb-2 opacity-50">⏰</span>
             <p>No jobs in queue</p>
           </div>
         {/if}
       </div>
     </div>
+
     <!-- Active Processing -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
         <h3 class="text-lg font-medium text-gray-900 flex items-center gap-2">
-          <Activity class="w-5 h-5" />
+          <span class="w-5 h-5">⚡</span>
           Processing ({activeJobs.length})
         </h3>
       </div>
@@ -427,17 +446,18 @@
         {/each}
         {#if activeJobs.length === 0}
           <div class="text-center py-8 text-gray-500">
-            <Activity class="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <span class="w-8 h-8 mx-auto mb-2 opacity-50">⚡</span>
             <p>No active processing</p>
           </div>
         {/if}
       </div>
     </div>
+
     <!-- Completed -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b border-gray-200">
         <h3 class="text-lg font-medium text-gray-900 flex items-center gap-2">
-          <CheckCircle class="w-5 h-5" />
+          <span class="w-5 h-5">✅</span>
           Completed ({completedJobs.length})
         </h3>
       </div>
@@ -459,17 +479,18 @@
         {/each}
         {#if completedJobs.length === 0}
           <div class="text-center py-8 text-gray-500">
-            <CheckCircle class="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <span class="w-8 h-8 mx-auto mb-2 opacity-50">✅</span>
             <p>No completed jobs</p>
           </div>
         {/if}
       </div>
     </div>
   </div>
+
   <!-- Performance Stats -->
   <div class="mt-8 bg-white rounded-lg shadow p-6">
     <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-      <BarChart class="w-5 h-5" /> <!-- Changed BarChart3 to BarChart -->
+      <span class="w-5 h-5">📊</span>
       Performance Statistics
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -500,11 +521,13 @@
     role="dialog"
     aria-modal="true"
   >
-    <div
+    <button
+      type="button"
       class="absolute inset-0 bg-black bg-opacity-50"
       transition:fade={{ duration: 200 }}
-      on:click={() => (showJobDialog = false)}
-    ></div>
+      onclick={() => (showJobDialog = false)}
+      aria-label="Close dialog"
+    ></button>
 
     <!-- Modal content -->
     <div
@@ -517,7 +540,7 @@
           type="button"
           aria-label="Close"
           class="text-gray-400 hover:text-gray-600"
-          on:click={() => (showJobDialog = false)}
+          onclick={() => (showJobDialog = false)}
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -525,8 +548,9 @@
         </button>
       </div>
 
-      <form on:submit|preventDefault={submitProcessingJob} class="space-y-4">
-        <FormField name="documentId" errors={newJobForm.errors.documentId}>
+      <form onsubmit={submitProcessingJob} class="space-y-4">
+        <!-- replaced FormField (typing children error) with inline markup -->
+        <div>
           <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1"> Document ID </label>
           <input
             id="documentId"
@@ -537,7 +561,11 @@
             bind:value={newJobForm.documentId}
             required
           />
-        </FormField>
+          {#if newJobForm.errors?.documentId}
+            <div class="text-red-600 text-sm mt-1">{newJobForm.errors.documentId[0]}</div>
+          {/if}
+        </div>
+
         <div>
           <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1"> Analysis Type </label>
           <select
@@ -579,7 +607,7 @@
         <div class="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            on:click={() => (showJobDialog = false)}
+            onclick={() => (showJobDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel

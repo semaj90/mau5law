@@ -28,11 +28,11 @@ type HealthCheckResult = {
   models: string[];
 };
 
-const DEFAULT_OLLAMA_API_URL = 'http://localhost:11434';
+import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
 const envFallback =
   typeof env.PUBLIC_OLLAMA_API_URL === 'string' && env.PUBLIC_OLLAMA_API_URL.length > 0
     ? env.PUBLIC_OLLAMA_API_URL
-    : DEFAULT_OLLAMA_API_URL;
+    : DEFAULT_OLLAMA;
 
 const isNode = typeof process !== 'undefined' && !!(process && (process as any).versions && (process as any).versions.node);
 

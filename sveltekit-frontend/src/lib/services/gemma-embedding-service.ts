@@ -283,25 +283,34 @@ export class GemmaEmbeddingService {
         normalize: options.normalize,
       };
 
-      const response = await fetch(provider.endpoint, {
-        method: 'POST',
-        headers: provider.headers ?? { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-        signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(provider.timeout ?? 30000) : undefined,
-      });
+      // { changed code }
+      const controller = new AbortController();
+      const timeoutMs = provider.timeout ?? 30000;
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(provider.endpoint, {
+          method: 'POST',
+          headers: provider.headers ?? { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'no body');
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'no body');
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
 
-      const data = (await response.json().catch(() => ({}))) as EmbeddingResponse;
-      const batchEmbeddings = this.parseEmbeddingResponse(data);
-      if (batchEmbeddings.length !== batch.length) {
-        // best-effort: if the provider returned fewer, throw
-        throw new Error(`Expected ${batch.length} embeddings, got ${batchEmbeddings.length}`);
+        const data = (await response.json().catch(() => ({}))) as EmbeddingResponse;
+        const batchEmbeddings = this.parseEmbeddingResponse(data);
+        if (batchEmbeddings.length !== batch.length) {
+          // best-effort: if the provider returned fewer, throw
+          throw new Error(`Expected ${batch.length} embeddings, got ${batchEmbeddings.length}`);
+        }
+        allEmbeddings.push(...batchEmbeddings);
+      } finally {
+        clearTimeout(timeoutId);
       }
-      allEmbeddings.push(...batchEmbeddings);
+      // { changed code }
     }
 
     const latency = Date.now() - startTime;
@@ -386,13 +395,21 @@ export class GemmaEmbeddingService {
       this.providers.map(async (provider) => {
         try {
           // lightweight health call
-          const res = await fetch(provider.endpoint, {
-            method: 'POST',
-            headers: provider.headers ?? { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ input: ['health check'] }),
-            signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(5000) : undefined,
-          });
-          results[provider.name] = res.ok;
+          // { changed code }
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          try {
+            const res = await fetch(provider.endpoint, {
+              method: 'POST',
+              headers: provider.headers ?? { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ input: ['health check'] }),
+              signal: controller.signal,
+            });
+            results[provider.name] = res.ok;
+          } finally {
+            clearTimeout(timeoutId);
+          }
+          // { changed code }
         } catch {
           results[provider.name] = false;
         }

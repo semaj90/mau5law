@@ -1,6 +1,6 @@
 // Centralized Component Props for Svelte 5 Components
 // This file contains strongly typed prop interfaces for reusable components
-import type { User } from './user.js';
+import type { User } from './user';
 // Base Props
 export interface BaseComponentProps {
   class?: string;
@@ -63,11 +63,26 @@ export interface AIAnalysisFormProps extends BaseComponentProps {
 }
 // Button Component Props
 export interface ButtonProps extends BaseComponentProps {
-  variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'danger' | 'success' | 'warning' | 'info' | 'default' | 'nier' | 'crimson' | 'gold';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'destructive'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+    | 'danger'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'default'
+    | 'nier'
+    | 'crimson'
+    | 'gold';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   disabled?: boolean;
   loading?: boolean;
-  onclick?: () => void;
+  // normalized event handler name & signature
+  onClick?: (event?: MouseEvent) => void;
   href?: string;
   target?: '_blank' | '_self' | '_parent' | '_top';
   type?: 'button' | 'submit' | 'reset';
@@ -93,14 +108,15 @@ export interface InputProps extends BaseComponentProps {
   value?: string;
   placeholder?: string;
   disabled?: boolean;
-  readonly?: boolean;
+  // use camelCase readOnly and proper event types
+  readOnly?: boolean;
   required?: boolean;
   name?: string;
   autocomplete?: string;
-  oninput?: (_event: Event) => void;
-  onchange?: (_event: Event) => void;
-  onfocus?: (_event: FocusEvent) => void;
-  onblur?: (_event: FocusEvent) => void;
+  onInput?: (event: InputEvent | Event) => void;
+  onChange?: (event: Event) => void;
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
 }
 // Select Component Props
 export interface SelectProps extends BaseComponentProps {
@@ -117,13 +133,14 @@ export interface TextareaProps extends BaseComponentProps {
   value?: string;
   placeholder?: string;
   disabled?: boolean;
-  readonly?: boolean;
+  // normalized readOnly
+  readOnly?: boolean;
   required?: boolean;
   name?: string;
   rows?: number;
   cols?: number;
-  oninput?: (_event: Event) => void;
-  onchange?: (_event: Event) => void;
+  onInput?: (event: InputEvent | Event) => void;
+  onChange?: (event: Event) => void;
 }
 // Card Component Props
 export interface CardProps extends BaseComponentProps {
@@ -278,7 +295,11 @@ export interface DocumentFormData {
   title: string;
   description?: string;
   content: string;
-  tags: string[];
-  confidentiality: 'public' | 'internal' | 'confidential' | 'restricted';
-  attachments: UploadedFile[];
+  tags?: string[];
+  attachments?: UploadedFile[];
+  authorId?: string;
+  metadata?: Record<string, unknown>;
+  createdAt?: Date;
+  updatedAt?: Date;
+  status?: 'draft' | 'published' | 'archived' | 'pending';
 }

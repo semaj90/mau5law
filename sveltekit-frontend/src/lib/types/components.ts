@@ -4,17 +4,16 @@ import type { UploadedFile } from './global.js';
 // =====================================================
 // FILE UPLOAD COMPONENT FIX
 // =====================================================
-}
 export interface FileUploadSectionProps {
   onFileUpload?: (files: File[]) => void;
   accept?: string;
   maxFiles?: number;
   maxFileSize?: number;
 }
+
 // =====================================================
 // COMPONENT PROPS INTERFACE FIXES
 // =====================================================
-}
 export interface ComponentPropsBase {
   class?: string;
   id?: string;
@@ -44,10 +43,10 @@ export interface FileUploadProps extends ComponentPropsBase {
   onUpload?: (files: File[]) => void;
   onUploadComplete?: (files: UploadedFile[]) => void;
 }
+
 // =====================================================
 // ENHANCED DOCUMENT TYPE FIX
 // =====================================================
-}
 export interface LegalDocumentExtended {
   id: string;
   title: string;
@@ -56,32 +55,32 @@ export interface LegalDocumentExtended {
   created: string;
   updated?: string;
   content?: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
 }
 // (Removed global Document augmentation to avoid DOM conflicts)
+
 // =====================================================
 // EVENT HANDLER FIXES
 // =====================================================
 export type EventHandler<T = Event> = (_event: T) => void;
 export type ClickHandler = (_event: MouseEvent) => void;
 export type InputHandler = (_event: Event & { currentTarget: HTMLInputElement }) => void;
-export type ChangeHandler = (_event: Event & { currentTarget: HTMLSelectElement | HTMLInputElement }
-) => void;
+export type ChangeHandler = (_event: Event & { currentTarget: HTMLSelectElement | HTMLInputElement }) => void;
 export type SubmitHandler = (_event: Event & { currentTarget: HTMLFormElement }) => void;
+
 // =====================================================
 // CUSTOM EVENT TYPES
 // =====================================================
-}
-export interface CustomEventDetail<T = any> {
+export interface CustomEventDetail<T = unknown> {
   detail: T;
 }
-export type CustomEventHandler<T = any> = (_event: CustomEvent<T>) => void;
+export type CustomEventHandler<T = unknown> = (_event: CustomEvent<T>) => void;
+
 // =====================================================
 // FORM STATE FIXES
 // =====================================================
-}
 export interface FormFieldState {
-  value: any;
+  value: unknown;
   error?: string;
   touched: boolean;
   dirty: boolean;
@@ -91,12 +90,12 @@ export interface FormValidationState {
   isSubmitting: boolean;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
-  values: { [key: string]: any }
+  values: Record<string, unknown>;
 }
+
 // =====================================================
 // SIDEBAR & LAYOUT STATE FIXES
 // =====================================================
-}
 export interface SidebarState {
   open: boolean;
   collapsed: boolean;
@@ -107,34 +106,35 @@ export interface LayoutState {
   theme: 'light' | 'dark' | 'auto';
   fullscreen: boolean;
 }
+
 // =====================================================
 // SEARCH COMPONENT FIXES
 // =====================================================
-}
 export interface SearchFilters {
   type?: string;
   caseId?: string;
   dateRange?: {
     start: string;
     end: string;
-  }
+  };
   status?: string[];
   tags?: string[];
 }
 export interface SearchFacets {
-  types: Array<any>;
-  statuses: Array<any>;
-  dates: Array<any>
+  types: string[];
+  statuses: string[];
+  dates: string[];
+}
+
 // =====================================================
 // AI & ML COMPONENT FIXES
 // =====================================================
-}
 export interface AIModel {
   id: string;
   name: string;
   type: 'chat' | 'embedding' | 'completion';
   available: boolean;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface TokenUsage {
   prompt_tokens: number;
@@ -148,21 +148,28 @@ export interface ModelAvailability {
   claude: boolean;
   local: boolean;
 }
+
 // =====================================================
 // NOTIFICATION FIXES
 // =====================================================
+export interface ToastAction {
+  id?: string;
+  label?: string;
+  href?: string;
+  // optional callback; typed as unknown to avoid runtime assumptions — callers can narrow
+  onClick?: (() => void) | undefined;
 }
+
 export interface Toast {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message: string;
   duration?: number;
-  actions?: Array<any>;
+  actions?: ToastAction[];
 }
 export interface Notification extends Toast {
   read: boolean;
   timestamp: string;
   category: string;
 }
-// (All interfaces exported individually above; no aggregate export block to avoid conflicts)

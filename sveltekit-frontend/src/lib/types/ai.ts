@@ -46,25 +46,7 @@ export interface EnhancedRAGEngine {
   analyze: (content: string) => Promise<SemanticEntity[]>;
 }
 // Chat related types for AI Assistant
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-  metadata?: {
-    model?: string;
-    tokenCount?: number;
-    processingTime?: number;
-    confidence?: number;
-  };
-}
-export interface SystemStatus {
-  gpu: boolean;
-  ollama: boolean;
-  enhancedRAG: boolean;
-  postgres: boolean;
-  neo4j: boolean;
-}
+import type { ChatMessage as ApiChatMessage } from './api-contracts.js';
 export interface ChatRequest {
   message: string;
   model?: string;
@@ -73,7 +55,7 @@ export interface ChatRequest {
   context?: {
     caseId?: string;
     documentIds?: string[];
-    previousMessages?: ChatMessage[];
+    previousMessages?: ApiChatMessage[]; // use shared type
   };
 }
 export interface ChatResponse {
@@ -91,4 +73,11 @@ export interface ChatResponse {
   suggestions?: string[];
   relatedCases?: string[];
   vectorSearchResults?: VectorSearchResult[];
+}
+export interface SystemStatus {
+  gpu: boolean;
+  ollama: boolean;
+  enhancedRAG: boolean;
+  postgres: boolean;
+  neo4j: boolean;
 }

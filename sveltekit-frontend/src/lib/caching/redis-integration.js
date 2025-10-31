@@ -1,16 +1,16 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis } from '$lib/server/redis-client';
 /**
  * Redis Integration Module
  * Provides unified Redis caching functionality for the legal AI platform
  * Supports embeddings, search results, shader caching, and general key-value operations
  */
 import { gzipSync, gunzipSync } from 'zlib';
-import { createClient } from '../shims/redis-shim.ts.js';
+
 // Configuration constants
 const DEFAULT_TTL = 3600; // 1 hour in seconds
 const COMPRESSION_THRESHOLD = 1024; // Compress data larger than 1KB
 const MAX_MEMORY_CACHE_SIZE = 1000;
-const MEMORY_CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
+
 // In-memory fallback cache
 const memoryCache = new Map();
 let memoryCacheSize = 0;
@@ -22,11 +22,11 @@ export class RedisIntegration {
   constructor(options = {}) {
     this.options = {
       connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
-      defaultTTL: DEFAULT_TTL
-      useCompression: true
-      fallbackToMemory: true
+      defaultTTL: DEFAULT_TTL,
+      useCompression: true,
+      fallbackToMemory: true,
       keyPrefix: 'legal-ai:',
-      ...options
+      ...options,
     };
     this.client = null;
     this.isConnected = false;
@@ -42,9 +42,9 @@ export class RedisIntegration {
       this.client = await redis;
       await this.client.connect();
       this.isConnected = true;
-      console.log(' Redis connected successfully');
+      console.log('Redis connected successfully');
     } catch (error) {
-      console.warn('�  Redis connection failed, using memory cache fallback:', error.message);
+      console.warn('Redis connection failed, using memory cache fallback:', error.message);
       this.isConnected = false;
       if (this.connectionAttempts < this.maxConnectionAttempts) {
         this.connectionAttempts++;
@@ -65,15 +65,15 @@ export class RedisIntegration {
   compressData(data) {
     const serialized = JSON.stringify(data);
     if (this.options.useCompression && serialized.length > COMPRESSION_THRESHOLD) {
-      const compressed = gzipSync(Buffer.from(serialized),;
+      const compressed = gzipSync(Buffer.from(serialized));
       return {
-        compressed: true
+        compressed: true,
         data: compressed.toString('base64'),
       };
     }
     return {
-      compressed: false
-      data: serialized
+      compressed: false,
+      data: serialized,
     };
   }
   /**
@@ -104,7 +104,7 @@ export class RedisIntegration {
     // Try Redis first
     if (this.isConnected && this.client) {
       try {
-        await this.client.setex(finalKey, finalTTL, JSON.stringify(compressed),;
+        await this.client.setEx(finalKey, finalTTL, JSON.stringify(compressed));
         return true;
       } catch (error) {
         console.warn('Redis set failed, falling back to memory:', error.message);
@@ -178,7 +178,7 @@ export class RedisIntegration {
       try {
         const pattern = this.generateKey('*', namespace);
         // Note: KEYS is not recommended in production, consider using SCAN
-        const keys = await this.client.keys ? await this.client.keys(pattern) : [];
+        const keys = (await this.client.keys) ? await this.client.keys(pattern) : [];
         if (keys.length > 0) {
           await this.client.del(...keys);
         }
@@ -253,14 +253,16 @@ export class RedisIntegration {
    * Specialized methods for different data types
    */
   // Embedding cache methods
-  async setEmbedding(documentId, embedding, ttl = 7200) { // 2 hours default for embeddings
+  async setEmbedding(documentId, embedding, ttl = 7200) {
+    // 2 hours default for embeddings
     return this.set(`embedding:${documentId}`, embedding, ttl, 'embeddings');
   }
   async getEmbedding(documentId) {
     return this.get(`embedding:${documentId}`, 'embeddings');
   }
   // Search results cache
-  async setSearchResults(query, results, ttl = 300) { // 5 minutes for search results
+  async setSearchResults(query, results, ttl = 300) {
+    // 5 minutes for search results
     const queryHash = this.hashQuery(query);
     return this.set(`search:${queryHash}`, results, ttl, 'search');
   }
@@ -269,14 +271,16 @@ export class RedisIntegration {
     return this.get(`search:${queryHash}`, 'search');
   }
   // Shader cache methods
-  async setShader(shaderId, shaderData, ttl = 86400) { // 24 hours for shaders
+  async setShader(shaderId, shaderData, ttl = 86400) {
+    // 24 hours for shaders
     return this.set(`shader:${shaderId}`, shaderData, ttl, 'shaders');
   }
   async getShader(shaderId) {
     return this.get(`shader:${shaderId}`, 'shaders');
   }
   // Session cache methods
-  async setSession(sessionId, sessionData, ttl = 1800) { // 30 minutes for sessions
+  async setSession(sessionId, sessionData, ttl = 1800) {
+    // 30 minutes for sessions
     return this.set(`session:${sessionId}`, sessionData, ttl, 'sessions');
   }
   async getSession(sessionId) {
@@ -291,7 +295,7 @@ export class RedisIntegration {
     const str = typeof query === 'string' ? query : JSON.stringify(query);
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(36);
@@ -301,8 +305,8 @@ export class RedisIntegration {
    */
   async healthCheck() {
     const status = {
-      redis: false
-      memory: true
+      redis: false,
+      memory: true,
       memoryCacheSize,
       connectionAttempts: this.connectionAttempts,
     };
@@ -326,7 +330,7 @@ export class RedisIntegration {
     return {
       isConnected: this.isConnected,
       memoryCacheSize,
-      maxMemorySize: MAX_MEMORY_CACHE_SIZE
+      maxMemorySize: MAX_MEMORY_CACHE_SIZE,
       connectionAttempts: this.connectionAttempts,
       options: this.options,
     };
@@ -366,5 +370,5 @@ export const {
   setSession,
   getSession,
   healthCheck,
-  getCacheStats
+  getCacheStats,
 } = redisIntegration;

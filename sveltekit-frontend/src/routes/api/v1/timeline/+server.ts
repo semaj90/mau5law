@@ -15,6 +15,9 @@ import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 import { resolveUser } from '$lib/server/auth/utils'; // Import resolveUser
 import { getGpuOrchestratorUrl } from '$lib/utils/gpu-orchestrator-endpoint'; // Import new helper
 
+// safer locals type to avoid `any` casts in handlers
+type LocalsLike = Record<string, unknown>;
+
 // Define interfaces for the AI extracted timeline data
 interface TimelineEvent {
   date: string; // ISO format date string
@@ -37,7 +40,8 @@ interface TimelineDateRange {
 interface TimelineConfidenceSummary {
   overall_confidence: number;
   extraction_quality: 'high' | 'medium' | 'low' | 'fallback';
-  missing_context: string[];
+  // allow AI to return optional context notes
+  missing_context?: string[];
 }
 
 interface TimelineData {
@@ -81,7 +85,7 @@ const LEGAL_MODEL_FALLBACK = 'gemma3:270m';
 async function extractTimelineWithAI(
   content: string,
   documentType: string,
-  _options: (typeof TimelineExtractionSchema._type)['extractionOptions'] // Renamed to _options and typed
+  _options: z.infer<typeof TimelineExtractionSchema>['extractionOptions'] // typed via z.infer
 ): Promise<TimelineData> {
   const model = await getOptimalModel();
 
@@ -233,11 +237,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication (allow test mode)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
-    // Cast locals to App.Locals to ensure it has the user property
-    const user = resolveUser(locals as any); // cast to any to avoid missing App types
+    // Cast via unknown first to satisfy TypeScript when intentionally converting types
+    const user = resolveUser(locals as unknown as LocalsLike);
 
     if (!isTestMode && !user) {
-      // Check if not in test mode AND no user
       return json({ message: 'Authentication required' }, { status: 401 });
     }
 
@@ -305,11 +308,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Check authentication (allow test mode)
     const isTestMode = url.searchParams.get('test-mode') === 'true';
-    // Cast locals to App.Locals to ensure it has the user property
-    const user = resolveUser(locals as any); // cast to any to avoid missing App types
+    // Cast via unknown first to satisfy TypeScript when intentionally converting types
+    const user = resolveUser(locals as unknown as LocalsLike);
 
     if (!isTestMode && !user) {
-      // Check if not in test mode AND no user
       return json({ message: 'Authentication required' }, { status: 401 });
     }
 
@@ -320,8 +322,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       endDate,
       eventTypes,
       minImportance,
-      format: _format,
-    } = TimelineQuerySchema.parse(queryParams); // Renamed format to _format
+      format, // renamed from $format -> format and schema default applies
+    } = TimelineQuerySchema.parse(queryParams);
 
     // Mock timeline data for now - in production, query database
     const mockTimeline = {
@@ -391,7 +393,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     return json({
       success: true,
-      data: response,
+      data: {
+        ...response,
+        requested_format: format, // explicitly include the requested format to avoid unused variable
+      },
     });
   } catch (error: unknown) {
     // Type error as unknown
@@ -415,5 +420,4 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       { status: 500 }
     );
   }
-};
 };

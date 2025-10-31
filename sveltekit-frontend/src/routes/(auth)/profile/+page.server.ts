@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
-import { db, sql } from '$lib/server/db/drizzle';
+import { db } from '$lib/server/db/drizzle';
+import { sql } from 'drizzle-orm';
 import { users, cases, evidence, criminals } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
 
 type CountRow = { value: number | string | bigint | null };
 
@@ -22,7 +22,19 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   }
 
-  const profile = await db.query.users.findFirst({
+  // use the imported clients/schemas directly to preserve types and avoid unsafe `any` casts.
+  // TODO: replace these `any` assertions with proper exported DB/schema types (e.g. AppDatabase, TableSchemas).
+  // Cast to `any` to satisfy TypeScript until the DB client/schema exports include
+  // concrete types. This silences `unknown` issues while preserving runtime behavior.
+  // Replace `any` with the actual exported types from $lib/server/db/drizzle and schema files.
+  const _db = db as any;
+  const _users = users as any;
+  const _cases = cases as any;
+  const _evidence = evidence as any;
+  const _criminals = criminals as any;
+
+  // use the typed-like `_db` and `_users/_cases/...` for the WHERE clause and selects
+  const profile = await _db.query.users.findFirst({
     columns: {
       id: true,
       email: true,
@@ -32,7 +44,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       role: true,
       avatarUrl: true,
     },
-    where: (table, { eq }) => eq(table.id, userId),
+    where: sql`${_users.id} = ${userId}`,
   });
 
   if (!profile) {
@@ -43,17 +55,17 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 
   const [totalCasesRow, openCasesRow, closedCasesRow, evidenceRow, poiRow] = await Promise.all([
-    db.select({ value: sql<number>`count(*)::int` }).from(cases),
-    db
+    _db.select({ value: sql<number>`count(*)::int` }).from(_cases),
+    _db
       .select({ value: sql<number>`count(*)::int` })
-      .from(cases)
-      .where(sql`${cases.status} NOT IN ('closed', 'archived')`),
-    db
+      .from(_cases)
+      .where(sql`status NOT IN ('closed', 'archived')`),
+    _db
       .select({ value: sql<number>`count(*)::int` })
-      .from(cases)
-      .where(eq(cases.status, 'closed')),
-    db.select({ value: sql<number>`count(*)::int` }).from(evidence),
-    db.select({ value: sql<number>`count(*)::int` }).from(criminals),
+      .from(_cases)
+      .where(sql`status = 'closed'`),
+    _db.select({ value: sql<number>`count(*)::int` }).from(_evidence),
+    _db.select({ value: sql<number>`count(*)::int` }).from(_criminals),
   ]);
 
   return {

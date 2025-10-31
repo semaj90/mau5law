@@ -17,7 +17,8 @@ https://svelte.dev/e/js_parse_error -->
   onMount(async () => {
     try {
       const mod = await import('$lib/components/ai/EnhancedMCPIntegration.svelte');
-      EnhancedMCPIntegration = (mod && (mod.default ?? mod)) as any;
+      // cast to any before reading .default to avoid TS error "Property 'default' does not exist ..."
+      EnhancedMCPIntegration = ((mod as any).default ?? (mod as any)) as any;
     } catch (e) {
       console.warn('Failed to dynamically load EnhancedMCPIntegration (non-fatal)', e);
     }
@@ -185,8 +186,10 @@ https://svelte.dev/e/js_parse_error -->
         } else {
           logMessage('error', `❌ ${diagnostic.name} - FAILED`, 'diagnostics');
         }
-      } catch (error) {
-        logMessage('error', `❌ ${diagnostic.name} - ERROR: ${error.message}`, 'diagnostics');
+      } catch (err) {
+        // normalize unknown thrown values
+        const errMsg = err instanceof Error ? err.message : String(err);
+        logMessage('error', `❌ ${diagnostic.name} - ERROR: ${errMsg}`, 'diagnostics');
       }
     }
     logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');

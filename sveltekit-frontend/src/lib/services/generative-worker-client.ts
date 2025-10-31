@@ -9,7 +9,7 @@ export class GenerativeWorkerClient {
   private ensureWorker() {
     if (!this.worker) {
       this.worker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
-        type: 'module'
+        type: 'module',
       });
       this.worker.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
         const cb = this.pending.get(e.data.taskId);
@@ -17,27 +17,41 @@ export class GenerativeWorkerClient {
       });
     }
   }
-  async run(_task: AITask): Promise<AIResponse> {
+  async run(task: AITask): Promise<AIResponse> {
     this.ensureWorker();
     const worker = this.worker!;
     const taskId = task.taskId;
     return new Promise((resolve, reject) => {
       const handler = (msg: WorkerMessage) => {
+        // ignore messages for other tasks
+        if (msg.taskId !== taskId) return;
         if (msg.type === 'TASK_COMPLETED') {
           this.pending.delete(taskId);
           resolve(msg.payload as AIResponse);
         } else if (msg.type === 'TASK_ERROR' || msg.type === 'TASK_CANCELLED') {
           this.pending.delete(taskId);
-          reject()
-            new Error((msg.payload && (msg.payload.message || msg.payload)) || 'Worker error')
-          );
+          const errPayload = msg.payload as unknown;
+          const extractErrorMessage = (p: unknown): string => {
+            if (p == null) return 'Worker error';
+            if (typeof p === 'string') return p;
+            if (typeof p === 'object') {
+              const obj = p as Record<string, unknown>;
+              const m = obj.message;
+              if (typeof m === 'string') return m;
+              const e = obj.error;
+              if (typeof e === 'string') return e;
+            }
+            return 'Worker error';
+          };
+          const message = extractErrorMessage(errPayload);
+          reject(new Error(message));
         }
-      }
+      };
       this.pending.set(taskId, handler);
       worker.postMessage({
         type: 'PROCESS_AI_TASK',
         taskId,
-        payload: task
+        payload: task,
       } satisfies WorkerMessage);
     });
   }

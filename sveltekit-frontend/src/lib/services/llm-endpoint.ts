@@ -1,15 +1,20 @@
 // LLM Endpoint Service
-// Returns the Ollama endpoint
-const OLLAMA_URL = 'http://localhost:11434/v1';
+// Returns the Ollama endpoint (prefers configured endpoint via helper)
+import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
+
 export async function getHealthyLlmEndpoint(): Promise<string> {
-  // Try Ollama
+  // Resolve base at runtime, append /v1 for model discovery if needed
+  const base = getOllamaEndpoint().replace(/\/$/, '');
+  const v1 = base.endsWith('/v1') ? base : `${base}/v1`;
   try {
-    const ollamaHealth = await fetch(`${OLLAMA_URL}/models`, {
+    const ollamaHealth = await fetch(`${v1}/models`, {
       method: 'GET',
       signal: AbortSignal.timeout(2000),
     });
-    if (ollamaHealth.ok) return OLLAMA_URL;
-  } catch (error) {}
+    if (ollamaHealth.ok) return v1;
+  } catch (error) {
+    // propagate a controlled error below
+  }
   throw new Error('No healthy LLM endpoint detected (Ollama)');
 }
 // Usage example:

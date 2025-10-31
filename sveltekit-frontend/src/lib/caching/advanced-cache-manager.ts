@@ -30,7 +30,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
   private misses = 0;
   private storagePrefix = 'advanced_cache_';
 
-  constructor(config: CacheConfiguration) {
+  constructor(config?: Partial<CacheConfiguration>) {
     // Provide safe defaults if caller passes partial config externally
     this.config = {
       maxSize: config?.maxSize ?? 50 * 1024 * 1024,
@@ -64,6 +64,60 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     } catch {
       return 0;
     }
+  }
+
+  // Safe base64 helpers for browser and Node (SSR) environments
+  private canUseBase64(): boolean {
+    // Narrowed view of globalThis to avoid `any`
+    const g = globalThis as unknown as {
+      btoa?: (input: string) => string;
+      atob?: (input: string) => string;
+      Buffer?: {
+        from: (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
+      };
+    };
+
+    const hasBrowserBase64 = typeof g.btoa === 'function' && typeof g.atob === 'function';
+    const hasNodeBuffer = typeof g.Buffer !== 'undefined' && typeof g.Buffer?.from === 'function';
+    return hasBrowserBase64 || hasNodeBuffer;
+  }
+
+  private base64Encode(input: string): string {
+    const g = globalThis as unknown as {
+      btoa?: (input: string) => string;
+      Buffer?: {
+        from: (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
+      };
+    };
+
+    if (typeof g.btoa === 'function') {
+      return g.btoa(input);
+    }
+
+    if (typeof g.Buffer !== 'undefined' && typeof g.Buffer.from === 'function') {
+      return g.Buffer.from(input, 'utf-8').toString('base64');
+    }
+
+    throw new Error('No base64 implementation available in this environment');
+  }
+
+  private base64Decode(b64: string): string {
+    const g = globalThis as unknown as {
+      atob?: (input: string) => string;
+      Buffer?: {
+        from: (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
+      };
+    };
+
+    if (typeof g.atob === 'function') {
+      return g.atob(b64);
+    }
+
+    if (typeof g.Buffer !== 'undefined' && typeof g.Buffer.from === 'function') {
+      return g.Buffer.from(b64, 'base64').toString('utf-8');
+    }
+
+    throw new Error('No base64 implementation available in this environment');
   }
 
   // --- CHANGED: persist entry typed as CacheEntry<T> ---
@@ -168,8 +222,8 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const stored = entry.value;
     if (this.config.compression && typeof stored === 'string') {
       try {
-        // stored string assumed to be base64 of JSON
-        const decoded = atob(stored);
+        if (!this.canUseBase64()) throw new Error('base64 not available in this environment');
+        const decoded = this.base64Decode(stored);
         return JSON.parse(decoded) as T;
       } catch (e) {
         // if decode fails, evict the key to avoid returning corrupted data
@@ -191,7 +245,17 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const expiresAt = effectiveTTL > 0 ? this.now() + effectiveTTL : null;
 
     // optionally "compress" (placeholder) - real compression would use a library
-    const storedValue: T | string = this.config.compression ? btoa(JSON.stringify(value)) : value;
+    let storedValue: T | string;
+    if (this.config.compression) {
+      if (!this.canUseBase64()) {
+        // fallback: store as plain JSON string if no base64 available
+        storedValue = JSON.stringify(value) as unknown as T;
+      } else {
+        storedValue = this.base64Encode(JSON.stringify(value));
+      }
+    } else {
+      storedValue = value;
+    }
     const size = this.byteSizeOf(this.config.compression ? (storedValue as string) : value);
 
     // ensure capacity (evict oldest if needed)

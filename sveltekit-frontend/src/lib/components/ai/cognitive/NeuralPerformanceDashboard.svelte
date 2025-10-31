@@ -1,26 +1,25 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'number' has already been declared;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier 'number' has already been declared -->
 <!--
   Neural Performance Dashboard - Real-time GPU & Neural Network Monitoring
   Integrates with Legal AI Platform GPU acceleration and neural processing
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  const { updateInterval: number = 2000, maxHistoryPoints: number = 30, showAdvancedMetrics: boolean = true } = $props();
+  // Props (fixed: don't redeclare 'number' etc.)
+  const { updateInterval = 2000, maxHistoryPoints = 30, showAdvancedMetrics = true } = $props();
+
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  // Props
-  // Performance metrics interface
+
+  // Performance metrics interface (fixed colons)
   interface PerformanceMetrics {
     timestamp: number;
-    gpuUtilization number;
+    gpuUtilization: number;
     memoryUsage: number;
     neuralEfficiency: number;
     processingSpeed: number;
     activeConnections: number;
     temperature: number;
   }
+
   interface ServiceStatus {
     gpu: 'healthy' | 'degraded' | 'offline';
     webgpu: 'healthy' | 'degraded' | 'offline';
@@ -28,7 +27,8 @@ https://svelte.dev/e/js_parse_error -->
     vectordb: 'healthy' | 'degraded' | 'offline';
     lastCheck: Date;
   }
-  // Real-time data stores
+
+  // Real-time data stores (fixed trailing comma/semicolons)
   const performanceHistory = writable<PerformanceMetrics[]>([]);
   const currentMetrics = writable<PerformanceMetrics | null>(null);
   const serviceStatus = writable<ServiceStatus>({
@@ -36,50 +36,56 @@ https://svelte.dev/e/js_parse_error -->
     webgpu: 'healthy',
     neural: 'healthy',
     vectordb: 'healthy',
-    lastCheck: new Date();
+    lastCheck: new Date(),
   });
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
+
   // Dashboard state
   let isMonitoring = $state(false);
-  let monitoringInterval: NodeJS.Timeout | null = null;
+  let monitoringInterval: ReturnType<typeof setInterval> | null = null;
   let lastUpdate = $state(Date.now());
   let selectedTimeRange = $state('5min');
+
   // Derived performance indicators
-  const overallGrade = derived([currentMetrics], ([$metrics]) => {
-    if (!$metrics) return { grade: 'N/A', color: 'text-gray-400', bg: 'bg-gray-500/20' }
+  const overallGrade = derived(currentMetrics, ($metrics) => {
+    if (!$metrics) return { grade: 'N/A', color: 'text-gray-400', bg: 'bg-gray-500/20' };
     const efficiency = $metrics.neuralEfficiency;
-    if (efficiency >= 95) return { grade: 'S+', color: 'text-emerald-400', bg: 'bg-emerald-500/20' }
-    if (efficiency >= 90) return { grade: 'S', color: 'text-green-400', bg: 'bg-green-500/20' }
-    if (efficiency >= 80) return { grade: 'A', color: 'text-blue-400', bg: 'bg-blue-500/20' }
-    if (efficiency >= 70) return { grade: 'B', color: 'text-yellow-400', bg: 'bg-yellow-500/20' }
-    if (efficiency >= 60) return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-500/20' }
-    return { grade: 'D', color: 'text-red-400', bg: 'bg-red-500/20' }
+    if (efficiency >= 95) return { grade: 'S+', color: 'text-emerald-400', bg: 'bg-emerald-500/20' };
+    if (efficiency >= 90) return { grade: 'S', color: 'text-green-400', bg: 'bg-green-500/20' };
+    if (efficiency >= 80) return { grade: 'A', color: 'text-blue-400', bg: 'bg-blue-500/20' };
+    if (efficiency >= 70) return { grade: 'B', color: 'text-yellow-400', bg: 'bg-yellow-500/20' };
+    if (efficiency >= 60) return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-500/20' };
+    return { grade: 'D', color: 'text-red-400', bg: 'bg-red-500/20' };
   });
-  const systemHealthScore = derived([serviceStatus], ([$status]) => {
-    const services = Object.values.filter(s => typeof s === 'string') as string[];
-    const healthyCount = services.filter(item => item.length);
+
+  // Fixed derived: compute service health properly
+  const systemHealthScore = derived(serviceStatus, ($status) => {
+    const services = Object.values($status).filter(v => typeof v === 'string') as string[];
+    const healthyCount = services.filter(s => s === 'healthy').length;
     const totalServices = services.length;
-    if (totalServices === 0) return { score: 0, status: 'Initializing', color: 'text-gray-400' }
+    if (totalServices === 0) return { score: 0, status: 'Initializing', color: 'text-gray-400' };
     const percentage = (healthyCount / totalServices) * 100;
-    if (percentage === 100) return { score: percentage, status: 'All Systems Operational', color: 'text-green-400' }
-    if (percentage >= 75) return { score: percentage, status: 'Minor Issues Detected', color: 'text-yellow-400' }
-    if (percentage >= 50) return { score: percentage, status: 'Service Degradation', color: 'text-orange-400' }
-    return { score: percentage, status: 'Critical Issues', color: 'text-red-400' }
+    if (percentage === 100) return { score: percentage, status: 'All Systems Operational', color: 'text-green-400' };
+    if (percentage >= 75) return { score: percentage, status: 'Minor Issues Detected', color: 'text-yellow-400' };
+    if (percentage >= 50) return { score: percentage, status: 'Service Degradation', color: 'text-orange-400' };
+    return { score: percentage, status: 'Critical Issues', color: 'text-red-400' };
   });
-  // Generate realistic performance data
+
+  // Generate realistic performance data (fixed object literal commas & keys)
   function generateMetrics(): PerformanceMetrics {
     const now = Date.now();
     const baseGpuUtilization = 70 + Math.sin(now / 10000) * 20;
     return {
-      timestamp: now
-      gpuUtilization Math.max(0, Math.min(100, baseGpuUtilization + (Math.random() - 0.5) * 10)),
+      timestamp: now,
+      gpuUtilization: Math.max(0, Math.min(100, baseGpuUtilization + (Math.random() - 0.5) * 10)),
       memoryUsage: 60 + Math.random() * 30,
       neuralEfficiency: 85 + Math.sin(now / 15000) * 10 + (Math.random() - 0.5) * 5,
       processingSpeed: 1200 + Math.sin(now / 8000) * 300 + (Math.random() - 0.5) * 100,
       activeConnections: Math.floor(5 + Math.sin(now / 20000) * 3 + Math.random() * 2),
-      temperature: 65 + Math.sin(now / 25000) * 8 + (Math.random() - 0.5) * 3;
-    }
+      temperature: 65 + Math.sin(now / 25000) * 8 + (Math.random() - 0.5) * 3,
+    };
   }
+
   // Update performance history
   function updateHistory(metrics: PerformanceMetrics) {
     performanceHistory.update(history => {
@@ -87,17 +93,19 @@ https://svelte.dev/e/js_parse_error -->
       return newHistory.slice(-maxHistoryPoints);
     });
   }
-  // Simulate service health checks
+
+  // Simulate service health checks (fixed trailing comma)
   function checkServiceHealth(): ServiceStatus {
     return {
       gpu: Math.random() > 0.1 ? 'healthy' : 'degraded',
       webgpu: Math.random() > 0.05 ? 'healthy' : 'degraded',
       neural: Math.random() > 0.08 ? 'healthy' : 'degraded',
       vectordb: Math.random() > 0.03 ? 'healthy' : 'degraded',
-      lastCheck: new Date();
-    }
+      lastCheck: new Date(),
+    };
   }
-  // Start monitoring
+
+  // Start / Stop monitoring (monitoringInterval typed correctly; use updateInterval)
   function startMonitoring() {
     if (isMonitoring) return;
     isMonitoring = true;
@@ -119,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, updateInterval);
   }
-  // Stop monitoring
+
   function stopMonitoring() {
     if (!isMonitoring) return;
     isMonitoring = false;
@@ -129,13 +137,15 @@ https://svelte.dev/e/js_parse_error -->
       monitoringInterval = null;
     }
   }
-  // Component lifecycle
-  $effect(() => {
+
+  // Use onMount / onDestroy lifecycle instead of $effect to avoid unused imports/issues
+  onMount(() => {
     startMonitoring();
   });
   onDestroy(() => {
     stopMonitoring();
   });
+
   // Helper functions
   function formatNumber(num: number, decimals: number = 1): string {
     return num.toFixed(decimals);
@@ -289,36 +299,44 @@ https://svelte.dev/e/js_parse_error -->
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.gpu)}</span>
         <div class="service-info">
           <h4>GPU Acceleration</h4>
-          <span class="service-status-text {getServiceStatusColor($serviceStatus.gpu)}">
-            {$serviceStatus.gpu.charAt.toUpperCase() + $serviceStatus.gpu.slice(1)}
-          </span>
+          {#if $serviceStatus}
+            <span class="service-status-text {getServiceStatusColor($serviceStatus.gpu)}">
+              {$serviceStatus.gpu.charAt(0).toUpperCase() + $serviceStatus.gpu.slice(1)}
+            </span>
+          {/if}
         </div>
       </div>
       <div class="service-item">
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.webgpu)}</span>
         <div class="service-info">
           <h4>WebGPU Compute</h4>
-          <span class="service-status-text {getServiceStatusColor($serviceStatus.webgpu)}">
-            {$serviceStatus.webgpu.charAt.toUpperCase() + $serviceStatus.webgpu.slice(1)}
-          </span>
+          {#if $serviceStatus}
+            <span class="service-status-text {getServiceStatusColor($serviceStatus.webgpu)}">
+              {$serviceStatus.webgpu.charAt(0).toUpperCase() + $serviceStatus.webgpu.slice(1)}
+            </span>
+          {/if}
         </div>
       </div>
       <div class="service-item">
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.neural)}</span>
         <div class="service-info">
           <h4>Neural Networks</h4>
-          <span class="service-status-text {getServiceStatusColor($serviceStatus.neural)}">
-            {$serviceStatus.neural.charAt.toUpperCase() + $serviceStatus.neural.slice(1)}
-          </span>
+          {#if $serviceStatus}
+            <span class="service-status-text {getServiceStatusColor($serviceStatus.neural)}">
+              {$serviceStatus.neural.charAt(0).toUpperCase() + $serviceStatus.neural.slice(1)}
+            </span>
+          {/if}
         </div>
       </div>
       <div class="service-item">
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.vectordb)}</span>
         <div class="service-info">
           <h4>Vector Database</h4>
-          <span class="service-status-text {getServiceStatusColor($serviceStatus.vectordb)}">
-            {$serviceStatus.vectordb.charAt.toUpperCase() + $serviceStatus.vectordb.slice(1)}
-          </span>
+          {#if $serviceStatus}
+            <span class="service-status-text {getServiceStatusColor($serviceStatus.vectordb)}">
+              {$serviceStatus.vectordb.charAt(0).toUpperCase() + $serviceStatus.vectordb.slice(1)}
+            </span>
+          {/if}
         </div>
       </div>
     </div>
@@ -371,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -437,7 +455,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .performance-grade {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     padding: 2rem;
     border-radius: 12px;
@@ -638,20 +656,20 @@ https://svelte.dev/e/js_parse_error -->
     background: #f59e0b;
   }
   .simple-chart {
-    position relative;
+    position: relative; /* fixed missing colon */
     height: 150px;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     margin-top: 1rem;
   }
   .chart-point {
-    position absolute;
+    position: absolute; /* fixed missing colon */
     width: 2px;
   }
   .point-gpu,
   .point-neural,
   .point-memory {
-    position absolute;
+    position: absolute; /* fixed missing colon */
     width: 2px;
     height: 2px;
     border-radius: 50%;

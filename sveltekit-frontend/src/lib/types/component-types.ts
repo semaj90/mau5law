@@ -1,8 +1,6 @@
-
 /**
  * Common component types for better type safety
  */
-}
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -102,5 +100,5 @@ export interface WebGPUContext {
 // Utility types
 export type AsyncFunction<T = void> = () => Promise<T>;
 export type EventCallback<T = Event> = (_event: T) => void;
-export type ValidationResult = { valid: boolean; errors: string[] }
+export type ValidationResult = { valid: boolean; errors: string[] };
 export type ComponentState = 'idle' | 'loading' | 'success' | 'error';

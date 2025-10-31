@@ -1,33 +1,57 @@
 // Simple client wrapper for the security orchestrator service
 // Assumes service reachable at SECURITY_ORCH_URL (default http://localhost:8600)
 // Use the SvelteKit API route we created for security validation
-const BASE_URL = (typeof process !== 'undefined' && (process.env as any)?.SECURITY_ORCH_URL) || '';
+const BASE_URL =
+  (typeof process !== 'undefined' && (process.env as Record<string, string> | undefined)?.SECURITY_ORCH_URL) || '';
+
+type Fingerprint = Record<string, unknown>;
+
+interface UserClient extends Record<string, unknown> {
+  email: string;
+  username: string;
+  requestedRole?: string;
+  referralCode?: string;
+  firstName?: string;
+  lastName?: string;
+  department?: string;
+  jurisdiction?: string;
+  badgeNumber?: string;
+}
+
 export interface SecurityValidationRequestClient {
   task: 'security_validation';
-  fingerprint: { [key: string]: any }
-  user: { email: string; username: string; requestedRole?: string; referralCode?: string } & { [key: string]: any }
-  context?: { [key: string]: any }
+  fingerprint: Fingerprint;
+  user: UserClient;
+  context?: Record<string, unknown>;
 }
+
 export interface SecurityValidationResponseClient {
   requestId: string;
   riskScore: number;
   securityScore: number;
-  verification: { [key: string]: any }
-  signals: Array<any>;
+  verification: Record<string, unknown>;
+  signals: Array<Record<string, unknown>>;
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
   durationMs: number;
   timestamp: string;
 }
-export async function validateSecurity(payload: SecurityValidationRequestClient): Promise<SecurityValidationResponseClient> {
-  // Use our SvelteKit API route for security validation
+
+export async function validateSecurity(
+  payload: SecurityValidationRequestClient
+): Promise<SecurityValidationResponseClient> {
+  // Build safe defaults for name parsing
+  const usernameParts = payload.user.username?.split?.('.') ?? [];
+  const firstName = payload.user.firstName ?? usernameParts[0] ?? '';
+  const lastName = payload.user.lastName ?? usernameParts[1] ?? '';
+
   const res = await fetch(`${BASE_URL}/api/security/validate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       email: payload.user.email,
-      firstName: payload.user.firstName || payload.user.username.split('.')[0],
-      lastName: payload.user.lastName || payload.user.username.split('.')[1],
+      firstName,
+      lastName,
       role: payload.user.requestedRole,
       department: payload.user.department,
       jurisdiction: payload.user.jurisdiction,
@@ -35,40 +59,83 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
       deviceInfo: payload.fingerprint,
     }),
   });
+
   if (!res.ok) {
-    let detail: any;
+    let detail: unknown = null;
     try {
       detail = await res.json();
-    } catch (error) {
+    } catch {
       detail = null;
     }
-    throw new Error(`Security validation failed (${res.status}): ${detail?.error || res.statusText}`);
+    // Safely pull an error message if present
+    const msg =
+      detail && typeof detail === 'object' && 'error' in (detail as Record<string, unknown>)
+        ? String((detail as Record<string, unknown>)['error'])
+        : res.statusText;
+    throw new Error(`Security validation failed (${res.status}): ${msg}`);
   }
-  const apiResponse = await res.json();
-  // Transform our API response to match the expected SecurityValidationResponseClient interface
+
+  const apiResponse = (await res.json()) as Record<string, unknown>;
+
+  const requestId =
+    typeof apiResponse['validationId'] === 'string' ? (apiResponse['validationId'] as string) : 'unknown';
+  const riskScore = typeof apiResponse['riskScore'] === 'number' ? (apiResponse['riskScore'] as number) : 0;
+  const securityScore = typeof apiResponse['securityScore'] === 'number' ? (apiResponse['securityScore'] as number) : 0;
+
+  const verification =
+    apiResponse['professionalVerification'] && typeof apiResponse['professionalVerification'] === 'object'
+      ? (apiResponse['professionalVerification'] as Record<string, unknown>)
+      : {};
+
+  let signals: Array<Record<string, unknown>> = [];
+  const ti = apiResponse['threatIntelligence'];
+  if (ti && typeof ti === 'object') {
+    const maybeSignals = (ti as Record<string, unknown>)['signals'];
+    if (Array.isArray(maybeSignals))
+      signals = maybeSignals.map(s =>
+        typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : { value: s }
+      );
+  }
+
+  const riskLevel = typeof apiResponse['riskLevel'] === 'string' ? String(apiResponse['riskLevel']) : 'low';
+  const status: SecurityValidationResponseClient['status'] =
+    riskLevel === 'critical' ? 'deny' : riskLevel === 'high' ? 'review' : 'allow';
+
+  const durationMs = typeof apiResponse['processingTime'] === 'number' ? (apiResponse['processingTime'] as number) : 0;
+  const modelVersion =
+    typeof apiResponse['modelVersion'] === 'string' ? (apiResponse['modelVersion'] as string) : 'enhanced-rag-v1';
+
   return {
-    requestId: apiResponse.validationId || 'unknown',
-    riskScore: apiResponse.riskScore || 0,
-    securityScore: apiResponse.securityScore || 0,
-    verification: apiResponse.professionalVerification || {},
-    signals: apiResponse.threatIntelligence?.signals || [],
-    status: apiResponse.riskLevel === 'critical' ? 'deny' :
-            apiResponse.riskLevel === 'high' ? 'review' : 'allow',
-    modelVersion: 'enhanced-rag-v1',
-    durationMs: apiResponse.processingTime || 0,
-    timestamp: new Date().toISOString()
-  }
+    requestId,
+    riskScore,
+    securityScore,
+    verification,
+    signals,
+    status,
+    modelVersion,
+    durationMs,
+    timestamp: new Date().toISOString(),
+  };
 }
-export function connectProgress(onMessage: (msg: any) => void): WebSocket {
-  // Use our SvelteKit WebSocket progress endpoint
-  const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsUrl = `${wsProtocol}//${window.location.host}/api/security/validate/progress`
+
+export function connectProgress(onMessage: (msg: unknown) => void): WebSocket {
+  // Guard for SSR - only build WS url if window exists
+  const wsProtocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const host = typeof window !== 'undefined' ? window.location.host : 'localhost';
+  const wsUrl = `${wsProtocol}//${host}/api/security/validate/progress`;
+
   const ws = new WebSocket(wsUrl);
-  ws.onmessage = e => {
+  ws.onmessage = (e: MessageEvent) => {
+    let parsed: unknown = e.data;
     try {
-      onMessage(JSON.parse(e.data));
+      parsed = JSON.parse(String(e.data));
     } catch {
-      /* ignore */
+      // leave parsed as raw data
+    }
+    try {
+      onMessage(parsed);
+    } catch {
+      // consumer errors should not break socket handling
     }
   };
   return ws;

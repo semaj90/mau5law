@@ -291,7 +291,11 @@ export class OCRService {
       const prompt = `Analyze this document text and determine its type:
 Text: "${text.substring(0, 1000)}..."
 Return only one of: legal_document, contract, form`;
-      const res = await fetch('http://localhost:11434/api/generate', {
+      // Resolve Ollama endpoint via centralized helper
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
+      const base = getOllamaEndpoint().replace(/\/$/, '');
+      const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -395,7 +399,9 @@ Return only one of: legal_document, contract, form`;
 Document text: "${text.substring(0, 2000)}..."
 Already extracted: ${existingNames}
 Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"name","confidence":0.85}]`;
-      const res = await fetch('http://localhost:11434/api/generate', {
+      const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
+      const base = getOllamaEndpoint().replace(/\/$/, '');
+      const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -490,7 +496,9 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
       const prompt = `Based on this document context, suggest possible values for the field "${fieldName}" of type "${fieldType}":
 Context: "${context.substring(0, 500)}..."
 Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", "suggestion3"]`;
-      const res = await fetch('http://localhost:11434/api/generate', {
+      const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');
+      const base = getOllamaEndpoint().replace(/\/$/, '');
+      const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

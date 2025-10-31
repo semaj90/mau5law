@@ -62,7 +62,7 @@ export interface ClusterMetadata {
   cpuCount: number;
   environment: string;
   version: string;
-  startTime: string;
+  startTime: string | Date; // was string -> allow Date
   uptime: number;
 }
 
@@ -76,7 +76,7 @@ export interface BackgroundWorkerStatus {
   type: 'ocr' | 'embedding' | 'autotag' | 'custom';
   status: 'online' | 'offline' | 'degraded';
   healthy: boolean;
-  lastHeartbeat?: string;
+  lastHeartbeat?: string | Date; // was string
   queueDepth?: number;
   processedJobs?: number;
   uptime?: number;
@@ -88,7 +88,7 @@ export interface WorkerHealthCheckResponse {
   success: boolean;
   status: 'online' | 'offline' | 'degraded';
   workers: BackgroundWorkerStatus[];
-  timestamp: string;
+  timestamp: string | Date; // was string
   summary?: {
     total: number;
     online: number;
@@ -108,7 +108,7 @@ export interface WorkerMetrics {
   maxConcurrentJobs: number;
   currentConcurrentJobs: number;
   uptime: number;
-  timestamp: string;
+  timestamp: string | Date; // was string
 }
 
 export interface WorkerPool {
@@ -122,7 +122,7 @@ export interface WorkerPool {
   totalJobsProcessed: number;
   totalJobsFailed: number;
   averageJobDuration: number;
-  timestamp: string;
+  timestamp: string | Date; // was string
 }
 
 // ============================================================================
@@ -137,12 +137,12 @@ export interface BackgroundJob {
   priority: number;
   retryCount: number;
   maxRetries: number;
-  createdAt: string;
-  startedAt?: string;
-  completedAt?: string;
+  createdAt: string | Date; // was string
+  startedAt?: string | Date; // was string|undefined
+  completedAt?: string | Date; // was string|undefined
   error?: string;
   result?: Record<string, unknown>;
-  metadata: Record<string, unknown>;
+  metadata?: Record<string, unknown>; // made optional
 }
 
 export interface JobQueueStats {
@@ -154,13 +154,13 @@ export interface JobQueueStats {
   failedJobs: number;
   averageJobDuration: number;
   throughput: number;
-  timestamp: string;
+  timestamp: string | Date; // was string
 }
 
 export interface JobStatusResponse {
   success: boolean;
   job: BackgroundJob;
-  timestamp: string;
+  timestamp: string | Date; // was string
   error?: string;
 }
 
@@ -173,7 +173,7 @@ export interface JobBatchResponse {
     total: number;
     pages: number;
   };
-  timestamp: string;
+  timestamp: string | Date; // was string
   error?: string;
 }
 
@@ -194,9 +194,9 @@ export interface FileUploadInfo {
   mimeType: string;
   uploadedBy: string;
   uploadPath: string;
-  uploadedAt: string;
+  uploadedAt: string | Date; // was string
   checksum?: string;
-  expiresAt?: string;
+  expiresAt?: string | Date; // was string|undefined
 }
 
 export interface FileProcessingStage {
@@ -213,8 +213,8 @@ export interface FileUploadResponse {
   success: boolean;
   file: FileUploadInfo;
   uploadJob: FileUploadJob;
-  processingJobs: FileUploadJob[];
-  timestamp: string;
+  processingJobs?: FileUploadJob[]; // can be absent in some responses
+  timestamp: string | Date; // was string
   error?: string;
 }
 
@@ -231,7 +231,7 @@ export interface FileUploadBatchResponse {
     failed: number;
     processing: number;
   };
-  timestamp: string;
+  timestamp: string | Date; // was string
   error?: string;
 }
 
@@ -247,7 +247,7 @@ export interface FileProcessingProgress {
   }>;
   estimatedTimeRemaining?: number;
   currentStage?: string;
-  timestamp: string;
+  timestamp: string | Date; // was string
 }
 
 // ============================================================================
@@ -334,19 +334,19 @@ export interface AutotagJob extends BackgroundJob {
 export interface ClusterEvent {
   eventId: string;
   eventType: string;
-  timestamp: string;
+  timestamp: string | Date; // was string
   source: 'worker' | 'master' | 'queue' | 'system';
   severity: 'info' | 'warning' | 'error' | 'critical';
   message: string;
   data: Record<string, unknown>;
   acknowledged: boolean;
-  handledAt?: string;
+  handledAt?: string | Date; // was string|undefined
 }
 
 export interface ClusterEventStreamResponse {
   event: ClusterEvent;
   cluster: ClusterMetadata;
-  timestamp: string;
+  timestamp: string | Date; // was string
 }
 
 // ============================================================================
@@ -363,7 +363,7 @@ export interface ClusterCommandResponse {
     error?: string;
     message?: string;
   }>;
-  timestamp: string;
+  timestamp: string | Date; // was string
   error?: string;
 }
 

@@ -1,7 +1,6 @@
 /**
  * AI Chat Types - Type definitions for the AI chat system
  */
-}
 export interface ChatMessage {
   id: string;
   sessionId: string;
@@ -16,7 +15,7 @@ export interface ChatMessage {
     tokens?: number;
     confidence?: number;
     sources?: string[];
-  }
+  };
 }
 export interface ChatSession {
   id: string;
@@ -32,7 +31,7 @@ export interface ChatSession {
 }
 export interface MessageAnalysis {
   intent: string;
-  entities: Array<any>;
+  entities: Entity[];
   sentiment: 'positive' | 'negative' | 'neutral';
   complexity: number;
   topics: string[];
@@ -42,8 +41,8 @@ export interface MessageAnalysis {
 export interface RAGContext {
   caseId?: string;
   documents: string[];
-  relevantSections: Array<any>;
-  metadata: { [key: string]: any }
+  relevantSections: RelevantSection[];
+  metadata: Record<string, unknown>;
   recommendations?: unknown[];
   did_you_mean?: string;
 }
@@ -53,7 +52,7 @@ export interface Recommendation {
   title: string;
   description: string;
   confidence: number;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
 }
 export interface StreamingResponse {
   messageId: string;
@@ -63,7 +62,7 @@ export interface StreamingResponse {
   metadata?: {
     tokens?: number;
     model?: string;
-  }
+  };
 }
 export interface UserActivity {
   userId: string;
@@ -77,14 +76,13 @@ export interface UserActivity {
 export interface AttentionData {
   messageId: string;
   attentionWeights: number[];
-  focusPoints: Array<any>;
+  focusPoints: FocusPoint[];
   focused?: boolean;
   lastActivity?: number;
   interactionCount?: number;
   scrollPosition?: number;
 }
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
-}
 export interface ChatStore {
   messages: ChatMessage[];
   currentSession: ChatSession | null;
@@ -93,4 +91,31 @@ export interface ChatStore {
   isTyping: boolean;
   userActivity: UserActivity[];
   recommendations: Recommendation[];
+}
+
+// New small typed shapes to avoid `any`
+export interface Entity {
+  type: string; // e.g., "PERSON", "ORG", "DATE"
+  text: string; // raw matched text
+  start?: number; // optional character start index
+  end?: number; // optional character end index
+  confidence?: number; // model confidence 0..1
+  normalized?: string; // normalized value (e.g., ISO date)
+  metadata?: Record<string, unknown>;
+}
+
+export interface RelevantSection {
+  id: string;
+  title?: string;
+  excerpt?: string;
+  score?: number; // relevance score
+  page?: number;
+  metadata?: Record<string, unknown>;
+}
+
+export interface FocusPoint {
+  field: string;
+  excerpt?: string;
+  relevance?: number;
+  metadata?: Record<string, unknown>;
 }

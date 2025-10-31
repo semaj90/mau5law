@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "moduleResolution": "bundler", // Better for modern bundlers
-    "module": "ESNext", // Modern ES modules for Vite/QUIC
+    "moduleResolution": "nodenext", // use NodeNext for modern Node ESM behavior
+    "module": "NodeNext", // match moduleResolution for proper ESM support
     "sourceMap": false, // disable source maps for smaller production builds
     "inlineSources": false,
-    "target": "ES2022", // More modern features for better performance
-    "lib": ["DOM", "DOM.Iterable", "ES2022"], // Removed unsupported "WebAssembly" lib; add types if needed
+    "target": "ES2023", // bump target for Node 22 features
+    "lib": ["DOM", "DOM.Iterable", "ES2023"], // align libs with target
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "types": ["node", "@webgpu/types"], // Added WebGPU for your GPU acceleration
+    "types": ["node"], // Removed '@webgpu/types' to avoid missing type errors. Install if needed.
     "isolatedModules": true,
     "strict": true, // Enable strict mode for better type safety
     "noImplicitReturns": true,
@@ -24,12 +24,18 @@
       "$services/*": ["src/lib/services/*"],
       "$types/*": ["src/lib/types/*"],
       "$utils/*": ["src/lib/utils/*"]
-    }
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./sveltekit-frontend/src/lib/types",
+      "./sveltekit-frontend/src/lib/types/vendor"
+    ]
   },
   "include": [
     "uno.config.ts",
     "playwright.config.ts",
-    "types.d.ts"
+    "types.d.ts",
+    "sveltekit-frontend/src/lib/types/vendor/**/*.d.ts"
   ],
   "exclude": [
     "node_modules/**",
