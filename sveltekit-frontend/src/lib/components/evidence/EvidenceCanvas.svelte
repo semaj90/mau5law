@@ -190,7 +190,7 @@ await embeddingsService.initialize();
   function getConnectionPath(connection EvidenceConnection): string {
     const fromEvidence = evidenceList.find(e => e.id === connection.fromId);
     const toEvidence = evidenceList.find(e => e.id === connection.toId);
-    if (!fromEvidence || !toEvidence) return: '';
+    if (!fromEvidence || !toEvidence) return '';
     const fromX = fromEvidence.x + 128; // Center of card
     const fromY = fromEvidence.y + 100;
     const toX = toEvidence.x + 128;
@@ -204,10 +204,10 @@ await embeddingsService.initialize();
   function getConnectionColor(type: string, strength: number): string {
     const opacity = Math.max(0.3, strength);
     switch (type) {
-      case: 'similarity': return `rgba(59, 130, 246, ${opacity})`;
-      case: 'temporal': return `rgba(16, 185, 129, ${opacity})`;
-      case: 'causal': return `rgba(245, 101, 101, ${opacity})`;
-      case: 'reference': return `rgba(139, 92, 246, ${opacity})`;
+      case 'similarity': return `rgba(59, 130, 246, ${opacity})`;
+      case 'temporal': return `rgba(16, 185, 129, ${opacity})`;
+      case 'causal': return `rgba(245, 101, 101, ${opacity})`;
+      case 'reference': return `rgba(139, 92, 246, ${opacity})`;
       default: return `rgba(107, 114, 126, ${opacity})`;
     }
   }

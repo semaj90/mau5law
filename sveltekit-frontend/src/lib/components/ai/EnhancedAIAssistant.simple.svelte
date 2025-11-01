@@ -153,7 +153,7 @@
         <Brain class="w-6 h-6 nes-text is-primary" />
         <h3 class="text-lg font-semibold nes-text is-primary">Legal AI Assistant</h3>
         {#if caseId}
-          <span class="text-sm nes-text is-disabled">Case: {caseId}</span>
+          <span class="text-sm nes-text is-disabled">case {caseId}</span>
         {/if}
       </div>
       <div class="flex items-center gap-2">

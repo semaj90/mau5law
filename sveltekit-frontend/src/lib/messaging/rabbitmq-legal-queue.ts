@@ -272,7 +272,7 @@ export class RabbitMQLegalQueue {
       let gpuUsed = false;
       let bankId: number | undefined;
       switch (message.operation) {
-        case: 'process':
+        case 'process':
           // Store document in NES memory
           const allocated = await nesMemory.allocateDocument(document, message.payload, {
             preferredBank: message.metadata.bankPreference,
@@ -284,7 +284,7 @@ export class RabbitMQLegalQueue {
             result = { allocated: true, bankId }
           }
           break;
-        case: 'analyze':
+        case 'analyze':
           // Perform AI analysis (placeholder)
           result = {
             confidence: message.metadata.confidenceLevel,
@@ -292,11 +292,11 @@ export class RabbitMQLegalQueue {
             analysis: 'Legal document analyzed successfully'
           }
           break;
-        case: 'store':
+        case 'store':
           // Persistent storage operation
           result = { stored: true, timestamp: Date.now() }
           break;
-        case: 'retrieve':
+        case 'retrieve':
           // Retrieve document from memory
           const retrieved = nesMemory.getDocument(message.documentId);
           result = retrieved ? { document: retrieved } : null;
@@ -415,16 +415,15 @@ export class RabbitMQLegalQueue {
   }
   private getQueueForOperation(operation: string, requiresGPU: boolean = false): string {
     if (requiresGPU || operation === 'rank') {
-      return: 'gpu.compute';
+      return 'gpu.compute';
     }
     switch (operation) {
-      case: 'process':
-      case: 'analyze':
-      case: 'store':
-      case: 'retrieve':
-        return: 'document.processing';
-      default:
-        return: 'document.processing';
+      case 'process':
+      case 'analyze':
+      case 'store':
+      case 'retrieve':
+        return 'document.processing';
+      default: return 'document.processing';
     }
   }
   private async performGPUComputation(message: LegalDocumentMessage): Promise<any> {

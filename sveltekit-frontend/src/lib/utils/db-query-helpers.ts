@@ -19,7 +19,7 @@ export const fieldMap = {
     isActive: 'is_active',
   },
   // Case fields
-  case: {
+  case {
     caseNumber: 'case_number',
     incidentDate: 'incident_date',
     dangerScore: 'danger_score',

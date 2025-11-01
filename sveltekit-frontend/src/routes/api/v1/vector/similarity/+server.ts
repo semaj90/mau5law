@@ -192,19 +192,19 @@ async function processCPUVectorOperation(params: {
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
   switch (operation) {
-    case: 'cosine':
+    case 'cosine':
       if (!vectorB) throw new Error('vectorB required for cosine similarity');
       return cosineSimilarity(vectorA, vectorB);
-    case: 'euclidean':
+    case 'euclidean':
       if (!vectorB) throw new Error('vectorB required for euclidean distance');
       return euclideanDistance(vectorA, vectorB);
-    case: 'dot':
+    case 'dot':
       if (!vectorB) throw new Error('vectorB required for dot product');
       return dotProduct(vectorA, vectorB);
-    case: 'manhattan':
+    case 'manhattan':
       if (!vectorB) throw new Error('vectorB required for manhattan distance');
       return manhattanDistance(vectorA, vectorB);
-    case: 'batch':
+    case 'batch':
       if (!vectors) throw new Error('vectors required for batch operation');
       return vectors.map(vector => {
         switch (algorithm) {
@@ -216,8 +216,7 @@ async function processCPUVectorOperation(params: {
             return dotProduct(vectorA, vector);
           case 3:
             return 1.0 / (1.0 + manhattanDistance(vectorA, vector));
-          default:
-            return 0;
+          default: return 0;
         }
       });
     default:

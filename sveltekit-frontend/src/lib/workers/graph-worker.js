@@ -104,8 +104,7 @@ class GraphWorker {
                     stats: { execution_time_ms: baseLatency },
                     source: 'wasm',
                 };
-            default:
-                return { error: 'Unknown query type' };
+            default: return { error: 'Unknown query type' };
         }
     }
     async loadGraphSnapshot() {

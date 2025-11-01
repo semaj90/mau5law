@@ -330,17 +330,17 @@
     });
   }
   function getRelevanceColor(score: number) {
-    if (score >= 0.9) return: 'text-green-600 bg-green-100';
-    if (score >= 0.8) return: 'text-blue-600 bg-blue-100';
-    if (score >= 0.7) return: 'text-yellow-600 bg-yellow-100';
-    return: 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return 'text-green-600 bg-green-100';
+    if (score >= 0.8) return 'text-blue-600 bg-blue-100';
+    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
+    return 'text-gray-600 bg-gray-100';
   }
   function getPrecedentialColor(value: string) {
     switch (value) {
-      case: 'High': return: 'text-red-600 bg-red-100';
-      case: 'Medium': return: 'text-yellow-600 bg-yellow-100';
-      case: 'Low': return: 'text-gray-600 bg-gray-100';
-      default: return: 'text-blue-600 bg-blue-100';
+      case 'High': return 'text-red-600 bg-red-100';
+      case 'Medium': return 'text-yellow-600 bg-yellow-100';
+      case 'Low': return 'text-gray-600 bg-gray-100';
+      default: return 'text-blue-600 bg-blue-100';
     }
   }
 </script>

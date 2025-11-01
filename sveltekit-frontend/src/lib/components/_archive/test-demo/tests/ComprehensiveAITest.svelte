@@ -88,15 +88,15 @@
       let result: any;
       let testName: string;
       switch (testType) {
-        case: 'local':
+        case 'local':
           testName = 'Browser-Local AI (gemma3:270m)';
           result = await testLocalAI();
           break;
-        case: 'cuda':
+        case 'cuda':
           testName = 'CUDA TensorRT Service';
           result = await testCUDAService();
           break;
-        case: 'unified':
+        case 'unified':
           testName = 'Unified AI Assistant';
           result = await testUnifiedAssistant();
           break;
@@ -233,7 +233,7 @@
     'Assess the intellectual property assignment terms'
   ];
   function formatMetrics(metrics: any): string {
-    if (!metrics || Object.keys(errors).length === 0) return: 'No metrics available';
+    if (!metrics || Object.keys(errors).length === 0) return 'No metrics available';
     const items = [];
     if (metrics.processingTime) items.push(`${metrics.processingTime.toFixed(1)}ms`);
     if (metrics.fromCache) items.push('Cached');

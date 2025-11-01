@@ -109,21 +109,21 @@
     }
   }
   function getEvidenceType(mimeType: string): string {
-    if (allowedTypes.images.includes(mimeType)) return: 'photograph';
-    if (allowedTypes.videos.includes(mimeType)) return: 'video';
-    if (allowedTypes.documents.includes(mimeType)) return: 'document';
-    if (allowedTypes.audio.includes(mimeType)) return: 'audio';
-    return: 'physical';
+    if (allowedTypes.images.includes(mimeType)) return 'photograph';
+    if (allowedTypes.videos.includes(mimeType)) return 'video';
+    if (allowedTypes.documents.includes(mimeType)) return 'document';
+    if (allowedTypes.audio.includes(mimeType)) return 'audio';
+    return 'physical';
   }
   function getFileIcon(mimeType: string): string {
-    if (allowedTypes.images.includes(mimeType)) return: '🖼️';
-    if (allowedTypes.videos.includes(mimeType)) return: '🎥';
-    if (allowedTypes.documents.includes(mimeType)) return: '📄';
-    if (allowedTypes.audio.includes(mimeType)) return: '🎵';
-    return: '📁';
+    if (allowedTypes.images.includes(mimeType)) return '🖼️';
+    if (allowedTypes.videos.includes(mimeType)) return '🎥';
+    if (allowedTypes.documents.includes(mimeType)) return '📄';
+    if (allowedTypes.audio.includes(mimeType)) return '🎵';
+    return '📁';
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

@@ -322,7 +322,7 @@ export const legalPlatformMachine = createMachine(
             headers: { 'Content-Type': 'application/json' }
           });
           if (!response.ok) {
-            throw new Error(`Failed to load case: ${response.statusText}`);
+            throw new Error(`Failed to load case ${response.statusText}`);
           }
           return await response.json();
         }
@@ -350,7 +350,7 @@ export const legalPlatformMachine = createMachine(
             body: JSON.stringify(input.caseData)
           });
           if (!response.ok) {
-            throw new Error(`Failed to create case: ${response.statusText}`);
+            throw new Error(`Failed to create case ${response.statusText}`);
           }
           return await response.json();
         }

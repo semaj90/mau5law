@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
   switch (mode) {
-    case: 'quick':
+    case 'quick':
       return {
         useSemanticSearch: true,
         useMemory: false,
@@ -162,7 +162,7 @@ function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
         enableSelfSynthesis: false,
         outputFormat: 'structured',
       };
-    case: 'comprehensive':
+    case 'comprehensive':
       return {
         useSemanticSearch: true,
         useMemory: true,
@@ -171,7 +171,7 @@ function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
         enableSelfSynthesis: true,
         outputFormat: 'structured',
       };
-    case: 'autonomous':
+    case 'autonomous':
       return {
         useSemanticSearch: true,
         useMemory: true,
@@ -180,8 +180,7 @@ function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
         enableSelfSynthesis: true,
         outputFormat: 'structured',
       };
-    default:
-      return {
+    default: return {
         useSemanticSearch: true,
         useMemory: true,
         useMultiAgent: true,
@@ -196,20 +195,19 @@ function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
  */
 function formatResponse(result: SelfPromptResult, outputFormat: string) {
   switch (outputFormat) {
-    case: 'json':
+    case 'json':
       return {
         data: result,
         format: 'json',
       };
-    case: 'markdown':
+    case 'markdown':
       return {
         analysis: formatAsMarkdown(result),
         data: result,
         format: 'markdown',
       };
-    case: 'structured':
-    default:
-      return {
+    case 'structured':
+    default: return {
         analysis: (
           result as {
             synthesizedOutput?: any;

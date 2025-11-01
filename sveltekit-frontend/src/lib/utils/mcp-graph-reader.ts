@@ -33,7 +33,7 @@ interface GraphRelation {
 
 /* Row shapes returned by Drizzle queries (minimal necessary fields) */
 interface CaseRow {
-  case: {
+  case {
     id: string;
     title: string;
     description?: string;
@@ -106,7 +106,7 @@ export class MCPGraphReader {
     // Build query using sql for join conditions (avoids eq/and/or API differences)
     const caseQuery = db
       .select({
-        case: cases,
+        case cases,
         creator: {
           id: users.id,
           name: users.name,
@@ -175,7 +175,7 @@ export class MCPGraphReader {
     const evidenceQuery = db
       .select({
         evidence: evidence,
-        case: {
+        case {
           id: cases.id,
           title: cases.title,
         },
@@ -207,7 +207,7 @@ export class MCPGraphReader {
           mimeType: e.mimeType,
           tags: e.tags,
           aiTags: e.aiTags,
-          case: item.case ?? null,
+          case item.case ?? null,
           creator: item.creator ?? null,
         },
         connections: [],
@@ -262,7 +262,7 @@ export class MCPGraphReader {
     const reportQuery = db
       .select({
         report: reports,
-        case: {
+        case {
           id: cases.id,
           title: cases.title,
         },
@@ -291,7 +291,7 @@ export class MCPGraphReader {
           reportType: r.reportType,
           status: r.status,
           aiAnalysis: r.metadata,
-          case: item.case ?? null,
+          case item.case ?? null,
           creator: item.creator ?? null,
         },
         connections: [],

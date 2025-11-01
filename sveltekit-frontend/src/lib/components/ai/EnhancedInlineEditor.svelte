@@ -273,22 +273,22 @@
   function handleKeyDown(event: KeyboardEvent) {
     if (!isShowingSuggestions || currentSuggestions.length === 0) return;
     switch ((event as KeyboardEvent).key) {
-      case: 'ArrowDown':
+      case 'ArrowDown':
         event.preventDefault();
         selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, currentSuggestions.length - 1);
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         event.preventDefault();
         selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, 0);
         break;
-      case: 'Tab':
-      case: 'Enter':
+      case 'Tab':
+      case 'Enter':
         if (selectedSuggestionIndex >= 0) {
           event.preventDefault();
           applySuggestion(currentSuggestions[selectedSuggestionIndex]);
         }
         break;
-      case: 'Escape':
+      case 'Escape':
         event.preventDefault();
         hideSuggestions();
         break;

@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     // Bind helpers locally to preserve existing call sites
     const { eq, and, or, like, desc } = (helpers || {}) as any;
     switch (dataType) {
-      case: 'documents':
+      case 'documents':
         const documentsQuery = db
           .select()
           .from(legalDocuments)
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           );
         totalCount = Number(countResult[0]?.count || 0);
         break;
-      case: 'cases':
+      case 'cases':
         const casesQuery = db
           .select()
           .from(casesTable)
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           );
         totalCount = Number(caseCountResult[0]?.count || 0);
         break;
-      case: 'evidence':
+      case 'evidence':
         const evidenceQuery = db
           .select()
           .from(evidenceTable)
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let result: any;
     switch (dataType) {
-      case: 'documents':
+      case 'documents':
         result = await db
           .insert(legalDocuments)
           .values({
@@ -262,7 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } as any)
           .returning();
         break;
-      case: 'cases':
+      case 'cases':
         result = await db
           .insert(casesTable)
           .values({
@@ -277,7 +277,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } as any)
           .returning();
         break;
-      case: 'evidence':
+      case 'evidence':
         result = await db
           .insert(evidenceTable)
           .values({
@@ -323,7 +323,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
     let result: any;
     switch (dataType) {
-      case: 'documents':
+      case 'documents':
         result = await db
           .update(legalDocuments)
           .set({
@@ -333,7 +333,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .where(eq(legalDocuments.id, id))
           .returning();
         break;
-      case: 'cases':
+      case 'cases':
         result = await db
           .update(casesTable)
           .set({
@@ -343,7 +343,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .where(eq(casesTable.id, id))
           .returning();
         break;
-      case: 'evidence':
+      case 'evidence':
         result = await db
           .update(evidenceTable)
           .set({
@@ -385,13 +385,13 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }
     let result: any;
     switch (dataType) {
-      case: 'documents':
+      case 'documents':
         result = await db.delete(legalDocuments).where(eq(legalDocuments.id, id)).returning();
         break;
-      case: 'cases':
+      case 'cases':
         result = await db.delete(casesTable).where(eq(casesTable.id, id)).returning();
         break;
-      case: 'evidence':
+      case 'evidence':
         result = await db.delete(evidenceTable).where(eq(evidenceTable.id, id)).returning();
         break;
       default:

@@ -283,20 +283,19 @@ class Context7MulticoreService extends EventEmitter {
 
   private getRequiredCapabilities(taskType: string): string[] {
     switch (taskType) {
-      case: 'tokenize':
+      case 'tokenize':
         return ['tokenize'];
-      case: 'semantic_analysis':
+      case 'semantic_analysis':
         return ['semantic_analysis'];
-      case: 'legal_classification':
+      case 'legal_classification':
         return ['legal_classification'];
-      case: 'tensor_parse':
+      case 'tensor_parse':
         return ['tensor_processing'];
-      case: 'json_parse':
+      case 'json_parse':
         return ['json_parsing'];
-      case: 'recommendation':
+      case 'recommendation':
         return ['recommendation_generation'];
-      default:
-        return [];
+      default: return [];
     }
   }
 
@@ -361,18 +360,18 @@ class Context7MulticoreService extends EventEmitter {
 
   private getWorkerEndpoint(taskType: string): string {
     switch (taskType) {
-      case: 'tokenize':
-        return: '/tokenize';
-      case: 'semantic_analysis':
-        return: '/semantic-analysis';
-      case: 'legal_classification':
-        return: '/legal-bert';
-      case: 'tensor_parse':
-        return: '/tensor-parse';
-      case: 'json_parse':
-        return: '/json-parse';
-      case: 'recommendation':
-        return: '/recommendation';
+      case 'tokenize':
+        return '/tokenize';
+      case 'semantic_analysis':
+        return '/semantic-analysis';
+      case 'legal_classification':
+        return '/legal-bert';
+      case 'tensor_parse':
+        return '/tensor-parse';
+      case 'json_parse':
+        return '/json-parse';
+      case 'recommendation':
+        return '/recommendation';
       default:
         throw new Error(`Unknown task type: ${taskType}`);
     }

@@ -283,20 +283,19 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const caseItem = mockCases[caseIndex];
     switch (action) {
-      case: 'access':
+      case 'access':
         // Update last accessed time
         caseItem.lastAccessed = new Date().toISOString();
         break;
-      case: 'boost':
+      case 'boost':
         // Temporarily boost priority
         caseItem.confidence = Math.min(1.0, caseItem.confidence + 0.1);
         break;
-      case: 'dismiss':
+      case 'dismiss':
         // Lower priority
         caseItem.confidence = Math.max(0.1, caseItem.confidence - 0.2);
         break;
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',

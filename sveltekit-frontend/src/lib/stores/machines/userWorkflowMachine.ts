@@ -63,7 +63,7 @@ export type UserWorkflowEvent =
   | { type: 'COMPLETE_STEP'; stepData: any }
   | { type: 'CANCEL_WORKFLOW' }
   | { type: 'COMPLETE_WORKFLOW' }
-  | { type: 'SET_ACTIVE_CASE'; case: LegalCase }
+  | { type: 'SET_ACTIVE_CASE'; case LegalCase }
   | { type: 'SET_ACTIVE_EVIDENCE'; evidence: Evidence }
   | { type: 'ADD_COLLABORATOR'; collaborator: User }
   | { type: 'REMOVE_COLLABORATOR'; userId: string }

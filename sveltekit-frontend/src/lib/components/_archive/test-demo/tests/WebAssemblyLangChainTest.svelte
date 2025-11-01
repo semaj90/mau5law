@@ -56,7 +56,7 @@
       let accelerationMetrics = null;
       // Use unified store for all tests with appropriate options
       const testCaseId = `test-${Date.now()}`;
-      aiAssistant.initializeCase(testCaseId, `Test Case: ${method.name}`);
+      aiAssistant.initializeCase(testCaseId, `Test case ${method.name}`);
       const responseMessage = await aiAssistant.sendMessage(testCaseId, testQuery, undefined, {
         backend: method.options.useWebAssembly ? 'webasm' : 'ollama',
         useAcceleration: method.options.useAcceleration,

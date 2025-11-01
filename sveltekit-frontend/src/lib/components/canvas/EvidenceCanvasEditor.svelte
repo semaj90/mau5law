@@ -122,25 +122,25 @@
       };
 
       switch (event.type) {
-        case: 'ADD_TO_HISTORY': {
+        case 'ADD_TO_HISTORY': {
           ctx.history = ctx.history || [];
           ctx.history.push(event.state);
           ctx.historyIndex = ctx.history.length - 1;
           break;
         }
-        case: 'UNDO': {
+        case 'UNDO': {
           ctx.historyIndex = Math.max(0, (ctx.historyIndex ?? 0) - 1);
           break;
         }
-        case: 'REDO': {
+        case 'REDO': {
           ctx.historyIndex = Math.min((ctx.history?.length ?? 1) - 1, (ctx.historyIndex ?? 0) + 1);
           break;
         }
-        case: 'SAVE_SUCCESS': {
+        case 'SAVE_SUCCESS': {
           ctx.canvasState = event.state;
           break;
         }
-        case: 'COLLABORATION_ENABLED': {
+        case 'COLLABORATION_ENABLED': {
           ss.value = 'collaboration.enabled';
           break;
         }
@@ -1283,25 +1283,25 @@
       };
 
       switch (event.type) {
-        case: 'ADD_TO_HISTORY': {
+        case 'ADD_TO_HISTORY': {
           ctx.history = ctx.history || [];
           ctx.history.push(event.state);
           ctx.historyIndex = ctx.history.length - 1;
           break;
         }
-        case: 'UNDO': {
+        case 'UNDO': {
           ctx.historyIndex = Math.max(0, (ctx.historyIndex ?? 0) - 1);
           break;
         }
-        case: 'REDO': {
+        case 'REDO': {
           ctx.historyIndex = Math.min((ctx.history?.length ?? 1) - 1, (ctx.historyIndex ?? 0) + 1);
           break;
         }
-        case: 'SAVE_SUCCESS': {
+        case 'SAVE_SUCCESS': {
           ctx.canvasState = event.state;
           break;
         }
-        case: 'COLLABORATION_ENABLED': {
+        case 'COLLABORATION_ENABLED': {
           ss.value = 'collaboration.enabled';
           break;
         }

@@ -1,6 +1,6 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
-  import: '../../app.css'; // Add this line to import the global Tailwind CSS
+  import '../../app.css'; // Add this line to import the global Tailwind CSS
   // Svelte 5 runes are auto-imported
   import { afterNavigate, goto } from '$app/navigation';
   import { onMount } from 'svelte';

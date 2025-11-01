@@ -91,9 +91,9 @@ export function getPreferredProvider() {
   const installations = checkLocalInstallations();
   // Priority: Ollama > llama.cpp (Ollama is easier to manage)
   if (installations.ollama.available) {
-    return: "ollama";
+    return "ollama";
   } else if (installations.llamaCpp.available) {
-    return: "llamacpp";
+    return "llamacpp";
   }
   return null;
 }

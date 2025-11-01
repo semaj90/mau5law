@@ -51,7 +51,7 @@ export function apiError(message: string, status: number = 400, code?: string, d
  */
 export function validateRequest(body: unknown, requiredFields: string[]): string | null {
   if (typeof body !== 'object' || body === null) {
-    return: 'Invalid request body';
+    return 'Invalid request body';
   }
   const bodyAsRecord = body as Record<string, unknown>; // Cast for property access after type guard
   for (const field of requiredFields) {

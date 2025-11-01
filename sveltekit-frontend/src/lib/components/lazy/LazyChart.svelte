@@ -32,9 +32,9 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     try {
       // Dynamic import based on chart type - replace with your actual chart library
       switch (chartType) {
-        case: 'line':
-        case: 'bar':
-        case: 'area':
+        case 'line':
+        case 'bar':
+        case 'area':
           // Example: const module = await import('$lib/components/charts/LineChart.svelte')
           // chartComponent = module.default
           // For demonstration, simulate loading delay
@@ -46,11 +46,11 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
             props: { data, config, height, width }
           }
           break;
-        case: 'pie':
+        case 'pie':
           // Example: const module = await import('$lib/components/charts/PieChart.svelte')
           // chartComponent = module.default
           break;
-        case: 'scatter':
+        case 'scatter':
           // Example: const module = await import('$lib/components/charts/ScatterChart.svelte')
           // chartComponent = module.default
           break;

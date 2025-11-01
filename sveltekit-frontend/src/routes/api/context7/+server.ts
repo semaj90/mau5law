@@ -92,19 +92,19 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, server, tool, data } = await request.json();
     switch (action) {
-      case: 'analyze_codebase':
+      case 'analyze_codebase':
         return await callMCPTool('wrapper', 'analyze_codebase', data);
-      case: 'check_services':
+      case 'check_services':
         return await callMCPTool('wrapper', 'check_services', {});
-      case: 'generate_recommendations':
+      case 'generate_recommendations':
         return await callMCPTool('wrapper', 'generate_recommendations', data);
-      case: 'synthesize_evidence':
+      case 'synthesize_evidence':
         return await callMCPTool('legal', 'synthesize_evidence', data);
-      case: 'legal_rag_query':
+      case 'legal_rag_query':
         return await callMCPTool('legal', 'legal_rag_query', data);
-      case: 'get_case_summary':
+      case 'get_case_summary':
         return await callMCPTool('legal', 'get_case_summary', data);
-      case: 'custom_tool':
+      case 'custom_tool':
         if (!server || !tool) {
           return json(
             {
@@ -115,10 +115,9 @@ export const POST: RequestHandler = async ({ request }) => {
           );
         }
         return await callMCPTool(server, tool, data);
-      case: 'sync_with_orchestrator':
+      case 'sync_with_orchestrator':
         return await syncWithOrchestrator(data);
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown action: ${action}`,

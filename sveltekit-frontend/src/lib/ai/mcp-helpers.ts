@@ -181,10 +181,10 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
 }
 // Helper functions for prompt analysis
 function detectArea(prompt: string): string {
-  if (prompt.includes('performance') || prompt.includes('speed')) return: 'performance';
-  if (prompt.includes('security') || prompt.includes('auth')) return: 'security';
-  if (prompt.includes('ui') || prompt.includes('ux')) return: 'ui-ux';
-  return: 'performance'; // default
+  if (prompt.includes('performance') || prompt.includes('speed')) return 'performance';
+  if (prompt.includes('security') || prompt.includes('auth')) return 'security';
+  if (prompt.includes('ui') || prompt.includes('ux')) return 'ui-ux';
+  return 'performance'; // default
 }
 function extractFeature(prompt: string): string {
   // Extract feature name from integration prompts

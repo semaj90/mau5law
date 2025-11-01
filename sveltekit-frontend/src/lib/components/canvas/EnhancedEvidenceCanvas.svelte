@@ -150,16 +150,15 @@
 
   function getTypeIcon(type: string | undefined): string {
     switch (type) {
-      case: 'image':
-        return: '🖼️';
-      case: 'document':
-        return: '📄';
-      case: 'video':
-        return: '🎥';
-      case: 'audio':
-        return: '🎵';
-      default:
-        return: '📎';
+      case 'image':
+        return '🖼️';
+      case 'document':
+        return '📄';
+      case 'video':
+        return '🎥';
+      case 'audio':
+        return '🎵';
+      default: return '📎';
     }
   }
 
@@ -167,15 +166,15 @@
     selectedTool = tool;
     if (!fabricCanvas) return;
     switch (tool) {
-      case: 'select':
+      case 'select':
         fabricCanvas.isDrawingMode = false;
         fabricCanvas.selection = true;
         break;
-      case: 'draw':
+      case 'draw':
         fabricCanvas.isDrawingMode = true;
         fabricCanvas.selection = false;
         break;
-      case: 'text':
+      case 'text':
         fabricCanvas.isDrawingMode = false;
         fabricCanvas.selection = true;
         addTextBox();

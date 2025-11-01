@@ -92,9 +92,9 @@ export const enhancedLegalCaseMachine = createMachine(
             target: 'caseLoaded',
             actions: assign({
               loading: () => false,
-              currentCase: (_context, event: { output: { case: LegalCase; evidence: Evidence[] } }) =>
+              currentCase: (_context, event: { output: { case LegalCase; evidence: Evidence[] } }) =>
                 event.output.case,
-              evidenceList: (_context, event: { output: { case: LegalCase; evidence: Evidence[] } }) =>
+              evidenceList: (_context, event: { output: { case LegalCase; evidence: Evidence[] } }) =>
                 event.output.evidence || [],
             }),
           },
@@ -171,7 +171,7 @@ export const enhancedLegalCaseMachine = createMachine(
     actors: {
       initializeSystem: fromPromise(async () => ({ status: 'ok' })),
       loadCase: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-        return { case: { id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
+        return { case { id: input?.caseId ?? 'dummy', title: 'Case', description: '' }, evidence: [] };
       }),
       createCase: fromPromise(async ({ input }: { input: { data: CaseForm } }) => {
         return { id: 'new_case', title: '', ...input.data };

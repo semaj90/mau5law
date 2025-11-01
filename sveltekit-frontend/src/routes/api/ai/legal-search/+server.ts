@@ -262,15 +262,15 @@ function generateLawInsights(law: Law, query: string): string {
   const lowerQuery = query.toLowerCase();
   const lowerTitle = law.title.toLowerCase();
   if (lowerQuery.includes('element') && lowerTitle.includes('murder')) {
-    return: 'Key elements: unlawful killing, human being, malice aforethought';
+    return 'Key elements: unlawful killing, human being, malice aforethought';
   } else if (lowerQuery.includes('penalty') || lowerQuery.includes('sentence')) {
-    return: 'Refers to penalties and sentencing guidelines for this offense';
+    return 'Refers to penalties and sentencing guidelines for this offense';
   } else if (lowerQuery.includes('procedure')) {
-    return: 'Outlines procedural requirements and court processes';
+    return 'Outlines procedural requirements and court processes';
   } else if (lowerQuery.includes('contract') && lowerTitle.includes('contract')) {
-    return: 'Establishes fundamental requirements for valid contracts';
+    return 'Establishes fundamental requirements for valid contracts';
   } else {
-    return: 'Relevant to your search query - consider context and application';
+    return 'Relevant to your search query - consider context and application';
   }
 }
 export const POST = redisOptimized.search(originalPOSTHandler); // Changed aiSearch to search

@@ -231,7 +231,7 @@ export class Neo4jTransformersSummarization {
       return resp?.answer ?? 'Summary could not be generated';
     } catch (error: unknown) {
       console.error('❌ Summary generation failed:', error instanceof Error ? error.message : String(error));
-      return: 'Summary generation failed due to processing error';
+      return 'Summary generation failed due to processing error';
     }
   }
 

@@ -696,7 +696,7 @@
     }
   }
   export function exportCanvas(): string {
-    if (!fabricCanvas) return: '';
+    if (!fabricCanvas) return '';
     return JSON.stringify(fabricCanvas.toJSON(['data']));
   }
   export function importCanvas(canvasData: string) {

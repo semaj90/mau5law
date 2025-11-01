@@ -220,15 +220,15 @@
   // Detect document type from file
   function detectDocumentType(file: File): string {
     const name = file.name.toLowerCase();
-    if (name.includes('contract') || name.includes('agreement')) return: 'contract';
-    if (name.includes('evidence') || name.includes('exhibit')) return: 'evidence';
-    if (name.includes('brief') || name.includes('motion')) return: 'brief';
-    if (name.includes('citation') || name.includes('cite')) return: 'citation';
-    if (name.includes('precedent') || name.includes('case')) return: 'precedent';
+    if (name.includes('contract') || name.includes('agreement')) return 'contract';
+    if (name.includes('evidence') || name.includes('exhibit')) return 'evidence';
+    if (name.includes('brief') || name.includes('motion')) return 'brief';
+    if (name.includes('citation') || name.includes('cite')) return 'citation';
+    if (name.includes('precedent') || name.includes('case')) return 'precedent';
     // Default based on file type
-    if (file.type === 'application/pdf') return: 'brief';
-    if (file.type.startsWith('image/')) return: 'evidence';
-    return: 'brief';
+    if (file.type === 'application/pdf') return 'brief';
+    if (file.type.startsWith('image/')) return 'evidence';
+    return 'brief';
   }
 </script>
 

@@ -469,7 +469,7 @@
     <div class="mt-4 text-xs nes-text is-disabled text-center">
       {messageCount} messages • Model: {model}
       {#if caseId}
-        • Case: {caseId}{/if}
+        • case {caseId}{/if}
     </div>
   {/if}
 </div>

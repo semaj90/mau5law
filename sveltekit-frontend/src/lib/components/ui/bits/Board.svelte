@@ -66,7 +66,7 @@
   });
   // Grid pattern overlay
   let gridPattern = $derived(() => {
-    if (!showGrid) return: '';
+    if (!showGrid) return '';
     return `
       background-image:
         linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),

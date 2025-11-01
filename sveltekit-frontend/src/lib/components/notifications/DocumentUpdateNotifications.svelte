@@ -61,16 +61,15 @@ https://svelte.dev/e/js_parse_error -->
   })
   let connectionStatusIcon = $derived(() => {
     switch (connectionStatus) {
-      case: "connected":
-        return: "🟢";
-      case: "connecting":
-        return: "🟡";
-      case: "disconnected":
-        return: "⚪";
-      case: "error":
-        return: "🔴";
-      default:
-        return: "⚪";
+      case "connected":
+        return "🟢";
+      case "connecting":
+        return "🟡";
+      case "disconnected":
+        return "⚪";
+      case "error":
+        return "🔴";
+      default: return "⚪";
     }
   });
   // Methods
@@ -92,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
         100;
       return `${Math.round(progress)}%`;
     }
-    return: "0%";
+    return "0%";
   }
 </script>
 

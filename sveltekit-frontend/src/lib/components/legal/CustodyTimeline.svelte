@@ -15,39 +15,37 @@ Displays the chronological chain of custody events with detailed audit trail
   // use simple emoji/icon fallbacks to avoid external icon import issues
   function getEventIcon(eventType: string) {
     switch (eventType) {
-      case: 'intake':
-        return: '🛡️';
-      case: 'transfer':
-        return: '🔁';
-      case: 'verification':
-        return: '🔍';
-      case: 'analysis':
-        return: '🧠';
-      case: 'approval':
-        return: '✅';
-      case: 'finalization':
-        return: '🏁';
-      default:
-        return: '⏱️';
+      case 'intake':
+        return '🛡️';
+      case 'transfer':
+        return '🔁';
+      case 'verification':
+        return '🔍';
+      case 'analysis':
+        return '🧠';
+      case 'approval':
+        return '✅';
+      case 'finalization':
+        return '🏁';
+      default: return '⏱️';
     }
   }
 
   function getEventColor(eventType: string) {
     switch (eventType) {
-      case: 'intake':
-        return: 'bg-blue-100 text-blue-800';
-      case: 'transfer':
-        return: 'bg-purple-100 text-purple-800';
-      case: 'verification':
-        return: 'bg-green-100 text-green-800';
-      case: 'analysis':
-        return: 'bg-indigo-100 text-indigo-800';
-      case: 'approval':
-        return: 'bg-emerald-100 text-emerald-800';
-      case: 'finalization':
-        return: 'bg-gray-100 text-gray-800';
-      default:
-        return: 'bg-gray-100 text-gray-800';
+      case 'intake':
+        return 'bg-blue-100 text-blue-800';
+      case 'transfer':
+        return 'bg-purple-100 text-purple-800';
+      case 'verification':
+        return 'bg-green-100 text-green-800';
+      case 'analysis':
+        return 'bg-indigo-100 text-indigo-800';
+      case 'approval':
+        return 'bg-emerald-100 text-emerald-800';
+      case 'finalization':
+        return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
 
@@ -61,7 +59,7 @@ Displays the chronological chain of custody events with detailed audit trail
   }
 
   function formatTimestamp(timestamp?: string | number | Date) {
-    if (!timestamp) return: '-';
+    if (!timestamp) return '-';
     const d = timestamp instanceof Date ? timestamp : new Date(timestamp);
     return isNaN(d.getTime()) ? '-' : d.toLocaleString();
   }
@@ -69,19 +67,19 @@ Displays the chronological chain of custody events with detailed audit trail
   function getEventDetails(evt: any) {
     const details = evt?.details ?? {};
     switch (evt?.eventType) {
-      case: 'intake':
+      case 'intake':
         return {
           primary: `Evidence taken into custody`,
           secondary: `Hash verified: ${details.hashMatch ? 'Yes' : 'No'}`,
           extra: details.originalHash ? `Hash: ${String(details.originalHash).substring(0, 8)}...` : ''
         };
-      case: 'transfer':
+      case 'transfer':
         return {
           primary: `Custody transferred`,
           secondary: `from ${details.fromCustodian ?? 'Unknown'} → To: ${details.toCustodian ?? 'Unknown'}`,
           extra: details.transferReason ? `Reason: ${details.transferReason}` : ''
         };
-      case: 'verification':
+      case 'verification':
         return {
           primary: `Integrity verification completed`,
           secondary: `Status: ${details.integrityStatus ?? 'Unknown'}`,
@@ -89,19 +87,19 @@ Displays the chronological chain of custody events with detailed audit trail
             ? `AI Score: ${(details.verificationResults.aiAnalysisScore * 100).toFixed(0)}%`
             : ''
         };
-      case: 'analysis':
+      case 'analysis':
         return {
           primary: `AI analysis completed`,
           secondary: `Risk Level: ${details.aiAnalysis?.riskLevel ?? 'Unknown'}`,
           extra: details.models ? `Models: ${details.models.join(', ')}` : ''
         };
-      case: 'approval':
+      case 'approval':
         return {
           primary: `Custody approved`,
           secondary: `Approval status: ${details.approvalStatus ?? 'Unknown'}`,
           extra: details.finalIntegrityStatus ? `Final status: ${details.finalIntegrityStatus}` : ''
         };
-      case: 'finalization':
+      case 'finalization':
         return {
           primary: `Custody workflow finalized`,
           secondary: `Total events: ${details.custodyReport?.totalEvents ?? 0}`,
@@ -109,8 +107,7 @@ Displays the chronological chain of custody events with detailed audit trail
             ? `Duration ${Math.round(details.custodyReport.totalProcessingTime / 1000)}s`
             : ''
         };
-      default:
-        return {
+      default: return {
           primary: formatEventTitle(evt?.eventType ?? 'event'),
           secondary: 'Event processed',
           extra: ''

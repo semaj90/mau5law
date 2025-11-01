@@ -256,7 +256,7 @@ class GPUMetricsBatcher {
    */
   private detectRenderingMode(): 'webgl' | 'webgpu' | 'software' {
     if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-      return: 'webgpu';
+      return 'webgpu';
     }
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');

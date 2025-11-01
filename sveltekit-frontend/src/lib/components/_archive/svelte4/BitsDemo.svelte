@@ -73,7 +73,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: 'Demo Case: ' + Date.now(),
+          title: 'Demo case ' + Date.now(),
           description: 'Demonstration case created from BitsDemo component',
           priority: 'medium',
           status: 'open',

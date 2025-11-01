@@ -197,7 +197,7 @@ class EvidenceAnalysisCacheService {
     await redisComponentStore.clearCache(`case:summary:${caseId}`);
     // Clear case index
     await redisComponentStore.clearCache(indexKey);
-    console.log(`🗑️ Invalidated all analysis for case: ${caseId}`);
+    console.log(`🗑️ Invalidated all analysis for case ${caseId}`);
   }
   /**
    * Get cache statistics
@@ -247,15 +247,14 @@ class EvidenceAnalysisCacheService {
   }
   private getTTLForAnalysisType(analysisType: string): number {
     switch (analysisType) {
-      case: 'similarity':
-      case: 'correlation':
+      case 'similarity':
+      case 'correlation':
         return this.SIMILARITY_TTL;
-      case: 'summary':
+      case 'summary':
         return this.SUMMARY_TTL;
-      case: 'classification':
-      case: 'extraction':
-      default:
-        return this.DEFAULT_TTL;
+      case 'classification':
+      case 'extraction':
+      default: return this.DEFAULT_TTL;
     }
   }
   private async addToCaseAnalysisIndex(caseId: string, analysisKey: string): Promise<void> {

@@ -267,7 +267,7 @@ export class OCRTensorProcessor {
   private getOCROptionsForLOD(): OCRProcessOptions {
     // Use gaming memory architecture to optimize OCR based on current LOD level
     switch (this.currentLODLevel) {
-      case: 'low':
+      case 'low':
         // 8-bit NES level optimization
         return {
           psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
@@ -276,7 +276,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: false,
           tessjs_create_tsv: false,
         };
-      case: 'medium':
+      case 'medium':
         // 16-bit SNES level optimization
         return {
           psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
@@ -285,7 +285,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: true,
           tessjs_create_tsv: false,
         };
-      case: 'high':
+      case 'high':
         // N64 level optimization with DNN LOD system
         return {
           psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
@@ -294,8 +294,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: true,
           tessjs_create_tsv: true,
         };
-      default:
-        return {};
+      default: return {};
     }
   }
   private async selectOptimalModel(): Promise<{
@@ -651,14 +650,13 @@ export class OCRTensorProcessor {
   private getOptimalChunkSize(): number {
     // Adaptive chunk size based on gaming memory architecture
     switch (this.currentLODLevel) {
-      case: 'low':
+      case 'low':
         return GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 1 : 2;
-      case: 'medium':
+      case 'medium':
         return GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 3 : 4;
-      case: 'high':
+      case 'high':
         return GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 6 : 8;
-      default:
-        return 3;
+      default: return 3;
     }
   }
   private calculateProcessingPriority(image: ImageData | HTMLCanvasElement | File, index: number): number {

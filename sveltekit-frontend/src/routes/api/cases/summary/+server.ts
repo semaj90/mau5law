@@ -301,10 +301,10 @@ function _determineImportance(content: string): 'low' | 'medium' | 'high' {
   const mediumPriorityKeywords = ['review', 'analysis', 'investigation', 'statement'];
   const lowerContent = content.toLowerCase();
   if (highPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
-    return: 'high';
+    return 'high';
   }
   if (mediumPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
-    return: 'medium';
+    return 'medium';
   }
-  return: 'low';
+  return 'low';
 }

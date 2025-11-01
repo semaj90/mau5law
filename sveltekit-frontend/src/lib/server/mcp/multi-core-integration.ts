@@ -215,11 +215,11 @@ export class MCPMultiCoreClient {
       return null;
     }
     switch (this.loadBalancingStrategy) {
-      case: 'least-loaded':
+      case 'least-loaded':
         return availableCores.reduce((best, current) =>
           current.currentLoad / current.maxLoad < best.currentLoad / best.maxLoad ? current : best
         );
-      case: 'capability-based':
+      case 'capability-based':
         // Prefer cores with specific capabilities for the task type
         const capableCores = availableCores.filter(
           (core) => core.capabilities.includes(task.type) || core.capabilities.includes('all')
@@ -229,7 +229,7 @@ export class MCPMultiCoreClient {
               current.averageResponseTime < best.averageResponseTime ? current : best
             )
           : availableCores[0];
-      case: 'round-robin':
+      case 'round-robin':
       default:
         // Simple round-robin selection
         const sortedCores = availableCores.sort((a, b) => a.lastHeartbeat - b.lastHeartbeat);

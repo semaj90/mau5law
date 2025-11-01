@@ -110,68 +110,67 @@
   }
   function getPageContent(page: string) {
     switch (page) {
-      case: 'home':
+      case 'home':
         return {
           title: '🏠 Home Dashboard',
           description: 'Welcome to your legal workspace', // Fixed syntax
         }
-      case: 'dashboard':
+      case 'dashboard':
         return {
           title: '📊 Analytics Dashboard',
           description: 'Overview of your legal practice metrics', // Fixed syntax
         }
-      case: 'documents':
+      case 'documents':
         return {
           title: '📄 Document Library',
           description: 'Manage all your legal documents', // Fixed syntax
         }
-      case: 'contracts':
+      case 'contracts':
         return {
           title: '📋 Contracts',
           description: 'Contract management and analysis', // Fixed syntax
         }
-      case: 'evidence':
+      case 'evidence':
         return {
           title: '🔍 Evidence Management',
           description: 'Digital evidence and discovery tools', // Fixed syntax
         }
-      case: 'briefs':
+      case 'briefs':
         return {
           title: '⚖️ Legal Briefs',
           description: 'Brief writing and case preparation', // Fixed syntax
         }
-      case: 'cases':
+      case 'cases':
         return {
           title: '📚 Case Management',
           description: 'Track and manage your legal cases', // Fixed syntax
         }
-      case: 'clients':
+      case 'clients':
         return {
           title: '👥 Client Portal',
           description: 'Client information and communication', // Fixed syntax
         }
-      case: 'calendar':
+      case 'calendar':
         return {
           title: '📅 Legal Calendar',
           description: 'Court dates, deadlines, and appointments', // Fixed syntax
         }
-      case: 'reports':
+      case 'reports':
         return {
           title: '📈 Reports & Analytics',
           description: 'Generate insights from your legal data', // Fixed syntax
         }
-      case: 'ai-assistant':
+      case 'ai-assistant':
         return {
           title: '🤖 AI Legal Assistant',
           description: 'AI-powered legal research and analysis', // Fixed syntax
         }
-      case: 'settings':
+      case 'settings':
         return {
           title: '⚙️ System Settings',
           description: 'Configure your legal workspace', // Fixed syntax
         }
-      default:
-        return {
+      default: return {
           title: '📄 Page Not Found',
           description: 'The requested page could not be found', // Fixed syntax
         }

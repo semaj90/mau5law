@@ -52,22 +52,22 @@
   }
   function handleGameAction(action: string) {
     switch (action) {
-      case: 'start':
+      case 'start':
         isPlaying = true;
         score = 0;
         break;
-      case: 'pause':
+      case 'pause':
         isPlaying = false;
         break;
-      case: 'powerup':
+      case 'powerup':
         score += 100;
         if (score % 1000 === 0) level++;
         break;
-      case: 'damage':
+      case 'damage':
         lives = Math.max(0, lives - 1);
         if (lives === 0) isPlaying = false;
         break;
-      case: 'reset':
+      case 'reset':
         score = 1337;
         level = 42;
         lives = 3;
@@ -77,20 +77,20 @@
   }
   function getStatusVariant(status: string) {
     switch (status) {
-      case: 'online': return: 'success';
-      case: 'processing': return: 'warning';
-      case: 'warning': return: 'warning';
-      case: 'error': return: 'danger';
-      default: return: 'default';
+      case 'online': return 'success';
+      case 'processing': return 'warning';
+      case 'warning': return 'warning';
+      case 'error': return 'danger';
+      default: return 'default';
     }
   }
   function getStatusText(status: string) {
     switch (status) {
-      case: 'online': return: 'ONLINE';
-      case: 'processing': return: 'PROC...';
-      case: 'warning': return: 'WARN!';
-      case: 'error': return: 'ERROR';
-      default: return: 'IDLE';
+      case 'online': return 'ONLINE';
+      case 'processing': return 'PROC...';
+      case 'warning': return 'WARN!';
+      case 'error': return 'ERROR';
+      default: return 'IDLE';
     }
   }
 </script>

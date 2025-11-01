@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
   await ensureInitialized();
   const endpoint = url.searchParams.get('endpoint');
   switch (endpoint) {
-    case: 'health':
+    case 'health':
       try {
         const health = await goTensorService.healthCheck();
         return json({
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-    case: 'metrics':
+    case 'metrics':
       try {
         const metrics = await goTensorService.getMetrics();
         return json({
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-    case: 'test': {
+    case 'test': {
       // Added opening brace
       // Generate test tensor data
       const testData = mockTensorData(768);
@@ -218,8 +218,7 @@ export const GET: RequestHandler = async ({ url }) => {
         },
       });
     } // Added closing brace
-    default:
-      return json(
+    default: return json(
         {
           success: false,
           error: 'Unknown endpoint. Available: health, metrics, test',

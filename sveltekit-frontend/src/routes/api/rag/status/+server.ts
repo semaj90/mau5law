@@ -10,7 +10,7 @@ function formatError(err: unknown): string {
   try {
     return String(err);
   } catch (_e) {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 

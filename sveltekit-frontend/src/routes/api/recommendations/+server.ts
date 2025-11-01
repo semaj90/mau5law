@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'suggest';
     const body = await request.json();
     switch (action) {
-      case: 'suggest': {
+      case 'suggest': {
         const { query, userContext, neo4jContext, limit = 5 } = body;
         // Run enhanced search with Neo4j context
         const reranked = await enhancedSearchWithNeo4j(query, userContext, neo4jContext, limit * 2);
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           .slice(0, limit);
         return json({ recommendations });
       }
-      case: 'resume': {
+      case 'resume': {
         const { userId } = body;
         if (!userId) {
           return json(
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           },
         });
       }
-      case: 'trending': {
+      case 'trending': {
         // Mock trending searches - would query actual data in production
         return json({
           trending: [
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'feedback': {
+      case 'feedback': {
         const { userId, recommendationId, rating, feedback } = body;
         if (!userId || !recommendationId || rating === undefined) {
           return json(
@@ -133,8 +133,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown action: ${action}`,

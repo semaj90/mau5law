@@ -311,7 +311,7 @@
    * 6. UTILITY FUNCTIONS
    */
   async function generateTextHash(text: string): Promise<string> {
-    if (!browser) return: '';
+    if (!browser) return '';
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);

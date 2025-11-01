@@ -496,16 +496,15 @@ export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateComp
   context: $chatStore;
   matches: (state: string) => {
     switch (state) {
-      case: "loading":
+      case "loading":
         return $chatStore.isLoading;
-      case: "streaming":
+      case "streaming":
         return $chatStore.isStreaming;
-      case: "error":
+      case "error":
         return !!$chatStore.error;
-      case: "idle":
+      case "idle":
         return !$chatStore.isLoading && !$chatStore.error;
-      default:
-        return false;
+      default: return false;
     }
   }
 }));

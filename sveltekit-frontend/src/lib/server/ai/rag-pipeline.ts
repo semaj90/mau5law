@@ -690,19 +690,19 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       else if (currentSection) {
         const trimmed = l.replace(/^[-•*]\s*/, '').trim();
         switch (currentSection) {
-          case: 'type':
+          case 'type':
             if (!sections.contractType) sections.contractType = trimmed;
             break;
-          case: 'terms':
+          case 'terms':
             sections.keyTerms.push(trimmed);
             break;
-          case: 'risks':
+          case 'risks':
             sections.risks.push(trimmed);
             break;
-          case: 'issues':
+          case 'issues':
             sections.legalIssues.push(trimmed);
             break;
-          case: 'recommendations':
+          case 'recommendations':
             sections.recommendations.push(trimmed);
             break;
         }

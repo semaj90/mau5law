@@ -1,10 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/environment';
-  interface Props {
-    status?: number;
-    error?: { message?: string };
-  }
-  let { status = 500, error }: Props = $props();
+  export let status: number = 500;
+  export let error: { message?: string } | undefined;
 </script>
 
 <svelte:head>

@@ -213,10 +213,10 @@ export const isBrowser = (): boolean => CLIENT_ENV.browser;
  * Get current environment string
  */
 export const getEnvironment = (): string => {
-  if (CLIENT_ENV.dev) return: 'development';
-  if (CLIENT_ENV.preview) return: 'preview';
-  if (CLIENT_ENV.prod) return: 'production';
-  return: 'unknown';
+  if (CLIENT_ENV.dev) return 'development';
+  if (CLIENT_ENV.preview) return 'preview';
+  if (CLIENT_ENV.prod) return 'production';
+  return 'unknown';
 };
 
 /**

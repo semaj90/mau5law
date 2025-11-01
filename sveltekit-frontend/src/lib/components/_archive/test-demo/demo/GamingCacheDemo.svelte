@@ -367,16 +367,16 @@ and performance monitoring across N64 and YoRHa gaming components
     console.log(`[Gaming Cache Demo] Running scenario: ${scenario.name}`);
     try {
       switch (scenario.component) {
-        case: 'n64':
+        case 'n64':
           await runN64Scenario(scenario);
           break;
-        case: 'yorha':
+        case 'yorha':
           await runYoRHaScenario(scenario);
           break;
-        case: 'wasm':
+        case 'wasm':
           await runWasmScenario(scenario);
           break;
-        case: 'performance':
+        case 'performance':
           await runPerformanceScenario(scenario);
           break;
       }
@@ -470,7 +470,7 @@ and performance monitoring across N64 and YoRHa gaming components
       for (const dataset of scenario.datasets) {
         const startTime = performance.now();
         switch (operation) {
-          case: 'texture-compression':
+          case 'texture-compression':
             const texture = textureTestData[Math.floor(Math.random() * textureTestData.length)];
             await wasmCacheOps.compressTexture(texture.data, {
               format: 'dxt5',
@@ -478,7 +478,7 @@ and performance monitoring across N64 and YoRHa gaming components
               enableSIMD: enableWasmAcceleratio;
             });
             break;
-          case: 'shader-optimization':
+          case 'shader-optimization':
             const shader = shaderTestData[Math.floor(Math.random() * shaderTestData.length)];
             await wasmCacheOps.optimizeShader(
               shader.source,
@@ -486,7 +486,7 @@ and performance monitoring across N64 and YoRHa gaming components
               dataset === 'small' ? 'fast' : dataset === 'medium' ? 'balanced' : 'quality'
             );
             break;
-          case: 'memory-defragmentation':
+          case 'memory-defragmentation':
             const blockCount = dataset === 'small' ? 10 : dataset === 'medium' ? 50 : 200;
             const memoryBlocks = Array.from({ length: blockCount }, (_, i) => ({
               address: i * 1024,

@@ -63,14 +63,13 @@ function normalizeSourceType(t: unknown): RAGSourceType {
     .toLowerCase()
     .trim();
   switch (s) {
-    case: 'case':
-      return: 'case';
-    case: 'evidence':
-      return: 'evidence';
-    case: 'precedent':
-      return: 'precedent';
-    default:
-      return: 'document';
+    case 'case':
+      return 'case';
+    case 'evidence':
+      return 'evidence';
+    case 'precedent':
+      return 'precedent';
+    default: return 'document';
   }
 }
 

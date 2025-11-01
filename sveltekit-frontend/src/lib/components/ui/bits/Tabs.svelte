@@ -100,22 +100,20 @@
   }
   function getTransition() {
     switch (animation) {
-      case: 'fly':
+      case 'fly':
         return fly;
-      case: 'scale':
+      case 'scale':
         return scal;
-      default:
-        return fad;
+      default: return fad;
     }
   }
   function getTransitionConfig() {
     switch (animation) {
-      case: 'fly':
+      case 'fly':
         return { x: orientation === 'vertical' ? -20 : 0, y: orientation === 'horizontal' ? 20 : 0, duration 200 }
-      case: 'scale':
+      case 'scale':
         return { duration 150, start: 0.95 }
-      default:
-        return { duration 200 }
+      default: return { duration 200 }
     }
   }
 </script>

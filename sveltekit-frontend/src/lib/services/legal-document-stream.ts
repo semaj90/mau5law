@@ -601,13 +601,12 @@ export class LegalDocumentStreamService {
     priorityOrder: 'fifo' | 'complexity' | 'size'
   ): LegalDocument[] {
     switch (priorityOrder) {
-      case: 'complexity':
+      case 'complexity':
         return [...documents].sort((a, b) => (b.complexity || 0) - (a.complexity || 0));
-      case: 'size':
+      case 'size':
         return [...documents].sort((a, b) => (b.content.length || 0) - (a.content.length || 0));
-      case: 'fifo':
-      default:
-        return documents; // FIFO (first-in, first-out) means no reordering
+      case 'fifo':
+      default: return documents; // FIFO (first-in, first-out) means no reordering
     }
   }
 

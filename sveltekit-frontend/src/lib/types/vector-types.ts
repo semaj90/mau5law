@@ -154,7 +154,7 @@ export interface RAGChunkingOptions {
   maxChunkSize?: number;
 }
 export interface LegalDocumentMetadata {
-  case: {
+  case {
     id: string;
     jurisdiction: string;
     parties: Array<{

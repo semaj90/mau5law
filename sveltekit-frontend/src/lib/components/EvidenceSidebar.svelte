@@ -126,16 +126,16 @@
   let filteredItems = $derived(() => {
     let items: Array<any> = [];
     switch (selectedCategory) {
-      case: 'cases':
+      case 'cases':
         items = userCases;
         break;
-      case: 'evidence':
+      case 'evidence':
         items = userEvidence;
         break;
-      case: 'reports':
+      case 'reports':
         items = userReports;
         break;
-      case: 'citations':
+      case 'citations':
         items = userCitations;
         break;
       default:
@@ -159,19 +159,19 @@
     items.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case: 'name':
+        case 'name':
           comparison = (a.title || '').localeCompare(b.title || '');
           break;
-        case: 'date':
+        case 'date':
           comparison = new Date(a.updatedAt || a.createdAt).getTime() -
                       new Date(b.updatedAt || b.createdAt).getTime();
           break;
-        case: 'priority': {
+        case 'priority': {
           const priorityOrder: Record<string, number> = { low: 1, medium: 2, high: 3, critical: 4 };
           comparison = (priorityOrder[a.priority as string] || 0) - (priorityOrder[b.priority as string] || 0);
           break;
         }
-        case: 'status':
+        case 'status':
           comparison = (a.status || '').toString().localeCompare((b.status || '').toString()) || 0;
           break;
       }
@@ -192,7 +192,7 @@
       }
       return `${hours}h ago`;
     } else if (days === 1) {
-      return: 'Yesterday';
+      return 'Yesterday';
     } else if (days < 7) {
       return `${days}d ago`;
     } else {
@@ -200,13 +200,13 @@
     }
   }
   function truncateText(text: string, maxLength: number = 50): string {
-    if (!text) return: '';
+    if (!text) return '';
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   }
   // return emoji string for UI icons (keeps UI expressive without depending on external icon exports)
   function getItemIcon(type: string) {
     const map: Record<string, string> = {
-      case: ICON('Folder'),
+      case ICON('Folder'),
       evidence: ICON('FileText'),
       report: ICON('MessageSquare'),
       citation: ICON('Archive'),
@@ -295,7 +295,7 @@
   }
   function navigateToItem(item: any) {
     const routes: Record<string, string> = {
-      case: `/cases/${item.id}`,
+      case `/cases/${item.id}`,
       evidence: `/evidence/${item.id}`,
       report: `/reports/${item.id}`,
       citation: `/citations/${item.id}`
@@ -307,7 +307,7 @@
   }
   function createNewItem(type: string) {
     const routes: Record<string, string> = {
-      case: '/cases/new',
+      case '/cases/new',
       evidence: '/evidence/new',
       report: '/reports/new',
       citation: '/citations/new',

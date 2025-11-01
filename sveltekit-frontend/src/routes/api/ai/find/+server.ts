@@ -64,7 +64,7 @@ const redis = {
     // No-op for testing
   },
   async ping(): Promise<string> {
-    return: 'PONG'
+    return 'PONG'
   }
 }
 }
@@ -165,7 +165,7 @@ async function performDatabaseSearch(
 ): Promise<any[]> {
   const q = (query || '').toLowerCase()
   const mockCases = [
-    { id: 'case-1', title: `Legal Case: ${query} Investigation`, description: `Ongoing investigation into ${query}`, type: 'case', updatedAt: new Date().toISOString(), priority: 'high' },
+    { id: 'case-1', title: `Legal case ${query} Investigation`, description: `Ongoing investigation into ${query}`, type: 'case', updatedAt: new Date().toISOString(), priority: 'high' },
     { id: 'case-2', title: `Contract Dispute: ${query}`, description: `Commercial contract dispute involving ${query}`, type: 'case', updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), priority: 'medium' }
   ]
   const mockEvidence = [

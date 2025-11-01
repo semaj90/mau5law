@@ -593,12 +593,12 @@ class EnhancedNotesManager {
     let filename: string;
     let mimeType: string;
     switch (format) {
-      case: "legal_brief":
+      case "legal_brief":
         content = this.formatAsLegalBrief(notes);
         filename = `legal-brief-${new Date().toISOString().split("T")[0]}.md`;
         mimeType = "text/markdown";
         break;
-      case: "markdown":
+      case "markdown":
         content = this.formatAsMarkdown(notes);
         filename = `notes-export-${new Date().toISOString().split("T")[0]}.md`;
         mimeType = "text/markdown";

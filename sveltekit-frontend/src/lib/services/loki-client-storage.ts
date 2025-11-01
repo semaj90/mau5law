@@ -254,13 +254,13 @@ export class LokiClientStorage {
       const collection = this.getCollection<LokiDocument>(update.collection); // Use LokiDocument
       if (!collection) continue;
       switch (update.operation) {
-        case: 'insert': {
+        case 'insert': {
           // Wrap in block
           const docToInsert = update.document as LokiDocument; // Cast to LokiDocument
           collection.insert({ ...docToInsert, _synced: true });
           break;
         }
-        case: 'update': {
+        case 'update': {
           // Wrap in block
           const docToUpdate = update.document as LokiDocument; // Cast to LokiDocument
           const existing = collection.findOne({ id: docToUpdate.id });
@@ -270,7 +270,7 @@ export class LokiClientStorage {
           }
           break;
         }
-        case: 'delete': {
+        case 'delete': {
           // Wrap in block
           const docIdToDelete = (update.document as { id: string | number | undefined }).id; // Extract ID
           const toDelete = collection.findOne({ id: docIdToDelete });

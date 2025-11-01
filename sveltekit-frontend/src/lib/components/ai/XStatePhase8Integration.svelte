@@ -148,10 +148,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
   function getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
-    if (hour < 12) return: 'morning';
-    if (hour < 17) return: 'afternoon';
-    if (hour < 21) return: 'evening';
-    return: 'night';
+    if (hour < 12) return 'morning';
+    if (hour < 17) return 'afternoon';
+    if (hour < 21) return 'evening';
+    return 'night';
   }
 
   // Event handlers with AI awareness

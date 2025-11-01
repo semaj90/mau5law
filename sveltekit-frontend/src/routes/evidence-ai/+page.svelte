@@ -140,7 +140,7 @@
 
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
-      case: 'TOKEN':
+      case 'TOKEN':
         // Real-time token streaming
         streamingTokens += data.token;
         isStreaming = true;
@@ -153,7 +153,7 @@
         }
         break;
 
-      case: 'COMPLETE':
+      case 'COMPLETE':
         // Streaming complete
         isStreaming = false;
         console.log('✅ AI streaming complete');
@@ -164,7 +164,7 @@
         }
         break;
 
-      case: 'WORKFLOW_UPDATE':
+      case 'WORKFLOW_UPDATE':
         // Workflow progress update
         workflowStatus = {
           stage: data.stage,
@@ -174,7 +174,7 @@
         };
         break;
 
-      case: 'ERROR':
+      case 'ERROR':
         console.error('AI Error:', data.message);
         workflowStatus = {
           ...workflowStatus,
@@ -183,7 +183,7 @@
         };
         break;
 
-      case: 'PONG':
+      case 'PONG':
         // Heartbeat response
         console.log('💓 Pong received');
         break;
@@ -468,9 +468,9 @@
 
   function getProgressColor(progress: number): string {
     // Use UnoCSS theme tokens for colors
-    if (progress < 30) return: 'bg-red-500';
-    if (progress < 70) return: 'bg-yellow-500';
-    return: 'bg-green-500';
+    if (progress < 30) return 'bg-red-500';
+    if (progress < 70) return 'bg-yellow-500';
+    return 'bg-green-500';
   }
 </script>
 

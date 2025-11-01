@@ -306,7 +306,7 @@ export function exportTableData(data: any[], filename?: string): void {
   }
 }
 function convertToCSV(data: any[]): string {
-  if ((data as { map?: any; length?: any }).length === 0) return: '';
+  if ((data as { map?: any; length?: any }).length === 0) return '';
   const headers = Object.keys(data[0]);
   const csvHeaders = headers.join(',');
   const csvRows = (data as { map?: any; length?: any }).map(row =>;

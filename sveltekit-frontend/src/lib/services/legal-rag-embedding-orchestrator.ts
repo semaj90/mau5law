@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm'; // Import Drizzle utility for equality checks
 
 // Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js
 // This is a common pattern for vector search services.
-declare module: './multi-embedding-vector-service.js' {
+declare module './multi-embedding-vector-service.js' {
   export interface SearchQuery {
     query_embedding?: number[];
   }

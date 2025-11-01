@@ -204,27 +204,25 @@
 
 	function getStatusColor(status: string) {
 		switch (status) {
-			case: 'online':
-				return: 'is-success'; // NES.css success color
-			case: 'offline':
-				return: 'is-error'; // NES.css error color
-			case: 'degraded':
-				return: 'is-warning'; // NES.css warning color
-			default:
-				return: 'is-disabled'; // NES.css disabled/default color
+			case 'online':
+				return 'is-success'; // NES.css success color
+			case 'offline':
+				return 'is-error'; // NES.css error color
+			case 'degraded':
+				return 'is-warning'; // NES.css warning color
+			default: return 'is-disabled'; // NES.css disabled/default color
 		}
 	}
 
 	function getStatusIcon(status: string) {
 		switch (status) {
-			case: 'online':
-				return: '✅';
-			case: 'offline':
-				return: '❌';
-			case: 'degraded':
-				return: '⚠️'; // Changed for degraded status
-			default:
-				return: '⏳';
+			case 'online':
+				return '✅';
+			case 'offline':
+				return '❌';
+			case 'degraded':
+				return '⚠️'; // Changed for degraded status
+			default: return '⏳';
 		}
 	}
 

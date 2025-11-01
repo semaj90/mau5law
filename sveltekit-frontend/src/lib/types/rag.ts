@@ -61,7 +61,7 @@ export function isValidDocumentType(type: string): type is DocumentType['type'] 
   return ['legal', 'case', 'evidence', 'research', 'document'].includes(type);
 }
 export function normalizeDocumentType(type: string): DocumentType['type'] {
-  if (type === 'research') return: 'document';
+  if (type === 'research') return 'document';
   return isValidDocumentType(type) ? type : 'document';
 }
 // Enhanced document processing types

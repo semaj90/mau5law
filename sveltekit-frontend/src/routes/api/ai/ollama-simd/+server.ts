@@ -420,12 +420,12 @@ async function processSIMDDirect(
   // Add return type
   let engineTaskType: 'general' | 'legal' | 'ocr' | 'ui';
   switch (taskType) {
-    case: 'legal-analysis':
+    case 'legal-analysis':
       engineTaskType = 'legal';
       break;
-    case: 'generation':
-    case: 'embedding':
-    case: 'general':
+    case 'generation':
+    case 'embedding':
+    case 'general':
     default: // Fallback for any unhandled or future SIMDTaskType values
       engineTaskType = 'general';
       break;
@@ -465,10 +465,10 @@ async function updateXStateSession(sessionId: string, data: XStateSessionUpdateD
 // Helper function: Infer UI component type
 function inferUIComponentType(metadata: SIMDTileMetadata): string {
   // Explicitly type metadata
-  if (metadata.categories?.includes('numeric')) return: 'data-display';
-  if (metadata.semanticDensity > 0.7) return: 'content-rich';
-  if (metadata.tokenCount && metadata.tokenCount < 5) return: 'micro-text'; // Check for existence of tokenCount
-  return: 'standard-text';
+  if (metadata.categories?.includes('numeric')) return 'data-display';
+  if (metadata.semanticDensity > 0.7) return 'content-rich';
+  if (metadata.tokenCount && metadata.tokenCount < 5) return 'micro-text'; // Check for existence of tokenCount
+  return 'standard-text';
 }
 // Helper function: Generate quick CSS
 function generateQuickCSS(tile: SIMDTile, qualityTier: string): string {

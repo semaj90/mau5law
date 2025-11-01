@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatAnalysisResponse(analysis: any, metadata: any): string {
-    if (!analysis) return: 'Analysis completed.';
+    if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
 
     if (analysis.thinking && thinkingStyleEnabled) {
@@ -473,7 +473,7 @@ https://svelte.dev/e/js_parse_error -->
           <span>{$currentConversation?.messages?.length || 0} messages</span>
         {/if}
         {#if caseId}
-          <span>• Case: {caseId}</span>
+          <span>• case {caseId}</span>
         {/if}
         {#if analysisMode}
           <span>• Analysis Mode</span>

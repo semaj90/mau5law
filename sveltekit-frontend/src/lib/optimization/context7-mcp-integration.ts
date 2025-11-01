@@ -216,7 +216,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
     switch (area) {
-      case: 'performance':
+      case 'performance':
         if (context.memory_usage > 6000) {
           recommendations.push({
             category: 'performance',
@@ -233,7 +233,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           });
         }
         break;
-      case: 'memory':
+      case 'memory':
         recommendations.push({
           category: 'memory',
           title: 'Memory Optimization Strategies',
@@ -248,7 +248,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           code_example: `// Comprehensive memory optimization\nconst suite = await optimizeForLegalAIProduction();\nawait suite.cache.analyzeAccessPatterns();\nawait suite.docker.optimizeMemoryUsage();`,
         });
         break;
-      case: 'docker':
+      case 'docker':
         recommendations.push({
           category: 'docker',
           title: 'Docker Resource Optimization',
@@ -263,8 +263,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           code_example: `// Generate optimized Docker Compose\nconst optimizer = optimizeFor70GBDev();\nconst dockerCompose = optimizer.generateOptimizedDockerCompose();`,
         });
         break;
-      default:
-        break;
+      default: break;
     }
     return recommendations;
   }

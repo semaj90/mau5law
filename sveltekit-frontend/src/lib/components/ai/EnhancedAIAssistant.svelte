@@ -187,10 +187,10 @@ https://svelte.dev/e/effect_invalid_placement -->
   // Get backend status color
   function getBackendStatusColor(backend: Backend): string {
     const latency = backendLatency[backend];
-    if (latency === 0) return: 'text-gray-500';
-    if (latency < 1000) return: 'text-green-500';
-    if (latency < 3000) return: 'text-yellow-500';
-    return: 'text-red-500';
+    if (latency === 0) return 'text-gray-500';
+    if (latency < 1000) return 'text-green-500';
+    if (latency < 3000) return 'text-yellow-500';
+    return 'text-red-500';
   }
   // Format timestamp
   function formatTime(timestamp: number): string {
@@ -216,7 +216,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       <Bot size={20} />
       <span>Legal AI Assistant</span>
       {#if caseId}
-        <span class="case-id">Case: {caseId}</span>
+        <span class="case-id">case {caseId}</span>
       {/if}
       <div class="backend-status">
         <span class="current-backend {getBackendStatusColor(currentBackend)}">

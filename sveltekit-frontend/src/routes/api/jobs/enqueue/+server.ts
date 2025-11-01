@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     switch (jobType) {
-      case: 'embedding': {
+      case 'embedding': {
         const { text, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
         if (!text) {
           return json(
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedDuration: Math.ceil(text.length * 0.1) + 1000, // rough estimate
         });
       }
-      case: 'batch-embedding': {
+      case 'batch-embedding': {
         const { texts, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
         if (!Array.isArray(texts) || texts.length === 0) {
           return json(
@@ -86,8 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
             Math.ceil((texts.reduce((sum: number, text: string) => sum + text.length, 0) * 0.1) / 10) + 2000,
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown job type: ${jobType}`,

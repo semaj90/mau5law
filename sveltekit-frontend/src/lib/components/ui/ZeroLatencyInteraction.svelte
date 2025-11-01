@@ -74,14 +74,14 @@ https://svelte.dev/e/js_parse_error -->
     trackedElements.add(element);
 
     switch (interactionType) {
-      case: 'hover':
+      case 'hover':
         element.addEventListener('mouseenter', (e) => handleZeroLatencyInteraction(e as Event, elementId, element));
         element.addEventListener('mouseleave', () => hideTooltip());
         break;
-      case: 'click':
+      case 'click':
         element.addEventListener('click', (e) => handleZeroLatencyInteraction(e as Event, elementId, element));
         break;
-      case: 'focus':
+      case 'focus':
         element.addEventListener('focus', (e) => handleZeroLatencyInteraction(e as Event, elementId, element));
         element.addEventListener('blur', () => hideTooltip());
         // ensure focusable

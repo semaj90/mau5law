@@ -104,7 +104,7 @@
       <p>Inline <code>code element</code> and <kbd>keyboard input</kbd> and <samp>sample output</samp>.</p>
       <pre><code>{`// Preformatted code block
 function example() {
-  return: "Hello World";
+  return "Hello World";
 }`}</code></pre>
     </section>
     <section>

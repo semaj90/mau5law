@@ -4,7 +4,7 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import: '../yorha/ps1.css';
+  import '../yorha/ps1.css';
 
   let container: HTMLElement | null;
   let gyroscope = { x: 0, y: 0, z: 0 };

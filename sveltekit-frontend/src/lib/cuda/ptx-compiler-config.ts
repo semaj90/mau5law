@@ -458,7 +458,7 @@ LIBRARIES="${libs}"
 
 # Architecture-specific optimizations
 ARCH_FLAGS=""
-case: "${this.config.ptxOptions.architecture}" in
+case "${this.config.ptxOptions.architecture}" in
     sm_86)
         ARCH_FLAGS="--gpu-architecture=sm_86 --gpu-code=compute_86,sm_86"
         echo: "Compiling for Ampere (RTX 30 series) with Tensor Core support"

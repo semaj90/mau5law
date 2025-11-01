@@ -14,22 +14,21 @@ const POST_OPERATIONS = [
 export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.searchParams.get('endpoint') ?? 'health';
   switch (endpoint) {
-    case: 'health':
+    case 'health':
       return json({ success: true, data: { status: 'unknown' }, timestamp: new Date().toISOString() });
-    case: 'metrics':
+    case 'metrics':
       return json({
         success: true,
         data: { metrics: [], count: 0, latestMetric: null },
         timestamp: new Date().toISOString(),
       });
-    case: 'tasks':
+    case 'tasks':
       return json({
         success: true,
         data: { activeTasks: [], taskQueue: [], activeCount: 0, queueCount: 0 },
         timestamp: new Date().toISOString(),
       });
-    default:
-      return json(
+    default: return json(
         { success: false, error: `Unknown endpoint: ${endpoint}`, availableEndpoints: GET_ENDPOINTS },
         { status: 400 }
       );

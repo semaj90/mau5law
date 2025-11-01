@@ -42,10 +42,10 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     progressValue.set(progress);
     switch (status) {
-      case: 'idle':
+      case 'idle':
         opacity.set(0);
         break;
-      case: 'model-loading':
+      case 'model-loading':
         opacity.set(1);
         loadingText = 'Loading GPU model into VRAM...';
         estimatedTime = '60-90 seconds';
@@ -54,11 +54,11 @@ https://svelte.dev/e/js_parse_error -->
           simulateModelLoading();
         }
         break;
-      case: 'inference':
+      case 'inference':
         loadingText = 'Processing with AI model...';
         estimatedTime = '10-30 seconds';
         break;
-      case: 'complete':
+      case 'complete':
         loadingText = 'Inference complete!';
         estimatedTime = '';
         progress = 100;
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
           }
         }, 2000);
         break;
-      case: 'error':
+      case 'error':
         loadingText = 'GPU inference failed';
         estimatedTime = 'Please try again';
         opacity.set(1);

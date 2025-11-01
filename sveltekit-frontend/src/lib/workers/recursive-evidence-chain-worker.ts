@@ -85,7 +85,7 @@ export class RecursiveEvidenceChainProcessor {
   ): Promise<EvidenceChainNode> {
     const startTime = performance.now();
 
-    // Base case: avoid infinite recursion or excessive depth
+    // Base case avoid infinite recursion or excessive depth
     if (currentDepth >= this.maxDepth || this.visitedEvidence.has(rootEvidenceId)) {
       return {
         evidenceId: rootEvidenceId,
@@ -347,18 +347,17 @@ export class RecursiveEvidenceChainProcessor {
   private generateRelationshipDescription(type: string, strength: number): string {
     const strengthText = strength > 0.8 ? 'strong' : strength > 0.6 ? 'moderate' : 'weak';
     switch (type) {
-      case: 'chain_link':
+      case 'chain_link':
         return `${strengthText} chain of custody connection`;
-      case: 'temporal':
+      case 'temporal':
         return `${strengthText} temporal correlation`;
-      case: 'location':
+      case 'location':
         return `${strengthText} location-based connection`;
-      case: 'causal':
+      case 'causal':
         return `${strengthText} causal relationship`;
-      case: 'documentary':
+      case 'documentary':
         return `${strengthText} documentary reference`;
-      default:
-        return `${strengthText} ${type} relationship`;
+      default: return `${strengthText} ${type} relationship`;
     }
   }
 

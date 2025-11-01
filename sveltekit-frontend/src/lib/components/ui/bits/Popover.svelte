@@ -45,26 +45,24 @@
   }
   function getTransition() {
     switch (animation) {
-      case: 'fly':
+      case 'fly':
         return fly;
-      case: 'scale':
+      case 'scale':
         return scal;
-      default:
-        return fad;
+      default: return fad;
     }
   }
   function getTransitionConfig() {
     switch (animation) {
-      case: 'fly':
+      case 'fly':
         return {
           y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0,
           x: side === 'left' ? 10 : side === 'right' ? -10 : 0,
           duration 200,
         }
-      case: 'scale':
+      case 'scale':
         return { duration 150, start: 0.95 }
-      default:
-        return { duration 200 }
+      default: return { duration 200 }
     }
   }
   function handleOpenChange(newOpen: boolean) {

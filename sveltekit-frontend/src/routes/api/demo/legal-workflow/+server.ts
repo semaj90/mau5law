@@ -70,7 +70,7 @@ type UpdateCanvasPositionsPayload = {
 // New typed RAG context
 type EvidenceDoc = { content?: string; metadata?: Record<string, unknown>; relevance?: number };
 type RagContext = {
-  case: { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
+  case { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
   evidence: EvidenceDoc[];
   query: string;
 };
@@ -114,7 +114,7 @@ async function callOllama(model: string, prompt: string): Promise<string> {
     return text || '';
   } catch (err) {
     console.warn('Ollama call failed, falling back to mock response:', err);
-    return: '';
+    return '';
   }
 }
 
@@ -125,15 +125,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const { action, data } = await request.json();
     switch (action) {
-      case: 'create_case':
+      case 'create_case':
         return await createLegalCase(data);
-      case: 'upload_evidence':
+      case 'upload_evidence':
         return await uploadEvidenceToCase(data);
-      case: 'update_canvas_positions':
+      case 'update_canvas_positions':
         return await updateCanvasPositions(data);
-      case: 'generate_timeline':
+      case 'generate_timeline':
         return await generateTimeline(data);
-      case: 'chat_with_case':
+      case 'chat_with_case':
         return await chatWithCase(data);
       default:
         throw new Error('Unknown action');
@@ -204,8 +204,8 @@ async function createLegalCase(data: any) {
     success: true,
     step: 1,
     action: 'case_created',
-    case: newCase,
-    message: `Legal case: "${data.title}" created successfully!`,
+    case newCase,
+    message: `Legal case "${data.title}" created successfully!`,
     nextStep: 'Upload evidence files using the drag-drop canvas',
   });
 }
@@ -561,11 +561,11 @@ async function chatWithCase(data: ChatWithCasePayload) {
 
   // Build RAG context
   const ragContext: {
-    case: { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
+    case { caseNumber: string; title: string; description?: string; status?: string; priority?: string };
     evidence: EvidenceDoc[];
     query: string;
   } = {
-    case: {
+    case {
       caseNumber: caseRow.caseNumber || String(caseRow.id || 'UNKNOWN'),
       title: caseRow.title || '',
       description: caseRow.description || '',
@@ -578,7 +578,7 @@ async function chatWithCase(data: ChatWithCasePayload) {
 
   // Build prompt parts safely (typed callbacks)
   const promptParts: string[] = [
-    `Case: ${ragContext.case.caseNumber} - ${ragContext.case.title}`,
+    `case ${ragContext.case.caseNumber} - ${ragContext.case.title}`,
     `Description: ${ragContext.case.description || ''}`,
     `Query: ${query}`,
     'Top evidence summaries:',
@@ -629,11 +629,11 @@ async function chatWithCase(data: ChatWithCasePayload) {
   });
 }
 function detectEvidenceType(mimeType: string): string {
-  if (mimeType.startsWith('image/')) return: 'photograph';
-  if (mimeType.startsWith('video/')) return: 'video_recording';
-  if (mimeType.startsWith('audio/')) return: 'audio_recording';
-  if (mimeType.includes('pdf')) return: 'document';
-  return: 'digital_evidence';
+  if (mimeType.startsWith('image/')) return 'photograph';
+  if (mimeType.startsWith('video/')) return 'video_recording';
+  if (mimeType.startsWith('audio/')) return 'audio_recording';
+  if (mimeType.includes('pdf')) return 'document';
+  return 'digital_evidence';
 }
 function getTimelineCategory(activityType: string): string {
   const categories: Record<string, string> = {
@@ -645,7 +645,7 @@ function getTimelineCategory(activityType: string): string {
   return categories[activityType] || 'general';
 }
 function generateMockLegalResponse(context: RagContext): string {
-  const { case: caseData, evidence, query } = context;
+  const { case caseData, evidence, query } = context;
   const evidenceCount = evidence?.length || 0;
   const avgRelevance =
     evidenceCount === 0 ? 0 : (evidence.reduce((sum, doc) => sum + (doc.relevance || 0), 0) / evidenceCount) * 100;

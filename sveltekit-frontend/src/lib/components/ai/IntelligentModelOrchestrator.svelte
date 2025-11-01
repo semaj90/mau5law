@@ -54,13 +54,13 @@
       worker.onmessage = (event) => {
   const { type, data, payload } = event.data;
         switch (type) {
-          case: 'SMART_MODEL_SELECTED':
+          case 'SMART_MODEL_SELECTED':
             console.log('🧠 Smart model selected:', data || payload);
             break;
-          case: 'MODEL_PERFORMANCE':
+          case 'MODEL_PERFORMANCE':
             console.log('📊 Performance data:', data || payload);
             break;
-          case: 'CACHE_OPTIMIZED':
+          case 'CACHE_OPTIMIZED':
             console.log('🔧 Cache optimized:', data || payload);
             break;
         }
@@ -159,18 +159,18 @@
     return `${(mb / 1024).toFixed(1)}GB`;
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence > 0.8) return: 'text-green-600';
-    if (confidence > 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (confidence > 0.8) return 'text-green-600';
+    if (confidence > 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case: 'clarification': return: '❓';
-      case: 'expansion': return: '📋';
-      case: 'alternative': return: '🔄';
-      case: 'follow-up': return: '➡️';
-      case: 'correction': return: '✏️';
-      default: return: '💡';
+      case 'clarification': return '❓';
+      case 'expansion': return '📋';
+      case 'alternative': return '🔄';
+      case 'follow-up': return '➡️';
+      case 'correction': return '✏️';
+      default: return '💡';
     }
   }
 </script>

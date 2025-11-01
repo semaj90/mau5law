@@ -215,21 +215,21 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   function getTypeIcon(type: WorkItem['type']): string {
     switch (type) {
-      case: 'case': return: '⚖️';
-      case: 'document': return: '📄';
-      case: 'evidence': return: '🔍';
-      case: 'contract': return: '📋';
-      case: 'research': return: '🔬';
-      default: return: '📁';
+      case 'case': return '⚖️';
+      case 'document': return '📄';
+      case 'evidence': return '🔍';
+      case 'contract': return '📋';
+      case 'research': return '🔬';
+      default: return '📁';
     }
   }
   function getStatusColor(status: WorkItem['status']): string {
     const palette = getCurrentPalette();
     switch (status) {
-      case: 'in-progress': return palette.colors.warning;
-      case: 'review': return palette.colors.accent[1];
-      case: 'completed': return palette.colors.succes;
-      case: 'on-hold': return palette.colors.error;
+      case 'in-progress': return palette.colors.warning;
+      case 'review': return palette.colors.accent[1];
+      case 'completed': return palette.colors.succes;
+      case 'on-hold': return palette.colors.error;
       default: return palette.colors.primary;
     }
   }
@@ -258,15 +258,15 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     return `${mins}m`;
   }
   function getUrgencyLevel(deadline?: string): 'low' | 'medium' | 'high' | 'critical' {
-    if (!deadline) return: 'low';
+    if (!deadline) return 'low';
     const now = new Date();
     const deadlineDate = new Date(deadline);
     const diffDays = Math.floor((deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays < 0) return: 'critical'; // Overdue
-    if (diffDays <= 1) return: 'critical';
-    if (diffDays <= 3) return: 'high';
-    if (diffDays <= 7) return: 'medium';
-    return: 'low';
+    if (diffDays < 0) return 'critical'; // Overdue
+    if (diffDays <= 1) return 'critical';
+    if (diffDays <= 3) return 'high';
+    if (diffDays <= 7) return 'medium';
+    return 'low';
   }
   async function openWorkItem(workItem: WorkItem) {
     try {

@@ -689,7 +689,7 @@ export class WebGPULegalDocumentGraph {
   private parseNodeType(typeString?: string): GraphNode['type'] {
     const m: Record<string, GraphNode['type']> = {
       document: 'document',
-      case: 'case',
+      case 'case',
       entity: 'entity',
       precedent: 'precedent',
     };
@@ -705,7 +705,7 @@ export class WebGPULegalDocumentGraph {
     return (typeString && m[typeString]) || 'reference';
   }
   private encodeNodeType(t: GraphNode['type']): number {
-    const map: Record<GraphNode['type'], number> = { document: 0, case: 1, entity: 2, precedent: 3 };
+    const map: Record<GraphNode['type'], number> = { document: 0, case 1, entity: 2, precedent: 3 };
     return map[t] ?? 0;
   }
 

@@ -168,7 +168,7 @@ export class MatrixLODSystem {
         }
       ) => Promise<HybridGPUContext> | HybridGPUContext;
 
-      // Robust dynamic import: handle multiple possible export shapes (named, alternative name, or default)
+      // Robust dynamic import handle multiple possible export shapes (named, alternative name, or default)
       const mod: {
         default?: HybridGPUFactory;
         createHybridGPUContext?: HybridGPUFactory;

@@ -135,15 +135,15 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       ...((requestData.config as Record<string, unknown>) ?? {}),
     };
     switch (indexType) {
-      case: 'hnsw':
+      case 'hnsw':
         indexEndpoint = '/api/v1/index/hnsw';
         // mutate nested field (allowed with const object)
         indexRequest.max_elements = requestData.max_elements || requestData.vectors.length * 2;
         break;
-      case: 'ivfpq':
+      case 'ivfpq':
         indexEndpoint = '/api/v1/index/ivfpq';
         break;
-      case: 'flat':
+      case 'flat':
       default:
         indexEndpoint = '/api/v1/index/build';
         indexRequest.config = {
@@ -209,7 +209,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const operation = url.searchParams.get('operation') || 'capabilities';
     switch (operation) {
-      case: 'capabilities': {
+      case 'capabilities': {
         const capabilitiesResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/simd/capabilities`);
         const capabilitiesData = await capabilitiesResponse.json();
         return json({
@@ -234,7 +234,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'health': {
+      case 'health': {
         const healthResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`);
         const healthData = await healthResponse.json();
         return json({
@@ -252,7 +252,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'metrics': {
+      case 'metrics': {
         const metricsResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/metrics`);
         const metricsData = await metricsResponse.json();
         return json({
@@ -266,8 +266,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
       }
-      default:
-        return json({
+      default: return json({
           success: true,
           message: 'CUDA-Accelerated Vector Indexing API',
           available_operations: ['capabilities', 'health', 'metrics'],
@@ -389,7 +388,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
         let endpoint = '';
         let requestBody: Record<string, unknown> = {};
         switch (operation.operation) {
-          case: 'build':
+          case 'build':
             endpoint = operation.index_type === 'hnsw' ? '/api/v1/index/hnsw' : '/api/v1/index/ivfpq';
             requestBody = {
               vectors: operation.vectors,
@@ -397,7 +396,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
               ...(operation.config ?? {}),
             };
             break;
-          case: 'search':
+          case 'search':
             endpoint = '/api/v1/index/search';
             requestBody = {
               query: operation.query_vector,
@@ -474,21 +473,21 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 		let endpoint = ''
 		let requestBody: Record<string, unknown> = {};
 		switch (simdRequest.operation) {
-			case: 'similarity':
+			case 'similarity':
 				endpoint = '/api/v1/simd/similarity'
 				requestBody = {
 					vector_a: simdRequest.vector_a,
 					vector_b: simdRequest.vector_b
 				}
 				break
-			case: 'distance':
+			case 'distance':
 				endpoint = '/api/v1/simd/distance'
 				requestBody = {
 					vector_a: simdRequest.vector_a,
 					vector_b: simdRequest.vector_b
 				}
 				break
-			case: 'batch':
+			case 'batch':
 				endpoint = '/api/v1/simd/batch'
 				requestBody = {
 					query: simdRequest.query,
@@ -496,8 +495,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 					operation: 'similarity'
 				}
 				break
-			default:
-				return json(
+			default: return json(
           {
             success: false,
             error: 'Invalid SIMD operation. Use: similarity, distance, or batch',

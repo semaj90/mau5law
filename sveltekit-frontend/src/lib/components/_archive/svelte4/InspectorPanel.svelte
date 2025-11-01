@@ -312,11 +312,11 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function detectEvidenceType(fileType: string): string {
-    if (fileType.includes('image')) return: 'photo';
-    if (fileType.includes('video')) return: 'video';
-    if (fileType.includes('audio')) return: 'audio';
-    if (fileType.includes('pdf') || fileType.includes('document')) return: 'document';
-    return: 'digital';
+    if (fileType.includes('image')) return 'photo';
+    if (fileType.includes('video')) return 'video';
+    if (fileType.includes('audio')) return 'audio';
+    if (fileType.includes('pdf') || fileType.includes('document')) return 'document';
+    return 'digital';
   }
   // Add/remove functions for arrays
   function addCustomTag() {
@@ -559,9 +559,9 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return: 'text-green-600';
-    if (confidence >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (confidence >= 0.8) return 'text-green-600';
+    if (confidence >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
 </script>
 

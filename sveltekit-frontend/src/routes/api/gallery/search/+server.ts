@@ -323,18 +323,17 @@ async function executeSearchQuery(
 
 function getOrderColumn(sortBy: string) {
   switch (sortBy) {
-    case: 'title':
+    case 'title':
       return E.title;
-    case: 'fileSize':
+    case 'fileSize':
       return E.file_size ?? E.fileSize;
-    case: 'fileType':
+    case 'fileType':
       return E.file_type ?? E.fileType;
-    case: 'processedAt':
+    case 'processedAt':
       return E.processed_at ?? E.processedAt;
-    case: 'caseTitle':
+    case 'caseTitle':
       return C.title;
-    default:
-      return E.uploaded_at ?? E.uploadedAt;
+    default: return E.uploaded_at ?? E.uploadedAt;
   }
 }
 
@@ -602,12 +601,12 @@ async function generateSuggestions(query?: string): Promise<string[]> {
 }
 
 function determineItemType(fileType?: string): string {
-  if (!fileType) return: 'document';
-  if (fileType.startsWith('image/')) return: 'image';
-  if (fileType.startsWith('video/')) return: 'video';
-  if (fileType.startsWith('audio/')) return: 'audio';
-  if (fileType.includes('pdf')) return: 'document';
-  return: 'document';
+  if (!fileType) return 'document';
+  if (fileType.startsWith('image/')) return 'image';
+  if (fileType.startsWith('video/')) return 'video';
+  if (fileType.startsWith('audio/')) return 'audio';
+  if (fileType.includes('pdf')) return 'document';
+  return 'document';
 }
 
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
@@ -627,7 +626,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
   }
-  return: '/icons/file-thumbnail.svg';
+  return '/icons/file-thumbnail.svg';
 }
 
 // GET endpoint for simple search

@@ -425,18 +425,18 @@
   }
   function getPrecedentColor(_value: string) {
     switch (_value) { // Fixed parameter name
-      case: 'BINDING': return: 'bg-green-600';
-      case: 'PERSUASIVE': return: 'bg-blue-600';
-      case: 'DISTINGUISHED': return: 'bg-yellow-600';
-      case: 'OVERRULED': return: 'bg-red-600';
-      default: return: 'bg-gray-600';
+      case 'BINDING': return 'bg-green-600';
+      case 'PERSUASIVE': return 'bg-blue-600';
+      case 'DISTINGUISHED': return 'bg-yellow-600';
+      case 'OVERRULED': return 'bg-red-600';
+      default: return 'bg-gray-600';
     }
   }
   function getStrengthColor(score: number) {
-    if (score >= 90) return: 'text-green-600';
-    if (score >= 75) return: 'text-blue-600';
-    if (score >= 60) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (score >= 90) return 'text-green-600';
+    if (score >= 75) return 'text-blue-600';
+    if (score >= 60) return 'text-yellow-600';
+    return 'text-red-600';
   }
 </script>
 <div class="container mx-auto p-6 space-y-6">

@@ -38,7 +38,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
   const mockLegalResults: SearchResult[] = [
     {
       id: 'case-001',
-      title: `Legal Case: ${query}`,
+      title: `Legal case ${query}`,
       type: 'case',
       content: `Legal case related to: "${query}" with relevant precedents and statutes.`,
       score: 0.95,

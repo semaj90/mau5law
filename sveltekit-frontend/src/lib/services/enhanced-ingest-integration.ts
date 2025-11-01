@@ -474,11 +474,11 @@ export class EnhancedIngestService {
   }
 
   private inferSectionType(pattern: RegExp): string {
-    if (pattern.source.includes('\\d+\\.')) return: 'numbered_section';
-    if (pattern.source.includes('[A-Z][A-Z\\s]+')) return: 'all_caps_header';
-    if (pattern.source.includes('WHEREAS')) return: 'whereas_clause';
-    if (pattern.source.includes('NOW, THEREFORE')) return: 'now_therefore_clause';
-    return: 'paragraph';
+    if (pattern.source.includes('\\d+\\.')) return 'numbered_section';
+    if (pattern.source.includes('[A-Z][A-Z\\s]+')) return 'all_caps_header';
+    if (pattern.source.includes('WHEREAS')) return 'whereas_clause';
+    if (pattern.source.includes('NOW, THEREFORE')) return 'now_therefore_clause';
+    return 'paragraph';
   }
 
   private splitLegalSection(section: LegalSection, maxSize: number, overlap: number): string[] {

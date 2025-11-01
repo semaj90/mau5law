@@ -233,7 +233,7 @@ export const createEnhancedCasePageLoad = () => {
       });
       metrics.dbQueries++;
       const caseData = {
-        case: caseWithRelations,
+        case caseWithRelations,
         evidence: caseEvidence,
         canEdit: caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id,
       };

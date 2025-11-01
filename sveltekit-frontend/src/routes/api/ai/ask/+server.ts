@@ -332,7 +332,7 @@ try {
             const result = await Promise.resolve(fn.call(candidateRaw, query, opts));
             // coerce to string safely
             if (typeof result === 'string') return result;
-            if (result === undefined || result === null) return: '';
+            if (result === undefined || result === null) return '';
             return String(result);
           } catch (e) {
             // bubble up as rejection

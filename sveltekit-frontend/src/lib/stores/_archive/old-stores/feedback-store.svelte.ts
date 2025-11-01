@@ -215,9 +215,9 @@ class FeedbackStore {
   // Helper methods
   private detectDeviceType(): 'mobile' | 'tablet' | 'desktop' {
     const width = window.innerWidth;
-    if (width < 768) return: 'mobile';
-    if (width < 1024) return: 'tablet';
-    return: 'desktop';
+    if (width < 768) return 'mobile';
+    if (width < 1024) return 'tablet';
+    return 'desktop';
   }
   private getFeedbackTypeForInteraction(interactionType: string): 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance' {
     const typeMap: Record<string, 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance'> = {

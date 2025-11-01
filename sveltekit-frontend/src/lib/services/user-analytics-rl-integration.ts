@@ -735,30 +735,29 @@ export class UserAnalyticsRLIntegration {
   private handleWorkerMessage(_workerId: number, data: { type: string; payload?: unknown }) {
     const { type, payload } = data;
     switch (type) {
-      case: 'analytics_updated':
+      case 'analytics_updated':
         if (payload && typeof payload === 'object') {
           this.updateAnalyticsProfile(payload as AnalyticsUpdatePayload);
         }
         break;
-      case: 'pattern_identified':
+      case 'pattern_identified':
         if (payload && typeof payload === 'object') {
           this.handlePatternIdentified(payload as PatternPayload);
         }
         break;
-      case: 'prediction_generated':
+      case 'prediction_generated':
         if (payload && typeof payload === 'object') {
           this.updatePredictions(payload as PredictionsPayload);
         }
         break;
-      default:
-        break;
+      default: break;
     }
   }
 
   private handleCacheMessage(data: { type: string; payload?: unknown }) {
     const { type, payload } = data;
     switch (type) {
-      case: 'cache_updated':
+      case 'cache_updated':
         if (payload && typeof payload === 'object' && 'id' in payload) {
           const p = payload as ProductivityCache;
           this.productivityCache.update(cache => {
@@ -772,11 +771,10 @@ export class UserAnalyticsRLIntegration {
           });
         }
         break;
-      case: 'cache_hit':
+      case 'cache_hit':
         console.log('Cache hit:', payload);
         break;
-      default:
-        break;
+      default: break;
     }
   }
   // Utility methods

@@ -396,7 +396,7 @@ class ContextAwareAIMemoryService {
 	private async generateContextualInsights(_e: Types.EvidenceTimelineEntry[] = [], _d: Types.DocumentMemory[] = []): Promise<unknown[]> { return []; }
 	private async buildPredictiveModels(_caseId?: string, _e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; }
 
-	private selectMemoryVisualization(_theme: string) { return: 'basic'; }
+	private selectMemoryVisualization(_theme: string) { return 'basic'; }
 	private calculateAchievements(_exp = 0, _items = 0) { return [] as string[]; }
 
 	// Small AI helpers (minimal)

@@ -161,7 +161,7 @@ class RedisStub implements RedisClientLike {
     }
   }
   async ping() {
-    return: 'PONG';
+    return 'PONG';
   }
   async quit() {
     this.store.clear();

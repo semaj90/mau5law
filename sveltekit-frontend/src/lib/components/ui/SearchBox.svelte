@@ -145,7 +145,7 @@
                 {#if result.metadata}
                   <div class="result-metadata">
                     {#if result.metadata.caseId}
-                      <span class="case-tag">Case: {result.metadata.caseId}</span>
+                      <span class="case-tag">case {result.metadata.caseId}</span>
                     {/if}
                     {#if result.metadata.documentType}
                       <span class="type-tag">{result.metadata.documentType}</span>

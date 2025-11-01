@@ -28,18 +28,17 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case: 'status':
+      case 'status':
         return await handleStatusRequest();
-      case: 'benchmark':
+      case 'benchmark':
         return await handleBenchmarkRequest();
-      case: 'pipeline':
+      case 'pipeline':
         return await handlePipelineRequest();
-      case: 'health':
+      case 'health':
         return await handleHealthRequest();
-      case: 'metrics':
+      case 'metrics':
         return await handleMetricsRequest();
-      default:
-        return json(
+      default: return json(
           {
             error: 'Invalid action',
             availableActions: ['status', 'benchmark', 'pipeline', 'health', 'metrics'],
@@ -63,14 +62,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'process';
   try {
     switch (action) {
-      case: 'process':
+      case 'process':
         return await handleProcessRequest(request);
-      case: 'configure':
+      case 'configure':
         return await handleConfigureRequest(request);
-      case: 'benchmark-run':
+      case 'benchmark-run':
         return await handleRunBenchmarkRequest(request);
-      default:
-        return json(
+      default: return json(
           {
             error: 'Invalid POST action',
             availableActions: ['process', 'configure', 'benchmark-run'],

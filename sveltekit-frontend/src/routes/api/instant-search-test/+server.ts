@@ -94,7 +94,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err)
   } catch {
-    return: 'Unknown error'
+    return 'Unknown error'
   }
 }
 
@@ -411,27 +411,26 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = payload?.data as Record<string, unknown> | undefined;
 
     switch (action) {
-      case: 'benchmark': {
+      case 'benchmark': {
         // Run performance benchmarks
         const benchmarkResults = await runPerformanceBenchmark(
           data as { iterations?: number; queries?: string[] } | undefined
         );
         return json({ success: true, benchmarks: benchmarkResults });
       }
-      case: 'clear-cache': {
+      case 'clear-cache': {
         // Clear all caches
         await safeClearSearchCache();
         if (typeof lokiCache.clear === 'function') await lokiCache.clear();
         return json({ success: true, message: 'All caches cleared' });
       }
-      case: 'populate-test-data': {
+      case 'populate-test-data': {
         // Add test data for demo
         const count = typeof data?.count === 'number' ? (data.count as number) : 10;
         const testData = await populateTestData(count);
         return json({ success: true, testData });
       }
-      default:
-        return json({ success: false, error: 'Unknown action' }, { status: 400 });
+      default: return json({ success: false, error: 'Unknown action' }, { status: 400 });
     }
   } catch (err: unknown) {
     const msg = getErrorMessage(err);

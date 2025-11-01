@@ -155,10 +155,10 @@ export class DocumentUpdateLoop {
     newLength: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     const lengthChange = Math.abs(newLength - oldLength) / Math.max(oldLength, 1);
-    if (similarity < 0.3 || lengthChange > 0.5) return: 'critical';
-    if (similarity < 0.6 || lengthChange > 0.3) return: 'high';
-    if (similarity < 0.8 || lengthChange > 0.1) return: 'medium';
-    return: 'low';
+    if (similarity < 0.3 || lengthChange > 0.5) return 'critical';
+    if (similarity < 0.6 || lengthChange > 0.3) return 'high';
+    if (similarity < 0.8 || lengthChange > 0.1) return 'medium';
+    return 'low';
   }
 
   private async detectAffectedChunks(documentId: string, oldContent: string, newContent: string): Promise<number[]> {

@@ -66,11 +66,11 @@ export class ONNXApiClient {
   async parallelProcess(requests: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     const promises = requests.map(async req => {
       switch (req.type) {
-        case: 'extract-entities':
+        case 'extract-entities':
           return this.extractEntities(req.payload.text, options);
-        case: 'classify-document':
+        case 'classify-document':
           return this.classifyDocument(req.payload.text, options);
-        case: 'generate-embeddings':
+        case 'generate-embeddings':
           return this.generateEmbeddings(req.payload.text, options);
         default:
           throw new Error(`Unknown request type: ${req.type}`);

@@ -192,9 +192,9 @@ https://svelte.dev/e/js_parse_error -->
     formData.extracted_entities = formData.extracted_entities.filter((_, i) => i !== index);
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.9) return: 'bg-green-100 text-green-800';
-    if (confidence >= 0.7) return: 'bg-yellow-100 text-yellow-800';
-    return: 'bg-red-100 text-red-800';
+    if (confidence >= 0.9) return 'bg-green-100 text-green-800';
+    if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-red-100 text-red-800';
   }
   function handleNext() {
     if (!formData.key_facts || formData.key_facts.length === 0) {

@@ -161,16 +161,16 @@
   }
 
   function getSimilarityColor(score: number): string {
-    if (score >= 0.9) return: 'text-green-600 bg-green-100';
-    if (score >= 0.7) return: 'text-blue-600 bg-blue-100';
-    if (score >= 0.5) return: 'text-yellow-600 bg-yellow-100';
-    return: 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return 'text-green-600 bg-green-100';
+    if (score >= 0.7) return 'text-blue-600 bg-blue-100';
+    if (score >= 0.5) return 'text-yellow-600 bg-yellow-100';
+    return 'text-gray-600 bg-gray-100';
   }
   function getSimilarityLabel(score: number): string {
-    if (score >= 0.9) return: 'Excellent Match';
-    if (score >= 0.7) return: 'Good Match';
-    if (score >= 0.5) return: 'Moderate Match';
-    return: 'Weak Match';
+    if (score >= 0.9) return 'Excellent Match';
+    if (score >= 0.7) return 'Good Match';
+    if (score >= 0.5) return 'Moderate Match';
+    return 'Weak Match';
   }
   function formatSearchTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
@@ -269,15 +269,15 @@
          <!-- Search Mode Tabs -->
          <!-- simple inline tab buttons to avoid external Tabs API mismatch -->
          <div class="grid w-full grid-cols-3 gap-2">
-            <button class={"gap-2 px-3 py-2 rounded: " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
               onclick={() => (searchMode = 'semantic')}>
               <span class="inline-block mr-1">{ICON.brain}</span> Semantic
             </button>
-            <button class={"gap-2 px-3 py-2 rounded: " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
               onclick={() => (searchMode = 'keyword')}>
               <span class="inline-block mr-1">{ICON.target}</span> Keyword
             </button>
-            <button class={"gap-2 px-3 py-2 rounded: " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
               onclick={() => (searchMode = 'hybrid')}>
               <span class="inline-block mr-1">{ICON.sparkles}</span> Hybrid
             </button>
@@ -379,7 +379,7 @@
                      <div class="flex items-center gap-2 mt-1">
                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.document_type.replace('_', ' ')}</span>
                        {#if result.case_id}
-                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {result.case_id.slice(0, 8)}</span>
+                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">case {result.case_id.slice(0, 8)}</span>
                        {/if}
                        {#if result.metadata?.file_type}
                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.metadata.file_type.toUpperCase()}</span>

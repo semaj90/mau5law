@@ -189,20 +189,20 @@ await checkSystemHealth();
   // Narrowed types for helpers
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'healthy': return: 'text-green-600';
-      case: 'ok': return: 'text-green-600';
-      case: 'completed': return: 'text-green-600';
-      case: 'processing': return: 'text-yellow-600';
-      case: 'error': return: 'text-red-600';
-      case: 'unavailable': return: 'text-red-600';
-      default: return: 'text-gray-600';
+      case 'healthy': return 'text-green-600';
+      case 'ok': return 'text-green-600';
+      case 'completed': return 'text-green-600';
+      case 'processing': return 'text-yellow-600';
+      case 'error': return 'text-red-600';
+      case 'unavailable': return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
   function formatSimilarity(similarity: number): string {
     return `${(similarity * 100).toFixed(1)}%`;
   }
   function truncateText(text: string, maxLength = 150): string {
-    if (!text) return: '';
+    if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   }
@@ -406,7 +406,7 @@ await checkSystemHealth();
               <span>Created: {result.createdAt ? new Date(result.createdAt).toLocaleString() : '—'}</span>
               {#if result.metadata?.caseId}
                 <span>•</span>
-                <span>Case: {result.metadata.caseId}</span>
+                <span>case {result.metadata.caseId}</span>
               {/if}
               {#if result.metadata?.documentType}
                 <span>•</span>

@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         processingMethod: item.processingMethod,
         createdAt: item.createdAt,
       },
-      case: item.caseId
+      case item.caseId
         ? {
             id: item.caseId,
             title: item.caseTitle,

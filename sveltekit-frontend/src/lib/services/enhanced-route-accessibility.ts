@@ -388,19 +388,19 @@ export class EnhancedRouteAccessibility {
     accessibilityService.announceToScreenReader(`Executing: ${action}`);
     // Handle common actions
     switch (keyCombo) {
-      case: 'Alt+D':
+      case 'Alt+D':
         this.showDemoNavigation();
         break;
-      case: 'Alt+T':
+      case 'Alt+T':
         this.toggleTesting();
         break;
-      case: 'Alt+V':
+      case 'Alt+V':
         this.toggleVisualOptions();
         break;
-      case: 'Alt+L':
+      case 'Alt+L':
         this.showLegalActions();
         break;
-      case: 'Ctrl+Shift+A':
+      case 'Ctrl+Shift+A':
         this.showAdminMenu();
         break;
       default:
@@ -474,7 +474,7 @@ export class EnhancedRouteAccessibility {
    * Convert route path to readable name
    */
   private getReadableRouteName(path: string): string {
-    if (path === '/') return: 'Homepage';
+    if (path === '/') return 'Homepage';
     return path;
       .replace(/^\//, '')
       .replace(/\//g, ' ')

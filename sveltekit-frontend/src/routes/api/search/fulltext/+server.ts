@@ -133,7 +133,7 @@ async function searchPostgreSQL(
     let searchResults: PostgresSearchRow[] = [];
 
     switch (searchMode) {
-      case: 'advanced':
+      case 'advanced':
         // Use PostgreSQL's full-text search with ranking - reference DB columns via sql fragments
         searchResults = await db
           .select({
@@ -167,7 +167,7 @@ async function searchPostgreSQL(
           .limit(limit);
         break;
 
-      case: 'fuzzy':
+      case 'fuzzy':
         searchResults = await db
           .select({
             id: legalDocuments.id,
@@ -352,7 +352,7 @@ async function searchLokiLogs(
 }
 // Utility functions
 function generateExcerpt(content: string, query: string, maxLength: number): string {
-  if (!content) return: '';
+  if (!content) return '';
   const queryIndex = content.toLowerCase().indexOf(query.toLowerCase());
   if (queryIndex === -1) {
     return content.substring(0, maxLength) + (content.length > maxLength ? '...' : '');

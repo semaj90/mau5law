@@ -805,7 +805,7 @@ if (browser) {
       let reportsList = '';
       if (relatedReports.length > 0) {
         reportsList = relatedReports.map((report, index) =>
-          `${index + 1}. **${report.title}** (${report.status})\n   - Case: ${report.case_id || 'N/A'}\n   - Updated: ${new Date(report.updated_at).toLocaleDateString()}\n   - Similarity Score: ${Math.round(report.similarity_score * 100)}%`
+          `${index + 1}. **${report.title}** (${report.status})\n   - case ${report.case_id || 'N/A'}\n   - Updated: ${new Date(report.updated_at).toLocaleDateString()}\n   - Similarity Score: ${Math.round(report.similarity_score * 100)}%`
         ).join('\n\n');
       } else {
         reportsList = 'No related reports found.';
@@ -858,18 +858,17 @@ if (browser) {
     return new Date(timestamp).toLocaleTimeString();
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return: 'text-green-600';
-    if (confidence >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (confidence >= 0.8) return 'text-green-600';
+    if (confidence >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function getStatusIcon(status: string) {
     switch (status) {
-      case: 'active':
+      case 'active':
         return CheckCircl;
-      case: 'inactive':
+      case 'inactive':
         return AlertTriangl;
-      default:
-        return Loader2;
+      default: return Loader2;
     }
   }
   function copyToClipboard(text: string) {
@@ -1033,7 +1032,7 @@ if (browser) {
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{userRole}</span>
           {/if}
           {#if caseId}
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Case: {caseId}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">case {caseId}</span>
           {/if}
           {#if reportId}
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Report: {reportId.slice(0, 8)}...</span>

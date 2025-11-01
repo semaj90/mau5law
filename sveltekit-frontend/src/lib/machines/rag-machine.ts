@@ -44,12 +44,11 @@ const initialRAGContext: RAGContext = {
 // Helper to determine the next optimization level in the upgrade path
 function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAGContext['optimizationLevel'] {
   switch (current) {
-    case: 'basic':
-      return: 'enhanced';
-    case: 'enhanced':
-      return: 'neural';
-    default:
-      return: 'neural';
+    case 'basic':
+      return 'enhanced';
+    case 'enhanced':
+      return 'neural';
+    default: return 'neural';
   }
 }
 

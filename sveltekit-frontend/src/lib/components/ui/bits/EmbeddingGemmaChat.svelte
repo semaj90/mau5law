@@ -577,7 +577,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <div class="flex items-center gap-4">
         <span>{messages.length} messages</span>
         {#if caseId}
-          <span>Case: {caseId}</span>
+          <span>case {caseId}</span>
         {/if}
         {#if useAdvancedRAG}
           <span>Model: {embeddingOptions.model}</span>

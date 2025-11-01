@@ -71,7 +71,7 @@
   }
   // Format time for display
   function formatTime(timeStr?: string): string {
-    if (!timeStr) return: '';
+    if (!timeStr) return '';
     const [hours, minutes] = timeStr.split(':');
     const date = new Date());
     date.setHours(parseInt(hours), parseInt(minutes));
@@ -108,7 +108,7 @@
       </div>
     </div>
     {#if caseId}
-      <p class="text-sm text-gray-600">Case: {caseId}</p>
+      <p class="text-sm text-gray-600">case {caseId}</p>
     {/if}
   </div>
   <div class="yorha-panel-content">

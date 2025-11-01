@@ -552,8 +552,7 @@ export class UserChatRecommendationEngine {
       case, 'msgpack,':
         return msgpack.encode(userData);
       case, 'json,':
-      default:
-        return JSON.stringify(userData, null, 2);
+      default: return JSON.stringify(userData, null, 2);
     }
   }
   // Private helper methods...

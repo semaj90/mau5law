@@ -227,20 +227,19 @@ export const GET: RequestHandler = async ({ url }) => {
     const searchPromises = categories.map(async category => {
       try {
         switch (category.trim()) {
-          case: 'cases':
+          case 'cases':
             return await searchCases(query, limit, threshold, vectorSearch);
-          case: 'evidence':
+          case 'evidence':
             return await searchEvidence(query, limit, threshold, vectorSearch);
-          case: 'criminals':
+          case 'criminals':
             return await searchCriminals(query, limit, threshold);
-          case: 'documents':
+          case 'documents':
             return await searchDocuments(query, limit, threshold, vectorSearch);
-          case: 'precedents':
+          case 'precedents':
             return await searchPrecedents(query, limit);
-          case: 'statutes':
+          case 'statutes':
             return await searchStatutes(query, limit);
-          default:
-            return [];
+          default: return [];
         }
       } catch (error: any) {
         console.error(`Error searching ${category}:`, error);
@@ -454,7 +453,7 @@ async function searchCases(
     return mergedResults.slice(0, limit).map((result: any) => ({
       // Removed extra: ','
       id: result.id || `case-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title: result.title || result.caseName || `Case: ${query}`,
+      title: result.title || result.caseName || `case ${query}`,
       type: 'case' as const,
       content: result.description || result.summary || result.content || '',
       score:
@@ -924,7 +923,7 @@ function extractPracticeAreas(query: string): string[] {
 }
 
 function calculateUrgencyLevel(results: SearchResult[]): 'low' | 'medium' | 'high' | 'critical' {
-  if (results.length === 0) return: 'low';
+  if (results.length === 0) return 'low';
   const avgScore = results.reduce((sum, r) => sum + r.score, 0) / results.length;
   const hasHighPriorityTerms = results.some(
     r =>
@@ -932,10 +931,10 @@ function calculateUrgencyLevel(results: SearchResult[]): 'low' | 'medium' | 'hig
       r.content.toLowerCase().includes('emergency') ||
       r.metadata.status === 'critical'
   );
-  if (hasHighPriorityTerms || avgScore > 0.9) return: 'critical';
-  if (avgScore > 0.7) return: 'high';
-  if (avgScore > 0.5) return: 'medium';
-  return: 'low';
+  if (hasHighPriorityTerms || avgScore > 0.9) return 'critical';
+  if (avgScore > 0.7) return 'high';
+  if (avgScore > 0.5) return 'medium';
+  return 'low';
 }
 
 function generateRecommendedActions(results: SearchResult[], query: string): string[] {

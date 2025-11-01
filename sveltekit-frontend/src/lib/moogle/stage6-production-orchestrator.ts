@@ -491,9 +491,9 @@ class CHRROMMemoryOrchestrator {
   }
   private getCompressionLevel(dataType: string): number {
     switch (dataType) {
-      case: 'legal_document': return 100; // High compression for documents
-      case: 'embedding': return 50; // Medium compression for embeddings
-      case: 'metadata': return 127; // Maximum compression for metadata
+      case 'legal_document': return 100; // High compression for documents
+      case 'embedding': return 50; // Medium compression for embeddings
+      case 'metadata': return 127; // Maximum compression for metadata
       default: return 75;
     }
   }
@@ -644,8 +644,7 @@ export class MoogleGraphSynthesizerOrchestrator {
       case ComponentType.WEBGPU_RAG_SERVICE: return webgpuRAGService.processQuery(query.text, query.context);
       case ComponentType.CHR_ROM_MEMORY: const textData = new TextEncoder().encode(query.text);
         return orchestrator.compressData(textData, 'legal_document');
-      default:
-        return null;
+      default: return null;
     }
   }
   private calculateOverallPerformance(componentResults: Record<ComponentType, any>): ComponentPerformance {

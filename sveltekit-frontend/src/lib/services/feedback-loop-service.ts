@@ -395,11 +395,11 @@ export class FeedbackLoopService {
     ];
     const queryLower = query.toLowerCase();
     if (advancedIndicators.some(indicator => queryLower.includes(indicator))) {
-      return: 'expert';
+      return 'expert';
     } else if (complexityIndicators.some(indicator => queryLower.includes(indicator))) {
-      return: 'intermediate';
+      return 'intermediate';
     } else {
-      return: 'beginner';
+      return 'beginner';
     }
   }
   /**

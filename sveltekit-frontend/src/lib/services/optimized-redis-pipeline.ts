@@ -810,7 +810,7 @@ if (!isMainThread && parentPort) {
     // Added type
     try {
       switch (message.type) {
-        case: 'PROCESS_CHUNK': {
+        case 'PROCESS_CHUNK': {
           const { chunk, workerIndex } = message.data as ProcessChunkData; // Added type assertion
           const results: OptimizedPipelineResult[] = [];
           // Process each item in chunk

@@ -534,8 +534,7 @@ export class APIOrchestrator {
         return config.http ?? config.primary ?? null;
       case ServiceTier.WEBSOCKET:
         return config.websocket ?? null;
-      default:
-        return config.http ?? config.primary ?? null;
+      default: return config.http ?? config.primary ?? null;
     }
   }
 
@@ -552,8 +551,7 @@ export class APIOrchestrator {
       case ServiceTier.REALTIME:
         return 5000;
       case ServiceTier.STANDARD:
-      default:
-        return 10_000;
+      default: return 10_000;
     }
   }
 

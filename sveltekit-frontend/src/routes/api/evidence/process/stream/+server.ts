@@ -290,7 +290,7 @@ const getStatusFromRecord = (obj: unknown): string | undefined => {
   if (typeof obj !== 'object' || obj === null) return undefined;
   const r = obj as Record<string, unknown>;
   if (typeof r.status === 'string') return r.status;
-  if (r.completed === true) return: 'completed';
+  if (r.completed === true) return 'completed';
   return undefined;
 };
 

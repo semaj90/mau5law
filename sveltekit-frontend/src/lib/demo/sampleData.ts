@@ -185,7 +185,7 @@ Case Status: Open Investigation`,
         title: "Financial Records Analysis",
         type: "financial_records" as const,
         content: `FINANCIAL ANALYSIS REPORT,
-Case: ${caseId}
+case ${caseId}
 Analyst: Forensic Accountant Sarah Chen, CPA
 Date: ${new Date().toLocaleDateString()}
 EXECUTIVE SUMMARY:
@@ -401,14 +401,14 @@ Legal Review: Prosecutor Williams`,
    * Generate a complete case with all related data
    */
   generateCompleteCase(): {
-    case: DemoCase;
+    case DemoCase;
     evidence: DemoEvidence[];
     persons: DemoPerson[];
   } {
     const cases = this.generateCases(1);
     const caseData = cases[0];
     return {
-      case: caseData,
+      case caseData,
       evidence: this.generateEvidence(caseData.id, 4),
       persons: this.generatePersons(caseData.id, 4)
     }

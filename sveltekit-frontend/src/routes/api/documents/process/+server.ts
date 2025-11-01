@@ -185,14 +185,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const normalizePriority = (raw: string | number): PriorityLevel => {
       if (typeof raw === 'number' && Number.isFinite(raw)) {
         // Map numeric priority to levels (tunable)
-        if (raw <= 1) return: 'low';
-        if (raw <= 5) return: 'medium';
-        if (raw <= 8) return: 'high';
-        return: 'critical';
+        if (raw <= 1) return 'low';
+        if (raw <= 5) return 'medium';
+        if (raw <= 8) return 'high';
+        return 'critical';
       }
       const s = String(raw).trim().toLowerCase();
       if (s === 'low' || s === 'medium' || s === 'high' || s === 'critical') return s;
-      return: 'medium';
+      return 'medium';
     };
 
     type OutputFormat = 'json' | 'structured' | 'summary' | 'full';
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .trim()
         .toLowerCase();
       if (s === 'structured' || s === 'summary' || s === 'full') return s;
-      return: 'json';
+      return 'json';
     };
 
     type ModelName =
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ) {
         return s as ModelName;
       }
-      return: 'gemma3-legal:latest';
+      return 'gemma3-legal:latest';
     };
 
     // normalize priority: if numeric string -> number, otherwise keep string

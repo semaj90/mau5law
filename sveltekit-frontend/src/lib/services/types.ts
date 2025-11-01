@@ -3,19 +3,19 @@ export interface AuthCredentials {
   email: string;
   password: string;
 }
-}
+
 export interface AuthResult {
   valid: boolean;
   userId: string;
   token: string;
   role: string;
 }
-}
+
 export interface TokenRefreshResult {
   token: string;
   expiresAt: number;
 }
-}
+
 export interface DocumentProcessingResult {
   text: string;
   entities: Array<any>;
@@ -23,7 +23,7 @@ export interface DocumentProcessingResult {
   processingTime: number;
   documentType: string;
 }
-}
+
 export interface OCRResult {
   text: string;
   confidence: number;

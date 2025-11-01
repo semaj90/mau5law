@@ -242,22 +242,22 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   }
   function getActionIcon(type: NextAction['type']) {
     switch (type) {
-      case: 'code': return Code;
-      case: 'test': return TestTube;
-      case: 'debug': return Bug;
-      case: 'deploy': return Rocket;
-      case: 'monitor': return Monitor;
-      case: 'research': return Search;
+      case 'code': return Code;
+      case 'test': return TestTube;
+      case 'debug': return Bug;
+      case 'deploy': return Rocket;
+      case 'monitor': return Monitor;
+      case 'research': return Search;
       default: return Setting;
     }
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case: 'critical': return: 'text-red-600 bg-red-100';
-      case: 'high': return: 'text-orange-600 bg-orange-100';
-      case: 'medium': return: 'text-yellow-600 bg-yellow-100';
-      case: 'low': return: 'text-green-600 bg-green-100';
-      default: return: 'text-gray-600 bg-gray-100';
+      case 'critical': return 'text-red-600 bg-red-100';
+      case 'high': return 'text-orange-600 bg-orange-100';
+      case 'medium': return 'text-yellow-600 bg-yellow-100';
+      case 'low': return 'text-green-600 bg-green-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   }
 </script>

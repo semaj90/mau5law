@@ -106,11 +106,11 @@ class EnhancedOllamaService extends EventEmitter {
         if (Array.isArray(maybeModels)) {
           const arr = maybeModels as unknown[];
 
-          // Case: array of strings
+          // case array of strings
           if (arr.length > 0 && arr.every(item => typeof item === 'string')) {
             models = arr as string[];
           }
-          // Case: array of objects with { name: string }
+          // case array of objects with { name: string }
           else if (
             arr.length > 0 &&
             arr.every(item => typeof item === 'object' && item !== null && 'name' in (item as Record<string, unknown>))
@@ -137,7 +137,7 @@ class EnhancedOllamaService extends EventEmitter {
                     if (typeof v === 'string' && v.trim()) return v.trim();
                   }
                 }
-                return: '';
+                return '';
               })
               .filter(Boolean);
             if (extracted.length > 0) {

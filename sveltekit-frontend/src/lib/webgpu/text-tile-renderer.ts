@@ -460,12 +460,12 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     metadata: CompressedTextTile['tileMetadata']
   ): 'text-display' | 'data-visualization' | 'interactive-element' {
     if (metadata.categories.includes('numeric') && metadata.semanticDensity > 0.7) {
-      return: 'data-visualization';
+      return 'data-visualization';
     }
     if (metadata.tokenCount < 5 && patternId > 64) {
-      return: 'interactive-element';
+      return 'interactive-element';
     }
-    return: 'text-display';
+    return 'text-display';
   }
 
   /**
@@ -503,12 +503,12 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   private generateDOMStructure(tile: CompressedTextTile, componentType: InstantUIComponent['type']): string {
     const className = `text-tile-${tile.id}`;
     switch (componentType) {
-      case: 'data-visualization':
+      case 'data-visualization':
         return `<div class="${className} data-viz" data-pattern="${tile.tileMetadata.patternId}" data-density="${tile.tileMetadata.semanticDensity}">
           <span class="value">${tile.compressedData[3]}</span>
           <span class="unit">${tile.tileMetadata.categories.join(',')}</span>
         </div>`;
-      case: 'interactive-element':
+      case 'interactive-element':
         return `<button class="${className} interactive" data-semantic-hash="${tile.semanticHash}">
           <span class="content">${tile.tileMetadata.tokenCount} tokens</span>
         </button>`;
@@ -524,7 +524,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    */
   private generateInteractionHandlers(tile: CompressedTextTile, componentType: InstantUIComponent['type']): string {
     if (componentType !== 'interactive-element') {
-      return: '';
+      return '';
     }
     return `
 // Generated interaction handlers for tile ${tile.id}

@@ -35,10 +35,41 @@ export function formatError(e: unknown): string {
 type RedisClient = RedisClientType | null;
 
 const IS_SERVER = typeof window === 'undefined';
-// prefer env helper, fall back to process envs and localhost
-const REDIS_URL =
-  process.env.REDIS_URL ||
-  `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`;
+
+// Redis connection configuration - handle both authenticated and non-authenticated Redis
+function getRedisConfig() {
+  // Check if REDIS_URL is provided
+  const redisUrl = process.env.REDIS_URL;
+  
+  if (redisUrl) {
+    // Parse URL to check if it has auth
+    try {
+      const url = new URL(redisUrl);
+      // If URL has auth but Redis server doesn't require it, remove it
+      if (url.password) {
+        console.log('⚠️ REDIS_URL contains password, but Redis may not require auth. Trying both methods...');
+      }
+      return { url: redisUrl };
+    } catch {
+      // Invalid URL, fall back to default
+    }
+  }
+  
+  // Build connection without password for local development
+  const host = process.env.REDIS_HOST || '127.0.0.1';
+  const port = process.env.REDIS_PORT || '6379';
+  const password = process.env.REDIS_PASSWORD;
+  
+  // Only include password if explicitly set and not empty
+  if (password && password !== 'redis' && password !== '') {
+    return { url: `redis://:${password}@${host}:${port}` };
+  } else {
+    // Connect without authentication for local development
+    return { url: `redis://${host}:${port}` };
+  }
+}
+
+const redisConfig = getRedisConfig();
 
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const MEMORY_CACHE_MAX_SIZE = 1000;
@@ -57,24 +88,47 @@ const memoryCache = new Map<string, MemoryEntry>();
 let rawRedisClient: RedisClient = null;
 if (IS_SERVER) {
   try {
-    // guard createClient to avoid: "possibly 'undefined'" errors
+    // guard createClient to avoid "possibly 'undefined'" errors
     if (typeof createClient === 'function') {
       // createClient is the node-redis v4 factory; use socket.reconnectStrategy for retry timing
       rawRedisClient = createClient({
-        url: REDIS_URL,
+        url: redisConfig.url,
         socket: {
           // simple reconnect strategy: linear-backoff capped at 2s
           reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000),
         },
       });
 
-      // handle runtime errors
-      rawRedisClient.on('error', (err: unknown) => console.warn('Redis error:', formatError(err)));
+      // handle runtime errors (suppress auth errors for local dev)
+      rawRedisClient.on('error', (err: unknown) => {
+        const errMsg = formatError(err);
+        // Suppress password auth errors for local development
+        if (!errMsg.includes('AUTH') && !errMsg.includes('password')) {
+          console.warn('Redis error:', errMsg);
+        }
+      });
 
       // attempt connection, but don't crash if it fails — fall back to in-memory cache
-      void rawRedisClient.connect().catch(() => {
-        console.warn('⚠️ Redis connect failed — using in-memory fallback.');
-        rawRedisClient = null;
+      void rawRedisClient.connect().catch((err) => {
+        const errMsg = formatError(err);
+        if (errMsg.includes('AUTH') || errMsg.includes('password')) {
+          console.warn('⚠️ Redis auth mismatch detected — trying without password...');
+          // Try reconnecting without auth
+          rawRedisClient = createClient({
+            url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`,
+            socket: {
+              reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000),
+            },
+          });
+          rawRedisClient.on('error', () => {}); // Suppress further errors
+          void rawRedisClient.connect().catch(() => {
+            console.warn('⚠️ Redis connect failed — using in-memory fallback.');
+            rawRedisClient = null;
+          });
+        } else {
+          console.warn('⚠️ Redis connect failed — using in-memory fallback.');
+          rawRedisClient = null;
+        }
       });
     } else {
       console.warn('⚠️ redis.createClient is not available — using in-memory fallback.');
@@ -105,7 +159,7 @@ type RedisLike = Partial<{
 /*  Cache Service                                                             */
 /* -------------------------------------------------------------------------- */
 
-class CacheService {
+export class CacheService {
   public client: RedisClient | null = rawRedisClient;
 
   private isRedisReady(): boolean {
@@ -401,4 +455,24 @@ export async function deleteLangCache(model: string, prompt: string): Promise<vo
   const key = `langcache:${model}:${shaPrompt}`;
   await cache.del(key);
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Public Client Access                                                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Get the Redis client instance (or in-memory fallback)
+ */
+export async function getRedisClient(): Promise<CacheService> {
+  return cache;
+}
+
+/**
+ * Close Redis connection gracefully
+ */
+export async function closeRedisClient(): Promise<void> {
+  if (cache.client && typeof (cache.client as RedisLike).quit === 'function') {
+    await (cache.client as RedisLike).quit?.();
+    console.log('🔌 Redis connection closed');
+  }
 }

@@ -544,16 +544,15 @@ class ComprehensiveOllamaSummarizer {
   private buildLegalPrompt(request: ComprehensiveSummaryRequest): string {
     const basePrompt = `Analyze the following ${request.type} and provide a comprehensive summary with key insights.\n\nContent:\n${request.content}\n\nPlease provide:\n1) A concise summary of the main content\n2) Key legal points and clauses\n3) Risk analysis and recommendations\n4) Important dates, parties, and obligations\nFormat your response as a structured analysis suitable for legal professionals.`;
     switch (request.type) {
-      case: 'contract':
+      case 'contract':
         return basePrompt + '\n\nFocus on: terms, conditions, obligations, termination clauses, liability, and dispute resolution.';
-      case: 'legal-brief':
+      case 'legal-brief':
         return basePrompt + '\n\nFocus on: legal arguments, precedents, evidence, and conclusions.';
-      case: 'case':
+      case 'case':
         return basePrompt + '\n\nFocus on: facts, legal issues, relevant laws, and potential outcomes.';
-      case: 'evidence':
+      case 'evidence':
         return basePrompt + '\n\nFocus on: relevance, credibility, admissibility, and impact on the case.';
-      default:
-        return basePrompt;
+      default: return basePrompt;
     }
   }
 

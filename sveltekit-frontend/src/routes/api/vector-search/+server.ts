@@ -116,10 +116,10 @@ export const POST: RequestHandler = async ({ request }) => {
         .map(vectorType => {
           let vectorColumn;
           switch (vectorType) {
-            case: 'title':
+            case 'title':
               vectorColumn = documents.title_embedding;
               break;
-            case: 'summary':
+            case 'summary':
               vectorColumn = documents.summary_embedding;
               break;
             default:

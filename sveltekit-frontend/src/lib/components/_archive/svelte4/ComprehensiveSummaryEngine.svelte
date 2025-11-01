@@ -133,16 +133,16 @@ https://svelte.dev/e/props_duplicate -->
   function handleServiceWorkerMessage(event) {
     const { type, data } = event.data;
     switch (type) {
-      case: 'chunkComplete':
+      case 'chunkComplete':
         updateStreamingProgress(data);
         break;
-      case: 'summaryComplete':
+      case 'summaryComplete':
         handleSummaryCompletion(data);
         break;
-      case: 'error':
+      case 'error':
         handleProcessingError(data);
         break;
-      case: 'metrics':
+      case 'metrics':
         updateMetrics(data);
         break;
     }
@@ -294,7 +294,7 @@ https://svelte.dev/e/props_duplicate -->
         }
       ).type
     ) {
-      case: 'status':
+      case 'status':
         currentStep = (
           data as {
             type?: any;
@@ -309,7 +309,7 @@ https://svelte.dev/e/props_duplicate -->
         ).message;
         summaryProgress.set((data as any).progress);
         break;
-      case: 'llm_chunk':
+      case 'llm_chunk':
         streamingData.update(d => [
           ...d,
           {
@@ -319,13 +319,13 @@ https://svelte.dev/e/props_duplicate -->
           },
         ]);
         break;
-      case: 'complete':
+      case 'complete':
         synthesisResult.set((data as any).result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
         isProcessing = false;
         break;
-      case: 'error':
+      case 'error':
         errorMessage = (
           data as {
             type?: any;

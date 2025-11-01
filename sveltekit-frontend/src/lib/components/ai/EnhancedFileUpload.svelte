@@ -278,15 +278,15 @@
   }
 
   function getStatusColor(progress: number): string {
-    if (progress === -1) return: 'text-red-500';
-    if (progress === 100) return: 'text-green-500';
-    return: 'text-blue-500';
+    if (progress === -1) return 'text-red-500';
+    if (progress === 100) return 'text-green-500';
+    return 'text-blue-500';
   }
 
   function getProgressColor(progress: number): string {
-    if (progress === -1) return: 'bg-red-500';
-    if (progress === 100) return: 'bg-green-500';
-    return: 'bg-blue-500';
+    if (progress === -1) return 'bg-red-500';
+    if (progress === 100) return 'bg-green-500';
+    return 'bg-blue-500';
   }
 
   // Auto-search effect

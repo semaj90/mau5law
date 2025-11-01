@@ -65,18 +65,18 @@
   `);
   let iconComponent = $derived(() => {
     switch (evidence.type) {
-      case: 'document': return FileText;
-      case: 'image': return Image; // Fixed: Imag -> Image
-      case: 'video': return Video;
-      case: 'audio': return Mic;
+      case 'document': return FileText;
+      case 'image': return Image; // Fixed: Imag -> Image
+      case 'video': return Video;
+      case 'audio': return Mic;
       default: return FileText;
     }
   });
   let confidenceColor = $derived(() => {
     const confidence = evidence.metadata?.confidence || 0;
-    if (confidence > 0.8) return: 'text-green-600';
-    if (confidence > 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (confidence > 0.8) return 'text-green-600';
+    if (confidence > 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   });
   // Position update handler
   function handlePositionUpdate(x: number, y: number) {

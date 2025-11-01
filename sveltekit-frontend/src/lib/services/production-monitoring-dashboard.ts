@@ -455,11 +455,11 @@ export class ProductionMonitoringDashboard {
       exportData.performanceAnalytics = analytics;
     }
     switch (format) {
-      case: 'json':
+      case 'json':
         return JSON.stringify(exportData, null, 2);
-      case: 'csv':
+      case 'csv':
         return this.convertToCSV(exportData);
-      case: 'pdf':
+      case 'pdf':
         return this.generatePDFReport(exportData);
       default:
         throw new Error(`Unsupported export format: ${format}`);
@@ -997,15 +997,15 @@ export class ProductionMonitoringDashboard {
     const criticalServices = services.filter(s => s.status === 'critical').length;
 
     if (criticalAlerts > 0 || offlineServices > 0) {
-      return: 'critical';
+      return 'critical';
     }
     if (errorAlerts > 2 || criticalServices > 0) {
-      return: 'degraded';
+      return 'degraded';
     }
     if (warningAlerts > 5 || errorAlerts > 0) {
-      return: 'warning';
+      return 'warning';
     }
-    return: 'healthy';
+    return 'healthy';
   }
 
   private createAlert(
@@ -1112,9 +1112,9 @@ export class ProductionMonitoringDashboard {
 
     const significanceFromAbs = (absPct: number): 'low' | 'medium' | 'high' => {
       const a = Math.abs(absPct);
-      if (a < 2) return: 'low';
-      if (a < 8) return: 'medium';
-      return: 'high';
+      if (a < 2) return 'low';
+      if (a < 8) return 'medium';
+      return 'high';
     };
 
     // Handle insufficient data

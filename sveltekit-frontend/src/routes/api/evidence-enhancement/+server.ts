@@ -653,17 +653,17 @@ function calculateTextSimilarity(text1: string, text2: string): number {
 function categorizeLegalPhrase(phrase: string): string {
   const lowerPhrase = phrase.toLowerCase();
   if (lowerPhrase.includes('evidence') || lowerPhrase.includes('proof')) {
-    return: 'evidence';
+    return 'evidence';
   } else if (lowerPhrase.includes('testimony') || lowerPhrase.includes('witness')) {
-    return: 'witness_testimony';
+    return 'witness_testimony';
   } else if (lowerPhrase.includes('guilty') || lowerPhrase.includes('conviction')) {
-    return: 'guilt_indicators';
+    return 'guilt_indicators';
   } else if (lowerPhrase.includes('precedent') || lowerPhrase.includes('case law')) {
-    return: 'legal_precedent';
+    return 'legal_precedent';
   } else if (lowerPhrase.includes('motion') || lowerPhrase.includes('procedure')) {
-    return: 'procedural';
+    return 'procedural';
   } else {
-    return: 'general_legal';
+    return 'general_legal';
   }
 }
 async function cacheEnhancementResults(evidenceText: string, results: unknown): Promise<void> {

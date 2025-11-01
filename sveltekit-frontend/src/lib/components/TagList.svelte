@@ -104,7 +104,7 @@
 
   function handleKeyDown(event: KeyboardEvent) {
     switch (event.key) {
-      case: 'Enter':
+      case 'Enter':
         event.preventDefault();
         if (activeIndex >= 0 && suggestions[activeIndex]) {
           addTag(suggestions[activeIndex]);
@@ -112,19 +112,19 @@
           addTag(inputValue);
         }
         break;
-      case: 'ArrowDown':
+      case 'ArrowDown':
         event.preventDefault();
         activeIndex = Math.min(activeIndex + 1, suggestions.length - 1);
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         event.preventDefault();
         activeIndex = Math.max(activeIndex - 1, -1);
         break;
-      case: 'Escape':
+      case 'Escape':
         showSuggestions = false;
         activeIndex = -1;
         break;
-      case: 'Backspace':
+      case 'Backspace':
         if (!inputValue && _tags.length > 0) {
           removeTag(_tags[_tags.length - 1]);
         }

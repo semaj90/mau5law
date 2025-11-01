@@ -117,16 +117,16 @@
   }
 
   function getScoreColor(score) {
-    if (score == null) return: 'text-gray-500';
-    if (score < 0.2) return: 'text-green-600 dark:text-green-400';
-    if (score < 0.4) return: 'text-yellow-600 dark:text-yellow-400';
-    return: 'text-red-600 dark:text-red-400';
+    if (score == null) return 'text-gray-500';
+    if (score < 0.2) return 'text-green-600 dark:text-green-400';
+    if (score < 0.4) return 'text-yellow-600 dark:text-yellow-400';
+    return 'text-red-600 dark:text-red-400';
   }
   function getScoreLabel(score) {
-    if (score == null) return: 'No Score';
-    if (score < 0.2) return: 'Excellent Match';
-    if (score < 0.4) return: 'Good Match';
-    return: 'Fair Match';
+    if (score == null) return 'No Score';
+    if (score < 0.2) return 'Excellent Match';
+    if (score < 0.4) return 'Good Match';
+    return 'Fair Match';
   }
   async function handleAIAction(law, action) {
     if (onResultSelect) onResultSelect(law, action);

@@ -73,7 +73,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 
@@ -287,7 +287,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
   try {
     const body = await request.json();
     switch (action) {
-      case: 'process-document': {
+      case 'process-document': {
         // Validate required fields
         if (!body.content || !body.document_type || !body.jurisdiction) {
           return json(
@@ -327,7 +327,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         );
       }
 
-      case: 'search': {
+      case 'search': {
         if (!body.query) {
           return json(
             {
@@ -364,7 +364,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         );
       }
 
-      case: 'enhanced-rag': {
+      case 'enhanced-rag': {
         if (!body.query) {
           return json(
             {
@@ -412,7 +412,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         );
       }
 
-      case: 'legal-analysis': {
+      case 'legal-analysis': {
         if (!body.content) {
           return json(
             {
@@ -509,8 +509,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         );
       }
 
-      default:
-        return json(
+      default: return json(
           {
             status: 'error',
             message: 'Invalid action parameter',

@@ -35,10 +35,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     let backendEndpoint: string;
     switch (endpoint) {
-      case: 'summarize':
+      case 'summarize':
         backendEndpoint = '/api/v1/summarize';
         break;
-      case: 'batch-summarize':
+      case 'batch-summarize':
         backendEndpoint = '/api/v1/batch-summarize';
         break;
       default:

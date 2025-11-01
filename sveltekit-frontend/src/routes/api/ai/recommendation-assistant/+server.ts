@@ -69,20 +69,19 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate AI recommendations based on type
     let aiResponse: AIRecommendationResponse
     switch (type) {
-      case: 'case-analysis':
+      case 'case-analysis':
         aiResponse = await generateCaseAnalysis(context, query)
         break
-      case: 'search-suggestion':
+      case 'search-suggestion':
         aiResponse = await generateSearchSuggestions(context, query)
         break
-      case: 'workflow-optimization':
+      case 'workflow-optimization':
         aiResponse = await generateWorkflowOptimization(context, query)
         break
-      case: 'precedent-discovery':
+      case 'precedent-discovery':
         aiResponse = await generatePrecedentDiscovery(context, query)
         break
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid recommendation type',

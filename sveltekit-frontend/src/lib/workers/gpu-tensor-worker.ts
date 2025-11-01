@@ -242,7 +242,7 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
   const msg = ev.data;
   try {
     switch (msg.type) {
-      case: 'INITIALIZE': {
+      case 'INITIALIZE': {
         // Narrow config: prefer msg.config; otherwise only accept msg.data if it looks like the init object
         let initConfig: { goServiceUrl?: string; cacheLimit?: number } | undefined;
         if (msg.config) {
@@ -260,26 +260,26 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
         self.postMessage({ type: 'INITIALIZED', id: msg.id, data: result } as WorkerResponse);
         break;
       }
-      case: 'PROCESS_TENSOR': {
+      case 'PROCESS_TENSOR': {
         if (!msg.data) throw new Error('No tensor data provided');
         const tensor = msg.data as MultiDimArray;
         const out = await worker.processGPUTensor(tensor);
         self.postMessage({ type: 'SUCCESS', id: msg.id, data: out } as WorkerResponse);
         break;
       }
-      case: 'PROCESS_BATCH': {
+      case 'PROCESS_BATCH': {
         if (!Array.isArray(msg.data)) throw new Error('PROCESS_BATCH expects an array in data');
         const tensors = msg.data as MultiDimArray[];
         const results = await worker.processBatch(tensors);
         self.postMessage({ type: 'SUCCESS', id: msg.id, data: results } as WorkerResponse);
         break;
       }
-      case: 'GET_STATS': {
+      case 'GET_STATS': {
         const stats = worker.getStats();
         self.postMessage({ type: 'STATS', id: msg.id, data: stats } as WorkerResponse);
         break;
       }
-      case: 'CLEAR_CACHE': {
+      case 'CLEAR_CACHE': {
         worker.clearCache();
         self.postMessage({ type: 'SUCCESS', id: msg.id, data: { cleared: true } } as WorkerResponse);
         break;

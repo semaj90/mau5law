@@ -206,36 +206,34 @@ https://svelte.dev/e/expected_token -->
 
   function getResultTypeIcon(resultType: string | undefined) {
     switch (resultType) {
-      case: 'cache':
+      case 'cache':
         return Clock;
-      case: 'fuzzy':
+      case 'fuzzy':
         return Search;
-      case: 'semantic':
+      case 'semantic':
         return TrendingUp;
-      case: 'hybrid':
+      case 'hybrid':
         return Zap;
-      default:
-        return FileText;
+      default: return FileText;
     }
   }
 
   function getResultTypeColor(resultType: string | undefined) {
     switch (resultType) {
-      case: 'cache':
-        return: 'text-blue-600';
-      case: 'fuzzy':
-        return: 'text-green-600';
-      case: 'semantic':
-        return: 'text-purple-600';
-      case: 'hybrid':
-        return: 'text-orange-600';
-      default:
-        return: 'text-gray-600';
+      case 'cache':
+        return 'text-blue-600';
+      case 'fuzzy':
+        return 'text-green-600';
+      case 'semantic':
+        return 'text-purple-600';
+      case 'hybrid':
+        return 'text-orange-600';
+      default: return 'text-gray-600';
     }
   }
 
   function formatScore(score: number | undefined) {
-    if (typeof score !== 'number' || Number.isNaN(score)) return: '0.0%';
+    if (typeof score !== 'number' || Number.isNaN(score)) return '0.0%';
     return (score * 100).toFixed(1) + '%';
   }
 

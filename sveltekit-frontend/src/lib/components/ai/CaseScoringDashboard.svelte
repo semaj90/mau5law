@@ -403,23 +403,22 @@
   }
 
   function getScoreColor(score: number): string {
-    if (score >= 85) return: 'text-red-600';
-    if (score >= 70) return: 'text-orange-600';
-    if (score >= 50) return: 'text-yellow-600';
-    return: 'text-green-600';
+    if (score >= 85) return 'text-red-600';
+    if (score >= 70) return 'text-orange-600';
+    if (score >= 50) return 'text-yellow-600';
+    return 'text-green-600';
   }
   function getPriorityBadgeClass(priority: string): string {
     switch (priority) {
-      case: 'critical':
-        return: 'bg-red-100 text-red-800 border-red-200';
-      case: 'high':
-        return: 'bg-orange-100 text-orange-800 border-orange-200';
-      case: 'medium':
-        return: 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case: 'low':
-        return: 'bg-green-100 text-green-800 border-green-200';
-      default:
-        return: 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'critical':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   // Derived filtered list (Svelte 5 $derived returns a callable)
@@ -440,16 +439,15 @@
     filtered = [...filtered]; // copy before sort
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case: 'score':
+        case 'score':
           return b.score - a.score;
-        case: 'priority': {
+        case 'priority': {
           const priorityOrder: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         }
-        case: 'date':
+        case 'date':
           return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
-        default:
-          return 0;
+        default: return 0;
       }
     });
     return filtered;

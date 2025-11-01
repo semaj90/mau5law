@@ -190,19 +190,19 @@
       );
       if (selectedRoom) {
         switch (selectedRoom.theme) {
-          case: 'evidence':
+          case 'evidence':
             gradient.addColorStop(0, '#2a0845');
             gradient.addColorStop(1, '#0a0a1f');
             break;
-          case: 'contracts':
+          case 'contracts':
             gradient.addColorStop(0, '#1a3a52');
             gradient.addColorStop(1, '#0a1a2f');
             break;
-          case: 'cases':
+          case 'cases':
             gradient.addColorStop(0, '#3a1a1a');
             gradient.addColorStop(1, '#1a0a0a');
             break;
-          case: 'research':
+          case 'research':
             gradient.addColorStop(0, '#1a3a1a');
             gradient.addColorStop(1, '#0a1a0a');
             break;

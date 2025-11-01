@@ -226,8 +226,8 @@ class NodeSIMDJSONService {
     // Estimate speedup based on optimization level
     let speedupFactor = 1;
     switch (this.optimizationLevel) {
-      case: 'simd': speedupFactor = 3.5; break;
-      case: 'basic': speedupFactor = 2.0; break;
+      case 'simd': speedupFactor = 3.5; break;
+      case 'basic': speedupFactor = 2.0; break;
       default: speedupFactor = 1.0; break;
     }
     return {

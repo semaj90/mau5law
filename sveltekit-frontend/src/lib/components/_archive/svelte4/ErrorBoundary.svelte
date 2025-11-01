@@ -103,39 +103,36 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function getIcon(severity: string) {
     switch (severity) {
-      case: "critical":
-      case: "error":
+      case "critical":
+      case "error":
         return AlertCircl;
-      case: "warning":
+      case "warning":
         return AlertTriangl;
-      case: "info":
-      default:
-        return Info;
+      case "info":
+      default: return Info;
     }
   }
   function getAlertClass(severity: string) {
     switch (severity) {
-      case: "critical":
-        return: "alert-error border-error/20 bg-error/10";
-      case: "error":
-        return: "alert-error border-error/20 bg-error/5";
-      case: "warning":
-        return: "alert-warning border-warning/20 bg-warning/5";
-      case: "info":
-      default:
-        return: "alert-info border-info/20 bg-info/5";
+      case "critical":
+        return "alert-error border-error/20 bg-error/10";
+      case "error":
+        return "alert-error border-error/20 bg-error/5";
+      case "warning":
+        return "alert-warning border-warning/20 bg-warning/5";
+      case "info":
+      default: return "alert-info border-info/20 bg-info/5";
     }
   }
   function getButtonClass(severity: string) {
     switch (severity) {
-      case: "critical":
-      case: "error":
-        return: "btn-error";
-      case: "warning":
-        return: "btn-warning";
-      case: "info":
-      default:
-        return: "btn-info";
+      case "critical":
+      case "error":
+        return "btn-error";
+      case "warning":
+        return "btn-warning";
+      case "info":
+      default: return "btn-info";
     }
   }
   // Report error to support (placeholder)

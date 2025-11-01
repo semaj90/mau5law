@@ -316,9 +316,9 @@ https://svelte.dev/e/js_parse_error -->
    * Helper functions
    */
   function determineFilteringType(_options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' {
-    if (options.enableTrilinearFiltering) return: 'trilinear';
-    if (options.anisotropicLevel && options.anisotropicLevel > 1) return: 'anisotropic';
-    return: 'bilinear';
+    if (options.enableTrilinearFiltering) return 'trilinear';
+    if (options.anisotropicLevel && options.anisotropicLevel > 1) return 'anisotropic';
+    return 'bilinear';
   }
   function calculateQualityScore(_options: N64RenderingOptions): number {
   let score = $state(0.3);

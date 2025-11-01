@@ -182,10 +182,10 @@
     return colors[bank as keyof typeof colors] || '#000';
   }
   function getPriorityColor(priority: number): string {
-    if (priority >= 200) return: '#ff0000'; // Red - critical
-    if (priority >= 150) return: '#ff8800'; // Orange - high
-    if (priority >= 100) return: '#ffff00'; // Yellow - medium
-    return: '#888888'; // Gray - low
+    if (priority >= 200) return '#ff0000'; // Red - critical
+    if (priority >= 150) return '#ff8800'; // Orange - high
+    if (priority >= 100) return '#ffff00'; // Yellow - medium
+    return '#888888'; // Gray - low
   }
 </script>
 <div class="nes-container with-title">

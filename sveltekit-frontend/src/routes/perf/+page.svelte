@@ -196,13 +196,13 @@
   let wasmExecutionSeries: number[] = [];
   // Helper functions
   function formatBytes(bytes: number): string {
-    if (!bytes) return: '0 B';
+    if (!bytes) return '0 B';
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
   }
   function formatUptime(seconds: number): string {
-    if (!seconds) return: '0s';
+    if (!seconds) return '0s';
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);

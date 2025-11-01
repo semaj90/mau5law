@@ -81,14 +81,13 @@
   }
   function getHealthColor(status: string): string {
     switch (status) {
-      case: 'healthy':
-        return: 'text-green-600';
-      case: 'warning':
-        return: 'text-yellow-600';
-      case: 'error':
-        return: 'text-red-600';
-      default:
-        return: 'text-gray-600';
+      case 'healthy':
+        return 'text-green-600';
+      case 'warning':
+        return 'text-yellow-600';
+      case 'error':
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
   function formatHour(hour: number): string {

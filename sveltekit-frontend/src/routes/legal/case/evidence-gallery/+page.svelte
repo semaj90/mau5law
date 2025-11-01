@@ -74,28 +74,26 @@
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case: 'VIDEO':
-        return: '🎥';
-      case: 'DOCUMENT':
-        return: '📄';
-      case: 'PHOTO':
-        return: '📷';
-      case: 'AUDIO':
-        return: '🎵';
-      default:
-        return: '📋';
+      case 'VIDEO':
+        return '🎥';
+      case 'DOCUMENT':
+        return '📄';
+      case 'PHOTO':
+        return '📷';
+      case 'AUDIO':
+        return '🎵';
+      default: return '📋';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case: 'active':
-        return: 'bg-green-500';
-      case: 'pending':
-        return: 'bg-yellow-500';
-      case: 'completed':
-        return: 'bg-blue-500';
-      default:
-        return: 'bg-gray-500';
+      case 'active':
+        return 'bg-green-500';
+      case 'pending':
+        return 'bg-yellow-500';
+      case 'completed':
+        return 'bg-blue-500';
+      default: return 'bg-gray-500';
     }
   }
   function addEvidence() {

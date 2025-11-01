@@ -89,7 +89,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
     let result: any = {};
 
     switch (operation) {
-      case: 'system_optimization':
+      case 'system_optimization':
         // Simulate system optimization
         await new Promise(resolve => setTimeout(resolve, 1000));
         result = {
@@ -104,7 +104,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case: 'context7_integration':
+      case 'context7_integration':
         // Simulate Context7 integration check
         await new Promise(resolve => setTimeout(resolve, 800));
         result = {
@@ -116,7 +116,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case: 'real_time_analysis':
+      case 'real_time_analysis':
         // Simulate real-time analysis
         await new Promise(resolve => setTimeout(resolve, 1200));
         result = {
@@ -128,7 +128,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case: 'legal_research':
+      case 'legal_research':
         // Simulate legal research operation
         await new Promise(resolve => setTimeout(resolve, 1500));
         result = {
@@ -140,7 +140,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case: 'vector_search_test':
+      case 'vector_search_test':
         // Simulate vector search test
         await new Promise(resolve => setTimeout(resolve, 600));
         result = {

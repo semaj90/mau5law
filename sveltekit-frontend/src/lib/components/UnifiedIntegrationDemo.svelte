@@ -106,7 +106,7 @@ Both parties acknowledge they have read and agree to these terms.`,
     try {
       let requestData: any = null;
       switch (selectedOperation) {
-        case: 'processDocument':
+        case 'processDocument':
           requestData = {
             operation: 'processDocument',
             data: {
@@ -119,7 +119,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-        case: 'performInference':
+        case 'performInference':
           requestData = {
             operation: 'performInference',
             data: {
@@ -131,7 +131,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-        case: 'processCanvas': {
+        case 'processCanvas': {
           const canvasData = JSON.parse(testInput);
           requestData = {
             operation: 'processCanvas',
@@ -140,12 +140,12 @@ Both parties acknowledge they have read and agree to these terms.`,
           };
           break;
         }
-        case: 'matmul': {
+        case 'matmul': {
           const matrixData = JSON.parse(testInput);
           requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
           break;
         }
-        case: 'attention': {
+        case 'attention': {
           const attentionData = JSON.parse(testInput);
           requestData = { operation: 'attention', data: attentionData, options: { priority: 'HIGH' } };
           break;
@@ -193,27 +193,25 @@ Both parties acknowledge they have read and agree to these terms.`,
 
   function getHealthColor(status: string) {
     switch (status) {
-      case: 'healthy':
-        return: 'text-green-600';
-      case: 'degraded':
-        return: 'text-yellow-600';
-      case: 'critical':
-        return: 'text-red-600';
-      default:
-        return: 'text-gray-600';
+      case 'healthy':
+        return 'text-green-600';
+      case 'degraded':
+        return 'text-yellow-600';
+      case 'critical':
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 
   function getServiceColor(status: string) {
     switch (status) {
-      case: 'online':
-        return: 'text-green-600';
-      case: 'degraded':
-        return: 'text-yellow-600';
-      case: 'offline':
-        return: 'text-red-600';
-      default:
-        return: 'text-gray-600';
+      case 'online':
+        return 'text-green-600';
+      case 'degraded':
+        return 'text-yellow-600';
+      case 'offline':
+        return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 </script>

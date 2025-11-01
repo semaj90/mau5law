@@ -222,8 +222,8 @@
   const handleKeyDown = (_event: KeyboardEvent) => {
     if (disabled) return;
     switch (event.key) {
-      case: 'Enter':
-      case: ' ':
+      case 'Enter':
+      case ' ':
         event.preventDefault();
         if (!isOpen) {
           openDropdown();
@@ -231,13 +231,13 @@
           selectOption(filteredOptions[selectedIndex]);
         }
         break;
-      case: 'Escape':
+      case 'Escape':
         if (isOpen) {
           event.preventDefault();
           closeDropdown();
         }
         break;
-      case: 'ArrowDown':
+      case 'ArrowDown':
         event.preventDefault();
         if (!isOpen) {
           openDropdown();
@@ -246,21 +246,21 @@
           playSelectSound(520, 0.05);
         }
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         event.preventDefault();
         if (isOpen) {
           selectedIndex = Math.max(selectedIndex - 1, 0);
           playSelectSound(520, 0.05);
         }
         break;
-      case: 'Home':
+      case 'Home':
         if (isOpen) {
           event.preventDefault();
           selectedIndex = 0;
           playSelectSound(600, 0.08);
         }
         break;
-      case: 'End':
+      case 'End':
         if (isOpen) {
           event.preventDefault();
           selectedIndex = filteredOptions.length - 1;

@@ -187,30 +187,30 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function handleStreamData(data: any, aiMessage: any) {
     switch (data.type) {
-      case: 'instant':
+      case 'instant':
         // Instant response from NES memory
         aiMessage.content = data.content;
         aiMessage.source = 'nes_memory';
         aiMessage.instant = true;
         break;
-      case: 'cached':
+      case 'cached':
         // Response from GPU cache
         aiMessage.content = data.content;
         aiMessage.source = 'gpu_cache';
         aiMessage.similarity = data.similarity;
         break;
-      case: 'chunk':
+      case 'chunk':
         // Streaming chunk from QLoRA
         aiMessage.chunks.push(data.content);
         aiMessage.content = aiMessage.chunks.join(' ');
         aiMessage.source = 'qlora';
         break;
-      case: 'glyph':
+      case 'glyph':
         // Neural sprite visualization
         aiMessage.neuralSprite = data.content;
         neuralSprites.update(sprites => [...sprites, data.content]);
         break;
-      case: 'complete':
+      case 'complete':
         // Streaming complete
         aiMessage.streaming = false;
         aiMessage.processed = true;

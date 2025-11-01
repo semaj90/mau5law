@@ -154,12 +154,12 @@ export class FlashAttentionGPUErrorProcessor {
     }));
   }
   private detectErrorCategory(code: string, message: string): TypeScriptError['category'] {
-    if (message.includes('export let') || message.includes('$props')) return: 'svelte5';
-    if (code.startsWith('TS2307') || message.includes('Cannot find module')) return: 'import';
-    if (code.startsWith('TS2322') || message.includes('Type')) return: 'type';
-    if (message.includes('syntax') || message.includes('Unexpected')) return: 'syntax';
-    if (message.includes('bind:') || message.includes('on:')) return: 'binding';
-    return: 'unknown';
+    if (message.includes('export let') || message.includes('$props')) return 'svelte5';
+    if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
+    if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
+    if (message.includes('syntax') || message.includes('Unexpected')) return 'syntax';
+    if (message.includes('bind:') || message.includes('on:')) return 'binding';
+    return 'unknown';
   }
   private createErrorBatch(batchId: string, errors: TypeScriptError[]): GPUErrorBatch {
     const priority =
@@ -244,7 +244,7 @@ export class FlashAttentionGPUErrorProcessor {
   private buildFixPrompt(error: TypeScriptError, context: string): string {
     const categoryPrompts = {
       svelte5: `Fix this Svelte 5 migration error. Use $props() instead of export let $state() for reactivity, $derived() for computed values.`,
-      import: `Fix this import error. Check the file path and module existence.`,
+      import `Fix this import error. Check the file path and module existence.`,
       type: `Fix this TypeScript type error. Ensure proper type annotations and compatibility.`,
       syntax: `Fix this syntax error. Check for missing semicolons, brackets, or quotes.`,
       binding: `Fix this Svelte binding error. Use proper event binding syntax.`,
@@ -288,7 +288,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
   private calculateConfidence(category: string, responseLength: number): number {
     const baseConfidence = {
       svelte5: 0.9,
-      import: 0.8,
+      import 0.8,
       type: 0.7,
       syntax: 0.9,
       binding: 0.8,
@@ -434,10 +434,10 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
     return groups;
   }
   private calculatePriority(category: string, count: number): GPUErrorBatch['priority'] {
-    if (category === 'syntax' || count > 500) return: 'critical';
-    if (category === 'svelte5' || count > 200) return: 'high';
-    if (category === 'type' || count > 50) return: 'medium';
-    return: 'low';
+    if (category === 'syntax' || count > 500) return 'critical';
+    if (category === 'svelte5' || count > 200) return 'high';
+    if (category === 'type' || count > 50) return 'medium';
+    return 'low';
   }
   private calculateOptimalBatchSize(errorCount: number): number {
     if (errorCount > 1000) return 16;
@@ -446,9 +446,9 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
     return 4;
   }
   private selectProcessingStrategy(batchSize: number): GPUErrorBatch['processing_strategy'] {
-    if (batchSize > 12) return: 'parallel';
-    if (batchSize > 6) return: 'hybrid';
-    return: 'sequential';
+    if (batchSize > 12) return 'parallel';
+    if (batchSize > 6) return 'hybrid';
+    return 'sequential';
   }
   private getPriorityWeight(priority: GPUErrorBatch['priority']): number {
     const weights = { critical: 4, high: 3, medium: 2, low: 1 };

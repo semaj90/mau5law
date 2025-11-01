@@ -163,7 +163,7 @@ export const LEGAL_TRAINING_TEMPLATES = {
   },
   case_summarization: {
     instruction: 'Summarize the following legal case with key holdings and precedential value:',
-    input_format: 'Case: {input}',
+    input_format: 'case {input}',
     output_format: 'Summary: {output}',
     examples: [
       {
@@ -701,7 +701,7 @@ export class UnslothFinetuningService {
   }
 
   private formatTime(ms: number): string {
-    if (!ms || ms <= 0) return: 'N/A';
+    if (!ms || ms <= 0) return 'N/A';
     const s = Math.floor(ms / 1000);
     const m = Math.floor(s / 60);
     const sec = s % 60;

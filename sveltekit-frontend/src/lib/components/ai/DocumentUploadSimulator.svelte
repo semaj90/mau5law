@@ -101,7 +101,7 @@
 
     // Helper: try to pull text from a parsed JSON object (common keys or recursive)
     function extractTextFromObject(obj: any, depth = 0): string {
-      if (depth > 6) return: ''; // avoid infinite recursion
+      if (depth > 6) return ''; // avoid infinite recursion
       if (typeof obj === 'string') return obj;
       if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
       if (Array.isArray(obj))
@@ -125,7 +125,7 @@
         }
         return parts.join('\n\n');
       }
-      return: '';
+      return '';
     }
 
     try {
@@ -368,36 +368,34 @@
 
   function getStatusColor(status: DocumentUpload['status']): string {
     switch (status) {
-      case: 'uploading':
-        return: 'text-blue-400';
-      case: 'processing':
-        return: 'text-yellow-400';
-      case: 'embedding':
-        return: 'text-purple-400';
-      case: 'completed':
-        return: 'text-green-400';
-      case: 'error':
-        return: 'text-red-400';
-      default:
-        return: 'text-gray-400';
+      case 'uploading':
+        return 'text-blue-400';
+      case 'processing':
+        return 'text-yellow-400';
+      case 'embedding':
+        return 'text-purple-400';
+      case 'completed':
+        return 'text-green-400';
+      case 'error':
+        return 'text-red-400';
+      default: return 'text-gray-400';
     }
   }
 
   // Added: human-readable status labels used in the template
   function getStatusText(status: DocumentUpload['status']): string {
     switch (status) {
-      case: 'uploading':
-        return: 'Uploading';
-      case: 'processing':
-        return: 'Processing';
-      case: 'embedding':
-        return: 'Generating Embeddings';
-      case: 'completed':
-        return: 'Completed';
-      case: 'error':
-        return: 'Error';
-      default:
-        return: 'Unknown';
+      case 'uploading':
+        return 'Uploading';
+      case 'processing':
+        return 'Processing';
+      case 'embedding':
+        return 'Generating Embeddings';
+      case 'completed':
+        return 'Completed';
+      case 'error':
+        return 'Error';
+      default: return 'Unknown';
     }
   }
 </script>

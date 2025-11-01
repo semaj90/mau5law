@@ -140,9 +140,9 @@ export class MatrixUICompiler {
   }
   private calculateLODLevel(nodes: MatrixUINode[]): 'low' | 'mid' | 'high' {
     const nodeCount = nodes.length;
-    if (nodeCount < this.lodThresholds.low.maxNodes) return: 'low';
-    if (nodeCount < this.lodThresholds.mid.maxNodes) return: 'mid';
-    return: 'high';
+    if (nodeCount < this.lodThresholds.low.maxNodes) return 'low';
+    if (nodeCount < this.lodThresholds.mid.maxNodes) return 'mid';
+    return 'high';
   }
   private generateEnhancedWebGLBuffers(nodes: MatrixUINode[], lodLevel: 'low' | 'mid' | 'high'): EnhancedWebGLBuffer {
     const vertexCount = nodes.length * 4; // 4 vertices per node
@@ -195,13 +195,13 @@ export class MatrixUICompiler {
     classes.push('relative', 'transition-all', 'duration-300');
     // Node type specific classes
     switch (node.type) {
-      case: 'container':
+      case 'container':
         classes.push('flex', 'flex-col');
         break;
-      case: 'text':
+      case 'text':
         classes.push('text-base', 'leading-relaxed');
         break;
-      case: 'button':
+      case 'button':
         classes.push('px-4', 'py-2', 'rounded', 'cursor-pointer');
         break;
       default:
@@ -297,20 +297,20 @@ export class MatrixUICompiler {
   private createElement(node: MatrixUINode): HTMLElement {
     let element: HTMLElement;
     switch (node.type) {
-      case: 'button':
+      case 'button':
         element = document.createElement('button');
         break;
-      case: 'card':
+      case 'card':
         element = document.createElement('div');
         element.setAttribute('role', 'article');
         break;
-      case: 'input':
+      case 'input':
         element = document.createElement('input');
         break;
-      case: 'dialog':
+      case 'dialog':
         element = document.createElement('dialog');
         break;
-      case: 'evidence-item':
+      case 'evidence-item':
         element = document.createElement('div');
         element.setAttribute('data-evidence-type', node.metadata?.evidenceType || '');
         break;
@@ -339,16 +339,16 @@ export class MatrixUICompiler {
     const classes: string[] = []; // Changed to const
     // Base classes from UnoCSS shortcuts
     switch (node.type) {
-      case: 'button':
+      case 'button':
         classes.push('yorha-button');
         break;
-      case: 'card':
+      case 'card':
         classes.push('yorha-card');
         if (node.metadata?.priority) {
           classes.push(`yorha-priority-${node.metadata.priority}`);
         }
         break;
-      case: 'evidence-item':
+      case 'evidence-item':
         classes.push('yorha-evidence-item');
         if (node.metadata?.evidenceType) {
           classes.push(`evidence-type-${node.metadata.evidenceType}`);
@@ -460,18 +460,18 @@ export class MatrixUICompiler {
   private calculateLOD(node: MatrixUINode): 'low' | 'mid' | 'high' {
     // High LOD for AI-flagged important elements
     if (node.metadata?.aiGenerated && node.metadata?.confidence && node.metadata.confidence > 80) {
-      return: 'high';
+      return 'high';
     }
     // High LOD for critical priority elements
     if (node.metadata?.priority === 'critical') {
-      return: 'high';
+      return 'high';
     }
     // Medium LOD for evidence items
     if (node.type === 'evidence-item') {
-      return: 'mid';
+      return 'mid';
     }
     // Default to low LOD
-    return: 'low';
+    return 'low';
   }
   /**
    * Handle UI events with matrix context

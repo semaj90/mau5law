@@ -200,19 +200,19 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function getHealthBadgeColor(health: string) {
     switch (health) {
-      case: 'healthy': return: 'bg-green-500';
-      case: 'degraded': return: 'bg-yellow-500';
-      case: 'critical': return: 'bg-red-500';
-      default: return: 'bg-gray-500';
+      case 'healthy': return 'bg-green-500';
+      case 'degraded': return 'bg-yellow-500';
+      case 'critical': return 'bg-red-500';
+      default: return 'bg-gray-500';
     }
   }
   function getCacheHealthColor(health: string) {
     switch (health) {
-      case: 'excellent': return: 'text-green-600';
-      case: 'good': return: 'text-blue-600';
-      case: 'fair': return: 'text-yellow-600';
-      case: 'poor': return: 'text-red-600';
-      default: return: 'text-gray-600';
+      case 'excellent': return 'text-green-600';
+      case 'good': return 'text-blue-600';
+      case 'fair': return 'text-yellow-600';
+      case 'poor': return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 </script>

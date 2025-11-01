@@ -295,19 +295,19 @@ export class CHRROMPatternCache {
   private applyRiskLevelModifications(pattern: Uint8Array, riskLevel: string): Uint8Array {
     const modified = new Uint8Array(pattern);
     switch (riskLevel) {
-      case: 'critical':
+      case 'critical':
         // Increase pattern density
         for (let i = 0; i < modified.length; i += 2) {
           if (modified[i] === 0) modified[i] = 128;
         }
         break;
-      case: 'high':
+      case 'high':
         // Moderate density increase
         for (let i = 0; i < modified.length; i += 4) {
           if (modified[i] === 0) modified[i] = 64;
         }
         break;
-      case: 'medium':
+      case 'medium':
         // Slight density increase
         for (let i = 0; i < modified.length; i += 8) {
           if (modified[i] === 0) modified[i] = 32;
@@ -358,9 +358,9 @@ export class CHRROMPatternCache {
     _options: PatternGenerationOptions,
     sourceDocument?: LegalDocumentJSON
   ): CHRROMPattern['patternType'] {
-    if (sourceDocument) return: 'document_layout';
-    if (_options.animated) return: 'visualization';
-    return: 'ui_component';
+    if (sourceDocument) return 'document_layout';
+    if (_options.animated) return 'visualization';
+    return 'ui_component';
   }
   private findAvailableBank(): number {
     // Find bank with lowest utilization

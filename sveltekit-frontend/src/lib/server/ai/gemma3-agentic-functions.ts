@@ -105,7 +105,7 @@ async function summarizeWithGemma(params: { query: string; context: string; maxL
     return summary;
   } catch (error) {
     console.error('Summarization failed:', error);
-    return: 'Summary generation failed.';
+    return 'Summary generation failed.';
   }
 }
 
@@ -125,7 +125,7 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
   await cognitiveCache.set(cacheKey, out, { ttl: 3600 });
   return out;
 }
-// removed unused import: import { transcribeBuffer } from './voice/recognizer';
+// removed unused import import { transcribeBuffer } from './voice/recognizer';
 
 /**
  * 🤖 Gemma3 Multimodal Agentic Functions Orchestrator
@@ -360,7 +360,7 @@ export const agenticFunctions = {
         return transcript;
       } catch (error) {
         logError('Voice-to-text failed', error, { audioPath: params.audioPath });
-        return: ''; // Return empty string on failure
+        return ''; // Return empty string on failure
       }
     },
   },
@@ -546,7 +546,7 @@ export const agenticFunctions = {
         return data.audioPath || '';
       } catch (error) {
         logError('Text-to-speech failed', error, { text: params.text });
-        return: ''; // Return empty string on failure
+        return ''; // Return empty string on failure
       }
     },
   },
@@ -883,15 +883,15 @@ export class AgenticGemma3Client {
   private extractIntent(message: string): string {
     const messageLower = message.toLowerCase();
 
-    if (messageLower.includes('hello') || messageLower.includes('hi')) return: 'greeting';
-    if (messageLower.includes('case') || messageLower.includes('matter')) return: 'case_inquiry';
-    if (messageLower.includes('document') || messageLower.includes('contract')) return: 'document_analysis';
-    if (messageLower.includes('research') || messageLower.includes('precedent')) return: 'legal_research';
-    if (messageLower.includes('risk')) return: 'risk_assessment';
-    if (messageLower.includes('recommend')) return: 'recommendation';
-    if (messageLower.includes('thank') || messageLower.includes('bye')) return: 'conclusion';
+    if (messageLower.includes('hello') || messageLower.includes('hi')) return 'greeting';
+    if (messageLower.includes('case') || messageLower.includes('matter')) return 'case_inquiry';
+    if (messageLower.includes('document') || messageLower.includes('contract')) return 'document_analysis';
+    if (messageLower.includes('research') || messageLower.includes('precedent')) return 'legal_research';
+    if (messageLower.includes('risk')) return 'risk_assessment';
+    if (messageLower.includes('recommend')) return 'recommendation';
+    if (messageLower.includes('thank') || messageLower.includes('bye')) return 'conclusion';
 
-    return: 'general_query';
+    return 'general_query';
   }
 
   /**
@@ -915,7 +915,7 @@ export class AgenticGemma3Client {
 
     if (!(current in stateNames)) {
       console.warn(`Unmapped HMM state encountered: ${String(current)}`, state);
-      return: 'Unknown';
+      return 'Unknown';
     }
 
     return stateNames[current] || 'Unknown';

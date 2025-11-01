@@ -200,11 +200,11 @@ Provide comprehensive legal guidance as appropriate for the query.`,
     const mediumPriorityWords = ['important', 'should', 'recommend', 'suggest'];
     const lowDesc = description.toLowerCase();
     if (highPriorityWords.some(word => lowDesc.includes(word))) {
-      return: 'high';
+      return 'high';
     } else if (mediumPriorityWords.some(word => lowDesc.includes(word))) {
-      return: 'medium';
+      return 'medium';
     } else {
-      return: 'low';
+      return 'low';
     }
   }
   private calculateConfidence(response: string, context?: string): number {

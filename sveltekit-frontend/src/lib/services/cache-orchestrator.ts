@@ -206,19 +206,19 @@ export class CacheOrchestrator {
   private async executeWarmingStrategy(strategy: CacheWarmingStrategy): Promise<void> {
     console.log(`🔥 Executing warming strategy: ${strategy.name}`);
     switch (strategy.payload?.type) {
-      case: 'legal_templates':
+      case 'legal_templates':
         await this.warmLegalTemplates(strategy.payload);
         break;
-      case: 'vector_similarity':
+      case 'vector_similarity':
         await this.warmVectorOperations(strategy.payload);
         break;
-      case: 'search_results':
+      case 'search_results':
         await this.warmSearchResults(strategy.payload);
         break;
-      case: 'som_training':
+      case 'som_training':
         await this.warmSOMTraining(strategy.payload);
         break;
-      case: 'simd_optimization':
+      case 'simd_optimization':
         await this.warmSIMDOptimization(strategy.payload);
         break;
       default:

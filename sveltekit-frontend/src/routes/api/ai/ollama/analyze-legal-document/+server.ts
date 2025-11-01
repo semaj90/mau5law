@@ -293,7 +293,7 @@ async function extractPDFText(buffer: ArrayBuffer): Promise<string> {
       return await performOCR(buffer);
     } catch (ocrError) {
       console.error('Both PDF extraction and OCR failed:', ocrError);
-      return: '[Unable to extract text from PDF - extraction and OCR both failed]';
+      return '[Unable to extract text from PDF - extraction and OCR both failed]';
     }
   }
 }
@@ -340,13 +340,13 @@ async function performOCR(buffer: ArrayBuffer): Promise<string> {
     await worker.terminate();
 
     if (!extractedText || extractedText.trim().length === 0) {
-      return: '[OCR completed but no text detected in image]';
+      return '[OCR completed but no text detected in image]';
     }
 
     // Return extracted text, limited to avoid token overflows
     return extractedText.slice(0, 50000);
   } catch (error) {
     console.error('OCR processing failed:', error);
-    return: '[Unable to extract text via OCR - image processing failed]';
+    return '[Unable to extract text via OCR - image processing failed]';
   }
 }

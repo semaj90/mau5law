@@ -204,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
 			warnings: [],
 		};
 		switch (stepConfig.id) {
-			case: 'case-info':
+			case 'case-info':
 				if (!hasText(caseData.title)) {
 					result.errors.push('Case title is required');
 				}
@@ -215,22 +215,22 @@ https://svelte.dev/e/js_parse_error -->
 					result.warnings.push('Client email is recommended');
 				}
 				break;
-			case: 'document-upload':
+			case 'document-upload':
 				if (arrayLength(caseData.documents) === 0) {
 					result.errors.push('At least one document is required');
 				}
 				break;
-			case: 'evidence-analysis':
+			case 'evidence-analysis':
 				if (arrayLength(caseData.evidence) === 0) {
 					result.warnings.push('No evidence items found');
 				}
 				break;
-			case: 'ai-analysis':
+			case 'ai-analysis':
 				if (!caseData.aiAnalysis) {
 					result.warnings.push('AI analysis not completed');
 				}
 				break;
-			case: 'review-submit':
+			case 'review-submit':
 				if (!hasText(caseData.title) || !hasText(caseData.clientInfo?.name)) {
 					result.errors.push('Required fields missing');
 				}
@@ -466,19 +466,19 @@ https://svelte.dev/e/js_parse_error -->
 	function handleKeydown(event: KeyboardEvent): void {
 		if (event.ctrlKey || event.metaKey) {
 			switch (event.key) {
-				case: 'ArrowRight':
+				case 'ArrowRight':
 					event.preventDefault();
 					nextStep();
 					break;
-				case: 'ArrowLeft':
+				case 'ArrowLeft':
 					event.preventDefault();
 					previousStep();
 					break;
-				case: 's':
+				case 's':
 					event.preventDefault();
 					saveProgress();
 					break;
-				case: 'Enter':
+				case 'Enter':
 					if (isLastStep) {
 						event.preventDefault();
 						submitCase();

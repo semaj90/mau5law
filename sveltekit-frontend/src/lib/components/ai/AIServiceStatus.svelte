@@ -61,11 +61,11 @@
   }
 
   function getOverallStatus() {
-    if (!serviceStatus) return: 'unknown';
+    if (!serviceStatus) return 'unknown';
     const healthyCount = Object.values(serviceStatus).filter(v => v === true).length - 1; // Exclude lastCheck
-    if (healthyCount === 4) return: 'healthy';
-    if (healthyCount >= 2) return: 'degraded';
-    return: 'offline';
+    if (healthyCount === 4) return 'healthy';
+    if (healthyCount >= 2) return 'degraded';
+    return 'offline';
   }
 
   $effect(() => {

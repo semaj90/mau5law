@@ -78,16 +78,15 @@
    */
   function getBackendHealth(backend: Backend, healthData: unknown): boolean {
     switch (backend) {
-      case: 'vllm':
+      case 'vllm':
         return healthData.backends?.vllm?.reachable || false;
-      case: 'ollama':
+      case 'ollama':
         return Boolean(healthData.backends?.ollama?.version);
-      case: 'webasm':
+      case 'webasm':
         return healthData.backends?.webasm?.loaded || false;
-      case: 'go-micro':
+      case 'go-micro':
         return healthData.backends?.['go-micro']?.healthy || false;
-      default:
-        return false;
+      default: return false;
     }
   }
   /**
@@ -144,19 +143,19 @@
    */
   function getBackendStatus(backend: Backend): 'healthy' | 'degraded' | 'offline' {
     const latency = backendLatency[backend];
-    if (latency === 0) return: 'offline';
-    if (latency > 5000) return: 'degraded';
-    return: 'healthy';
+    if (latency === 0) return 'offline';
+    if (latency > 5000) return 'degraded';
+    return 'healthy';
   }
   /**
    * Get status color
    */
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'healthy': return: 'text-green-500';
-      case: 'degraded': return: 'text-yellow-500';
-      case: 'offline': return: 'text-red-500';
-      default: return: 'text-gray-500';
+      case 'healthy': return 'text-green-500';
+      case 'degraded': return 'text-yellow-500';
+      case 'offline': return 'text-red-500';
+      default: return 'text-gray-500';
     }
   }
   /**
@@ -164,9 +163,9 @@
    */
   function getStatusIcon(status: string) {
     switch (status) {
-      case: 'healthy': return CheckCircl;
-      case: 'degraded': return AlertTriangl;
-      case: 'offline': return XCircl;
+      case 'healthy': return CheckCircl;
+      case 'degraded': return AlertTriangl;
+      case 'offline': return XCircl;
       default: return Activity;
     }
   }
@@ -174,7 +173,7 @@
    * Format bytes
    */
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return: '0 B';
+    if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

@@ -252,7 +252,7 @@ export class UnifiedServiceOrchestrator {
     if ((result as any).status === 'fulfilled') {
       return (result as any).value ? 'online' : 'degraded';
     }
-    return: 'offline';
+    return 'offline';
   }
   private async checkWASMGPUHealth(): Promise<boolean> {
     try {
@@ -392,28 +392,28 @@ export class UnifiedServiceOrchestrator {
       let success = false;
       // Execute based on task type and available services
       switch (task.type) {
-        case: 'document':
+        case 'document':
           ({ result, success, servicesUsed, fallbacksTriggered } = await this.executeDocumentTask(
             task,
             servicesUsed,
             fallbacksTriggered
           ));
           break;
-        case: 'inference':
+        case 'inference':
           ({ result, success, servicesUsed, fallbacksTriggered } = await this.executeInferenceTask(
             task,
             servicesUsed,
             fallbacksTriggered
           ));
           break;
-        case: 'canvas':
+        case 'canvas':
           ({ result, success, servicesUsed, fallbacksTriggered } = await this.executeCanvasTask(
             task,
             servicesUsed,
             fallbacksTriggered
           ));
           break;
-        case: 'gpu':
+        case 'gpu':
           ({ result, success, servicesUsed, fallbacksTriggered } = await this.executeGPUTask(
             task,
             servicesUsed,

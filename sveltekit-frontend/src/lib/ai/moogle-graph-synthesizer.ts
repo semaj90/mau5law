@@ -331,7 +331,7 @@ export class MoogleGraphSynthesizer {
   private calculateLegalImportanceWeight(node: SoraGraphNode): number {
     let weight = 1.0;
     const typeWeights: Record<string, number> = {
-      case: 1.2,
+      case 1.2,
       statute: 1.3,
       regulation: 1.1,
       precedent: 1.4,
@@ -392,7 +392,7 @@ export class MoogleGraphSynthesizer {
       colorScheme: 'semantic',
       nodeColors: {
         document: '#4CAF50',
-        case: '#2196F3',
+        case '#2196F3',
         evidence: '#FF5722',
         entity: '#9C27B0',
         concept: '#FFC107',
@@ -515,7 +515,7 @@ export class MoogleGraphSynthesizer {
       colorScheme: 'semantic',
       nodeColors: {
         document: '#4CAF50',
-        case: '#2196F3',
+        case '#2196F3',
         evidence: '#FF5722',
         entity: '#9C27B0',
         concept: '#FFC107',
@@ -753,12 +753,11 @@ export class MoogleGraphSynthesizer {
     config: MoogleVisualizationConfig
   ): Promise<Map<string, { x: number; y: number }>> {
     switch (config.layout) {
-      case: 'force-directed':
+      case 'force-directed':
         return this.forceDirectedLayout(nodes, edges, config);
-      case: 'legal-context':
+      case 'legal-context':
         return this.legalContextLayout(nodes, edges, config);
-      default:
-        return this.forceDirectedLayout(nodes, edges, config);
+      default: return this.forceDirectedLayout(nodes, edges, config);
     }
   }
 
@@ -833,7 +832,7 @@ export class MoogleGraphSynthesizer {
   ): Promise<Map<string, { x: number; y: number }>> {
     const positions = new Map<string, { x: number; y: number }>();
     const typeGroups: Record<string, SoraGraphNode[]> = {
-      case: [],
+      case [],
       evidence: [],
       document: [],
       entity: [],
@@ -845,7 +844,7 @@ export class MoogleGraphSynthesizer {
       else typeGroups.document.push(node);
     }
     const groupCenters: Record<string, { x: number; y: number }> = {
-      case: { x: 0, y: -config.height * 0.3 },
+      case { x: 0, y: -config.height * 0.3 },
       evidence: { x: -config.width * 0.25, y: 0 },
       document: { x: config.width * 0.25, y: 0 },
       entity: { x: -config.width * 0.15, y: config.height * 0.25 },

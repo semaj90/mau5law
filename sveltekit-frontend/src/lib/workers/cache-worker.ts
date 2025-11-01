@@ -53,23 +53,23 @@ class CacheWorker {
     try {
       let result: unknown;
       switch (type) {
-        case: 'init':
+        case 'init':
           this.config = config!;
           result = { initialized: true, simdSupport: this.simdSupport };
           break;
-        case: 'compress':
+        case 'compress':
           result = await this.compressData(data as InputData);
           break;
-        case: 'decompress':
+        case 'decompress':
           result = await this.decompressData(data as Uint8Array);
           break;
-        case: 'serialize':
+        case 'serialize':
           result = await this.serializeData(data as InputData);
           break;
-        case: 'deserialize':
+        case 'deserialize':
           result = await this.deserializeData(data as Uint8Array);
           break;
-        case: 'batch':
+        case 'batch':
           result = await this.processBatch(operations!);
           break;
         default:
@@ -302,13 +302,13 @@ class CacheWorker {
       const batchResults = (await Promise.all(
         batch.map(async op => {
           switch (op.type) {
-            case: 'compress':
+            case 'compress':
               return await this.compressData(op.data as InputData);
-            case: 'decompress':
+            case 'decompress':
               return await this.decompressData(op.data as Uint8Array);
-            case: 'serialize':
+            case 'serialize':
               return await this.serializeData(op.data as InputData);
-            case: 'deserialize':
+            case 'deserialize':
               return await this.deserializeData(op.data as Uint8Array);
             default:
               throw new Error(`Unknown batch operation: ${op.type}`);

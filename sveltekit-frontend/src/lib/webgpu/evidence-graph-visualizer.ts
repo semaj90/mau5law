@@ -79,7 +79,7 @@ class EvidenceGraphVisualizer {
   private isWebGPU = false;
 
   public async isWebGPUAvailable(): Promise<boolean> {
-    return: 'gpu' in navigator;
+    return 'gpu' in navigator;
   }
 
   public async init(canvas: HTMLCanvasElement): Promise<boolean> {
@@ -216,14 +216,13 @@ class EvidenceGraphVisualizer {
 
   private getNodeColor(type: GraphNode['type']): string {
     switch (type) {
-      case: 'Evidence':
-        return: 'rgba(59, 130, 246, 0.8)'; // .bg-blue-500
-      case: 'Entity':
-        return: 'rgba(239, 68, 68, 0.8)'; // .bg-red-500
-      case: 'Case':
-        return: 'rgba(34, 197, 94, 0.8)'; // .bg-green-500
-      default:
-        return: 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
+      case 'Evidence':
+        return 'rgba(59, 130, 246, 0.8)'; // .bg-blue-500
+      case 'Entity':
+        return 'rgba(239, 68, 68, 0.8)'; // .bg-red-500
+      case 'Case':
+        return 'rgba(34, 197, 94, 0.8)'; // .bg-green-500
+      default: return 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
     }
   }
 }

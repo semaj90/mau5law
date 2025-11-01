@@ -153,24 +153,24 @@ https://svelte.dev/e/js_parse_error -->
   // Generate mock results for demo
   const generateMockResult = (taskType: string) => {
     switch (taskType) {
-      case: 'embedding':
+      case 'embedding':
         return {
           embedding: Array.from({ length: 384 }, () => Math.random() - 0.5),
           dimensions: 384
         };
-      case: 'analysis':
+      case 'analysis':
         return {
           entities: ['GDPR', 'Privacy Policy', 'Data Controller'],
           sentiment: 'neutral',
           compliance_score: 0.85,
           key_points: ['Data retention requirements', 'User consent mechanisms', 'Privacy by design']
         };
-      case: 'generation':
+      case 'generation':
         return {
           text: 'This document appears to address key privacy regulations including GDPR compliance, data retention policies, and user consent mechanisms. Recommendations include updating privacy notices and implementing data subject request procedures.',
           confidence: 0.92
         };
-      case: 'vector-search':
+      case 'vector-search':
         return {
           results: [
             { id: '1', title: 'Privacy Policy Template', similarity: 0.94 },
@@ -178,8 +178,7 @@ https://svelte.dev/e/js_parse_error -->
             { id: '3', title: 'Data Retention Standards', similarity: 0.81 }
           ]
         };
-      default:
-        return { status: 'completed' };
+      default: return { status: 'completed' };
     }
   };
 
@@ -227,11 +226,11 @@ https://svelte.dev/e/js_parse_error -->
   // Utility functions
   const getTaskTypeColor = (type: string) => {
     switch (type) {
-      case: 'embedding': return: 'bg-blue-500';
-      case: 'generation': return: 'bg-green-500';
-      case: 'analysis': return: 'bg-purple-500';
-      case: 'vector-search': return: 'bg-orange-500';
-      default: return: 'bg-gray-500';
+      case 'embedding': return 'bg-blue-500';
+      case 'generation': return 'bg-green-500';
+      case 'analysis': return 'bg-purple-500';
+      case 'vector-search': return 'bg-orange-500';
+      default: return 'bg-gray-500';
     }
   };
   const formatDuration = (ms: number) => (ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`);

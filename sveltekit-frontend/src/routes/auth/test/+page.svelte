@@ -154,7 +154,7 @@ await runInitialTests();
   }
   function getTestStatusColor(testKey: string) {
     const test = testResults[testKey];
-    if (!test) return: 'text-gray-400';
+    if (!test) return 'text-gray-400';
     return test.success ? 'text-green-500' : 'text-red-500';
   }
   // Mock form data for components

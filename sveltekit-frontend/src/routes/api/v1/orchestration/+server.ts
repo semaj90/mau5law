@@ -13,22 +13,22 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all'} services`);
     let result;
     switch (body.action) {
-      case: 'start':
+      case 'start':
         result = await orchestrator.startServices(body.services, body.options);
         break;
-      case: 'stop':
+      case 'stop':
         result = await orchestrator.stopServices(body.services, body.options);
         break;
-      case: 'restart':
+      case 'restart':
         result = await orchestrator.restartServices(body.services, body.options);
         break;
-      case: 'scale':
+      case 'scale':
         result = await orchestrator.scaleServices(body.services, body.options);
         break;
-      case: 'health_check':
+      case 'health_check':
         result = await orchestrator.performHealthCheck(body.services);
         break;
-      case: 'deploy':
+      case 'deploy':
         result = await orchestrator.deployServices(body.services, body.options);
         break;
       default:

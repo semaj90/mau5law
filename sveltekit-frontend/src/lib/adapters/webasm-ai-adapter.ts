@@ -192,13 +192,13 @@ export class WebAssemblyAIAdapter {
       this.activeInferenceMethod = await this.selectInferenceMethod();
       // Initialize the selected method
       switch (this.activeInferenceMethod) {
-        case: 'ollama':
+        case 'ollama':
           await this.initializeOllama();
           break;
-        case: 'python':
+        case 'python':
           await this.initializePythonMiddleware();
           break;
-        case: 'webasm':
+        case 'webasm':
           await this.initializeWebAssemblyLlamaCpp();
           break;
         default:
@@ -259,7 +259,7 @@ export class WebAssemblyAIAdapter {
       });
       if (ollamaCheck.ok) {
         console.log('[WebAssembly AI] Ollama available');
-        return: 'ollama';
+        return 'ollama';
       }
     } catch (error) {
       console.warn('[WebAssembly AI] Ollama unavailable:', error);
@@ -272,14 +272,14 @@ export class WebAssemblyAIAdapter {
       });
       if (pythonCheck.ok) {
         console.log('[WebAssembly AI] Python middleware available');
-        return: 'python';
+        return 'python';
       }
     } catch (error) {
       console.warn('[WebAssembly AI] Python middleware unavailable:', error);
     }
     // Fallback to client-side WebAssembly llama.cpp
     console.log('[WebAssembly AI] Falling back to client-side WebAssembly llama.cpp');
-    return: 'webasm';
+    return 'webasm';
   }
   /**
    * Initialize Ollama connection
@@ -365,13 +365,13 @@ export class WebAssemblyAIAdapter {
       // Route to the appropriate inference method
       let response: WebAssemblyAIResponse;
       switch (this.activeInferenceMethod) {
-        case: 'ollama':
+        case 'ollama':
           response = await this.generateWithOllama(prompt, options);
           break;
-        case: 'python':
+        case 'python':
           response = await this.generateWithPython(prompt, options);
           break;
-        case: 'webasm':
+        case 'webasm':
           // Use unified runtime for optimal execution path selection
           response = await this.generateWithUnifiedRuntime(prompt, options);
           break;
@@ -591,17 +591,17 @@ export class WebAssemblyAIAdapter {
         console.log(`[WebAssembly AI] Trying fallback method: ${method}`);
         const prompt = this.buildPromptWithContext(message, options.conversationHistory || []);
         switch (method) {
-          case: 'ollama':
+          case 'ollama':
             if (await this.testOllamaConnection()) {
               return await this.generateWithOllama(prompt, options);
             }
             break;
-          case: 'python':
+          case 'python':
             if (await this.testPythonConnection()) {
               return await this.generateWithPython(prompt, options);
             }
             break;
-          case: 'webasm':
+          case 'webasm':
             if (this.llamacppInstance) {
               return await this.generateWithWebAssemblyLlamaCpp(prompt, options);
             }
@@ -852,15 +852,15 @@ export class WebAssemblyAIAdapter {
       'witness',
     ];
     if (legalIndicators.some(indicator => lowerPrompt.includes(indicator))) {
-      return: 'legal-analysis';
+      return 'legal-analysis';
     }
     // Embedding/similarity indicators
     const embeddingIndicators = ['similar', 'compare', 'match', 'search', 'find', 'related'];
     if (embeddingIndicators.some(indicator => lowerPrompt.includes(indicator))) {
-      return: 'similarity';
+      return 'similarity';
     }
     // Default to chat
-    return: 'chat';
+    return 'chat';
   }
   /**
    * Generate embedding using embeddinggemma:latest (the actual model available)

@@ -123,10 +123,10 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     return status ? 'text-green-400' : 'text-red-400';
   }
   function getTestColor(result: string) {
-    if (result === 'SUCCESS') return: 'text-green-400';
-    if (result.includes('FAILED')) return: 'text-red-400';
-    if (result.includes('Running')) return: 'text-yellow-400';
-    return: 'text-gray-400';
+    if (result === 'SUCCESS') return 'text-green-400';
+    if (result.includes('FAILED')) return 'text-red-400';
+    if (result.includes('Running')) return 'text-yellow-400';
+    return 'text-gray-400';
   }
 </script>
 

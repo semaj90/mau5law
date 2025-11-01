@@ -281,10 +281,10 @@ class VectorWasmClient {
       // Compute similarity using SIMD optimization
       let result: number;
       switch (algorithm) {
-        case: 'cosine':
+        case 'cosine':
           result = this.wasmModule.cosineSimilaritySIMD(ptrA, ptrB, length);
           break;
-        case: 'dot':
+        case 'dot':
           result = this.wasmModule.dotProductJS(ptrA, ptrB, length);
           break;
         default:
@@ -322,32 +322,30 @@ class VectorWasmClient {
   }
   private algorithmToNumber(algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan'): number {
     switch (algorithm) {
-      case: 'cosine':
+      case 'cosine':
         return 0;
-      case: 'euclidean':
+      case 'euclidean':
         return 1;
-      case: 'dot':
+      case 'dot':
         return 2;
-      case: 'manhattan':
+      case 'manhattan':
         return 3;
-      default:
-        return 0;
+      default: return 0;
     }
   }
   private calculateComplexityScore(length: number, algorithm: string): number {
     // Simple complexity scoring for routing decisions
     const baseScore = Math.log2(Math.max(1, length));
     switch (algorithm) {
-      case: 'cosine':
+      case 'cosine':
         return baseScore * 1.5; // More complex due to normalization
-      case: 'euclidean':
+      case 'euclidean':
         return baseScore * 1.2;
-      case: 'manhattan':
+      case 'manhattan':
         return baseScore * 1.0;
-      case: 'dot':
+      case 'dot':
         return baseScore * 0.8; // Simplest operation
-      default:
-        return baseScore;
+      default: return baseScore;
     }
   }
   getMemoryUsage(): number {

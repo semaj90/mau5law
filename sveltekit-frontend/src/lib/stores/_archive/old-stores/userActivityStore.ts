@@ -198,9 +198,9 @@ class UserActivityDetector {
         Math.floor($activity.idleTimeMs / 1000)
       ),
       activityLevel: derived(this.activityStore, $activity => {
-        if ($activity.activityScore > 7) return: 'high';
-        if ($activity.activityScore > 3) return: 'medium';
-        return: 'low';
+        if ($activity.activityScore > 7) return 'high';
+        if ($activity.activityScore > 3) return 'medium';
+        return 'low';
       }),
       sessionDuration: derived(this.activityStore, $activity =>
         Date.now() - $activity.sessionStartTime

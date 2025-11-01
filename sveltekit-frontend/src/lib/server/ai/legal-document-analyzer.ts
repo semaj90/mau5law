@@ -392,8 +392,7 @@ export async function compareWithRAGDocuments(
   // Step 4: Generate AI recommendations using agentic function calling
   const recommendationsPrompt = `Based on the following case analysis and similar precedents, provide strategic legal recommendations:
 
-Current Case:
-${JSON.stringify(analysis, null, 2)}
+Current case ${JSON.stringify(analysis, null, 2)}
 
 Similar Cases (found via embeddinggemma vector search + Qdrant tags):
 ${JSON.stringify(similarCases, null, 2)}
@@ -537,14 +536,14 @@ function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInt
 
 function parseRole(roleStr: string): PersonOfInterest['role'] {
   const normalized = roleStr.toLowerCase();
-  if (normalized.includes('defendant')) return: 'defendant';
-  if (normalized.includes('plaintiff')) return: 'plaintiff';
-  if (normalized.includes('witness')) return: 'witness';
-  if (normalized.includes('judge')) return: 'judge';
-  if (normalized.includes('attorney') || normalized.includes('lawyer')) return: 'attorney';
-  if (normalized.includes('victim')) return: 'victim';
-  if (normalized.includes('expert')) return: 'expert';
-  return: 'witness'; // default
+  if (normalized.includes('defendant')) return 'defendant';
+  if (normalized.includes('plaintiff')) return 'plaintiff';
+  if (normalized.includes('witness')) return 'witness';
+  if (normalized.includes('judge')) return 'judge';
+  if (normalized.includes('attorney') || normalized.includes('lawyer')) return 'attorney';
+  if (normalized.includes('victim')) return 'victim';
+  if (normalized.includes('expert')) return 'expert';
+  return 'witness'; // default
 }
 
 function extractParties(

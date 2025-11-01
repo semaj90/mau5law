@@ -236,8 +236,7 @@ function generateEvidenceResponse(caseData: any, sources: any[]): string {
     const evidence = caseData.evidence.find((e: any) => e.id === s.id);
     return evidence?.type || 'unknown';
   }));
-  return `I've identified ${sources.length} pieces of relevant evidence in this case:
-${sources.slice(0, 3).map((source, i) => {
+  return `I've identified ${sources.length} pieces of relevant evidence in this case ${sources.slice(0, 3).map((source, i) => {
     const evidence = caseData.evidence.find((e: any) => e.id === source.id);
     return `${i + 1}. **${evidence?.filename}** (${Math.round(source.relevance * 100)}% relevance)
    ${source.excerpt}`;
@@ -256,8 +255,7 @@ ${timelineEvents.map((evidence: any, i: number) => {
 This timeline shows the progression of evidence collection and suggests a systematic approach to the investigation. Earlier evidence may have triggered subsequent collection efforts.`;
 }
 function generatePersonResponse(caseData: any, sources: any[]): string {
-  return `Analyzing person-related evidence in this case:
-The evidence suggests involvement of multiple parties:
+  return `Analyzing person-related evidence in this case The evidence suggests involvement of multiple parties:
 • Email communications indicate at least 2-3 individuals
 • Financial records show transactions between different accounts
 • Network logs reveal access from multiple IP addresses
@@ -300,7 +298,7 @@ ${sources.length > 0
  */
 export async function demoGenerateCaseSummary(caseId: string): Promise<string> {
   const caseData = mockCaseData[caseId as keyof typeof mockCaseData];
-  if (!caseData) return: 'Case not found in demo data.';
+  if (!caseData) return 'Case not found in demo data.';
   await new Promise(resolve => setTimeout(resolve, 1000));
   return `# Case Summary: ${caseData.title}
 ## Overview

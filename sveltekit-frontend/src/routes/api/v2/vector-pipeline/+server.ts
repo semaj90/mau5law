@@ -217,14 +217,14 @@ class VectorPipelineService {
   private async extractTextContent(content: Buffer, filename: string): Promise<string> {
     const extension = filename.split('.').pop()?.toLowerCase();
     switch (extension) {
-      case: 'pdf':
+      case 'pdf':
         // TODO: Implement PDF text extraction
         // For now, return base64 or placeholder
         return content.toString('utf8');
-      case: 'txt':
-      case: 'md':
+      case 'txt':
+      case 'md':
         return content.toString('utf8');
-      case: 'json':
+      case 'json':
         try {
           const jsonData = JSON.parse(content.toString('utf8')); // <-- added closing paren
           return JSON.stringify(jsonData, null, 2);
@@ -585,7 +585,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action');
     const query = url.searchParams.get('q');
     switch (action) {
-      case: 'search': {
+      case 'search': {
         if (!query) {
           throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)`
         }
@@ -614,7 +614,7 @@ export const GET: RequestHandler = async ({ url }) => {
           options: { limit, threshold, model, filters },
         });
       }
-      case: 'stats': {
+      case 'stats': {
         const stats = await vectorPipelineService.getStats();
         return json(stats);
       }

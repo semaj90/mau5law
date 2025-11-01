@@ -700,16 +700,15 @@ class AutoEncoder {
 	}
 	private applyActivation(x: number): number {
 		switch (this.config.activation) {
-			case: 'relu':
+			case 'relu':
 				return Math.max(0, x);
-			case: 'sigmoid':
+			case 'sigmoid':
 				return 1 / (1 + Math.exp(-x));
-			case: 'tanh':
+			case 'tanh':
 				return Math.tanh(x);
-			case: 'leaky_relu':
+			case 'leaky_relu':
 				return x > 0 ? x : 0.01 * x;
-			default:
-				return x;
+			default: return x;
 		}
 	}
 }
@@ -731,7 +730,7 @@ const encoder = new AdvancedBitEncoder({
 const colorEncoding = encoder.encodeColor(255, 128, 64);
 console.log('Encoded color:', colorEncoding);
 // Encode JSON with metadata
-const data = { legal: 'document', case: 'id', evidence: [1, 2, 3] }
+const data = { legal: 'document', case 'id', evidence: [1, 2, 3] }
 const encoded = encoder.encodeJSONWithMetadata(data);
 console.log('Encoded JSON:', encoded);
 // Create range event listener

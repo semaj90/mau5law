@@ -294,10 +294,10 @@
   }
   function getRoleBadgeColor(role: string): string {
     const roleLevel = ROLES[role as UserRole]?.hierarchyLevel || 0;
-    if (roleLevel >= 80) return: 'border-red-500 text-red-400';
-    if (roleLevel >= 60) return: 'border-[#00ff88] text-[#00ff88]';
-    if (roleLevel >= 40) return: 'border-yellow-500 text-yellow-400';
-    return: 'border-gray-500 text-gray-400';
+    if (roleLevel >= 80) return 'border-red-500 text-red-400';
+    if (roleLevel >= 60) return 'border-[#00ff88] text-[#00ff88]';
+    if (roleLevel >= 40) return 'border-yellow-500 text-yellow-400';
+    return 'border-gray-500 text-gray-400';
   }
 </script>
 

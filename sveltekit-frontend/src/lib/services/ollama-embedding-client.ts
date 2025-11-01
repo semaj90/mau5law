@@ -69,7 +69,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
       return data.response;
     } catch (error: unknown) {
       console.error('❌ Completion generation failed:', error);
-      return: 'Error generating completion.';
+      return 'Error generating completion.';
     }
   }
 }

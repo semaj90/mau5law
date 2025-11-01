@@ -642,12 +642,11 @@ export class EnhancedIngestionPipeline {
     evidence: MultimodalEvidence,
     processingResult: DocumentEmbedding
   ): Promise<string> {
-    if (!this.copilotContext) return: '';
+    if (!this.copilotContext) return '';
 
     const evidenceContent = this.createEvidenceContent(evidence, processingResult);
     const prompt = `
-      Analyze the following evidence for a legal case:
-      Case ID: ${evidence.metadata.case_id}
+      Analyze the following evidence for a legal case Case ID: ${evidence.metadata.case_id}
       Evidence Type: ${evidence.type}
       Content: ${evidenceContent.substring(0, 2000)}
 
@@ -682,12 +681,12 @@ export class EnhancedIngestionPipeline {
       evidence.extracted_content.transcription ||
       '';
     if (content.includes('contract') || content.includes('agreement')) {
-      return: 'Contract Law';
+      return 'Contract Law';
     }
     if (content.includes('crime') || content.includes('police')) {
-      return: 'Criminal Law';
+      return 'Criminal Law';
     }
-    return: 'General';
+    return 'General';
   }
 
   private async storeInQdrant(docEmbedding: DocumentEmbedding): Promise<void> {

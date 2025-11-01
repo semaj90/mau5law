@@ -144,16 +144,16 @@
 			const startTime = performance.now();
 			let result: any;
 			switch (operation) {
-				case: 'inference':
+				case 'inference':
 					result = await performClientInference(text);
 					break;
-				case: 'embedding':
+				case 'embedding':
 					result = await generateClientEmbedding(text);
 					break;
-				case: 'summarize':
+				case 'summarize':
 					result = await summarizeClientSide(text);
 					break;
-				case: 'extract':
+				case 'extract':
 					result = await extractClientSide(text);
 					break;
 				default:

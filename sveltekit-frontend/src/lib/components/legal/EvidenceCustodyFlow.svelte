@@ -186,46 +186,43 @@ and AI-powered verification features.
   function handleCollaborationUpdate(data: any) {
     // Handle different types of collaboration updates
     switch (data.action) {
-      case: 'user-joined':
+      case 'user-joined':
         toast.info(`${data.userName} joined the collaboration`);
         break;
-      case: 'user-left':
+      case 'user-left':
         toast.info(`${data.userName} left the collaboration`);
         break;
-      case: 'annotation-added':
+      case 'annotation-added':
         toast.info('New annotation added');
         break;
-      default:
-        break;
+      default: break;
     }
   }
 
   function getStatusIcon(status: string) {
     switch (status) {
-      case: 'verified':
+      case 'verified':
         return CheckCircle;
-      case: 'compromised':
+      case 'compromised':
         return AlertTriangle;
-      case: 'pending':
-      case: 'requires-attention':
+      case 'pending':
+      case 'requires-attention':
         return Clock;
-      default:
-        return Clock;
+      default: return Clock;
     }
   }
 
   function getStatusColor(status: string) {
     switch (status) {
-      case: 'verified':
-        return: 'text-green-600';
-      case: 'compromised':
-        return: 'text-red-600';
-      case: 'requires-attention':
-        return: 'text-yellow-600';
-      case: 'pending':
-        return: 'text-blue-600';
-      default:
-        return: 'text-gray-600';
+      case 'verified':
+        return 'text-green-600';
+      case 'compromised':
+        return 'text-red-600';
+      case 'requires-attention':
+        return 'text-yellow-600';
+      case 'pending':
+        return 'text-blue-600';
+      default: return 'text-gray-600';
     }
   }
 

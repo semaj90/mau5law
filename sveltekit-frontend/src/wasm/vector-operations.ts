@@ -417,8 +417,7 @@ export function shouldUseServer(
       return true; // Always use server for embedding generation
     case 3: // Search
       return dataSize > 100 || complexityScore > 30;
-    default:
-      return false;
+    default: return false;
   }
 }
 // === JavaScript-Friendly Wrappers ===

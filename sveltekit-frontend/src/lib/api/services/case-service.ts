@@ -127,11 +127,11 @@ export async function getCaseById(caseId: string): Promise<LegalCase> {
     }
     const caseData: LegalCase = await response.json();
     // TODO: Add audit logging for case access
-    console.log(`Fetched case: ${caseData.title} (${caseId})`);
+    console.log(`Fetched case ${caseData.title} (${caseId})`);
     return caseData;
   } catch (error: any) {
     console.error('Case fetch error:', error);
-    throw new Error(`Failed to fetch case: ${error.message}`);
+    throw new Error(`Failed to fetch case ${error.message}`);
   }
 }
 export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
@@ -150,11 +150,11 @@ export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
     }
     const newCase: LegalCase = await response.json();
     // TODO: Add audit logging for case creation
-    console.log(`Created new case: ${newCase.title} (${newCase.id})`);
+    console.log(`Created new case ${newCase.title} (${newCase.id})`);
     return newCase;
   } catch (error: any) {
     console.error('Case creation error:', error);
-    throw new Error(`Failed to create case: ${error.message}`);
+    throw new Error(`Failed to create case ${error.message}`);
   }
 }
 export async function updateCase(caseId: string, updates: UpdateCaseData): Promise<LegalCase> {
@@ -173,11 +173,11 @@ export async function updateCase(caseId: string, updates: UpdateCaseData): Promi
     }
     const updatedCase: LegalCase = await response.json();
     // TODO: Add audit logging for case updates
-    console.log(`Updated case: ${updatedCase.title} (${caseId})`);
+    console.log(`Updated case ${updatedCase.title} (${caseId})`);
     return updatedCase;
   } catch (error: any) {
     console.error('Case update error:', error);
-    throw new Error(`Failed to update case: ${error.message}`);
+    throw new Error(`Failed to update case ${error.message}`);
   }
 }
 export async function deleteCase(caseId: string): Promise<void> {
@@ -194,10 +194,10 @@ export async function deleteCase(caseId: string): Promise<void> {
       throw new Error(error.message || 'Failed to delete case');
     }
     // TODO: Add audit logging for case deletion
-    console.log(`Deleted case: ${caseId}`);
+    console.log(`Deleted case ${caseId}`);
   } catch (error: any) {
     console.error('Case deletion error:', error);
-    throw new Error(`Failed to delete case: ${error.message}`);
+    throw new Error(`Failed to delete case ${error.message}`);
   }
 }
 // Case Document Management

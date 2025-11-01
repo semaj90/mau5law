@@ -99,7 +99,7 @@
       addToast({
         variant: 'success',
         title: 'Case Created',
-        description: `Legal case: "${result.caseTitle || 'Untitled'}" created successfully!`,
+        description: `Legal case "${result.caseTitle || 'Untitled'}" created successfully!`,
         duration: 5000,
       });
     } catch (error: any) {

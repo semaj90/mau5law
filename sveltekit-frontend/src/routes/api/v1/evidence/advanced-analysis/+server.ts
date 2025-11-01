@@ -83,18 +83,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'analyze';
     const data = await request.json();
     switch (action) {
-      case: 'analyze':
+      case 'analyze':
         return await handleAnalyzeEvidence(data);
-      case: 'batch_analyze':
+      case 'batch_analyze':
         return await handleBatchAnalyze(data);
-      case: 'get_analysis':
+      case 'get_analysis':
         return await handleGetAnalysis(data);
-      case: 'synthesis':
+      case 'synthesis':
         return await handleSynthesis(data);
-      case: 'real_time':
+      case 'real_time':
         return await handleRealTimeAnalysis(data);
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
     console.error('Advanced evidence analysis error:', error);
@@ -486,7 +485,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case: 'status':
+      case 'status':
         return json({
           service: 'Advanced Evidence Analysis API',
           status: 'operational',
@@ -502,19 +501,18 @@ export const GET: RequestHandler = async ({ url }) => {
           analysisTypes: ['ocr', 'sentiment', 'entities', 'patterns', 'precedents', 'summary', 'timeline', 'all'],
           timestamp: new Date().toISOString(),
         });
-      case: 'models':
+      case 'models':
         return json({
           availableModels: analyzer.getAvailableModels(),
           defaultModel: analyzer.getDefaultModel(),
           modelCapabilities: analyzer.getModelCapabilities(),
         });
-      case: 'health': {
+      case 'health': {
         // scope lexical declaration to avoid: "Unexpected lexical declaration in case block"
         const healthCheck = await analyzer.healthCheck();
         return json(healthCheck);
       }
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
     console.error('Advanced evidence analysis API error:', error);

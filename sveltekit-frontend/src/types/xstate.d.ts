@@ -1,4 +1,4 @@
-declare module: 'xstate' {
+declare module 'xstate' {
   // Minimal, forgiving signatures used only to satisfy TypeScript during builds.
   export function createMachine<Context = any, Event = any>(
     config: any,

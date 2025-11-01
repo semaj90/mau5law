@@ -67,13 +67,13 @@ export const POST: RequestHandler = async ({ request }) => {
       // Process with advanced CUDA attention
       try {
         switch (type) {
-          case: 'kernel-splicing':
+          case 'kernel-splicing':
             result = await processKernelSplicingAttention(text, options);
             break;
-          case: 'flash-attention':
+          case 'flash-attention':
             result = await processFlashAttention(text, options);
             break;
-          case: 'multi-head':
+          case 'multi-head':
             result = await processMultiHeadAttention(text, options);
             break;
           default:

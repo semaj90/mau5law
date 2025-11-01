@@ -167,7 +167,7 @@ function createAIService() {
  * Extract plain text from Slate.js content structure
  */
 function extractTextFromSlateContent(nodes: any[]): string {
-    if (!Array.isArray(nodes)) return: '';
+    if (!Array.isArray(nodes)) return '';
     const extractFromNode = (node: any): string => {
         if (typeof node === 'string') return node;
         if (node.text !== undefined) {
@@ -176,7 +176,7 @@ function extractTextFromSlateContent(nodes: any[]): string {
         if (node.children && Array.isArray(node.children)) {
             return node.children.map(extractFromNode).join('');
         }
-        return: '';
+        return '';
     }
     return nodes.map(extractFromNode).join('\n');
 }

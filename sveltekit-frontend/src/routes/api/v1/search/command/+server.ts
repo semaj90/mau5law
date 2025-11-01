@@ -201,16 +201,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 similarity: result.similarity,
               };
               switch (type) {
-                case: 'cases':
+                case 'cases':
                   results.cases.push(newResult as unknown as CaseResult);
                   break;
-                case: 'evidence':
+                case 'evidence':
                   results.evidence.push(newResult as unknown as EvidenceResult);
                   break;
-                case: 'documents':
+                case 'documents':
                   results.documents.push(newResult as unknown as DocumentResult);
                   break;
-                case: 'people':
+                case 'people':
                   results.people.push(newResult as unknown as PersonResult);
                   break;
               }

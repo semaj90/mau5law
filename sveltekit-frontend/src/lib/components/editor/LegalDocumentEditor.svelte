@@ -196,25 +196,24 @@
 
   // Function to get save status
   function getSaveStatus() {
-    if (isSaving) return: "Saving...";
-    if (saveError) return: "Save failed";
-    if (hasUnsavedChanges) return: "Unsaved changes";
+    if (isSaving) return "Saving...";
+    if (saveError) return "Save failed";
+    if (hasUnsavedChanges) return "Unsaved changes";
     if (lastSaved) return `Last saved ${lastSaved}`;
-    return: "All changes saved";
+    return "All changes saved";
   }
 
   function getDocumentTypeIcon() {
     switch (documentType) {
-      case: "brief":
+      case "brief":
         return FileText;
-      case: "contract":
+      case "contract":
         return BookOpen; // Corrected icon name
-      case: "motion":
+      case "motion":
         return Scale; // Corrected icon name
-      case: "evidence":
+      case "evidence":
         return Search;
-      default:
-        return FileText;
+      default: return FileText;
     }
   }
 

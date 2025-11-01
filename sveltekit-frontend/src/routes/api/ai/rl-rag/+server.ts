@@ -353,16 +353,16 @@ async function reinforcementLearningRanking(
       let boostedScore = result.score;
       // Legal category boosting
       switch (result.metadata.legal_category) {
-        case: 'case_law':
+        case 'case_law':
           boostedScore *= 1.3;
           break;
-        case: 'statute':
+        case 'statute':
           boostedScore *= 1.2;
           break;
-        case: 'regulation':
+        case 'regulation':
           boostedScore *= 1.1;
           break;
-        case: 'contract':
+        case 'contract':
           boostedScore *= 1.15;
           break;
       }

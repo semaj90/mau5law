@@ -172,13 +172,13 @@ function determineHealthStatus(
   cudaAvailable: boolean
 ): 'excellent' | 'good' | 'degraded' | 'poor' {
   if (stats.redisConnected && cudaAvailable && (stats.totalTransitions || 0) > 0) {
-    return: 'excellent';
+    return 'excellent';
   }
   if (stats.redisConnected && (stats.totalTransitions || 0) > 0) {
-    return: 'good';
+    return 'good';
   }
   if (!stats.redisConnected && (stats.totalTransitions || 0) > 0) {
-    return: 'degraded';
+    return 'degraded';
   }
-  return: 'poor';
+  return 'poor';
 }

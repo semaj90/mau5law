@@ -155,11 +155,11 @@ export class RAGMinIOGPUSOMCache {
     const clusterActivity = this.somGrid[bmu.y][bmu.x].documents.length;
     const recentAccess = Date.now() - entry.timestamp < 5 * 60 * 1000; // 5 minutes
     if (entry.accessCount > 5 && recentAccess && clusterActivity > 3) {
-      return: 'l1';
+      return 'l1';
     } else if (entry.accessCount > 2 && clusterActivity > 1) {
-      return: 'l2';
+      return 'l2';
     } else {
-      return: 'l3';
+      return 'l3';
     }
   }
 
@@ -182,13 +182,13 @@ export class RAGMinIOGPUSOMCache {
 
     const cacheLevel = await this.getOptimalCacheLevel(entry);
     switch (cacheLevel) {
-      case: 'l1':
+      case 'l1':
         await this.storeL1(entry);
         break;
-      case: 'l2':
+      case 'l2':
         await this.storeL2(entry);
         break;
-      case: 'l3':
+      case 'l3':
         await this.storeL3(entry);
         break;
     }

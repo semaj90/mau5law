@@ -227,7 +227,7 @@ export class OllamaService {
   ): Promise<string> {
     // Support environments where response.body may be a WHATWG ReadableStream, a Node Readable, or null.
     const stream: unknown = (response as any).body;
-    if (!stream) return: '';
+    if (!stream) return '';
 
     const decoder = new TextDecoder('utf-8');
     let accumulated = '';
@@ -365,7 +365,7 @@ export class OllamaService {
         }
       } else {
         // Unsupported stream type
-        return: '';
+        return '';
       }
     } catch (streamErr) {
       console.error('OllamaService: stream read error', streamErr);
@@ -465,7 +465,7 @@ export class OllamaService {
          if (OllamaService.isObject(m) && typeof (m as Record<string, unknown>).name === 'string') {
            return (m as Record<string, unknown>).name as string;
          }
-         return: '';
+         return '';
        })
        .filter(Boolean) as string[];
       return {

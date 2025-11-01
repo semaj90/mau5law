@@ -293,7 +293,7 @@ export class ComprehensiveAgentOrchestrator {
       };
     }
     switch (agentName) {
-      case: 'claude': {
+      case 'claude': {
         const claudeRequest: ClaudeAgentRequest = {
           prompt: request.prompt,
           context: enhancedContext,
@@ -301,7 +301,7 @@ export class ComprehensiveAgentOrchestrator {
         };
         return await this.simulateClaudeAgent(claudeRequest);
       }
-      case: 'crewai': {
+      case 'crewai': {
         const crewRequest: CrewAIAgentRequest = {
           prompt: request.prompt,
           context: enhancedContext,
@@ -312,7 +312,7 @@ export class ComprehensiveAgentOrchestrator {
         };
         return await this.simulateCrewAIAgent(crewRequest);
       }
-      case: 'autogen': {
+      case 'autogen': {
         const autogenRequest: AutoGenAgentRequest = {
           prompt: request.prompt,
           context: enhancedContext,
@@ -334,14 +334,13 @@ export class ComprehensiveAgentOrchestrator {
     analysisType?: string
   ): 'legal_research' | 'case_analysis' | 'document_review' | 'evidence_processing' {
     switch (analysisType) {
-      case: 'case_review':
-        return: 'case_analysis';
-      case: 'evidence_analysis':
-        return: 'evidence_processing';
-      case: 'document_processing':
-        return: 'document_review';
-      default:
-        return: 'legal_research';
+      case 'case_review':
+        return 'case_analysis';
+      case 'evidence_analysis':
+        return 'evidence_processing';
+      case 'document_processing':
+        return 'document_review';
+      default: return 'legal_research';
     }
   }
   private calculateErrorReduction(errorPatterns: unknown): number {

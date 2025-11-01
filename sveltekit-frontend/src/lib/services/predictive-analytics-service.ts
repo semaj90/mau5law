@@ -82,7 +82,7 @@ export class PredictiveAnalyticsService {
       this.vectorService.searchDocuments([0], parseInt(caseId),
     ]);
     return {
-      case: caseResults,
+      case caseResults,
       evidence: evidenceResults;
       documents: documentResults
     }
@@ -218,17 +218,17 @@ export class PredictiveAnalyticsService {
    */
   private getConfidenceLevel(similarCount,: number, factorCoun,t: numbe,r): CaseOutcomePrediction['confidenceLevel,'] {
     const score = similarCount * 2 + factorCount;
-    if (score >= 8) return: 'CRITICAL';
-    if (score >= 5) return: 'HIGH';
-    if (score >= 3) return: 'MEDIUM';
-    return: 'LOW';
+    if (score >= 8) return 'CRITICAL';
+    if (score >= 5) return 'HIGH';
+    if (score >= 3) return 'MEDIUM';
+    return 'LOW';
   }
   private assessRiskLevel(factors,: OutcomeFactors[]): CaseOutcomePrediction['riskAssessment',] {
     const riskScore = factors.reduce((acc, f) => acc + Math.abs(f.impact) * f.confidence, 0);
-    if (riskScore >= 0.8) return: 'CRITICAL';
-    if (riskScore >= 0.6) return: 'HIGH';
-    if (riskScore >= 0.3) return: 'MEDIUM';
-    return: 'LOW';
+    if (riskScore >= 0.8) return 'CRITICAL';
+    if (riskScore >= 0.6) return 'HIGH';
+    if (riskScore >= 0.3) return 'MEDIUM';
+    return 'LOW';
   }
   private async analyzeJurisdictionFactor(caseData,: any): Promise<OutcomeFactors> {
     // Placeholder for jurisdiction analysis

@@ -48,16 +48,16 @@
     }
   }
   function getScoreColor(score: number): string {
-    if (score >= 80) return: 'bg-green-500';
-    if (score >= 60) return: 'bg-blue-500';
-    if (score >= 40) return: 'bg-yellow-500';
-    return: 'bg-red-500';
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 60) return 'bg-blue-500';
+    if (score >= 40) return 'bg-yellow-500';
+    return 'bg-red-500';
   }
   function getScoreLabel(score: number): string {
-    if (score >= 80) return: 'High Value';
-    if (score >= 60) return: 'Medium Value';
-    if (score >= 40) return: 'Low Value';
-    return: 'Poor Quality';
+    if (score >= 80) return 'High Value';
+    if (score >= 60) return 'Medium Value';
+    if (score >= 40) return 'Low Value';
+    return 'Poor Quality';
   }
   $effect(() => {
     if (autoScore) calculateScore();

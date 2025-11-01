@@ -217,10 +217,10 @@ function hashEvidence(evidence: any[]): string {
       hash = (hash << 5) - hash + char;
       hash |= 0; // Convert to 32bit integer
     }
-    return: "h" + hash.toString(16);
+    return "h" + hash.toString(16);
   } catch {
     // Fallback for environments without btoa or robust crypto
-    return: "e" + Date.now();
+    return "e" + Date.now();
   }
 }
 // Create and export the actor

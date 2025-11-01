@@ -127,7 +127,7 @@ export interface PrecedentAnalysis {
 }
 // Precedent Match
 export interface PrecedentMatch {
-  case: CaseLaw;
+  case CaseLaw;
   relevanceScore: number; // 0-1
   similarity: {
     factual: number;
@@ -347,17 +347,16 @@ export class PrecedentAnalysisEngine {
    */
   formatCitation(caseLaw: CaseLaw, style: 'bluebook' | 'chicago' | 'apa' | 'mla' = 'bluebook'): string {
     switch (style) {
-      case: 'bluebook':
+      case 'bluebook':
         // e.g., "Brown v. Board of Education, 347 U.S. 483 (1954)"
         return `${caseLaw.title}, ${caseLaw.citation} (${caseLaw.decisionDate.getFullYear()})`;
-      case: 'chicago':
+      case 'chicago':
         return `${caseLaw.title}. ${caseLaw.citation} (${caseLaw.court} ${caseLaw.decisionDate.getFullYear()})`;
-      case: 'apa':
+      case 'apa':
         return `${caseLaw.title}, ${caseLaw.citation} (${caseLaw.court} ${caseLaw.decisionDate.getFullYear()})`;
-      case: 'mla':
+      case 'mla':
         return `"${caseLaw.title}." ${caseLaw.citation}. ${caseLaw.court}, ${caseLaw.decisionDate.getFullYear()}.`;
-      default:
-        return caseLaw.citation;
+      default: return caseLaw.citation;
     }
   }
   /**
@@ -373,13 +372,13 @@ export class PrecedentAnalysisEngine {
   ): Promise<string> {
     const { includeFullText = false, citationStyle = 'bluebook' } = options;
     switch (format) {
-      case: 'json':
+      case 'json':
         return JSON.stringify(analysis, null, 2);
-      case: 'markdown':
+      case 'markdown':
         return this.exportToMarkdown(analysis, citationStyle, includeFullText);
-      case: 'latex':
+      case 'latex':
         return this.exportToLatex(analysis, citationStyle);
-      case: 'word':
+      case 'word':
         // Would generate Word XML format in production
         return this.exportToMarkdown(analysis, citationStyle, includeFullText);
       default:
@@ -509,7 +508,7 @@ export class PrecedentAnalysisEngine {
         (candidate.precedentialValue === 'binding' ? 0.3 : 0.1) +
         Math.min((2024 - candidate.decisionDate.getFullYear()) / 50, 0.1);
       matches.push({
-        case: candidate,
+        case candidate,
         relevanceScore,
         similarity,
         distinguishingFactors: this.generateDistinguishingFactors(targetCase, candidate),

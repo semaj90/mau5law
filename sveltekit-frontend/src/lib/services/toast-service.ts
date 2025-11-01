@@ -2,7 +2,7 @@
 // Provides user-friendly notifications for errors and success messages
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-}
+
 export interface Toast {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
@@ -58,14 +58,14 @@ class ToastService {
     return toast.id;
   }
   remove(id: string) {
-    this.toasts.update((toasts) => toasts.filter((toast) => toast.id !== id);
+    this.toasts.update((toasts) => toasts.filter((toast) => toast.id !== id));
   }
   clear() {
     this.toasts.set([]);
   }
   private cleanup() {
     const oneMinuteAgo = new Date(Date.now() - 60000);
-    this.toasts.update((toasts) => toasts.filter((toast) => toast.timestamp > oneMinuteAgo);
+    this.toasts.update((toasts) => toasts.filter((toast) => toast.timestamp > oneMinuteAgo));
   }
   // Helper methods for common error scenarios
   networkError(message: string = 'Network request failed') {
@@ -123,7 +123,7 @@ class ToastService {
   }
   update(id: string, updates: Partial<Toast>) {
     this.toasts.update((toasts) =>
-      toasts.map((toast) => (toast.id === id ? { ...toast, ...updates } : toast)
+      toasts.map((toast) => (toast.id === id ? { ...toast, ...updates } : toast))
     );
   }
   dismiss(id: string) {

@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             timestamp: new Date().toISOString(),
           })}'
         `);
-        console.log(`📡 PostgreSQL NOTIFY sent for case: ${triggerData.caseId}`);
+        console.log(`📡 PostgreSQL NOTIFY sent for case ${triggerData.caseId}`);
       } catch (pgError) {
         console.warn('⚠️ PostgreSQL NOTIFY failed:', pgError);
         // Don't fail the request if PG notification fails

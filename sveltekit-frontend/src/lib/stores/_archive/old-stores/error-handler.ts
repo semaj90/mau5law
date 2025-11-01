@@ -756,25 +756,25 @@ class EnhancedErrorHandler {
   ): ErrorSeverity {
     // Critical legal issues
     if (Boolean(context?.['privileged_content_exposed']) || Boolean(context?.['chain_of_custody_error'])) {
-      return: 'critical';
+      return 'critical';
     }
     // Compliance violations
     if (legalContext?.compliance_requirements || Boolean(context?.['compliance_violation'])) {
-      return: 'compliance';
+      return 'compliance';
     }
     // Security issues
     if (message.includes('security') || message.includes('unauthorized') || message.includes('breach')) {
-      return: 'security';
+      return 'security';
     }
     // Server errors
     if (message.includes('500') || message.includes('server error')) {
-      return: 'error';
+      return 'error';
     }
     // Client errors
     if (message.includes('400') || message.includes('validation')) {
-      return: 'warning';
+      return 'warning';
     }
-    return: 'error';
+    return 'error';
   }
   // Normalize a free-form confidentiality string into the LegalErrorContext union (or undefined)
   private normalizeConfidentialityLevel(level?: string): LegalErrorContext['confidentiality_level'] | undefined {
@@ -826,10 +826,10 @@ class EnhancedErrorHandler {
     return guidance.trim() || 'Consult supervising attorney for guidance.';
   }
   private mapHttpStatusToSeverity(status: number): ErrorSeverity {
-    if (status >= 500) return: 'error';
-    if (status === 403 || status === 401) return: 'security';
-    if (status >= 400) return: 'warning';
-    return: 'info';
+    if (status >= 500) return 'error';
+    if (status === 403 || status === 401) return 'security';
+    if (status >= 400) return 'warning';
+    return 'info';
   }
   private generateErrorId(): string {
     return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -851,15 +851,14 @@ class EnhancedErrorHandler {
   }
   private getLogLevel(severity: ErrorSeverity): 'error' | 'warn' | 'info' {
     switch (severity) {
-      case: 'critical':
-      case: 'security':
-      case: 'error':
-        return: 'error';
-      case: 'warning':
-      case: 'compliance':
-        return: 'warn';
-      default:
-        return: 'info';
+      case 'critical':
+      case 'security':
+      case 'error':
+        return 'error';
+      case 'warning':
+      case 'compliance':
+        return 'warn';
+      default: return 'info';
     }
   }
   private checkComplianceViolations(errorDetails: ErrorDetails): void {

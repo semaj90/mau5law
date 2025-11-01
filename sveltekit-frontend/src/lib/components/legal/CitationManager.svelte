@@ -183,16 +183,16 @@
     filtered.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case: 'relevance':
+        case 'relevance':
           comparison = b.relevanceScore - a.relevanceScore;
           break;
-        case: 'date':
+        case 'date':
           comparison = new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
           break;
-        case: 'usage':
+        case 'usage':
           comparison = b.usageCount - a.usageCount;
           break;
-        case: 'accuracy':
+        case 'accuracy':
           comparison = b.accuracy - a.accuracy;
           break;
         default:
@@ -295,7 +295,7 @@
 
   function getCitationIcon(type: Citation['type']): string {
     const icons = {
-      case: '⚖️',
+      case '⚖️',
       statute: '📜',
       regulation: '📋',
       constitutional: '🏛️',
@@ -316,9 +316,9 @@
   }
 
   function getAccuracyColor(accuracy: number) {
-    if (accuracy >= 0.9) return: '#10b981';
-    if (accuracy >= 0.7) return: '#f59e0b';
-    return: '#ef4444';
+    if (accuracy >= 0.9) return '#10b981';
+    if (accuracy >= 0.7) return '#f59e0b';
+    return '#ef4444';
   }
 
   // Allow using events on these UI components without TS complaining.

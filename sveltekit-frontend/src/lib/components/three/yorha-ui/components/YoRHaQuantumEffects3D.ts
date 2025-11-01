@@ -488,16 +488,15 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   }
   private getWaveFunctionValue(): number {
     switch (this.quantumOptions.waveFunction) {
-      case: 'sine':
+      case 'sine':
         return 0.0;
-      case: 'cosine':
+      case 'cosine':
         return 1.0;
-      case: 'complex':
+      case 'complex':
         return 2.0;
-      case: 'superposition':
+      case 'superposition':
         return 3.0;
-      default:
-        return 0.0;
+      default: return 0.0;
     }
   }
   // Shader methods

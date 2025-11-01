@@ -127,17 +127,17 @@ export class PaletteAnimationController {
   }
   private applyEasing(progress: number, easing: AnimationOptions['easing']): number {
     switch (easing) {
-      case: 'linear':
+      case 'linear':
         return progress;
-      case: 'ease':
+      case 'ease':
         return progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-      case: 'ease-in':
+      case 'ease-in':
         return progress * progress;
-      case: 'ease-out':
+      case 'ease-out':
         return progress * (2 - progress);
-      case: 'ease-in-out':
+      case 'ease-in-out':
         return progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-      case: 'bounce':
+      case 'bounce':
         if (progress < 1 / 2.75) {
           return 7.5625 * progress * progress;
         } else if (progress < 2 / 2.75) {
@@ -147,21 +147,20 @@ export class PaletteAnimationController {
         } else {
           return 7.5625 * (progress -= 2.625 / 2.75) * progress + 0.984375;
         }
-      default:
-        return progress;
+      default: return progress;
     }
   }
   private applyPreTransitionEffects(effects: AnimationEffect[]): void {
     // const root = document.documentElement; // Removed unused variable
     for (const effect of effects) {
       switch (effect.type) {
-        case: 'scanlines':
+        case 'scanlines':
           this.createScanlinesEffect(effect.intensity);
           break;
-        case: 'glitch':
+        case 'glitch':
           this.glitchIntensity = effect.intensity;
           break;
-        case: 'pixelate':
+        case 'pixelate':
           this.pixelateLevel = effect.intensity;
           break;
       }
@@ -171,19 +170,19 @@ export class PaletteAnimationController {
     for (const effect of effects) {
       const effectProgress = Math.min(progress * (1000 / effect.duration), 1);
       switch (effect.type) {
-        case: 'scanlines':
+        case 'scanlines':
           this.updateScanlinesEffect(effect.intensity * (1 - effectProgress));
           break;
-        case: 'chromatic-aberration':
+        case 'chromatic-aberration':
           this.updateChromaticAberration(effect.intensity * Math.sin(progress * Math.PI));
           break;
-        case: 'glitch':
+        case 'glitch':
           this.updateGlitchEffect(effect.intensity * Math.random() * (1 - effectProgress));
           break;
-        case: 'pixelate':
+        case 'pixelate':
           this.updatePixelateEffect(effect.intensity * (1 - effectProgress));
           break;
-        case: 'crt-curve':
+        case 'crt-curve':
           this.updateCRTCurveEffect(effect.intensity);
           break;
       }
@@ -449,12 +448,12 @@ export async function smoothPaletteTransition(
 }
 export function quickGamingTransition(consoleName: ConsolePaletteName): Promise<void> {
   switch (consoleName) {
-    case: 'nes': return paletteAnimator.animateToNES();
-    case: 'snes': return paletteAnimator.animateToSNES();
-    case: 'n64': return paletteAnimator.animateToN64();
-    case: 'ps1': return paletteAnimator.animateToPS1();
-    case: 'ps2': return paletteAnimator.animateToPS2();
-    case: 'legal': return paletteAnimator.animateToLegal();
+    case 'nes': return paletteAnimator.animateToNES();
+    case 'snes': return paletteAnimator.animateToSNES();
+    case 'n64': return paletteAnimator.animateToN64();
+    case 'ps1': return paletteAnimator.animateToPS1();
+    case 'ps2': return paletteAnimator.animateToPS2();
+    case 'legal': return paletteAnimator.animateToLegal();
     default: return paletteAnimator.animateToLegal();
   }
 }

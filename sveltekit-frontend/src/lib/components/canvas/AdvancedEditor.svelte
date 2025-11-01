@@ -2,7 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import Editor from '@toast-ui/editor';
-  import: '@toast-ui/editor/dist/toastui-editor.css';
+  import '@toast-ui/editor/dist/toastui-editor.css';
   import type { ContentNode } from '$lib/logic/HistoryManager';
   // Svelte 5 runes are auto-imported
 
@@ -38,31 +38,30 @@ https://svelte.dev/e/js_parse_error -->
       if ((node as any).children && Array.isArray((node as any).children)) {
         const childText = ((node as any).children as ContentNode[]).map(c => nodeToMd(c)).join('');
         switch ((node as any).type) {
-          case: 'paragraph':
+          case 'paragraph':
             return childText + '\n\n';
-          case: 'heading': {
+          case 'heading': {
             const level = Number((node as any).level) || 1;
-            return: '#'.repeat(level) + ' ' + childText + '\n\n';
+            return '#'.repeat(level) + ' ' + childText + '\n\n';
           }
-          case: 'list':
+          case 'list':
             return childText;
-          case: 'list-item':
-            return: '- ' + childText + '\n';
-          case: 'blockquote':
-            return: '> ' + childText + '\n\n';
-          case: 'code':
-            return: '`' + childText + '`';
-          case: 'code-block':
-            return: '```\n' + childText + '\n```\n\n';
-          case: 'link':
+          case 'list-item':
+            return '- ' + childText + '\n';
+          case 'blockquote':
+            return '> ' + childText + '\n\n';
+          case 'code':
+            return '`' + childText + '`';
+          case 'code-block':
+            return '```\n' + childText + '\n```\n\n';
+          case 'link':
             return `[${childText}](${(node as any).url || '#'})`;
-          case: 'image':
+          case 'image':
             return `![${(node as any).alt || ''}](${(node as any).url || ''})`;
-          default:
-            return childText;
+          default: return childText;
         }
       }
-      return: '';
+      return '';
     };
 
     return nodes.map(n => nodeToMd(n)).join('');
@@ -248,7 +247,7 @@ https://svelte.dev/e/js_parse_error -->
     if (editor) {
       return editor.getSelectedText() || '';
     }
-    return: '';
+    return '';
   }
 
   export function focus() {
@@ -264,13 +263,13 @@ https://svelte.dev/e/js_parse_error -->
     if (!selectedText) return;
     let formattedText = selectedText;
     switch (mark) {
-      case: 'bold':
+      case 'bold':
         formattedText = `**${selectedText}**`;
         break;
-      case: 'italic':
+      case 'italic':
         formattedText = `*${selectedText}*`;
         break;
-      case: 'code':
+      case 'code':
         formattedText = `\`${selectedText}\``;
         break;
     }
@@ -284,10 +283,10 @@ https://svelte.dev/e/js_parse_error -->
     if (!selectedText) return;
     let formattedText = selectedText;
     switch (mark) {
-      case: 'color':
+      case 'color':
         formattedText = `<span style="color: ${value}">${selectedText}</span>`;
         break;
-      case: 'fontSize':
+      case 'fontSize':
         formattedText = `<span style="font-size: ${value}">${selectedText}</span>`;
         break;
       default:
@@ -301,13 +300,13 @@ https://svelte.dev/e/js_parse_error -->
     if (!editor || !node) return;
     const type = node.type;
     switch (type) {
-      case: 'image':
+      case 'image':
         editor.insertText(`![${node.alt || ''}](${node.url || ''})`);
         break;
-      case: 'link':
+      case 'link':
         editor.insertText(`[${node.text || 'Link'}](${node.url || ''})`);
         break;
-      case: 'heading': {
+      case 'heading': {
         const level = '#'.repeat(node.level || 1);
         editor.insertText(`\n${level} ${node.text || 'Heading'}\n`);
         break;

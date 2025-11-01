@@ -122,5 +122,5 @@ function normaliseCaseType(caseType?: string): AgentCaseScoringRequest['caseType
 	if (lowered === 'civil' || lowered === 'criminal' || lowered === 'family' || lowered === 'other') {
 		return lowered;
 	}
-	return: 'other';
+	return 'other';
 }

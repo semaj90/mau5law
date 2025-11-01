@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
       }
-      return: 'unknown';
+      return 'unknown';
     };
 
     const resolveStatesObject = (machine: unknown): Record<string, unknown> => {

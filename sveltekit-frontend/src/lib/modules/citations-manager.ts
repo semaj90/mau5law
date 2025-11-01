@@ -216,14 +216,13 @@ export class CitationsManager {
   // Import/Export Methods
   formatCitationForImport(citation: Citation, options: CitationImportOptions): string {
     switch (options.format) {
-      case: 'bluebook':
+      case 'bluebook':
         return this.formatBluebook(citation, options);
-      case: 'apa':
+      case 'apa':
         return this.formatAPA(citation, options);
-      case: 'mla':
+      case 'mla':
         return this.formatMLA(citation, options);
-      default:
-        return this.formatCustom(citation, options);
+      default: return this.formatCustom(citation, options);
     }
   }
   exportCitations(citationIds: string[], options: CitationImportOptions): string {

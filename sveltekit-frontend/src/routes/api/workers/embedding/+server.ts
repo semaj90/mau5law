@@ -12,16 +12,15 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case: 'status':
+      case 'status':
         return await getWorkerStatus();
-      case: 'health':
+      case 'health':
         return await getWorkerHealth();
-      case: 'stats':
+      case 'stats':
         return await getWorkerStats();
-      case: 'queues':
+      case 'queues':
         return await getQueueInfo();
-      default:
-        return await getWorkerStatus();
+      default: return await getWorkerStatus();
     }
   } catch (error) {
     console.error('Error in embedding worker API:', error);
@@ -38,22 +37,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case: 'start':
+      case 'start':
         return await startWorker();
-      case: 'stop':
+      case 'stop':
         return await stopWorker();
-      case: 'restart':
+      case 'restart':
         return await restartWorker();
-      case: 'reset-stats':
+      case 'reset-stats':
         return await resetWorkerStats();
-      case: 'queue-job':
+      case 'queue-job':
         return await queueEmbeddingJob(request);
-      case: 'queue-bulk':
+      case 'queue-bulk':
         return await queueBulkEmbeddingJob(request);
-      case: 'test':
+      case 'test':
         return await testWorker(request);
-      default:
-        return json({ error: 'Unknown action' }, { status: 400 });
+      default: return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error) {
     console.error('Error in embedding worker API:', error);
@@ -293,7 +291,7 @@ async function testWorker(request: Request): Promise<Response> {
     const { test_type = 'basic' } = await request.json().catch(() => ({}));
     let testPayload: EmbeddingJobPayload;
     switch (test_type) {
-      case: 'document':
+      case 'document':
         testPayload = {
           entity_type: 'document',
           entity_id: 'test-doc-' + Date.now(),
@@ -302,7 +300,7 @@ async function testWorker(request: Request): Promise<Response> {
           embedding_type: 'content',
         };
         break;
-      case: 'case':
+      case 'case':
         testPayload = {
           entity_type: 'case',
           entity_id: 'test-case-' + Date.now(),

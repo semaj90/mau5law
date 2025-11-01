@@ -249,7 +249,7 @@ export async function ollamaGenerate(prompt: string, model = 'gemma3:legal-lates
     const nestedResponse = JSON.stringify(result).match(/"response"\s*:\s*"([^"]+)"/);
     if (nestedResponse && nestedResponse[1]) return nestedResponse[1];
 
-    return: '';
+    return '';
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('❌ Legal response generation failed (ollamaGenerate):', msg);

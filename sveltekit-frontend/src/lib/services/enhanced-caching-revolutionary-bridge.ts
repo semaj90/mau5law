@@ -142,16 +142,16 @@ class EnhancedCachingRevolutionaryBridge {
       let result: UnifiedCacheResult;
 
       switch (strategy) {
-        case: 'enhanced_first':
+        case 'enhanced_first':
           result = await this.enhancedFirstStrategy(hybridQuery, startTime);
           break;
-        case: 'revolutionary_first':
+        case 'revolutionary_first':
           result = await this.revolutionaryFirstStrategy(hybridQuery, startTime);
           break;
-        case: 'parallel':
+        case 'parallel':
           result = await this.parallelStrategy(hybridQuery, startTime);
           break;
-        case: 'adaptive':
+        case 'adaptive':
         default:
           result = await this.adaptiveStrategy(hybridQuery, startTime);
           break;
@@ -203,9 +203,9 @@ class EnhancedCachingRevolutionaryBridge {
       this.revolutionaryAvailable &&
       this.performanceMetrics.revolutionaryCacheHits > this.performanceMetrics.enhancedCacheHits
     ) {
-      return: 'revolutionary_first';
+      return 'revolutionary_first';
     }
-    return: 'enhanced_first';
+    return 'enhanced_first';
   }
 
   private async enhancedFirstStrategy(query: HybridCacheQuery, startTime: number): Promise<UnifiedCacheResult> {

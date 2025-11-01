@@ -299,15 +299,15 @@ function generateResearchRecommendations(_topic: string, results: LegalResearchR
   }
   // Role-specific recommendations
   switch (userRole) {
-    case: 'prosecutor':
+    case 'prosecutor':
       recommendations.push('Prepare for potential constitutional challenges');
       recommendations.push('Review charging precedents and sentencing guidelines');
       break;
-    case: 'defense':
+    case 'defense':
       recommendations.push('Identify favorable precedents for motion practice');
       recommendations.push('Research potential grounds for appeal');
       break;
-    case: 'judge':
+    case 'judge':
       recommendations.push('Review conflicting interpretations for consistent application');
       recommendations.push('Consider scheduling briefing on complex legal issues');
       break;

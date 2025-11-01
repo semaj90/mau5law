@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case: 'health': {
+      case 'health': {
         const health = await rabbitmqServiceWorker.healthCheck();
         return json(health, {
           headers: {
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'stats': {
+      case 'stats': {
         const stats = rabbitmqServiceWorker.getStats();
         return json({
           status: 'success',
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'queues': {
+      case 'queues': {
         return json({
           status: 'success',
           data: {
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
       default: {
-        // Default: Return worker status
+        // default: Return worker status
         const workerStats = rabbitmqServiceWorker.getStats();
         const healthStatus = await rabbitmqServiceWorker.healthCheck();
         return json({
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const action = String(body.action ?? '');
 
     switch (action) {
-      case: 'start': {
+      case 'start': {
         const rawConfig = (body.config as Record<string, unknown> | undefined) ?? {};
 
         // Runtime-validate and coerce config properties
@@ -150,14 +150,14 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'stop': {
+      case 'stop': {
         await stopRabbitMQWorker();
         return json({
           status: 'success',
           message: 'RabbitMQ Service Worker stopped successfully',
         });
       }
-      case: 'publish': {
+      case 'publish': {
         // runtime-guard extraction (no `any`)
         const rawQueue = body['queueName'];
         const rawMessage = body['message'];
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'bulk_publish': {
+      case 'bulk_publish': {
         const rawMessages = body['messages'];
         if (!Array.isArray(rawMessages)) {
           return json(
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'simulate_load': {
+      case 'simulate_load': {
         // Simulate various types of legal AI processing jobs
         const loadTestJobs = [
           {
@@ -367,7 +367,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case: 'reset_stats':
+      case 'reset_stats':
         // Reset worker statistics
         return json({
           status: 'success',
@@ -376,7 +376,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
             resetAt: new Date().toISOString(),
           },
         });
-      case: 'clear_queues':
+      case 'clear_queues':
         // This would clear queue contents in a real implementation
         return json({
           status: 'success',
@@ -385,8 +385,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
             clearedAt: new Date().toISOString(),
           },
         });
-      default:
-        return json(
+      default: return json(
           {
             status: 'error',
             error: { message: 'Action required for DELETE operation' },

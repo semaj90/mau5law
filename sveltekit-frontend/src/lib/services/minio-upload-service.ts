@@ -296,7 +296,7 @@ export class MinIOUploadService {
     const type = msg.type;
 
     switch (type) {
-      case: 'upload_progress': {
+      case 'upload_progress': {
         const taskId = typeof msg.taskId === 'string' ? msg.taskId : undefined;
         const payload =
           typeof msg.payload === 'object' && msg.payload !== null
@@ -306,7 +306,7 @@ export class MinIOUploadService {
         this.handleUploadProgress(taskId, payload);
         break;
       }
-      case: 'upload_completed': {
+      case 'upload_completed': {
         const taskId = typeof msg.taskId === 'string' ? msg.taskId : undefined;
         const payload =
           typeof msg.payload === 'object' && msg.payload !== null
@@ -316,7 +316,7 @@ export class MinIOUploadService {
         this.handleUploadCompleted(workerId, taskId, payload);
         break;
       }
-      case: 'upload_failed': {
+      case 'upload_failed': {
         const taskId = typeof msg.taskId === 'string' ? msg.taskId : undefined;
         const payload =
           typeof msg.payload === 'object' && msg.payload !== null ? (msg.payload as { error?: string }) : {};
@@ -324,7 +324,7 @@ export class MinIOUploadService {
         this.handleUploadFailed(workerId, taskId, payload);
         break;
       }
-      case: 'chunk_completed': {
+      case 'chunk_completed': {
         const taskId = typeof msg.taskId === 'string' ? msg.taskId : undefined;
         const payload = msg.payload;
         if (!taskId || typeof payload !== 'object' || payload === null) return;

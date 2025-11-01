@@ -8,7 +8,7 @@
   import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
   import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic';
   // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import)
-  import: '$lib/styles/hybrid-theme.css';
+  import '$lib/styles/hybrid-theme.css';
   // Sample legal data for demonstration
   const initialLegalData = {
     documents: [] as LegalDocument[],
@@ -141,7 +141,7 @@
         return priorities[i];
       }
     }
-    return: 'medium';
+    return 'medium';
   }
   function getRandomCaseStatus(): string {
     const statuses = ['active', 'pending', 'under_review', 'closed', 'on_hold'];

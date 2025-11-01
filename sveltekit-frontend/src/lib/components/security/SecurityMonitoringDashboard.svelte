@@ -127,48 +127,45 @@
   }
   function getSeverityIcon(severity: string) {
     switch (severity) {
-      case: 'critical':
+      case 'critical':
         return AlertTriangl;
-      case: 'high':
+      case 'high':
         return AlertCircl;
-      case: 'medium':
+      case 'medium':
         return Info;
-      case: 'low':
+      case 'low':
         return CheckCircl;
-      default:
-        return Info;
+      default: return Info;
     }
   }
   function getSeverityColor(severity: string) {
     switch (severity) {
-      case: 'critical':
-        return: 'text-error bg-error/10 border-error/20';
-      case: 'high':
-        return: 'text-warning bg-warning/10 border-warning/20';
-      case: 'medium':
-        return: 'text-info bg-info/10 border-info/20';
-      case: 'low':
-        return: 'text-success bg-success/10 border-success/20';
-      default:
-        return: 'text-base-content bg-base-200 border-base-300';
+      case 'critical':
+        return 'text-error bg-error/10 border-error/20';
+      case 'high':
+        return 'text-warning bg-warning/10 border-warning/20';
+      case 'medium':
+        return 'text-info bg-info/10 border-info/20';
+      case 'low':
+        return 'text-success bg-success/10 border-success/20';
+      default: return 'text-base-content bg-base-200 border-base-300';
     }
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case: 'login':
+      case 'login':
         return User;
-      case: 'logout':
+      case 'logout':
         return Unlock;
-      case: 'access_denied':
+      case 'access_denied':
         return Lock;
-      case: 'suspicious_activity':
+      case 'suspicious_activity':
         return AlertTriangl;
-      case: 'file_upload':
+      case 'file_upload':
         return Databa;
-      case: 'data_export':
+      case 'data_export':
         return Download;
-      default:
-        return Activity;
+      default: return Activity;
     }
   }
   function formatTimestamp(timestamp: number) {
@@ -176,26 +173,24 @@
   }
   function getSystemHealthIcon(status: string) {
     switch (status) {
-      case: 'healthy':
+      case 'healthy':
         return CheckCircl;
-      case: 'warning':
+      case 'warning':
         return AlertCircl;
-      case: 'error':
+      case 'error':
         return XCircl;
-      default:
-        return Info;
+      default: return Info;
     }
   }
   function getSystemHealthColor(status: string) {
     switch (status) {
-      case: 'healthy':
-        return: 'text-success';
-      case: 'warning':
-        return: 'text-warning';
-      case: 'error':
-        return: 'text-error';
-      default:
-        return: 'text-base-content';
+      case 'healthy':
+        return 'text-success';
+      case 'warning':
+        return 'text-warning';
+      case 'error':
+        return 'text-error';
+      default: return 'text-base-content';
     }
   }
   // Reactive effect (runes mode): run filterEvents whenever severity/type selections change

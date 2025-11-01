@@ -1299,16 +1299,17 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   }),
 }));
 export const casesRelations = relations(cases, ({ one, many }) => ({
-  leadProsecutor: one(users, {
-    fields: [cases.leadProsecutor],
-    references: [users.id],
-    relationName: 'leadProsecutor',
-  }),
-  createdBy: one(users, {
-    fields: [cases.createdBy],
-    references: [users.id],
-    relationName: 'createdBy',
-  }),
+  // FIXME: leadProsecutor and createdBy columns don't exist in cases table
+  // leadProsecutor: one(users, {
+  //   fields: [cases.leadProsecutor],
+  //   references: [users.id],
+  //   relationName: 'leadProsecutor',
+  // }),
+  // createdBy: one(users, {
+  //   fields: [cases.createdBy],
+  //   references: [users.id],
+  //   relationName: 'createdBy',
+  // }),
   evidence: many(evidence),
   activities: many(caseActivities),
 }));

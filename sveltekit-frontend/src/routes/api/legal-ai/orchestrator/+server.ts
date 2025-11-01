@@ -599,7 +599,7 @@ class LegalAIOrchestrator {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        context: `New ${params.caseType} case: ${params.title}. ${params.description}`,
+        context: `New ${params.caseType} case ${params.title}. ${params.description}`,
         suggestionType: 'research',
         maxSuggestions: params.maxSuggestions || 10,
       }),
@@ -767,7 +767,7 @@ class LegalAIOrchestrator {
       timestamp: new Date(),
     };
     switch (workflow) {
-      case: 'legal-research':
+      case 'legal-research':
         return {
           ...baseResult,
           searchResults: (results[0] as unknown as EnhancedLegalSearchResult)?.results || [],
@@ -775,7 +775,7 @@ class LegalAIOrchestrator {
           summary: (results[2] as unknown as ChatResponse)?.response || '',
           recommendations: (results[1] as unknown as LegalResearchAnalysisResult)?.recommendations || [],
         } as BitsUICompatibleObject;
-      case: 'document-processing':
+      case 'document-processing':
         return {
           ...baseResult,
           entities: (results[0] as unknown as DocumentEntityExtractionResult)?.entities || [],
@@ -783,7 +783,7 @@ class LegalAIOrchestrator {
           summary: (results[2] as unknown as DocumentSummaryResult)?.summary || '',
           keyTerms: (results[2] as unknown as DocumentSummaryResult)?.keyTerms || [],
         } as BitsUICompatibleObject;
-      case: 'case-creation':
+      case 'case-creation':
         return {
           ...baseResult,
           caseScore: (results[0] as unknown as CaseScoringResult)?.score || 0,
@@ -791,7 +791,7 @@ class LegalAIOrchestrator {
           // Provide a typed empty default to satisfy the expected CaseTimelineResult shape
           timeline: (results[2] as unknown as CaseTimelineResult) || ({} as CaseTimelineResult),
         } as BitsUICompatibleObject;
-      case: 'evidence-analysis':
+      case 'evidence-analysis':
         return {
           ...baseResult,
           metadata:
@@ -800,7 +800,7 @@ class LegalAIOrchestrator {
             (results[1] as unknown as EvidenceRelevanceAnalysisResult) || ({} as EvidenceRelevanceAnalysisResult),
           report: (results[2] as unknown as EvidenceReportResult)?.report || '',
         } as BitsUICompatibleObject;
-      case: 'qlora-distillation': // New case
+      case 'qlora-distillation': // New case
         return {
           ...baseResult,
           distillationJob:
@@ -809,8 +809,7 @@ class LegalAIOrchestrator {
             (results[0] as unknown as TriggerQLoRADistillationResult)?.message || 'QLoRA distillation job initiated.',
           statusUrl: (results[0] as unknown as TriggerQLoRADistillationResult)?.statusUrl || '',
         } as BitsUICompatibleObject;
-      default:
-        return { ...baseResult, results } as BitsUICompatibleObject;
+      default: return { ...baseResult, results } as BitsUICompatibleObject;
     }
   }
   private generateWorkflowId(): string {

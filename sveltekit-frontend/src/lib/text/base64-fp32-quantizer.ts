@@ -212,16 +212,16 @@ export class Base64FP32Quantizer {
     // Apply scaling method
     let scaled: number;
     switch (config.scalingMethod) {
-      case: 'linear':
+      case 'linear':
         scaled = normalized;
         break;
-      case: 'logarithmic':
+      case 'logarithmic':
         scaled = Math.log(1 + normalized) / Math.log(2);
         break;
-      case: 'exponential':
+      case 'exponential':
         scaled = (Math.exp(normalized) - 1) / (Math.E - 1);
         break;
-      case: 'sigmoid':
+      case 'sigmoid':
       default:
         // Sigmoid with legal domain bias
         const biased = normalized + this.LEGAL_TOKEN_BIAS;

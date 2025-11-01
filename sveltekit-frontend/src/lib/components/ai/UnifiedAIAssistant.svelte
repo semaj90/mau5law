@@ -142,14 +142,14 @@
         webgpuBridge.onmessage = event => {
           const { type, data } = event.data;
           switch (type) {
-            case: 'init-complete':
+            case 'init-complete':
               aiBackends.webgpu.initialized = !!(data && (data as { success?: any }).success);
               aiBackends.webgpu.status = data && (data as { success?: any }).success ? 'ready' : 'error';
               break;
-            case: 'task-complete':
+            case 'task-complete':
               handleWebGPUTaskComplete(data);
               break;
-            case: 'error':
+            case 'error':
               console.error('WebGPU worker error:', data);
               break;
           }
@@ -292,13 +292,13 @@
 
   async function useSpecificBackend(context: string, backend: string): Promise<any> {
     switch (backend) {
-      case: 'vllm':
+      case 'vllm':
         return await processWithVLLM(context);
-      case: 'ollama':
+      case 'ollama':
         return await processWithOllama(context);
-      case: 'webasm':
+      case 'webasm':
         return await processWithWebASM(context);
-      case: 'goMicroservice':
+      case 'goMicroservice':
         return await processWithGoMicroservice(context);
       default:
         throw new Error(`Unknown backend: ${backend}`);

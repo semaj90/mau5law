@@ -342,22 +342,21 @@
   }
   function getTheoryTypeColor(type: Theory['type']) {
     switch (type) {
-      case: 'prosecution':
-        return: 'text-red-600 bg-red-100';
-      case: 'defense':
-        return: 'text-blue-600 bg-blue-100';
-      case: 'civil':
-        return: 'text-green-600 bg-green-100';
-      case: 'alternative':
-        return: 'text-purple-600 bg-purple-100';
-      default:
-        return: 'text-gray-600 bg-gray-100';
+      case 'prosecution':
+        return 'text-red-600 bg-red-100';
+      case 'defense':
+        return 'text-blue-600 bg-blue-100';
+      case 'civil':
+        return 'text-green-600 bg-green-100';
+      case 'alternative':
+        return 'text-purple-600 bg-purple-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   }
   function getStrengthColor(strength: number) {
-    if (strength >= 0.8) return: 'text-green-600';
-    if (strength >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (strength >= 0.8) return 'text-green-600';
+    if (strength >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function generateMockEvidence() {
     return [
@@ -722,22 +721,21 @@
   }
   function getTheoryTypeColor(type: Theory['type']) {
     switch (type) {
-      case: 'prosecution':
-        return: 'text-red-600 bg-red-100';
-      case: 'defense':
-        return: 'text-blue-600 bg-blue-100';
-      case: 'civil':
-        return: 'text-green-600 bg-green-100';
-      case: 'alternative':
-        return: 'text-purple-600 bg-purple-100';
-      default:
-        return: 'text-gray-600 bg-gray-100';
+      case 'prosecution':
+        return 'text-red-600 bg-red-100';
+      case 'defense':
+        return 'text-blue-600 bg-blue-100';
+      case 'civil':
+        return 'text-green-600 bg-green-100';
+      case 'alternative':
+        return 'text-purple-600 bg-purple-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   }
   function getStrengthColor(strength: number) {
-    if (strength >= 0.8) return: 'text-green-600';
-    if (strength >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (strength >= 0.8) return 'text-green-600';
+    if (strength >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function generateMockEvidence() {
     return [

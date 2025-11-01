@@ -162,13 +162,13 @@ export class SIMDJSONIndexProcessor {
     try {
       let embedding: number[];
       switch (this.vectorConfig.backend) {
-        case: 'pgvector':
+        case 'pgvector':
           embedding = await this.generatePGVectorEmbedding(content);
           break;
-        case: 'qdrant':
+        case 'qdrant':
           embedding = await this.generateQdrantEmbedding(content);
           break;
-        case: 'hybrid':
+        case 'hybrid':
           embedding = await this.generateHybridEmbedding(content);
           break;
       }

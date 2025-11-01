@@ -369,9 +369,9 @@ export const POST: RequestHandler = async event => {
           },
         });
         if (workerTriggered) {
-          console.log(`🚀 Worker processing triggered for case: ${newCase.id}`);
+          console.log(`🚀 Worker processing triggered for case ${newCase.id}`);
         } else {
-          console.warn(`⚠️ Worker not triggered (Redis unavailable or enqueue failed) for case: ${newCase.id}`);
+          console.warn(`⚠️ Worker not triggered (Redis unavailable or enqueue failed) for case ${newCase.id}`);
         }
       } catch (workerError: unknown) {
         // This catch is unlikely to be hit now because triggerWorkerProcessing returns false on internal failure,
@@ -381,7 +381,7 @@ export const POST: RequestHandler = async event => {
       }
 
       return {
-        case: newCase,
+        case newCase,
         message: `Case ${newCase.caseNumber} created successfully`,
         metadata: {
           workerTriggered,
@@ -413,7 +413,7 @@ export const PUT: RequestHandler = async event => {
     try {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id);
       return {
-        case: updatedCase,
+        case updatedCase,
         message: 'Case updated successfully',
       };
     } catch (error: unknown) {

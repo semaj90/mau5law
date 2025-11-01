@@ -212,54 +212,54 @@ await loadSystemHealth();
   }
   function getRecommendationIcon(type: string) {
     switch (type) {
-      case: 'action': return Target;
-      case: 'insight': return Lightbulb;
-      case: 'warning': return AlertTriangl;
-      case: 'opportunity': return TrendingUp;
+      case 'action': return Target;
+      case 'insight': return Lightbulb;
+      case 'warning': return AlertTriangl;
+      case 'opportunity': return TrendingUp;
       default: return FileText;
     }
   }
   function getRecommendationColor(type: string) {
     switch (type) {
-      case: 'action': return: 'recommendation-action';
-      case: 'insight': return: 'recommendation-insight';
-      case: 'warning': return: 'recommendation-warning';
-      case: 'opportunity': return: 'recommendation-opportunity';
-      default: return: 'recommendation-item';
+      case 'action': return 'recommendation-action';
+      case 'insight': return 'recommendation-insight';
+      case 'warning': return 'recommendation-warning';
+      case 'opportunity': return 'recommendation-opportunity';
+      default: return 'recommendation-item';
     }
   }
   function getEntityIcon(type: string) {
     switch (type) {
-      case: 'person': return User;
-      case: 'organization': return Network;
-      case: 'location': return Target;
-      case: 'date': return Clock;
-      case: 'legal_concept': return FileText;
+      case 'person': return User;
+      case 'organization': return Network;
+      case 'location': return Target;
+      case 'date': return Clock;
+      case 'legal_concept': return FileText;
       default: return Tag;
     }
   }
   function getEntityColor(type: string) {
     switch (type) {
-      case: 'person': return: 'semantic-entity-person';
-      case: 'organization': return: 'semantic-entity-organization';
-      case: 'location': return: 'semantic-entity-location';
-      case: 'date': return: 'semantic-entity-date';
-      case: 'legal_concept': return: 'semantic-entity-legal';
-      default: return: 'semantic-entity-tag';
+      case 'person': return 'semantic-entity-person';
+      case 'organization': return 'semantic-entity-organization';
+      case 'location': return 'semantic-entity-location';
+      case 'date': return 'semantic-entity-date';
+      case 'legal_concept': return 'semantic-entity-legal';
+      default: return 'semantic-entity-tag';
     }
   }
   function getConfidenceColor(confidence: number) {
-    if (confidence >= 0.8) return: 'vector-confidence-high';
-    if (confidence >= 0.6) return: 'vector-confidence-medium';
-    return: 'vector-confidence-low';
+    if (confidence >= 0.8) return 'vector-confidence-high';
+    if (confidence >= 0.6) return 'vector-confidence-medium';
+    return 'vector-confidence-low';
   }
   function getHealthColor(health: string) {
     switch (health) {
-      case: 'excellent': return: 'text-green-600';
-      case: 'good': return: 'text-blue-600';
-      case: 'fair': return: 'text-yellow-600';
-      case: 'poor': return: 'text-red-600';
-      default: return: 'text-gray-600';
+      case 'excellent': return 'text-green-600';
+      case 'good': return 'text-blue-600';
+      case 'fair': return 'text-yellow-600';
+      case 'poor': return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 </script>

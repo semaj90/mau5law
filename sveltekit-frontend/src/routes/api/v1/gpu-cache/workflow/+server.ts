@@ -450,13 +450,13 @@ function analyzeWorkflowRequirements(
   };
   // Adjust based on optimization preference
   switch (optimization) {
-    case: 'speed':
+    case 'speed':
       base.performancePriority *= 1.5;
       break;
-    case: 'compression':
+    case 'compression':
       base.dataIntensity *= 1.3;
       break;
-    case: 'security':
+    case 'security':
       base.securityRequirements *= 1.4;
       break;
   }
@@ -471,17 +471,17 @@ function calculateNESMemoryAllocation(context: LegalWorkflowContext): {
   const allocation: Record<string, number> = {};
   // Base allocations (in bytes)
   switch (context.type) {
-    case: 'document_upload':
+    case 'document_upload':
       regions.push('CHR_ROM', 'RAM');
       allocation.CHR_ROM = 6144; // 6KB for document sprites
       allocation.RAM = 1536; // 1.5KB for processing state
       break;
-    case: 'evidence_review':
+    case 'evidence_review':
       regions.push('PRG_ROM', 'PPU_MEMORY');
       allocation.PRG_ROM = 16384; // 16KB for UI components
       allocation.PPU_MEMORY = 8192; // 8KB for GPU shaders
       break;
-    case: 'case_analysis':
+    case 'case_analysis':
       regions.push('PRG_ROM', 'CHR_ROM', 'PPU_MEMORY');
       allocation.PRG_ROM = 20480; // 20KB for complex UI
       allocation.CHR_ROM = 4096; // 4KB for visualizations
@@ -529,21 +529,21 @@ function assessWebGPUNeeds(context: LegalWorkflowContext): {
 function determineOptimalEncoding(context: LegalWorkflowContext, baseOptimization: BaseOptimization): EncodingFormat {
   // High security workflows prefer CBOR
   if (context.requiresEncryption || context.complexity === 'critical') {
-    return: 'cbor';
+    return 'cbor';
   }
   // Large document workflows prefer compression
   if (context.documentCount && context.documentCount > 100) {
-    return: 'cbor';
+    return 'cbor';
   }
   // Default to base optimization recommendation
   return (baseOptimization?.recommendedEncodingFormat as EncodingFormat) ?? 'msgpack';
 }
 
 function determineCacheStrategy(context: LegalWorkflowContext): 'memory' | 'nes' | 'hybrid' | 'distributed' {
-  if (context.collaborators && context.collaborators > 5) return: 'distributed';
-  if (context.complexity === 'critical') return: 'hybrid';
-  if (context.documentCount && context.documentCount > 200) return: 'hybrid';
-  return: 'nes';
+  if (context.collaborators && context.collaborators > 5) return 'distributed';
+  if (context.complexity === 'critical') return 'hybrid';
+  if (context.documentCount && context.documentCount > 200) return 'hybrid';
+  return 'nes';
 }
 
 function calculateCompressionLevel(context: LegalWorkflowContext, optimization: string): number {
@@ -564,9 +564,9 @@ function calculatePerformanceGain(context: LegalWorkflowContext, baseOptimizatio
 }
 
 function determineSecurityLevel(context: LegalWorkflowContext): 'standard' | 'enhanced' | 'maximum' {
-  if (context.requiresEncryption) return: 'maximum';
-  if (context.complexity === 'critical') return: 'enhanced';
-  return: 'standard';
+  if (context.requiresEncryption) return 'maximum';
+  if (context.complexity === 'critical') return 'enhanced';
+  return 'standard';
 }
 
 function generateWorkflowConfiguration(

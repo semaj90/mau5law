@@ -1,4 +1,4 @@
-declare module: '$lib/logging/structured-logger' {
+declare module '$lib/logging/structured-logger' {
   export interface StructuredLogger {
     // existing methods are declared elsewhere; add the optional method used by components
     logUserAction?(payload: any): Promise<any>;
@@ -6,7 +6,7 @@ declare module: '$lib/logging/structured-logger' {
   export const logger: StructuredLogger;
 }
 
-declare module: '$lib/logging/structured-logger.js' {
+declare module '$lib/logging/structured-logger.js' {
   export interface StructuredLogger {
     logUserAction?(payload: any): Promise<any>;
   }

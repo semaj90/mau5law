@@ -259,11 +259,11 @@ export class GRPCQuicVectorProxy {
   ): Promise<Omit<VectorResult, 'latency' | 'protocol'>> {
     const config = this.config[protocol];
     switch (protocol) {
-      case: 'quic':
+      case 'quic':
         return this.executeQuicOperation(operation, config);
-      case: 'grpc':
+      case 'grpc':
         return this.executeGrpcOperation(operation, config);
-      case: 'http':
+      case 'http':
         return this.executeHttpOperation(operation, config);
       default:
         throw new Error(`Unsupported protocol: ${protocol}`);
@@ -517,7 +517,7 @@ export class GRPCQuicVectorProxy {
       }
     }
     // Default fallback
-    return: 'http';
+    return 'http';
   }
 
   /**

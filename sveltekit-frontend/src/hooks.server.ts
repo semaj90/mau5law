@@ -1,5 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
-import { getDbClient, closeDbClient } from '$lib/server/db/client';
+import { createRuntimeConnection, closeConnections } from '$lib/server/db/client';
 import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
 import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
 
@@ -7,23 +7,29 @@ import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messagi
 async function initializeServices() {
   try {
     // Initialize Drizzle DB client
-    getDbClient(); // No need to assign to a variable if not directly used here
-    // You might want to run a simple query to test connection
-    // await db.execute(sql`SELECT 1`);
-    console.log('Database client initialized successfully.');
+    createRuntimeConnection();
+    console.log('✅ Database client initialized successfully.');
 
     // Initialize Redis client
     const redis = await getRedisClient();
     await redis.ping();
-    console.log('Redis client initialized successfully.');
+    console.log('✅ Redis client initialized successfully.');
 
-    // Initialize RabbitMQ channel
-    await getRabbitMQChannel(); // No need to assign to a variable if not directly used here
-    console.log('RabbitMQ channel initialized successfully.');
+    // Initialize RabbitMQ channel (optional)
+    try {
+      const rabbitChannel = await getRabbitMQChannel();
+      if (rabbitChannel) {
+        console.log('✅ RabbitMQ channel initialized successfully.');
+      } else {
+        console.log('⚠️ RabbitMQ not available - continuing without it.');
+      }
+    } catch (rabbitError) {
+      console.log('⚠️ RabbitMQ initialization failed - continuing without it:', 
+        rabbitError instanceof Error ? rabbitError.message : rabbitError);
+    }
   } catch (error) {
-    console.error('Failed to initialize one or more services:', error);
-    // Depending on severity, you might want to exit the process
-    // process.exit(1);
+    console.error('❌ Failed to initialize one or more services:', error);
+    // Non-critical services can fail gracefully
   }
 }
 
@@ -32,9 +38,20 @@ initializeServices();
 
 // Handle function to make clients available in `event.locals`
 export const handle: Handle = async ({ event, resolve }) => {
-  event.locals.db = getDbClient();
-  event.locals.redis = await getRedisClient();
-  event.locals.rabbitmqChannel = await getRabbitMQChannel();
+  // Get or create database connection
+  const db = createRuntimeConnection();
+  event.locals.db = db;
+  
+  // Get Redis cache service
+  const redisCache = await getRedisClient();
+  event.locals.redis = redisCache;
+  
+  // RabbitMQ is optional - may be null
+  try {
+    event.locals.rabbitmqChannel = await getRabbitMQChannel();
+  } catch (err) {
+    event.locals.rabbitmqChannel = null;
+  }
 
   const response = await resolve(event);
   return response;
@@ -43,7 +60,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 // Cleanup services on server shutdown
 process.on('SIGINT', async () => {
   console.log('SIGINT signal received: Closing services.');
-  await closeDbClient();
+  await closeConnections();
   await closeRedisClient();
   await closeRabbitMQConnection();
   process.exit(0);
@@ -51,7 +68,7 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   console.log('SIGTERM signal received: Closing services.');
-  await closeDbClient();
+  await closeConnections();
   await closeRedisClient();
   await closeRabbitMQConnection();
   process.exit(0);

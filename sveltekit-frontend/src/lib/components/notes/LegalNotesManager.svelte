@@ -227,16 +227,15 @@
     // Only return badge variants that exist in the Badge component's type.
     // Avoid returning: 'primary' which is not part of the BadgeVariant type in this codebase.
     switch (riskLevel) {
-      case: 'critical':
-        return: 'destructive';
-      case: 'high':
-        return: 'destructive';
-      case: 'medium':
-        return: 'outline';
-      case: 'low':
-        return: 'outline';
-      default:
-        return: 'outline';
+      case 'critical':
+        return 'destructive';
+      case 'high':
+        return 'destructive';
+      case 'medium':
+        return 'outline';
+      case 'low':
+        return 'outline';
+      default: return 'outline';
     }
   }
   function getTypeBadgeColor(noteType: string): string {

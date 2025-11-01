@@ -122,7 +122,7 @@
   function processCommand(cmd: string) {
     const [command, ...args] = cmd.toLowerCase().split(' ');
     switch (command) {
-      case: 'help':
+      case 'help':
         terminalHistory = [
           ...terminalHistory,
           'YoRHa Legal AI Commands:',
@@ -141,10 +141,10 @@
           '',
         ];
         break;
-      case: 'clear':
+      case 'clear':
         terminalHistory = [];
         break;
-      case: 'status':
+      case 'status':
         terminalHistory = [
           ...terminalHistory,
           'YoRHa Legal AI System Status:',
@@ -157,7 +157,7 @@
           '',
         ];
         break;
-      case: 'cases':
+      case 'cases':
         terminalHistory = [
           ...terminalHistory,
           'Active Legal Cases:',
@@ -168,7 +168,7 @@
           '',
         ];
         break;
-      case: 'evidence':
+      case 'evidence':
         if (args[0] === 'list') {
           terminalHistory = [
             ...terminalHistory,
@@ -188,7 +188,7 @@
           ];
         }
         break;
-      case: 'analyze':
+      case 'analyze':
         if (args[0]) {
           terminalHistory = [
             ...terminalHistory,
@@ -204,7 +204,7 @@
           terminalHistory = [...terminalHistory, 'Usage: analyze <filename>', ''];
         }
         break;
-      case: 'search':
+      case 'search':
         if (args[0]) {
           terminalHistory = [
             ...terminalHistory,
@@ -219,7 +219,7 @@
           terminalHistory = [...terminalHistory, 'Usage: search <search term>', ''];
         }
         break;
-      case: 'exit':
+      case 'exit':
         terminalHistory = [
           ...terminalHistory,
           'Terminal session ending...',

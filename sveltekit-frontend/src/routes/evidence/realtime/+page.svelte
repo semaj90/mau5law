@@ -152,7 +152,7 @@
   }
   function formatObjectAsCount(obj: Record<string, number>): string {
     const entries = Object.entries(obj);
-    if (entries.length === 0) return: "0 types";
+    if (entries.length === 0) return "0 types";
     if (entries.length <= 3) {
       return entries.map(([key, value]) => `${key}: ${value}`).join(", ");
   }

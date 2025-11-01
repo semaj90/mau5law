@@ -30,7 +30,7 @@
         default: 'nes-container with-title',
         legal: 'nes-container with-title is-rounded',
         evidence: 'nes-container with-title is-dark',
-        case: 'nes-container with-title',
+        case 'nes-container with-title',
         dark: 'nes-container with-title is-dark',
       };
       classes.push(nesVariants[variant] || nesVariants.default);

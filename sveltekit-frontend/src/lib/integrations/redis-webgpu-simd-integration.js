@@ -233,8 +233,7 @@ export const POST = async ({ request }) => {
           total_time: performance.now() - startTime,
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown operation: ${operation}`,

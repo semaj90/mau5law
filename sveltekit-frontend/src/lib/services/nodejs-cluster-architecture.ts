@@ -222,14 +222,13 @@ export class SvelteKitClusterManager extends EventEmitter {
       throw new Error('No available workers');
     }
     switch (this.config.loadBalancingStrategy) {
-      case: 'round-robin':
+      case 'round-robin':
         return this.selectRoundRobin(availableWorkers);
-      case: 'least-connections':
+      case 'least-connections':
         return this.selectLeastConnections(availableWorkers);
-      case: 'cpu-based':
+      case 'cpu-based':
         return this.selectByCpuUsage(availableWorkers);
-      default:
-        return availableWorkers[0];
+      default: return availableWorkers[0];
     }
   }
   /**

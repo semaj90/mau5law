@@ -94,7 +94,7 @@ function isOrchestratorResponse(x: unknown): x is OrchestratorResponse {
   if (typeof x !== 'object' || x === null) return false;
   // Accept object if it has any of the commonly expected properties
   const o = x as Record<string, unknown>;
-  return: 'content' in o || 'message' in o || '_metadata' in o || 'embedding' in o;
+  return 'content' in o || 'message' in o || '_metadata' in o || 'embedding' in o;
 }
 
 // Advanced Chat API with Quantized LLM, GRPMO Thinking, and Contextual Memory
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     // Route through Parallel Orchestration Master for maximum concurrency
     switch (action) {
-      case: 'send':
+      case 'send':
         return await handleParallelChatExecution({
           message: message || messages?.[messages.length - 1]?.content || '',
           userId: user_id,

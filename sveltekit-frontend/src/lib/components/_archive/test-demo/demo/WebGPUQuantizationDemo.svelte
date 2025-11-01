@@ -106,19 +106,19 @@ await initializeWebGPU();
     errorMessage = '';
     try {
       switch (demoId) {
-        case: 'basic':
+        case 'basic':
           await runBasicDemo();
           break;
-        case: 'comparison':
+        case 'comparison':
           await runComparisonDemo();
           break;
-        case: 'batch':
+        case 'batch':
           await runBatchDemo();
           break;
-        case: 'pipeline':
+        case 'pipeline':
           await runPipelineDemo();
           break;
-        case: 'cache':
+        case 'cache':
           await runCacheDemo();
           break;
       }

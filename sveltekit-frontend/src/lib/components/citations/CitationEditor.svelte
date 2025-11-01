@@ -103,13 +103,13 @@ try {
     if (!formData.title || !formData.author) return;
     let formatted = '';
     switch (formData.citationType) {
-      case: 'case_law':
+      case 'case_law':
         formatted = `${formData.title}, ${formData.source}${formData.court ? ` (${formData.court}` : ''}${formData.publicationDate ? ` ${new Date(formData.publicationDate).getFullYear()}` : ''}${formData.court ? ')' : ''}`;
         break;
-      case: 'statute':
+      case 'statute':
         formatted = `${formData.title}, ${formData.source}${formData.publicationDate ? ` (${new Date(formData.publicationDate).getFullYear()})` : ''}`;
         break;
-      case: 'academic_paper':
+      case 'academic_paper':
         formatted = `${formData.author}, "${formData.title}"${formData.source ? `, ${formData.source}` : ''}${formData.publicationDate ? ` (${new Date(formData.publicationDate).getFullYear()})` : ''}`;
         break;
       default:

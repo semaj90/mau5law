@@ -10,7 +10,7 @@
   let showModal = $state(false);
   async function selectCase(caseId: string) {
     // Update the application context with the selected case
-    console.log(`Selected case: ${caseId}`);
+    console.log(`Selected case ${caseId}`);
     // cast the payload to the expected Partial<ContextData> to satisfy TS
     await ContextService.updateCaseContext({ caseId } as unknown as Partial<any>);
     showModal = false;

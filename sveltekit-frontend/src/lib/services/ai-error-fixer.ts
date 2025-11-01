@@ -156,7 +156,7 @@ export class AIErrorFixer {
           // keep behavior but avoid leaking types
           // eslint-disable-next-line no-console
           console.error('Ollama generation failed:', err);
-          return: '';
+          return '';
         }
       },
     };

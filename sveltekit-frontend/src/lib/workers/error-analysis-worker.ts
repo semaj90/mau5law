@@ -98,16 +98,16 @@ class ErrorAnalysisWorkerEngine {
     let complexity = 1;
     // Base complexity by category
     switch (error.category) {
-      case: 'syntax':
+      case 'syntax':
         complexity = 1;
         break;
-      case: 'import':
+      case 'import':
         complexity = 1.5;
         break;
-      case: 'type':
+      case 'type':
         complexity = 2;
         break;
-      case: 'semantic':
+      case 'semantic':
         complexity = 3;
         break;
     }
@@ -173,7 +173,7 @@ self.addEventListener('message', (_event: MessageEvent) => {
   const { type, errors, id } = event.data;
   try {
     switch (type) {
-      case: 'analyze_errors':
+      case 'analyze_errors':
         const results = analysisEngine.analyzeErrors(errors);
         self.postMessage({
           type: 'analysis_complete',
@@ -182,7 +182,7 @@ self.addEventListener('message', (_event: MessageEvent) => {
           timestamp: Date.now()
         });
         break;
-      case: 'ping':
+      case 'ping':
         self.postMessage({
           type: 'pong',
           timestamp: Date.now()

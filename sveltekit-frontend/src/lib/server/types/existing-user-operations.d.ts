@@ -1,4 +1,4 @@
-declare module: '$lib/server/db/existing-user-operations' {
+declare module '$lib/server/db/existing-user-operations' {
   export interface ExistingUser {
     id: string;
     email: string;
@@ -46,6 +46,6 @@ declare module: '$lib/server/db/existing-user-operations' {
   export { ExistingUserAuthService as ExistingUserAuthService };
 }
 // also declare the .js import path used by routes
-declare module: '$lib/server/db/existing-user-operations.js' {
+declare module '$lib/server/db/existing-user-operations.js' {
   export * from '$lib/server/db/existing-user-operations';
 }

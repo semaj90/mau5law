@@ -162,7 +162,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
         onError: {
           target: 'error',
           actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
-            error_message: `Failed to create case: ${String((evt as any).data ?? 'unknown error')}`,
+            error_message: `Failed to create case ${String((evt as any).data ?? 'unknown error')}`,
           })),
         },
       },
@@ -294,7 +294,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
             target: 'analyzingCase',
             guard: (_ctx: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => {
               const out = (evt as any).data as Record<string, unknown>;
-              return: 'analysis' in out;
+              return 'analysis' in out;
             },
             actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
               analysis_results: [

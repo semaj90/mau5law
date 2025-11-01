@@ -462,13 +462,13 @@
       ctx.fillStyle = node.color;
       ctx.beginPath();
       switch (node.type) {
-        case: 'person':
+        case 'person':
           ctx.arc(node.position!.x, node.position!.y, size, 0, Math.PI * 2);
           break;
-        case: 'document':
+        case 'document':
           ctx.rect(node.position!.x - size / 2, node.position!.y - size / 2, size, size);
           break;
-        case: 'event':
+        case 'event':
           ctx.moveTo(node.position!.x, node.position!.y - size);
           ctx.lineTo(node.position!.x + size, node.position!.y);
           ctx.lineTo(node.position!.x, node.position!.y + size);

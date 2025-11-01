@@ -401,7 +401,7 @@ export const legalCaseMachine = createMachine({
         src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
           // removed unused response assignment
           if (!response.ok) {
-            throw new Error(`Failed to load case: ${response.statusText}`);
+            throw new Error(`Failed to load case ${response.statusText}`);
           }
           return response.json();
         }),
@@ -442,7 +442,7 @@ export const legalCaseMachine = createMachine({
             body: JSON.stringify(input.caseData)
           });
           if (!response.ok) {
-            throw new Error(`Failed to create case: ${response.statusText}`);
+            throw new Error(`Failed to create case ${response.statusText}`);
           }
           return response.json();
         }),
@@ -550,7 +550,7 @@ export const legalCaseMachine = createMachine({
             body: JSON.stringify(input.updates)
           });
           if (!response.ok) {
-            throw new Error(`Failed to update case: ${response.statusText}`);
+            throw new Error(`Failed to update case ${response.statusText}`);
           }
           return response.json();
         }),
@@ -642,7 +642,7 @@ export const legalCaseMachine = createMachine({
             method: 'DELETE'
           });
           if (!response.ok) {
-            throw new Error(`Failed to delete case: ${response.statusText}`);
+            throw new Error(`Failed to delete case ${response.statusText}`);
           }
           return response.json();
         }),

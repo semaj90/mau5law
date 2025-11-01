@@ -138,14 +138,14 @@ export function quantize(
   const f32 = ensureF32(input);
   const originalByteLength = f32.byteLength;
   switch (mode) {
-    case: 'fp32':
+    case 'fp32':
       return {
         data: f32,
         originalType: 'fp32',
         byteLength: f32.byteLength,
         compressionRatio: 1.0
       }
-    case: 'fp16':
+    case 'fp16':
       const fp16 = toFP16(f32);
       return {
         data: fp16,
@@ -153,7 +153,7 @@ export function quantize(
         byteLength: fp16.byteLength,
         compressionRatio: originalByteLength / fp16.byteLength
       }
-    case: 'int8_symmetric':
+    case 'int8_symmetric':
       const { data: int8Sym, params: paramsSym } = toInt8(f32, 'symmetric');
       return {
         data: int8Sym,
@@ -162,7 +162,7 @@ export function quantize(
         byteLength: int8Sym.byteLength,
         compressionRatio: originalByteLength / int8Sym.byteLength
       }
-    case: 'int8_asymmetric':
+    case 'int8_asymmetric':
       const { data: int8Asym, params: paramsAsym } = toInt8(f32, 'asymmetric');
       return {
         data: int8Asym,
@@ -177,12 +177,12 @@ export function quantize(
 }
 export function dequantize(quantizedData: QuantizedData): Float32Array {
   switch (quantizedData.originalType) {
-    case: 'fp32':
+    case 'fp32':
       return quantizedData.data as Float32Array;
-    case: 'fp16':
+    case 'fp16':
       return fromFP16(quantizedData.data as Uint16Array);
-    case: 'int8_symmetric':
-    case: 'int8_asymmetric':
+    case 'int8_symmetric':
+    case 'int8_asymmetric':
       if (!quantizedData.params) {
         throw new Error('Quantization parameters required for dequantization');
       }

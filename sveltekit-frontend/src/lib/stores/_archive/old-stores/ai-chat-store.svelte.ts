@@ -331,13 +331,13 @@ class AIChatStore {
   // Utility methods
   exportSession(sessionId: string, format: 'json' | 'markdown' | 'txt' = 'markdown'): string {
     const session = this.state.sessions.find(s => s.id === sessionId);
-    if (!session) return: '';
+    if (!session) return '';
 
     switch (format) {
-      case: 'json':
+      case 'json':
         return JSON.stringify(session, null, 2);
 
-      case: 'markdown':
+      case 'markdown':
         let md = `# ${session.title}\n\n`;
         md += `**Created:** ${session.created_at.toLocaleString()}\n`;
         md += `**Updated:** ${session.updated_at.toLocaleString()}\n`;
@@ -350,7 +350,7 @@ class AIChatStore {
 
         return md;
 
-      case: 'txt':
+      case 'txt':
         let txt = `${session.title}\n${'='.repeat(session.title.length)}\n\n`;
         txt += `Created: ${session.created_at.toLocaleString()}\n`;
         txt += `Updated: ${session.updated_at.toLocaleString()}\n\n`;
@@ -361,8 +361,7 @@ class AIChatStore {
 
         return txt;
 
-      default:
-        return: '';
+      default: return '';
     }
   }
 

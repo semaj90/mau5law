@@ -14,7 +14,7 @@
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   if (diff < 60000) {
-    return: 'just now';
+    return 'just now';
   } else if (diff < 3600000) {
     const minutes = Math.floor(diff / 60000);
     return `${minutes}m ago`;
@@ -141,15 +141,15 @@
     // Handle special key combinations
     if (event.ctrlKey || event.metaKey) {
       switch (event.key) {
-        case: 's':
+        case 's':
           event.preventDefault();
           handleManualSave();
           break;
-        case: '/':
+        case '/':
           event.preventDefault();
           toggleAIAssistant();
           break;
-        case: 'Enter':
+        case 'Enter':
           if (event.shiftKey) {
             event.preventDefault();
             showInlineSuggestions();

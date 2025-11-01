@@ -101,14 +101,13 @@
 
   function getStatusBadgeClass(status: string) {
     switch (status) {
-      case: 'published':
-        return: 'badge-success';
-      case: 'draft':
-        return: 'badge-warning';
-      case: 'archived':
-        return: 'badge-neutral';
-      default:
-        return: 'badge-info';
+      case 'published':
+        return 'badge-success';
+      case 'draft':
+        return 'badge-warning';
+      case 'archived':
+        return 'badge-neutral';
+      default: return 'badge-info';
     }
   }
 </script>

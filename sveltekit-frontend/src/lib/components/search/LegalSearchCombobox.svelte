@@ -69,7 +69,7 @@
 
   // Icon/color mappings
   const typeIcons: Record<string, any> = {
-    case: Scale,
+    case Scale,
     evidence: Shield,
     precedent: FileText,
     statute: FileText,
@@ -78,7 +78,7 @@
     recent: Clock
   };
   const typeColors: Record<string, string> = {
-    case: 'text-blue-600',
+    case 'text-blue-600',
     evidence: 'text-red-600',
     precedent: 'text-purple-600',
     statute: 'text-green-600',

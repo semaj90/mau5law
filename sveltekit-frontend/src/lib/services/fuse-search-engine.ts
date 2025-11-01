@@ -419,16 +419,15 @@ export class FuseSearchEngine {
   }
   private inferItemType(collection: string, _item: unknown): SearchableItem['type'] {
     switch (collection) {
-      case: 'cases':
-        return: 'case';
-      case: 'documents':
-        return: 'document';
-      case: 'evidence':
-        return: 'evidence';
-      case: 'chat_messages':
-        return: 'chat';
-      default:
-        return: 'document';
+      case 'cases':
+        return 'case';
+      case 'documents':
+        return 'document';
+      case 'evidence':
+        return 'evidence';
+      case 'chat_messages':
+        return 'chat';
+      default: return 'document';
     }
   }
   private extractTags(item: unknown): string[] {
@@ -494,37 +493,35 @@ export class FuseSearchEngine {
   }
   private sortResults(results: SearchResult[], sortBy: 'relevance' | 'date' | 'importance'): SearchResult[] {
     switch (sortBy) {
-      case: 'date':
+      case 'date':
         return results.sort((a, b) => {
           const dateA = new Date(a.item.updated_at ?? a.item.created_at ?? 0).getTime();
           const dateB = new Date(b.item.updated_at ?? b.item.created_at ?? 0).getTime();
           return dateB - dateA;
         });
-      case: 'importance':
+      case 'importance':
         return results.sort((a, b) => this.calculateImportanceScore(b.item) - this.calculateImportanceScore(a.item));
-      case: 'relevance':
-      default:
-        return results.sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
+      case 'relevance':
+      default: return results.sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
     }
   }
   private calculateImportanceScore(item: SearchableItem): number {
     let score = 0;
-    const typeScores: Record<string, number> = { case: 10, evidence: 8, document: 6, chat: 4, precedent: 9 };
+    const typeScores: Record<string, number> = { case 10, evidence: 8, document: 6, chat: 4, precedent: 9 };
     score += typeScores[item.type] ?? 5;
     // Add importance based on metadata priority if available
     if (item.metadata?.priority) {
       switch (item.metadata.priority.toLowerCase()) {
-        case: 'critical':
+        case 'critical':
           score += 5;
           break;
-        case: 'high':
+        case 'high':
           score += 3;
           break;
-        case: 'medium':
+        case 'medium':
           score += 1;
           break;
-        default:
-          break;
+        default: break;
       }
     }
     return score;

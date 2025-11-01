@@ -184,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleCommand(cmd: string) {
     const command = cmd.slice.toLowerCase();
     switch (command) {
-      case: "help":
+      case "help":
         messages.push({
           role: "system",
           content: `Commands:
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
           status: "complete",
         });
         break;
-      case: "clear":
+      case "clear":
         messages = [
           {
             role: "system",
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
           },
         ];
         break;
-      case: "embed":
+      case "embed":
         const lastEmbed = messages.findLast((m) => m.embeddings);
         if (lastEmbed?.embeddings) {
           messages.push({
@@ -220,10 +220,10 @@ https://svelte.dev/e/js_parse_error -->
           });
         }
         break;
-      case: "gpu":
+      case "gpu":
         checkGPUStatus();
         break;
-      case: "export":
+      case "export":
         exportChat();
         break;
       default:

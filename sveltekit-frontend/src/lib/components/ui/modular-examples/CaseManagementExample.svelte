@@ -26,16 +26,16 @@ https://svelte.dev/e/illegal_element_attribute -->
   function handleCommandSearch(item: unknown, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
-      case: 'cases':
+      case 'cases':
         handleCaseSelect(item, type);
         break;
-      case: 'evidence':
+      case 'evidence':
         // Navigate to evidence view
         break;
-      case: 'documents':
+      case 'documents':
         // Open document viewer
         break;
-      case: 'people':
+      case 'people':
         // Show person profile
         break;
     }

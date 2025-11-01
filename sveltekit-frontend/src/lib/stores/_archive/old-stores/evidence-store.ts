@@ -180,19 +180,19 @@ export const filteredEvidence = derived(evidenceGrid, $evidenceGrid => {
     let bVal: string | number = '';
 
     switch (sortBy) {
-      case: 'title':
+      case 'title':
         aVal = (a.title || '').toLowerCase();
         bVal = (b.title || '').toLowerCase();
         break;
-      case: 'evidenceType':
+      case 'evidenceType':
         aVal = (a.evidenceType || '').toLowerCase();
         bVal = (b.evidenceType || '').toLowerCase();
         break;
-      case: 'fileSize':
+      case 'fileSize':
         aVal = a.fileSize ?? 0;
         bVal = b.fileSize ?? 0;
         break;
-      case: 'uploadedAt':
+      case 'uploadedAt':
       default:
         aVal = toTime(a.uploadedAt);
         bVal = toTime(b.uploadedAt);

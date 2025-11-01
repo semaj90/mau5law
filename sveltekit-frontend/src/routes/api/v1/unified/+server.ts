@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') ?? '';
   try {
     switch (action) {
-      case: 'health': {
+      case 'health': {
         const healthStatus = {
           status: 'healthy',
           services: {
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         );
       }
-      case: 'search': {
+      case 'search': {
         const query = url.searchParams.get('query');
         if (!query) {
           return json(createResponse(false, null, 'Query parameter required'));
@@ -106,8 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         );
       }
-      default:
-        return json(createResponse(false, null, `Unknown action: ${action}`));
+      default: return json(createResponse(false, null, `Unknown action: ${action}`));
     }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
@@ -120,7 +119,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const body = (await request.json().catch(() => ({}))) as UnifiedRequestBody;
     switch (action) {
-      case: 'rag': {
+      case 'rag': {
         const { query, caseId } = body;
         if (!query) {
           return json(createResponse(false, null, 'Query required'));
@@ -139,7 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           })
         );
       }
-      case: 'upload': {
+      case 'upload': {
         const uploadResult = {
           fileId: `file_${Date.now()}`,
           fileName: body.fileName ?? 'document.pdf',
@@ -154,8 +153,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           })
         );
       }
-      default:
-        return json(createResponse(false, null, `Unknown action: ${action}`));
+      default: return json(createResponse(false, null, `Unknown action: ${action}`));
     }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');

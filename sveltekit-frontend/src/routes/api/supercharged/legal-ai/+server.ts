@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const demo = url.searchParams.get('demo');
     switch (demo) {
-      case: 'status': {
+      case 'status': {
         // Show integrated system status
         // NOTE: If: 'getSystemStatus' or: 'getMetrics' are not defined on RedisWebGPUSIMDIntegration,
         // their types need to be added to the definition in: '$lib/integrations/redis-webgpu-simd-integration.js'.
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'benchmark': {
+      case 'benchmark': {
         // Performance comparison demo
         const benchmarkResults = await runPerformanceBenchmark();
         return json({
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'showcase': {
+      case 'showcase': {
         // Show what's possible with the integrated system
         return json({
           success: true,
@@ -215,7 +215,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { operation, data, options = {} } = body;
     const startTime = performance.now();
     switch (operation) {
-      case: 'legal_document': {
+      case 'legal_document': {
         // default pipeline and safe cast to avoid JobType literal mismatch at compile time
         const defaultPipeline = ['document-analysis', 'entity-extraction', 'risk-assessment'] as const;
         const pipelineToUse = options.pipeline
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
           total_time: performance.now() - startTime,
         });
       }
-      case: 'vector_similarity': {
+      case 'vector_similarity': {
         const { queryVector, candidateVectors, algorithm = 'cosine' } = data;
         if (!Array.isArray(queryVector) || !Array.isArray(candidateVectors)) {
           return json(
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
           total_time: performance.now() - startTime,
         });
       }
-      case: 'intelligent_todos': {
+      case 'intelligent_todos': {
         const { npmOutput } = data;
         if (typeof npmOutput !== 'string') {
           return json(
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
           total_time: performance.now() - startTime,
         });
       }
-      case: 'batch_operations': {
+      case 'batch_operations': {
         const { operations } = data;
         if (!Array.isArray(operations)) {
           return json(
@@ -297,7 +297,7 @@ export const POST: RequestHandler = async ({ request }) => {
           total_time: performance.now() - startTime,
         });
       }
-      case: 'performance_test': {
+      case 'performance_test': {
         // Run a comprehensive performance test
         const perfResult = await runComprehensivePerformanceTest(data);
         return json({
@@ -307,8 +307,7 @@ export const POST: RequestHandler = async ({ request }) => {
           total_time: performance.now() - startTime,
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown operation: ${operation}`,

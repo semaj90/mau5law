@@ -220,18 +220,18 @@
     }
   }
   function getSentimentColor(sentiment: number): string {
-    if (sentiment == null || Number.isNaN(sentiment)) return: "text-gray-500";
-    if (sentiment > 0.7) return: "text-green-600";
-    if (sentiment > 0.5) return: "text-blue-600";
-    if (sentiment > 0.3) return: "text-yellow-600";
-    return: "text-red-600";
+    if (sentiment == null || Number.isNaN(sentiment)) return "text-gray-500";
+    if (sentiment > 0.7) return "text-green-600";
+    if (sentiment > 0.5) return "text-blue-600";
+    if (sentiment > 0.3) return "text-yellow-600";
+    return "text-red-600";
   }
   function getSentimentLabel(sentiment: number): string {
-    if (sentiment == null || Number.isNaN(sentiment)) return: "Unknown";
-    if (sentiment > 0.7) return: "Positive";
-    if (sentiment > 0.5) return: "Somewhat Positive";
-    if (sentiment > 0.3) return: "Neutral";
-    return: "Negative";
+    if (sentiment == null || Number.isNaN(sentiment)) return "Unknown";
+    if (sentiment > 0.7) return "Positive";
+    if (sentiment > 0.5) return "Somewhat Positive";
+    if (sentiment > 0.3) return "Neutral";
+    return "Negative";
   }
   onMount(() => {
     checkServiceHealth().catch((e) => console.warn('initial health check failed', e));

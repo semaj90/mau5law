@@ -92,30 +92,28 @@
   });
   function getThreatLevelColor(level: string) {
     switch (level) {
-      case: 'critical':
-        return: 'bg-red-500 text-white';
-      case: 'high':
-        return: 'bg-orange-500 text-white';
-      case: 'medium':
-        return: 'bg-yellow-500 text-black';
-      case: 'low':
-        return: 'bg-green-500 text-white';
-      default:
-        return: 'bg-gray-500 text-white';
+      case 'critical':
+        return 'bg-red-500 text-white';
+      case 'high':
+        return 'bg-orange-500 text-white';
+      case 'medium':
+        return 'bg-yellow-500 text-black';
+      case 'low':
+        return 'bg-green-500 text-white';
+      default: return 'bg-gray-500 text-white';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case: 'wanted':
-        return: 'bg-red-600 text-white';
-      case: 'surveillance':
-        return: 'bg-blue-600 text-white';
-      case: 'active':
-        return: 'bg-orange-600 text-white';
-      case: 'cleared':
-        return: 'bg-green-600 text-white';
-      default:
-        return: 'bg-gray-600 text-white';
+      case 'wanted':
+        return 'bg-red-600 text-white';
+      case 'surveillance':
+        return 'bg-blue-600 text-white';
+      case 'active':
+        return 'bg-orange-600 text-white';
+      case 'cleared':
+        return 'bg-green-600 text-white';
+      default: return 'bg-gray-600 text-white';
     }
   }
   // Load persons from API

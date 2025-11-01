@@ -162,7 +162,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   }
   try {
     switch (action) {
-      case: 'stats': {
+      case 'stats': {
         // Fixed: Added block scope
         // Get session statistics
         const stats = {
@@ -179,15 +179,14 @@ export const PATCH: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       } // Fixed: Closed block scope
-      case: 'export':
+      case 'export':
         // Export conversation for analysis
         return json({
           success: true,
           message: 'Export functionality not yet implemented',
           timestamp: new Date().toISOString(),
         });
-      default:
-        return json(
+      default: return json(
           {
             // Corrected: Removed extra comma
             success: false,

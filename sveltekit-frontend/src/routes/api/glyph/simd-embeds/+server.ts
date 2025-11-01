@@ -487,7 +487,7 @@ function generateShaderFromTiles(
   const tileCount = tilingResult.tileMap.length;
   const compressionRatio = tilingResult.compressionStats.achievedRatio;
   switch (format) {
-    case: 'webgpu':
+    case 'webgpu':
       return `
 // SIMD-Optimized WebGPU Compute Shader - ${tier.toUpperCase()} Quality Tier
 // Generated from ${tileCount} tiles with ${compressionRatio.toFixed(1)}:1 compression
@@ -502,7 +502,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let qualityMultiplier = ${tier === 'nes' ? '0.25' : tier === 'snes' ? '0.5' : '1.0'};
   outputBuffer[global_id.y * 512u + global_id.x] = patternValue * qualityMultiplier;
 }`;
-    case: 'webgl':
+    case 'webgl':
       return `
 // SIMD-Optimized WebGL Fragment Shader - ${tier.toUpperCase()} Quality
 // ${tileCount} tiles, ${compressionRatio.toFixed(1)}:1 compression
@@ -515,7 +515,7 @@ void main() {
   vec4 tileValue = texture2D(u_tileData, tileCoord)
   gl_FragColor = tileValue * u_qualityTier
 }`;
-    case: 'css':
+    case 'css':
       return `
 /* SIMD-Optimized CSS Animation - ${tier.toUpperCase()} Quality */
 /* Generated from ${tileCount} tiles with ${compressionRatio.toFixed(1)}:1 compression */
@@ -530,7 +530,7 @@ void main() {
     )
     .join('')}
 }`;
-    case: 'svg':
+    case 'svg':
       return `
 <!-- SIMD-Optimized SVG Pattern - ${tier.toUpperCase()} Quality -->
 <!-- ${tileCount} tiles, ${compressionRatio.toFixed(1)}:1 compression -->
@@ -549,8 +549,7 @@ void main() {
       .join('')}
   </pattern>
 </defs>`;
-    default:
-      return `// Unsupported shader format: ${format}`;
+    default: return `// Unsupported shader format: ${format}`;
   }
 }
 /*

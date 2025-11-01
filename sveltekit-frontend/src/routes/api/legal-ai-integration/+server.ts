@@ -7,7 +7,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   try {
     switch (action) {
-      case: 'status': {
+      case 'status': {
         const status = legalAIIntegration.getStatus();
         return json({
           success: true,
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'health': {
+      case 'health': {
         const health = await legalAIIntegration.getSystemHealth();
         return json({
           success: true,
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'autosolve': {
+      case 'autosolve': {
         const autosolveResult = await legalAIIntegration.runAutosolve();
         return json({
           success: true,
@@ -31,8 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      default:
-        return json({
+      default: return json({
           success: true,
           data: {
             message: 'QUIC-Enhanced Legal AI System',

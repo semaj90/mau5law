@@ -423,19 +423,19 @@ class UnifiedClientLLMOrchestrator {
     }
     // Task-based selection
     switch (request.task) {
-      case: 'legal_analysis':
+      case 'legal_analysis':
         // Prefer Legal-BERT for legal tasks if context switching is enabled
         if (request.modelPreferences.enableContextSwitching) {
           return this.models.get('legal-bert') || this.models.get('gemma-legal') || this.models.get('gemma270m')!;
         }
         return this.models.get('gemma-legal') || this.models.get('gemma270m')!;
-      case: 'embedding':
+      case 'embedding':
         return this.models.get('onnx-embeddings') || this.models.get('legal-bert')!;
-      case: 'rl_training':
+      case 'rl_training':
         return this.models.get('gemma-legal') || this.models.get('gemma270m')!;
-      case: 'context_switch':
+      case 'context_switch':
         return this.models.get('legal-bert')!;
-      case: 'chat':
+      case 'chat':
       default:
         // Choose based on latency requirements
         if (
@@ -498,13 +498,13 @@ class UnifiedClientLLMOrchestrator {
     model.performanceMetrics.lastUsed = Date.now();
     try {
       switch (model.type) {
-        case: 'gemma270m':
+        case 'gemma270m':
           return await this.executeGemmaInference(model, request);
-        case: 'legal-bert':
+        case 'legal-bert':
           return await this.executeLegalBERTInference(model, request);
-        case: 'gemma-legal':
+        case 'gemma-legal':
           return await this.executeGemmaLegalInference(model, request);
-        case: 'onnx-model':
+        case 'onnx-model':
           return await this.executeONNXInference(model, request);
         default:
           throw new Error(`Unknown model type: ${model.type}`);

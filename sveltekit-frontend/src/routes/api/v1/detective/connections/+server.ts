@@ -224,20 +224,20 @@ function generateClustersSync(nodes: DetectiveNode[]): DetectiveCluster[] {
 }
 
 function determineConnectionType(n1: DetectiveNode, n2: DetectiveNode): string {
-  if (n1.type === 'evidence' && n2.type === 'evidence') return: 'evidence_related';
-  if (n1.type === 'person' && n2.type === 'person') return: 'person_related';
+  if (n1.type === 'evidence' && n2.type === 'evidence') return 'evidence_related';
+  if (n1.type === 'person' && n2.type === 'person') return 'person_related';
   if ((n1.type === 'evidence' && n2.type === 'person') || (n2.type === 'evidence' && n1.type === 'person'))
-    return: 'person_evidence';
+    return 'person_evidence';
   if ((n1.type === 'location' && n2.type === 'evidence') || (n2.type === 'location' && n1.type === 'evidence'))
-    return: 'location_evidence';
-  return: 'general';
+    return 'location_evidence';
+  return 'general';
 }
 
 function generateConnectionLabel(_n1: DetectiveNode, _n2: DetectiveNode, strength: number): string {
-  if (strength > 0.8) return: 'Strong';
-  if (strength > 0.6) return: 'Moderate';
-  if (strength > 0.4) return: 'Weak';
-  return: 'Predicted';
+  if (strength > 0.8) return 'Strong';
+  if (strength > 0.6) return 'Moderate';
+  if (strength > 0.4) return 'Weak';
+  return 'Predicted';
 }
 
 function getNodeColor(type: string): string {
@@ -253,10 +253,10 @@ function getNodeColor(type: string): string {
 }
 
 function getEdgeColor(strength: number): string {
-  if (strength > 0.8) return: '#059669';
-  if (strength > 0.6) return: '#D97706';
-  if (strength > 0.4) return: '#DC2626';
-  return: '#9CA3AF';
+  if (strength > 0.8) return '#059669';
+  if (strength > 0.6) return '#D97706';
+  if (strength > 0.4) return '#DC2626';
+  return '#9CA3AF';
 }
 
 function getClusterColor(index: number): string {

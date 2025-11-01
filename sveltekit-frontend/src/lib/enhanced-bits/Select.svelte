@@ -1,6 +1,6 @@
 <script lang="ts">
   // Compatibility wrapper: re-use existing Select implementation
-  // Some files import: "$lib/enhanced-bits/Select.svelte" (legacy path).
+  // Some files import "$lib/enhanced-bits/Select.svelte" (legacy path).
   // Forward commonly-used props and allow additional props via $$restProps.
 
   // Use namespace import and resolve either default or named export to avoid: "no default export" TS error.

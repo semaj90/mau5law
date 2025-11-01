@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       headers: Object.fromEntries(request.headers.entries()),
     });
     switch (path) {
-      case: 'analytics': {
+      case 'analytics': {
         const analytics = await jsonbLegalService.getLegalAnalytics();
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           },
         });
       }
-      case: 'performance': {
+      case 'performance': {
         const performance_metrics = await jsonbLegalService.getPerformanceMetrics();
         const perfDuration = performance.now() - startTime;
         await logger.logAPIResponse({
@@ -90,8 +90,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           },
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Endpoint not found: ${path}`,
@@ -185,7 +184,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
     });
 
     switch (path) {
-      case: 'documents': {
+      case 'documents': {
         const schema = z.object({
           title: z.string().min(1),
           content: z.string().min(1),
@@ -211,7 +210,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 201 }
         );
       }
-      case: 'cases': {
+      case 'cases': {
         const schema = z.object({
           title: z.string().min(1),
           description: z.string().optional(),
@@ -237,7 +236,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 201 }
         );
       }
-      case: 'evidence': {
+      case 'evidence': {
         const schema = z.object({
           caseId: cuidSchema,
           title: z.string(),
@@ -269,7 +268,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 201 }
         );
       }
-      case: 'search': {
+      case 'search': {
         const redis = await getRedis();
         type DocumentSearchRequest = z.infer<typeof DocumentSearchSchema>;
         const searchCriteria: DocumentSearchRequest = DocumentSearchSchema.parse(requestBody);
@@ -330,7 +329,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           },
         });
       }
-      case: 'concepts': {
+      case 'concepts': {
         const redis = await getRedis();
         type ConceptAnalysisRequest = z.infer<typeof ConceptAnalysisSchema>;
         const { documentIds }: ConceptAnalysisRequest = ConceptAnalysisSchema.parse(requestBody);
@@ -382,7 +381,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           },
         });
       }
-      case: 'similar-cases': {
+      case 'similar-cases': {
         const redis = await getRedis();
         type SimilarCasesRequest = z.infer<typeof SimilarCasesSchema>;
         const { caseId, threshold }: SimilarCasesRequest = SimilarCasesSchema.parse(requestBody);
@@ -434,7 +433,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           },
         });
       }
-      case: 'citation-network': {
+      case 'citation-network': {
         type CitationNetworkRequest = z.infer<typeof CitationNetworkSchema>;
         const { documentId, depth }: CitationNetworkRequest = CitationNetworkSchema.parse(requestBody);
         const citationNetwork = await jsonbLegalService.buildCitationNetwork(documentId, depth);
@@ -456,8 +455,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           },
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown endpoint: ${path}`,

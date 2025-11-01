@@ -235,13 +235,13 @@ export class AIProviderRouter {
    */
   private async callProvider(provider: LLMProviderConfig, request: LLMRequest): Promise<LLMResponse> {
     switch (provider.type) {
-      case: 'tensorrt':
+      case 'tensorrt':
         return this.callTensorRT(provider, request);
-      case: 'vllm':
+      case 'vllm':
         return this.callVLLM(provider, request);
-      case: 'ollama':
+      case 'ollama':
         return this.callOllama(provider, request);
-      case: 'openai':
+      case 'openai':
         return this.callOpenAI(provider, request);
       default:
         throw new Error(`Unknown provider type: ${provider.type}`);

@@ -490,13 +490,13 @@ https://svelte.dev/e/js_parse_error -->
     // fixed: no $state for local var
     let fragmentShader = '';
     switch (aaType) {
-      case: 'fxaa':
+      case 'fxaa':
         fragmentShader = yorhaShaderTemplates.fxaa_fragment;
         break;
-      case: 'taa':
+      case 'taa':
         fragmentShader = yorhaShaderTemplates.taa_fragment;
         break;
-      case: 'smaa':
+      case 'smaa':
         fragmentShader = yorhaShaderTemplates.smaa_fragment;
         break;
       default:
@@ -516,15 +516,15 @@ https://svelte.dev/e/js_parse_error -->
   function calculateAAQualityScore(): number {
     let score = 0.3;
     switch (aaConfig?.type) {
-      case: 'taa': score += 0.4; break;
-      case: 'smaa': score += 0.3; break;
-      case: 'msaa': score += 0.2; break;
-      case: 'fxaa': score += 0.1; break;
+      case 'taa': score += 0.4; break;
+      case 'smaa': score += 0.3; break;
+      case 'msaa': score += 0.2; break;
+      case 'fxaa': score += 0.1; break;
     }
     switch (aaConfig?.quality) {
-      case: 'ultra': score += 0.3; break;
-      case: 'high': score += 0.2; break;
-      case: 'medium': score += 0.1; break;
+      case 'ultra': score += 0.3; break;
+      case 'high': score += 0.2; break;
+      case 'medium': score += 0.1; break;
     }
     return Math.min(score, 1.0);
   }

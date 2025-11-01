@@ -131,7 +131,7 @@ function normalizeJobState(state: string): JobStatusResult['status'] {
 	const allowed = new Set(['completed', 'failed', 'waiting', 'active', 'delayed']);
 	if (allowed.has(state)) return state as JobStatusResult['status'];
 	// fallback to: 'waiting' when unknown (keeps typing safe)
-	return: 'waiting';
+	return 'waiting';
 }
 
 // Typed helper to call getJobCounts() without using `any`

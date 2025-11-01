@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const startTime = performance.now();
 
     switch (scenario) {
-      case: 'standard': {
+      case 'standard': {
         // Standard benchmark with default test data
         const standardBench = await benchmarkJSONParsing(iterations);
         return json({
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'legal_document': {
+      case 'legal_document': {
         // Benchmark with legal document-like payload
         const legalDoc = {
           documentId: 'doc-' + Date.now(),
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'vector_operations': {
+      case 'vector_operations': {
         // Benchmark with vector/tensor data
         const vectorData = {
           operation: 'similarity_compute',
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'rabbitmq_message': {
+      case 'rabbitmq_message': {
         // Benchmark with RabbitMQ message payload
         const rabbitMessage = {
           jobId: 'job-' + Date.now(),
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'cache_operations': {
+      case 'cache_operations': {
         // Benchmark with cache entry payload
         const cacheEntries = Array.from({ length: 100 }, (_, i) => ({
           key: `cache-key-${i}`,
@@ -265,7 +265,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'comparison': {
+      case 'comparison': {
         // Run all scenarios for comparison
         type BenchmarkResult = { data?: unknown; speedup?: number; [k: string]: unknown };
         const scenarios = ['legal_document', 'vector_operations', 'rabbitmq_message', 'cache_operations'];
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'system_info': {
+      case 'system_info': {
         // Return system and SIMD status information
         const simdStatus = getSIMDStatus();
         const stats = simdMetrics.getStats();
@@ -371,7 +371,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body;
     const startTime = performance.now();
     switch (testType) {
-      case: 'load': {
+      case 'load': {
         // Run sustained load test
         const loadResults = await runLoadTest(duration, concurrency, payloadSize, scenario);
         return json({
@@ -384,7 +384,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'stress': {
+      case 'stress': {
         // Gradually increase load until failure
         const stressResults = await runStressTest(duration, payloadSize);
         return json({
@@ -397,7 +397,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'spike': {
+      case 'spike': {
         // Sudden traffic spikes
         const spikeResults = await runSpikeTest(concurrency * 5, payloadSize);
         return json({
@@ -410,8 +410,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown test type: ${testType}`,

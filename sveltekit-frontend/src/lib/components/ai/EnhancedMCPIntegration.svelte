@@ -135,7 +135,7 @@
   function handleRealtimeUpdate(data: any) {
     if (!data || !data.type) return;
     switch (data.type) {
-      case: 'cluster-metrics-update':
+      case 'cluster-metrics-update':
         clusterMetrics.set({
           activeWorkers: data.metrics?.activeWorkers || 0,
           totalRequests: data.metrics?.totalRequests || 0,
@@ -144,12 +144,12 @@
           cacheHitRate: data.metrics?.cacheHitRate || 0,
         });
         break;
-      case: 'mcp-tool-status':
+      case 'mcp-tool-status':
         mcpTools.update(tools =>
           tools.map(tool => (tool.id === data.toolId ? { ...tool, status: data.status, lastUsed: new Date() } : tool))
         );
         break;
-      case: 'query-result':
+      case 'query-result':
         queryResults.update(r => [data.result, ...r].slice(0, 20));
         break;
     }

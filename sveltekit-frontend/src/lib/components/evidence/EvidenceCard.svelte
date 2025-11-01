@@ -31,23 +31,22 @@
 
   const getIcon = (type: Evidence["type"]) => {
     switch (type) {
-      case: "document":
+      case "document":
         return FileText;
-      case: "image":
+      case "image":
         return Image;
-      case: "video":
+      case "video":
         return Video;
-      case: "audio":
+      case "audio":
         return Headphones;
-      case: "link":
+      case "link":
         return Link;
-      default:
-        return FileText;
+      default: return FileText;
     }
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (!bytes || bytes === 0) return: "0 Bytes";
+    if (!bytes || bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

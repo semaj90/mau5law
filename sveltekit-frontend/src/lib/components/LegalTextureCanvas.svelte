@@ -226,16 +226,15 @@
    */
   function getItemColor(type: string): string {
     switch (type) {
-      case: 'photo':
-        return: '#ff4444';
-      case: 'document':
-        return: '#44ff44';
-      case: 'physical':
-        return: '#4444ff';
-      case: 'digital':
-        return: '#ffff44';
-      default:
-        return: '#888888';
+      case 'photo':
+        return '#ff4444';
+      case 'document':
+        return '#44ff44';
+      case 'physical':
+        return '#4444ff';
+      case 'digital':
+        return '#ffff44';
+      default: return '#888888';
     }
   }
   /**

@@ -21,14 +21,14 @@ https://svelte.dev/e/js_parse_error -->
   let currentTime = $state(new Date());
   // Status indicators
   let systemStatus = $derived(() => {
-    if (systemLoad > 90 || memoryUsage > 90) return: 'critical';
-    if (systemLoad > 75 || memoryUsage > 75) return: 'warning';
-    return: 'normal';
+    if (systemLoad > 90 || memoryUsage > 90) return 'critical';
+    if (systemLoad > 75 || memoryUsage > 75) return 'warning';
+    return 'normal';
   });
   let networkStatus = $derived(() => {
-    if (networkLatency > 100) return: 'poor';
-    if (networkLatency > 50) return: 'fair';
-    return: 'excellent';
+    if (networkLatency > 100) return 'poor';
+    if (networkLatency > 50) return 'fair';
+    return 'excellent';
   });
   // Real-time updates
   let updateInterval: ReturnType<typeof setInterval> | null = null;
@@ -57,18 +57,18 @@ https://svelte.dev/e/js_parse_error -->
 
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'critical': return: 'text-red-400';
-      case: 'warning': return: 'text-yellow-400';
-      case: 'normal': return: 'text-green-400';
-      case: 'poor': return: 'text-red-400';
-      case: 'fair': return: 'text-yellow-400';
-      case: 'excellent': return: 'text-green-400';
+      case 'critical': return 'text-red-400';
+      case 'warning': return 'text-yellow-400';
+      case 'normal': return 'text-green-400';
+      case 'poor': return 'text-red-400';
+      case 'fair': return 'text-yellow-400';
+      case 'excellent': return 'text-green-400';
     }
   }
   function getProgressBarColor(value: number): string {
-    if (value > 85) return: 'bg-red-500';
-    if (value > 70) return: 'bg-yellow-500';
-    return: 'bg-green-500';
+    if (value > 85) return 'bg-red-500';
+    if (value > 70) return 'bg-yellow-500';
+    return 'bg-green-500';
   }
   function formatUptime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);

@@ -17,13 +17,13 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case: 'status':
+      case 'status':
         return json({
           ready: await startupFlagService.isReady(),
           summary: startupFlagService.getServiceSummary(),
           timestamp: Date.now(),
         });
-      case: 'health': {
+      case 'health': {
         const summary: StartupServiceSummary = startupFlagService.getServiceSummary();
         const healthGrade = calculateOverallHealth(summary);
         return json({
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'diff':
+      case 'diff':
         try {
           const diffPath = join(logsDir, 'startup-diff.json');
           if (existsSync(diffPath)) {
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
             { status: 500 }
           );
         }
-      case: 'flag':
+      case 'flag':
         try {
           const flagPath = join(logsDir, 'ready.flag');
           if (existsSync(flagPath)) {
@@ -97,8 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
             { status: 500 }
           );
         }
-      default:
-        return json(
+      default: return json(
           {
             error: 'Invalid action',
             availableActions: ['status', 'health', 'diff', 'flag'],
@@ -125,21 +124,21 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case: 'start':
+      case 'start':
         await startupFlagService.startMonitoring();
         return json({
           success: true,
           message: 'Startup monitoring initiated',
           timestamp: Date.now(),
         });
-      case: 'shutdown':
+      case 'shutdown':
         await startupFlagService.shutdown();
         return json({
           success: true,
           message: 'Startup monitoring shutdown',
           timestamp: Date.now(),
         });
-      case: 'check-ready': {
+      case 'check-ready': {
         const isReady = await startupFlagService.isReady();
         const summary = startupFlagService.getServiceSummary();
         return json({
@@ -151,8 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: Date.now(),
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             error: 'Invalid action',
             availableActions: ['start', 'shutdown', 'check-ready'],
@@ -180,19 +178,19 @@ function calculateOverallHealth(summary: StartupServiceSummary): string {
   const criticalFailed = Object.values(summary.services).filter(s => !s.isOptional && s.status === 'failed').length;
   // Critical services failed = critical health
   if (criticalFailed > 0) {
-    return: 'critical';
+    return 'critical';
   }
   // All services ready = excellent
   if (readyServices === totalServices) {
-    return: 'excellent';
+    return 'excellent';
   }
   // Most services ready = good
   const readyRatio = readyServices / totalServices;
   if (readyRatio >= 0.9) {
-    return: 'good';
+    return 'good';
   } else if (readyRatio >= 0.7) {
-    return: 'fair';
+    return 'fair';
   } else {
-    return: 'poor';
+    return 'poor';
   }
 }

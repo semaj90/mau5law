@@ -381,7 +381,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
   	function handleServiceWorkerMessage(message: any) { // Use: 'any' for now as message structure is not fully defined
   		switch (message.type) {
-  			case: 'CACHE_HIT':
+  			case 'CACHE_HIT':
   				serviceWorkerStore.update(store => ({
   					...store,
   					performance: {
@@ -391,7 +391,7 @@ https://svelte.dev/e/js_parse_error -->
   					}
   				}));
   				break;
-  			case: 'PERFORMANCE_UPDATE':
+  			case 'PERFORMANCE_UPDATE':
   				serviceWorkerStore.update(store => ({
   					...store,
   					performance: {

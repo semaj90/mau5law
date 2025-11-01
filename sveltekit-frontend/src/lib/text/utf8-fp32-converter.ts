@@ -133,9 +133,9 @@ export class UTF8ToFP32Converter {
   }
   private encodeText(text: string, encoding: string): Uint8Array {
     switch (encoding) {
-      case: 'utf8':
+      case 'utf8':
         return this.textEncoder.encode(text);
-      case: 'utf16': {
+      case 'utf16': {
         // UTF-16 encoding (simplified)
         const utf16Array = new Uint16Array(text.length);
         for (let i = 0; i < text.length; i++) {
@@ -143,7 +143,7 @@ export class UTF8ToFP32Converter {
         }
         return new Uint8Array(utf16Array.buffer);
       }
-      case: 'ascii': {
+      case 'ascii': {
         // ASCII encoding (7-bit)
         const asciiArray = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
@@ -152,7 +152,7 @@ export class UTF8ToFP32Converter {
         }
         return asciiArray;
       }
-      case: 'latin1': {
+      case 'latin1': {
         // Latin-1 encoding (8-bit)
         const latin1Array = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
@@ -161,8 +161,7 @@ export class UTF8ToFP32Converter {
         }
         return latin1Array;
       }
-      default:
-        return this.textEncoder.encode(text);
+      default: return this.textEncoder.encode(text);
     }
   }
   private bytesToFP32(bytes: Uint8Array, _config: TextConversionOptions): Float32Array {
@@ -203,7 +202,7 @@ export class UTF8ToFP32Converter {
     const result = new Float32Array(fp32Values);
     const [minRange, maxRange] = config.outputRange;
     switch (config.normalizationMethod) {
-      case: 'range': {
+      case 'range': {
         // Min-max normalization to specified range
         let currentMin = Infinity;
         let currentMax = -Infinity;
@@ -220,7 +219,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case: 'unicode': {
+      case 'unicode': {
         // Normalize based on Unicode code point ranges
         for (let i = 0; i < result.length; i++) {
           // Normalize to [-1, 1] based on full Unicode range (0-1114111)
@@ -229,7 +228,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case: 'gaussian': {
+      case 'gaussian': {
         // Gaussian normalization (z-score)
         let sum = 0;
         for (let i = 0; i < result.length; i++) sum += result[i];
@@ -248,7 +247,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case: 'sigmoid': {
+      case 'sigmoid': {
         // Sigmoid normalization for smooth mapping
         for (let i = 0; i < result.length; i++) {
           const normalized = 1 / (1 + Math.exp(-result[i] / 32));
@@ -343,14 +342,14 @@ export class UTF8ToFP32Converter {
       return reconstructed;
     } catch (error) {
       console.error('❌ FP32 to text reconstruction failed:', error);
-      return: '';
+      return '';
     }
   }
   private reverseNormalization(fp32Array: Float32Array, config: TextConversionOptions): Float32Array {
     const result = new Float32Array(fp32Array);
     const [minRange, maxRange] = config.outputRange;
     switch (config.normalizationMethod) {
-      case: 'range': {
+      case 'range': {
         // Reverse min-max normalization (assuming original range was 0-255)
         const targetRange = maxRange - minRange;
         for (let i = 0; i < result.length; i++) {
@@ -358,7 +357,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case: 'unicode': {
+      case 'unicode': {
         // Reverse Unicode normalization
         for (let i = 0; i < result.length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 2 - 1;
@@ -366,7 +365,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case: 'gaussian': {
+      case 'gaussian': {
         // Reverse Gaussian normalization (approximate)
         for (let i = 0; i < result.length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 6 - 3;
@@ -374,7 +373,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case: 'sigmoid': {
+      case 'sigmoid': {
         // Reverse sigmoid normalization
         for (let i = 0; i < result.length; i++) {
           const sigmoid = (result[i] - minRange) / (maxRange - minRange);

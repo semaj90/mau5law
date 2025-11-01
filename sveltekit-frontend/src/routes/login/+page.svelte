@@ -11,7 +11,7 @@
     taintedMessage: null,
   });
   // Show success banner if coming from registration
-  let registrationSuccess = $state(data.registrationSuccess);
+  let registrationSuccess = $derived(data.registrationSuccess);
 </script>
 
 {#if registrationSuccess}
@@ -107,7 +107,7 @@
     border-radius: 0.375rem;
     cursor: pointer;
   }
-  buttonhover {
+  button:hover {
     background: #0056b3;
   }
   .demo-login {

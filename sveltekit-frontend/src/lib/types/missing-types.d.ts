@@ -84,7 +84,7 @@ declare global {
   const prisma: any;
 }
 // Langchain missing exports
-declare module: '@langchain/community/vectorstores/pgvector' {
+declare module '@langchain/community/vectorstores/pgvector' {
   export class PGVectorStore {
     static initialize(config: any): Promise<PGVectorStore>;
     static fromExistingIndex(config: any): Promise<PGVectorStore>;
@@ -97,7 +97,7 @@ declare module: '@langchain/community/vectorstores/pgvector' {
     INNER_PRODUCT = 'innerProduct',
   }
 }
-declare module: '@langchain/community/vectorstores/neo4j_vector' {
+declare module '@langchain/community/vectorstores/neo4j_vector' {
   export class Neo4jVectorStore {
     constructor(config: any);
     static fromExistingIndex(config: any): Promise<Neo4jVectorStore>;
@@ -105,7 +105,7 @@ declare module: '@langchain/community/vectorstores/neo4j_vector' {
   }
 }
 // XState v5 compatibility stubs
-declare module: 'xstate' {
+declare module 'xstate' {
   export interface StateId {
     [key: string]: any;
   }
@@ -130,7 +130,7 @@ declare module: 'xstate' {
   export function createActor<T>(machine: any): Actor<T>;
 }
 // Redis stub
-declare module: 'ioredis' {
+declare module 'ioredis' {
   export default class Redis {
     constructor(config?: any);
     get(_key: string): Promise<string | null>;

@@ -431,19 +431,19 @@ export class WebGPUSOMCache {
   }
   private determineSeverity(message: string): 'low' | 'medium' | 'high' | 'critical' {
     const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('critical') || lowerMessage.includes('fatal')) return: 'critical';
-    if (lowerMessage.includes('error') || lowerMessage.includes('cannot')) return: 'high';
-    if (lowerMessage.includes('warning') || lowerMessage.includes('deprecated')) return: 'medium';
-    return: 'low';
+    if (lowerMessage.includes('critical') || lowerMessage.includes('fatal')) return 'critical';
+    if (lowerMessage.includes('error') || lowerMessage.includes('cannot')) return 'high';
+    if (lowerMessage.includes('warning') || lowerMessage.includes('deprecated')) return 'medium';
+    return 'low';
   }
   private determineCategory(message: string): string {
     const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('type') || lowerMessage.includes('property')) return: 'typescript';
-    if (lowerMessage.includes('import') || lowerMessage.includes('module')) return: 'import';
-    if (lowerMessage.includes('syntax') || lowerMessage.includes('unexpected')) return: 'syntax';
-    if (lowerMessage.includes('service') || lowerMessage.includes('fetch')) return: 'service';
-    if (lowerMessage.includes('build') || lowerMessage.includes('compile')) return: 'build';
-    return: 'general';
+    if (lowerMessage.includes('type') || lowerMessage.includes('property')) return 'typescript';
+    if (lowerMessage.includes('import') || lowerMessage.includes('module')) return 'import';
+    if (lowerMessage.includes('syntax') || lowerMessage.includes('unexpected')) return 'syntax';
+    if (lowerMessage.includes('service') || lowerMessage.includes('fetch')) return 'service';
+    if (lowerMessage.includes('build') || lowerMessage.includes('compile')) return 'build';
+    return 'general';
   }
   private async computeErrorEmbeddingsGPU(errors: NPMError[]): Promise<Float32Array[]> {
     if (!this.device) return [];
@@ -588,7 +588,7 @@ export class WebGPUSOMCache {
   private generateSuggestedFixes(category: string): string[] {
     const fixes: Record<string, string[]> = {
       typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import: ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
+      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
       syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
@@ -799,7 +799,7 @@ export class WebGPUSOMCache {
   private generateSuggestedFixes(category: string): string[] {
     const fixes: Record<string, string[]> = {
       typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import: ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
+      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
       syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
@@ -1010,7 +1010,7 @@ export class WebGPUSOMCache {
   private generateSuggestedFixes(category: string): string[] {
     const fixes: Record<string, string[]> = {
       typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import: ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
+      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
       syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
@@ -1221,7 +1221,7 @@ export class WebGPUSOMCache {
   private generateSuggestedFixes(category: string): string[] {
     const fixes: Record<string, string[]> = {
       typescript: ['Add missing type declarations', 'Fix import statements', 'Update tsconfig.json'],
-      import: ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
+      import ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
       syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],

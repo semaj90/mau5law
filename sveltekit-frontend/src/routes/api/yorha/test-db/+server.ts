@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
       service: 'yorha-db-test',
     };
     switch (action) {
-      case: 'test-connection':
+      case 'test-connection':
         // Test basic database connectivity
         const connectionTest = await db.execute(sql`SELECT version(), current_database(), current_user`);
         results.results.connection = {
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'connected',
         };
         break;
-      case: 'test-pgvector':
+      case 'test-pgvector':
         // Test pgvector extension
         try {
           const vectorTest = await db.execute(sql`SELECT extname FROM pg_extension WHERE extname = 'vector'`);
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
           };
         }
         break;
-      case: 'test-json':
+      case 'test-json':
         // Test JSONB functionality
         const testDoc = {
           title: 'YoRHa Test Document',
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'success',
         };
         break;
-      case: 'test-vector':
+      case 'test-vector':
         // Test vector operations (if available)
         try {
           // Create a test vector
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
           };
         }
         break;
-      case: 'test-full-stack':
+      case 'test-full-stack':
         // Comprehensive test of all functionality
         const fullStackResults: any = {};
         // 1. Connection test
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         results.results.fullStack = fullStackResults;
         break;
-      case: 'cleanup':
+      case 'cleanup':
         // Clean up test data
         const cleanupResult = await db.execute(sql`
           DELETE FROM legal_documents

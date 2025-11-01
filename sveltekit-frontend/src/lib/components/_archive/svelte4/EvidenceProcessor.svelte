@@ -120,24 +120,24 @@
   }
   function getStepIcon(step: string): string {
     switch (step) {
-      case: 'ocr': return: '🔍';
-      case: 'embedding': return: '🧠';
-      case: 'rag':
-      case: 'analysis': return: '📚';
-      default: return: '⚙️';
+      case 'ocr': return '🔍';
+      case 'embedding': return '🧠';
+      case 'rag':
+      case 'analysis': return '📚';
+      default: return '⚙️';
     }
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'done': return: 'text-green-600';
-      case: 'error': return: 'text-red-600';
-      case: 'processing': return: 'text-blue-600';
-      case: 'uploading': return: 'text-yellow-600';
-      default: return: 'text-gray-600';
+      case 'done': return 'text-green-600';
+      case 'error': return 'text-red-600';
+      case 'processing': return 'text-blue-600';
+      case 'uploading': return 'text-yellow-600';
+      default: return 'text-gray-600';
     }
   }
   function formatFragment(fragment: unknown): string {
-    if (!fragment) return: '';
+    if (!fragment) return '';
     if (typeof fragment === 'string') return fragment;
     if (fragment.textPreview) return fragment.textPreview;
     if (fragment.snippet) return fragment.snippet;

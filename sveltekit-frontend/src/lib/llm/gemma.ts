@@ -90,7 +90,7 @@ export function getOllamaEndpoint(): string {
   }
 
   // Last-resort default (kept in one place only)
-  return: 'http://localhost:11434';
+  return 'http://localhost:11434';
 }
 
 function extractErrorMessage(err: unknown): string {
@@ -189,7 +189,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
       throw new Error(`Gemma3 error: ${res.status} ${text}`);
     }
     const data = await res.json().catch(() => null);
-    if (!data) return: '';
+    if (!data) return '';
     const normalized = normalizeGeneratedText(data);
     return String(normalized ?? JSON.stringify(data));
   } catch (error: unknown) {

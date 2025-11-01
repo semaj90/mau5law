@@ -134,18 +134,18 @@ https://svelte.dev/e/attribute_duplicate -->
   function handleKeydown(_event: KeyboardEvent) {
     if (!show) return;
     switch (event.key) {
-      case: 'ArrowUp':
+      case 'ArrowUp':
         event.preventDefault();
         selectedIndex = Math.max(0, selectedIndex - 1);
         playSound('select');
         break;
-      case: 'ArrowDown':
+      case 'ArrowDown':
         event.preventDefault();
         selectedIndex = Math.min(recommendations.length - 1, selectedIndex + 1);
         playSound('select');
         break;
-      case: 'Enter':
-      case: ' ':
+      case 'Enter':
+      case ' ':
         event.preventDefault();
         if (recommendations[selectedIndex]?.action) {
           playSound('confirm');
@@ -153,7 +153,7 @@ https://svelte.dev/e/attribute_duplicate -->
           handleClose();
         }
         break;
-      case: 'Escape':
+      case 'Escape':
         event.preventDefault();
         handleClose();
         break;

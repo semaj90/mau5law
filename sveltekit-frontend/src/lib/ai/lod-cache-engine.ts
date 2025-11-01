@@ -608,11 +608,11 @@ class LODCacheEngine {
     return Math.abs(hash).toString(36);
   }
   private determinePrimaryLODLevel(text: string): LODLevel {
-    if (text.length <= 10) return: 'glyph';
-    if (text.length <= 50) return: 'tile';
-    if (text.length <= 250) return: 'block';
-    if (text.length <= 1500) return: 'section';
-    return: 'document';
+    if (text.length <= 10) return 'glyph';
+    if (text.length <= 50) return 'tile';
+    if (text.length <= 250) return 'block';
+    if (text.length <= 1500) return 'section';
+    return 'document';
   }
   private async calculatePredictionConfidence(text: string, context: LODProcessingContext): Promise<number> {
     // Simple confidence calculation - would be more sophisticated in production
@@ -751,9 +751,9 @@ class LODCacheEngine {
     return entry.svg_summaries[lodPreference || 'tile'];
   }
   private determineBestLODForQuery(entry: LODCacheEntry, query: string): LODLevel {
-    if (query.length <= 20) return: 'glyph';
-    if (query.length <= 100) return: 'tile';
-    return: 'block';
+    if (query.length <= 20) return 'glyph';
+    if (query.length <= 100) return 'tile';
+    return 'block';
   }
   private async synthesizeEnhancedContext(results: EnhancedRAGResultItem[], query: string): Promise<string> {
     const contexts = results.map(r => r.contextual_prompt).join('\n\n');

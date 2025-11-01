@@ -152,18 +152,18 @@
   }
   function getServiceStatusColor(status: string): string {
     switch (status) {
-      case: 'healthy': return: 'text-green-400';
-      case: 'degraded': return: 'text-yellow-400';
-      case: 'offline': return: 'text-red-400';
-      default: return: 'text-gray-400';
+      case 'healthy': return 'text-green-400';
+      case 'degraded': return 'text-yellow-400';
+      case 'offline': return 'text-red-400';
+      default: return 'text-gray-400';
     }
   }
   function getServiceStatusIcon(status: string): string {
     switch (status) {
-      case: 'healthy': return: '✅';
-      case: 'degraded': return: '⚠️';
-      case: 'offline': return: '❌';
-      default: return: '🔄';
+      case 'healthy': return '✅';
+      case 'degraded': return '⚠️';
+      case 'offline': return '❌';
+      default: return '🔄';
     }
   }
 </script>

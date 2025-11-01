@@ -247,16 +247,16 @@ export class QLorATrainingService {
       this.worker.onmessage = event => {
         const { type, data } = event.data;
         switch (type) {
-          case: 'training_progress':
+          case 'training_progress':
             this.updateTrainingProgress(data);
             break;
-          case: 'training_completed':
+          case 'training_completed':
             this.handleTrainingCompleted(data);
             break;
-          case: 'training_error':
+          case 'training_error':
             this.handleTrainingError(data);
             break;
-          case: 'reinforcement_update':
+          case 'reinforcement_update':
             this.handleReinforcementUpdate(data);
             break;
         }
@@ -473,7 +473,7 @@ export class QLorATrainingService {
     // Extract from case summary
     if (caseData.summary) {
       examples.push({
-        prompt: `Summarize the key facts of this legal case: ${caseData.title || 'Legal Case'}`,
+        prompt: `Summarize the key facts of this legal case ${caseData.title || 'Legal Case'}`,
         completion: caseData.summary,
       });
     }

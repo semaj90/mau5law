@@ -247,7 +247,7 @@
   function handleWebSocketMessage(data: unknown) {
     const payload = data as any;
     switch (payload.type) {
-      case: 'connected':
+      case 'connected':
         clientId = (payload.clientId as string) ?? clientId;
         gpuStatus = (payload.gpuConfig as any) ?? gpuStatus;
         // update derived GPU fields
@@ -255,7 +255,7 @@
         tensorRTEnabled = !!(gpuStatus as any)?.tensorRT?.enabled;
         console.log('Connected with ID:', clientId);
         break;
-      case: 'chat_response':
+      case 'chat_response':
         {
           const content = (payload.response ?? payload.content) as string;
           const message: GPUChatMessage = {
@@ -272,25 +272,25 @@
           }
         }
         break;
-      case: 'typing':
+      case 'typing':
         isTyping = Boolean(payload.isTyping);
         break;
-      case: 'user_joined':
+      case 'user_joined':
         connectedUsers++;
         showNotification(`User joined room: ${payload.clientId}`, 'info');
         break;
-      case: 'user_left':
+      case 'user_left':
         connectedUsers = Math.max(0, connectedUsers - 1);
         break;
-      case: 'document_processed':
+      case 'document_processed':
         showNotification('Document processed successfully', 'success');
         handleDocumentResult(payload);
         break;
-      case: 'batch_complete':
+      case 'batch_complete':
         handleBatchResults(payload.results as any[]);
         batchMode = false;
         break;
-      case: 'error':
+      case 'error':
         console.error(payload.error);
         showNotification('Error: ' + payload.error, 'error');
         isTyping = false;

@@ -209,7 +209,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       }
       let syncResults: QdrantSyncResult; // typed syncResults
       switch (source) {
-        case: 'postgres': {
+        case 'postgres': {
           // Check if collection exists (typed using local QdrantCollectionInfo)
           const collections: QdrantCollectionInfo[] = await qdrant.getCollections();
           const collectionExists = collections.some((c: QdrantCollectionInfo) => c.name === collection);
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     const collection = url.searchParams.get('collection') || 'legal_documents';
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case: 'search': {
+      case 'search': {
         const query = url.searchParams.get('query');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100);
         const offset = parseInt(url.searchParams.get('offset') || '0');
@@ -365,7 +365,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      case: 'status':
+      case 'status':
       default: {
         let collections: QdrantCollectionInfo[]; // Explicitly typed collections
         let collectionInfo: QdrantCollectionInfo; // Explicitly typed collectionInfo (permissive)

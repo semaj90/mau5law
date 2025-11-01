@@ -35,7 +35,7 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
           headers: { 'Content-Type': 'application/json' }
         });
         if (!response.ok) {
-          throw new Error(`Failed to load case: ${response.status}`);
+          throw new Error(`Failed to load case ${response.status}`);
         }
         const caseData = await response.json();
         // Auto-load evidence if requested
@@ -46,7 +46,7 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
           }
         }
         return {
-          case: caseData.case || caseData,
+          case caseData.case || caseData,
           evidence: caseData.evidence || []
         }
       }),

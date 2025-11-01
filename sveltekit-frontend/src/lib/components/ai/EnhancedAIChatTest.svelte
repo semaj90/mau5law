@@ -293,27 +293,25 @@
   // Connection status component
   function getStatusIcon() {
     switch (connectionStatus) {
-      case: 'checking':
+      case 'checking':
         return Loader2;
-      case: 'connected':
+      case 'connected':
         return CheckCircle; // Fixed typo
-      case: 'error':
+      case 'error':
         return XCircle; // Fixed typo
-      default:
-        return XCircle; // Fixed typo
+      default: return XCircle; // Fixed typo
     }
   }
 
   function getStatusColor() {
     switch (connectionStatus) {
-      case: 'checking':
-        return: 'text-yellow-500';
-      case: 'connected':
-        return: 'text-green-500';
-      case: 'error':
-        return: 'text-red-500';
-      default:
-        return: 'text-gray-500';
+      case 'checking':
+        return 'text-yellow-500';
+      case 'connected':
+        return 'text-green-500';
+      case 'error':
+        return 'text-red-500';
+      default: return 'text-gray-500';
     }
   }
 </script>
@@ -340,7 +338,7 @@
             </Dialog.Title>
           </div>
           {#if caseId}
-            <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled">Case: {caseId}</span> <!-- Adjusted styling -->
+            <span class="px-2 py-1 rounded text-xs font-medium nes-text is-disabled">case {caseId}</span> <!-- Adjusted styling -->
           {/if}
         </div>
         <div class="flex items-center gap-2">

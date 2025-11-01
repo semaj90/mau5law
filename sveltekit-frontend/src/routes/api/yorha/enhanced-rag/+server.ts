@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Database search for relevant legal data
     let dbResults: DBRecord[] = [];
     switch (dataType) {
-      case: 'documents':
+      case 'documents':
         dbResults = await db
           .select()
           .from(legalDocuments)
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
           )
           .limit(limit);
         break;
-      case: 'cases':
+      case 'cases':
         dbResults = await db
           .select()
           .from(cases)
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
           )
           .limit(limit);
         break;
-      case: 'evidence':
+      case 'evidence':
         dbResults = await db
           .select()
           .from(evidence)
@@ -295,29 +295,29 @@ function calculateRiskFactor(result: AnalysisResult): number {
 }
 function determineActionRequired(result: AnalysisResult): string {
   const riskFactor = calculateRiskFactor(result);
-  if (riskFactor > 0.7) return: 'URGENT';
-  if (riskFactor > 0.4) return: 'REVIEW';
-  return: 'MONITOR';
+  if (riskFactor > 0.7) return 'URGENT';
+  if (riskFactor > 0.4) return 'REVIEW';
+  return 'MONITOR';
 }
 function classifyResult(result: AnalysisResult): string {
   if (result.documentType) return String(result.documentType).toUpperCase();
   if (result.evidenceType) return String(result.evidenceType).toUpperCase();
-  if (result.source === 'enhanced-rag') return: 'AI_ANALYSIS';
-  return: 'GENERAL';
+  if (result.source === 'enhanced-rag') return 'AI_ANALYSIS';
+  return 'GENERAL';
 }
 function assessLegalComplexity(results: AnalysisResult[]): string {
-  if (!results.length) return: 'LOW';
+  if (!results.length) return 'LOW';
   const avgLegalWeight = results.reduce((acc, r) => acc + (r.yorha_analysis?.legalWeight || 0), 0) / results.length;
-  if (avgLegalWeight > 0.7) return: 'HIGH';
-  if (avgLegalWeight > 0.4) return: 'MEDIUM';
-  return: 'LOW';
+  if (avgLegalWeight > 0.7) return 'HIGH';
+  if (avgLegalWeight > 0.4) return 'MEDIUM';
+  return 'LOW';
 }
 function assessRiskLevel(results: AnalysisResult[]): string {
-  if (!results.length) return: 'LOW';
+  if (!results.length) return 'LOW';
   const avgRiskFactor = results.reduce((acc, r) => acc + (r.yorha_analysis?.riskFactor || 0), 0) / results.length;
-  if (avgRiskFactor > 0.7) return: 'HIGH';
-  if (avgRiskFactor > 0.4) return: 'MEDIUM';
-  return: 'LOW';
+  if (avgRiskFactor > 0.7) return 'HIGH';
+  if (avgRiskFactor > 0.4) return 'MEDIUM';
+  return 'LOW';
 }
 function extractJurisdiction(results: AnalysisResult[]): string[] {
   const jurisdictions = new Set<string>();

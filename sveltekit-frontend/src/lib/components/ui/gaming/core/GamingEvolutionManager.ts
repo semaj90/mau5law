@@ -157,22 +157,22 @@ export class GamingEvolutionManager {
       const canvas = document.createElement('canvas');
       const gl = (canvas.getContext('webgl') ||
         canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
-      if (!gl) return: 'basic';
+      if (!gl) return 'basic';
 
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-      if (!debugInfo) return: 'integrated';
+      if (!debugInfo) return 'integrated';
 
       const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) as unknown;
       if (typeof renderer === 'string') {
         const r = renderer.toLowerCase();
         if (r.includes('nvidia') || r.includes('amd') || r.includes('radeon') || r.includes('geforce')) {
-          return: 'discrete';
+          return 'discrete';
         }
-        return: 'integrated';
+        return 'integrated';
       }
-      return: 'integrated';
+      return 'integrated';
     } catch {
-      return: 'unknown';
+      return 'unknown';
     }
   }
 
@@ -188,7 +188,7 @@ export class GamingEvolutionManager {
     } catch {
       // fallthrough
     }
-    return: 'unknown';
+    return 'unknown';
   }
 
   private hasWebGL(): boolean {
@@ -275,9 +275,9 @@ export class GamingEvolutionManager {
 
   private getPerformanceLevel(frameTime: number): GamingThemeState['performanceLevel'] {
     const threshold = this.config.performanceThreshold ?? 16.67;
-    if (frameTime > threshold * 2) return: 'low';
-    if (frameTime > threshold) return: 'medium';
-    return: 'high';
+    if (frameTime > threshold * 2) return 'low';
+    if (frameTime > threshold) return 'medium';
+    return 'high';
   }
 
   private updatePerformanceLevel(level: GamingThemeState['performanceLevel']): void {
@@ -301,18 +301,18 @@ export class GamingEvolutionManager {
   }
 
   private determineOptimalEra(): GamingEra {
-    if (!this.capabilities) return: '8bit';
+    if (!this.capabilities) return '8bit';
     const { memory, cores, gpu, webgl, webgpu } = this.capabilities;
     // N64 requirements: Good GPU, WebGL, 4GB+ memory
     if (webgpu || (webgl && gpu !== 'basic' && memory >= 4 && cores >= 4)) {
-      return: 'n64';
+      return 'n64';
     }
     // SNES requirements: Moderate specs
     if (memory >= 2 && cores >= 2) {
-      return: '16bit';
+      return '16bit';
     }
     // NES: Universal fallback
-    return: '8bit';
+    return '8bit';
   }
 
   public async setEra(era: GamingEra): Promise<void> {

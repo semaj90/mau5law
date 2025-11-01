@@ -346,7 +346,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     switch (action) {
-      case: 'test_user_flow': {
+      case 'test_user_flow': {
         // Simulate complete user workflow
         const result = await simulateUserWorkflow();
         return json({
@@ -356,7 +356,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: Date.now() - startTime,
         });
       }
-      case: 'test_document_processing': {
+      case 'test_document_processing': {
         // Test document processing pipeline
         const result = await testDocumentProcessingPipeline();
         return json({
@@ -366,8 +366,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: Date.now() - startTime,
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',

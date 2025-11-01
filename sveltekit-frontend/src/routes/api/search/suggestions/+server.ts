@@ -447,21 +447,21 @@ function extractRelatedTerms(text: string, category: string): string[] {
 function determineJurisdiction(text: string): string {
   const textLower = text.toLowerCase();
   if (textLower.includes('federal') || textLower.includes('supreme court') || textLower.includes('constitutional')) {
-    return: 'federal';
+    return 'federal';
   }
   if (textLower.includes('state') || textLower.includes('local')) {
-    return: 'state';
+    return 'state';
   }
-  return: 'general';
+  return 'general';
 }
 function determineUrgencyLevel(text: string): 'low' | 'medium' | 'high' | 'critical' {
   const textLower = text.toLowerCase();
   const highUrgencyTerms = ['emergency', 'urgent', 'immediate', 'crisis', 'critical'];
   const mediumUrgencyTerms = ['deadline', 'hearing', 'court date', 'filing'];
-  if (highUrgencyTerms.some(term => textLower.includes(term))) return: 'critical';
-  if (mediumUrgencyTerms.some(term => textLower.includes(term))) return: 'high';
-  if (textLower.includes('review') || textLower.includes('analysis')) return: 'medium';
-  return: 'low';
+  if (highUrgencyTerms.some(term => textLower.includes(term))) return 'critical';
+  if (mediumUrgencyTerms.some(term => textLower.includes(term))) return 'high';
+  if (textLower.includes('review') || textLower.includes('analysis')) return 'medium';
+  return 'low';
 }
 function extractCommonTerms(suggestions: string[]): string[] {
   const wordCount: Record<string, number> = {};

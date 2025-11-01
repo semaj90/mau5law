@@ -18,11 +18,11 @@ export interface DrizzleLegalDocument {
   file_path: string;
   file_size: number;
   processing_status: 'pending' | 'processing' | 'completed' | 'error';
-  metadata: any; // JSONB field,
+  metadata: any; // JSONB field
   created_at: Date;
   updated_at: Date;
 }
-}
+
 export interface DrizzleDocumentAnalysis {
   id: string;
   document_id: string;
@@ -32,7 +32,7 @@ export interface DrizzleDocumentAnalysis {
   processing_time_ms: number;
   created_at: Date;
 }
-}
+
 export interface DrizzleEntityExtraction {
   id: string;
   document_id: string;
@@ -42,7 +42,6 @@ export interface DrizzleEntityExtraction {
   position_start: number;
   position_end: number;
   created_at: Date;
-}
 }
 export interface DrizzleDocumentEmbedding {
   id: string;
@@ -161,8 +160,8 @@ export class DrizzleCHRROMBridge {
     try {
       // In production: Check updated_at timestamps
       // For now, simulate random updates
-      if (Math.random() < 0.1) { // 10% chance>
-        const docIds = Array.from(this.documentCache.keys();
+      if (Math.random() < 0.1) { // 10% chance
+        const docIds = Array.from(this.documentCache.keys());
         const randomDoc = docIds[Math.floor(Math.random() * docIds.length)];
         console.log(`🔄 Detected update for document ${randomDoc}, regenerating CHR-ROM patterns...`);
         await this.regeneratePatternsForDocument(randomDoc);
@@ -205,7 +204,7 @@ export class DrizzleCHRROMBridge {
       analysis: {
         confidence: this.calculateOverallConfidence(analyses),
         riskLevel: this.calculateRiskLevel(analyses),
-        entities: entities.map(e => ({,
+        entities: entities.map(e => ({
           type: e.entity_type,
           value: e.entity_value,
           confidence: e.confidence
@@ -213,16 +212,16 @@ export class DrizzleCHRROMBridge {
         processingComplete: document.processing_status === 'completed',
         summaryAvailable: analyses.some(a => a.analysis_type === 'summary')
       },
-      similarities: similarDocs.map(sim => ({,
+      similarities: similarDocs.map(sim => ({
         docId: sim.id,
         similarity: sim.similarity,
         title: sim.title
       })),
-      embeddings: embeddings.map(emb => ({,
+      embeddings: embeddings.map(emb => ({
         type: emb.embedding_type,
         vector: emb.embedding_vector,
         chunkIndex: emb.chunk_index
-      }),
+      })),
     }
     return enrichedData;
   }
@@ -331,7 +330,7 @@ export class DrizzleCHRROMBridge {
    */
   private calculateOverallConfidence(analyses: DrizzleDocumentAnalysis[]): number {
     if (analyses.length === 0) return 0.5;
-    const avgConfidence = analyses.reduce((sum, analysis) =>;
+    const avgConfidence = analyses.reduce((sum, analysis) =>
       sum + analysis.confidence_score, 0) / analyses.length;
     return Math.round(avgConfidence * 100) / 100;
   }
@@ -369,9 +368,9 @@ export class DrizzleCHRROMBridge {
         'category_color',
         'status_indicator'
       ];
-      const regenerationPromises = patternTypes.map(patternType =>;
+      const regenerationPromises = patternTypes.map(patternType =>
         chrROMPrecomputation.precomputeOnDemand(docId, patternType)
-          .catch(error => console.error(`Pattern regeneration failed for ${docId}:${patternType}:`, error)
+          .catch(error => console.error(`Pattern regeneration failed for ${docId}:${patternType}:`, error))
       );
       await Promise.allSettled(regenerationPromises);
       console.log(`✅ CHR-ROM patterns regenerated for document ${docId}`);
@@ -406,16 +405,16 @@ export class DrizzleCHRROMBridge {
   async batchProcessDocuments(docIds: string[]): Promise<void> {
     console.log(`🔄 Batch processing ${docIds.length} documents for CHR-ROM patterns...`);
     const batchSize = 5; // Process 5 documents at a time
-    for (let i = 0; i < docIds.length; i += batchSize) {>
+    for (let i = 0; i < docIds.length; i += batchSize) {
       const batch = docIds.slice(i, i + batchSize);
-      const batchPromises = batch.map(docId =>;
+      const batchPromises = batch.map(docId =>
         this.regeneratePatternsForDocument(docId)
-          .catch(error => console.error(`Batch processing failed for ${docId}:`, error)
+          .catch(error => console.error(`Batch processing failed for ${docId}:`, error))
       );
       await Promise.allSettled(batchPromises);
       // Small delay between batches to avoid overwhelming the system
-      if (i + batchSize < docIds.length) {>
-        await new Promise(resolve => setTimeout(resolve, 500);
+      if (i + batchSize < docIds.length) {
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
     console.log(`✅ Batch CHR-ROM processing completed for ${docIds.length} documents`);
@@ -435,7 +434,7 @@ export class DrizzleCHRROMBridge {
    * Get all document IDs available for processing
    */
   getAllDocumentIds(): string[] {
-    return Array.from(this.documentCache.keys();
+    return Array.from(this.documentCache.keys());
   }
   /**
    * Get document by ID

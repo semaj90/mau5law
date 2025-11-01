@@ -117,18 +117,17 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, services, options } = await request.json();
     switch (action) {
-      case: 'start_services':
+      case 'start_services':
         return await handleStartServices(Array.isArray(services) ? services : [], options);
-      case: 'stop_services':
+      case 'stop_services':
         return await handleStopServices(Array.isArray(services) ? services : []);
-      case: 'restart_tier':
+      case 'restart_tier':
         return await handleRestartTier(options?.tier);
-      case: 'generate_startup_script':
+      case 'generate_startup_script':
         return await handleGenerateStartupScript();
-      case: 'update_orchestration':
+      case 'update_orchestration':
         return await handleUpdateOrchestration(options);
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     console.error('POST action failed:', error);

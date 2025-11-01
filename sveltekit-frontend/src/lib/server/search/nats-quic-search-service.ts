@@ -381,16 +381,16 @@ export class NatsQuicSearchService {
       // Set TTL based on priority
       let ttl: number;
       switch (priority) {
-        case: 'realtime':
+        case 'realtime':
           ttl = 60;
           break; // 1 minute
-        case: 'high':
+        case 'high':
           ttl = 300;
           break; // 5 minutes
-        case: 'normal':
+        case 'normal':
           ttl = 1800;
           break; // 30 minutes
-        case: 'low':
+        case 'low':
           ttl = 3600;
           break; // 1 hour
         default:
@@ -456,7 +456,7 @@ export class NatsQuicSearchService {
     if (!this.nats || !this.isInitialized) {
       console.warn('⚠️ NATS Search Service not available, using direct search fallback');
       // Return a dummy ID to indicate fallback mode
-      return: 'fallback-' + Date.now();
+      return 'fallback-' + Date.now();
     }
     const searchRequest: SearchRequest = {
       ...request,

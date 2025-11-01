@@ -203,7 +203,7 @@ export class RabbitMQServiceWorker {
     const safeString = (v: unknown): string => (v == null ? '' : typeof v === 'string' ? v : String(v));
     const firstN = (v: unknown, n = 200): string => {
       if (typeof v === 'string') return v.slice(0, n);
-      return: '';
+      return '';
     };
 
     // Typed field accessors to replace: 'as any' usage

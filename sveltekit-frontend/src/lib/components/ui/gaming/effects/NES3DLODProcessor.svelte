@@ -300,18 +300,18 @@
       particle.z += particle.velocity.z;
       // Apply physics based on processing stage
       switch (processingStage) {
-        case: 'parsing':
+        case 'parsing':
           particle.velocity.x *= 0.99;
           particle.velocity.y *= 0.99;
           break;
-        case: 'analyzing':
+        case 'analyzing':
           // Orbital motion
           const centerDistance = Math.sqrt(particle.x * particle.x + particle.y * particle.y);
           const orbitalForce = 0.01;
           particle.velocity.x += -particle.y * orbitalForce / Math.max(centerDistance, 50);
           particle.velocity.y += particle.x * orbitalForce / Math.max(centerDistance, 50);
           break;
-        case: 'connecting':
+        case 'connecting':
           // Attraction to connections
           connections.forEach(connection => {
             const dx = Math.random() * 100 - particle.x;
@@ -322,7 +322,7 @@
             particle.velocity.y += (dy / Math.max(distance, 1)) * forc;
           });
           break;
-        case: 'synthesizing':
+        case 'synthesizing':
           // Converge to center
           const centerForce = 0.02;
           particle.velocity.x += -particle.x * centerForc;
@@ -474,10 +474,10 @@
    */
   function getInitialQualityTier(target: string): typeof adaptiveQuality {
     switch (target) {
-      case: 'smooth': return: '16BIT_SNES';   // Prioritize framerate
-      case: 'balanced': return: '32BIT_N64';   // Balance quality and performance
-      case: 'quality': return: '64BIT_PS2';    // Prioritize visual quality
-      default: return: '32BIT_N64';
+      case 'smooth': return '16BIT_SNES';   // Prioritize framerate
+      case 'balanced': return '32BIT_N64';   // Balance quality and performance
+      case 'quality': return '64BIT_PS2';    // Prioritize visual quality
+      default: return '32BIT_N64';
     }
   }
   /**

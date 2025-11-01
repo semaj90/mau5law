@@ -487,12 +487,11 @@ export function estimateMemoryFootprint(data: unknown, format: EncodingFormat = 
     const serialized = JSON.stringify(data);
     const jsonSize = serialized ? serialized.length * 2 : 0; // UTF-16 heuristic
     switch (format) {
-      case: 'cbor':
+      case 'cbor':
         return Math.floor(jsonSize * 0.7); // ~30% compression
-      case: 'msgpack':
+      case 'msgpack':
         return Math.floor(jsonSize * 0.8); // ~20% compression
-      default:
-        return jsonSize;
+      default: return jsonSize;
     }
   } catch {
     // If data cannot be serialized, return a conservative estimate

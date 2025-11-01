@@ -175,8 +175,8 @@ function generateMockFallbackData(errorCode: string): unknown {
   };
   // Context-aware mock data generation
   switch (errorCode) {
-    case: 'DATABASE_ERROR':
-    case: 'INTERNAL_ERROR':
+    case 'DATABASE_ERROR':
+    case 'INTERNAL_ERROR':
       return {
         ...baseData,
         cases: [
@@ -210,7 +210,7 @@ function generateMockFallbackData(errorCode: string): unknown {
           hasPrev: false,
         },
       };
-    case: 'NOT_FOUND':
+    case 'NOT_FOUND':
       return {
         ...baseData,
         suggested: [
@@ -222,16 +222,15 @@ function generateMockFallbackData(errorCode: string): unknown {
           },
         ],
       };
-    case: 'UNAUTHORIZED':
-    case: 'FORBIDDEN':
+    case 'UNAUTHORIZED':
+    case 'FORBIDDEN':
       return {
         ...baseData,
         demoMode: true,
         availableFeatures: ['case-viewing', 'evidence-browsing'],
         restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis'],
       };
-    default:
-      return baseData;
+    default: return baseData;
   }
 }
 // API wrapper function for consistent error handling

@@ -78,7 +78,7 @@ function formatError(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case: 'force_health_check': {
+      case 'force_health_check': {
         // Force refresh of all service health checks (block scoped)
         const redisService = getRedisService();
         const [redisHealth, minioHealth, rabbitmqHealth] = await Promise.all([
@@ -169,8 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     return json(

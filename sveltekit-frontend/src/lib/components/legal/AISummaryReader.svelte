@@ -158,23 +158,22 @@
 
   function getImportanceColor(importance: string) {
     switch (importance) {
-      case: 'critical':
-        return: 'text-red-600 border-red-200 bg-red-50';
-      case: 'high':
-        return: 'text-orange-600 border-orange-200 bg-orange-50';
-      case: 'medium':
-        return: 'text-yellow-600 border-yellow-200 bg-yellow-50';
-      case: 'low':
-        return: 'text-gray-600 border-gray-200 bg-gray-50';
-      default:
-        return: 'text-gray-600 border-gray-200 bg-gray-50';
+      case 'critical':
+        return 'text-red-600 border-red-200 bg-red-50';
+      case 'high':
+        return 'text-orange-600 border-orange-200 bg-orange-50';
+      case 'medium':
+        return 'text-yellow-600 border-yellow-200 bg-yellow-50';
+      case 'low':
+        return 'text-gray-600 border-gray-200 bg-gray-50';
+      default: return 'text-gray-600 border-gray-200 bg-gray-50';
     }
   }
 
   function getAnalysisScoreColor(score: number) {
-    if (score >= 0.9) return: 'text-green-600 bg-green-100';
-    if (score >= 0.7) return: 'text-yellow-600 bg-yellow-100';
-    return: 'text-red-600 bg-red-100';
+    if (score >= 0.9) return 'text-green-600 bg-green-100';
+    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
+    return 'text-red-600 bg-red-100';
   }
 </script>
 

@@ -169,9 +169,9 @@ async function getRecentKeys() {
 async function checkRedisConnection() {
   try {
     await redisService.ping();
-    return: 'connected';
+    return 'connected';
   } catch (error) {
-    return: 'disconnected';
+    return 'disconnected';
   }
 }
 async function getPerformanceMetrics() {

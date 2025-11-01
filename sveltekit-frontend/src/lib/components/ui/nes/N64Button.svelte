@@ -69,24 +69,23 @@
   // Button icon/content based on variant
   let buttonContent = $derived(() => {
     switch (variant) {
-      case: 'c-up':
-        return: '↑';
-      case: 'c-down':
-        return: '↓';
-      case: 'c-left':
-        return: '←';
-      case: 'c-right':
-        return: '→';
-      case: 'start':
-        return: 'START';
-      case: 'z':
-        return: 'Z';
-      case: 'a':
-        return: 'A';
-      case: 'b':
-        return: 'B';
-      default:
-        return null;
+      case 'c-up':
+        return '↑';
+      case 'c-down':
+        return '↓';
+      case 'c-left':
+        return '←';
+      case 'c-right':
+        return '→';
+      case 'start':
+        return 'START';
+      case 'z':
+        return 'Z';
+      case 'a':
+        return 'A';
+      case 'b':
+        return 'B';
+      default: return null;
     }
   });
 </script>

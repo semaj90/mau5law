@@ -290,21 +290,20 @@ export const GET: RequestHandler = async ({ url }) => {
   const timeRange = url.searchParams.get('timeRange') || '1h';
   try {
     switch (action) {
-      case: 'dashboard':
+      case 'dashboard':
         return json(await getDashboardMetrics(timeRange));
-      case: 'keys': {
+      case 'keys': {
         const pattern = url.searchParams.get('pattern') || '*';
         const limit = parseInt(url.searchParams.get('limit') || '100');
         return json(await getCacheKeys(pattern, limit));
       }
-      case: 'memory':
+      case 'memory':
         return json(await getMemoryAnalysis());
-      case: 'performance':
+      case 'performance':
         return json(await getPerformanceMetrics(timeRange));
-      case: 'health':
+      case 'health':
         return json(await getSystemHealth());
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',
@@ -330,20 +329,19 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, params = {} } = await request.json();
     switch (action) {
-      case: 'clear-cache':
+      case 'clear-cache':
         return json(await clearCacheByPattern(params.pattern || '*'));
-      case: 'clear-vector-cache':
+      case 'clear-vector-cache':
         // Use the previously-unused import to clear vector cache
         await clearVectorCache();
         return json({ success: true, message: 'Vector cache cleared', timestamp: new Date().toISOString() });
-      case: 'warm-cache':
+      case 'warm-cache':
         return json(await warmPopularCache(params.queries || []));
-      case: 'analyze-keys':
+      case 'analyze-keys':
         return json(await analyzeKeyPatterns());
-      case: 'optimize-memory':
+      case 'optimize-memory':
         return json(await optimizeMemoryUsage());
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',

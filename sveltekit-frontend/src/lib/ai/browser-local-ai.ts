@@ -145,11 +145,11 @@ export class BrowserLocalAI {
   }
   private selectOptimalDevice(): 'webgpu' | 'wasm' | 'cpu' {
     if (this.capabilities?.webgpu) {
-      return: 'webgpu';
+      return 'webgpu';
     } else if (this.capabilities?.wasm) {
-      return: 'wasm';
+      return 'wasm';
     } else {
-      return: 'cpu';
+      return 'cpu';
     }
   }
   private async loadModels(): Promise<void> {

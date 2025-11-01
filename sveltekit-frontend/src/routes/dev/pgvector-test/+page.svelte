@@ -217,9 +217,9 @@ https://svelte.dev/e/expected_token -->
    */
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'connected': return: 'bg-green-100 text-green-800';
-      case: 'failed': return: 'bg-red-100 text-red-800';
-      default: return: 'bg-gray-100 text-gray-800';
+      case 'connected': return 'bg-green-100 text-green-800';
+      case 'failed': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
   // Initialize dashboard on mount

@@ -157,11 +157,11 @@ export class CHRROMPatternOptimizer {
       throw new Error(`Unknown pattern type: ${patternType}`);
     }
     switch (spec.format) {
-      case: 'svg':
+      case 'svg':
         return await this.generateSVGPattern(patternType, data, spec);
-      case: 'png':
+      case 'png':
         return await this.generatePNGPattern(patternType, data, spec);
-      case: 'hybrid':
+      case 'hybrid':
         return await this.generateHybridPattern(patternType, data, spec);
       default:
         throw new Error(`Unsupported format: ${spec.format}`);
@@ -177,20 +177,20 @@ export class CHRROMPatternOptimizer {
   ): Promise<CHRROMPattern> {
     let svgContent = '';
     switch (patternType) {
-      case: 'doc_summary_icon':
+      case 'doc_summary_icon':
         svgContent = this.generateSVGDocumentIcon(data, spec);
         break;
-      case: 'risk_gauge':
+      case 'risk_gauge':
         svgContent = this.generateSVGRiskGauge(data, spec);
         break;
-      case: 'confidence_badge':
+      case 'confidence_badge':
         svgContent = this.generateSVGConfidenceBadge(data, spec);
         break;
-      case: 'similarity_graph':
+      case 'similarity_graph':
         svgContent = this.generateSVGSimilarityGraph(data, spec);
         break;
-      case: 'category_color':
-        // Special case: just return hex color
+      case 'category_color':
+        // Special case just return hex color
         return {
           type: 'badge' as const,
           size: 'xs' as const,
@@ -241,10 +241,10 @@ export class CHRROMPatternOptimizer {
     this.ctx.imageSmoothingEnabled = false;
     let pngDataURL = '';
     switch (patternType) {
-      case: 'status_indicator':
+      case 'status_indicator':
         pngDataURL = this.generatePNGStatusIndicator(data, spec, width, height);
         break;
-      case: 'entity_heatmap':
+      case 'entity_heatmap':
         pngDataURL = this.generatePNGEntityHeatmap(data, spec, width, height);
         break;
       default:
@@ -325,15 +325,15 @@ export class CHRROMPatternOptimizer {
     // Draw 16x16 pixel art status icon
     this.ctx!.fillStyle = color;
     switch (status) {
-      case: 'completed':
+      case 'completed':
         // Draw checkmark in pixel art style
         this.drawPixelCheckmark(width, height, color);
         break;
-      case: 'processing':
+      case 'processing':
         // Draw spinning dots
         this.drawPixelSpinner(width, height, color);
         break;
-      case: 'error':
+      case 'error':
         // Draw X mark
         this.drawPixelX(width, height, color);
         break;
@@ -559,32 +559,32 @@ export class CHRROMPatternOptimizer {
   private getPatternType(patternType: string): CHRROMPattern['type'] {
     // Map internal string to a valid CHRROMPattern type
     switch (patternType) {
-      case: 'doc_summary_icon': return: 'icon';
-      case: 'status_indicator': return: 'indicator';
-      case: 'risk_gauge': return: 'gauge';
-      case: 'entity_heatmap': return: 'heatmap';
-      case: 'confidence_badge': return: 'badge';
-      case: 'similarity_graph': return: 'graph';
-      case: 'category_color': return: 'color';
-      default: return: 'default';
+      case 'doc_summary_icon': return 'icon';
+      case 'status_indicator': return 'indicator';
+      case 'risk_gauge': return 'gauge';
+      case 'entity_heatmap': return 'heatmap';
+      case 'confidence_badge': return 'badge';
+      case 'similarity_graph': return 'graph';
+      case 'category_color': return 'color';
+      default: return 'default';
     }
   }
 
   private getPatternSize(targetSize: string): CHRROMPattern['size'] {
     // Map targetSize string to a valid CHRROMPattern size
     switch (targetSize) {
-      case: '16x16': return: 'xs';
-      case: '32x32': return: 'sm';
-      case: '64x64': return: 'md'; // Assuming larger sizes might exist
-      case: '128x128': return: 'lg';
-      case: '256x256': return: 'xl';
-      case: 'scalable': return: 'scalable';
-      default: return: 'scalable'; // Default to scalable for unknown
+      case '16x16': return 'xs';
+      case '32x32': return 'sm';
+      case '64x64': return 'md'; // Assuming larger sizes might exist
+      case '128x128': return 'lg';
+      case '256x256': return 'xl';
+      case 'scalable': return 'scalable';
+      default: return 'scalable'; // Default to scalable for unknown
     }
   }
 
   private generateDefaultPNG(width: number, height: number): string {
-    if (!this.canvas || !this.ctx) return: '';
+    if (!this.canvas || !this.ctx) return '';
     this.canvas.width = width;
     this.canvas.height = height;
     this.ctx.clearRect(0, 0, width, height);

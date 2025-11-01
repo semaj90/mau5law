@@ -405,26 +405,24 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   function getSeverityIcon(severity: string) {
     switch (severity) {
-      case: "error":
+      case "error":
         return XCircl;
-      case: "warning":
+      case "warning":
         return AlertTriangl;
-      case: "info":
+      case "info":
         return Info;
-      default:
-        return CheckCircl;
+      default: return CheckCircl;
     }
   }
   function getSeverityColor(severity: string) {
     switch (severity) {
-      case: "error":
-        return: "text-error";
-      case: "warning":
-        return: "text-warning";
-      case: "info":
-        return: "text-info";
-      default:
-        return: "text-success";
+      case "error":
+        return "text-error";
+      case "warning":
+        return "text-warning";
+      case "info":
+        return "text-info";
+      default: return "text-success";
     }
   }
 </script>

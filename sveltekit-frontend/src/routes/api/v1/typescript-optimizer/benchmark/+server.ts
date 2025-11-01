@@ -34,13 +34,13 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     let results: BenchmarkResult[];
     switch (body.strategy) {
-      case: 'speed':
+      case 'speed':
         results = await runSpeedBenchmark(errorCount, iterations);
         break;
-      case: 'quality':
+      case 'quality':
         results = await runQualityBenchmark(errorCount, iterations);
         break;
-      case: 'comparison':
+      case 'comparison':
         results = await runComparisonBenchmark(errorCount, iterations);
         break;
       default:

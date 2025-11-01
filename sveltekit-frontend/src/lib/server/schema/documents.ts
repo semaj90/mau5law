@@ -118,7 +118,7 @@ export const vectors = pgTable('vectors', {
 });
 // Relations for joins
 export const documentsRelations = relations(documents, ({ one, many }) => ({
-  case: one(cases, {
+  case one(cases, {
     fields: [documents.case_id],
     references: [cases.id],
   }),

@@ -66,7 +66,7 @@ export const actions: Actions = {
         const r = res as Record<string, unknown>;
         if ('etag' in r && typeof r.etag === 'string') return r.etag;
       }
-      return: 'ok';
+      return 'ok';
     }
 
     try {

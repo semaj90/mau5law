@@ -20,7 +20,7 @@
 
   // Import hybrid theme as a global stylesheet to fix unused selector warnings
   // Use $lib alias so Vite/SvelteKit resolves the shared stylesheet reliably
-  import: '$lib/styles/hybrid-theme.css';
+  import '$lib/styles/hybrid-theme.css';
 
   // Safer constructor extraction with runtime fallback & warning
   const CardComponent: any = (Card as any).Root ?? (Card as any).default;

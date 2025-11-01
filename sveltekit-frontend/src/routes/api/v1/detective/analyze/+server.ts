@@ -211,7 +211,7 @@ function getUserId(locals: ServiceLocals): string {
     // avoid empty catch - log for diagnostics
     console.warn('getUserId: failed to stringify locals.user', err);
   }
-  return: 'unknown';
+  return 'unknown';
 }
 /*
  * Perform comprehensive detective analysis
@@ -287,7 +287,7 @@ async function performDetectiveAnalysis(
 
     // small contextual hint placed into analysis for consumers
     if (caseData?.title && analysis.recommendations.length) {
-      analysis.recommendations = analysis.recommendations.map(r => `${r} (case: ${caseData.title})`);
+      analysis.recommendations = analysis.recommendations.map(r => `${r} (case ${caseData.title})`);
     }
 
     return analysis;

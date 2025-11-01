@@ -106,38 +106,38 @@ export function validateField(value: unknown, config: FormFieldConfig): Validati
   // type checks
   if (value != null && config.type) {
     switch (config.type) {
-      case: 'email':
+      case 'email':
         if (typeof value !== 'string' || !isValidEmail(value)) errors.push(`${label}invalid email`);
         break;
-      case: 'url':
+      case 'url':
         if (typeof value !== 'string' || !isValidURL(value)) errors.push(`${label}invalid URL`);
         break;
-      case: 'phone':
+      case 'phone':
         if (typeof value !== 'string' || !isValidPhone(value)) errors.push(`${label}invalid phone number`);
         break;
-      case: 'date':
+      case 'date':
         if (typeof value !== 'string' && !(value instanceof Date)) {
           errors.push(`${label}invalid date`);
         } else if (typeof value === 'string' && !isValidDate(value)) {
           errors.push(`${label}invalid date`);
         }
         break;
-      case: 'number':
+      case 'number':
         if (typeof value !== 'number') errors.push(`${label}must be a number`);
         break;
-      case: 'boolean':
+      case 'boolean':
         if (typeof value !== 'boolean') errors.push(`${label}must be a boolean`);
         break;
-      case: 'array':
+      case 'array':
         if (!Array.isArray(value)) errors.push(`${label}must be an array`);
         break;
-      case: 'object':
+      case 'object':
         if (typeof value !== 'object' || Array.isArray(value)) errors.push(`${label}must be an object`);
         break;
-      case: 'file':
+      case 'file':
         // handled later by file validator when provided
         break;
-      case: 'string':
+      case 'string':
       default:
         if (typeof value !== 'string') {
           // allow other primitives but flag as warning

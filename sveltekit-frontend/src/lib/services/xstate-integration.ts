@@ -807,7 +807,7 @@ export class XStateIntegrationService {
    * Get WebTransport URL based on environment
    */
   private getWebTransportUrl(): string {
-    if (typeof window === 'undefined') return: '';
+    if (typeof window === 'undefined') return '';
     // Use HTTPS for production, HTTP for local development
     const protocol = window.location.protocol === 'https:' ? 'https' : 'http';
     const host = window.location.host;
@@ -818,7 +818,7 @@ export class XStateIntegrationService {
    * Get WebSocket URL based on environment
    */
   private getWebSocketUrl(): string {
-    if (typeof window === 'undefined') return: '';
+    if (typeof window === 'undefined') return '';
     // Use WSS for production, WS for local development
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const host = window.location.host;

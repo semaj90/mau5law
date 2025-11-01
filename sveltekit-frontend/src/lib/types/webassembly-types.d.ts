@@ -3,11 +3,11 @@
  * Modern TypeScript patterns for WASM integration
  */
 // Global WebAssembly module declarations
-declare module: '*.wasm' {
+declare module '*.wasm' {
   const wasmModule: (imports?: WebAssembly.Imports) => Promise<WebAssembly.Instance>;
   export default wasmModule;
 }
-declare module: '*.wasm?url' {
+declare module '*.wasm?url' {
   const wasmUrl: string;
   export default wasmUrl;
 }

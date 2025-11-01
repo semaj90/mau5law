@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const manager = await getNeuralManager();
     const mm = asManager(manager);
     switch (action) {
-      case: 'predict': {
+      case 'predict': {
         const startTime = Date.now();
         // Call the optional method via the loose ManagerLike shape to avoid TS errors
         // Provide a safe fallback if the concrete manager doesn't implement prediction
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
         });
       }
-      case: 'optimize': {
+      case 'optimize': {
         const startTime = Date.now();
         await mm.optimizeMemoryAllocation?.();
         const optimizationReport = {
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         };
         return json({ success: true, message: 'Optimization triggered', data: optimizationReport });
       }
-      case: 'status': {
+      case 'status': {
         // call via the loose shape (mm) using optional chaining; provide a fallback if not implemented
         const status = (await mm.generatePerformanceReport?.()) ?? { summary: 'performance report unavailable' };
         const systemInfo = await getSystemInfo();
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
         });
       }
-      case: 'report': {
+      case 'report': {
         const report = (await mm.generatePerformanceReport?.()) ?? { summary: 'performance report unavailable' };
         const detailedMetrics = await getDetailedMetrics(manager);
         return json({
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
         });
       }
-      case: 'health': {
+      case 'health': {
         const health = await performHealthCheck(manager);
         return json(
           {
@@ -240,8 +240,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         );
       }
-      default:
-        return json({ success: false, error: 'Invalid action' }, { status: 400 });
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -287,7 +286,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const manager = await getNeuralManager();
     const mm = asManager(manager);
     switch (action) {
-      case: 'adjust_lod': {
+      case 'adjust_lod': {
         if (typeof memoryPressure !== 'number' || memoryPressure < 0 || memoryPressure > 1) {
           return json({ success: false, error: 'memoryPressure must be between 0 and 1' }, { status: 400 });
         }
@@ -306,7 +305,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           },
         });
       }
-      case: 'force_optimization': {
+      case 'force_optimization': {
         const startTime = Date.now();
         const beforeMemory = mm.getCurrentMemoryUsage?.() ?? 0;
         await mm.optimizeMemoryAllocation?.();
@@ -324,14 +323,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           },
         });
       }
-      case: 'configure': {
+      case 'configure': {
         if (!config || typeof config !== 'object') {
           return json({ success: false, error: 'Configuration object required' }, { status: 400 });
         }
         const result = await updateManagerConfiguration(manager, config);
         return json({ success: true, message: 'Configuration updated', data: result });
       }
-      case: 'clear_cache': {
+      case 'clear_cache': {
         const startTime = Date.now();
         const clearedBytes = await clearManagerCache(manager);
         return json({
@@ -343,8 +342,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           },
         });
       }
-      default:
-        return json({ success: false, error: 'Invalid action' }, { status: 400 });
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     if (error instanceof Error) {

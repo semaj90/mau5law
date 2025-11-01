@@ -187,29 +187,27 @@
 
   function getPriorityColor(priority) {
     switch (priority) {
-      case: 'critical':
-        return: 'text-red-600 bg-red-50';
-      case: 'high':
-        return: 'text-orange-600 bg-orange-50';
-      case: 'medium':
-        return: 'text-yellow-600 bg-yellow-50';
-      case: 'low':
-        return: 'text-green-600 bg-green-50';
-      default:
-        return: 'text-gray-600 bg-gray-50';
+      case 'critical':
+        return 'text-red-600 bg-red-50';
+      case 'high':
+        return 'text-orange-600 bg-orange-50';
+      case 'medium':
+        return 'text-yellow-600 bg-yellow-50';
+      case 'low':
+        return 'text-green-600 bg-green-50';
+      default: return 'text-gray-600 bg-gray-50';
     }
   }
 
   function getStatusColor(status) {
     switch (status) {
-      case: 'applied':
-        return: 'text-green-600 bg-green-50';
-      case: 'failed':
-        return: 'text-red-600 bg-red-50';
-      case: 'pending':
-        return: 'text-blue-600 bg-blue-50';
-      default:
-        return: 'text-gray-600 bg-gray-50';
+      case 'applied':
+        return 'text-green-600 bg-green-50';
+      case 'failed':
+        return 'text-red-600 bg-red-50';
+      case 'pending':
+        return 'text-blue-600 bg-blue-50';
+      default: return 'text-gray-600 bg-gray-50';
     }
   }
 </script>

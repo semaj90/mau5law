@@ -463,27 +463,26 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
   private async detectDocumentType(text: string): Promise<'legal' | 'contract' | 'evidence' | 'general'> {
     const lower = text.toLowerCase();
-    if (lower.includes('contract') || lower.includes('agreement') || lower.includes('whereas')) return: 'contract';
-    if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return: 'evidence';
-    if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return: 'legal';
-    return: 'general';
+    if (lower.includes('contract') || lower.includes('agreement') || lower.includes('whereas')) return 'contract';
+    if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return 'evidence';
+    if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return 'legal';
+    return 'general';
   }
 
   private getMimeType(filename: string): string {
     const ext = path.extname(filename).toLowerCase();
     switch (ext) {
-      case: '.pdf':
-        return: 'application/pdf';
-      case: '.png':
-        return: 'image/png';
-      case: '.jpg':
-      case: '.jpeg':
-        return: 'image/jpeg';
-      case: '.tiff':
-      case: '.tif':
-        return: 'image/tiff';
-      default:
-        return: 'application/octet-stream';
+      case '.pdf':
+        return 'application/pdf';
+      case '.png':
+        return 'image/png';
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.tiff':
+      case '.tif':
+        return 'image/tiff';
+      default: return 'application/octet-stream';
     }
   }
 
@@ -518,12 +517,12 @@ export class EnhancedOCRProcessor extends EventEmitter {
   private async detectConfidentiality(text: string): Promise<'public' | 'confidential' | 'privileged'> {
     const lower = text.toLowerCase();
     if (lower.includes('attorney-client privilege') || lower.includes('privileged communication')) {
-      return: 'privileged';
+      return 'privileged';
     }
     if (lower.includes('confidential') || lower.includes('proprietary information')) {
-      return: 'confidential';
+      return 'confidential';
     }
-    return: 'public';
+    return 'public';
   }
 
   private extractDocumentStructure(text: string): string[] {

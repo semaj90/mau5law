@@ -532,10 +532,10 @@ export class PgVectorFAISSBridge {
     fusionMethod: 'rank' | 'score' | 'weighted'
   ): PgVectorDocument[] {
     switch (fusionMethod) {
-      case: 'rank':
+      case 'rank':
         // Simple rank-based fusion
         return [...faissResults.slice(0, 25), ...pgvectorResults.slice(0, 25)];
-      case: 'score':
+      case 'score':
         // Score-based fusion (prefer higher similarity)
         const combinedResults = [
           ...faissResults.map((doc, i) => ({ ...doc, fusionScore: faissScores[i] || 0, source: 'faiss' })),
@@ -546,7 +546,7 @@ export class PgVectorFAISSBridge {
           })),
         ];
         return combinedResults.sort((a, b) => (b as any).fusionScore - (a as any).fusionScore).slice(0, 50);
-      case: 'weighted':
+      case 'weighted':
       default:
         // Weighted fusion (FAISS gets 70%, pgvector gets 30%)
         const faissWeighted = faissResults.slice(0, Math.floor(50 * 0.7));

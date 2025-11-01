@@ -126,12 +126,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     let contentType: string;
     let fileName: string;
     switch (format) {
-      case: 'csv':
+      case 'csv':
         responseData = convertToCSV(exportData);
         contentType = 'text/csv';
         fileName = `legal-data-export-${new Date().toISOString().split('T')[0]}.csv`;
         break;
-      case: 'xml':
+      case 'xml':
         responseData = convertToXML(exportData);
         contentType = 'application/xml';
         fileName = `legal-data-export-${new Date().toISOString().split('T')[0]}.xml`;
@@ -242,18 +242,17 @@ function convertToXML(data: ExportResult): string {
 function escapeXml(unsafe: string): string {
   return unsafe.replace(/[<>&'"]/g, function (c) {
     switch (c) {
-      case: '<':
-        return: '&lt;';
-      case: '>':
-        return: '&gt;';
-      case: '&':
-        return: '&amp;';
-      case: "'":
-        return: '&apos;';
-      case: '"':
-        return: '&quot;';
-      default:
-        return c;
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '&':
+        return '&amp;';
+      case "'":
+        return '&apos;';
+      case '"':
+        return '&quot;';
+      default: return c;
     }
   });
 }

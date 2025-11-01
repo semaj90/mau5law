@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const resultOutput = String(result.output ?? ''); // Guard undefined -> use empty string
 
       switch (task) {
-        case: 'summarize':
+        case 'summarize':
           structuredOutput = {
             summary: resultOutput,
             keyPoints: extractKeyPoints(resultOutput),
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
           };
           confidence = 0.9;
           break;
-        case: 'analyze':
+        case 'analyze':
           structuredOutput = {
             analysis: resultOutput,
             entities: extractLegalEntities(resultOutput),
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
           };
           confidence = 0.88;
           break;
-        case: 'extract':
+        case 'extract':
           structuredOutput = {
             extracted: resultOutput,
             entities: extractLegalEntities(resultOutput),
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
           };
           confidence = structuredOutput.confidence || 0.82;
           break;
-        case: 'generate':
+        case 'generate':
           structuredOutput = {
             generated: resultOutput,
             creativity: parameters.temperature || 0.7,
@@ -513,7 +513,7 @@ async function generateMockT5Response(input: string, task: string, domain: strin
   let confidence = 0.85;
   let structured: T5TransformResponse['structured'] = {};
   switch (task) {
-    case: 'summarize':
+    case 'summarize':
       output = `This document ${domain === 'contract' ? 'establishes contractual obligations' : 'contains legal provisions'} that require careful consideration of the parties' rights and responsibilities.`;
       confidence = 0.88;
       structured = {
@@ -523,7 +523,7 @@ async function generateMockT5Response(input: string, task: string, domain: strin
         compressionRatio: input.length / output.length,
       };
       break;
-    case: 'analyze':
+    case 'analyze':
       output = `Analysis indicates this is a ${domain} document with moderate complexity. Key areas of focus include compliance requirements and risk mitigation strategies.`;
       confidence = 0.82;
       structured = {
@@ -534,7 +534,7 @@ async function generateMockT5Response(input: string, task: string, domain: strin
         recommendations: generateRecommendations(output, domain),
       };
       break;
-    case: 'extract':
+    case 'extract':
       output = `Extracted entities: [Mock Entity 1], [Mock Entity 2]. Key dates and financial terms identified.`;
       confidence = 0.8;
       structured = {
@@ -544,7 +544,7 @@ async function generateMockT5Response(input: string, task: string, domain: strin
         confidence: calculateExtractionConfidence(input, output),
       };
       break;
-    case: 'generate':
+    case 'generate':
       output = `Generated mock legal content for ${domain} domain.`;
       confidence = 0.85;
       structured = {
@@ -591,7 +591,7 @@ async function generateMockT5Response(input: string, task: string, domain: strin
 
 // Helper: safely truncate input for responses
 function truncateInput(text: string, max = 200) {
-  if (!text) return: '';
+  if (!text) return '';
   return text.length > max ? text.substring(0, max) + '...' : text;
 }
 

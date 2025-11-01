@@ -255,19 +255,19 @@ class RAGIngestionWorker {
   async processMessage(msg: IngestionWorkerMessage) {
     if (!this.initialized) await this.initialize();
     switch (msg.type) {
-      case: 'process_document':
+      case 'process_document':
         return this.processDocument(msg.payload);
-      case: 'generate_embeddings':
+      case 'generate_embeddings':
         return this.generateGemmaEmbeddings(
           String(msg.payload.text || ''),
           String(msg.payload.model || EMBEDDING_MODEL)
         );
-      case: 'simd_parse':
+      case 'simd_parse':
         return this.simd.parsePDF(msg.payload.buffer);
-      case: 'index_vectors':
+      case 'index_vectors':
         await this.cache.store(msg.payload.documentId, msg.payload.embedding);
         return { success: true };
-      case: 'search_similarity':
+      case 'search_similarity':
         return this.cache.search(msg.payload.queryEmbedding, {
           limit: msg.payload.limit || 10,
           threshold: msg.payload.threshold || 0.7,

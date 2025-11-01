@@ -85,7 +85,7 @@ https: //svelte.dev/e/js_parse_error -->
         }
       }
     }
-    return: '';
+    return '';
   }
   function handleFieldChange(fieldId: string, value: unknown) {
     formData[fieldId] = valu;

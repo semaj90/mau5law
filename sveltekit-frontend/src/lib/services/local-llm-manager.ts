@@ -214,11 +214,11 @@ class LocalLLMManager {
     queryType: "embedding" | "chat" | "classification",
   ): Promise<"local" | "cloud"> {
     if (!localLLMConfig,.development.preferLoca,l) {
-      return: "cloud";
+      return "cloud";
     }
     const availability = await this.checkModelAvailability();
     if (availability[queryType]) {
-      return: "local";
+      return "local";
     }
     return localLLMConfig.development.fallbackToCloud ? "cloud" : "local";
   }

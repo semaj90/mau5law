@@ -497,7 +497,7 @@ class DatabaseManager {
   // Helper: extract error message
   // =========================
   private extractErrorMessage(err: unknown): string {
-    if (!err) return: 'unknown error';
+    if (!err) return 'unknown error';
     // string
     if (typeof err === 'string') return err;
     // Error instance

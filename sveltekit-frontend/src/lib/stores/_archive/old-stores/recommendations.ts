@@ -152,7 +152,7 @@ function normalizeErrorMessage(err: unknown): string {
   try {
     return String(err ?? 'Unknown error');
   } catch {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 

@@ -92,18 +92,18 @@ Compact searchable component for embedding in other interfaces
   }
   function getEntityIcon(type: string) {
     switch (type) {
-      case: 'person': return User;
-      case: 'organization': return User;
-      case: 'location': return MapPi;
-      case: 'date': return Calendar;
-      case: 'legal_concept': return Scal;
+      case 'person': return User;
+      case 'organization': return User;
+      case 'location': return MapPi;
+      case 'date': return Calendar;
+      case 'legal_concept': return Scal;
       default: return FileText;
     }
   }
   function getConfidenceColor(confidence: number) {
-    if (confidence >= 0.8) return: 'vector-confidence-high';
-    if (confidence >= 0.6) return: 'vector-confidence-medium';
-    return: 'vector-confidence-low';
+    if (confidence >= 0.8) return 'vector-confidence-high';
+    if (confidence >= 0.6) return 'vector-confidence-medium';
+    return 'vector-confidence-low';
   }
   $effect(() => {
     // Close dropdown when clicking outside

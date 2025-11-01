@@ -37,7 +37,7 @@
     title: string;
     type: 'motion' | 'summary_judgment' | 'discovery' | 'appellate' | 'response';
     court: string;
-    case: string;
+    case string;
     dueDate: string;
     wordLimit: number;
     sections: BriefSection[];
@@ -67,7 +67,7 @@
     title: 'Motion for Summary Judgment',
     type: 'summary_judgment',
     court: 'Superior Court of California, County of Los Angeles',
-    case: 'Smith v. Jones Construction Co.',
+    case 'Smith v. Jones Construction Co.',
     dueDate: '2025-10-15',
     wordLimit: 8000,
     status: 'draft',
@@ -118,9 +118,9 @@
 
   let wordCountStatus = $derived(() => {
     const percentage = (wordCount / briefData.wordLimit) * 100;
-    if (percentage > 100) return: 'over';
-    if (percentage > 90) return: 'warning';
-    return: 'normal';
+    if (percentage > 100) return 'over';
+    if (percentage > 90) return 'warning';
+    return 'normal';
   });
 
   let currentSection = $derived(() =>
@@ -220,7 +220,7 @@
 
   function getCitationIcon(type: Citation['type']): string {
     const icons: Record<string, string> = {
-      case: '⚖️',
+      case '⚖️',
       statute: '📜',
       regulation: '📋',
       secondary: '📚'

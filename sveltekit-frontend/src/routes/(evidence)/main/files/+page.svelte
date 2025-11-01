@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Utility functions
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -324,18 +324,17 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getFileIcon(evidenceType: string) {
     switch (evidenceType) {
-      case: 'image':
+      case 'image':
         return Image;
-      case: 'video':
+      case 'video':
         return Video;
-      case: 'audio':
+      case 'audio':
         return Music;
-      case: 'document':
+      case 'document':
         return FileText;
-      case: 'archive':
+      case 'archive':
         return Archive;
-      default:
-        return File;
+      default: return File;
     }
   }
   function getFileUrl(file: any): string {

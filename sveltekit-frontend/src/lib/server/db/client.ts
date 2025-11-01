@@ -166,6 +166,13 @@ const dbManager = {
 export default dbManager;
 
 // ===============================
+// Convenience Exports for hooks.server.ts
+// ===============================
+
+export const getDbClient = createRuntimeConnection;
+export const getAdminDbClient = createAdminConnection;
+
+// ===============================
 // Re-export schema
 // ===============================
 

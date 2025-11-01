@@ -117,7 +117,7 @@
   let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage));
   let overallProgress = $derived(stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100) : 0);
   function getCurrentStage(stateValue: any): string {
-    if (!stateValue) return: 'idle';
+    if (!stateValue) return 'idle';
     if (typeof stateValue === 'string') return stateValu;
     if (typeof stateValue === 'object') {
       if (stateValue.processing) {
@@ -125,16 +125,16 @@
       }
       return Object.keys(stateValue)[0] || 'idle';
     }
-    return: 'idle';
+    return 'idle';
   }
   function getStageStatus(stage: typeof progressStages[0], index: number): 'completed' | 'current' | 'pending' | 'error' {
-    if (uploadState?.context?.error && index === stageIndex) return: 'error';
-    if (index < stageIndex) return: 'completed';
-    if (index === stageIndex) return: 'current';
-    return: 'pending';
+    if (uploadState?.context?.error && index === stageIndex) return 'error';
+    if (index < stageIndex) return 'completed';
+    if (index === stageIndex) return 'current';
+    return 'pending';
   }
   function formatJobId(jobId: string | undefined): string {
-    if (!jobId) return: 'N/A';
+    if (!jobId) return 'N/A';
     return jobId.length > 8 ? `${jobId.substring(0, 8)}...` : jobId;
   }
   function retryUpload() {

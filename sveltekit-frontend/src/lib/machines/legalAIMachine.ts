@@ -74,7 +74,7 @@ export type LegalAIEvent =
   | { type: 'AUTH.LOGOUT' }
   | { type: 'AUTH.REGISTER'; userData: any }
   | { type: 'CASES.LOAD'; filters?: any }
-  | { type: 'CASES.SELECT'; case: Case }
+  | { type: 'CASES.SELECT'; case Case }
   | { type: 'CASES.CREATE'; caseData: any }
   | { type: 'CASES.SEARCH'; query: string }
   | { type: 'AI.QUERY'; prompt: string; context?: any }

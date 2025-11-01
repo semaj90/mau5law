@@ -95,23 +95,23 @@ export class LegalAIWebSocketServer extends EventEmitter {
     const client = this.clients.get(sessionId);
     if (!client) return;
     switch (message.type) {
-      case: 'subscribe':
+      case 'subscribe':
         this.handleSubscription(sessionId, message.payload.channels || []);
         break;
-      case: 'unsubscribe':
+      case 'unsubscribe':
         this.handleUnsubscription(sessionId, message.payload.channels || []);
         break;
-      case: 'ping':
+      case 'ping':
         this.sendToClient(sessionId, {
           type: 'pong',
           payload: { timestamp: message.timestamp },
           timestamp: new Date().toISOString()
         });
         break;
-      case: 'evidence_edit':
+      case 'evidence_edit':
         this.handleCollaborativeEdit(sessionId, message);
         break;
-      case: 'cursor_position':
+      case 'cursor_position':
         this.handleCursorUpdate(sessionId, message);
         break;
       default:
@@ -367,13 +367,13 @@ export class LegalAIWebSocketClient extends EventEmitter {
   }
   private handleMessage(message,: WebSocketMessage): void {
     switch (message,.typ,e) {
-      case: 'connection_established',:
+      case 'connection_established',:
         this.emit('connection_established', message.payload);
         break;
-      case: 'heartbeat',:
+      case 'heartbeat',:
         // Heartbeat received, connection is alive
         break;
-      case: 'pong',:
+      case 'pong',:
         this.emit('pong', message.payload);
         break;
       default:

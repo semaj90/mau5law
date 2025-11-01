@@ -81,23 +81,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.log(`🚀 WebGPU Cache Demo: ${operation} - Client: ${getClientAddress()}`);
     let result: any;
     switch (operation) {
-      case: 'benchmark':
+      case 'benchmark':
         result = await runPerformanceBenchmark(data, options);
         break;
-      case: 'tensor':
+      case 'tensor':
         result = await demonstrateTensorOperations(data, options);
         break;
-      case: 'batch':
+      case 'batch':
         result = await demonstrateBatchProcessing(data, options);
         break;
-      case: 'stats':
+      case 'stats':
         result = await getDetailedStatistics();
         break;
-      case: 'stress-test':
+      case 'stress-test':
         result = await runStressTest(data, options);
         break;
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid operation',

@@ -388,10 +388,10 @@ const adaptiveLOD = {
     return ragQuery;
   }
   private calculatePriorityFromScore(score: number): 'critical' | 'high' | 'medium' | 'low' {
-    if (score > 0.9) return: 'critical';
-    if (score > 0.7) return: 'high';
-    if (score > 0.5) return: 'medium';
-    return: 'low';
+    if (score > 0.9) return 'critical';
+    if (score > 0.7) return 'high';
+    if (score > 0.5) return 'medium';
+    return 'low';
   }
   private extractBenefits(content: string): string[] {
     // Simple keyword extraction for benefits
@@ -406,10 +406,10 @@ const adaptiveLOD = {
   }
   private getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
-    if (hour < 12) return: 'morning';
-    if (hour < 17) return: 'afternoon';
-    if (hour < 21) return: 'evening';
-    return: 'night';
+    if (hour < 12) return 'morning';
+    if (hour < 17) return 'afternoon';
+    if (hour < 21) return 'evening';
+    return 'night';
   }
   private getFallbackRecommendations(query: Context7Phase8Query): Phase8Recommendation[] {
     return [

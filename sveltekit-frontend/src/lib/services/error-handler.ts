@@ -312,8 +312,7 @@ class ErrorHandler {
       case ErrorType.VALIDATION_ERROR:
       case ErrorType.AUTH_ERROR:
         return false;
-      default:
-        return false;
+      default: return false;
     }
   }
   // Public methods for logging

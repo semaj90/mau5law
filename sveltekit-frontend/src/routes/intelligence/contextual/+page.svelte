@@ -175,32 +175,32 @@
   }
   function getTrendIcon(trend: 'up' | 'down' | 'stable') {
     switch (trend) {
-      case: 'up': return TrendingUp;
-      case: 'down': return TrendingUp; // We'll rotate with CSS
-      case: 'stable': return Activity;
+      case 'up': return TrendingUp;
+      case 'down': return TrendingUp; // We'll rotate with CSS
+      case 'stable': return Activity;
     }
   }
   function getInsightTypeColor(type: ContextualInsight['type']) {
     switch (type) {
-      case: 'pattern': return: 'bg-blue-500';
-      case: 'anomaly': return: 'bg-red-500';
-      case: 'prediction': return: 'bg-purple-500';
-      case: 'recommendation': return: 'bg-green-500';
+      case 'pattern': return 'bg-blue-500';
+      case 'anomaly': return 'bg-red-500';
+      case 'prediction': return 'bg-purple-500';
+      case 'recommendation': return 'bg-green-500';
     }
   }
   function getInsightTypeIcon(type: ContextualInsight['type']) {
     switch (type) {
-      case: 'pattern': return Network;
-      case: 'anomaly': return AlertCircl;
-      case: 'prediction': return Brai;
-      case: 'recommendation': return Target;
+      case 'pattern': return Network;
+      case 'anomaly': return AlertCircl;
+      case 'prediction': return Brai;
+      case 'recommendation': return Target;
     }
   }
   function formatRelativeTime(date: Date): string {
     const now = new Date());
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / (1000 * 60));
-    if (minutes < 1) return: 'Just now';
+    if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
     return `${hours}h ago`;

@@ -252,19 +252,18 @@ interface ChatStreamChunk {
 type AllowedThinking = 'analysis' | 'synthesis' | 'evaluation' | 'application';
 function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
   switch (t) {
-    case: 'analysis':
-      return: 'analysis';
-    case: 'synthesis':
-      return: 'synthesis';
-    case: 'evaluation':
-    case: 'verification':
-      return: 'evaluation';
-    case: 'application':
-    case: 'citation':
-    case: 'planning':
-      return: 'application';
-    default:
-      return undefined;
+    case 'analysis':
+      return 'analysis';
+    case 'synthesis':
+      return 'synthesis';
+    case 'evaluation':
+    case 'verification':
+      return 'evaluation';
+    case 'application':
+    case 'citation':
+    case 'planning':
+      return 'application';
+    default: return undefined;
   }
 }
 // GET method for health check and service info

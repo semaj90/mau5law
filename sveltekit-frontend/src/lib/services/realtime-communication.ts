@@ -412,16 +412,16 @@ class RealtimeCommunicationLayer {
     const status = this.getCurrentConnectionStatus();
     // For critical messages, prefer WebRTC for lowest latency
     if (priority === 'critical' && status.webrtc === 'connected') {
-      return: 'webrtc';
+      return 'webrtc';
     }
     // For high priority, prefer WebSocket
     if (priority === 'high' && status.websocket === 'connected') {
-      return: 'websocket';
+      return 'websocket';
     }
     // Fallback priority: WebSocket > WebRTC > SSE
-    if (status.websocket === 'connected') return: 'websocket';
-    if (status.webrtc === 'connected') return: 'webrtc';
-    if (status.sse === 'connected') return: 'sse';
+    if (status.websocket === 'connected') return 'websocket';
+    if (status.webrtc === 'connected') return 'webrtc';
+    if (status.sse === 'connected') return 'sse';
     return null;
   }
   /**
@@ -434,7 +434,7 @@ class RealtimeCommunicationLayer {
   ): Promise<void> {
     const messageData = JSON.stringify(message);
     switch (channel) {
-      case: 'websocket': // Corrected typos
+      case 'websocket': // Corrected typos
         if (this.connections.websocket?.readyState === WebSocket.OPEN) {
           // Corrected typos
           this.connections.websocket.send(messageData);
@@ -442,14 +442,14 @@ class RealtimeCommunicationLayer {
           throw new Error('WebSocket not connected');
         }
         break;
-      case: 'webrtc': // Corrected typos
+      case 'webrtc': // Corrected typos
         if (this.connections.webrtc?.channel.readyState === 'open') {
           this.connections.webrtc.channel.send(messageData);
         } else {
           throw new Error('WebRTC data channel not open');
         }
         break;
-      case: 'sse': // Corrected typos
+      case 'sse': // Corrected typos
         // SSE is read-only, fallback to HTTP POST
         await fetch('http://localhost:8094/api/messages', {
           method: 'POST',
@@ -554,13 +554,13 @@ class RealtimeCommunicationLayer {
         );
         this.reconnectAttempts[channel]++;
         switch (channel) {
-          case: 'websocket':
+          case 'websocket':
             await this.initializeWebSocket(userId, sessionId);
             break;
-          case: 'sse':
+          case 'sse':
             await this.initializeSSE(userId, sessionId);
             break;
-          case: 'webrtc':
+          case 'webrtc':
             await this.initializeWebRTC(userId, sessionId);
             break;
         }

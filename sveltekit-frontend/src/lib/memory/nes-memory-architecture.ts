@@ -311,44 +311,44 @@ export class NESMemoryArchitecture {
     // Critical legal documents go to fast RAM
     if (document.riskLevel === 'critical' || document.confidenceLevel > 0.9) {
       if (this.memoryBanks.get('INTERNAL_RAM')!.used + size <= this.memoryBanks.get('INTERNAL_RAM')!.size) {
-        return: 'INTERNAL_RAM';
+        return 'INTERNAL_RAM';
       }
     }
     // Contracts and evidence patterns go to CHR-ROM
     if (document.type === 'contract' || document.type === 'evidence') {
       if (this.memoryBanks.get('CHR_ROM')!.used + size <= this.memoryBanks.get('CHR_ROM')!.size) {
-        return: 'CHR_ROM';
+        return 'CHR_ROM';
       }
     }
     // Legal processing logic goes to PRG-ROM
     if (document.type === 'brief' || document.type === 'precedent') {
       if (this.memoryBanks.get('PRG_ROM')!.used + size <= this.memoryBanks.get('PRG_ROM')!.size) {
-        return: 'PRG_ROM';
+        return 'PRG_ROM';
       }
     }
     // Persistent data goes to Save RAM
     if (document.metadata?.caseId) {
       if (this.memoryBanks.get('SAVE_RAM')!.used + size <= this.memoryBanks.get('SAVE_RAM')!.size) {
-        return: 'SAVE_RAM';
+        return 'SAVE_RAM';
       }
     }
     // Default to PRG-ROM (largest bank)
-    return: 'PRG_ROM';
+    return 'PRG_ROM';
   }
   private calculateLegalPriority(_document: Omit<LegalDocument, 'lastAccessed' | 'priority'>): number {
     let priority = this.LEGAL_PRIORITIES.medium; // Base priority
     // Risk level adjustment
     switch (document.riskLevel) {
-      case: 'critical':
+      case 'critical':
         priority = this.LEGAL_PRIORITIES.critical;
         break;
-      case: 'high':
+      case 'high':
         priority = this.LEGAL_PRIORITIES.high;
         break;
-      case: 'medium':
+      case 'medium':
         priority = this.LEGAL_PRIORITIES.medium;
         break;
-      case: 'low':
+      case 'low':
         priority = this.LEGAL_PRIORITIES.low;
         break;
     }
@@ -536,15 +536,15 @@ export class NESMemoryArchitecture {
     for (const bank of this.memoryBanks.values()) {
       documentCount += bank.documents.size;
       switch (bank.type) {
-        case: 'INTERNAL_RAM':
+        case 'INTERNAL_RAM':
           totalRAM += bank.size;
           usedRAM += bank.used;
           break;
-        case: 'CHR_ROM':
+        case 'CHR_ROM':
           totalCHR += bank.size;
           usedCHR += bank.used;
           break;
-        case: 'PRG_ROM':
+        case 'PRG_ROM':
           totalPRG += bank.size;
           usedPRG += bank.used;
           break;
@@ -607,12 +607,11 @@ export class NESMemoryArchitecture {
         return state.ppu2002 | (state.vblankActive ? 0x80 : 0);
       case 0x2007: // PPU Data
         return state.ppudata;
-      default:
-        return 0;
+      default: return 0;
     }
   }
   private formatBytes(bytes: number): string {
-    if (bytes === 0) return: '0 B';
+    if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

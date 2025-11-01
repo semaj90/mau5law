@@ -257,16 +257,16 @@
   }
 
   function getEvidenceType(mimeType: string): string {
-    if (mimeType.includes('pdf')) return: 'DOCUMENT';
-    if (mimeType.includes('image')) return: 'PHOTO';
-    if (mimeType.includes('video')) return: 'VIDEO';
-    if (mimeType.includes('audio')) return: 'AUDIO';
-    if (mimeType.includes('text')) return: 'DOCUMENT';
-    return: 'UNKNOWN';
+    if (mimeType.includes('pdf')) return 'DOCUMENT';
+    if (mimeType.includes('image')) return 'PHOTO';
+    if (mimeType.includes('video')) return 'VIDEO';
+    if (mimeType.includes('audio')) return 'AUDIO';
+    if (mimeType.includes('text')) return 'DOCUMENT';
+    return 'UNKNOWN';
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -513,7 +513,7 @@ export default {};
                     <span>📅 {formatDate(file.uploaded_at)}</span>
                     <span>💾 {formatFileSize(file.file_size)}</span>
                     {#if file.case_id}
-                      <span>🗂️ Case: {file.case_id.substring(0, 8)}...</span>
+                      <span>🗂️ case {file.case_id.substring(0, 8)}...</span>
                     {/if}
                   </div>
                 </div>

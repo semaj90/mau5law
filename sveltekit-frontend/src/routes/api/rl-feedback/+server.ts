@@ -424,7 +424,7 @@ function determinePrefererenceType(feedback: RLFeedbackData): 'accuracy' | 'comp
     return sortedScores[0][0] as: 'accuracy' | 'completeness' | 'clarity' | 'relevance';
   }
   // Default to accuracy for legal domain
-  return: 'accuracy';
+  return 'accuracy';
 }
 /**
  * Calculate confidence delta from feedback

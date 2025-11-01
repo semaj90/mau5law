@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case: 'process_errors':
+      case 'process_errors':
         console.log('⚡ Starting GPU error processing with gemma3-legal GGUF...');
         const typeScriptCheck = await runTypeScriptCheck();
         const mockProcessingResult = {
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
           result: mockProcessingResult,
           message: 'GPU error processing completed with gemma3-legal GGUF',
         });
-      case: 'benchmark':
+      case 'benchmark':
         const benchmarkResult = {
           processing_speed: 145.7,
           memory_efficiency: 0.85,
@@ -184,8 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
           benchmark: benchmarkResult,
           message: 'FlashAttention2 benchmark completed',
         });
-      default:
-        return json({ success: false, error: 'Invalid action' }, { status: 400 });
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     return json(

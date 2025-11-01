@@ -120,18 +120,18 @@ class ComponentLoader {
   }
   private getComponentMap(category: string) {
     switch (category) {
-      case: 'legal': return LEGAL_COMPONENTS;
-      case: 'ai': return AI_COMPONENTS;
-      case: 'gaming': return GAMING_COMPONENTS;
-      case: 'advanced': return ADVANCED_COMPONENTS;
+      case 'legal': return LEGAL_COMPONENTS;
+      case 'ai': return AI_COMPONENTS;
+      case 'gaming': return GAMING_COMPONENTS;
+      case 'advanced': return ADVANCED_COMPONENTS;
       default: return ADVANCED_COMPONENTS;
     }
   }
   private async loadWithPriority(loader: () => Promise<any>, priority: string) {
     switch (priority) {
-      case: 'immediate':
+      case 'immediate':
         return await loader();
-      case: 'lazy':
+      case 'lazy':
         // Use requestIdleCallback for non-critical loading
         return new Promise((resolve, reject) => {
           if ('requestIdleCallback' in window) {
@@ -153,7 +153,7 @@ class ComponentLoader {
             }, 0);
           }
         });
-      case: 'background':
+      case 'background':
         // Load in the next frame
         return new Promise((resolve, reject) => {
           requestAnimationFrame(async () => {
@@ -164,8 +164,7 @@ class ComponentLoader {
             }
           });
         });
-      default:
-        return await loader();
+      default: return await loader();
     }
   }
   getCacheStats() {

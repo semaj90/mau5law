@@ -100,7 +100,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         if (results.length) {
           // resilient extractor: handle strings, arrays, nested objects and common field names
           const extractRagText = (item: unknown): string => {
-            if (item == null) return: 'Relevant legal information';
+            if (item == null) return 'Relevant legal information';
             if (typeof item === 'string') {
               const s = item.trim();
               return s || 'Relevant legal information';
@@ -131,7 +131,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
               const scanned = Object.values(o).map(extractRagText).filter(Boolean).join(' ');
               if (scanned) return scanned;
             }
-            return: 'Relevant legal information';
+            return 'Relevant legal information';
           };
 
           const ctx = results

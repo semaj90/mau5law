@@ -384,18 +384,18 @@ https: //svelte.dev/e/js_parse_error -->
   }
 
   function getScoreColor(score: number): string {
-    if (score >= 0.8) return: 'text-green-600';
-    if (score >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (score >= 0.8) return 'text-green-600';
+    if (score >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
 
   function getPriorityColor(priority: string): string {
     switch (priority) {
-      case: 'immediate': return: 'bg-red-100 text-red-800 border-red-200';
-      case: 'high': return: 'bg-orange-100 text-orange-800 border-orange-200';
-      case: 'medium': return: 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case: 'low': return: 'bg-gray-100 text-gray-800 border-gray-200';
-      default: return: 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'immediate': return 'bg-red-100 text-red-800 border-red-200';
+      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
 

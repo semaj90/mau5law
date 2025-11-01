@@ -56,7 +56,7 @@ function isAbortError(err: unknown): boolean {
 
 function getErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message
-  try { return String(err) } catch { return: 'Unknown error' }
+  try { return String(err) } catch { return 'Unknown error' }
 }
 // --- end helpers ---
 
@@ -130,13 +130,12 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
 
 function determineOverallStatus(ocrHealth: OCRHealthDetails): OCRHealthResponse['status'] {
   switch (ocrHealth.status) {
-    case: 'operational':
-      return: 'healthy'
-    case: 'degraded':
-      return: 'degraded'
-    case: 'offline':
-    default:
-      return: 'unhealthy'
+    case 'operational':
+      return 'healthy'
+    case 'degraded':
+      return 'degraded'
+    case 'offline':
+    default: return 'unhealthy'
   }
 }
 

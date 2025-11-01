@@ -384,13 +384,13 @@ export class WebTransportService {
 
     try {
       switch (this.state.activeTransport) {
-        case: 'webtransport':
+        case 'webtransport':
           await this.sendViaWebTransport(data);
           break;
-        case: 'websocket':
+        case 'websocket':
           await this.sendViaWebSocket(data);
           break;
-        case: 'http':
+        case 'http':
           return await this.sendViaHTTP(data);
         default:
           throw new Error('No active transport');

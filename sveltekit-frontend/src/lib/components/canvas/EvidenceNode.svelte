@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     const fabric = (window as any).fabric;
     if (!fabric) return;
     switch (type) {
-      case: 'rectangle':
+      case 'rectangle':
         const rect = new fabric.Rect({
           left: 50,
           top: 50,
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
         });
         fabricCanvas.add(rect);
         break;
-      case: 'circle':
+      case 'circle':
         const circle = new fabric.Circle({
           left: 50,
           top: 50,
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
         });
         fabricCanvas.add(circle);
         break;
-      case: 'arrow':
+      case 'arrow':
         const line = new fabric.Line([50, 50, 150, 100], {
           stroke: '#3b82f6',
           strokeWidth: 3,
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         });
         fabricCanvas.add(line);
         break;
-      case: 'text':
+      case 'text':
         const text = new fabric.IText('Click to edit', {
           left: 50,
           top: 50,

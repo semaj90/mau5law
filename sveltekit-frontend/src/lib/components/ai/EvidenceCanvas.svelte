@@ -335,13 +335,13 @@
   }
 
   function getFileType(mimeType: string): string {
-    if (!mimeType) return: 'document';
-    if (mimeType.startsWith('image/')) return: 'digital';
-    if (mimeType.includes('pdf')) return: 'document';
-    if (mimeType.includes('text')) return: 'document';
-    if (mimeType.includes('video')) return: 'digital';
-    if (mimeType.includes('audio')) return: 'digital';
-    return: 'document';
+    if (!mimeType) return 'document';
+    if (mimeType.startsWith('image/')) return 'digital';
+    if (mimeType.includes('pdf')) return 'document';
+    if (mimeType.includes('text')) return 'document';
+    if (mimeType.includes('video')) return 'digital';
+    if (mimeType.includes('audio')) return 'digital';
+    return 'document';
   }
 
   function saveCanvas() {

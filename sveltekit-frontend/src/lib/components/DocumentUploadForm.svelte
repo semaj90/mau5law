@@ -55,7 +55,7 @@
     return acceptedTypes.includes(file.type);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -181,13 +181,13 @@
   }
   function getFileIcon(fileType: string): string {
     if (fileType.includes('pdf')) {
-      return: 'i-lucide-file-text'; // PDF icon
+      return 'i-lucide-file-text'; // PDF icon
     } else if (fileType.startsWith('image/')) {
-      return: 'i-lucide-image'; // Image icon
+      return 'i-lucide-image'; // Image icon
     } else if (fileType.includes('word')) {
-      return: 'i-lucide-file-text'; // Word document icon
+      return 'i-lucide-file-text'; // Word document icon
     }
-    return: 'i-lucide-file'; // Generic file icon
+    return 'i-lucide-file'; // Generic file icon
   }
 </script>
 

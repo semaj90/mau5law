@@ -32,14 +32,13 @@
       toggle: () =>
         update(current => {
           switch (current) {
-            case: 'light':
-              return: 'dark';
-            case: 'dark':
-              return: 'system';
-            case: 'system':
-              return: 'light';
-            default:
-              return: 'light';
+            case 'light':
+              return 'dark';
+            case 'dark':
+              return 'system';
+            case 'system':
+              return 'light';
+            default: return 'light';
           }
         }),
       init: () => {
@@ -92,13 +91,13 @@
   }
   function toggleTheme() {
     switch (currentTheme) {
-      case: 'light':
+      case 'light':
         currentTheme = 'dark';
         break;
-      case: 'dark':
+      case 'dark':
         currentTheme = 'system';
         break;
-      case: 'system':
+      case 'system':
         currentTheme = 'light';
         break;
     }

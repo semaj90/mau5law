@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
 			});
 			if ((response as { ok?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; json?: any }).json();
-				startTypewriter(`✅ Case: "${template.title}" created successfully! Case ID: ${(result as { data?: any }).data.id}`);
+				startTypewriter(`✅ case "${template.title}" created successfully! Case ID: ${(result as { data?: any }).data.id}`);
 				onCaseCreated((result as { data?: any }).data.id);
 				// Reset form
 				setTimeout(() => {
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
 			});
 			if ((response as { ok?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; json?: any }).json();
-				startTypewriter(`✅ Case: "${caseTitle}" created successfully! Ready to assist with evidence collection and analysis.`);
+				startTypewriter(`✅ case "${caseTitle}" created successfully! Ready to assist with evidence collection and analysis.`);
 				onCaseCreated((result as { data?: any }).data.id);
 				// Reset form
 				caseTitle = '';

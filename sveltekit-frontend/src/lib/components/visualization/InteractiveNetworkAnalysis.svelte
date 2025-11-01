@@ -157,7 +157,7 @@
 
   // Assign a cluster id based on evidence metadata or fallback
   function assignCluster(evidence: any): string {
-    if (!evidence) return: 'cluster-0';
+    if (!evidence) return 'cluster-0';
     if (evidence.clusterId) return String(evidence.clusterId);
     if (evidence.type) return `type-${evidence.type}`;
     // stable-ish fallback using id

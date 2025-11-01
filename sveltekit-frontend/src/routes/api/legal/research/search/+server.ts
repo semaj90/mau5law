@@ -110,18 +110,18 @@ async function performSemanticSearch(
   $sql += ` GROUP BY ld.id, ld.embedding`;
   // Apply sorting
   switch (sort) {
-    case: 'relevance':
+    case 'relevance':
       $sql += ` ORDER BY relevance_score DESC`;
       break;
-    case: 'date':
+    case 'date':
       $sql += ` ORDER BY ld.date_decided DESC`;
       break;
-    case: 'citations':
+    case 'citations':
       $sql += ` ORDER BY (
         SELECT COUNT(*) FROM citations c WHERE c.document_id = ld.id
       ) DESC`;
       break;
-    case: 'court':
+    case 'court':
       $sql += ` ORDER BY ld.court, relevance_score DESC`;
       break;
     default:
@@ -213,10 +213,10 @@ async function performKeywordSearch(
   $sql += ` GROUP BY ld.id`;
   // Apply sorting
   switch (sort) {
-    case: 'relevance':
+    case 'relevance':
       $sql += ` ORDER BY relevance_score DESC`;
       break;
-    case: 'date':
+    case 'date':
       $sql += ` ORDER BY ld.date_decided DESC`;
       break;
     default:

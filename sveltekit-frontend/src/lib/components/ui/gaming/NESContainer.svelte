@@ -220,7 +220,7 @@
         {#snippet children(name="title")}Legal Evidence{/snippet}
       </div>
       {#if caseId}
-        <div class="nes-container__case-id">Case: {caseId}</div>
+        <div class="nes-container__case-id">case {caseId}</div>
       {/if}
     </div>
   {/if}

@@ -41,17 +41,16 @@ export const POST: RequestHandler = async ({ request }) => {
     const action = body.action as: 'deploy' | 'start' | 'stop' | 'status';
     console.log(`🚀 GPU Orchestration Deployment - Action: ${action}`);
     switch (action) {
-      case: 'deploy':
+      case 'deploy':
         return await deployOrchestrationSystem(body.config);
-      case: 'start':
+      case 'start':
         return await startOrchestrationSystem();
-      case: 'stop':
+      case 'stop':
         return await stopOrchestrationSystem();
-      case: 'status':
+      case 'status':
         // Return a kit Response (json) rather than the raw DeploymentStatus object
         return json(await getOrchestrationStatus());
-      default:
-        return error(400, 'Invalid action. Use deploy, start, stop, or status.');
+      default: return error(400, 'Invalid action. Use deploy, start, stop, or status.');
     }
   } catch (err: unknown) {
     console.error('❌ GPU orchestration deployment error:', err);

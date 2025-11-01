@@ -160,9 +160,9 @@
   }
   const getStatusColor = (status) => {
     switch (status) {
-      case: 'operational': return: 'bg-green-500';
-      case: 'offline': return: 'bg-red-500';
-      default: return: 'bg-yellow-500';
+      case 'operational': return 'bg-green-500';
+      case 'offline': return 'bg-red-500';
+      default: return 'bg-yellow-500';
     }
   }
 </script>

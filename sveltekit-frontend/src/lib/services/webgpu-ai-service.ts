@@ -85,20 +85,20 @@ export class WebGPUAIService {
   private handleWorkerMessage(data: any): void {
     const { type, requestId, taskId } = data || {};
     switch (type) {
-      case: 'init-complete':
+      case 'init-complete':
         this.isInitialized = Boolean(data?.success);
         this.emit('initialization-complete', { success: this.isInitialized, status: data?.status, requestId });
         break;
-      case: 'task-queued':
+      case 'task-queued':
         this.emit('task-queued', { taskId: data?.taskId, requestId });
         break;
-      case: 'task-complete':
+      case 'task-complete':
         this.handleTaskComplete(data);
         break;
-      case: 'task-error':
+      case 'task-error':
         this.handleTaskError(data);
         break;
-      case: 'status-response':
+      case 'status-response':
         this.emit('status-update', { status: data?.status, requestId });
         break;
       default:
@@ -375,39 +375,38 @@ export class WebGPUAIService {
 
   private mapTaskTypeToWorkerType(taskType: AIProcessingTask['type']): string {
     switch (taskType) {
-      case: 'legal-analysis':
-      case: 'evidence-review':
-      case: 'pattern-detection':
-        return: 'inference';
-      case: 'citation-verification':
-        return: 'embedding';
-      case: 'document-processing':
-        return: 'image-processing';
-      default:
-        return: 'inference';
+      case 'legal-analysis':
+      case 'evidence-review':
+      case 'pattern-detection':
+        return 'inference';
+      case 'citation-verification':
+        return 'embedding';
+      case 'document-processing':
+        return 'image-processing';
+      default: return 'inference';
     }
   }
 
   private prepareTaskData(task: AIProcessingTask): any {
     switch (task.type) {
-      case: 'legal-analysis': {
+      case 'legal-analysis': {
         const encoded = new TextEncoder().encode(String(task.data.content ?? ''));
         // Return a tight ArrayBuffer slice containing just the bytes
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case: 'evidence-review': {
+      case 'evidence-review': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data.evidence ?? {}));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case: 'citation-verification': {
+      case 'citation-verification': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data.citations ?? []));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case: 'pattern-detection': {
+      case 'pattern-detection': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data ?? {}));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case: 'document-processing':
+      case 'document-processing':
         return task.data.document instanceof ArrayBuffer
           ? task.data.document
           : task.data.document instanceof Uint8Array
@@ -416,8 +415,7 @@ export class WebGPUAIService {
                 task.data.document.byteOffset + task.data.document.byteLength
               )
             : new ArrayBuffer(0);
-      default:
-        return new ArrayBuffer(0);
+      default: return new ArrayBuffer(0);
     }
   }
 
@@ -430,41 +428,40 @@ export class WebGPUAIService {
     };
 
     switch (task.type) {
-      case: 'legal-analysis':
+      case 'legal-analysis':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: `Analyze this legal document with ${task.data.analysisType || 'basic'} analysis level`,
           temperature: 0.3,
         };
-      case: 'evidence-review':
+      case 'evidence-review':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: 'Review this evidence for admissibility, chain of custody, and relevance',
           temperature: 0.2,
         };
-      case: 'citation-verification':
+      case 'citation-verification':
         return {
           ...baseConfig,
           model: 'nomic-embed-text',
           text: JSON.stringify(task.data.citations || []),
         };
-      case: 'pattern-detection':
+      case 'pattern-detection':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: `Detect patterns and anomalies using ${task.data.analysisDepth || 'surface'} analysis`,
           temperature: 0.1,
         };
-      case: 'document-processing':
+      case 'document-processing':
         return {
           ...baseConfig,
           extractText: task.data.extractText,
           analyzeContent: task.data.analyzeContent,
         };
-      default:
-        return baseConfig;
+      default: return baseConfig;
     }
   }
 

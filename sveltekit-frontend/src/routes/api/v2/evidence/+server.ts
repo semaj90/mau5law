@@ -264,7 +264,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const action = url.searchParams.get('action') || 'list';
 
     switch (action) {
-      case: 'list': {
+      case 'list': {
         const caseId = url.searchParams.get('caseId');
         const evidenceType = url.searchParams.get('type');
         const search = url.searchParams.get('search');
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
       }
 
-      case: 'search': {
+      case 'search': {
         const query = url.searchParams.get('q') || url.searchParams.get('query');
         const userId = locals.user?.id || 'anonymous';
         const useVector = url.searchParams.get('vector') !== 'false';
@@ -339,7 +339,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
       }
 
-      case: 'status': {
+      case 'status': {
         const fileId = url.searchParams.get('fileId');
         if (!fileId) {
           return json({ error: 'fileId required' }, { status: 400 });
@@ -358,7 +358,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }, { status: 503 });
       }
 
-      case: 'health': {
+      case 'health': {
         const pythonHealthy = await pythonAI.healthCheck();
 
         return json({
@@ -382,8 +382,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
       }
 
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (err) {
     console.error('Evidence API GET error:', err);

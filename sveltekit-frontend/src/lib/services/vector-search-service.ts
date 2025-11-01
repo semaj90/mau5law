@@ -598,15 +598,14 @@ class VectorSearchService {
     hybridWeight: number;
   ): number {
     switch (strategy) {
-      case: 'semantic':
+      case 'semantic':
         return (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore;
-      case: 'bm25':
+      case 'bm25':
         return (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore;
-      case: 'neural':
+      case 'neural':
         return ((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore + (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore) / 2;
-      case: 'hybrid':
-      default:
-        return (
+      case 'hybrid':
+      default: return (
           (weights.semantic || 0.4) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore +
           (weights.text || 0.3) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore +
           (weights.recency || 0.1) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).recencyScore +

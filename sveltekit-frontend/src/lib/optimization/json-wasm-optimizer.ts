@@ -527,7 +527,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
             .map((s: string) => s.trim())
             .filter(Boolean);
           const usedImports = namedImports.filter((imp: string) => usages.has(imp));
-          if (usedImports.length === 0) return: '';
+          if (usedImports.length === 0) return '';
           if (usedImports.length !== namedImports.length) {
             return line.replace(/\{[^}]+\}/, `{ ${usedImports.join(', ')} }`);
           }

@@ -187,10 +187,10 @@ await loadDocuments();
   });
   // Get score color class
   function getScoreColor(score: number): string {
-    if (score >= 0.9) return: 'text-green-600 font-bold';
-    if (score >= 0.7) return: 'text-blue-600';
-    if (score >= 0.5) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (score >= 0.9) return 'text-green-600 font-bold';
+    if (score >= 0.7) return 'text-blue-600';
+    if (score >= 0.5) return 'text-yellow-600';
+    return 'text-red-600';
   }
   // Get label color class
   function getLabelColor(label: string): string {
