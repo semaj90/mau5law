@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
         // removed: timestamp
       });
       console.log('Search completed:', result);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Search failed:', error);
       // System message (no explicit timestamp)
@@ -199,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
         // removed: timestamp
       });
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   // ========================================================================
@@ -211,7 +211,6 @@ https://svelte.dev/e/js_parse_error -->
     await graphTextureManager.updateViewport(viewport);
     await updatePerformanceStats();
   }
-
   function handleCanvasInteraction(event: MouseEvent) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -317,7 +316,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="graph-explorer">
   <header class="controls">
     <div class="search-section">
@@ -350,15 +348,14 @@ https://svelte.dev/e/js_parse_error -->
           <p>Confidence: {(+(selectedNode.metadata?.confidence ?? 0) * 100).toFixed(1)}%</p>
           <p>Type: {selectedNode.metadata?.documentType || 'Unknown'}</p>
           <p>Position ({selectedNode.position?.x?.toFixed(0)}, {selectedNode.position?.y?.toFixed(0)})</p>
-        </div>
-      {/if}
+        {/if}
     </section>
     <!-- Search Results -->
     {#if searchResults.length > 0}
       <section class="results-section">
         <h3>Search Results ({searchResults.length})</h3>
         <div class="results-grid">
-          {#each searchResults as result}
+          {#each Array.isArray(searchResults) ? searchResults : [] as result}
             <div class="result-card">
               <div class="result-score">{(result.score * 100).toFixed(1)}%</div>
               <div class="result-content">
@@ -400,8 +397,7 @@ https://svelte.dev/e/js_parse_error -->
           <p>Queries: {performanceStats.search.totalQueries}</p>
           <p>Avg Response: {performanceStats.search.averageResponseTime}ms</p>
           <p>Cache Hit Rate: {performanceStats.search.cacheHitRate}</p>
-        </div>
-      {/if}
+        {/if}
       <div class="stat-group">
         <h4>GPU Memory</h4>
         <p>LOD Levels: {performanceStats.gpu?.lodLevels || 0}</p>
@@ -414,15 +410,14 @@ https://svelte.dev/e/js_parse_error -->
           <p>Vectors: {performanceStats.quantization.totalVectors}</p>
           <p>Compression {performanceStats.quantization.compressionRatio.toFixed(1)}x</p>
           <p>Memory Saved: {(performanceStats.quantization.memoryReduction * 100).toFixed(1)}%</p>
-        </div>
-      {/if}
+        {/if}
     </aside>
   {/if}
   <!-- Chat History (Reactive) -->
   <aside class="chat-panel">
     <h3>Chat History ({messages.length})</h3>
     <div class="chat-messages">
-      {#each messages.slice(-10) as message}
+      {#each Array.isArray(messages.slice(-10)) ? messages.slice(-10) : [] as message}
         <div class="message message-{message.role}">
           <div class="message-meta">
             <span class="role">{message.role}</span>
@@ -437,14 +432,12 @@ https://svelte.dev/e/js_parse_error -->
               {#if message.metadata.legalContext.jurisdiction}
                 <span class="context-tag">{message.metadata.legalContext.jurisdiction}</span>
               {/if}
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
     </div>
   </aside>
 </div>
-
 <!-- ============================================================================ -->
 <!-- COMPONENT STYLES -->
 <!-- ============================================================================ -->
@@ -693,4 +686,3 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 14px;
   }
 </style>
-

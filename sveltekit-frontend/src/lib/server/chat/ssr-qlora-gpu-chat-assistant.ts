@@ -64,19 +64,19 @@ type SerializedUserDictionary = {
 // New: typed shapes to avoid `any`
 type NESMatch = {
   response?: string;
-  metadata?: { response?: string; [k: string]: unknown };
+  metadata?: { response?: string; [k: string]: any };
   similarity?: number;
 };
 
 type QLoRAResult = {
   response?: string;
   score?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type EmbeddingResponse = {
   embedding?: number[];
-  [k: string]: unknown;
+  [k: string]: any;
 };
 // --- end added types ---
 

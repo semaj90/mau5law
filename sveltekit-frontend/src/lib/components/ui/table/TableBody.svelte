@@ -7,7 +7,6 @@
   }
   let { children, class: className = '' }: Props = $props();
 </script>
-
 <tbody class={cn('[&_tr:last-child]:border-0', className)}>
-  {@render children?.()}
+  <slot />
 </tbody>

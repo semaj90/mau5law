@@ -25,7 +25,7 @@ export class SIMDJSONWorkerClient {
       timeout?: NodeJS.Timeout;
     }
   >();
-  private isReady = false;
+  private isReady = $state(false);
   private initPromise: Promise<boolean> | null = null;
   constructor() {
     if (typeof Worker !== 'undefined') {
@@ -269,7 +269,7 @@ export class SIMDJSONWorkerClient {
       this.rejectAllPending(new Error('Worker terminated'));
       this.worker.terminate();
       this.worker = null;
-      this.isReady = false;
+      this.isReady = $state(false);
       this.initPromise = null;
     }
   }

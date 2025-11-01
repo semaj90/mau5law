@@ -57,7 +57,7 @@ export interface ComprehensiveCachingSetOptions {
 }
 
 export interface ComprehensiveCachingArchitecture {
-  set(key: string, value: unknown, options?: ComprehensiveCachingSetOptions): Promise<void>;
+  set(key: string, value: any, options?: ComprehensiveCachingSetOptions): Promise<void>;
   get<T = unknown>(key: string): Promise<T | null>;
   delete?(key: string): Promise<void>;
 }
@@ -74,13 +74,13 @@ type RedisWithBuffer = Partial<Redis> & {
   // commonly-used methods — optional to reflect best-effort usage
   keys?: (pattern: string) => Promise<string[]>;
   get?: (key: string) => Promise<string | null>;
-  set?: (key: string, value: string, ...args: unknown[]) => Promise<'OK' | null>;
+  set?: (key: string, value: string, ...args: any[]) => Promise<'OK' | null>;
 };
 
 interface QdrantClient {
-  upsert?: (collection: string, payload: unknown) => Promise<unknown>;
-  search?: (collection: string, options: unknown) => Promise<unknown>;
-  query?: (collection: string, options: unknown) => Promise<unknown>;
+  upsert?: (collection: string, payload: any) => Promise<unknown>;
+  search?: (collection: string, options: any) => Promise<unknown>;
+  query?: (collection: string, options: any) => Promise<unknown>;
 }
 
 let redisClient: RedisWithBuffer | null = null;
@@ -200,16 +200,16 @@ export class WebGLShaderCache {
   /* ---------- Uniforms ---------- */
 
   // convert type-guard properties into methods so TS narrows properly
-  private isTextureObj(v: unknown): v is { texture: WebGLTexture; unit?: number; target?: number } {
+  private isTextureObj(v: any): v is { texture: WebGLTexture; unit?: number; target?: number } {
     return !!v && typeof v === 'object' && 'texture' in (v as Record<string, unknown>);
   }
 
-  private isNumericWrapper(v: unknown): v is { value: number } {
+  private isNumericWrapper(v: any): v is { value: number } {
     return (
       !!v &&
       typeof v === 'object' &&
       'value' in (v as Record<string, unknown>) &&
-      typeof (v as { value?: unknown }).value === 'number'
+      typeof (v as { value?: any }).value === 'number'
     );
   }
 
@@ -562,7 +562,7 @@ export class WebGLShaderCache {
   public async findSimilarShaders(
     id: string,
     topK = 3
-  ): Promise<Array<{ id: string; score: number; metadata?: unknown }>> {
+  ): Promise<Array<{ id: string; score: number; metadata?: any }>> {
     try {
       // best-effort: try Redis first
       let base: string | null = null;
@@ -578,7 +578,7 @@ export class WebGLShaderCache {
         if (qdrantClient?.search) {
           const maybe = await qdrantClient.search('shader_embeddings', { id, limit: topK });
           if (Array.isArray(maybe)) {
-            return maybe as Array<{ id: string; score: number; metadata?: unknown }>;
+            return maybe as Array<{ id: string; score: number; metadata?: any }>;
           }
           return [];
         }
@@ -587,7 +587,7 @@ export class WebGLShaderCache {
             'SELECT id, metadata, 1 - (vector <=> $1) AS score FROM shader_embeddings ORDER BY score DESC LIMIT $2',
             [[], topK]
           );
-          return (rows as Array<{ id: string; metadata?: unknown; score: number }>) ?? [];
+          return (rows as Array<{ id: string; metadata?: any; score: number }>) ?? [];
         }
         return [];
       }
@@ -598,7 +598,7 @@ export class WebGLShaderCache {
 
       if (qdrantClient?.search) {
         const res = await qdrantClient.search('shader_embeddings', { vector: embedding, limit: topK });
-        if (Array.isArray(res)) return res as Array<{ id: string; score: number; metadata?: unknown }>;
+        if (Array.isArray(res)) return res as Array<{ id: string; score: number; metadata?: any }>;
       }
 
       if (pgPool) {
@@ -606,12 +606,12 @@ export class WebGLShaderCache {
           'SELECT id, metadata, 1 - (vector <=> $1) AS score FROM shader_embeddings ORDER BY score DESC LIMIT $2',
           [embedding, topK]
         );
-        if (rows && Array.isArray(rows)) return rows as Array<{ id: string; metadata?: unknown; score: number }>;
+        if (rows && Array.isArray(rows)) return rows as Array<{ id: string; metadata?: any; score: number }>;
       }
 
       // Final fallback: scan Redis keys and compute cosine similarity locally
       const keys = redisClient && typeof redisClient.keys === 'function' ? await redisClient.keys('shader:*') : [];
-      const sims: Array<{ id: string; score: number; metadata?: unknown }> = [];
+      const sims: Array<{ id: string; score: number; metadata?: any }> = [];
       if (keys && Array.isArray(keys)) {
         for (const k of keys) {
           try {
@@ -791,7 +791,7 @@ export function getOllamaEndpoint(path = '/api/embeddings'): string {
 /* helper: safely extract tags array from unknown metadata */
 function extractTags(meta: Record<string, unknown> | undefined): string[] {
   if (!meta) return [];
-  const maybe = (meta as { tags?: unknown }).tags;
+  const maybe = (meta as { tags?: any }).tags;
   if (Array.isArray(maybe) && maybe.every(t => typeof t === 'string')) return maybe as string[];
   return [];
 }

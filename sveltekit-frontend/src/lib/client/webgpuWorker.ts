@@ -1,7 +1,6 @@
 export async function initWebGPUWorker() {
   // Assert globalThis.navigator to include the: 'gpu' property for WebGPU types
   const typedNavigator = globalThis.navigator as (Navigator & { gpu?: GPU });
-
   if (typeof typedNavigator === 'undefined' || !typedNavigator.gpu) return null;
   const adapter = await typedNavigator.gpu.requestAdapter();
   if (!adapter) return null;

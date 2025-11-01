@@ -216,7 +216,7 @@ export class WebTransportService {
     const writer = stream.writable.getWriter();
 
     try {
-      let done = false;
+      let done = $state(false);
       while (!done) {
         const res = await reader.read();
         done = Boolean(res.done);
@@ -252,7 +252,7 @@ export class WebTransportService {
     const reader = stream.getReader();
 
     try {
-      let done = false;
+      let done = $state(false);
       while (!done) {
         const res = await reader.read();
         done = Boolean(res.done);
@@ -274,7 +274,7 @@ export class WebTransportService {
   }
 
   // Send data via WebTransport
-  async sendViaWebTransport(data: unknown): Promise<void> {
+  async sendViaWebTransport(data: any): Promise<void> {
     if (!this.transport) {
       throw new Error('WebTransport not connected');
     }
@@ -343,7 +343,7 @@ export class WebTransportService {
   }
 
   // Send data via WebSocket
-  async sendViaWebSocket(data: unknown): Promise<void> {
+  async sendViaWebSocket(data: any): Promise<void> {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       throw new Error('WebSocket not connected');
     }
@@ -354,7 +354,7 @@ export class WebTransportService {
   }
 
   // Send data via HTTP
-  async sendViaHTTP(data: unknown): Promise<unknown> {
+  async sendViaHTTP(data: any): Promise<unknown> {
     try {
       const response = await fetch(this.config.httpUrl, {
         method: 'POST',
@@ -379,7 +379,7 @@ export class WebTransportService {
   }
 
   // Unified send method with automatic transport selection
-  async send(data: unknown): Promise<unknown | void> {
+  async send(data: any): Promise<unknown | void> {
     const startTime = performance.now();
 
     try {

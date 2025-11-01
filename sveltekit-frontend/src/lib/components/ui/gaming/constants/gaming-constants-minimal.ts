@@ -2,7 +2,6 @@
  * Gaming UI Constants - Minimal Working Version
  * Essential constants to get the app running
  */
-
 // Basic Gaming CSS Variables
 export const GAMING_CSS_VARS = {
   '--gaming-current-era': '8bit',
@@ -17,14 +16,12 @@ export const GAMING_CSS_VARS = {
   '--yorha-bg-primary': '#0a0a0a',
   '--yorha-text-primary': '#e0e0e0',
 };
-
 // Gaming Breakpoints
 export const GAMING_BREAKPOINTS = {
   mobile: 768,
   tablet: 1024,
   desktop: 1440,
 };
-
 // Gaming Era Specifications
 export const GAMING_ERA_SPECS = {
   '8bit': {
@@ -75,7 +72,6 @@ export const GAMING_ERA_SPECS = {
     },
   },
 };
-
 // N64 Texture Presets
 export const N64_TEXTURE_PRESETS = {
   lowPoly: {
@@ -112,7 +108,6 @@ export const N64_TEXTURE_PRESETS = {
     shadowMapSize: 1024 as const,
   },
 };
-
 // Export a working constants object
 export const GAMING_CONSTANTS = {
   CSS_VARS: GAMING_CSS_VARS,

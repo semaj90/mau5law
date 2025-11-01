@@ -268,8 +268,8 @@ export interface FileSecurityResult {
 export function checkFileSecurityAI(file: File): FileSecurityResult {
   const issues: string[] = [];
   let risk: "low" | "medium" | "high" = "low";
-  let isLegalDocument = false;
-  let requiresPrivilegedAccess = false;
+  let isLegalDocument = $state(false);
+  let requiresPrivilegedAccess = $state(false);
   // File size check
   if (file.size > DEFAULT_SECURITY_CONFIG.maxFileSize) {
     issues.push("File size exceeds maximum allowed");
@@ -493,7 +493,7 @@ export function addChainOfCustodyEvent(
   });
 }
 // Data export security with legal privilege protection
-export function secureDataExport(data: any, userId: string, legalContext?: unknown): void {
+export function secureDataExport(data: any, userId: string, legalContext?: any): void {
   logSecurityEvent({
     type: "data_export",
     userId,

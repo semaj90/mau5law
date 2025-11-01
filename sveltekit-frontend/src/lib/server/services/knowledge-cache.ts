@@ -4,15 +4,12 @@ import { appPool } from '$lib/server/db/connections';
 import { ensureRedisReady, redis } from '$lib/server/redis-client';
 import { LokiHybridStore } from '$lib/server/lokiHybridStore';
 import { qdrant, EVIDENCE_COLLECTION_NAME } from '$lib/server/services/qdrant-client';
-
 type GlobalRegistry = typeof globalThis & {
   knowledgeCache?: LokiHybridStore;
   knowledgeCacheReady?: Promise<void>;
   knowledgeCacheNeo4jDriver?: neo4j.Driver;
 };
-
 const globalRef = globalThis as GlobalRegistry;
-
 function resolveNeo4jConnection(): neo4j.Driver | undefined {
   const url =
     process.env.NEO4J_URI ??
@@ -23,7 +20,6 @@ function resolveNeo4jConnection(): neo4j.Driver | undefined {
     process.env.NEO4J_USERNAME ?? process.env.NEO4J_USER ?? CONFIG.NEO4J_USER ?? 'neo4j';
   const password =
     process.env.NEO4J_PASSWORD ?? process.env.NEO4J_PASS ?? CONFIG.NEO4J_PASSWORD ?? 'password';
-
   try {
     if (globalRef.knowledgeCacheNeo4jDriver) {
       return globalRef.knowledgeCacheNeo4jDriver;
@@ -36,7 +32,6 @@ function resolveNeo4jConnection(): neo4j.Driver | undefined {
     return undefined;
   }
 }
-
 async function initializeStore(store: LokiHybridStore): Promise<void> {
   try {
     await ensureRedisReady().catch((error) => {
@@ -47,7 +42,6 @@ async function initializeStore(store: LokiHybridStore): Promise<void> {
   }
   await store.init();
 }
-
 if (!globalRef.knowledgeCache) {
   const neo4jDriver = resolveNeo4jConnection();
   const store = new LokiHybridStore({
@@ -66,6 +60,5 @@ if (!globalRef.knowledgeCache) {
   globalRef.knowledgeCache = store;
   globalRef.knowledgeCacheReady = initializeStore(store);
 }
-
 export const knowledgeCache = globalRef.knowledgeCache!;
 export const knowledgeCacheReady = globalRef.knowledgeCacheReady ?? Promise.resolve();

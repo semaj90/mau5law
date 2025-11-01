@@ -5,21 +5,20 @@
   import { slide } from 'svelte/transition';
   import { sidebarStore } from '../stores/canvas';
   import { loki, lokiStore } from '../stores/lokiStore';
-  import InfiniteScrollList from './InfiniteScrollList.svelte';
-  import SearchBar from './SearchBar.svelte';
-  import TagList from './TagList.svelte';
+  import { InfiniteScrollList } from './InfiniteScrollList.svelte';
+  import { SearchBar } from './SearchBar.svelte';
+  import { TagList } from './TagList.svelte';
   // FileText and Tag are available as named exports in this environment
   import { FileText, Tag } from 'lucide-svelte';
   // Folder and X may be provided as default exports depending on lucide-svelte version
   import Folder from 'lucide-svelte';
   import X from 'lucide-svelte';
   let sidebarElement: HTMLElement;
-  let isHovered = false;
+  let isHovered = $state(false);
   let isPinned = $state(false);
   let searchQuery = $state('');
   let activeTab: 'evidence' | 'notes' | 'canvas' = $state('evidence');
   let fuse: Fuse<any> | null = null;
-
   // Define expected interfaces for Loki service to resolve type errors
   interface RefreshableCollection {
     refreshStore(): void;
@@ -28,23 +27,19 @@
     getByCaseId?(caseId: string): any[];
     search?(query: string): any[];
   }
-
   interface ExpectedLokiService {
     init(): Promise<void>;
     evidence: RefreshableCollection;
     notes: RefreshableCollection;
     canvasStates: RefreshableCollection;
   }
-
   // Cast the imported loki object to the expected interface
   const typedLoki = loki as ExpectedLokiService;
-
   // Fix: use $derived as a function that accepts a callback
   let sidebarOpen = $derived(() => ($sidebarStore?.open ?? false) || isHovered || isPinned);
   let evidenceItems = $derived(() => $lokiStore?.evidence ?? []);
   let notesItems = $derived(() => $lokiStore?.notes ?? []);
   let canvasStates = $derived(() => $lokiStore?.canvasStates ?? []);
-
   // Create Fuse instance when relevant items change
   $effect(() => {
     if (activeTab === 'evidence' && evidenceItems.length > 0) {
@@ -55,7 +50,6 @@
       fuse = null;
     }
   });
-
   // Compute search results reactively (use callback form)
   let searchResults = $derived(() => {
     if (searchQuery && fuse) {
@@ -65,12 +59,10 @@
     if (activeTab === 'notes') return notesItems;
     return canvasStates;
   });
-
   $effect(() => {
     typedLoki.init();
     refreshData();
   });
-
   function refreshData() {
     if (activeTab === 'evidence') {
       typedLoki.evidence.refreshStore();
@@ -80,37 +72,30 @@
       typedLoki.canvasStates.refreshStore();
     }
   }
-
   function handleMouseEnter() {
     isHovered = true;
   }
-
   function handleMouseLeave() {
-    isHovered = false;
+    isHovered = $state(false);
   }
-
   function togglePin() {
     isPinned = !isPinned;
     // annotate state param to avoid implicit any
     sidebarStore.update((state: any) => ({ ...state, open: isPinned }));
   }
-
   // Fix malformed handler: use the event parameter correctly
   function handleSearch(event: CustomEvent) {
     searchQuery = (event as CustomEvent).detail?.query ?? '';
   }
-
-  function handleItemClick(item: unknown) {
+  function handleItemClick(item: any) {
     console.log('Item clicked:', item);
   }
-
   function handleTabChange(tab: 'evidence' | 'notes' | 'canvas') {
     activeTab = tab;
     searchQuery = '';
     refreshData();
   }
 </script>
-
 <div
   class="yorha-3d-panel nes-legal-container sidebar-container"
   class:open={sidebarOpen}
@@ -121,8 +106,7 @@
   onmouseleave={handleMouseLeave}
 >
   {#if !sidebarOpen}
-    <div class="nes-sidebar-trigger hover-trigger" aria-hidden="true"></div>
-  {/if}
+    <div class="nes-sidebar-trigger hover-trigger" aria-hidden="true">{/if}
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
@@ -209,10 +193,8 @@
       <div class="nes-tags-section nes-legal-priority-low tags-section">
         <TagList />
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .sidebar-container {
@@ -328,4 +310,3 @@
     }
   }
 </style>
-

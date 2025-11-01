@@ -173,7 +173,7 @@ export const evidenceProcessingMachine = setup({
           confidence: Math.min(embeddings.confidence || 0, tags.confidence || 0, analysis.confidence || 0),
           timestamp: new Date(),
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         throw new Error(`AI processing failed: ${(error as Error).message}`);
       }
     }),
@@ -191,7 +191,7 @@ export const evidenceProcessingMachine = setup({
         });
         if (!response.ok) throw new Error('Vector search failed');
         return await response.json();
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Return empty results on failure
         return { matches: [] };
       }
@@ -209,7 +209,7 @@ export const evidenceProcessingMachine = setup({
         });
         if (!response.ok) throw new Error('Relationship discovery failed');
         return await response.json();
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Return empty relationships on failure
         return { nodes: [], connections: [] };
       }
@@ -229,7 +229,7 @@ export const evidenceProcessingMachine = setup({
             ? 'degraded'
             : 'critical';
         return { health: healthStatus, details: checks };
-      } catch (error: unknown) {
+      } catch (error: any) {
         return { health: 'critical', details: [], error: (error as Error).message };
       }
     }),
@@ -239,7 +239,7 @@ export const evidenceProcessingMachine = setup({
         if (!response.ok) throw new Error('Cache sync failed');
         const result = await response.json();
         return { cacheOperations: (result as { operations?: number }).operations || 0 };
-      } catch (error: unknown) {
+      } catch (error: any) {
         return { cacheOperations: 0, error: (error as Error).message };
       }
     }),
@@ -622,7 +622,7 @@ export async function initializeEnhancedMachines(): Promise<any> {
     return {
       evidenceActor,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to initialize enhanced machines:', error);
     throw error;
   }

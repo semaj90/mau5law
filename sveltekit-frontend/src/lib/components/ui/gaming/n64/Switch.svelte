@@ -19,31 +19,31 @@
   export let era: string = 'n64';
   export let variant: string = 'primary';
   export let size: string = 'medium'; // normalized to: 'small'|'medium'|'large'|'xl'
-  export let disabled: boolean = false;
-  export let loading: boolean = false;
+  export let disabled: boolean = $state(false);
+  export let loading: boolean = $state(false);
   export let animationStyle: string = 'smooth';
   export let renderOptions: Partial<N64RenderingOptions> = {};
-  export let checked: boolean = false;
+  export let checked: boolean = $state(false);
   export let name: string | undefined = undefined;
   export let id: string | undefined = undefined;
   export let value: string | undefined = undefined;
-  export let required: boolean = false;
-  export let readonly: boolean = false;
+  export let required: boolean = $state(false);
+  export let readonly: boolean = $state(false);
   export let label: string | undefined = undefined;
   export let description: string | undefined = undefined;
   export let meshComplexity: 'low' | 'medium' | 'high' | 'ultra' = 'medium';
   export let materialType: 'basic' | 'phong' | 'pbr' = 'phong';
   export let enableTextureFiltering: boolean = true;
-  export let enableMipMapping: boolean = false;
+  export let enableMipMapping: boolean = $state(false);
   export let enableFog: boolean = true;
   export let enableLighting: boolean = true;
-  export let enableReflections: boolean = false;
+  export let enableReflections: boolean = $state(false);
   export let enableMechanicalAnimation: boolean = true;
   export let depth: number = 6;
   export let perspective: number = 1000;
   export let switchWidth: number = 56;
   export let switchHeight: number = 32;
-  export let enableParticles: boolean = false;
+  export let enableParticles: boolean = $state(false);
   export let glowIntensity: number = 0.4;
   export let enableSpatialAudio: boolean = true;
   export let enableToggleGlow: boolean = true;
@@ -55,10 +55,10 @@
   export let className: string = '';
 
   // Local state
-  let isFocused = false;
-  let isHovered = false;
-  let isPressed = false;
-  let isAnimating = false;
+  let isFocused = $state(false);
+  let isHovered = $state(false);
+  let isPressed = $state(false);
+  let isAnimating = $state(false);
   let switchElement: HTMLElement | null = null;
   let audioContext: AudioContext | null = null;
   let animationFrameId: number | null = null;
@@ -168,8 +168,8 @@
     await playSwitchSound(newValue);
     if (enableParticles) createSwitchParticles();
     setTimeout(() => {
-      isPressed = false;
-      isAnimating = false;
+      isPressed = $state(false);
+      isAnimating = $state(false);
     }, animationDuration);
     ondispatch?.({ checked: newValue, value });
   }
@@ -179,14 +179,14 @@
     isFocused = true;
   }
   function handleBlur() {
-    isFocused = false;
+    isFocused = $state(false);
   }
   function handleHover() {
     if (disabled) return;
     isHovered = true;
   }
   function handleUnhover() {
-    isHovered = false;
+    isHovered = $state(false);
   }
   function handleKeyDown(e: KeyboardEvent) {
     if (disabled || readonly) return;
@@ -387,23 +387,18 @@
     <div class="switch-track" style={`width: ${sizeStyles.width}px; height: ${sizeStyles.height}px;`}>
       <div class="switch-knob" style={`width: ${sizeStyles.knobSize}px; height: ${sizeStyles.knobSize}px;`}>
         {#if enableLighting}
-          <div class="knob-lighting"></div>
-        {/if}
+          <div class="knob-lighting">{/if}
         {#if enableReflections}
-          <div class="knob-reflection"></div>
-        {/if}
+          <div class="knob-reflection">{/if}
         {#if loading}
           <div class="knob-loading">
             <div class="n64-spinner"></div>
-          </div>
-        {/if}
+          {/if}
       </div>
       {#if enableFog}
-        <div class="track-fog"></div>
-      {/if}
+        <div class="track-fog">{/if}
       {#if enableToggleGlow && checked}
-        <div class="toggle-glow"></div>
-      {/if}
+        <div class="toggle-glow">{/if}
     </div>
 
     <!-- Hidden input for form handling -->
@@ -426,10 +421,8 @@
         <label id="switch-label" class="switch-label" for={id}>{label}</label>
       {/if}
       {#if description}
-        <div id="switch-description" class="switch-description">{description}</div>
-      {/if}
-    </div>
-  {/if}
+        <div id="switch-description" class="switch-description">{description}{/if}
+    {/if}
 </div>
 
 <style>

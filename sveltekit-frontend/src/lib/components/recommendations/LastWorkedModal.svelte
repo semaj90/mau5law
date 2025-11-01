@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, slide, scale } from 'svelte/transition';
   import { cubicOut, elasticOut } from 'svelte/easing';
-  import DiamondModal from '$lib/components/ui/DiamondModal.svelte';
+  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface WorkItem {
     id: string;
@@ -78,7 +78,7 @@
   });
   async function loadWorkHistory() {
     isLoading = true;
-    let usingMockData = false;
+    let usingMockData = $state(false);
     try {
       // removed unused response assignment
       const result = await response.json();
@@ -143,12 +143,12 @@
         }
       ];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       // Display fallback notice if using mock data
       if (usingMockData) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position fixed;
+        notice.style.cssText = 'position: fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
@@ -177,7 +177,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - activity recorded locally';
-      notice.style.cssText = 'position fixed;
+      notice.style.cssText = 'position: fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
@@ -211,7 +211,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       recordActivity(activeTimer.itemId, 'edited', duration, 'Timed work session');
       activeTimer = null;
     }
-    isRecordingTime = false;
+    isRecordingTime = $state(false);
   }
   function getTypeIcon(type: WorkItem['type']): string {
     switch (type) {
@@ -275,21 +275,20 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       // In real app, this would navigate to the work item
       console.log('Opening work item:', workItem.title);
       // Close modal
-      open = false;
+      open = $state(false);
     } catch (error) {
       // Show fallback notice for navigation failure
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - item opened locally';
-      notice.style.cssText = 'position fixed;
+      notice.style.cssText = 'position: fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
-      open = false;
+      open = $state(false);
     }
   }
 </script>
-
 <DiamondModal bind:open title="💼 Work History & Time Tracking" size="large">
   <div class="work-history-modal">
     <!-- Header Stats & Controls -->
@@ -336,8 +335,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         {:else}
           <div class="timer-status">
             {isRecordingTime ? '⏱️ Timer Active' : '⏱️ Timer Ready'}
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- Work Items List -->
@@ -403,8 +401,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     <div class="urgency-indicator urgency-{urgency}">
                       {urgency === 'critical' ? '🔴' : urgency === 'high' ? '🟡' : urgency === 'medium' ? '🟠' : '🟢'}
                       {new Date(workItem.metadata.deadline).toLocaleDateString()}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
               <!-- Expanded Details -->
@@ -414,7 +411,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   <div class="activities-section">
                     <h5>Recent Activities ({workItem.activities.length})</h5>
                     <div class="activities-list">
-                      {#each workItem.activities.slice(0, 5) as activity}
+                      {#each Array.isArray(workItem.activities.slice(0, 5)) ? workItem.activities.slice(0, 5) : [] as activity}
                         <div class="activity-item">
                           <div class="activity-icon">
                             {activity.action === 'opened'
@@ -446,12 +443,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     <div class="collaborators-section">
                       <h5>Collaborators ({workItem.metadata.collaborators.length})</h5>
                       <div class="collaborator-chips">
-                        {#each workItem.metadata.collaborators as collaborator}
+                        {#each Array.isArray(workItem.metadata.collaborators) ? workItem.metadata.collaborators : [] as collaborator}
                           <span class="collaborator-chip">👤 {collaborator}</span>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Action Buttons -->
                   <div class="work-actions">
                     <button class="action-btn primary" onclick={() => openWorkItem(workItem)}> 📂 Open Item </button>
@@ -477,8 +473,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                       </button>
                     {/if}
                   </div>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {/each}
@@ -486,7 +481,6 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     </div>
   </div>
 </DiamondModal>
-
 <style>
   .work-history-modal {
     max-height: 85vh;
@@ -627,7 +621,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .progress-text {
     font-size: 0.75rem;
@@ -817,4 +811,3 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     background: rgba(138, 43, 226, 0.7);
   }
 </style>
-

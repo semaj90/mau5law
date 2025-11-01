@@ -75,7 +75,7 @@ export interface LoadEvent {
   request: Request;
   cookies: {
     get(name: string): string | undefined;
-    set(name: string, value: string, options?: unknown): void;
+    set(name: string, value: string, options?: any): void;
   };
   locals: Record<string, unknown>;
   parent(): Promise<Record<string, unknown>>; // Fixed: Added closing: '>'
@@ -95,12 +95,12 @@ export interface RequestEvent {
   request: Request;
   cookies: {
     get(name: string): string | undefined;
-    set(name: string, value: string, options?: unknown): void;
-    delete(name: string, options?: unknown): void;
+    set(name: string, value: string, options?: any): void;
+    delete(name: string, options?: any): void;
   };
   locals: Record<string, unknown>;
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
-  platform?: unknown;
+  platform?: any;
 }
 export interface RequestHandler {
   // Removed unused: 'Data' generic
@@ -108,10 +108,10 @@ export interface RequestHandler {
 }
 // SvelteKit hooks
 export interface Handle {
-  (input: { event: RequestEvent; resolve: unknown }): Promise<Response>;
+  (input: { event: RequestEvent; resolve: any }): Promise<Response>;
 }
 export interface HandleError {
-  (input: { error: unknown; event: RequestEvent }): unknown;
+  (input: { error: any; event: RequestEvent }): any;
 }
 export interface HandleFetch {
   (input: { event: RequestEvent; request: Request; fetch: typeof fetch }): Promise<Response>;
@@ -122,9 +122,9 @@ export interface PageStore {
   params: Record<string, string>;
   route: { id: string | null };
   data: Record<string, unknown>;
-  error: unknown;
+  error: any;
   state: Record<string, unknown>;
-  form: unknown;
+  form: any;
 }
 export type NavigatingStore = {
   from?: { params: Record<string, string>; url: URL };
@@ -154,7 +154,7 @@ export interface QueryResult<T = unknown> {
   fields?: Array<unknown>;
 }
 export interface DatabaseConnection {
-  query<T = unknown>(sql: string, params?: unknown[]): Promise<QueryResult<T>>; // Fixed: Added closing: '>'
+  query<T = unknown>(sql: string, params?: any[]): Promise<QueryResult<T>>; // Fixed: Added closing: '>'
   transaction<T>(callback: (client: DatabaseConnection) => Promise<T>): Promise<T>;
   end(): Promise<void>;
 }
@@ -174,10 +174,10 @@ export interface PostgresOptions {
   ssl?: boolean | string | object;
   prepare?: boolean;
   connect_timeout?: number;
-  onnotice?: (notice: unknown) => void;
-  onparameter?: (_key: string, value: unknown) => void;
+  onnotice?: (notice: any) => void;
+  onparameter?: (_key: string, value: any) => void;
   onconnect?: () => Promise<void>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Drizzle ORM specific types
 export interface DrizzleConfig {
@@ -187,44 +187,44 @@ export interface DrizzleConfig {
 }
 // Enhanced Drizzle column functions to fix untyped function calls
 export interface DrizzleColumnHelpers {
-  pgTable: unknown;
-  serial: unknown;
-  text: unknown;
-  varchar: unknown;
-  integer: unknown;
-  boolean: unknown;
-  timestamp: unknown;
-  json: unknown;
-  jsonb: unknown;
-  uuid: unknown;
-  real: unknown;
-  doublePrecision: unknown;
-  vector: unknown;
-  primaryKey: unknown;
-  foreignKey: unknown;
-  unique: unknown;
-  index: unknown;
+  pgTable: any;
+  serial: any;
+  text: any;
+  varchar: any;
+  integer: any;
+  boolean: any;
+  timestamp: any;
+  json: any;
+  jsonb: any;
+  uuid: any;
+  real: any;
+  doublePrecision: any;
+  vector: any;
+  primaryKey: any;
+  foreignKey: any;
+  unique: any;
+  index: any;
   // Query operators
-  eq: unknown;
-  ne: unknown;
-  gt: unknown;
-  gte: unknown;
-  lt: unknown;
-  lte: unknown;
-  isNull: unknown;
-  isNotNull: unknown;
-  inArray: unknown;
-  notInArray: unknown;
-  like: unknown;
-  ilike: unknown;
-  between: unknown;
-  notBetween: unknown;
-  exists: unknown;
-  notExists: unknown;
-  and: unknown;
-  or: unknown;
-  not: unknown;
-  sql: unknown;
+  eq: any;
+  ne: any;
+  gt: any;
+  gte: any;
+  lt: any;
+  lte: any;
+  isNull: any;
+  isNotNull: any;
+  inArray: any;
+  notInArray: any;
+  like: any;
+  ilike: any;
+  between: any;
+  notBetween: any;
+  exists: any;
+  notExists: any;
+  and: any;
+  or: any;
+  not: any;
+  sql: any;
 }
 export interface DrizzleTable<T extends Record<string, unknown> = Record<string, unknown>> {
   // Fixed: Added closing: '>'
@@ -255,7 +255,7 @@ export interface VectorSearchResult {
   score: number;
   values?: number[];
   metadata?: Record<string, unknown>;
-  document?: unknown;
+  document?: any;
 }
 export interface VectorSearchOptions {
   limit?: number;
@@ -302,7 +302,7 @@ export interface OllamaGenerateResponse {
 export interface OllamaEmbeddingRequest {
   model: string;
   prompt: string;
-  options?: unknown;
+  options?: any;
   keep_alive?: string;
 }
 export interface OllamaEmbeddingResponse {
@@ -341,7 +341,7 @@ export interface RAGQuery {
 export interface RAGResponse {
   response: string;
   context: RAGDocument[];
-  sources: unknown[];
+  sources: any[];
   confidence: number;
   processingTime: number;
   model?: string;
@@ -372,7 +372,7 @@ export interface CacheLayerConfig {
   options?: Record<string, unknown>;
 }
 export interface CacheEntry {
-  value: unknown;
+  value: any;
   metadata: Record<string, unknown>;
   ttl: number;
   createdAt: number;
@@ -424,26 +424,26 @@ export interface CachePolicy {
 // Enhanced LokiJS types to fix missing exports
 export interface Collection<T = unknown> {
   insert(obj: T | T[]): T | T[];
-  find(query?: unknown): T[];
-  findOne(query?: unknown): T | null;
+  find(query?: any): T[];
+  findOne(query?: any): T | null;
   update(obj: T): T;
   remove(obj: T | T[]): void;
-  chain(): unknown;
-  count(query?: unknown): number;
+  chain(): any;
+  count(query?: any): number;
   data: T[];
   name: string;
 }
 export interface LokiMemoryAdapter {
-  loadDatabase(dbname: string, callback: (data: unknown) => void): void;
+  loadDatabase(dbname: string, callback: (data: any) => void): void;
   saveDatabase(dbname: string, dbstring: string, callback?: () => void): void;
   deleteDatabase(dbname: string, callback?: () => void): void;
 }
 export interface Loki {
-  addCollection<T>(name: string, options?: unknown): Collection<T>;
+  addCollection<T>(name: string, options?: any): Collection<T>;
   getCollection<T>(name: string): Collection<T> | null;
   removeCollection(name: string): void;
-  loadDatabase(options?: unknown): void;
-  saveDatabase(callback?: (err?: unknown) => void): void;
+  loadDatabase(options?: any): void;
+  saveDatabase(callback?: (err?: any) => void): void;
   close(callback?: () => void): void;
   serialize(): string;
 }
@@ -458,12 +458,12 @@ export interface EnhancedRedisOptions {
   enableReadyCheck?: boolean;
   lazyConnect?: boolean;
   retryStrategy?: (times: number) => number;
-  reconnectOnError?: (err: unknown) => boolean;
+  reconnectOnError?: (err: any) => boolean;
   enableOfflineQueue?: boolean;
   commandTimeout?: number;
   keyPrefix?: string;
   cacheTtl?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // ===== TESTING TYPES =====
 export interface TestContext {
@@ -476,17 +476,17 @@ export interface ExpectationResult {
   pass: boolean;
   message: string;
 }
-export interface MockFunction<T extends (...args: unknown[]) => unknown = (...args: unknown[]) => unknown> {
+export interface MockFunction<T extends (...args: any[]) => unknown = (...args: any[]) => unknown> {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
   mockReturnValue(_value: ReturnType<T>): this;
   mockResolvedValue(_value: Awaited<ReturnType<T>>): this; // Fixed: Added closing: '>'
-  mockRejectedValue(error: unknown): this;
+  mockRejectedValue(error: any): this;
   mockClear(): this;
   mockReset(): this;
   mockRestore(): this;
   calls: Parameters<T>[];
-  results: { type: 'return' | 'throw'; value: unknown }[];
+  results: { type: 'return' | 'throw'; value: any }[];
 }
 // ===== ENVIRONMENT TYPES =====
 export interface EnvironmentConfig {
@@ -518,11 +518,11 @@ export interface EnvironmentConfig {
 declare global {
   // Enhanced window interface
   interface Window {
-    comprehensivePackageBarrelStore?: unknown;
+    comprehensivePackageBarrelStore?: any;
   }
   // Enhanced console interface
   interface Console {
-    trace(...args: unknown[]): void;
+    trace(...args: any[]): void;
     group(label?: string): void;
     groupCollapsed(label?: string): void;
     groupEnd(): void;

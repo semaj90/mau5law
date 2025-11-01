@@ -76,7 +76,7 @@
   /**
    * Get backend health from health check data
    */
-  function getBackendHealth(backend: Backend, healthData: unknown): boolean {
+  function getBackendHealth(backend: Backend, healthData: any): boolean {
     switch (backend) {
       case 'vllm':
         return healthData.backends?.vllm?.reachable || false;
@@ -286,7 +286,7 @@
         <h3>Backend Status</h3>
       </div>
       <div class="nier-bits-yorha-panel-content">
-        {#each availableBackends as backend}
+        {#each Array.isArray(availableBackends) ? availableBackends : [] as backend}
           {@const status = getBackendStatus(backend)}
           {@const StatusIcon = getStatusIcon(status)}
           <div class="backend-row">
@@ -374,8 +374,7 @@
           <div class="no-data">
             <p>No performance data available yet</p>
             <p class="hint">Metrics will appear after AI interactions</p>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -383,7 +382,7 @@
   <div class="backend-details">
     <h3>Backend Details</h3>
     <div class="backend-tabs">
-      {#each availableBackends as backend}
+      {#each Array.isArray(availableBackends) ? availableBackends : [] as backend}
         <div class="backend-detail-nier-bits-card">
           <div class="backend-header">
             <h4>{backend.toUpperCase()}</h4>
@@ -597,7 +596,7 @@
   }
   .bar-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .bar-fill.requests {
     background: #3b82f6;
@@ -710,4 +709,3 @@
     }
   }
 </style>
-

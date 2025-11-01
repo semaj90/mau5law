@@ -148,7 +148,7 @@
       console.error('Search error:', error);
       searchResults = [];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }, 300);
 
@@ -182,7 +182,7 @@
     selectedResult = result;
     inputValue = result.title;
     value = inputValue;
-    open = false;
+    open = $state(false);
     // Add to recent searches
     if (!recentSearches.includes(result.title)) {
       recentSearches = [result.title, ...recentSearches.slice(0, 4)];
@@ -272,7 +272,7 @@
     {#if inputValue.length >= 2}
       <div class="border-b border-gray-100 p-3">
         <div class="flex flex-wrap gap-2">
-          {#each categories as category}
+          {#each Array.isArray(categories) ? categories : [] as category}
             <span class={cn(
               "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
               "bg-blue-50 text-blue-700"
@@ -290,8 +290,7 @@
             </span>
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
 
     <!-- Results List -->
     <div class="max-h-80 overflow-auto p-1">
@@ -310,7 +309,7 @@
                 <Clock class="mr-1 h-3 w-3" />
                 Recent Searches
               </p>
--              {#each recentSearches as search}
+-              {#each Array.isArray(recentSearches) ? recentSearches : [] as search}
 -                <ComboboxItem
 -                  value={search}
 -                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
@@ -319,7 +318,7 @@
 -                  <Search class="mr-3 h-4 w-4 text-gray-400" />
 -                  {search}
 -                </ComboboxItem>
-+              {#each recentSearches as search}
++              {#each Array.isArray(recentSearches) ? recentSearches : [] as search}
 +                <div
 +                  role="option"
 +                  tabindex="0"
@@ -331,8 +330,7 @@
 +                  {search}
 +                </div>
                {/each}
-            </div>
-          {/if}
+            {/if}
 
           <!-- AI Suggestions -->
           {#if suggestions.length > 0}
@@ -341,7 +339,7 @@
                 <Zap class="mr-1 h-3 w-3" />
                 Suggested Searches
               </p>
--              {#each suggestions.slice(0, 3) as suggestion}
+-              {#each Array.isArray(suggestions.slice(0, 3)) ? suggestions.slice(0, 3) : [] as suggestion}
 -                <ComboboxItem
 -                  value={suggestion}
 -                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
@@ -350,7 +348,7 @@
 -                  <Zap class="mr-3 h-4 w-4 text-purple-400" />
 -                  {suggestion}
 -                </ComboboxItem>
-+              {#each suggestions.slice(0, 3) as suggestion}
++              {#each Array.isArray(suggestions.slice(0, 3)) ? suggestions.slice(0, 3) : [] as suggestion}
 +                <div
 +                  role="option"
 +                  tabindex="0"
@@ -362,11 +360,10 @@
 +                  {suggestion}
 +                </div>
                {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
       {:else}
-        {#each displayResults as result}
+        {#each Array.isArray(displayResults) ? displayResults : [] as result}
           <div
             role="option"
             tabindex="0"
@@ -420,8 +417,7 @@
                       {result.metadata.jurisdiction}
                     </span>
                   {/if}
-                </div>
-              {/if}
+                {/if}
 
               <!-- Highlights -->
               {#if result.highlights && result.highlights.length > 0}
@@ -429,8 +425,7 @@
                   <span class="bg-yellow-100 px-1 rounded">
                     ...{result.highlights[0]}...
                   </span>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {/each}
@@ -444,8 +439,7 @@
           {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
           {#if enableVectorSearch} • AI-powered search{/if}
         </p>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 

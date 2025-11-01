@@ -7,7 +7,7 @@
  * - persistent enables localStorage backing (when available).
  */
 type PersistedEntry = {
-  value: unknown;
+  value: any;
   expiresAt?: number | null;
 };
 interface MultiTierCacheOptions {

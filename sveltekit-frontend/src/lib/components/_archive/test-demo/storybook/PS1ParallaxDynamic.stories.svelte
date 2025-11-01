@@ -9,8 +9,8 @@ https://svelte.dev/e/expected_token -->
   let container: HTMLElement | null;
   let gyroscope = { x: 0, y: 0, z: 0 };
   let pointer = { x: 0, y: 0 };
-  let isGyroscopeAvailable = false;
-  let isMobile = false;
+  let isGyroscopeAvailable = $state(false);
+  let isMobile = $state(false);
   let parallaxLayers: Array<any> = [];
   let animationId: number | null = null;
 
@@ -67,12 +67,12 @@ https://svelte.dev/e/expected_token -->
           console.log('✅ Gyroscope permission granted');
         } else {
           console.log('❌ Gyroscope permission denied');
-          isGyroscopeAvailable = false;
+          isGyroscopeAvailable = $state(false);
         }
       }
     } catch (error) {
       console.warn('Gyroscope permission request failed:', error);
-      isGyroscopeAvailable = false;
+      isGyroscopeAvailable = $state(false);
     }
   }
 

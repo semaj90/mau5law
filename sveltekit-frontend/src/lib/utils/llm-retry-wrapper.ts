@@ -9,7 +9,7 @@ type LogDetails = Record<string, unknown>;
 type OllamaResponse = {
   response?: string;
   eval_count?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 type OllamaTag = { name: string };
 
@@ -40,7 +40,7 @@ const todoAutogen = {
 };
 
 // --- added: safe type helpers to avoid `any` casts ---
-function getErrorName(e: unknown): string | undefined {
+function getErrorName(e: any): string | undefined {
   if (typeof e === 'object' && e !== null) {
     const maybeName = (e as Record<string, unknown>)['name'];
     return typeof maybeName === 'string' ? maybeName : undefined;
@@ -48,7 +48,7 @@ function getErrorName(e: unknown): string | undefined {
   return undefined;
 }
 
-function extractResponseString(v: unknown): string | undefined {
+function extractResponseString(v: any): string | undefined {
   if (typeof v === 'string') return v;
   if (typeof v === 'object' && v !== null) {
     const maybe = (v as Record<string, unknown>)['response'];
@@ -62,7 +62,7 @@ const retryLLMCall = async <T>(fn: () => Promise<T>, model: string, prompt: stri
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (i === retries - 1) throw error;
       // exponential backoff-ish
       await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
@@ -147,7 +147,7 @@ export class OllamaRetryWrapper {
             duration,
             success: true,
           } as LLMResponse;
-        } catch (err: unknown) {
+        } catch (err: any) {
           clearTimeout(timeoutId);
           // Track failures
           this.failureCount++;
@@ -212,7 +212,7 @@ export class OllamaRetryWrapper {
         });
       }
       return { status, details };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       await todoAutogen.logLLMMisfire({
         model: 'health-check',
@@ -327,7 +327,7 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
         yield buffer.trim();
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     await todoAutogen.logLLMMisfire({
       model,

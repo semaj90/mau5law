@@ -4,7 +4,7 @@ export interface AIResponse {
   processingTime?: number;
   gpuProcessed?: boolean;
   legalRisk?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface VectorSearchResult {
   id: string;

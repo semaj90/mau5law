@@ -2,17 +2,13 @@
 <script lang="ts">
   import { routeGroups } from '$lib/data/route-groups-config';
   import { page } from '$app/stores';
-
   let isExpanded = $state(false);
-
   // Get current route group based on pathname
   const currentGroup = $derived(() => {
     const pathname = $page.url.pathname;
-
     // Check route groups
     for (const group of routeGroups) {
       if (pathname.startsWith(group.path)) return group;
-
       // Check individual routes
       for (const route of group.routes) {
         if (pathname === route.route || pathname.startsWith(route.route + '/')) {
@@ -20,39 +16,33 @@
         }
       }
     }
-
     // Default fallback
     return null;
   });
 </script>
-
 <nav class="consolidated-navigation" class:expanded={isExpanded}>
   <div class="nav-header">
     <button onclick={() => (isExpanded = !isExpanded)} class="nav-toggle" aria-label="Toggle Navigation">
       <span class="nav-icon">{isExpanded ? '✕' : '☰'}</span>
       <span class="nav-title">Legal AI Platform</span>
     </button>
-
     {#if currentGroup}
       <div class="current-group" style="--theme-color: var(--{currentGroup.theme}-primary, #00ff00)">
         <span class="group-icon">{currentGroup.icon}</span>
         <span class="group-label">{currentGroup.label}</span>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   {#if isExpanded}
     <div class="nav-content">
-      {#each routeGroups as group}
+      {#each Array.isArray(routeGroups) ? routeGroups : [] as group}
         <div class="route-group" data-theme={group.theme}>
           <div class="group-header">
             <span class="group-icon">{group.icon}</span>
             <span class="group-title">{group.label}</span>
             <span class="route-count">({group.routes.length})</span>
           </div>
-
           <div class="group-routes">
-            {#each group.routes as route}
+            {#each Array.isArray(group.routes) ? group.routes : [] as route}
               <a
                 href={route.route}
                 class="route-link"
@@ -69,7 +59,6 @@
           </div>
         </div>
       {/each}
-
       <!-- Preserved standalone routes -->
       <div class="standalone-routes">
         <div class="group-header">
@@ -91,13 +80,11 @@
           </a>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </nav>
-
 <style>
   .consolidated-navigation {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     z-index: 1000,
@@ -105,19 +92,16 @@
     border-right: 1px solid var(--border-primary, #333333);
     height: 100vh;
     width: 64px;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
     overflow: hidden;
   }
-
   .consolidated-navigation.expanded {
     width: 320px;
   }
-
   .nav-header {
     padding: 1rem;
     border-bottom: 1px solid var(--border-primary, #333333);
   }
-
   .nav-toggle {
     display: flex;
     align-items: center;
@@ -131,21 +115,17 @@
     border-radius: 4px;
     transition: background 0.2s;
   }
-
   .nav-toggle:hover {
     background: var(--surface-secondary, #1a1a1a);
   }
-
   .nav-icon {
     font-size: 1.2rem;
     min-width: 20px;
   }
-
   .nav-title {
     font-weight: bold;
     white-space: nowrap;
   }
-
   .current-group {
     display: flex;
     align-items: center;
@@ -156,17 +136,14 @@
     border-radius: 4px;
     color: var(--theme-color);
   }
-
   .nav-content {
     padding: 1rem 0;
     height: calc(100vh - 120px);
     overflow-y: auto;
   }
-
   .route-group {
     margin-bottom: 1.5rem;
   }
-
   .group-header {
     display: flex;
     align-items: center;
@@ -178,18 +155,15 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-
   .route-count {
     color: var(--text-tertiary, #666666);
     font-size: 0.8rem;
   }
-
   .group-routes {
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
-
   .route-link {
     display: flex;
     align-items: center;
@@ -200,28 +174,23 @@
     transition: all 0.2s;
     border-left: 3px solid transparent;
   }
-
   .route-link:hover {
     background: var(--surface-secondary, #1a1a1a);
     border-left-color: var(--accent-primary, #00ff00);
   }
-
   .route-link.active {
     background: rgba(var(--accent-primary), 0.1);
     border-left-color: var(--accent-primary, #00ff00);
     color: var(--accent-primary, #00ff00);
   }
-
   .route-icon {
     font-size: 1.1rem;
     min-width: 20px;
   }
-
   .route-label {
     font-size: 0.9rem;
     white-space: nowrap;
   }
-
   .beta-badge {
     background: var(--warning, #ff6600);
     color: white;
@@ -231,47 +200,38 @@
     font-weight: bold;
     margin-left: auto;
   }
-
   .standalone-routes {
     border-top: 1px solid var(--border-primary, #333333);
     margin-top: 1rem;
     padding-top: 1rem;
   }
-
   /* Theme-specific styling */
   .route-group[data-theme='matrix'] .group-header {
     color: #00ff00;
   }
-
   .route-group[data-theme='cyberpunk'] .group-header {
     color: #00ccff;
   }
-
   .route-group[data-theme='amber'] .group-header {
     color: #ffaa00;
   }
-
   .route-group[data-theme='retro'] .group-header {
     color: #ff6600;
   }
-
   @media (max-width: 768px) {
     .consolidated-navigation {
       width: 100%;
       height: auto;
-      position relative;
+      position: relative;
       border-right: none;
       border-bottom: 1px solid var(--border-primary, #333333);
     }
-
     .consolidated-navigation.expanded {
       width: 100%;
     }
-
     .nav-content {
       height: auto;
       max-height: 60vh;
     }
   }
 </style>
-

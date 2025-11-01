@@ -5,7 +5,7 @@ import { resolve } from 'path';
 
 export interface VSCodeCommand {
   command: string;
-  args?: unknown[];
+  args?: any[];
 }
 export interface VSCodeAction {
   title: string;
@@ -28,17 +28,17 @@ export interface ErrorRecord {
   column?: number;
   frame?: string;
   plugin?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface ErrorLogFile {
   errors?: ErrorRecord[];
-  diagnostics?: unknown[];
+  diagnostics?: any[];
 }
 
 export class VSCodeIntegration {
   private logFile: string;
-  private isWatching = false;
+  private isWatching = $state(false);
   private callbacks: Array<(errors: ErrorRecord[]) => void> = [];
 
   constructor(logFile?: string) {
@@ -59,12 +59,12 @@ export class VSCodeIntegration {
 
   // Stop watching
   stopWatching() {
-    this.isWatching = false;
+    this.isWatching = $state(false);
     console.log('📟 VS Code integration stopped');
   }
 
   // small helper to safely stringify unknown errors
-  private static formatUnknown(err: unknown) {
+  private static formatUnknown(err: any) {
     if (err instanceof Error) return err;
     try {
       return JSON.stringify(err);
@@ -97,7 +97,7 @@ export class VSCodeIntegration {
       // Notify callbacks (guard for missing errors)
       const allErrors = Array.isArray(logData.errors) ? logData.errors : [];
       this.callbacks.forEach((callback) => callback(allErrors));
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to parse error log:', VSCodeIntegration.formatUnknown(err));
     }
   }
@@ -163,7 +163,7 @@ export class VSCodeIntegration {
         const parsed = JSON.parse(data) as unknown;
         if (parsed && typeof parsed === 'object') return parsed as ErrorLogFile;
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to read current errors:', VSCodeIntegration.formatUnknown(err));
     }
     return { errors: [], diagnostics: [] };
@@ -297,9 +297,9 @@ export class ErrorNavigator {
 // Auto-fix suggestions
 export class AutoFixSuggestions {
   static getSuggestions(
-    error: unknown
-  ): Array<{ title: string; command: string; args?: unknown[] }> {
-    const suggestions: Array<{ title: string; command: string; args?: unknown[] }> = [];
+    error: any
+  ): Array<{ title: string; command: string; args?: any[] }> {
+    const suggestions: Array<{ title: string; command: string; args?: any[] }> = [];
 
     // Replace ad-hoc any casts with a small typed extractor
     const msg = AutoFixSuggestions.extractMessage(error);
@@ -356,10 +356,10 @@ export class AutoFixSuggestions {
   }
 
   // New helper: safely extract a string message from unknown error shapes
-  private static extractMessage(err: unknown): string {
+  private static extractMessage(err: any): string {
     if (err instanceof Error) return err.message;
     if (typeof err === 'object' && err !== null && 'message' in err) {
-      const m = (err as { message?: unknown }).message;
+      const m = (err as { message?: any }).message;
       if (typeof m === 'string') return m;
       if (m != null) return String(m);
     }

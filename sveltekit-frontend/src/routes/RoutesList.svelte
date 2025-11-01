@@ -29,7 +29,7 @@
       .split.map(s => (s ? s[0].toUpperCase() + s.slice(1) : ''))
       .join(' ');
   }
-  function deriveLabel(path: string, mod: unknown): string {
+  function deriveLabel(path: string, mod: any): string {
     return (
       mod?.routeMeta?.title ||
       mod?.metadata?.title ||
@@ -140,7 +140,7 @@
     <p class="empty" role="status">No routes match your filter.</p>
   {:else}
     <div class="groups">
-      {#each Object.keys.sort() as g}
+      {#each Array.isArray(Object.keys.sort()) ? Object.keys.sort() : [] as g}
         <section class="group" aria-labelledby={`group-${g}`}>
           <button
             class="group-header"
@@ -155,7 +155,7 @@
           </button>
           {#if !groupCollapse[g]}
             <ul class="route-list" role="list">
-              {#each grouped[g] as r}
+              {#each Array.isArray(grouped[g]) ? grouped[g] : [] as r}
                 <li class={`route-item kind-${r.kind} ${r.dynamic ? 'is-dynamic' : ''}`}>
                   <a href={r.path} data-sveltekit-prefetch aria-label={`${r.label} (${r.path})`}>
                     <code>{r.path}</code>

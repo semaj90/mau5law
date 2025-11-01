@@ -4,7 +4,7 @@ import { embeddingGemma } from './embeddinggemma-service'; // Direct embeddingGe
 import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
 
 // Helper for structured logging
-function logError(context: string, error: unknown, details?: Record<string, unknown>) {
+function logError(context: string, error: any, details?: Record<string, unknown>) {
   console.error(
     `[ERROR] ${new Date().toISOString()} - ${context}:`,
     error instanceof Error ? error.message : String(error),
@@ -682,8 +682,8 @@ export class AgenticGemma3Client {
     LLMOutput & {
       functionCalls?: Array<{
         name: string;
-        parameters: unknown;
-        result: unknown;
+        parameters: any;
+        result: any;
       }>;
       duration?: number;
     }
@@ -834,9 +834,9 @@ export class AgenticGemma3Client {
     text: string,
     sessionId: string,
     userId: string
-  ): Promise<Array<{ name: string; parameters: unknown; result: unknown }>> {
+  ): Promise<Array<{ name: string; parameters: any; result: any }>> {
     const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
-    const calls: Array<{ name: string; parameters: unknown; result: unknown }> = [];
+    const calls: Array<{ name: string; parameters: any; result: any }> = [];
 
     let match;
     while ((match = functionCallRegex.exec(text)) !== null) {

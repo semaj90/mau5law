@@ -15,7 +15,6 @@
     }
   });
 </script>
-
 <!-- Provide the authentication context to child components -->
 {#if children}
   {@render children()}

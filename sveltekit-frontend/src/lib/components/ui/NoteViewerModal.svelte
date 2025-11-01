@@ -6,7 +6,7 @@
     content?: string;
     markdown?: string;
     html?: string;
-    contentJson?: unknown;
+    contentJson?: any;
     noteType?: string;
     tags?: string[];
     userId?: string;
@@ -15,7 +15,7 @@
     isOpen?: boolean;
     mode?: "view" | "edit";
     canEdit?: boolean;
-    onSave?: (data: unknown) => void;
+    onSave?: (data: any) => void;
   }
   const {
     noteId = "",
@@ -41,7 +41,7 @@
     removeSavedNote,
     saveNoteForLater,
   } from '$lib/stores/saved-notes';
-  import RichTextEditor from "./RichTextEditor.svelte";
+  import { RichTextEditor } from "./RichTextEditor.svelte";
   // Local state for mutable values that need to change
   let localMode = $state(mode);
   let localTitle = $state(title);
@@ -52,7 +52,7 @@
   let localContentJson = $state(contentJson);
   let localIsOpen = $state(isOpen);
   // Props
-  let isSaved = false;
+  let isSaved = $state(false);
   let editedContent = content;
   let editedTitle = titl;
   let editedTags: string[] = [...tags];
@@ -82,7 +82,7 @@
   async function handleRemoveFromSaved() {
     try {
       await removeSavedNote(noteId);
-      isSaved = false;
+      isSaved = $state(false);
     } catch (error) {
       console.error("Failed to remove note:", error);
     }
@@ -138,7 +138,7 @@
     editedTags = [...tags];
   }
   function closeModal() {
-    localIsOpen = false;
+    localIsOpen = $state(false);
   }
 </script>
 {#if localIsOpen}
@@ -215,7 +215,7 @@
         <div class="space-y-4">
           <Tag class="space-y-4" />
           {#if localMode === "edit"}
-            {#each editedTags as tag}
+            {#each Array.isArray(editedTags) ? editedTags : [] as tag}
               <span class="space-y-4">
                 {tag}
                 <button
@@ -234,7 +234,7 @@
               placeholder="Add tag..."
             />
           {:else}
-            {#each localTags as tag}
+            {#each Array.isArray(localTags) ? localTags : [] as tag}
               <span class="space-y-4">{tag}</span>
             {/each}
           {/if}
@@ -255,8 +255,7 @@
         {:else if content}
           <div class="space-y-4">{localContent}</div>
         {:else}
-          <div class="space-y-4">No content available</div>
-        {/if}
+          <div class="space-y-4">No content available{/if}
       </div>
       <!-- Footer -->
       {#if localMode === "view"}
@@ -272,8 +271,6 @@
             <Eye class="space-y-4" />
             <span class="space-y-4">Read-only</span>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
+  {/if}

@@ -7,7 +7,7 @@ import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration
 import { sql, eq, and, or, gte, lte } from 'drizzle-orm';
 import { generateEmbedding } from '$lib/server/services/embedding-service';
 // Ensure database is initialized
-const dbInitialized = false;
+const dbInitialized = $state(false);
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('[Search] Processing document search request...');
@@ -436,7 +436,7 @@ export const GET: RequestHandler = async () => {
       console.warn('[Search] Failed to count documents:', err);
     }
     // Test cognitive cache
-    let cacheStatus = false;
+    let cacheStatus = $state(false);
     try {
       await cognitiveCacheManager.get({ key: 'health_check', type: 'legal-data', context: { action: 'health-test' } });
       cacheStatus = true;

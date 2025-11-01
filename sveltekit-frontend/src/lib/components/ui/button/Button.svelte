@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
   import type { HTMLButtonAttributes, HTMLAnchorAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-
   // Local type definitions (avoid relying on non-exported types)
   type ButtonVariant =
     | 'default'
@@ -18,9 +17,7 @@
     | 'nier'
     | 'crimson'
     | 'gold';
-
   type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
   interface Props extends HTMLButtonAttributes {
     variant?: ButtonVariant;
     size?: ButtonSize;
@@ -32,7 +29,6 @@
     to?: string; // optional navigation href
     children?: Snippet;
   }
-
   let {
     variant = 'primary',
     size = 'md',
@@ -45,23 +41,20 @@
     children,
     ...restProps
   }: Props = $props();
-
   // When rendering an anchor, restProps may contain button-specific handlers/types;
   // cast them to HTMLAnchorAttributes to satisfy the type system for the <a> spread.
   let anchorProps = $derived(() => restProps as unknown as HTMLAnchorAttributes);
-
-  let classes = [
+  let classes = $state([
     'nier-btn',
     `btn-${variant}`,
     `btn-${size}`,
     fullWidth && 'w-full',
     loading && 'btn-loading',
     className,
-  ]
+  ])
     .filter(Boolean)
     .join(' ');
 </script>
-
 {#if to}
   <a class={classes} data-button-root href={to} {...anchorProps}>
     {#if icon && iconPosition === 'left'}
@@ -93,20 +86,17 @@
     {/if}
   </button>
 {/if}
-
 <style>
   :global(.nier-btn[disabled]) {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   :global(.nier-btn.btn-loading) {
     opacity: 0.6;
     cursor: not-allowed;
     background: #23272e;
     color: #bcbcbc;
   }
-
   /* Variant styles */
   :global(.btn-default) {
     background: linear-gradient(90deg, #23272e 0%, #393e46 100%);
@@ -166,7 +156,6 @@
     background: linear-gradient(90deg, #b8860b 0%, #ffd700 100%);
     color: #000;
   }
-
   /* Size styles */
   :global(.btn-xs) {
     font-size: 0.75rem;
@@ -188,7 +177,6 @@
     font-size: 1.25rem;
     padding: 1rem 2rem;
   }
-
   .loader {
     width: 1rem;
     height: 1rem;
@@ -199,7 +187,6 @@
     display: inline-block;
     vertical-align: middle;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);

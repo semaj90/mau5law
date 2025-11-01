@@ -14,7 +14,7 @@ export interface RAGDocumentResult {
   summary: string;
   relevanceScore: number;
   // Add other relevant fields if needed from your vector search results
-  [key: string]: unknown; // Allow for additional metadata
+  [key: string]: any; // Allow for additional metadata
 }
 
 // Define return types for specific methods
@@ -129,7 +129,7 @@ export class RealAIService {
           })
         );
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.warn('Ollama health check failed:', error);
     }
@@ -139,7 +139,7 @@ export class RealAIService {
         signal: AbortSignal.timeout(5000),
       });
       health.ragService = response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.warn('RAG service health check failed:', error);
     }
@@ -149,7 +149,7 @@ export class RealAIService {
         signal: AbortSignal.timeout(5000),
       });
       health.vectorSearch = response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.warn('Vector search health check failed:', error);
     }
@@ -178,7 +178,7 @@ export class RealAIService {
         model: actualModel,
         availableModels,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       return {
         success: false,
@@ -215,7 +215,7 @@ export class RealAIService {
             const vectorData = await vectorResponse.json();
             ragContext = vectorData.results as RAGDocumentResult[]; // Cast to RAGDocumentResult[]
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed from any
           console.warn('Vector search failed, proceeding without RAG:', error);
         }
@@ -257,7 +257,7 @@ export class RealAIService {
         executionTime: duration,
         fromCache: false,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       throw new Error(`AI service error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -288,7 +288,7 @@ export class RealAIService {
         throw new Error(`Model switch test failed: ${testResponse.status}`);
       }
       return { success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       return {
         success: false,
@@ -305,7 +305,7 @@ export class RealAIService {
       limit?: number;
       threshold?: number;
       collection?: string;
-      filter?: { [key: string]: unknown }; // Changed from any
+      filter?: { [key: string]: any }; // Changed from any
     } = {}
   ): Promise<RAGDocumentResult[]> {
     // Changed from any[]
@@ -330,7 +330,7 @@ export class RealAIService {
       }
       const data = await response.json();
       return (data.results || []) as RAGDocumentResult[]; // Cast to RAGDocumentResult[]
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Document search failed:', error);
       return [];
@@ -342,7 +342,7 @@ export class RealAIService {
   async indexDocument(_document: {
     title: string;
     content: string;
-    metadata?: { [key: string]: unknown }; // Changed from any
+    metadata?: { [key: string]: any }; // Changed from any
   }): Promise<DocumentIndexResult> {
     // Changed from any
     try {
@@ -356,7 +356,7 @@ export class RealAIService {
         ..._document.metadata,
       });
       return { success: result };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       return {
         success: false,

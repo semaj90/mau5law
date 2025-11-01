@@ -39,12 +39,12 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let evidenceFiles: any[] = [];
   let filteredFiles: any[] = [];
-  let loading = false;
+  let loading = $state(false);
   let error: string | null = null;
   let uploadProgress = 0;
-  let uploading = false;
+  let uploading = $state(false);
   let selectedFiles = new Set<string>();
-  let showBulkActions = false;
+  let showBulkActions = $state(false);
 
   // Filters and view options
   let searchQuery = '';
@@ -54,8 +54,8 @@ https://svelte.dev/e/js_parse_error -->
   let sortOrder = 'desc';
 
   // Upload modal state
-  let showUploadModal = false;
-  let dragActive = false;
+  let showUploadModal = $state(false);
+  let dragActive = $state(false);
   let uploadFiles: FileList | null = null;
   let uploadDescription = '';
   let uploadTags = '';
@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
         duration 5000,
       });
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function filterAndSortFiles() {
@@ -165,11 +165,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
 
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
           message: `${file.name} uploaded successfully`,
         });
 
-        showUploadModal = false;
+        showUploadModal = $state(false);
         uploadDescription = '';
         uploadTags = '';
         uploadFiles = null;
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
         duration 5000,
       });
     } finally {
-      uploading = false;
+      uploading = $state(false);
       uploadProgress = 0;
     }
   }
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
         duration 5000,
       });
     } finally {
-      uploading = false;
+      uploading = $state(false);
       uploadProgress = 0;
     }
   }
@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Category Filter -->
       <div class="nes-select is-dark filter-select">
         <select bind:value={selectedCategory} aria-label="Filter by category">
-          {#each categories as category}
+          {#each Array.isArray(categories) ? categories : [] as category}
             <option value={category.value}>{category.label}</option>
           {/each}
         </select>
@@ -463,7 +463,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => {
               selectedFiles.clear();
               selectedFiles = selectedFiles;
-              showBulkActions = false;
+              showBulkActions = $state(false);
             }}
           >
             Cancel
@@ -551,7 +551,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Files Grid/List -->
       {#if viewMode === 'grid'}
         <div class="files-grid">
-          {#each filteredFiles as file}
+          {#each Array.isArray(filteredFiles) ? filteredFiles : [] as file}
             <div class="nes-container is-dark is-rounded file-card">
               <div class="file-card-header">
                 <!-- Selection and Actions -->
@@ -633,7 +633,7 @@ https://svelte.dev/e/js_parse_error -->
       {:else}
         <!-- List View -->
         <div class="files-list">
-          {#each filteredFiles as file}
+          {#each Array.isArray(filteredFiles) ? filteredFiles : [] as file}
             {@const IconComponent = getFileIcon(file.evidenceType)}
             <div class="nes-container is-dark file-list-item">
               <div class="list-item-content">
@@ -746,7 +746,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="nes-btn"
           onclick={() => {
-            showUploadModal = false;
+            showUploadModal = $state(false);
             uploadFiles = null;
             uploadDescription = '';
             uploadTags = '';

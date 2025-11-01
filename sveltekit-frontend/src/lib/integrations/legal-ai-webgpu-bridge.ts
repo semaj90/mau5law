@@ -33,7 +33,7 @@ export interface LegalAIProcessingResult {
 export class LegalAIWebGPUBridge {
   private uploader: WebGPUBufferUploader | null = null;
   private device: GPUDevice | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     // Auto-initialize if WebGPU is available
     if (typeof window !== 'undefined' && 'gpu' in navigator) {
@@ -227,7 +227,7 @@ export class LegalAIWebGPUBridge {
     if (this.device) {
       this.device.destroy();
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.device = null;
     this.uploader = null;
   }

@@ -114,7 +114,7 @@
     isProcessing = true;
     setTimeout(() => {
       processCommand(cmd);
-      isProcessing = false;
+      isProcessing = $state(false);
       currentCommand = '';
       scrollToBottom();
     }, 100);
@@ -252,7 +252,6 @@
     }, 10);
   }
 </script>
-
 <div class="yorha-terminal" bind:this={terminalRef}>
   <!-- Terminal Header -->
   <div class="terminal-header">
@@ -299,7 +298,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .yorha-terminal {
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -477,4 +475,3 @@
     }
   }
 </style>
-

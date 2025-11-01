@@ -22,7 +22,7 @@
 <button onclick={searchDocs}>Search</button>
 
 <ul>
-  {#each results as r}
+  {#each Array.isArray(results) ? results : [] as r}
     <li>{r.id} — {r.score}</li>
   {/each}
 </ul>

@@ -6,8 +6,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
-  import * as Dialog from '$lib/components/ui/dialog';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   // Recommendation state
   let recommendations = $state<Recommendation[]>([]);
   let selectedRecommendation = $state<Recommendation | null>(null);
@@ -175,7 +175,7 @@
     } catch (error) {
       console.error('Error generating recommendations:', error);
     } finally {
-      isGenerating = false;
+      isGenerating = $state(false);
     }
   }
   async function applyRecommendation(recommendationId: string) {
@@ -309,8 +309,7 @@
         <div class="context-preview">
           <span class="context-status">Status: {contextData.current_status}</span>
           <span class="context-entities">{contextData.entities.length} entities</span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="filters-section">
       <h3>Filters</h3>
@@ -364,7 +363,7 @@
         <p>Try adjusting your filters or generating new recommendations.</p>
       </div>
     {:else}
-      {#each filteredRecommendations as recommendation}
+      {#each Array.isArray(filteredRecommendations) ? filteredRecommendations : [] as recommendation}
         <div.Root class="recommendation-nier-bits-card">
           <CardHeader>
             <div class="recommendation-header">
@@ -423,7 +422,7 @@
               <div class="steps-preview">
                 <h4>Action Steps ({recommendation.steps.length}):</h4>
                 <ol class="steps-list">
-                  {#each recommendation.steps.slice(0, 3) as step}
+                  {#each Array.isArray(recommendation.steps.slice(0, 3)) ? recommendation.steps.slice(0, 3) : [] as step}
                     <li class="step-item">{step.description}</li>
                   {/each}
                   {#if recommendation.steps.length > 3}
@@ -435,19 +434,17 @@
                 <div class="completion-estimate">
                   <span class="estimate-label">Est. Completion</span>
                   <span class="estimate-value">{new Date(recommendation.estimated_completion).toLocaleDateString()}</span>
-                </div>
-              {/if}
+                {/if}
             </div>
             {#if recommendation.tags.length > 0}
               <div class="recommendation-tags">
-                {#each recommendation.tags.slice(0, 4) as tag}
+                {#each Array.isArray(recommendation.tags.slice(0, 4)) ? recommendation.tags.slice(0, 4) : [] as tag}
                   <span class="tag">{tag}</span>
                 {/each}
                 {#if recommendation.tags.length > 4}
                   <span class="tag-more">+{recommendation.tags.length - 4}</span>
                 {/if}
-              </div>
-            {/if}
+              {/if}
           </CardContent>
           <div.Footer>
             <div class="nier-bits-card-actions">
@@ -506,7 +503,7 @@
         <section class="steps-section">
           <h3>Implementation Steps</h3>
           <ol class="detailed-steps-list">
-            {#each selectedRecommendation.steps as step}
+            {#each Array.isArray(selectedRecommendation.steps) ? selectedRecommendation.steps : [] as step}
               <li class="detailed-step">
                 <h4>Step {step.order}: {step.description}</h4>
                 <div class="step-details">
@@ -528,7 +525,7 @@
           <section class="resources-section">
             <h3>Required Resources</h3>
             <div class="resources-grid">
-              {#each selectedRecommendation.resources as resource}
+              {#each Array.isArray(selectedRecommendation.resources) ? selectedRecommendation.resources : [] as resource}
                 <div class="resource-nier-bits-card">
                   <h4>{resource.name}</h4>
                   <p class="resource-type">{resource.type.replace('_', ' ')}</p>
@@ -549,7 +546,7 @@
           <section class="risks-section">
             <h3>Risk Assessment</h3>
             <div class="risks-list">
-              {#each selectedRecommendation.risks as risk}
+              {#each Array.isArray(selectedRecommendation.risks) ? selectedRecommendation.risks : [] as risk}
                 <div class="risk-item">
                   <div class="risk-header">
                     <span class="risk-description">{risk.description}</span>
@@ -566,7 +563,7 @@
           <section class="alternatives-section">
             <h3>Alternative Approaches</h3>
             <div class="alternatives-list">
-              {#each selectedRecommendation.alternatives as alternative}
+              {#each Array.isArray(selectedRecommendation.alternatives) ? selectedRecommendation.alternatives : [] as alternative}
                 <div class="alternative-item">
                   <h4>{alternative.title} ({alternative.confidence}% confidence)</h4>
                   <p>{alternative.description}</p>
@@ -574,7 +571,7 @@
                     <div class="pros">
                       <h5>Pros:</h5>
                       <ul>
-                        {#each alternative.pros as pro}
+                        {#each Array.isArray(alternative.pros) ? alternative.pros : [] as pro}
                           <li>{pro}</li>
                         {/each}
                       </ul>
@@ -582,7 +579,7 @@
                     <div class="cons">
                       <h5>Cons:</h5>
                       <ul>
-                        {#each alternative.cons as con}
+                        {#each Array.isArray(alternative.cons) ? alternative.cons : [] as con}
                           <li>{con}</li>
                         {/each}
                       </ul>
@@ -598,7 +595,7 @@
           <section class="metrics-section">
             <h3>Success Metrics</h3>
             <div class="metrics-list">
-              {#each selectedRecommendation.success_metrics as metric}
+              {#each Array.isArray(selectedRecommendation.success_metrics) ? selectedRecommendation.success_metrics : [] as metric}
                 <div class="metric-item">
                   <h4>{metric.name}</h4>
                   <p><strong>Target:</strong> {metric.target}</p>
@@ -616,8 +613,7 @@
         <button class="nes-btn" onclick={() => applyRecommendation(selectedRecommendation.id)}>
           Apply Recommendation
         </button>
-      </div>
-    {/if}
+      {/if}
   </Dialog.Content>
 </Dialog.Root>
 <style>
@@ -794,7 +790,7 @@
   }
   .stat-fill {
     height: 100%;
-    transition: width 0.3;
+    transition: width: 0.3;
   }
   .stat-fill.impact { background: #10b981, }
   .stat-fill.effort { background: #f59e0b, }
@@ -825,12 +821,12 @@
     padding: 0.5rem 0;
     font-size: 0.75rem;
     color: #64748b;
-    position relative;
+    position: relative;
     padding-left: 1.5rem;
   }
   .step-item::before {
     content: counter(step-counter);
-    position absolute;
+    position: absolute;
     left: 0,
     top: 0.5rem;
     width: 1rem;
@@ -1138,4 +1134,3 @@
     }
   }
 </style>
-

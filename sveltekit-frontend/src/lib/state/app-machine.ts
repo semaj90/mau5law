@@ -42,7 +42,7 @@ export interface AppContext {
   error: {
     code: string;
     message: string;
-    details?: unknown;
+    details?: any;
     recoverable: boolean;
   } | null;
   // Performance monitoring

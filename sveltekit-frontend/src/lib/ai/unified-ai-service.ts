@@ -12,7 +12,7 @@ type WASMLLMService = {
   initialize(): Promise<boolean>;
   loadModel(config?: Partial<WASMLLMConfig>): Promise<void>;
   generateText(prompt: string, config?: Partial<WASMLLMConfig>): Promise<WASMLLMResponse>;
-  getStats?(): unknown;
+  getStats?(): any;
   // allow async or sync disposers
   dispose?(): Promise<void> | void;
 };
@@ -24,7 +24,7 @@ type LangChainOllamaService = {
     content: string,
     meta?: { documentId?: string; title?: string; type?: string }
   ): Promise<ProcessingResult>;
-  getStats?(): unknown;
+  getStats?(): any;
   // allow async or sync reset
   reset?(): Promise<void> | void;
 };
@@ -194,7 +194,7 @@ export interface UnifiedResponse {
 }
 export class UnifiedAIService {
   private config: UnifiedAIConfig;
-  private initialized = false;
+  private initialized = $state(false);
   private cache = new Map<string, UnifiedResponse>();
   constructor(config: Partial<UnifiedAIConfig> = {}) {
     this.config = {
@@ -234,7 +234,7 @@ export class UnifiedAIService {
   }
 
   // NEW: safe error message extractor for unknown catch bindings
-  private getErrorMessage(err: unknown): string {
+  private getErrorMessage(err: any): string {
     if (!err) return 'Unknown error';
     if (err instanceof Error) return err.message;
     try {
@@ -294,7 +294,7 @@ export class UnifiedAIService {
 
       this.initialized = true;
       console.log('🚀 Unified AI Service initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize Unified AI Service:', this.getErrorMessage(error));
       throw error;
     }
@@ -343,7 +343,7 @@ export class UnifiedAIService {
         this.cache.set(cacheKey, result);
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Query failed:', this.getErrorMessage(error));
       return {
         success: false,
@@ -382,7 +382,7 @@ export class UnifiedAIService {
           confidence: wasmResponse.confidence,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`WASM query failed: ${this.getErrorMessage(error)}`);
     }
   }
@@ -414,7 +414,7 @@ export class UnifiedAIService {
           confidence: langChainResponse.confidence,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`LangChain query failed: ${this.getErrorMessage(error)}`);
     }
   }
@@ -453,7 +453,7 @@ export class UnifiedAIService {
           confidence: 0.8,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`GPU query failed: ${this.getErrorMessage(error)}`);
     }
   }
@@ -557,7 +557,7 @@ export class UnifiedAIService {
         errors,
         processingTime,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Ingest documents failed:', error);
       return {
         success: false,

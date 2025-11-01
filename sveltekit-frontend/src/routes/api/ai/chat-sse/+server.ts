@@ -25,11 +25,11 @@ interface StreamLine {
   response?: string;
   done?: boolean;
   // Replace `any` with `unknown` to avoid: "Unexpected any" lint/TS error
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 // add a typed shape for the RAG service response to avoid `any`
-type RAGResponse = { results?: unknown[]; [k: string]: unknown };
+type RAGResponse = { results?: any[]; [k: string]: any };
 
 const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   const requestId = getRequestId(event);
@@ -99,7 +99,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
 
         if (results.length) {
           // resilient extractor: handle strings, arrays, nested objects and common field names
-          const extractRagText = (item: unknown): string => {
+          const extractRagText = (item: any): string => {
             if (item == null) return 'Relevant legal information';
             if (typeof item === 'string') {
               const s = item.trim();
@@ -155,7 +155,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
 
       let buffer = '';
       let tokens = 0;
-      let finished = false;
+      let finished = $state(false);
 
       const persist = async (incomplete = false) => {
         if (!buffer) return;

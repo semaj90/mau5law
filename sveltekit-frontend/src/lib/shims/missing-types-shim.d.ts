@@ -16,7 +16,7 @@ declare global {
   type WorkerMessage = {
     taskId: string;
     type: 'status' | 'result' | 'error';
-    data: unknown;
+    data: any;
     timestamp: Date;
   };
   type EnhancedRAGEngine = {
@@ -130,21 +130,21 @@ declare global {
   type PGVectorStore = {
     ensureTableInDatabase?: () => Promise<void>;
     similaritySearchWithScore?: (query: string, limit?: number) => Promise<Array<[unknown, number]>>;
-    addDocuments?: (docs: unknown[]) => Promise<void>;
-    delete?: (options?: unknown) => Promise<void>;
-    [key: string]: unknown;
+    addDocuments?: (docs: any[]) => Promise<void>;
+    delete?: (options?: any) => Promise<void>;
+    [key: string]: any;
   };
   type QueryResult = {
     content: string;
     score: number;
-    sources?: unknown[];
+    sources?: any[];
   };
 }
 // XState Types
 declare global {
   type RecommendationMachineContext = {
-    userContext?: unknown;
-    [key: string]: unknown;
+    userContext?: any;
+    [key: string]: any;
   };
   type ConcurrencyContext = unknown;
   type ConcurrencyTask = unknown;
@@ -163,7 +163,7 @@ declare global {
     topK: number;
     repeatPenalty: number;
     stopTokens: string[];
-    priority: unknown;
+    priority: any;
   };
 }
 // Row/Database result types

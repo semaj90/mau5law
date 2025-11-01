@@ -2,11 +2,11 @@
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Textarea from "$lib/components/ui/textarea/Textarea.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Textarea } from "$lib/components/ui/textarea/Textarea.svelte";
   import { notifications  } from '$lib/stores/unified";
   import { Bot, Send, Loader2, Brain, Zap, FileText, Search, Activity, Database } from "lucide-svelte";
-  import AIChatMessage from "./AIChatMessage.svelte";
+  import { AIChatMessage } from "./AIChatMessage.svelte";
   import { tick } from "svelte";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import type { EmbeddedDocument, SemanticSearchResult } from "$lib/services/enhanced-embedding-service";
@@ -60,7 +60,7 @@
       isLoading = true;
       isTyping = true;
       let response: Respon;
-      let responseData: unknown;
+      let responseData: any;
       if (useAdvancedRAG && (availableDocuments.length > 0 || selectedDocuments.length > 0)) {
         // Use Enhanced Embedding Service with full infrastructure integration
         const documentsToUse = selectedDocuments.length > 0
@@ -92,8 +92,8 @@
           if (ragResult.similarDocuments.length > 0) {
             assistantResponse += `**📚 Found ${ragResult.similarDocuments.length} relevant documents:**\n\n`;
             ragResult.similarDocuments.forEach((result, index) => {
-              const doc = (result as { document?: unknown; similarity?: unknown; queued?: unknown }).document;
-              assistantResponse += `**Document ${index + 1}** (Similarity: ${((result as { document?: unknown; similarity?: unknown; queued?: unknown }).similarity * 100).toFixed(1)}%)\n`;
+              const doc = (result as { document?: any; similarity?: any; queued?: any }).document;
+              assistantResponse += `**Document ${index + 1}** (Similarity: ${((result as { document?: any; similarity?: any; queued?: any }).similarity * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.content.substring(0, 200)}${doc.content.length > 200 ? '...' : ''}\n`;
               if (doc.metadata.practiceArea) {
                 assistantResponse += `*Practice Area: ${doc.metadata.practiceArea}*\n`;
@@ -153,10 +153,10 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(ragRequest),
           });
-          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-            throw new Error(`RAG API fallback error: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status} ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`RAG API fallback error: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
-          responseData = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+          responseData = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
           if (!responseData.success) {
             throw new Error(responseData.error || "RAG query failed");
           }
@@ -165,7 +165,7 @@
           let assistantResponse = `**⚠️ AI Analysis (Fallback Mode):**\n\n`;
           if (ragContext.similarDocs && ragContext.similarDocs.length > 0) {
             assistantResponse += `Found ${ragContext.similarDocs.length} relevant document(s):\n\n`;
-            ragContext.similarDocs.forEach((doc: unknown, index: number) => {
+            ragContext.similarDocs.forEach((doc: any, index: number) => {
               assistantResponse += `**Document ${index + 1}** (Similarity: ${(doc.score * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.document}\n\n`;
             });
@@ -182,7 +182,7 @@
               fallbackMode: true,
               model: ragContext.metadata?.model || 'fallback',
               processingTime: ragContext.processingTime,
-              similarityScores: ragContext.similarDocs?.map((d: unknown) => d.score) || [],
+              similarityScores: ragContext.similarDocs?.map((d: any) => d.score) || [],
               vectorDimensions: ragContext.metadata?.vectorDimensions || 384,
               gpuAccelerated: ragContext.metadata?.gpuUsed || false;
             },
@@ -199,18 +199,18 @@
             context: { caseId }
           }),
         });
-        if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
           throw new Error("Failed to get AI response");
         }
-        responseData = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+        responseData = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
         if (!responseData.success || !responseData.data) {
           throw new Error(responseData.error || "Invalid response format");
         }
         messages = [...messages, {
           role: 'assistant',
-          content: (responseData.data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).content,
+          content: (responseData.data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).content,
           timestamp: new Date().toLocaleTimeString(),
-          metadata: (responseData.data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).metadata
+          metadata: (responseData.data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).metadata
         }];
       }
       // Scroll to bottom
@@ -229,8 +229,8 @@
         message: "Failed to get response from AI assistant",
       });
     } finally {
-      isLoading = false;
-      isTyping = false;
+      isLoading = $state(false);
+      isTyping = $state(false);
     }
   }
   function scrollToBottom() {
@@ -288,7 +288,7 @@
         message: error instanceof Error ? error.message: "Failed to analyze documents",
       });
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function checkServiceHealth() {
@@ -330,7 +330,7 @@
           `doc-${Date.now()}-${i}`,
           doc
         );
-        if ((result as { document?: unknown; similarity?: unknown; queued?: unknown }).queued) successCount++;
+        if ((result as { document?: any; similarity?: any; queued?: any }).queued) successCount++;
       }
       notifications.add({
         type: successCount === availableDocuments.length ? "success" : "warning",
@@ -345,7 +345,7 @@
         message: "Failed to queue embedding jobs",
       });
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function addDocument() {
@@ -490,10 +490,8 @@ useAdvancedRAG = !useAdvancedRAG}
               </span>
             </div>
           {/each}
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Messages Container -->
   <div;
     bind:this={messagesContainer}
@@ -517,12 +515,11 @@ useAdvancedRAG = !useAdvancedRAG}
         {:else}
           <div class="text-sm text-green-600 bg-green-50 rounded p-3 max-w-md mx-auto">
             ⚡ <strong>Quick Mode Active:</strong> I'll provide fast, direct responses without document analysis.
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else}
       <!-- Messages -->
-      {#each messages as message}
+      {#each Array.isArray(messages) ? messages : [] as message}
         <AIChatMessage {message} showReferences={useAdvancedRAG} />
       {/each}
     {/if}
@@ -538,8 +535,7 @@ useAdvancedRAG = !useAdvancedRAG}
         <span class="text-sm text-gray-600">
           {useAdvancedRAG ? 'Processing with EmbeddingGemma...' : 'Thinking...'}
         </span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Input Area -->
   <div class="mt-4 p-4 bg-gray-50 rounded-lg border">

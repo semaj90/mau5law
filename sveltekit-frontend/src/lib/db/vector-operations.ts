@@ -103,8 +103,8 @@ PRODUCTION TODOs
 class ServiceError extends Error {
   code: string;
   status: number;
-  details?: unknown;
-  constructor(code: string, message: string, status = 400, details?: unknown) {
+  details?: any;
+  constructor(code: string, message: string, status = 400, details?: any) {
     super(message);
     this.code = code;
     this.status = status;
@@ -120,7 +120,7 @@ const ERR = {
   RATE_LIMIT: 'RATE_LIMIT',
 } as const;
 
-function validateEmbedding(embedding: unknown, minDim = 16, maxDim = 4096) {
+function validateEmbedding(embedding: any, minDim = 16, maxDim = 4096) {
   if (!Array.isArray(embedding) || embedding.length === 0) {
     throw new ServiceError(ERR.INVALID_INPUT, 'Embedding must be a non-empty array of numbers');
   }
@@ -134,12 +134,12 @@ function validateEmbedding(embedding: unknown, minDim = 16, maxDim = 4096) {
   }
 }
 
-function validatePositiveInt(n: unknown, defaultVal = 10) {
+function validatePositiveInt(n: any, defaultVal = 10) {
   const num = typeof n === 'number' ? n : Number(n);
   if (!Number.isFinite(num) || num <= 0) return defaultVal;
   return Math.floor(num);
 }
-function toNumberOrNull(v: unknown): number | null {
+function toNumberOrNull(v: any): number | null {
   if (v === null || v === undefined) return null;
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;
   const s = String(v).trim();
@@ -148,23 +148,23 @@ function toNumberOrNull(v: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function toDateOrNull(v: unknown): Date | null {
+function toDateOrNull(v: any): Date | null {
   if (v === null || v === undefined) return null;
   if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
   const d = new Date(String(v));
   return isNaN(d.getTime()) ? null : d;
 }
 
-function toStringOrNull(v: unknown): string | null {
+function toStringOrNull(v: any): string | null {
   if (v === null || v === undefined) return null;
   if (typeof v === 'string') return v;
   const s = String(v).trim();
   return s === '' ? null : s;
 }
 
-function toNumberArrayOrNull(v: unknown): number[] | null {
+function toNumberArrayOrNull(v: any): number[] | null {
   if (!Array.isArray(v)) return null;
-  const nums = v.map((item: unknown) => toNumberOrNull(item)).filter((n): n is number => n !== null);
+  const nums = v.map((item: any) => toNumberOrNull(item)).filter((n): n is number => n !== null);
   return nums.length > 0 ? nums : null;
 }
 

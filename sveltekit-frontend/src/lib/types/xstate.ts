@@ -257,7 +257,7 @@ export interface Context7Recommendation {
 }
 export interface Context7CacheEntry {
   key: string;
-  data: unknown;
+  data: any;
   timestamp: Date;
   expiresAt: Date;
   hitCount: number;
@@ -329,7 +329,7 @@ export interface ModalState {
   id: string;
   type: string;
   title: string;
-  content: unknown;
+  content: any;
   size: 'sm' | 'md' | 'lg' | 'xl';
   closable: boolean;
   persistent: boolean;

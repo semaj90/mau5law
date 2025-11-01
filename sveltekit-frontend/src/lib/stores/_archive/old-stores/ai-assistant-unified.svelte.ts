@@ -91,7 +91,7 @@ class AIAssistantUnified {
       console.error('AI message failed:', error);
       this.state.error = error instanceof Error ? error.message : 'AI request failed';
     } finally {
-      this.state.isProcessing = false;
+      this.state.isProcessing = $state(false);
     }
   }
 

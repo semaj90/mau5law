@@ -134,8 +134,8 @@ import { storeDocumentsInDatabase } from '$lib/server/db';
 // Use the redis package exported client type
 type RedisClientType = ReturnType<typeof createClient>;
 let redisClient: RedisClientType | null = null;
-let redisConnected = false;
-let disconnectHandlerRegistered = false;
+let redisConnected = $state(false);
+let disconnectHandlerRegistered = $state(false);
 
 // Local helper to disconnect cleanly (declared before use)
 async function disconnectHandler() {
@@ -143,7 +143,7 @@ async function disconnectHandler() {
     if (redisClient && redisConnected) {
       console.info('Disconnecting Redis client due to shutdown signal...');
       await redisClient.disconnect().catch(e => console.warn('Redis disconnect error during shutdown:', e));
-      redisConnected = false;
+      redisConnected = $state(false);
     }
   } catch (e) {
     console.warn('Error during Redis disconnect in shutdown handler:', e);
@@ -191,8 +191,8 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     redisClient = redis;
 
     // Helpful telemetry for production debugging
-    redisClient.on('error', (err: unknown) => {
-      redisConnected = false;
+    redisClient.on('error', (err: any) => {
+      redisConnected = $state(false);
       console.warn('Redis client error:', err);
     });
     redisClient.on('connect', () => console.info('Redis client connecting...'));
@@ -202,7 +202,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     });
     redisClient.on('reconnecting', () => console.info('Redis client reconnecting...'));
     redisClient.on('end', () => {
-      redisConnected = false;
+      redisConnected = $state(false);
       console.info('Redis client connection ended');
     });
 
@@ -234,7 +234,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
       console.warn('Error while cleaning up Redis client after failed connect:', e);
     }
     redisClient = null;
-    redisConnected = false;
+    redisConnected = $state(false);
     return null;
   }
 }
@@ -388,7 +388,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     console.log(`🎉 Legal document processing complete: ${processedDocuments.length} documents, ${totalTime}ms`);
     return json(response);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = Date.now() - startTime;
     const errMsg = err instanceof Error ? err.message : String(err);
     console.error('❌ Legal document processing failed:', err);
@@ -536,20 +536,20 @@ type EmbeddingsResponse =
   | Record<string, unknown>;
 
 // Add a strict type guard for numeric arrays (Embedding)
-function isNumberArray(v: unknown): v is Embedding {
+function isNumberArray(v: any): v is Embedding {
   // Ensure it's an array and every element is a number
   return Array.isArray(v) && v.length > 0 && (v as unknown[]).every(el => typeof el === 'number');
 }
 
 // Helper to detect objects that carry an `embeddings` array property
-function hasEmbeddingsProp(v: unknown): v is { embeddings: unknown[] } {
+function hasEmbeddingsProp(v: any): v is { embeddings: any[] } {
   if (typeof v !== 'object' || v === null) return false;
   const obj = v as Record<string, unknown>;
   return Array.isArray(obj['embeddings']);
 }
 
 // Helper to detect objects that carry a `data` array property
-function hasDataProp(v: unknown): v is { data: unknown[] } {
+function hasDataProp(v: any): v is { data: any[] } {
   if (typeof v !== 'object' || v === null) return false;
   const obj = v as Record<string, unknown>;
   return Array.isArray(obj['data']);
@@ -564,7 +564,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
   const inputs = chunks.map(c => c.text);
 
   // Helper to normalize various response items into Embedding or null
-  const normalizeItem = (item: unknown): Embedding | null => {
+  const normalizeItem = (item: any): Embedding | null => {
     if (isNumberArray(item)) {
       return item;
     }
@@ -828,8 +828,8 @@ async function enhanceWithRAG(documents: LegalDocument[], caseId: string): Promi
 // add: typed shape for pdf-parse result to avoid `any`
 type PdfParseResult = {
   text?: string;
-  info?: unknown;
-  metadata?: unknown;
+  info?: any;
+  metadata?: any;
   numpages?: number; // pdf-parse uses `numpages`
   numrender?: number;
   version?: string;

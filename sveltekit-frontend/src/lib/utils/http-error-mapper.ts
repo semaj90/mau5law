@@ -5,7 +5,7 @@ export type ServiceError = {
   code: string; // machine-friendly code
   status?: number; // HTTP status when available
   message: string; // human-friendly message
-  details?: unknown; // raw error / payload
+  details?: any; // raw error / payload
 };
 
 /**
@@ -13,7 +13,7 @@ export type ServiceError = {
  */
 export async function mapResponseToServiceError(res: Response): Promise<ServiceError> {
   const text = await res.text().catch(() => null);
-  let parsed: unknown = null;
+  let parsed: any = null;
   try {
     parsed = text ? JSON.parse(text) : null;
   } catch {
@@ -54,7 +54,7 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
 /**
  * Map a thrown error (network, timeout, etc.) to ServiceError
  */
-export function mapErrorToServiceError(err: unknown): ServiceError {
+export function mapErrorToServiceError(err: any): ServiceError {
   // network errors
   if (err instanceof TypeError && String(err.message).toLowerCase().includes('failed to fetch')) {
     return { code: 'network_error', message: 'Network error while calling upstream service', details: err };

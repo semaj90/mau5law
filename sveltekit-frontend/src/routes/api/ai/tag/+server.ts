@@ -186,14 +186,14 @@ Content: ${content.slice(0, 2000)}`;
     if (enhanced) {
       try {
         await generateEmbedding(parsedResult, content);
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed: 'any' to: 'unknown'
         console.log('Embedding generation failed:', error);
         // Non-critical, continue without embedding
       }
     }
     return parsedResult;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('AI Tagging error:', error);
     return json(
@@ -392,7 +392,7 @@ function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: b
  * Normalize and validate date-like values returned by the AI.
  * Returns an array of ISO date strings (YYYY-MM-DD). Ignores unparsable values.
  */
-function validateDates(dates: unknown): string[] {
+function validateDates(dates: any): string[] {
   const out: string[] = [];
   if (!Array.isArray(dates)) return out;
 

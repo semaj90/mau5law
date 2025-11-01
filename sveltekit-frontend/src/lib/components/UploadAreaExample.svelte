@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import UploadArea from './UploadArea.svelte';
+  import { UploadArea } from './UploadArea.svelte';
 
   let uploadComponent: any = $state(null);
   let uploadStatus = $state('');
@@ -171,8 +171,7 @@
           <i class="space-y-4"></i>
           {uploadStatus}
           <button type="button" class="space-y-4" aria-label="Clear status" onclick={() => clearStatus()}>Clear</button>
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="space-y-4">
       <div class="space-y-4">
@@ -207,8 +206,7 @@
                   {/if}
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <!-- Feature List -->

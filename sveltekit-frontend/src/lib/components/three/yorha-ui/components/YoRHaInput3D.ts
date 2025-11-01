@@ -31,8 +31,8 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private options: YoRHaInput3DOptions;
   private currentValue = '';
   private cursorPosition = 0;
-  private isFocused = false;
-  private isPasswordVisible = false;
+  private isFocused = $state(false);
+  private isPasswordVisible = $state(false);
   private cursorBlinkTimer = 0;
   constructor(options: YoRHaInput3DOptions = {}) {
     const style = YoRHaInput3D.getVariantStyle(
@@ -375,12 +375,12 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     }
     // Hide placeholder
     if (this.placeholderMesh) {
-      this.placeholderMesh.visible = false;
+      this.placeholderMesh.visible = $state(false);
     }
     this.emitEvent('focus', { value: this.currentValue });
   }
   public blur(): void {
-    this.isFocused = false;
+    this.isFocused = $state(false);
     // Reset visual state
     this.setStyle({
       borderColor: this.options.error
@@ -420,7 +420,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   }
   public setError(error: boolean): void {
     this.options.error = error;
-    this.options.success = false;
+    this.options.success = $state(false);
     const newStyle = YoRHaInput3D.getVariantStyle(
       this.options.variant || 'default',
       this.options.size || 'medium',
@@ -431,7 +431,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   }
   public setSuccess(success: boolean): void {
     this.options.success = success;
-    this.options.error = false;
+    this.options.error = $state(false);
     const newStyle = YoRHaInput3D.getVariantStyle(
       this.options.variant || 'default',
       this.options.size || 'medium',

@@ -42,7 +42,7 @@ export interface ClientLLMRequest {
 type ONNXSession = {
   modelPath: string;
   // runtime handle (onnxruntime-web session, etc). Keep as unknown to avoid leaking implementation detail.
-  runtime?: unknown;
+  runtime?: any;
 };
 
 // Orchestrator status shape returned from getStatus
@@ -510,7 +510,7 @@ class UnifiedClientLLMOrchestrator {
           throw new Error(`Unknown model type: ${model.type}`);
       }
     } finally {
-      model.isActive = false;
+      model.isActive = $state(false);
     }
   }
   /**
@@ -701,7 +701,7 @@ class UnifiedClientLLMOrchestrator {
    * Send message to worker and wait for response
    */
   private async sendWorkerMessage(worker: Worker, message: Record<string, unknown>): Promise<WorkerResult> {
-    type WorkerEvent = { id?: string; type?: string; data?: unknown };
+    type WorkerEvent = { id?: string; type?: string; data?: any };
     return new Promise((resolve, reject) => {
       const messageId = Math.random().toString(36);
       const handleMessage = (evt: MessageEvent) => {
@@ -717,7 +717,7 @@ class UnifiedClientLLMOrchestrator {
             if (typeof d === 'string') {
               errMsg = d;
             } else if (d && typeof d === 'object') {
-              const maybe = d as { message?: unknown };
+              const maybe = d as { message?: any };
               if (typeof maybe.message === 'string') {
                 errMsg = maybe.message;
               }
@@ -800,7 +800,7 @@ class UnifiedClientLLMOrchestrator {
       const from = this.models.get(fromModel);
       const to = this.models.get(toModel);
       if (!to) return;
-      if (from) from.isActive = false;
+      if (from) from.isActive = $state(false);
       // small pause - non-blocking and predictable
       await new Promise(res => setTimeout(res, 20));
       to.isActive = true;
@@ -911,7 +911,7 @@ class ONNXInferenceEngine {
     session: ONNXSession,
     input: string,
     options: Record<string, unknown>
-  ): Promise<{ output: string; confidence?: number; contextType?: unknown }> {
+  ): Promise<{ output: string; confidence?: number; contextType?: any }> {
     // ONNX inference implementation
     // 'session' is the typed session handle and may contain runtime internals if needed
     return {

@@ -103,7 +103,7 @@ type EnhancedRAGHealthShape = {
   available?: boolean;
   status?: HealthStatus | string | null;
   version?: string | null;
-  capabilities?: unknown;
+  capabilities?: any;
   responseTime?: number | null;
 };
 
@@ -114,13 +114,13 @@ type GRPCConnectionStatusShape = {
 
 // Helper: attempt to call a method by name on an unknown service object.
 // Returns the method result (possibly a Promise) or null if method not present.
-function callMethodIfExists<T = unknown>(service: unknown, methodName: string): Promise<T | null> {
+function callMethodIfExists<T = unknown>(service: any, methodName: string): Promise<T | null> {
   const obj = service as Record<string, unknown>;
   const maybe = obj[methodName];
   if (typeof maybe === 'function') {
     // call it and normalize to a Promise
     try {
-      const result = (maybe as (...args: unknown[]) => unknown).call(service);
+      const result = (maybe as (...args: any[]) => unknown).call(service);
       return Promise.resolve(result as T);
     } catch (err) {
       return Promise.reject(err);

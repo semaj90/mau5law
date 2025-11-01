@@ -2,7 +2,6 @@
  * PTX Compiler Configuration for Ampere+ Architectures
  * Optimized for RTX 30/40 series and modern NVIDIA GPUs
  */
-
 export interface PTXCompilerOptions {
   architecture: 'sm_86' | 'sm_89' | 'sm_90' | 'compute_86' | 'compute_89' | 'compute_90';
   optimizationLevel: 0 | 1 | 2 | 3;
@@ -13,7 +12,6 @@ export interface PTXCompilerOptions {
   enableDebugging?: boolean;
   generateLineInfo?: boolean;
 }
-
 export interface CUDABuildConfig {
   ptxOptions: PTXCompilerOptions;
   nvccFlags: string[];
@@ -22,7 +20,6 @@ export interface CUDABuildConfig {
   libraries: string[];
   outputFormat: 'ptx' | 'cubin' | 'fatbin';
 }
-
 // Architecture-specific configurations
 export const AMPERE_ARCHITECTURES = {
   RTX_30_SERIES: {
@@ -37,7 +34,6 @@ export const AMPERE_ARCHITECTURES = {
     memoryBusWidth: 320,
     memoryClock: 19000, // 19 Gbps
   },
-
   RTX_40_SERIES: {
     architecture: 'sm_89' as const,
     tensorCores: true,
@@ -50,7 +46,6 @@ export const AMPERE_ARCHITECTURES = {
     memoryBusWidth: 256,
     memoryClock: 22400, // 22.4 Gbps
   },
-
   HOPPER_H100: {
     architecture: 'sm_90' as const,
     tensorCores: true,
@@ -64,11 +59,9 @@ export const AMPERE_ARCHITECTURES = {
     memoryClock: 3352, // 3.35 Gbps HBM3
   },
 };
-
 export class PTXCompiler {
   private config: CUDABuildConfig;
   private wasmModule: WebAssembly.Module | null = null;
-
   constructor(options: Partial<CUDABuildConfig> = {}) {
     this.config = {
       ptxOptions: {
@@ -95,7 +88,6 @@ export class PTXCompiler {
       outputFormat: options.outputFormat || 'ptx',
     };
   }
-
   /**
    * Generate optimized PTX code for RAG kernels
    */
@@ -104,7 +96,6 @@ export class PTXCompiler {
 .version 8.2
 .target ${this.config.ptxOptions.architecture}
 .address_size 64
-
 // Optimized cosine similarity kernel for Ampere
 .visible .entry cosine_similarity_kernel(
     .param .u64 input_embeddings,
@@ -119,76 +110,60 @@ export class PTXCompiler {
     .reg .s64 rd<16>;
     .reg .f32 f<32>;
     .reg .v4 .f32 fv<8>;
-
     // Get thread and block indices
     mov.u32 r1, %ctaid.x;
     mov.u32 r2, %blockdim.x;
     mov.u32 r3, %tid.x;
     mad.lo.s32 r4, r1, r2, r3; // Global thread ID
-
     // Load parameters
     ld.param.u64 rd1, [input_embeddings];
     ld.param.u64 rd2, [query_embedding];
     ld.param.u64 rd3, [similarity_results];
     ld.param.u32 r5, [num_documents];
     ld.param.u32 r6, [embedding_dim];
-
     // Bounds check
     setp.ge.s32 p1, r4, r5;
     @p1 bra DONE;
-
     // Calculate document offset
     mul.lo.s32 r7, r4, r6;
     mul.wide.s32 rd4, r7, 4; // Convert to bytes
     add.s64 rd5, rd1, rd4; // Document embedding address
-
     // Initialize accumulators
     mov.f32 f1, 0.0; // dot_product
     mov.f32 f2, 0.0; // norm_input
     mov.f32 f3, 0.0; // norm_query
-
     // Vectorized loop (process 4 elements at a time)
     mov.s32 r8, 0; // Loop counter
     and.s32 r9, r6, 0xFFFFFFFC; // Align to 4
-
 LOOP_START:
     setp.ge.s32 p2, r8, r9;
     @p2 bra LOOP_END;
-
     // Load 4 input elements
     mul.lo.s32 r10, r8, 4;
     add.s64 rd6, rd5, r10;
     ld.global.v4.f32 fv1, [rd6];
-
     // Load 4 query elements
     add.s64 rd7, rd2, r10;
     ld.global.v4.f32 fv2, [rd7];
-
     // Compute dot products and norms
     ${this.generateVectorizedComputation()}
-
     add.s32 r8, r8, 4;
     bra LOOP_START;
-
 LOOP_END:
     // Handle remaining elements
     ${this.generateRemainingElementsCode()}
-
     // Compute final cosine similarity
     sqrt.rn.f32 f4, f2; // sqrt(norm_input)
     sqrt.rn.f32 f5, f3; // sqrt(norm_query)
     mul.rn.f32 f6, f4, f5; // denominator
     div.rn.f32 f7, f1, f6; // cosine similarity
-
     // Store result
     mul.lo.s32 r11, r4, 4;
     add.s64 rd8, rd3, r11;
     st.global.f32 [rd8], f7;
-
 DONE:
     ret;
 }
-
 // K-means clustering kernel with tensor core optimization
 .visible .entry kmeans_kernel(
     .param .u64 document_embeddings,
@@ -201,7 +176,6 @@ DONE:
 {
     ${this.generateKMeansKernel()}
 }
-
 // Legal entity extraction kernel
 .visible .entry entity_extraction_kernel(
     .param .u64 text_tokens,
@@ -214,10 +188,8 @@ DONE:
     ${this.generateEntityExtractionKernel()}
 }
 `;
-
     return ptxCode;
   }
-
   private generateVectorizedComputation(): string {
     if (this.config.ptxOptions.enableTensorCores) {
       return `
@@ -240,13 +212,11 @@ DONE:
     add.f32 f1, f1, f9;
     add.f32 f1, f1, f10;
     add.f32 f1, f1, f11;
-
     // Compute norms
     fma.rn.f32 f2, fv1.x, fv1.x, f2;
     fma.rn.f32 f2, fv1.y, fv1.y, f2;
     fma.rn.f32 f2, fv1.z, fv1.z, f2;
     fma.rn.f32 f2, fv1.w, fv1.w, f2;
-
     fma.rn.f32 f3, fv2.x, fv2.x, f3;
     fma.rn.f32 f3, fv2.y, fv2.y, f3;
     fma.rn.f32 f3, fv2.z, fv2.z, f3;
@@ -254,52 +224,42 @@ DONE:
       `;
     }
   }
-
   private generateRemainingElementsCode(): string {
     return `
     // Process remaining elements (< 4)
     and.s32 r12, r6, 3; // r6 % 4
     setp.eq.s32 p3, r12, 0;
     @p3 bra SKIP_REMAINING;
-
     mov.s32 r13, r8; // Current index
 REMAINING_LOOP:
     setp.ge.s32 p4, r13, r6;
     @p4 bra SKIP_REMAINING;
-
     // Load single elements
     mul.lo.s32 r14, r13, 4;
     add.s64 rd9, rd5, r14;
     ld.global.f32 f12, [rd9];
-
     add.s64 rd10, rd2, r14;
     ld.global.f32 f13, [rd10];
-
     // Update accumulators
     fma.rn.f32 f1, f12, f13, f1;
     fma.rn.f32 f2, f12, f12, f2;
     fma.rn.f32 f3, f13, f13, f3;
-
     add.s32 r13, r13, 1;
     bra REMAINING_LOOP;
-
 SKIP_REMAINING:
     `;
   }
-
   private generateKMeansKernel(): string {
     return `
     .reg .pred p<8>;
     .reg .s32 r<20>;
     .reg .s64 rd<12>;
     .reg .f32 f<16>;
-
     // Get global thread ID
     mov.u32 r1, %ctaid.x;
     mov.u32 r2, %blockdim.x;
     mov.u32 r3, %tid.x;
     mad.lo.s32 r4, r1, r2, r3;
-
     // Load parameters
     ld.param.u64 rd1, [document_embeddings];
     ld.param.u64 rd2, [cluster_centroids];
@@ -307,119 +267,94 @@ SKIP_REMAINING:
     ld.param.u32 r5, [num_documents];
     ld.param.u32 r6, [num_clusters];
     ld.param.u32 r7, [embedding_dim];
-
     // Bounds check
     setp.ge.s32 p1, r4, r5;
     @p1 bra KMEANS_DONE;
-
     // Find closest cluster
     mov.f32 f1, 0x7F800000; // +infinity
     mov.s32 r8, 0; // best_cluster
-
     mov.s32 r9, 0; // cluster loop counter
 CLUSTER_LOOP:
     setp.ge.s32 p2, r9, r6;
     @p2 bra CLUSTER_LOOP_END;
-
     // Compute distance to cluster r9
     mov.f32 f2, 0.0; // distance accumulator
-
     // Calculate document and centroid offsets
     mul.lo.s32 r10, r4, r7;
     mul.wide.s32 rd4, r10, 4;
     add.s64 rd5, rd1, rd4;
-
     mul.lo.s32 r11, r9, r7;
     mul.wide.s32 rd6, r11, 4;
     add.s64 rd7, rd2, rd6;
-
     // Distance computation loop
     mov.s32 r12, 0;
 DISTANCE_LOOP:
     setp.ge.s32 p3, r12, r7;
     @p3 bra DISTANCE_LOOP_END;
-
     mul.lo.s32 r13, r12, 4;
     add.s64 rd8, rd5, r13;
     add.s64 rd9, rd7, r13;
-
     ld.global.f32 f3, [rd8]; // document element
     ld.global.f32 f4, [rd9]; // centroid element
-
     sub.f32 f5, f3, f4; // difference
     fma.rn.f32 f2, f5, f5, f2; // distance += diff^2
-
     add.s32 r12, r12, 1;
     bra DISTANCE_LOOP;
-
 DISTANCE_LOOP_END:
     // Check if this is the best cluster so far
     setp.lt.f32 p4, f2, f1;
     @p4 mov.f32 f1, f2;
     @p4 mov.s32 r8, r9;
-
     add.s32 r9, r9, 1;
     bra CLUSTER_LOOP;
-
 CLUSTER_LOOP_END:
     // Store assignment
     mul.lo.s32 r14, r4, 4;
     add.s64 rd10, rd3, r14;
     st.global.s32 [rd10], r8;
-
 KMEANS_DONE:
     ret;
     `;
   }
-
   private generateEntityExtractionKernel(): string {
     return `
     .reg .pred p<8>;
     .reg .s32 r<16>;
     .reg .s64 rd<8>;
     .reg .u32 token;
-
     // Get global thread ID
     mov.u32 r1, %ctaid.x;
     mov.u32 r2, %blockdim.x;
     mov.u32 r3, %tid.x;
     mad.lo.s32 r4, r1, r2, r3;
-
     // Load parameters
     ld.param.u64 rd1, [text_tokens];
     ld.param.u64 rd2, [pattern_database];
     ld.param.u64 rd3, [entity_matches];
     ld.param.u32 r5, [text_length];
     ld.param.u32 r6, [num_patterns];
-
     // Bounds check
     setp.ge.s32 p1, r4, r5;
     @p1 bra ENTITY_DONE;
-
     // Pattern matching logic
     // Load current token
     mul.lo.s32 r7, r4, 4;
     add.s64 rd4, rd1, r7;
     ld.global.u32 token, [rd4];
-
     // Check against all patterns
     mov.s32 r8, 0; // pattern counter
 PATTERN_LOOP:
     setp.ge.s32 p2, r8, r6;
     @p2 bra ENTITY_DONE;
-
     // Load pattern
     mul.lo.s32 r9, r8, 4;
     add.s64 rd5, rd2, r9;
     ld.global.u32 r10, [rd5];
-
     // Simple pattern matching (production would be more complex)
     setp.eq.u32 p3, token, r10;
     @p3 bra PATTERN_MATCH;
-
     add.s32 r8, r8, 1;
     bra PATTERN_LOOP;
-
 PATTERN_MATCH:
     // Store match information
     // This is simplified - production would store proper entity data
@@ -428,12 +363,10 @@ PATTERN_MATCH:
     st.global.s32 [rd6], r4; // start position
     st.global.s32 [rd6+4], r4; // end position (simplified)
     st.global.s32 [rd6+8], r8; // entity type
-
 ENTITY_DONE:
     ret;
     `;
   }
-
   /**
    * Generate build script for compilation
    */
@@ -442,20 +375,15 @@ ENTITY_DONE:
     const includes = this.config.includePaths.map(p => `-I${p}`).join(' ');
     const libPaths = this.config.libraryPaths.map(p => `-L${p}`).join(' ');
     const libs = this.config.libraries.map(l => `-l${l}`).join(' ');
-
     return `#!/bin/bash
 # Auto-generated CUDA build script for RAG kernels
-
 set -e
-
 echo: "Building CUDA RAG kernels with PTX optimization..."
-
 # Compiler settings
 NVCC_FLAGS="${flags}"
 INCLUDE_PATHS="${includes}"
 LIBRARY_PATHS="${libPaths}"
 LIBRARIES="${libs}"
-
 # Architecture-specific optimizations
 ARCH_FLAGS=""
 case "${this.config.ptxOptions.architecture}" in
@@ -472,13 +400,11 @@ case "${this.config.ptxOptions.architecture}" in
         echo: "Compiling for Hopper (H100) with advanced Tensor Core features"
         ;;
 esac
-
 # Compile RAG kernels
 nvcc $NVCC_FLAGS $ARCH_FLAGS $INCLUDE_PATHS \\
     -o cuda_rag_kernels.${this.config.outputFormat} \\
     src/lib/cuda/rag_kernels.cu \\
     $LIBRARY_PATHS $LIBRARIES
-
 # Generate WebAssembly fallback
 echo: "Generating WebAssembly fallback..."
 emcc -O3 -s WASM=1 \\
@@ -486,13 +412,11 @@ emcc -O3 -s WASM=1 \\
     -s MODULARIZE=1 -s EXPORT_NAME=CUDAModule \\
     -o static/wasm/cuda-rag-kernels.js \\
     src/lib/wasm/cuda-rag-kernels.c
-
 echo: "Build complete!"
 echo: "PTX: cuda_rag_kernels.${this.config.outputFormat}"
 echo: "WASM: static/wasm/cuda-rag-kernels.js"
 `;
   }
-
   /**
    * Get optimal configuration for detected GPU
    */
@@ -510,38 +434,31 @@ echo: "WASM: static/wasm/cuda-rag-kernels.js"
       generateLineInfo: false,
     };
   }
-
   /**
    * Validate configuration for target architecture
    */
   validateConfiguration(): boolean {
     const arch = AMPERE_ARCHITECTURES.RTX_30_SERIES; // Default validation
-
     if (this.config.ptxOptions.maxRegisterCount! > arch.registersPerThread) {
       console.warn(
         `Register count ${this.config.ptxOptions.maxRegisterCount} exceeds limit ${arch.registersPerThread}`
       );
       return false;
     }
-
     if (this.config.ptxOptions.sharedMemorySize! > arch.sharedMemoryPerBlock) {
       console.warn(
         `Shared memory ${this.config.ptxOptions.sharedMemorySize} exceeds limit ${arch.sharedMemoryPerBlock}`
       );
       return false;
     }
-
     return true;
   }
-
   getConfig(): CUDABuildConfig {
     return this.config;
   }
 }
-
 // Export default configurations
 export const defaultPTXConfig: PTXCompilerOptions = PTXCompiler.detectOptimalConfig();
-
 export const productionBuildConfig: CUDABuildConfig = {
   ptxOptions: defaultPTXConfig,
   nvccFlags: ['-O3', '--use_fast_math', '--ptxas-options=-v', '-lineinfo'],
@@ -550,7 +467,6 @@ export const productionBuildConfig: CUDABuildConfig = {
   libraries: ['cudart', 'cublas', 'curand', 'cusparse'],
   outputFormat: 'ptx',
 };
-
 export const debugBuildConfig: CUDABuildConfig = {
   ...productionBuildConfig,
   ptxOptions: {

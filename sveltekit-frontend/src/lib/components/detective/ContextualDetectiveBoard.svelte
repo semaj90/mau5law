@@ -12,7 +12,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from "svelte";
   import { page } from '$app/state';
-  import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';
+  import { HeadlessTypingListener } from '$lib/components/HeadlessTypingListener.svelte';
   import DetectiveWebSocketManager, { type CollaborativeUser } from '$lib/websocket/DetectiveWebSocketManager.js';
   import type { TypingContext, TypingState } from '$lib/machines/userTypingStateMachine.js';
   // Props
@@ -251,7 +251,7 @@
     } catch (error) {
       console.error('Failed to generate connection map:', error);
     } finally {
-      isGeneratingMap = false;
+      isGeneratingMap = $state(false);
     }
   }
   /**
@@ -341,10 +341,8 @@
             <div class="metric typing-indicator">
               <span class="label">Typing:</span>
               <span class="value">{collaborationStats.typingUsers}</span>
-            </div>
-          {/if}
-      </div>
-    {/if}
+            {/if}
+      {/if}
   </header>
   <!-- Main analysis area -->
   <main class="analysis-area">
@@ -375,7 +373,7 @@
       <section class="contextual-prompts">
         <h3>Contextual Suggestions</h3>
         <div class="prompts-list">
-          {#each contextualPrompts as prompt}
+          {#each Array.isArray(contextualPrompts) ? contextualPrompts : [] as prompt}
             <button
               type="button"
               class="prompt-button"
@@ -399,7 +397,7 @@
         <div class="map-visualization">
           <!-- Simple visualization - replace with actual graph library -->
           <div class="nodes-preview">
-            {#each (connectionMap.nodes || []).slice(0, 10) as node}
+            {#each Array.isArray((connectionMap.nodes || []).slice(0, 10)) ? (connectionMap.nodes || []).slice(0, 10) : [] as node}
               <div class="node-item" style="background-color: {node.color}">
                 <span class="node-type">{node.type}</span>
                 <span class="node-label">{node.label}</span>
@@ -418,22 +416,20 @@
             <div class="entities">
               <h4>Key Entities</h4>
               <ul>
-                {#each detectiveAnalysis.keyEntities as entity}
+                {#each Array.isArray(detectiveAnalysis.keyEntities) ? detectiveAnalysis.keyEntities : [] as entity}
                   <li>{entity.name} ({entity.type})</li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           {#if detectiveAnalysis.suggestedConnections}
             <div class="connections">
               <h4>Suggested Connections</h4>
               <ul>
-                {#each detectiveAnalysis.suggestedConnections as connection}
+                {#each Array.isArray(detectiveAnalysis.suggestedConnections) ? detectiveAnalysis.suggestedConnections : [] as connection}
                   <li>{connection.description} (confidence: {connection.confidence})</li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
         </div>
       </section>
     {/if}
@@ -674,4 +670,3 @@
     color: #4b5563;
   }
 </style>
-

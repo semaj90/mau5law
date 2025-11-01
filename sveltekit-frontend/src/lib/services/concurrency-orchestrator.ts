@@ -16,7 +16,7 @@ import os from 'os'; // added for server-side CPU count fallback
 export interface ConcurrencyTask {
   id: string;
   type: 'search' | 'analysis' | 'canvas' | 'ai' | 'database';
-  payload: unknown;
+  payload: any;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   userId?: string;
   caseId?: string;
@@ -26,7 +26,7 @@ export interface ConcurrencyTask {
 export interface WorkerResult {
   taskId: string;
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   duration: number;
   workerId: string;
@@ -43,7 +43,7 @@ export interface ConcurrencyContext {
     completed: number;
     failed: number;
   };
-  error?: unknown;
+  error?: any;
 }
 
 // Event types (narrowed where needed)
@@ -53,9 +53,9 @@ type SubmitTaskEvent = {
 };
 
 // Module-level service holders (so init functions can expose instances to the orchestrator)
-let lokiInstance: unknown | null = null;
-let redisInstance: unknown | null = null;
-let rabbitmqInitialized = false;
+let lokiInstance: any | null = null;
+let redisInstance: any | null = null;
+let rabbitmqInitialized = $state(false);
 
 // --- New: simple in-process worker pool -------------------------------------------------
 type WorkerTask<T = unknown> = () => Promise<T>;
@@ -69,7 +69,7 @@ interface WorkerPool {
 }
 
 let workerPool: WorkerPool | null = null;
-type ThreadPoolRunResult = { success: boolean; result?: unknown; error?: string };
+type ThreadPoolRunResult = { success: boolean; result?: any; error?: string };
 type ThreadPoolInstance = {
   runTask: (task: Record<string, unknown>) => Promise<ThreadPoolRunResult>;
 };
@@ -81,8 +81,8 @@ class InProcessWorkerPool implements WorkerPool {
   activeWorkers = 0;
   private queue: Array<{
     fn: WorkerTask;
-    resolve: (v: unknown) => void;
-    reject: (e: unknown) => void;
+    resolve: (v: any) => void;
+    reject: (e: any) => void;
   }> = [];
 
   constructor(maxWorkers: number) {
@@ -91,7 +91,7 @@ class InProcessWorkerPool implements WorkerPool {
 
   run<T = unknown>(fn: WorkerTask<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      this.queue.push({ fn, resolve: resolve as (v: unknown) => void, reject });
+      this.queue.push({ fn, resolve: resolve as (v: any) => void, reject });
       this.tryStart();
     });
   }
@@ -117,7 +117,7 @@ class InProcessWorkerPool implements WorkerPool {
   }
 
   async shutdown(): Promise<void> {
-    this.running = false;
+    this.running = $state(false);
     // wait for active workers to finish
     await new Promise<void>((res) => {
       const check = () => {
@@ -156,13 +156,13 @@ const defaultMaxWorkers = (() => {
 })();
 
 // machine will be created dynamically in init() to avoid compile-time xstate dependency
-let concurrencyMachine: unknown = null;
+let concurrencyMachine: any = null;
 
 // --- Add a small typed shape for the minimal XState interpreter surface we use
 interface XStateServiceShape {
-  send?: (event: unknown) => void;
+  send?: (event: any) => void;
   getSnapshot?: () => unknown;
-  subscribe?: (listener: (state: unknown) => void) => (() => void) | { unsubscribe?: () => void };
+  subscribe?: (listener: (state: any) => void) => (() => void) | { unsubscribe?: () => void };
   start?: () => void;
   stop?: () => void;
 }
@@ -185,15 +185,15 @@ export class ConcurrencyOrchestrator {
   private async init() {
     // use an indirect dynamic import to avoid TypeScript statically resolving the: 'xstate' module
     const dynamicImport = Function('s', 'return import(s)') as (s: string) => Promise<unknown>;
-    const xstate = await dynamicImport('xstate').catch((e: unknown) => {
+    const xstate = await dynamicImport('xstate').catch((e: any) => {
       // fail gracefully if xstate isn't available at runtime
       throw new Error('xstate module import failed: ' + String(e));
     });
 
     // Provide small, explicit function shapes instead of `Function` to keep type-safety and avoid lint complaints
-    type CreateMachineFn = (config: unknown, options?: unknown) => unknown;
-    type AssignFn = (...args: unknown[]) => unknown;
-    type InterpretFn = (machine: unknown) => XStateServiceShape;
+    type CreateMachineFn = (config: any, options?: any) => unknown;
+    type AssignFn = (...args: any[]) => unknown;
+    type InterpretFn = (machine: any) => XStateServiceShape;
 
     const { createMachine, assign, interpret } = xstate as {
       createMachine: CreateMachineFn;
@@ -244,7 +244,7 @@ export class ConcurrencyOrchestrator {
               onError: {
                 target: 'error',
                 actions: assign({
-                  error: (_ctx: ConcurrencyContext, evt: unknown) => {
+                  error: (_ctx: ConcurrencyContext, evt: any) => {
                     try {
                       return JSON.stringify(evt);
                     } catch {
@@ -297,7 +297,7 @@ export class ConcurrencyOrchestrator {
               onError: {
                 target: 'error',
                 actions: assign({
-                  error: (_ctx: ConcurrencyContext, evt: unknown) => {
+                  error: (_ctx: ConcurrencyContext, evt: any) => {
                     try {
                       return JSON.stringify(evt);
                     } catch {
@@ -435,7 +435,7 @@ export class ConcurrencyOrchestrator {
 
     // start the interpreter (avoid `any` cast by calling interpret via a Function type)
     // assign the result into our typed service slot and use optional chaining for start()
-    this.service = (interpret as unknown as (machine: unknown) => XStateServiceShape)(concurrencyMachine);
+    this.service = (interpret as unknown as (machine: any) => XStateServiceShape)(concurrencyMachine);
     this.service?.start?.();
   }
 
@@ -460,12 +460,12 @@ export class ConcurrencyOrchestrator {
   }
 
   // accept subscriber with a generic snapshot type to avoid compile-time xstate dependency
-  subscribe(callback: (snapshot: unknown) => void) {
+  subscribe(callback: (snapshot: any) => void) {
     if (!this.service || typeof this.service.subscribe !== 'function') {
       // nothing to subscribe to yet
       return () => {};
     }
-    const sub = this.service.subscribe((state: unknown) => {
+    const sub = this.service.subscribe((state: any) => {
       callback(state);
     });
     // normalize unsubscribe (subscribe can return a function or an object with unsubscribe)
@@ -487,7 +487,7 @@ export class ConcurrencyOrchestrator {
   }
 
    // Specialized task submission methods
-   async submitSearchTask(query: string, dataset: unknown[], options: Record<string, unknown> = {}): Promise<string> {
+   async submitSearchTask(query: string, dataset: any[], options: Record<string, unknown> = {}): Promise<string> {
      return this.submitTask({
        type: 'search',
        payload: { query, dataset, options },
@@ -495,7 +495,7 @@ export class ConcurrencyOrchestrator {
      } as Omit<ConcurrencyTask, 'id' | 'createdAt'>);
    }
 
-   async submitAnalysisTask(data: unknown, analysisType: string): Promise<string> {
+   async submitAnalysisTask(data: any, analysisType: string): Promise<string> {
      return this.submitTask({
        type: 'analysis',
        payload: { data, analysisType },
@@ -503,7 +503,7 @@ export class ConcurrencyOrchestrator {
      });
    }
 
-   async submitCanvasTask(canvasId: string, operation: string, params: unknown): Promise<string> {
+   async submitCanvasTask(canvasId: string, operation: string, params: any): Promise<string> {
      return this.submitTask({
        type: 'canvas',
        payload: { canvasId, operation, params },
@@ -511,7 +511,7 @@ export class ConcurrencyOrchestrator {
      });
    }
 
-   async submitAITask(prompt: string, context?: unknown): Promise<string> {
+   async submitAITask(prompt: string, context?: any): Promise<string> {
      return this.submitTask({
        type: 'ai',
        payload: { prompt, context },
@@ -520,7 +520,7 @@ export class ConcurrencyOrchestrator {
    }
 
    // Loki.js integration methods - use module-level lokiInstance
-   getLokiCollection(name: string): unknown | null {
+   getLokiCollection(name: string): any | null {
      if (isLokiDB(lokiInstance)) {
        return lokiInstance.getCollection?.(name) ?? null;
      }
@@ -537,7 +537,7 @@ export class ConcurrencyOrchestrator {
    }
 
    // Canvas management
-   getCanvas(canvasId: string): unknown | null {
+   getCanvas(canvasId: string): any | null {
      return this.canvasInstances.get(canvasId) ?? null;
    }
 
@@ -573,7 +573,7 @@ export class ConcurrencyOrchestrator {
      try {
        services.rabbitmq = await this.checkRabbitMQHealth();
      } catch {
-       services.rabbitmq = false;
+       services.rabbitmq = $state(false);
      }
 
      // dynamic check for ollama/gemma service (use safe guards)
@@ -588,10 +588,10 @@ export class ConcurrencyOrchestrator {
            services.ollama = Boolean(healthRaw);
          }
        } else {
-         services.ollama = false;
+         services.ollama = $state(false);
        }
      } catch {
-       services.ollama = false;
+       services.ollama = $state(false);
      }
 
      const healthyServices = Object.values(services).filter(v => Boolean(v)).length;
@@ -642,7 +642,7 @@ export class ConcurrencyOrchestrator {
 }
 
 // Add a small helper to safely format errors
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   if (err === undefined || err === null) return 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
@@ -656,7 +656,7 @@ function formatError(err: unknown): string {
 // Add a small helper to safely stringify potentially-circular objects
 function getCircularReplacer() {
   const seen = new WeakSet<object>();
-  return function (_key: string, value: unknown) {
+  return function (_key: string, value: any) {
     if (value !== null && typeof value === 'object') {
       const obj = value as object;
       if (seen.has(obj)) return '[Circular]';
@@ -667,7 +667,7 @@ function getCircularReplacer() {
 }
 
 // lightweight type guard for Loki shape
-function isLokiDB(obj: unknown): obj is {
+function isLokiDB(obj: any): obj is {
   getCollection?: (name: string) => unknown;
   addCollection?: (name: string, options?: Record<string, unknown>) => unknown;
 } {
@@ -677,7 +677,7 @@ function isLokiDB(obj: unknown): obj is {
 }
 
 // Add small helper types and resolvers to avoid `any` casts
-type FuseResultUnknown = { item: unknown; score?: number; matches?: unknown[] };
+type FuseResultUnknown = { item: any; score?: number; matches?: any[] };
 type AITaskContext = { type?: string } | undefined;
 
 // Narrowed object shape for services that expose the expected methods.
@@ -687,7 +687,7 @@ type GemmaServiceObj = {
 };
 
 function hasGenerateLegalResponse(
-  s: unknown
+  s: any
 ): s is { generateLegalResponse: GemmaServiceObj['generateLegalResponse'] } {
   if (typeof s !== 'object' || s === null) return false;
   const rec = s as Record<string, unknown>;
@@ -695,14 +695,14 @@ function hasGenerateLegalResponse(
   return typeof fn === 'function';
 }
 
-function hasHealthCheck(s: unknown): s is { healthCheck: GemmaServiceObj['healthCheck'] } {
+function hasHealthCheck(s: any): s is { healthCheck: GemmaServiceObj['healthCheck'] } {
   if (typeof s !== 'object' || s === null) return false;
   const rec = s as Record<string, unknown>;
   const fn = rec['healthCheck'];
   return typeof fn === 'function';
 }
 
-function resolveGemmaService(mod: unknown): unknown | null {
+function resolveGemmaService(mod: any): any | null {
   if (!mod) return null;
   const rec = mod as Record<string, unknown>;
   const candidate = rec['gemma3LegalService'] ?? rec['default'] ?? rec;
@@ -715,7 +715,7 @@ async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
   const startTime = Date.now();
   const workerId = `worker-${task.type}-${Date.now()}`;
   try {
-    let result: unknown;
+    let result: any;
     switch (task.type) {
       case 'search':
         result = await processSearchTask(task.payload);
@@ -753,8 +753,8 @@ async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
   }
 }
 
-async function processSearchTask(payload: unknown): Promise<unknown> {
-  const p = (payload as { query?: string; dataset?: unknown[]; options?: Record<string, unknown> }) ?? {};
+async function processSearchTask(payload: any): Promise<unknown> {
+  const p = (payload as { query?: string; dataset?: any[]; options?: Record<string, unknown> }) ?? {};
   const { query = '', dataset = [], options = {} } = p;
   const fuse = new Fuse(dataset || [], {
     keys: (options.keys as string[]) || ['title', 'content', 'description'],
@@ -779,8 +779,8 @@ async function processSearchTask(payload: unknown): Promise<unknown> {
   };
 }
 
-async function processAnalysisTask(payload: unknown): Promise<unknown> {
-  const p = payload as { data?: unknown; analysisType?: string } | undefined;
+async function processAnalysisTask(payload: any): Promise<unknown> {
+  const p = payload as { data?: any; analysisType?: string } | undefined;
   const { data, analysisType } = p ?? {};
   switch (analysisType) {
     case 'legal': {
@@ -812,8 +812,8 @@ async function processAnalysisTask(payload: unknown): Promise<unknown> {
   }
 }
 
-async function processCanvasTask(payload: unknown): Promise<unknown> {
-  const p = payload as { canvasId?: string; operation?: string; params?: unknown } | undefined;
+async function processCanvasTask(payload: any): Promise<unknown> {
+  const p = payload as { canvasId?: string; operation?: string; params?: any } | undefined;
   const { canvasId = '', operation = '', params = {} } = p ?? {};
   return {
     canvasId,
@@ -824,8 +824,8 @@ async function processCanvasTask(payload: unknown): Promise<unknown> {
   };
 }
 
-async function processAITask(payload: unknown): Promise<unknown> {
-  const p = payload as { prompt?: string; context?: unknown } | undefined;
+async function processAITask(payload: any): Promise<unknown> {
+  const p = payload as { prompt?: string; context?: any } | undefined;
   const { prompt = '', context } = p ?? {};
   try {
     const mod = await import('$lib/services/ollama-gemma3-service').catch(() => null);
@@ -850,8 +850,8 @@ async function processAITask(payload: unknown): Promise<unknown> {
   }
 }
 
-async function processDatabaseTask(payload: unknown): Promise<unknown> {
-  const p = payload as { operation?: string; collection?: string; data?: unknown; query?: unknown } | undefined;
+async function processDatabaseTask(payload: any): Promise<unknown> {
+  const p = payload as { operation?: string; collection?: string; data?: any; query?: any } | undefined;
   const { operation = '', collection = '', data, query } = p ?? {};
   // return included fields so they are considered: "used" (prevents unused var warnings)
   return {
@@ -869,10 +869,10 @@ async function initializeLokiDB(): Promise<unknown | null> {
   if (typeof window === 'undefined') {
     const LokiModule = await import('lokijs');
     const maybe = LokiModule as unknown as {
-      default?: { new (name: string, opts?: unknown): unknown };
-      new (name: string, opts?: unknown): unknown;
+      default?: { new (name: string, opts?: any): any };
+      new (name: string, opts?: any): any;
     };
-    const LokiCtor = maybe.default ?? (maybe as unknown as { new (name: string, opts?: unknown): unknown });
+    const LokiCtor = maybe.default ?? (maybe as unknown as { new (name: string, opts?: any): any });
     const loki = new LokiCtor('legal-ai.db', {
       autoload: true,
       autosave: true,
@@ -891,10 +891,10 @@ async function initializeRedis(): Promise<unknown | null> {
   if (typeof window === 'undefined') {
     const RedisModule = await import('ioredis');
     const maybe = RedisModule as unknown as {
-      default?: { new (opts?: unknown): { ping: () => Promise<unknown> } };
-      new (opts?: unknown): { ping: () => Promise<unknown> };
+      default?: { new (opts?: any): { ping: () => Promise<unknown> } };
+      new (opts?: any): { ping: () => Promise<unknown> };
     };
-    const RedisCtor = maybe.default ?? (maybe as unknown as { new (opts?: unknown): { ping: () => Promise<unknown> } });
+    const RedisCtor = maybe.default ?? (maybe as unknown as { new (opts?: any): { ping: () => Promise<unknown> } });
     const redis = new RedisCtor({
       host: process.env.REDIS_HOST || 'localhost',
       port: Number(process.env.REDIS_PORT || 6379),
@@ -927,13 +927,13 @@ async function initializeRabbitMQ(): Promise<boolean> {
           await (setupFn as () => Promise<void>)();
           rabbitmqInitialized = true;
         } else {
-          rabbitmqInitialized = false;
+          rabbitmqInitialized = $state(false);
         }
       } else {
-        rabbitmqInitialized = false;
+        rabbitmqInitialized = $state(false);
       }
     } catch (err) {
-      rabbitmqInitialized = false;
+      rabbitmqInitialized = $state(false);
     }
     console.log('✅ RabbitMQ initialization attempted');
     return rabbitmqInitialized;
@@ -988,10 +988,10 @@ export const concurrencyOrchestrator = new ConcurrencyOrchestrator();
 export type XStateServiceSnapshot = unknown;
 
 // Convenience wrappers that use the exported singleton
-export async function analyzeWithAI(prompt: string, context?: unknown): Promise<string> {
+export async function analyzeWithAI(prompt: string, context?: any): Promise<string> {
   return concurrencyOrchestrator.submitAITask(prompt, context);
 }
 
-export async function processLegalDocument(document: unknown, analysisType: string = 'legal'): Promise<string> {
+export async function processLegalDocument(document: any, analysisType: string = 'legal'): Promise<string> {
   return concurrencyOrchestrator.submitAnalysisTask(document, analysisType);
 }

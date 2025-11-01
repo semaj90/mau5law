@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications  } from '$lib/stores/unified';
   interface Props {
@@ -15,7 +15,7 @@
     resetText?: string;
     showResetButton?: boolean;
     loading?: boolean;
-    formApi?: unknown; // Add bindable formApi prop
+    formApi?: any; // Add bindable formApi prop
     onsubmit?: (_event: { values: { [key: string]: any }, isValid: boolean }) => void;
     onreset?: () => void;
     onchange?: (_event: { values: { [key: string]: any } }) => void;
@@ -112,8 +112,7 @@
           {submitText}
         </Button>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Form status -->
   {#if $form.submitCount > 0 && Object.keys($form.errors).length > 0}
     <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
@@ -130,6 +129,5 @@
           </ul>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </form>

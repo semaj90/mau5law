@@ -8,7 +8,7 @@
     y: number;
     width?: number;
     height?: number;
-    data: unknown;
+    data: any;
     type: 'evidence' | 'note' | 'connection' | 'marker';
   }
   interface Props {
@@ -87,8 +87,8 @@
     draggedItem = item;
     const rect = boardElement.getBoundingClientRect();
     dragOffset = {
-      x: event.clientX - rect.left - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x,
-      y: event.clientY - rect.top - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y
+      x: event.clientX - rect.left - (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).x,
+      y: event.clientY - rect.top - (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).y
     }
     ondispatch?.({ item });
   }
@@ -107,7 +107,7 @@
   }
   // Handle drag end
   function handleMouseUp() {
-    isDragging = false;
+    isDragging = $state(false);
     draggedItem = null;
   }
   // Toggle fullscreen
@@ -117,7 +117,7 @@
       isFullscreen = true;
     } else {
       document.exitFullscreen();
-      isFullscreen = false;
+      isFullscreen = $state(false);
     }
   }
   // Auto-arrange items
@@ -240,7 +240,7 @@
     <!-- Connection Lines SVG -->
     {#if showConnections && connections.length > 0}
       <svg class="absolute inset-0 pointer-events-none z-10" style="width: 100%; height: 100%;">
-        {#each connections as connection}
+        {#each Array.isArray(connections) ? connections : [] as connection}
           {@const fromItem = items.find(i => i.id === connection.from)}
           {@const toItem = items.find(i => i.id === connection.to)}
           {#if fromItem && toItem}
@@ -257,36 +257,35 @@
       </svg>
     {/if}
     <!-- Board Items -->
-    {#each items as item ((item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id)}
+    {#each items as item ((item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id)}
       <div
         class="absolute cursor-move transition-all duration-200 hover: scale-105 hover:z-20";
-        class:opacity-75={isDragging && draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id}
+        class:opacity-75={isDragging && draggedItem?.id === (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id}
         style="
-          left: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x}px;
-          top: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y}px;
-          width: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).width || 'auto'}
-          height: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).height || 'auto'}
+          left: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).x}px;
+          top: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).y}px;
+          width: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).width || 'auto'}
+          height: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).height || 'auto'}
         "
         onmousedown={(e) => handleDragStart(e, item)}
         role="button"
         tabindex="0"
       >
         <!-- Item Content Slot -->
-        {#if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).type === 'evidence'}
+        {#if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'evidence'}
           <div class="nes-container is-rounded p-3 bg-white shadow-lg min-w-[180px]">
-            <div class="font-bold text-sm mb-2">{(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.title || 'Evidence'}</div>
-            <div class="text-xs text-gray-600">{(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.type || 'Document'}</div>
-            {#if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.confidence}
+            <div class="font-bold text-sm mb-2">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.title || 'Evidence'}</div>
+            <div class="text-xs text-gray-600">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.type || 'Document'}</div>
+            {#if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.confidence}
               <div class="mt-2 text-xs">
                 Confidence: {Math.round.data.confidence * 100)}%
-              </div>
-            {/if}
+              {/if}
           </div>
-        {:else if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).type === 'note'}
+        {:else if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'note'}
           <div class="nes-container is-rounded p-3 bg-yellow-100 shadow-lg min-w-[160px]">
-            <div class="text-sm">{(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).data.text || 'Note'}</div>
+            <div class="text-sm">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.text || 'Note'}</div>
           </div>
-        {:else if (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).type === 'marker'}
+        {:else if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'marker'}
           <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-white shadow-lg">
           </div>
         {:else}
@@ -296,13 +295,11 @@
           {:else}
             <div class="nes-container is-rounded p-3 bg-gray-100 shadow-lg">
               <div class="text-sm">Unknown Item</div>
-            </div>
-          {/if}
+            {/if}
         {/if}
         <!-- Item Selection Indicator -->
-        {#if draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id}
-          <div class="absolute -inset-1 border-2 border-blue-500 rounded pointer-events-none"></div>
-        {/if}
+        {#if draggedItem?.id === (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id}
+          <div class="absolute -inset-1 border-2 border-blue-500 rounded pointer-events-none">{/if}
       </div>
     {/each}
     <!-- Drop Zone Overlay -->
@@ -311,8 +308,7 @@
         <div class="absolute inset-0 flex items-center justify-center">
           <span class="text-blue-600 font-medium">Drop here to place item</span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Board Statistics -->
   <div class="flex items-center justify-between mt-2 text-xs text-gray-600">

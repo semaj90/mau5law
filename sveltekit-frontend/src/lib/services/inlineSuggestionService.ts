@@ -72,7 +72,7 @@ class LRUMap<K, V> extends Map<K, V> {
 export class InlineSuggestionService {
   private aiActor: AIActor | null = null;
   private goServiceActor: GoActor | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private pendingTasks = new LRUMap<string, Promise<AITaskResult>>();
   private abortedTaskIds = new Set<string>();
   private options: SuggestionOptions;
@@ -110,7 +110,7 @@ export class InlineSuggestionService {
       this.isInitialized = true;
     } catch (err: any) {
       console.warn('[InlineSuggestionService] init failed', err);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
     }
   }
 
@@ -241,7 +241,7 @@ export class InlineSuggestionService {
 
       const aiMatchesIdle = (() => {
         if (typeof aiSnap !== 'object' || aiSnap === null) return false;
-        const potential = aiSnap as { matches?: unknown };
+        const potential = aiSnap as { matches?: any };
         if (typeof potential.matches !== 'function') return false;
         // safe to call now
         return (potential.matches as (state: string) => boolean)('idle');
@@ -249,9 +249,9 @@ export class InlineSuggestionService {
 
       const goConnected = (() => {
         if (typeof goSnap !== 'object' || goSnap === null) return false;
-        const potential = goSnap as { context?: unknown };
+        const potential = goSnap as { context?: any };
         if (typeof potential.context !== 'object' || potential.context === null) return false;
-        const ctx = potential.context as { connectionStatus?: unknown };
+        const ctx = potential.context as { connectionStatus?: any };
         return ctx.connectionStatus === 'connected';
       })();
 
@@ -274,7 +274,7 @@ export class InlineSuggestionService {
     }
     this.pendingTasks.clear();
     this.abortedTaskIds.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 
   cancelAll() {

@@ -105,7 +105,7 @@ interface APIResponse<T = unknown> {
   meta?: {
     userId?: string;
     timestamp: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 
@@ -202,7 +202,7 @@ export class LegalAIApiClient {
         throw new Error(data.message || 'API request failed');
       }
       return data;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`API Error [${endpoint}]:`, error);
       throw error;
     }
@@ -483,14 +483,14 @@ export class LegalAIApiClient {
   /**
    * Get a value from the Redis cache.
    */
-  async getCache(key: string): Promise<APIResponse<{ key: string; value: unknown }>> {
+  async getCache(key: string): Promise<APIResponse<{ key: string; value: any }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`);
   }
 
   /**
    * Set a value in the Redis cache with an optional TTL (in seconds).
    */
-  async setCache(key: string, value: unknown, ttl?: number): Promise<APIResponse<{ key: string; success: boolean }>> {
+  async setCache(key: string, value: any, ttl?: number): Promise<APIResponse<{ key: string; success: boolean }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
       method: 'POST',
       body: JSON.stringify({ value, ttl }),
@@ -575,7 +575,7 @@ export class LegalAIApiClient {
   async createEvidenceWithOCR(
     caseId: string,
     file: File,
-    metadata: { [key: string]: unknown } = {}
+    metadata: { [key: string]: any } = {}
   ): Promise<APIResponse<Evidence>> {
     const ocr = await this.processDocumentOCR(file);
     // if OCR failed, return a typed APIResponse<Evidence> indicating failure
@@ -608,7 +608,7 @@ export class LegalAIApiClient {
 export const apiClient = new LegalAIApiClient();
 // Reactive API client wrapper for component usage
 export const reactiveApiClient = {
-  subscribe: (_key: string, _callback: (data: unknown) => void) => {
+  subscribe: (_key: string, _callback: (data: any) => void) => {
     // Simple reactive wrapper - implement proper store subscription when needed
     console.warn('reactiveApiClient.subscribe is a placeholder and not fully implemented.');
     return () => {}; // unsubscribe function

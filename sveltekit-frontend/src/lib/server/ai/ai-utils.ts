@@ -4,7 +4,6 @@ export interface Candidate {
   text: string;
   rerankedScore?: number;
 }
-
 export function MMR(
   _query: string, // Renamed to _query
   candidates: Candidate[],
@@ -14,7 +13,6 @@ export function MMR(
   console.warn('MMR diversification stub: returning original candidates.');
   return candidates;
 }
-
 export async function crossEncoderRerank(
   _query: string, // Renamed to _query
   candidates: Candidate[]
@@ -24,7 +22,6 @@ export async function crossEncoderRerank(
   await new Promise(resolve => setTimeout(resolve, 100)); // Simulate network/GPU latency
   return candidates.map(c => ({ ...c, rerankedScore: Math.random() })).sort((a, b) => (b.rerankedScore || 0) - (a.rerankedScore || 0));
 }
-
 // Stub for server-side embedding (e.g., calling a TensorRT/Gemma3 endpoint)
 export async function embedTextServer(_text: string): Promise<number[]> { // Renamed to _text
   console.warn('Server-side embedding stub: returning mock embedding.');

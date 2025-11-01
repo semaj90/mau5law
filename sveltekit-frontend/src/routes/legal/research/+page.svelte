@@ -179,7 +179,7 @@
       searchResults = generateMockResults(searchQuery);
       totalResults = searchResults.length;
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   function generateMockResults(query: string) {
@@ -438,7 +438,7 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={selectedFilters.jurisdiction} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Jurisdictions</option>
-                    {#each filterOptions.jurisdictions as jurisdiction}
+                    {#each Array.isArray(filterOptions.jurisdictions) ? filterOptions.jurisdictions : [] as jurisdiction}
                       <option value={jurisdiction}>{jurisdiction}</option>
                     {/each}
                   </select>
@@ -446,7 +446,7 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="court">Court</label><select id="court" bind:value={selectedFilters.court} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Courts</option>
-                    {#each filterOptions.courts as court}
+                    {#each Array.isArray(filterOptions.courts) ? filterOptions.courts : [] as court}
                       <option value={court}>{court}</option>
                     {/each}
                   </select>
@@ -454,7 +454,7 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label><select id="document-type" bind:value={selectedFilters.documentType} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Types</option>
-                    {#each filterOptions.documentTypes as type}
+                    {#each Array.isArray(filterOptions.documentTypes) ? filterOptions.documentTypes : [] as type}
                       <option value={type}>{type}</option>
                     {/each}
                   </select>
@@ -462,7 +462,7 @@
                 <div class="md:col-span-2">
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="precedential-value">Precedential Value</label><select id="precedential-value" bind:value={selectedFilters.precedentialValue} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Values</option>
-                    {#each filterOptions.precedentialValues as value}
+                    {#each Array.isArray(filterOptions.precedentialValues) ? filterOptions.precedentialValues : [] as value}
                       <option value={value}>{value}</option>
                     {/each}
                   </select>
@@ -487,7 +487,7 @@
               <h3 class="text-sm font-medium text-blue-900">AI Research Suggestions</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {#each aiSuggestions as suggestion}
+              {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
                 <button
                   onclick={() => { searchQuery = suggestion; performSearch(); }}
                   class="text-left p-2 text-sm text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
@@ -517,14 +517,14 @@
               </div>
             </div>
             <!-- Results List -->
-            {#each searchResults as result}
+            {#each Array.isArray(searchResults) ? searchResults : [] as result}
               <div class="bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h3 class="text-lg font-semibold text-blue-600 hover:text-blue-800">
-                      <a href={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).url}>{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).title}</a>
+                      <a href={(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).url}>{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).title}</a>
                     </h3>
-                    <p class="text-sm text-gray-600 font-mono">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citation}</p>
+                    <p class="text-sm text-gray-600 font-mono">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citation}</p>
                   </div>
                   <div class="flex items-center space-x-2 ml-4">
                     <span
@@ -541,25 +541,25 @@
                     </button>
                   </div>
                 </div>
-                <p class="text-gray-700 text-sm mb-3 line-clamp-2">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).summary}</p>
+                <p class="text-gray-700 text-sm mb-3 line-clamp-2">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).summary}</p>
                 <div class="flex items-center justify-between text-sm">
                   <div class="flex items-center space-x-4">
                     <div class="flex items-center text-gray-500">
                       <Gavel class="h-4 w-4 mr-1" />
-                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).court}
+                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).court}
                     </div>
                     <div class="flex items-center text-gray-500">
                       <Calendar class="h-4 w-4 mr-1" />
-                      {formatDate((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).dateDecided)}
+                      {formatDate((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).dateDecided)}
                     </div>
                     <div class="flex items-center text-gray-500">
                       <Link class="h-4 w-4 mr-1" />
-                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citedBy} citations
+                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citedBy} citations
                     </div>
                   </div>
                   <div class="flex items-center space-x-2">
-                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getPrecedentialColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue)}>
-                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue} Precedent
+                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getPrecedentialColor((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}>
+                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue} Precedent
                     </span>
                     <button
                       onclick={() => openCitationDialog(result)}
@@ -571,10 +571,10 @@
                   </div>
                 </div>
                 <!-- Key Topics -->
-                {#if (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics?.length > 0}
+                {#if (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics?.length > 0}
                   <div class="mt-3 pt-3 border-t border-gray-100">
                     <div class="flex flex-wrap gap-1">
-                      {#each (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics.slice(0, 5) as topic}
+                      {#each (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics.slice(0, 5) as topic}
                         <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
                           {topic}
                         </span>
@@ -627,7 +627,7 @@
             <span class="text-sm text-gray-500">{savedCitations.length}</span>
           </div>
           <div class="space-y-3 max-h-64 overflow-y-auto">
-            {#each savedCitations.slice(0, 10) as citation}
+            {#each Array.isArray(savedCitations.slice(0, 10)) ? savedCitations.slice(0, 10) : [] as citation}
               <div class="border-l-2 border-yellow-400 pl-3 py-2">
                 <h4 class="text-sm font-medium text-gray-900">{citation.title}</h4>
                 <p class="text-xs text-gray-600 font-mono">{citation.citation}</p>
@@ -668,7 +668,7 @@
             <div class="mt-4 pt-4 border-t border-gray-200">
               <h4 class="text-sm font-medium text-gray-900 mb-2">Recent Queries</h4>
               <div class="space-y-2 max-h-32 overflow-y-auto">
-                {#each researchSession.queries.slice(-5) as query}
+                {#each Array.isArray(researchSession.queries.slice(-5)) ? researchSession.queries.slice(-5) : [] as query}
                   <button
                     onclick={() => { searchQuery = query.query; performSearch(); }}
                     class="w-full text-left p-2 text-xs text-gray-600 hover:bg-gray-50 rounded border border-gray-200"
@@ -685,7 +685,7 @@
           <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Related Topics</h3>
             <div class="space-y-2">
-              {#each relatedTopics as topic}
+              {#each Array.isArray(relatedTopics) ? relatedTopics : [] as topic}
                 <button
                   onclick={() => { searchQuery = topic; performSearch(); }}
                   class="w-full text-left p-2 text-sm text-blue-600 hover:bg-blue-50 rounded"
@@ -736,7 +736,7 @@
             <div>
               <h4 class="font-medium text-gray-700 mb-2">Key Topics</h4>
               <div class="flex flex-wrap gap-2">
-                {#each selectedDocument.keyTopics as topic}
+                {#each Array.isArray(selectedDocument.keyTopics) ? selectedDocument.keyTopics : [] as topic}
                   <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800">
                     {topic}
                   </span>
@@ -753,7 +753,7 @@
             Close
           </button>
           <button
-            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
+            onclick={() => { saveCitation(selectedDocument); showCitationDialog = $state(false); }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1 inline" />

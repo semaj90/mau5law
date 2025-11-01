@@ -1,377 +1,337 @@
-
 // Enhanced Tauri LLM Service with Gemma3 Integration
 // Extends the existing RAG system with local Rust-based LLM capabilities
-// Type declaration for Tauri global
-declare global {
-  interface Window {
-    __TAURI__?: unknown;
-  }
-}
-// Dynamic Tauri imports to prevent TypeScript errors
-let invoke: any;
-async function initializeTauri(): Promise<any> {
-  try {
-    const tauriCore = await import("@tauri-apps/api/core)");
-    invoke = tauriCore.invoke;
-  } catch (error: any) {
-    console.warn("Tauri not available - using fallback implementations");
-    invoke = () => Promise.reject(new Error("Tauri not available");
-  }
-}
+import type { Gemma3ModelConfig } from '$lib/config/gemma3-config';
 import {
-  formatGemmaPrompt,
-  getInferenceSettings,
-  getSystemPromptForContext,
-  selectOptimalGemmaModel,
-  type Gemma3ModelConfig
-} from "$lib/config/gemma3-config";
+	formatGemmaPrompt,
+	getInferenceSettings,
+	getSystemPromptForContext,
+	selectOptimalGemmaModel
+} from '$lib/config/gemma3-config';
+
+declare global {
+	interface Window {
+		__TAURI__?: any;
+	}
 }
+
+type InvokeFn = (cmd: string, args?: Record<string, any>) => Promise<any>;
+
 export interface LocalModel {
-  id: string;
-  name: string;
-  type: "embedding" | "chat" | "classification";
-  domain: "general" | "legal" | "medical" | "technical";
-  architecture:
-    | "bert"
-    | "llama"
-    | "mistral"
-    | "legal-bert"
-    | "gemma"
-    | "gemma3";
-  dimensions?: number;
-  maxTokens?: number;
-  isLoaded: boolean;
-  memoryUsage?: number;
-  modelPath?: string;
-  quantization?: "f16" | "q4_0" | "q4_1" | "q5_0" | "q5_1" | "q8_0";
+	id: string;
+	name: string;
+	type: 'embedding' | 'chat' | 'classification';
+	domain: 'general' | 'legal' | 'medical' | 'technical';
+	architecture: 'bert' | 'llama' | 'mistral' | 'legal-bert' | 'gemma' | 'gemma3';
+	dimensions?: number;
+	maxTokens?: number;
+	isLoaded: boolean;
+	memoryUsage?: number;
+	modelPath?: string;
+	quantization?: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
 }
+
 export interface InferenceOptions {
-  temperature?: number;
-  maxTokens?: number;
-  topP?: number;
-  topK?: number;
-  contextWindow?: number;
-  systemPrompt?: string;
-  stopTokens?: string[];
-  repeatPenalty?: number;
+	temperature?: number;
+	maxTokens?: number;
+	topP?: number;
+	topK?: number;
+	contextWindow?: number;
+	systemPrompt?: string;
+	stopTokens?: string[];
+	repeatPenalty?: number;
 }
+
 export interface Gemma3Config {
-  modelPath: string;
-  quantization: "f16" | "q4_0" | "q4_1" | "q5_0" | "q5_1" | "q8_0";
-  contextLength: number;
-  temperature: number;
-  topP: number;
-  topK: number;
-  repeatPenalty: number;
+	modelPath: string;
+	quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
+	contextLength: number;
+	temperature: number;
+	topP: number;
+	topK: number;
+	repeatPenalty: number;
+	maxTokens?: number;
+	promptTemplate?: string;
 }
+
 export interface EmbeddingOptions {
-  batchSize?: number;
-  normalize?: boolean;
-  poolingStrategy?: "mean" | "cls" | "max";
+	batchSize?: number;
+	normalize?: boolean;
+	poolingStrategy?: 'mean' | 'cls' | 'max';
 }
+
 class TauriLLMService {
-  private availableModels: LocalModel[] = [];
-  private isInitialized = false;
-  private currentEmbeddingModel: string | null = null;
-  private currentChatModel: string | null = null;
-  private gemma3Config: Gemma3ModelConfig | null = null;
-  private availableMemory: number = 8; // Default 8GB
-  // Initialize the Tauri LLM service with Gemma3 support
-  async initialize(): Promise<void> {
-    if (this.isInitialized) return;
-    try {
-      // Check if we're running in Tauri environment
-      if (!window.__TAURI__) {
-        console.log("Tauri not available - running in web mode with fallback");
-        await this.initializeWebFallback();
-        return;
-      }
-      // Get available models from Rust backend
-      const models = (await (invoke as any)("list_llm_models")) as LocalModel[];
-      this.availableModels = models;
-      // Initialize Gemma3 if available
-      await this.initializeGemma3();
-      // Auto-select best models for each task
-      await this.selectOptimalModels();
-      this.isInitialized = true;
-      console.log()
-        "Tauri LLM Service initialized with",
-        models.length,
-        "models"
-      );
-    } catch (error: any) {
-      console.error("Failed to initialize Tauri LLM service:", error);
-    }
-  }
-  // Select optimal models based on domain and task
-  private async selectOptimalModels(): Promise<void> {
-    // Prefer legal-bert for embeddings in legal domain
-    const legalEmbeddingModel = this.availableModels.find(
-      (model) =>
-        model.architecture === "legal-bert" && model.type === "embedding"
-    );
-    if (legalEmbeddingModel) {
-      this.currentEmbeddingModel = legalEmbeddingModel.id;
-      await this.loadModel(legalEmbeddingModel.id);
-    } else {
-      // Fallback to Gemma3Q4_K_M if available
-      const gemmaModel = this.availableModels.find(
-        (model) =>
-          model.name.toLowerCase().includes("gemma") && model.type === "chat"
-      );
-      if (gemmaModel) {
-        this.currentChatModel = gemmaModel.id;
-        await this.loadModel(gemmaModel.id);
-      } else {
-        // Fallback to general BERT model
-        const generalEmbeddingModel = this.availableModels.find(
-          (model) => model.architecture === "bert" && model.type === "embedding"
-        );
-        if (generalEmbeddingModel) {
-          this.currentEmbeddingModel = generalEmbeddingModel.id;
-          await this.loadModel(generalEmbeddingModel.id);
-        }
-      }
-    }
-    // Select chat model (prefer local Llama/Mistral for legal domain, then Gemma)
-    const legalChatModel = this.availableModels.find(
-      (model) => model.type === "chat" && model.domain === "legal"
-    );
-    if (legalChatModel) {
-      this.currentChatModel = legalChatModel.id;
-      await this.loadModel(legalChatModel.id);
-    } else {
-      // Fallback to Gemma3Q4_K_M if available
-      const gemmaModel = this.availableModels.find(
-        (model) =>
-          model.name.toLowerCase().includes("gemma") && model.type === "chat"
-      );
-      if (gemmaModel) {
-        this.currentChatModel = gemmaModel.id;
-        await this.loadModel(gemmaModel.id);
-      }
-    }
-  }
-  // Load a specific model into memory
-  async loadModel(modelId: string): Promise<boolean> {
-    try {
-      const result = (await (invoke as any)("load_model", {
-        modelId
-      })) as boolean;
-      // Update model status
-      const model = this.availableModels.find((m) => m.id === modelId);
-      if (model) {
-        model.isLoaded = result;
-      }
-      return result;
-    } catch (error: any) {
-      console.error(`Failed to load model ${modelId}:`, error);
-      return false;
-    }
-  }
-  // Generate embeddings using local legal-bert
-  async generateEmbedding()
-    text: string | string[];
-    options: EmbeddingOptions = {}
-  ): Promise<number,[], | number[][]> {
-    if (!this.isInitialized || !this.currentEmbeddingMode,l) {
-      throw new Error("Embedding model not available");
-    }
-    try {
-      const result = await (invoke as any)("generate_embedding", {
-        modelId: this.currentEmbeddingModel,
-        text: Array.isArray(text) ? text : [text],
-        options: {
-          batchSize: options.batchSize || 10,
-          normalize: options.normalize !== false,
-          poolingStrategy: options.poolingStrategy || "mean"
-        }
-      });
-      // Return single array for single input, array of arrays for batch
-      return Array.isArray(text) ? result : (result as number[][])[0];
-    } catch (error: any) {
-      console.error("Local embedding generation failed:", error);
-      throw error;
-    }
-  }
-  // Initialize Gemma3 model with optimal configuration
-  private async initializeGemma3(),: Promise<void> {
-    try {
-      // Get system memory info
-      this.availableMemory = await this.getAvailableMemory();
-      // Select optimal Gemma3 model based on available memory
-      const optimalModel = selectOptimalGemmaModel(0, this.availableMemory);
-      if (optimalModel) {
-        this.gemma3Config = optimalModel;
-        // Load Gemma3 model
-        await invoke("load_gemma3_model", {
-          config: {
-            modelPath: optimalModel.modelPath,
-            quantization: optimalModel.quantization,
-            contextLength: optimalModel.contextLength,
-            maxTokens: optimalModel.maxTokens
-          },
-        )});
-        console,.log(`Gemma3 model initialized: ${optimalModel.name}`);
-        this.currentChatModel = optimalModel.modelI,d;
-      }, else, {
-        console,.log("No suitable Gemma3 model found for available memory");
-        await thi,s.initializeFallbackModel,();
-      }
-    } catch (error: any) {
-      console.error("Failed to initialize Gemma3:", error);
-      await this.initializeFallbackModel();
-    }
-  }
-  // Initialize web-based fallback when Tauri is not available
-  private async initializeWebFallback(),: Promise<void> {
-    // Add a fallback model for web-only mode
-    this.availableModels = [
-      {
-        id: "web-llm-fallback",
-        name: "Web LLM (Browser-based)",
-        type: "chat",
-        domain: "general",
-        architecture: "gemma",
-        maxTokens: 2048,
-        isLoaded: true
-      }
-    ];
-    this.currentChatModel = "web-llm-fallback,";
-    this.isInitialized = tru,e;
-    console,.log("Initialized web fallback mode");
-  }
-  // Initialize fallback model when Gemma3 is not available
-  private async initializeFallbackModel(),: Promise<void> {
-    // Try to find any available chat model
-    const fallbackModel = this.availableModels.find(
-      (model) => model.type === "chat" && model.isLoaded
-    );
-    if (fallbackModel) {
-      this.currentChatModel = fallbackModel.id;
-      console.log(`Using fallback model: ${fallbackModel.name}`);
-    }, else, {
-      console,.warn("No suitable chat models available");
-    }
-  }
-  // Enhanced run inference with Gemma3 optimization
-  async runInference()
-    prompt: string;
-    options: InferenceOptions = {}
-  ): Promise<string> {
-    if (!this.isInitialize,d) {
-      await this.initialize();
-    }
-    // Default options optimized for legal queries
-    const inferenceOptions: InferenceOptions = {
-      temperature: options.temperature ?? 0.7,
-      maxTokens: options.maxTokens ?? 512,
-      topP: options.topP ?? 0.9,
-      topK: options.topK ?? 40,
-      contextWindow: options.contextWindow ?? 8192,
-      systemPrompt: options.systemPrompt ?? this.getLegalSystemPrompt(),
-      stopTokens: options.stopTokens ?? [
-        "</s>",
-        "<|endoftext|>",
-        "\n\nHuman:",
-        "\n\nAssistant:"
-      ],
-      repeatPenalty: options.repeatPenalty ?? 1.1,
-      ...options
-    }
-    try {
-      // Use Gemma3 if available
-      if (this.currentChatModel && this.gemma3Config) {
-        return await this.runGemma3Inference(prompt, inferenceOptions);
-      }
-      // Fallback to web-based inference
-      if (this.currentChatModel === "web-llm-fallback") {
-        return await this.runWebInference(prompt, inferenceOptions);
-      }
-      // Use generic Tauri inference
-      return await this.runGenericInference(prompt, inferenceOptions);
-    } catch (error: any) {
-      console.error("Inference failed:", error);
-      const errorMessage =;
-        error instanceof Error ? error.message: "Unknown error";
-      throw new Error(`Failed to run inference: ${errorMessage}`);
-    }
-  }
-  // Get available system memory
-  private async getAvailableMemory(),: Promise<number> {
-    try {
-      if (window,.__TAURI_,_) {
-        const memInfo = await (invoke as any)("get_system_memory");
-        return Math.floor(memInfo.available / (1024 * 1024 * 1024); // Convert to GB
-      }
-      // Fallback for web mode
-      return 8;
-    } catch (error: any) {
-      console.warn("Could not get system memory info, using default");
-      return 8;
-    }
-  }
-  // Gemma3-specific inference with optimized prompting
-  private async runGemma3Inference()
-    prompt: string;
-    options: InferenceOptions;
-  ): Promise<string> {
-    if (!this.gemma3Confi,g) {
-      throw new Error("Gemma3 not initialized");
-    }
-    const queryType = this.detectQueryType(prompt);
-    const systemPrompt =;
-      options.systemPrompt || getSystemPromptForContext(queryType, true);
-    const inferenceSettings = getInferenceSettings("balanced");
-    // Format prompt for Gemma3 instruction format
-    const formattedPrompt = formatGemmaPrompt(
-      this.gemma3Config.promptTemplate,
-      systemPrompt,
-      prompt
-    );
-    try {
-      const response = await (invoke as any)("gemma3_inference", {
-        prompt: formattedPrompt,
-        maxTokens: options.maxTokens || inferenceSettings.maxTokens,
-        temperature: options.temperature || inferenceSettings.temperature,
-        topP: options.topP || inferenceSettings.topP,
-        topK: options.topK || inferenceSettings.topK,
-        stopTokens: options.stopTokens || ["</s>", "<end_of_turn>"],
-        repeatPenalty: options.repeatPenalty || inferenceSettings.repeatPenalty
-      });
-      return this.cleanGemma3Response(response);
-    } catch (error: any) {
-      console.error("Gemma3 inference failed:", error);
-      throw error;
-    }
-  }
-  // Detect query type for optimal prompt selection
-  private detectQueryType(query,: string): string {
-    const lowerQuery = query.toLowerCase();
-    if (lowerQuery.includes("case") || lowerQuery.includes("litigation")) {
-      return "case_analysis";
-    }
-    if (lowerQuery.includes("contract") || lowerQuery.includes("agreement")) {
-      return "document_review";
-    }
-    if (lowerQuery.includes("evidence") || lowerQuery.includes("exhibit")) {
-      return "evidence_analysis";
-    }
-    return "general";
-  }
-  // Clean Gemma3 response
-  private cleanGemma3Response(response,: string): string {
-    // Remove special tokens and clean up the response
-    return response;
-      .replace(/<\|.*?\|>/g, "") // Remove special tokens
-      .replace(/<end_of_turn>.*$/s, "") // Remove end tokens
-      .replace(/^[\s\n]+/, "") // Remove leading whitespace
-      .replace(/[\s\n]+$/, "") // Remove trailing whitespace
-      .trim();
-  }
-  // Get optimized system prompt for legal domain
-  private getLegalSystemPrompt(),: string {
-    return `You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review.;
+	private availableModels: LocalModel[] = [];
+	private isInitialized = false;
+	private currentEmbeddingModel: string | null = null;
+	private currentChatModel: string | null = null;
+	private gemma3Config: Gemma3ModelConfig | null = null;
+	private availableMemoryGB = 8;
+	private invokeFn: InvokeFn | null = null;
+
+	// lazy loader for Tauri invoke
+	private async getInvoke(): Promise<InvokeFn | null> {
+		if (this.invokeFn) return this.invokeFn;
+		try {
+			// Try to dynamically import Tauri's invoke
+			const tauri = await import('@tauri-apps/api/tauri');
+			this.invokeFn = tauri.invoke as InvokeFn;
+			return this.invokeFn;
+		} catch {
+			this.invokeFn = null;
+			return null;
+		}
+	}
+
+	// Initialize the service
+	async initialize(): Promise<void> {
+		if (this.isInitialized) return;
+		try {
+			const invoke = await this.getInvoke();
+			if (!invoke || !window.__TAURI__) {
+				// Web fallback
+				await this.initializeWebFallback();
+				this.isInitialized = true;
+				return;
+			}
+
+			// Request model list from backend
+			const models = (await invoke('list_llm_models')) as LocalModel[];
+			this.availableModels = Array.isArray(models) ? models : [];
+			await this.initializeGemma3();
+			await this.selectOptimalModels();
+			this.isInitialized = true;
+			console.log('Tauri LLM Service initialized with', this.availableModels.length, 'models');
+		} catch (err) {
+			console.error('Failed to initialize Tauri LLM service:', err);
+			// ensure we have a usable fallback
+			await this.initializeWebFallback();
+			this.isInitialized = true;
+		}
+	}
+
+	// Choose optimal models from availableModels
+	private async selectOptimalModels(): Promise<void> {
+		// Prefer legal-bert for embeddings
+		const legalEmbedding = this.availableModels.find(m => m.architecture === 'legal-bert' && m.type === 'embedding');
+		if (legalEmbedding) {
+			this.currentEmbeddingModel = legalEmbedding.id;
+			await this.loadModel(legalEmbedding.id).catch(() => {});
+		} else {
+			const generalEmb = this.availableModels.find(m => m.architecture === 'bert' && m.type === 'embedding');
+			if (generalEmb) {
+				this.currentEmbeddingModel = generalEmb.id;
+				await this.loadModel(generalEmb.id).catch(() => {});
+			}
+		}
+
+		// Select chat model: prefer legal-domain chat, then gemma-like
+		const legalChat = this.availableModels.find(m => m.type === 'chat' && m.domain === 'legal');
+		if (legalChat) {
+			this.currentChatModel = legalChat.id;
+			await this.loadModel(legalChat.id).catch(() => {});
+			return;
+		}
+		const gemmaChat = this.availableModels.find(m => m.type === 'chat' && m.name.toLowerCase().includes('gemma'));
+		if (gemmaChat) {
+			this.currentChatModel = gemmaChat.id;
+			await this.loadModel(gemmaChat.id).catch(() => {});
+		}
+	}
+
+	// Load model via Tauri
+	async loadModel(modelId: string): Promise<boolean> {
+		const invoke = await this.getInvoke();
+		if (!invoke) return false;
+		try {
+			const res = await invoke('load_model', { modelId });
+			const model = this.availableModels.find(m => m.id === modelId);
+			if (model) model.isLoaded = !!res;
+			return !!res;
+		} catch (err) {
+			console.error(`Failed to load model ${modelId}:`, err);
+			return false;
+		}
+	}
+
+	// Generate embeddings (single or batch)
+	async generateEmbedding(text: string | string[], options: EmbeddingOptions = {}): Promise<number[] | number[][]> {
+		if (!this.isInitialized) await this.initialize();
+		if (!this.currentEmbeddingModel) throw new Error('Embedding model not available');
+		const invoke = await this.getInvoke();
+		if (!invoke) throw new Error('Tauri invoke not available');
+
+		const inputs = Array.isArray(text) ? text : [text];
+		try {
+			const result = await invoke('generate_embedding', {
+				modelId: this.currentEmbeddingModel,
+				text: inputs,
+				options: {
+					batchSize: options.batchSize ?? 10,
+					normalize: options.normalize !== false,
+					poolingStrategy: options.poolingStrategy ?? 'mean'
+				}
+			});
+			// result expected as number[]
+			return Array.isArray(text) ? (result as number[][]) : (result as number[][])[0];
+		} catch (err) {
+			console.error('Local embedding generation failed:', err);
+			throw err;
+		}
+	}
+
+	// Initialize Gemma3 if available (best-effort)
+	private async initializeGemma3(): Promise<void> {
+		try {
+			this.availableMemoryGB = await this.getAvailableMemory();
+			const optimal = selectOptimalGemmaModel(this.availableMemoryGB, this.availableMemoryGB) as Gemma3ModelConfig | undefined;
+			if (optimal) {
+				this.gemma3Config = optimal;
+				const invoke = await this.getInvoke();
+				if (invoke) {
+					await invoke('load_gemma3_model', {
+						config: {
+							modelPath: optimal.modelPath,
+							quantization: optimal.quantization,
+							contextLength: optimal.contextLength,
+							maxTokens: optimal.maxTokens ?? 2048
+						}
+					});
+					// don't set chat model id here (model registry may differ)
+					console.log(`Gemma3 model initialization attempted: ${optimal.modelPath}`);
+				}
+			}
+		} catch (err) {
+			console.warn('Gemma3 initialization skipped or failed:', err);
+		}
+	}
+
+	// Web fallback initialization
+	private async initializeWebFallback(): Promise<void> {
+		this.availableModels = [
+			{
+				id: 'web-llm-fallback',
+				name: 'Web LLM (Browser-based)',
+				type: 'chat',
+				domain: 'general',
+				architecture: 'gemma',
+				maxTokens: 2048,
+				isLoaded: true
+			}
+		];
+		this.currentChatModel = 'web-llm-fallback';
+		this.isInitialized = true;
+		console.log('Initialized web fallback mode');
+	}
+
+	// Run inference: uses Gemma3 if configured, otherwise generic or web fallback
+	async runInference(prompt: string, options: InferenceOptions = {}): Promise<string> {
+		if (!this.isInitialized) await this.initialize();
+		const opts: InferenceOptions = {
+			temperature: options.temperature ?? 0.7,
+			maxTokens: options.maxTokens ?? 512,
+			topP: options.topP ?? 0.9,
+			topK: options.topK ?? 40,
+			contextWindow: options.contextWindow ?? 8192,
+			systemPrompt: options.systemPrompt ?? this.getLegalSystemPrompt(),
+			stopTokens: options.stopTokens ?? ['</s>', '<|endoftext|>'],
+			repeatPenalty: options.repeatPenalty ?? 1.1,
+			...options
+		};
+
+		try {
+			if (this.gemma3Config) {
+				return await this.runGemma3Inference(prompt, opts);
+			}
+			if (this.currentChatModel === 'web-llm-fallback') {
+				return await this.runWebInference(prompt, opts);
+			}
+			return await this.runGenericInference(prompt, opts);
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
+			throw new Error(`Failed to run inference: ${message}`);
+		}
+	}
+
+	private async runGemma3Inference(prompt: string, options: InferenceOptions): Promise<string> {
+		const invoke = await this.getInvoke();
+		if (!invoke) throw new Error('Tauri invoke not available for Gemma3 inference');
+		const queryType = this.detectQueryType(prompt);
+		const systemPrompt = options.systemPrompt ?? getSystemPromptForContext(queryType, true);
+		const inferenceSettings = getInferenceSettings('balanced');
+		const formatted = formatGemmaPrompt(this.gemma3Config?.promptTemplate ?? '{prompt}', systemPrompt, prompt);
+
+		const payload = {
+			prompt: formatted,
+			maxTokens: options.maxTokens ?? inferenceSettings.maxTokens,
+			temperature: options.temperature ?? inferenceSettings.temperature,
+			topP: options.topP ?? inferenceSettings.topP,
+			topK: options.topK ?? inferenceSettings.topK,
+			stopTokens: options.stopTokens ?? ['</s>', '<end_of_turn>'],
+			repeatPenalty: options.repeatPenalty ?? inferenceSettings.repeatPenalty
+		};
+
+		try {
+			const res = await invoke('gemma3_inference', payload);
+			return this.cleanGemma3Response(String(res));
+		} catch (err) {
+			console.error('Gemma3 inference failed:', err);
+			throw err;
+		}
+	}
+
+	private async runWebInference(prompt: string, options: InferenceOptions): Promise<string> {
+		console.warn('Web inference fallback — simple heuristic response');
+		// Minimal fallback: echo prompt truncated (placeholder)
+		return `WebFallback: ${prompt.slice(0, 800)}`;
+	}
+
+	private async runGenericInference(prompt: string, options: InferenceOptions): Promise<string> {
+		const invoke = await this.getInvoke();
+		if (!invoke) throw new Error('Tauri invoke not available for generic inference');
+		try {
+			const res = await invoke('run_inference', { prompt, options });
+			return String(res ?? '');
+		} catch (err) {
+			console.error('Generic inference failed:', err);
+			throw err;
+		}
+	}
+
+	private async getAvailableMemory(): Promise<number> {
+		try {
+			const invoke = await this.getInvoke();
+			if (invoke && window.__TAURI__) {
+				const memInfo = await invoke('get_system_memory');
+				if (memInfo && typeof memInfo.available === 'number') {
+					return Math.floor(memInfo.available / (1024 * 1024 * 1024)); // GB
+				}
+			}
+			// Browser fallback heuristic
+			return 8;
+		} catch {
+			return 8;
+		}
+	}
+
+	private detectQueryType(query: string): string {
+		const lower = query.toLowerCase();
+		if (lower.includes('case') || lower.includes('litigation')) return 'case_analysis';
+		if (lower.includes('contract') || lower.includes('agreement')) return 'document_review';
+		if (lower.includes('evidence') || lower.includes('exhibit')) return 'evidence_analysis';
+		return 'general';
+	}
+
+	private cleanGemma3Response(response: string): string {
+		return response
+			.replace(/<\|.*?\|>/g, '')
+			.replace(/<end_of_turn>.*$/s, '')
+			.replace(/^[\s\n]+/, '')
+			.replace(/[\s\n]+$/, '')
+			.trim();
+	}
+
+	private getLegalSystemPrompt(): string {
+		return `You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review.
 Your capabilities include:
 - Analyzing legal documents and evidence
 - Providing citations and legal precedents
@@ -383,120 +343,80 @@ Guidelines:
 - Cite specific sources when making legal references
 - Indicate confidence levels in your analysis
 - Distinguish between facts and legal interpretations
-- Provide clear, professional language suitable for legal professionals
-Please provide accurate, well-reasoned responses that would be helpful to legal practitioners.`;
-  }
-  // Get model performance metrics
-  async getModelMetrics(modelId,: string): Promise<any> {
-    try {
-      return await invoke("get_model_metrics", { modelId, )});
-    } catch (error: any) {
-      console.error("Failed to get model metrics:", error);
-      throw error;
-    }
-  }
-  // Model management
-  async unloadModel(modelId,: string): Promise<boolean> {
-    try {
-      const result = (await (invoke as any)("unload_model", {
-        modelId
-      })) as boolean;
-      const model = this.availableModels.find((m) => m.id === modelId);
-      if (model) {
-        model.isLoaded = false;
-      }
-      return resul,t;
-    } catch (error: any) {
-      console.error(`Failed to unload model ${modelId}:`, error);
-      return false;
-    }
-  }
-  // Check if Tauri is available
-  isAvailable(),: boolean {
-    return this.isInitialized && !!window.__TAURI__;
-  }
-  // Get available models
-  getAvailableModels(),: LocalModel[], {
-    return this.availableModels;
-  }
-  // Get current models
-  getCurrentModels(),: { embedding: string | null; chat: string | null } {
-    return {
-      embedding: this.currentEmbeddingModel,
-      chat: this.currentChatModel
-    }
-  }
-  // Switch models
-  async switchEmbeddingModel(modelId,: string): Promise<boolean> {
-    const model = this.availableModels.find(
-      (m) => m.id === modelId && m.type === "embedding"
-    );
-    if (!model) {
-      throw new Error(`Embedding model ${modelId} not found`);
-    }
-    // Unload current model if different
-    if (this.currentEmbeddingModel && this.currentEmbeddingModel !== modelI,d) {
-      await this.unloadModel(this.currentEmbeddingModel);
-    }
-    // Load new model
-    const loaded = await this.loadModel(modelId);
-    if (loaded) {
-      this.currentEmbeddingModel = modelId;
-    }
-    return loaded;
-  }
-  async switchChatModel(modelId,: string): Promise<boolean> {
-    const model = this.availableModels.find(
-      (m) => m.id === modelId && m.type === "chat"
-    );
-    if (!model) {
-      throw new Error(`Chat model ${modelId} not found`);
-    }
-    // Unload current model if different
-    if (this.currentChatModel && this.currentChatModel !== modelI,d) {
-      await this.unloadModel(this.currentChatModel);
-    }
-    // Load new model
-    const loaded = await this.loadModel(modelId);
-    if (loaded) {
-      this.currentChatModel = modelId;
-    }
-    return loaded;
-  }
-  // Missing methods referenced in runInference
-  async runWebInference(prompt,: string, option,s: an,y): Promise<string> {
-    // Fallback web-based inference implementation
-    console,.warn("Web inference not implemented, falling back to default");
-    return "Web inference not available,";
-  }
-  async runGenericInference(prompt,: string, option,s: an,y): Promise<string> {
-    // Generic Tauri inference implementation
-    try {
-      return await invoke("run_inference", { prompt, options, )});
-    } catch (error: any) {
-      console.error("Generic inference failed:", error);
-      return "Generic inference failed";
-    }
-  }
+- Provide clear, professional language suitable for legal professionals`;
+	}
+
+	async getModelMetrics(modelId: string): Promise<any> {
+		const invoke = await this.getInvoke();
+		if (!invoke) throw new Error('Tauri invoke not available');
+		return invoke('get_model_metrics', { modelId });
+	}
+
+	async unloadModel(modelId: string): Promise<boolean> {
+		const invoke = await this.getInvoke();
+		if (!invoke) return false;
+		try {
+			const res = await invoke('unload_model', { modelId });
+			const model = this.availableModels.find(m => m.id === modelId);
+			if (model) model.isLoaded = false;
+			return !!res;
+		} catch (err) {
+			console.error(`Failed to unload model ${modelId}:`, err);
+			return false;
+		}
+	}
+
+	isAvailable(): boolean {
+		return this.isInitialized && !!(window.__TAURI__ && this.invokeFn);
+	}
+
+	getAvailableModels(): LocalModel[] {
+		return this.availableModels;
+	}
+
+	getCurrentModels(): { embedding: string | null; chat: string | null } {
+		return { embedding: this.currentEmbeddingModel, chat: this.currentChatModel };
+	}
+
+	async switchEmbeddingModel(modelId: string): Promise<boolean> {
+		const model = this.availableModels.find(m => m.id === modelId && m.type === 'embedding');
+		if (!model) throw new Error(`Embedding model ${modelId} not found`);
+		if (this.currentEmbeddingModel && this.currentEmbeddingModel !== modelId) {
+			await this.unloadModel(this.currentEmbeddingModel).catch(() => {});
+		}
+		const loaded = await this.loadModel(modelId);
+		if (loaded) this.currentEmbeddingModel = modelId;
+		return loaded;
+	}
+
+	async switchChatModel(modelId: string): Promise<boolean> {
+		const model = this.availableModels.find(m => m.id === modelId && m.type === 'chat');
+		if (!model) throw new Error(`Chat model ${modelId} not found`);
+		if (this.currentChatModel && this.currentChatModel !== modelId) {
+			await this.unloadModel(this.currentChatModel).catch(() => {});
+		}
+		const loaded = await this.loadModel(modelId);
+		if (loaded) this.currentChatModel = modelId;
+		return loaded;
+	}
 }
+
 // Singleton instance
 export const tauriLLM = new TauriLLMService();
-// Initialize on module load
 tauriLLM.initialize().catch(console.error);
-// Export legacy functions for backward compatibility
+
+// Backwards-compatible helpers
 export async function getAvailableModels(): Promise<string[]> {
-  await tauriLLM.initialize();
-  return tauriLLM.getAvailableModels().map((model) => model.id);
+	await tauriLLM.initialize();
+	return tauriLLM.getAvailableModels().map(m => m.id);
 }
-export async function runInference()
-  model: string;
-  prompt: string;
-): Promise<string> {
-  await tauriLL,M.initialize,();
-  // Switch to specified model if different from current
-  if (tauriLLM,.getCurrentModels().chat !== mode,l) {
-    await tauriLLM.switchChatModel(model);
-  }
-  return tauriLLM.runInference(prompt);
+
+export async function runInference(model: string | null, prompt: string): Promise<string> {
+	await tauriLLM.initialize();
+	if (model && tauriLLM.getCurrentModels().chat !== model) {
+		await tauriLLM.switchChatModel(model).catch(() => {});
+	}
+	return tauriLLM.runInference(prompt);
 }
+
 export default tauriLLM;

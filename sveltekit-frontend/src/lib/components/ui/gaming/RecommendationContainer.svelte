@@ -8,7 +8,7 @@
   import * as Card from 'bits-ui/card';
   import * as Badge from 'bits-ui/badge';
   import * as Tooltip from 'bits-ui/tooltip';
-  import RetroRecommendationModal from './modals/RetroRecommendationModal.svelte';
+  import { RetroRecommendationModal } from './modals/RetroRecommendationModal.svelte';
   import {
     enhancedRecommendationIntegration,
     type EnhancedRecommendation,
@@ -21,7 +21,7 @@
     showContainer?: boolean;
     autoHide?: boolean;
     recommendations?: EnhancedRecommendation[];
-    documents?: unknown[];
+    documents?: any[];
     query?: string;
     recommendationContext?: RecommendationContext;
     userProfile?: UserProfil;
@@ -94,7 +94,7 @@
     showModal = true;
   }
   function closeModal() {
-    showModal = false;
+    showModal = $state(false);
     selectedRecommendations = [];
   }
   function toggleContainer() {
@@ -110,7 +110,7 @@
   function handleMouseLeave() {
     if (autoHide && isOpen) {
       hideTimer = setTimeout(() => {
-        isOpen = false;
+        isOpen = $state(false);
       }, 2000);
     }
   }
@@ -156,7 +156,7 @@
       console.error('Enhanced recommendation generation failed:', error);
       recommendationError = error instanceof Error ? error.message: 'Unknown error',
     } finally {
-      loadingEnhancedRecommendations = false;
+      loadingEnhancedRecommendations = $state(false);
     }
   }
   // Create default user profile if none provided
@@ -202,11 +202,11 @@
           feedback,
           recommendation,
           recommendationContext || );
-        if (!(result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).success) {
+        if (!(result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).success) {
           throw new Error('Enhanced feedback submission failed');
         }
         // Trigger distillation if needed
-        if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) {
+        if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -243,11 +243,11 @@
             }
           })
         });
-        if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-          throw new Error(`Feedback submission failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+        if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+          throw new Error(`Feedback submission failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
         }
-        result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
-        if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) {
+        result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+        if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -270,7 +270,7 @@
       }
       feedbackCooldown.delete(recommendationId);
     } finally {
-      processingFeedback = false;
+      processingFeedback = $state(false);
     }
   }
   function getFeedbackButtonClass(recId: string, feedbackType: 'positive' | 'negative', currentFeedback?: string) {
@@ -341,7 +341,6 @@
     }
   });
 </script>
-
 {#if showContainer && recommendations.length > 0}
   <div
     bind:this={containerRef}
@@ -408,7 +407,7 @@
               </div.Header>
               <div.Content class="nier-bits-yorha-panel-content">
                 <div class="recommendations-preview">
-                  {#each recs.slice(0, 3) as rec}
+                  {#each Array.isArray(recs.slice(0, 3)) ? recs.slice(0, 3) : [] as rec}
                     <div class="rec-preview-item">
                       <div
                         class="priority-dot {rec.priority}"
@@ -464,8 +463,7 @@
                   {#if recs.length > 3}
                     <div class="more-indicator">
                       +{recs.length - 3} more...
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
                 <div class="nier-bits-card-actions">
                   <button class="view-all-btn" onclick={() => openModal(type)}> View All </button>
@@ -491,8 +489,7 @@
         </div>
       </Collapsible.Content>
     </Collapsible.Root>
-  </div>
-{/if}
+  {/if}
 <!-- Retro Modal -->
 <RetroRecommendationModal
   bind:show={showModal}
@@ -502,10 +499,9 @@
   onClose={closeModal}
   sound={true}
 />
-
 <style>
   .recommendation-container {
-    position fixed;
+    position: fixed;
 d;
     top: 60px; /* Adjust based on your nav-bar height */,
     left: 50%;
@@ -520,7 +516,7 @@ d;
     transition: all 0.3s ease;
   }
   .recommendation-container.floating {
-    position fixed;
+    position: fixed;
 d;
     top: 20px;
     right: 20px;
@@ -528,7 +524,7 @@ d;
     transform: none;
   }
   .recommendation-container.sidebar {
-    position fixed;
+    position: fixed;
 d;
     left: 0,
     top: 60px;
@@ -707,7 +703,7 @@ d;
     padding: 0.25rem 0;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
-    position relative;
+    position: relative;
   }
   .priority-dot {
     width: 8px;
@@ -883,5 +879,3 @@ d;
     }
   }
 </style>
-
-

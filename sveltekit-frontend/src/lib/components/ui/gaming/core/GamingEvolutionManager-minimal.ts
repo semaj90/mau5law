@@ -1,15 +1,12 @@
 /**
  * Gaming Evolution Manager - Minimal Working Version
  */
-
 import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types-minimal.js';
-
 export class GamingEvolutionManager {
   private static instance: GamingEvolutionManager | null = null;
   private config: ProgressiveGamingConfig;
   private currentState: GamingThemeState;
   private subscribers: Array<(state: GamingThemeState) => void> = [];
-
   private constructor(config: ProgressiveGamingConfig) {
     this.config = config;
     this.currentState = {
@@ -25,14 +22,12 @@ export class GamingEvolutionManager {
       retroShaders: true,
     };
   }
-
   static getInstance(config: ProgressiveGamingConfig): GamingEvolutionManager {
     if (!GamingEvolutionManager.instance) {
       GamingEvolutionManager.instance = new GamingEvolutionManager(config);
     }
     return GamingEvolutionManager.instance;
   }
-
   async setEra(era: GamingEra): Promise<void> {
     this.currentState = {
       ...this.currentState,
@@ -41,37 +36,30 @@ export class GamingEvolutionManager {
       isTransitioning: true,
     };
     this.notifySubscribers();
-
     // Simulate transition delay
     await new Promise(resolve => setTimeout(resolve, 100));
-
     this.currentState = {
       ...this.currentState,
       isTransitioning: false,
     };
     this.notifySubscribers();
   }
-
   async upgradeEra(): Promise<void> {
     const currentIndex = this.currentState.availableEras.indexOf(this.currentState.currentEra);
     const nextIndex = Math.min(currentIndex + 1, this.currentState.availableEras.length - 1);
     await this.setEra(this.currentState.availableEras[nextIndex]);
   }
-
   async downgradeEra(): Promise<void> {
     const currentIndex = this.currentState.availableEras.indexOf(this.currentState.currentEra);
     const prevIndex = Math.max(currentIndex - 1, 0);
     await this.setEra(this.currentState.availableEras[prevIndex]);
   }
-
   updateConfig(updates: Partial<ProgressiveGamingConfig>): void {
     this.config = { ...this.config, ...updates };
   }
-
   getCurrentState(): GamingThemeState {
     return { ...this.currentState };
   }
-
   getCapabilities(): Record<string, unknown> {
     return {
       memory: 8,
@@ -80,11 +68,9 @@ export class GamingEvolutionManager {
       webgpu: false,
     };
   }
-
   getConfig(): ProgressiveGamingConfig {
     return { ...this.config };
   }
-
   subscribe(callback: (state: GamingThemeState) => void): () => void {
     this.subscribers.push(callback);
     return () => {
@@ -94,12 +80,10 @@ export class GamingEvolutionManager {
       }
     };
   }
-
   dispose(): void {
     this.subscribers = [];
     GamingEvolutionManager.instance = null;
   }
-
   private notifySubscribers(): void {
     this.subscribers.forEach(callback => callback(this.currentState));
   }

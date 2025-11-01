@@ -61,7 +61,7 @@ export async function validateSecurity(
   });
 
   if (!res.ok) {
-    let detail: unknown = null;
+    let detail: any = null;
     try {
       detail = await res.json();
     } catch {
@@ -118,7 +118,7 @@ export async function validateSecurity(
   };
 }
 
-export function connectProgress(onMessage: (msg: unknown) => void): WebSocket {
+export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   // Guard for SSR - only build WS url if window exists
   const wsProtocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = typeof window !== 'undefined' ? window.location.host : 'localhost';
@@ -126,7 +126,7 @@ export function connectProgress(onMessage: (msg: unknown) => void): WebSocket {
 
   const ws = new WebSocket(wsUrl);
   ws.onmessage = (e: MessageEvent) => {
-    let parsed: unknown = e.data;
+    let parsed: any = e.data;
     try {
       parsed = JSON.parse(String(e.data));
     } catch {

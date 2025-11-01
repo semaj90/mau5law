@@ -81,7 +81,7 @@ async function extractTextFromFile(
         entities: (first.entities as OcrExtractedEntities) || undefined, // Explicitly cast to OcrExtractedEntities
         embedding: first.embedding || undefined,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('[Test RAG] GPU OCR service error:', error);
       return {
         text: `[OCR Service Unavailable] ${file.name}. Start Python GPU OCR service on port 8090.`,
@@ -128,7 +128,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             console.log(`✅ [Test RAG] Embedding generated: ${embedding.length} dimensions`);
           } catch (embErr) {
             console.warn('[Test RAG] GPU embedding generation failed:', embErr);
-            result.embeddingGenerated = false;
+            result.embeddingGenerated = $state(false);
           }
         } else {
           result.embeddingGenerated = true;
@@ -205,14 +205,14 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             console.log('✅ [Test RAG] Synced to Qdrant');
           } catch (qdrantErr) {
             console.warn('[Test RAG] Qdrant storage failed:', qdrantErr);
-            result.qdrantStored = false;
+            result.qdrantStored = $state(false);
           }
         }
 
         result.success = true;
         console.log(`✅ [Test RAG] Successfully processed: ${file.name}\n`);
-      } catch (fileErr: unknown) {
-        result.success = false;
+      } catch (fileErr: any) {
+        result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
         console.error(`❌ [Test RAG] Failed to process file ${file.name}:`, fileErr);
       }
@@ -235,7 +235,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         storage: '✅ PostgreSQL pgvector + Qdrant',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[Test RAG] Upload error:', error);
     return json(
       { error: 'Upload failed', details: error instanceof Error ? error.message : String(error) },
@@ -255,12 +255,12 @@ export const POST = withValidationAndRate(handler, null, {
  */
 export const GET: RequestHandler = async () => {
   try {
-    let qdrantHealthy = false;
+    let qdrantHealthy = $state(false);
     try {
       const probe = await QdrantVectorService.searchVector(Array(768).fill(0), 1);
       qdrantHealthy = Array.isArray(probe);
     } catch (err) {
-      qdrantHealthy = false;
+      qdrantHealthy = $state(false);
     }
     const dbConnected = !!db;
 
@@ -298,7 +298,7 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       { error: 'Health check failed', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }

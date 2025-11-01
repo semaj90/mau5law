@@ -8,7 +8,7 @@ import crypto from 'crypto';
  */
 export class SIMDJSONParser {
   private worker: Worker | null = null;
-  private initialized = false;
+  private initialized = $state(false);
   constructor() {
     if (typeof Worker !== 'undefined') {
       this.initWorker();
@@ -19,7 +19,7 @@ export class SIMDJSONParser {
       // Use Web Worker for SIMD operations to avoid blocking main thread
       this.worker = new Worker('/workers/simd-json-worker.js');
       this.initialized = true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('SIMD Worker not available, falling back to native JSON', error);
     }
   }
@@ -31,14 +31,11 @@ export class SIMDJSONParser {
     if (!this.initialized || !this.worker) {
       return this.fallbackParse(buffer);
     }
-
-    type WorkerResponse = { error?: string; result?: unknown };
-
+    type WorkerResponse = { error?: string; result?: any };
     return new Promise<unknown>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error('SIMD JSON parsing timeout'));
       }, 30000); // 30 second timeout
-
       this.worker!.onmessage = (event: MessageEvent) => {
         clearTimeout(timeoutId);
         const data = (event.data as WorkerResponse) ?? {};
@@ -48,12 +45,10 @@ export class SIMDJSONParser {
           resolve(data.result);
         }
       };
-
       this.worker!.onerror = (error: ErrorEvent) => {
         clearTimeout(timeoutId);
         reject(error);
       };
-
       // Transfer buffer to worker for processing - cast to Transferable in a type-safe way
       this.worker!.postMessage({ buffer }, [buffer as unknown as Transferable]);
     });
@@ -75,18 +70,16 @@ export class SIMDJSONParser {
     const encoded = new TextEncoder().encode(jsonString);
     const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
     const parsed = await this.parseBuffer(buffer);
-
     if (!Array.isArray(parsed)) {
       throw new Error('Expected evidence array');
     }
-
-    return parsed.map((item: unknown) => this.validateEvidence(item));
+    return parsed.map((item: any) => this.validateEvidence(item));
   }
   /**
    * Parse streaming legal case data (for real-time processing)
    */
   async parseStreamingCaseData(chunks: string[]): Promise<unknown[]> {
-    const results: unknown[] = [];
+    const results: any[] = [];
     // Process chunks in parallel using SIMD
     const promises = chunks.map(async chunk => {
       const encoded = new TextEncoder().encode(chunk);
@@ -94,7 +87,6 @@ export class SIMDJSONParser {
       return this.parseBuffer(buffer);
     });
     const parsedChunks = (await Promise.all(promises)) as unknown[];
-
     // Merge and deduplicate results
     for (const chunk of parsedChunks) {
       if (Array.isArray(chunk)) {
@@ -108,7 +100,7 @@ export class SIMDJSONParser {
   /**
    * Fallback parser for environments without SIMD support
    */
-  private fallbackParse(buffer: ArrayBuffer | SharedArrayBuffer): unknown {
+  private fallbackParse(buffer: ArrayBuffer | SharedArrayBuffer): any {
     // TextDecoder can handle both ArrayBuffer and SharedArrayBuffer via Uint8Array
     const uint8Array = new Uint8Array(buffer);
     const jsonString = new TextDecoder().decode(uint8Array);
@@ -117,12 +109,11 @@ export class SIMDJSONParser {
   /**
    * Validate legal document structure and sanitize sensitive data
    */
-  private validateLegalDocument(data: unknown): LegalDocument {
+  private validateLegalDocument(data: any): LegalDocument {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid legal document format');
     }
     const obj = data as Record<string, unknown>;
-
     // Ensure required fields exist and are strings
     const id = obj.id;
     const title = obj.title;
@@ -130,7 +121,6 @@ export class SIMDJSONParser {
     if (typeof id !== 'string') throw new Error('Missing or invalid field: id');
     if (typeof title !== 'string') throw new Error('Missing or invalid field: title');
     if (typeof documentType !== 'string') throw new Error('Missing or invalid field: documentType');
-
     // Normalize documentType to allowed union values
     const allowedDocumentTypes = new Set([
       'motion', 'brief', 'contract', 'evidence', 'correspondence', 'pleading',
@@ -139,30 +129,26 @@ export class SIMDJSONParser {
     const documentTypeNormalized = allowedDocumentTypes.has(documentType)
       ? (documentType as LegalDocument['documentType'])
       : 'other';
-    
     // Build a sanitized LegalDocument object (preserve known optional fields where safe)
     const doc: Partial<LegalDocument> = {
       id,
       title,
       documentType: documentTypeNormalized,
     };
-
     if (typeof obj.content === 'string') doc.content = obj.content;
     if (Array.isArray(obj.parties)) doc.parties = obj.parties as unknown as LegalDocument['parties'];
     // citations may not be declared on the LegalDocument type in this codebase;
     // assign it via a safe index signature to avoid TS errors while preserving runtime data.
     if (Array.isArray(obj.citations)) (doc as Record<string, unknown>).citations = obj.citations;
-
     if (typeof obj.socialSecurityNumber === 'string') {
       (doc as Record<string, unknown>).socialSecurityNumber = this.maskSensitiveData(obj.socialSecurityNumber);
     }
-
     return doc as LegalDocument;
   }
   /**
    * Validate evidence structure
    */
-  private validateEvidence(data: unknown): Evidence {
+  private validateEvidence(data: any): Evidence {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid evidence format');
     }
@@ -170,11 +156,9 @@ export class SIMDJSONParser {
     const id = obj.id;
     const title = obj.title;
     const evidenceType = obj.evidenceType;
-
     if (typeof id !== 'string') throw new Error('Missing or invalid evidence field: id');
     if (typeof title !== 'string') throw new Error('Missing or invalid evidence field: title');
     if (typeof evidenceType !== 'string') throw new Error('Missing or invalid evidence field: evidenceType');
-
     // Normalize evidenceType to allowed union values
     const allowedEvidenceTypes = new Set([
       'other', 'document', 'image', 'video', 'audio', 'digital', 'physical', 'testimony'
@@ -182,16 +166,13 @@ export class SIMDJSONParser {
     const evidenceTypeNormalized = allowedEvidenceTypes.has(evidenceType)
       ? (evidenceType as Evidence['evidenceType'])
       : 'other';
-    
     const ev: Partial<Evidence> = {
       id,
       title,
       evidenceType: evidenceTypeNormalized,
     };
-
     if (typeof obj.description === 'string') ev.description = obj.description;
     if (obj.metadata && typeof obj.metadata === 'object') ev.metadata = obj.metadata as Record<string, unknown>;
-
     return ev as Evidence;
   }
   /**
@@ -241,7 +222,7 @@ export class SIMDJSONParser {
     if (this.worker) {
       this.worker.terminate();
       this.worker = null;
-      this.initialized = false;
+      this.initialized = $state(false);
     }
   }
 }

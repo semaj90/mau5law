@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 export async function embedText(text: string): Promise<number[]> {
   // Try to use @xenova/transformers or transformers.js if available
   try {
@@ -15,7 +14,6 @@ export async function embedText(text: string): Promise<number[]> {
   } catch (err) {
     // ignore and fall back
   }
-
   // Fallback: deterministic pseudo-embedding via hash
   const hash = crypto.createHash('sha256').update(text).digest();
   const vec: number[] = [];

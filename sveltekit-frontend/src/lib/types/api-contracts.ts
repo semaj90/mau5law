@@ -208,7 +208,7 @@ export interface ChatRequest {
     userRole?: string;
     caseId?: string;
     documentIds?: string[];
-    sessionContext?: unknown;
+    sessionContext?: any;
     enableLegalBERT?: boolean;
     enableRAG?: boolean;
     maxDocuments?: number;
@@ -224,9 +224,9 @@ export interface ChatRequest {
 }
 export interface ChatResponse {
   response: string;
-  synthesizedInput?: unknown;
-  legalAnalysis?: unknown;
-  ragResults?: unknown;
+  synthesizedInput?: any;
+  legalAnalysis?: any;
+  ragResults?: any;
   confidence: number;
   processingTime: number;
   metadata: {
@@ -237,13 +237,13 @@ export interface ChatResponse {
     cacheHits?: string[];
   };
   recommendations?: string[];
-  contextualPrompts?: unknown[];
+  contextualPrompts?: any[];
 }
 export type Chat = ApiContract<ChatRequest, ChatResponse>;
 
 // ==================== VECTOR SEARCH API CONTRACTS ====================
 export interface VectorSearchFilters {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface VectorSearchSearchRequest {
   query: string;

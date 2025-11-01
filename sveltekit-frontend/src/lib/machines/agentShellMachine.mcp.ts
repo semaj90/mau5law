@@ -175,13 +175,13 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           target: 'idle',
           actions: assign({
             // use typed extractor instead of `as any`
-            response: (_: AgentShellContext, e: unknown) => extractData<string>(e) ?? '',
+            response: (_: AgentShellContext, e: any) => extractData<string>(e) ?? '',
           }),
         },
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'Processing error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Processing error'),
           }),
         },
       },
@@ -206,13 +206,13 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           target: 'idle',
           actions: assign({
             // fixed: explicitly expect RAGResponse (don't use typeof e)
-            searchResults: (_: AgentShellContext, e: unknown) => extractData<RAGResponse>(e) ?? null,
+            searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null,
           }),
         },
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'Search error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Search error'),
           }),
         },
       },
@@ -229,13 +229,13 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           target: 'idle',
           actions: assign({
             // fixed: explicitly expect UploadResponse
-            uploadResults: (_: AgentShellContext, e: unknown) => extractData<UploadResponse>(e) ?? null,
+            uploadResults: (_: AgentShellContext, e: any) => extractData<UploadResponse>(e) ?? null,
           }),
         },
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'Upload error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Upload error'),
           }),
         },
       },
@@ -246,14 +246,14 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            serviceHealth: (_: AgentShellContext, e: unknown) =>
+            serviceHealth: (_: AgentShellContext, e: any) =>
               extractData<AgentShellContext['serviceHealth']>(e) ?? null,
           }),
         },
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'Health check error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Health check error'),
           }),
         },
       },
@@ -266,7 +266,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            currentCase: (_: AgentShellContext, e: unknown) => extractData<Case>(e) ?? null,
+            currentCase: (_: AgentShellContext, e: any) => extractData<Case>(e) ?? null,
             // keep previous results if any
             mcpResults: ({ mcpResults }) => mcpResults || {},
           }),
@@ -274,7 +274,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP case load error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP case load error'),
           }),
         },
       },
@@ -287,7 +287,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           target: 'idle',
           actions: assign({
             // fixed: explicitly extract Case[] array
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               cases: extractData<Case[]>(e) ?? null,
             }),
@@ -296,7 +296,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP cases load error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP cases load error'),
           }),
         },
       },
@@ -311,8 +311,8 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            currentCase: (_: AgentShellContext, e: unknown) => extractData<Case>(e) ?? null,
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            currentCase: (_: AgentShellContext, e: any) => extractData<Case>(e) ?? null,
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               // createCase may return a single Case or an array; extract data as Case or Case[]
               cases: extractData<Case[]>(e) ?? null,
@@ -322,7 +322,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP case creation error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP case creation error'),
           }),
         },
       },
@@ -334,8 +334,8 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            currentEvidence: (_: AgentShellContext, e: unknown) => extractData<Evidence[]>(e) ?? [],
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            currentEvidence: (_: AgentShellContext, e: any) => extractData<Evidence[]>(e) ?? [],
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               evidence: extractData<Evidence[]>(e) ?? null,
             }),
@@ -344,7 +344,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP evidence load error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP evidence load error'),
           }),
         },
       },
@@ -359,7 +359,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               evidence: extractData<Evidence[]>(e) ?? null,
             }),
@@ -368,7 +368,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP evidence creation error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP evidence creation error'),
           }),
         },
       },
@@ -384,7 +384,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           target: 'idle',
           actions: assign({
             // fixed: expect array of Cases as similarity results
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               cases: extractData<Case[]>(e) ?? null,
             }),
@@ -393,7 +393,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP similar cases error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP similar cases error'),
           }),
         },
       },
@@ -408,7 +408,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               evidence: extractData<Evidence[]>(e) ?? null,
             }),
@@ -417,7 +417,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP similar evidence error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP similar evidence error'),
           }),
         },
       },
@@ -432,7 +432,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onDone: {
           target: 'idle',
           actions: assign({
-            mcpResults: ({ mcpResults }, e: unknown) => ({
+            mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               // analytics shape is varied; use unknown
               analytics: extractData<unknown>(e) ?? null,
@@ -442,7 +442,7 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         onError: {
           target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: unknown) => extractErrorMessage(e, 'MCP analytics error'),
+            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP analytics error'),
           }),
         },
       },
@@ -458,7 +458,7 @@ type ServicesLike = {
   checkAllServicesHealth?: () => Promise<unknown>;
 };
 
-function extractData<T>(e: unknown): T | null {
+function extractData<T>(e: any): T | null {
   if (!e || typeof e !== 'object') return null;
   const obj = e as Record<string, unknown>;
   // XState onDone often uses `.data`; other libraries use `.payload` or `.output`
@@ -468,7 +468,7 @@ function extractData<T>(e: unknown): T | null {
   return null;
 }
 
-function extractErrorMessage(e: unknown, fallback = 'Unknown error'): string {
+function extractErrorMessage(e: any, fallback = 'Unknown error'): string {
   if (!e) return fallback;
   if (typeof e === 'string') return e;
   if (typeof e === 'object') {
@@ -493,7 +493,7 @@ export const agentShellServicesMCP = {
   callAgentWithMCP: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
       // First, gather relevant context using MCP tools
-      let contextData: unknown = {};
+      let contextData: any = {};
       if (caseId) {
         // Load case data and related evidence using the provided caseId
         // pass `query` because loadCases expects query/userId/limit/offset
@@ -520,7 +520,7 @@ export const agentShellServicesMCP = {
       const svc = services as unknown as ServicesLike;
       const resp = await (svc.callAgent?.(enhancedInput, { userId, caseId }) ?? Promise.resolve({ response: 'No response' }));
       return resp;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Enhanced agent call failed:", error);
       throw error;
     }
@@ -559,7 +559,7 @@ export const agentShellServicesMCP = {
         mcpResults: searchResults,
         enhancedContext: true,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Enhanced semantic search failed:", error);
       throw error;
     }
@@ -588,7 +588,7 @@ export const agentShellServicesMCP = {
         };
       }
       return uploadObj;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Enhanced file upload failed:", error);
       throw error;
     }
@@ -615,7 +615,7 @@ export const agentShellServicesMCP = {
       const mcpDatabase = healthChecks[2].status === 'fulfilled' ? true : false;
 
       return { production, legacy, mcpDatabase };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Enhanced health check failed:", error);
       throw error;
     }

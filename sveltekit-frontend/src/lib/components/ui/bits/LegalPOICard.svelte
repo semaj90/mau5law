@@ -87,7 +87,6 @@
     }
   }
 </script>
-
 <Card class="poi-card {compact ? 'compact' : ''} {poi.status}" style="border-left: 4px solid {riskColor}">
   <CardHeader>
     <div class="poi-header">
@@ -120,8 +119,7 @@
             {/if}
           </div>
           {#if poi.metadata.publicSafetyRisk}
-            <div class="public-safety-warning">⚠️ PUBLIC SAFETY RISK</div>
-          {/if}
+            <div class="public-safety-warning">⚠️ PUBLIC SAFETY RISK{/if}
         </div>
         <!-- Criminal Profile (if suspect/fugitive) -->
         {#if poi.criminalProfile}
@@ -130,31 +128,28 @@
             {#if poi.criminalProfile.warrants.length > 0}
               <div class="warrants">
                 <strong>Active Warrants:</strong>
-                {#each poi.criminalProfile.warrants.filter(w => w.status === 'active').slice(0, 3) as warrant}
+                {#each Array.isArray(poi.criminalProfile.warrants.filter(w => w.status === 'active').slice(0, 3)) ? poi.criminalProfile.warrants.filter(w => w.status === 'active').slice(0, 3) : [] as warrant}
                   <div class="warrant">
                     {warrant.type.toUpperCase()}: {warrant.charges.join(', ')}
                     ({warrant.jurisdiction})
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
             {#if poi.criminalProfile.watchLists.length > 0}
               <div class="watch-lists">
                 <strong>Watch Lists:</strong>
-                {#each poi.criminalProfile.watchLists as watchList}
+                {#each Array.isArray(poi.criminalProfile.watchLists) ? poi.criminalProfile.watchLists : [] as watchList}
                   <span class="watch-list-badge" data-priority={watchList.priority}>
                     {watchList.list.replace(/_/g, ' ').toUpperCase()}
                   </span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
             {#if poi.criminalProfile.lastKnownLocation}
               <div class="last-known">
                 <strong>Last Known Location</strong>
                 {poi.criminalProfile.lastKnownLocation.address}
                 <span class="date">({new Date(poi.criminalProfile.lastKnownLocation.date).toLocaleDateString()})</span>
-              </div>
-            {/if}
+              {/if}
             <div class="danger-indicators">
               {#if poi.criminalProfile.armedAndDangerous}
                 <span class="danger-badge armed">🔫 ARMED & DANGEROUS</span>
@@ -163,26 +158,22 @@
                 <span class="danger-badge escape">🏃 HIGH ESCAPE RISK</span>
               {/if}
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Contact Information -->
         {#if poi.contact.phones.length > 0 || poi.contact.emails.length > 0}
           <div class="contact-info">
             <h4>Contact Information</h4>
             {#if poi.contact.phones.length > 0}
-              <div>📞 {poi.contact.phones[0]}</div>
-            {/if}
+              <div>📞 {poi.contact.phones[0]}{/if}
             {#if poi.contact.emails.length > 0}
-              <div>📧 {poi.contact.emails[0]}</div>
-            {/if}
-          </div>
-        {/if}
+              <div>📧 {poi.contact.emails[0]}{/if}
+          {/if}
         <!-- AI Insights -->
         {#if poi.metadata.personality.traits.length > 0}
           <div class="ai-insights">
             <h4>AI Analysis</h4>
             <div class="traits">
-              {#each poi.metadata.personality.traits.slice(0, 3) as trait}
+              {#each Array.isArray(poi.metadata.personality.traits.slice(0, 3)) ? poi.metadata.personality.traits.slice(0, 3) : [] as trait}
                 <span class="trait-badge">{trait}</span>
               {/each}
             </div>
@@ -191,10 +182,8 @@
                 Stability: {Math.round(poi.metadata.personality.psychologicalProfile.stability * 100)}% | Cooperation {Math.round(
                   poi.metadata.personality.psychologicalProfile.cooperationLikelihood * 100
                 )}%
-              </div>
-            {/if}
-          </div>
-        {/if}
+              {/if}
+          {/if}
       </div>
       <!-- Action Buttons -->
       <div class="poi-actions">
@@ -216,20 +205,17 @@
           {#if poi.criminalProfile && poi.criminalProfile.warrants.length > 0}
             <div class="warrant-count">
               {poi.criminalProfile.warrants.filter(w => w.status === 'active').length} active warrants
-            </div>
-          {/if}
+            {/if}
           <div class="last-updated">
             Updated: {new Date(poi.updatedAt).toLocaleDateString()}
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </CardContent>
 </Card>
-
 <style>
   .poi-card {
-    position relative;
+    position: relative;
     margin-bottom: 1rem;
     transition: all 0.2s ease;
   }
@@ -436,5 +422,3 @@
     }
   }
 </style>
-
-

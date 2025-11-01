@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
   import { evidenceStore  } from '$lib/stores/unified";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
@@ -289,7 +289,7 @@ clearAllEvidence()}>
             class="space-y-4"
           >
             <option value={undefined}>All Cases</option>
-            {#each Object.keys(stats.byCase) as caseId}
+            {#each Array.isArray(Object.keys(stats.byCase)) ? Object.keys(stats.byCase) : [] as caseId}
               <option value={caseId}
                 >{caseId} ({stats.byCase[caseId]} items)</option
               >

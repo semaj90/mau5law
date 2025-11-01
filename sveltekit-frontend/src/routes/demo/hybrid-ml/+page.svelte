@@ -72,7 +72,7 @@
       error = `Embedding failed: ${err}`;
       console.error('❌ Embedding Error:', err);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 
@@ -99,7 +99,7 @@
       error = `Search failed: ${err}`;
       console.error('❌ Search Error:', err);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 </script>

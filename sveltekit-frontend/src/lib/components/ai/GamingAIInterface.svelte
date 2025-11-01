@@ -20,8 +20,8 @@
     Shield,
     Target,
   } from 'lucide-svelte';
-  import GamingAIButton from './GamingAIButton.svelte';
-  import NierAIAssistant from './NierAIAssistant.svelte';
+  import { GamingAIButton } from './GamingAIButton.svelte';
+  import { NierAIAssistant } from './NierAIAssistant.svelte';
   interface AIMessage {
     id: string;
     role: 'user' | 'assistant' | 'system';
@@ -131,7 +131,7 @@
       // Update user message status
       messages = messages.map(msg => (msg.id === userMessage.id ? { ...msg, status: 'error' } : msg));
     } finally {
-      isTyping = false;
+      isTyping = $state(false);
       aiMode = 'idle';
       inputValue = '';
     }
@@ -216,7 +216,7 @@
       },
     };
     messages = [...messages, aiResponse];
-    isTyping = false;
+    isTyping = $state(false);
     aiMode = 'active';
     // Reset to idle after showing result
     setTimeout(() => {
@@ -234,7 +234,7 @@
   };
   const openNierAssistant = () => {
     showNierAssistant = true;
-    showAIInterface = false;
+    showAIInterface = $state(false);
   };
   // System monitoring simulation
   $effect(() => {
@@ -247,7 +247,6 @@
     return () => clearInterval(interval);
   });
 </script>
-
 <!-- Gaming AI Button -->
 <GamingAIButton
   bind:isVisible
@@ -271,7 +270,7 @@
       aria-label="Close AI Interface"
       onclick={() => (showAIInterface = false)}
       onkeydown={e => {
-        if (e.key === 'Enter' || e.key === ' ') showAIInterface = false;
+        if (e.key === 'Enter' || e.key === ' ') showAIInterface = $state(false);
       }}
     ></div>
     <!-- Main Interface Panel -->
@@ -299,8 +298,7 @@
             <div class="flex items-center gap-2 px-3 py-1 bg-blue-500/20 rounded-lg border border-blue-500/30">
               <Database class="w-4 h-4 text-blue-400" />
               <span class="text-sm text-blue-300">{caseContext.title}</span>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Header Controls -->
         <div class="flex items-center gap-2">
@@ -369,8 +367,7 @@
                           {message.metadata.confidence}% CONFIDENCE
                         </span>
                       {/if}
-                    </div>
-                  {/if}
+                    {/if}
                   <div
                     class="px-4 py-3 rounded-lg {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto'
@@ -390,8 +387,7 @@
                         {#if message.metadata.model}
                           <span>🤖 {message.metadata.model}</span>
                         {/if}
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
                 </div>
               </div>
@@ -408,8 +404,7 @@
                   </div>
                   <span class="text-sm {theme.secondary}">AI analyzing...</span>
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
@@ -442,7 +437,7 @@
             </form>
             <!-- Quick Commands -->
             <div class="flex gap-2 mt-3">
-              {#each ['analyze case', 'search evidence', 'system status', 'generate report'] as cmd}
+              {#each Array.isArray(['analyze case', 'search evidence', 'system status', 'generate report']) ? ['analyze case', 'search evidence', 'system status', 'generate report'] : [] as cmd}
                 <button
                   onclick={() => {
                     inputValue = cmd;
@@ -497,13 +492,11 @@
         ></div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Nier Assistant Integration -->
 {#if showNierAssistant}
   <NierAIAssistant isOpen={showNierAssistant} {caseContext} onClose={() => (showNierAssistant = false)} />
 {/if}
-
 <style>
   @keyframes scanner {
     0% {
@@ -519,4 +512,3 @@
     }
   }
 </style>
-

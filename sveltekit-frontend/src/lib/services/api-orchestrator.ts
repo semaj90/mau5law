@@ -47,7 +47,7 @@ export interface ProtocolEndpoint {
   monitor?: {
     enabled?: boolean;
     interval?: number;
-    [key: string]: unknown; // changed from any
+    [key: string]: any; // changed from any
   };
 }
 export interface DatabaseEndpoint extends ProtocolEndpoint {}
@@ -85,7 +85,7 @@ export interface MultiProtocolRequestOptions {
   cacheResponse?: boolean;
   validateResponse?: boolean;
   headers?: Record<string, string>;
-  body?: unknown; // changed from any
+  body?: any; // changed from any
   context?: APIRequestContext;
   protocol?: ServiceTier;
   method?: string;
@@ -105,7 +105,7 @@ export class APIOrchestrator {
   // NEW: in-memory response cache (simple, process-local)
   private responseCache: Map<
     string,
-    { data: unknown; headers: Record<string, string>; status: number; expires: number }
+    { data: any; headers: Record<string, string>; status: number; expires: number }
   > = new Map();
 
   private constructor() {
@@ -464,7 +464,7 @@ export class APIOrchestrator {
         lastCheck: new Date().toISOString(),
         metadata: response.ok ? await this.extractHealthMetadata(response) : undefined,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       result = {
         status: 'error',
         error: String(error),
@@ -632,7 +632,7 @@ export class APIOrchestrator {
   }
 
   // NEW helper: build a stable cache key for GET requests
-  private buildCacheKey(service: string, endpoint: string, method: string, headers?: Record<string, string>, body?: unknown) {
+  private buildCacheKey(service: string, endpoint: string, method: string, headers?: Record<string, string>, body?: any) {
     const safeBody = body ? JSON.stringify(body) : '';
     return `${service}|${method}|${endpoint}|${safeBody}`;
   }

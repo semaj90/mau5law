@@ -5,7 +5,7 @@ import { getOptimalModel } from '../ai/ollama-config';
 export async function getEmbedding(text: string): Promise<number[]> {
   // Use configured embedding model from ollama-config with fallback chain
   // Treat return as unknown and narrow with runtime checks to satisfy TypeScript
-  const embeddingModels: unknown = getOptimalModel('embedding');
+  const embeddingModels: any = getOptimalModel('embedding');
   // getOptimalModel may return a string or an array of strings; pick the first when array.
   let model = 'embeddinggemma:latest';
   if (Array.isArray(embeddingModels)) {
@@ -44,19 +44,19 @@ export async function getEmbedding(text: string): Promise<number[]> {
 }
 
 // Helper to handle several possible API response shapes
-function isNumberArray(value: unknown): value is number[] {
+function isNumberArray(value: any): value is number[] {
   return Array.isArray(value) && value.every(item => typeof item === 'number');
 }
 
 // New type-guard for objects that contain an embedding array
-function isEmbeddingObject(value: unknown): value is { embedding: number[] } {
+function isEmbeddingObject(value: any): value is { embedding: number[] } {
   if (typeof value !== 'object' || value === null) return false;
   const obj = value as Record<string, unknown>;
   if (!('embedding' in obj)) return false;
   return isNumberArray(obj['embedding']);
 }
 
-function extractEmbedding(payload: unknown): number[] | null {
+function extractEmbedding(payload: any): number[] | null {
   if (payload === null || payload === undefined) return null;
 
   // direct shape: { embedding: [...] }

@@ -24,7 +24,7 @@ export interface StartupServiceSummary {
   services: Record<string, ServiceSummaryItem>;
 }
 class StartupFlagServiceImpl {
-  private ready = false;
+  private ready = $state(false);
   private start = Date.now();
   private services: Record<string, ServiceSummaryItem> = {
     sveltekit: { status: 'ready', health: 'good', isOptional: false, startupTime: 1000 }
@@ -39,7 +39,7 @@ class StartupFlagServiceImpl {
     }, 500);
   }
   async shutdown() {
-    this.ready = false;
+    this.ready = $state(false);
   }
   getServiceSummary(): StartupServiceSummary {
     const total = Object.keys(this.services).length;

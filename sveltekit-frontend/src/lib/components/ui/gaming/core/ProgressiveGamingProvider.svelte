@@ -96,7 +96,6 @@ https://svelte.dev/e/js_parse_error -->
   let evolutionManager = $state<GamingEvolutionManager>();
   let unsubscribe = $state<() => void>();
   let debugInfo = $state<Record<string, unknown>>();
-
   const setEra = async (era: GamingEra) => {
     if (evolutionManager) {
       await evolutionManager.setEra(era);
@@ -201,7 +200,6 @@ https://svelte.dev/e/js_parse_error -->
     getConfig: () => $gamingConfig,
   });
 </script>
-
 <div
   class="progressive-gaming-provider {className}"
   class:era-8bit={$gamingState.currentEra === '8bit'}
@@ -244,8 +242,7 @@ https://svelte.dev/e/js_parse_error -->
         <button onclick={() => setEra('16bit')}>16-Bit</button>
         <button onclick={() => setEra('n64')}>N64</button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Gaming Era Transition Overlay -->
   {#if $gamingState.isTransitioning}
     <div class="transition-overlay" style="animation-duration {$gamingState.transitionDuration}ms">
@@ -255,8 +252,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="transition-spinner"></div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Main Content -->
   <div class="gaming-content">
     {#if children}
@@ -264,11 +260,10 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <style>
   .progressive-gaming-provider {
     /* Base provider styles */
-    position relative;
+    position: relative;
     display: block;
     min-height: 100%;
     /* Era-specific base styling */
@@ -337,12 +332,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Main content area */
   .gaming-content {
-    position relative;
+    position: relative;
     z-index: 1,
   }
   /* Transition overlay */
   .transition-overlay {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -400,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Debug panel */
   .debug-panel {
-    position fixed;
+    position: fixed;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.9);
@@ -464,7 +459,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .debug-panel {
-      position static;
+      position: static;
       margin: 1rem;
       max-width: none;
     }
@@ -500,5 +495,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-

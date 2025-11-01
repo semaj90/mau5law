@@ -2,9 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-
   type Link = { href: string; label: string; icon?: string };
-
   // Exported props with proper types
   export let brand: string = 'YORHA LEGAL AI';
   export let version: string = 'v4.0.0';
@@ -14,16 +12,13 @@
     { href: '/reports', label: 'REPORTS', icon: '📊' },
     { href: '/analytics', label: 'ANALYTICS', icon: '📈' },
   ];
-
   // Reactive derived current path from the page store
   let currentPath: string = '/';
   $: currentPath = $page.url?.pathname ?? '/';
-
   function isActive(href: string): boolean {
     return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   }
 </script>
-
 <nav class="yorha-nav">
   <div class="yorha-nav-container">
     <div class="yorha-brand">
@@ -34,7 +29,7 @@
       </div>
     </div>
     <div class="yorha-nav-links">
-      {#each links as link}
+      {#each Array.isArray(links) ? links : [] as link}
         <a
           href={link.href}
           class="yorha-nav-link"
@@ -46,8 +41,7 @@
           {/if}
           {link.label}
           {#if isActive(link.href)}
-            <div class="active-bar"></div>
-          {/if}
+            <div class="active-bar">{/if}
         </a>
       {/each}
     </div>
@@ -67,7 +61,6 @@
     </div>
   </div>
 </nav>
-
 <style>
   /* @unocss-include */
   .yorha-nav {
@@ -234,4 +227,3 @@
     }
   }
 </style>
-

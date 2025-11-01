@@ -36,7 +36,6 @@
   // Find selected option for display
   let selectedOption = $derived(options.find(option => option.value === value));
 </script>
-
 <SelectRoot bind:selected={value} onSelectedChange={handleValueChange} {disabled} {required} {name}>
   <!-- Select Trigger -->
   <SelectTrigger
@@ -84,7 +83,6 @@
     <Select.Input {name} />
   {/if}
 </SelectRoot>
-
 <style>
   /* Legal AI App Specific Styling */
   :global(.legal-select-trigger) {
@@ -100,4 +98,3 @@
     transition: all 0.15s ease;
   }
 </style>
-

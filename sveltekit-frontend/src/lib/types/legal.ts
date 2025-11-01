@@ -214,7 +214,7 @@ export interface ApiResponse<T> {
   error?: {
     message: string;
     code: string;
-    details?: unknown;
+    details?: any;
   };
   metadata?: {
     timestamp: Date;
@@ -242,7 +242,7 @@ export interface DocumentProcessingJob {
   progress: number; // 0-100
   startedAt?: Date;
   completedAt?: Date;
-  result?: unknown;
+  result?: any;
   error?: string;
   retryCount: number;
 }

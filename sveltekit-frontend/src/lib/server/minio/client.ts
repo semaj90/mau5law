@@ -1,12 +1,10 @@
 import { Client as MinioClient } from 'minio';
 import { env } from '$env/dynamic/private';
-
 // Parse MINIO_ENDPOINT which may be: 'host', 'host:port', or: 'http(s)://host:port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';
 let _host = _raw;
 let _port = Number(env.MINIO_PORT || 9000);
 let _useSSL = (env.MINIO_USE_SSL || 'false') === 'true';
-
 try {
   if (_raw.includes('://')) {
     const u = new URL(_raw);
@@ -24,14 +22,12 @@ try {
 } catch (e) {
   // ignore and use defaults
 }
-
 const MINIO_ENDPOINT = _host;
 const MINIO_PORT = _port;
 const MINIO_USE_SSL = _useSSL;
 // Fallback to MINIO_ROOT_USER/MINIO_ROOT_PASSWORD when access/secret not provided
 const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY || env.MINIO_ROOT_USER || 'minioadmin';
 const MINIO_SECRET_KEY = env.MINIO_SECRET_KEY || env.MINIO_ROOT_PASSWORD || 'minioadmin';
-
 export const minio = new MinioClient({
   endPoint: MINIO_ENDPOINT,
   port: MINIO_PORT,
@@ -46,7 +42,7 @@ export async function ensureBucket(bucketName: string): Promise<boolean> {
       await minio.makeBucket(bucketName);
     }
     return true;
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Safe logging for unknown error shapes
     if (err instanceof Error) {
       console.error('MinIO ensureBucket error:', err.message, err);
@@ -66,7 +62,7 @@ export async function putObject(
     await ensureBucket(bucketName);
     // minio.putObject returns a Promise that resolves to a string (object etag) in most SDK versions.
     return (await minio.putObject(bucketName, objectName, buffer, meta || {})) as string | undefined;
-  } catch (err: unknown) {
+  } catch (err: any) {
     // If MinIO is not configured or credentials are invalid in dev, fall back to local storage
     try {
       // Safe logging
@@ -74,7 +70,6 @@ export async function putObject(
         '⚠️ MinIO putObject failed, falling back to local storage:',
         err instanceof Error ? err.message : String(err)
       );
-
       // Ensure local storage directory exists
       const path = await import('path');
       const fs = await import('fs/promises');
@@ -82,9 +77,7 @@ export async function putObject(
       const localDir = path.join(projectRoot, '.local_storage', bucketName);
       await fs.mkdir(localDir, { recursive: true });
       const localPath = path.join(localDir, objectName);
-
       await fs.writeFile(localPath, buffer);
-
       // Return a local file URI so callers can distinguish storage location
       return `file://${localPath}`;
     } catch (fsErr) {
@@ -94,4 +87,3 @@ export async function putObject(
     }
   }
 }
-

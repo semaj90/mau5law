@@ -3,13 +3,13 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
 
   // System status and results
   const systemHealth = writable<any | null>(null);
@@ -18,7 +18,7 @@
   // fixed typo: latestMetric
   const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
 
-  let isLoading: boolean = false;
+  let isLoading: boolean = $state(false);
   let selectedOperation: string = 'processDocument';
   let testInput: string = '';
   let errorMessage: string = '';
@@ -180,7 +180,7 @@ Both parties acknowledge they have read and agree to these terms.`,
       errorMessage = `Error: ${err?.message ?? String(err)}`;
       console.error('Operation failed:', err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       updateSystemHealth();
       updateMetrics();
     }
@@ -266,8 +266,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             </div>
           </div>
         {:else}
-          <div class="text-center text-gray-500">Loading system health...</div>
-        {/if}
+          <div class="text-center text-gray-500">Loading system health...{/if}
       </div>
     </div>
     <!-- Operation Controls Card -->
@@ -314,8 +313,7 @@ Both parties acknowledge they have read and agree to these terms.`,
           {#if errorMessage}
             <div class="bg-red-50 border border-red-200 rounded-md p-3">
               <p class="text-red-600 text-sm">{errorMessage}</p>
-            </div>
-          {/if}
+            {/if}
           <!-- Execute Button -->
           <Button
             onclick={executeOperation}
@@ -392,8 +390,7 @@ Both parties acknowledge they have read and agree to these terms.`,
           {:else}
             <div class="text-center text-gray-500 py-8">
               No results yet. Execute an operation to see results here.
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </div>
@@ -416,8 +413,7 @@ Both parties acknowledge they have read and agree to these terms.`,
                   <p class="text-2xl font-bold text-green-600">
                     {$metrics.latestMetric.latency ?? 'N/A'}ms
                   </p>
-                </div>
-              {/if}
+                {/if}
             </div>
             <!-- Recent Metrics Chart (simplified) -->
             <div>
@@ -443,8 +439,7 @@ Both parties acknowledge they have read and agree to these terms.`,
         {:else}
           <div class="text-center text-gray-500 py-8">
             No metrics available yet. Execute some operations to see performance.
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>

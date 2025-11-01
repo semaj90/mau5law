@@ -42,7 +42,7 @@ export const GET: RequestHandler = async () => {
       ],
     };
     return json(capabilities);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to get shader search capabilities:', error);
     return json(
       {
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const searchTime = performance.now() - startTime;
     console.error('Shader search error:', error);
     return json(

@@ -43,7 +43,7 @@ interface SimilarEvidence {
   embedding?: number[];
 }
 // Type guards for Ollama responses
-function isEmbeddingArray(obj: unknown): obj is number[] {
+function isEmbeddingArray(obj: any): obj is number[] {
   // quick guard for a plain embedding array
   return Array.isArray(obj) && obj.every(item => typeof item === 'number');
 }
@@ -200,7 +200,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 // Utility to safely extract an error message from unknown
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   // Standard Error instance
   if (err instanceof Error) return err.message;
   // Fallback: try JSON stringify, else string conversion
@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           processedAt: new Date().toISOString(),
         },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Similar evidence search failed:', error);
       if (error instanceof z.ZodError) {
         return json(
@@ -386,7 +386,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
           model: LEGAL_MODEL,
         },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Suggestion generation failed:', error);
       if (error instanceof z.ZodError) {
         return json(

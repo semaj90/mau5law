@@ -80,7 +80,7 @@
           bind:value={serverName}
           onchange={fetchMcp}
         >
-          {#each servers as server}
+          {#each Array.isArray(servers) ? servers : [] as server}
             <option value={server.name}>{server.name}</option>
           {/each}
         </select>
@@ -137,7 +137,7 @@
 
             {#if result.record.capabilities?.length}
               <div class="flex flex-wrap gap-2">
-                {#each result.record.capabilities as capability}
+                {#each Array.isArray(result.record.capabilities) ? result.record.capabilities : [] as capability}
                   <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
                     {capability}
                   </span>
@@ -149,7 +149,7 @@
               <div>
                 <h3 class="font-semibold text-sm">Endpoints</h3>
                 <div class="grid gap-3 md:grid-cols-2">
-                  {#each result.record.endpoints as endpoint}
+                  {#each Array.isArray(result.record.endpoints) ? result.record.endpoints : [] as endpoint}
                     <div class="rounded border border-gray-200 bg-gray-50 p-3">
                       <p class="text-xs uppercase tracking-wide text-gray-500">{endpoint.protocol}</p>
                       <p class="text-sm font-medium text-blue-700 break-all">{endpoint.url}</p>
@@ -166,7 +166,7 @@
               <div>
                 <h3 class="font-semibold text-sm">Core Topology</h3>
                 <div class="grid gap-2 md:grid-cols-2">
-                  {#each result.record.cores as core}
+                  {#each Array.isArray(result.record.cores) ? result.record.cores : [] as core}
                     <div class="rounded border border-gray-200 bg-white p-2 text-xs">
                       <p><strong>{core.id}</strong> — {core.role}</p>
                       <p>Status: <span class="font-semibold">{core.status}</span></p>

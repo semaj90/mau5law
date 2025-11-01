@@ -92,14 +92,14 @@ export class EnhancedVectorEmbeddingService {
         console.log('✅ Redis client initialized (no ping available on type)');
       }
       await this.createVectorIndexes();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize vector embedding service:', error);
     }
   }
 
   // Helper to perform HSET in a type-safe way:
   private async hset(key: string, data: Record<string, string>): Promise<void> {
-    const callFn = (this.redis as unknown as { call?: (...args: unknown[]) => Promise<unknown> }).call;
+    const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
     if (typeof callFn === 'function') {
       const args: Array<string | Buffer> = ['HSET', key];
       for (const [k, v] of Object.entries(data)) {
@@ -115,8 +115,8 @@ export class EnhancedVectorEmbeddingService {
   private async createVectorIndexes(): Promise<void> {
     try {
       // Use a guarded call wrapper for clients that expose a raw: 'call' API.
-      const callFn = (this.redis as unknown as { call?: (...args: unknown[]) => Promise<unknown> }).call;
-      let indexExists = false;
+      const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
+      let indexExists = $state(false);
       if (typeof callFn === 'function') {
         const raw = await callFn.call(this.redis, 'FT._LIST');
         if (Array.isArray(raw)) {
@@ -171,7 +171,7 @@ export class EnhancedVectorEmbeddingService {
           console.warn('⚠️ Cannot create Redis FT index: raw .call not available on Redis client.');
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Vector index creation failed (may already exist):', error);
     }
   }
@@ -216,7 +216,7 @@ export class EnhancedVectorEmbeddingService {
       // Last attempt: some Ollama-style endpoints return { result: { embedding: [...] } }
       if (!embedding && Array.isArray(data?.result?.embedding)) embedding = data.result.embedding;
 
-      if (!embedding || !Array.isArray(embedding) || !embedding.every((v: unknown) => typeof v === 'number')) {
+      if (!embedding || !Array.isArray(embedding) || !embedding.every((v: any) => typeof v === 'number')) {
         throw new Error('Unable to parse embedding from response');
       }
 
@@ -282,7 +282,7 @@ export class EnhancedVectorEmbeddingService {
       });
       console.log(`🎉 Completed processing document ${documentId}: ${storedIds.length} chunks stored`);
       return storedIds;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to process document ${documentId}:`, error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -468,8 +468,8 @@ export class EnhancedVectorEmbeddingService {
       ];
 
       // Guarded raw call like above
-      const callFn = (this.redis as unknown as { call?: (...args: unknown[]) => Promise<unknown> }).call;
-      let rawSearch: unknown = null;
+      const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
+      let rawSearch: any = null;
       if (typeof callFn === 'function') {
         rawSearch = await callFn.call(this.redis, ...params);
       } else {
@@ -532,7 +532,7 @@ export class EnhancedVectorEmbeddingService {
       // Sort by final_rank (desc) and return top results limited by `limit`
       results.sort((a: SearchResult, b: SearchResult) => b.final_rank - a.final_rank);
       return results.slice(0, limit);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Vector search failed:', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -595,7 +595,7 @@ export class EnhancedVectorEmbeddingService {
       const cached = await this.redis.get(cacheKey);
       if (cached) return JSON.parse(cached) as number[];
       return null;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Cache retrieval failed:', error);
       return null;
     }
@@ -606,7 +606,7 @@ export class EnhancedVectorEmbeddingService {
       const cacheKey = `embedding:${Buffer.from(text).toString('base64')}`;
       // Use a guarded cast because some Redis typings may not expose setex
       await (this.redis as any).setex(cacheKey, ttl, JSON.stringify(embedding));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Cache storage failed:', error);
     }
   }
@@ -614,7 +614,7 @@ export class EnhancedVectorEmbeddingService {
   // Use a typed return value instead of: 'any'
   async getProcessingStats(): Promise<ProcessingStats> {
     try {
-      const callFn = (this.redis as unknown as { call?: (...args: unknown[]) => Promise<unknown> }).call;
+      const callFn = (this.redis as unknown as { call?: (...args: any[]) => Promise<unknown> }).call;
       let totalVectors = 0;
       if (typeof callFn === 'function') {
         const rawInfo = await callFn.call(this.redis, 'FT.INFO', 'legal_vectors');
@@ -636,7 +636,7 @@ export class EnhancedVectorEmbeddingService {
         cache_hit_rate: 0.85,
         avg_processing_time: 2500,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to get processing stats:', error);
       return {
         total_vectors: 0,

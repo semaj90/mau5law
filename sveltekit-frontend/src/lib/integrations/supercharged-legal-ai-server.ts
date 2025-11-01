@@ -12,11 +12,9 @@ import {
 } from '$lib/integrations/redis-webgpu-simd-integration'; // Updated import path
 import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js'; // Corrected import path for JobType
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
-
 // Extend the global Performance interface to include the non-standard 'memory' property
 // This declare global block is likely redundant and conflicting with lib.dom.d.ts
 // Removing it as these types are usually provided by the standard library.
-
 // Define specific types for benchmark results
 interface BenchmarkMetrics {
   jsonParsing: number;
@@ -24,14 +22,12 @@ interface BenchmarkMetrics {
   cacheOperations: number;
   // Add other benchmark metrics as needed
 }
-
 interface BenchmarkImprovements {
   jsonParsing: string;
   vectorSimilarity: string;
   cacheOperations: string;
   // Add other benchmark improvements as needed
 }
-
 interface PerformanceBenchmarkResults {
   benchmark_results: {
     traditional: BenchmarkMetrics;
@@ -45,7 +41,6 @@ interface PerformanceBenchmarkResults {
     user_experience: string;
   };
 }
-
 interface ComprehensivePerformanceTestPhase {
   name: string;
   duration: number;
@@ -59,7 +54,6 @@ interface ComprehensivePerformanceTestPhase {
   processingPath?: string;
   cacheHit?: boolean;
 }
-
 interface ComprehensivePerformanceTestSystemMetrics {
   redisHits: number;
   webgpuComputations: number;
@@ -72,7 +66,6 @@ interface ComprehensivePerformanceTestSystemMetrics {
       }
     | 'not_available';
 }
-
 interface ComprehensivePerformanceTestResults {
   workload: {
     documentCount: number;
@@ -83,7 +76,6 @@ interface ComprehensivePerformanceTestResults {
   phases: ComprehensivePerformanceTestPhase[];
   system_performance: ComprehensivePerformanceTestSystemMetrics;
 }
-
 // GET: Demonstrate system capabilities and status
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -317,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Supercharged Legal AI Error:', error);
     return json(
       {
@@ -401,11 +393,9 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
   results.traditional.vectorSimilarity = performance.now() - cpuSimStart;
   // WebGPU similarity (simulated)
   results.optimized.vectorSimilarity = results.traditional.vectorSimilarity * 0.1; // 10x improvement
-
   // Test 3: Cache Performance
   const cacheKey = 'test_operation_' + Date.now();
   const testData = { result: 'computed_value', complexity: 'high' };
-
   // Traditional: Always recompute
   const recomputeStart = performance.now();
   for (let i = 0; i < 10; i++) {
@@ -413,7 +403,6 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
     await new Promise(resolve => setTimeout(resolve, 50));
   }
   results.traditional.cacheOperations = performance.now() - recomputeStart;
-
   // Optimized: Cache hit simulation
   const cacheOptimizedStart = performance.now();
   await redisWebGPUIntegration.set(cacheKey, testData, 60); // Simulate setting to cache
@@ -421,7 +410,6 @@ async function runPerformanceBenchmark(): Promise<PerformanceBenchmarkResults> {
     await redisWebGPUIntegration.get(cacheKey); // Simulate fast cache hit
   }
   results.optimized.cacheOperations = performance.now() - cacheOptimizedStart;
-
   // Calculate improvements
   results.improvement.jsonParsing = `${(results.traditional.jsonParsing / results.optimized.jsonParsing).toFixed(1)}x faster`;
   results.improvement.vectorSimilarity = `${(results.traditional.vectorSimilarity / results.optimized.vectorSimilarity).toFixed(1)}x faster`;

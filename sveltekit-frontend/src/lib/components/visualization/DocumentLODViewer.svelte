@@ -16,8 +16,8 @@
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/card';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import * as Card from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     ZoomIn, ZoomOut, RotateCw, FileText,
     Eye, Layers, Download, Navigation
@@ -141,7 +141,7 @@ if (!browser || !enableWebGPU) return;
     // Implement Canvas2D fallback with NES-style pixelated rendering
     const ctx = canvasElement?.getContext('2d');
     if (ctx) {
-      ctx.imageSmoothingEnabled = false; // Pixelated rendering like NES
+      ctx.imageSmoothingEnabled = $state(false); // Pixelated rendering like NES
       isWebGPUReady = true; // Ready with fallback
     }
   }
@@ -159,7 +159,7 @@ if (!browser || !enableWebGPU) return;
     } catch (error) {
       console.error('[DocumentLOD] Document loading failed:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function loadPagesInRange(startPage: number, endPage: number, lodLevel: number): Promise<void> {
@@ -364,7 +364,7 @@ if (!browser || !enableWebGPU) return;
     renderCurrentPage();
   }
   function handleMouseUp(): void {
-    dragState.isDragging = false;
+    dragState.isDragging = $state(false);
   }
   // Wheel zoom handler
   function handleWheel(_event: WheelEvent): void {
@@ -374,7 +374,6 @@ if (!browser || !enableWebGPU) return;
     updateLODBasedOnZoom();
   }
 </script>
-
 <div class="document-lod-viewer nes-container with-title">
   <p class="title">📄 Document Viewer (LOD)</p>
   <!-- Document Controls -->
@@ -457,8 +456,7 @@ if (!browser || !enableWebGPU) return;
           <div class="nes-progress-bar indeterminate"></div>
         </div>
         <p>Loading document...</p>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- LOD Statistics Panel -->
   <div class="lod-stats nes-container">
@@ -493,7 +491,6 @@ if (!browser || !enableWebGPU) return;
     </div>
   </div>
 </div>
-
 <style>
   .document-lod-viewer {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
@@ -539,7 +536,7 @@ if (!browser || !enableWebGPU) return;
     font-size: 0.75rem;
   }
   .document-canvas-container {
-    position relative;
+    position: relative;
     height: 500px;
     background: #2a2a3;
     border: 2px solid #444;
@@ -551,7 +548,7 @@ if (!browser || !enableWebGPU) return;
     cursor: grabbing;
   }
   .loading-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -622,4 +619,3 @@ if (!browser || !enableWebGPU) return;
     }
   }
 </style>
-

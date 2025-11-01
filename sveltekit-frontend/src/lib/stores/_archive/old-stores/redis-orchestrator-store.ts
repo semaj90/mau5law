@@ -23,7 +23,7 @@ export interface RedisStats {
   last_updated: string;
 }
 export interface RedisOptimizationResult {
-  response: unknown;
+  response: any;
   source: 'cache' | 'fresh' | 'queued';
   processing_time: number;
   cached: boolean;
@@ -43,7 +43,7 @@ export interface QueuedTask {
   status: 'queued' | 'processing' | 'completed' | 'failed';
   estimatedTime: string;
   submittedAt: string;
-  result?: unknown;
+  result?: any;
 }
 // Core stores
 export const redisStats = writable<RedisStats | null>(null);
@@ -135,7 +135,7 @@ export class RedisOrchestratorClient {
         throw new Error(`Redis orchestrator request failed: ${response.statusText}`);
       }
 
-      const rawResult: unknown = await response.json();
+      const rawResult: any = await response.json();
 
       // Update client-side metrics
       this.recordProcessingTime(context.endpoint || 'client-query', performance.now() - startTime);
@@ -229,7 +229,7 @@ export class RedisOrchestratorClient {
       if (!response.ok) {
         throw new Error(`Task queuing failed: ${response.statusText}`);
       }
-      const raw: unknown = await response.json();
+      const raw: any = await response.json();
 
       const taskId = extractTaskId(raw);
       const estimated = (() => {
@@ -306,10 +306,10 @@ export class RedisOrchestratorClient {
         isRedisHealthy.set(false);
         return;
       }
-      const data: unknown = await response.json();
+      const data: any = await response.json();
 
       // Safely extract redis_stats or fall back to top-level fields
-      let statsSource: unknown = data;
+      let statsSource: any = data;
       if (isObject(data) && isObject(data.redis_stats)) {
         statsSource = data.redis_stats;
       }
@@ -423,11 +423,11 @@ export class RedisOrchestratorClient {
 export const redisOrchestratorClient = RedisOrchestratorClient.getInstance();
 
 // --- new helpers to avoid `any` casts ---
-function isObject(v: unknown): v is Record<string, unknown> {
+function isObject(v: any): v is Record<string, unknown> {
   return v !== null && typeof v === 'object';
 }
 
-function extractTaskId(obj: unknown): string | undefined {
+function extractTaskId(obj: any): string | undefined {
   if (!isObject(obj)) return undefined;
   const o = obj as Record<string, unknown>;
   if (typeof o.task_id === 'string') return o.task_id;
@@ -445,7 +445,7 @@ function extractTaskId(obj: unknown): string | undefined {
   return undefined;
 }
 
-function extractResultField<T = unknown>(obj: unknown, field: string): T | undefined {
+function extractResultField<T = unknown>(obj: any, field: string): T | undefined {
   if (!isObject(obj)) return undefined;
   const o = obj as Record<string, unknown>;
   if (field in o) {
@@ -458,7 +458,7 @@ function extractResultField<T = unknown>(obj: unknown, field: string): T | undef
 }
 
 // New: safe mappers and converters for RedisStats
-function toNumber(v: unknown, fallback = 0): number {
+function toNumber(v: any, fallback = 0): number {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
   if (typeof v === 'string') {
     const n = parseFloat(v);
@@ -466,7 +466,7 @@ function toNumber(v: unknown, fallback = 0): number {
   }
   return fallback;
 }
-function toString(v: unknown, fallback = ''): string {
+function toString(v: any, fallback = ''): string {
   if (typeof v === 'string') return v;
   if (v === undefined || v === null) return fallback;
   try {
@@ -479,7 +479,7 @@ function toString(v: unknown, fallback = ''): string {
 /**
  * Safely map an unknown payload to RedisStats, returning null if input is not mappable.
  */
-function buildRedisStatsFromUnknown(src: unknown): RedisStats | null {
+function buildRedisStatsFromUnknown(src: any): RedisStats | null {
   if (!isObject(src)) return null;
   const s = src as Record<string, unknown>;
   const llm = isObject(s.llm_cache) ? (s.llm_cache as Record<string, unknown>) : {};
@@ -509,7 +509,7 @@ function buildRedisStatsFromUnknown(src: unknown): RedisStats | null {
 }
 
 // New: safe mapper from unknown -> RedisOptimizationResult
-function mapToRedisOptimizationResult(src: unknown): RedisOptimizationResult | null {
+function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null {
   if (!isObject(src)) return null;
   const o = src as Record<string, unknown>;
 

@@ -32,7 +32,7 @@
 	}
 
 	function close() {
-		isOpen = false;
+		isOpen = $state(false);
 	}
 
 	function selectItem(id: string) {

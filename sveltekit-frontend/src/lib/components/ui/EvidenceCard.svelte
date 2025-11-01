@@ -32,7 +32,6 @@
     onclick();
   }
 </script>
-
 <!-- Evidence Card (matching Evidence Board style) -->
 <div
   class="evidence-card nes-container is-rounded cursor-pointer transition-all duration-300 {statusConfig?.bgClass ||
@@ -52,8 +51,7 @@
       {#if icon}
         <div class="p-1 rounded {statusConfig.bgClass}">
           {@render icon()}
-        </div>
-      {/if}
+        {/if}
       <h3 class="nes-text {statusConfig.color} text-sm font-bold truncate">
         {title}
       </h3>
@@ -73,8 +71,7 @@
   {#if children}
     <div class="mb-3">
       {@render children()}
-    </div>
-  {/if}
+    {/if}
   <!-- Card Footer -->
   <div class="flex items-center justify-between text-xs text-gray-500">
     <span class="flex items-center gap-1">
@@ -89,13 +86,11 @@
   </div>
   <!-- Hover/Selection Effects -->
   {#if isHovered || isSelected}
-    <div class="absolute -inset-1 bg-blue-200 opacity-20 rounded-lg -z-10"></div>
-  {/if}
+    <div class="absolute -inset-1 bg-blue-200 opacity-20 rounded-lg -z-10">{/if}
 </div>
-
 <style>
   .evidence-card {
-    position relative;
+    position: relative;
     min-height: 120px;
     background: white;
     border-width: 3px;
@@ -115,7 +110,7 @@
   /* Connection lines effect */
   .evidence-card.selected::after {
     content: '';
-    position absolute;
+    position: absolute;
     top: 50%;
     right: -10px;
     width: 20px;
@@ -136,13 +131,12 @@
     max-height: calc(1.2em * 2); /* Assuming line-height of 1.2 */
     line-height: 1.2;
     overflow: hidden;
-    position relative;
+    position: relative;
   }
-
   /* Gradient fade for better UX */
   .line-clamp-2-fallback::after {
     content: '';
-    position absolute;
+    position: absolute;
     bottom: 0,
     right: 0;
     width: 3em;
@@ -151,4 +145,3 @@
     pointer-events: none;
   }
 </style>
-

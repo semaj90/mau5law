@@ -12,13 +12,13 @@ export interface SemanticSearchResult {
   relevance_score?: number;
   source?: string;
   content?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface MemoryResult {
   relevance_score?: number;
   source?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface AgentResult {
@@ -26,7 +26,7 @@ export interface AgentResult {
   type: string;
   tokensUsed?: number;
   confidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface EngineeringAnalysis {
@@ -49,7 +49,7 @@ export interface EngineeringAnalysis {
     effort: Recommendation['effort'];
     priority: number;
   }[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Endpoint helpers for production-ready service wiring
@@ -64,7 +64,7 @@ function getFastApiUrl(): string {
 // Service implementation for CrewAI-based legal case analysis
 const analyzeLegalCaseWithCrew = async (caseData: {
   prompt: string;
-  documents: unknown[];
+  documents: any[];
   jurisdiction: string;
 }): Promise<Record<string, unknown>> => {
   const controller = new AbortController();
@@ -87,7 +87,7 @@ const analyzeLegalCaseWithCrew = async (caseData: {
 
     console.error(`CrewAI analysis request failed: ${response.status} ${response.statusText}`);
     return { analysis: 'failed', error: `API returned status ${response.status}` };
-  } catch (error: unknown) {
+  } catch (error: any) {
     clearTimeout(timeoutId);
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
@@ -119,7 +119,7 @@ const aiWorkerManager = {
 export interface AITask {
   id: string;
   type: string;
-  data?: unknown;
+  data?: any;
   providerId?: string;
   model?: string;
   prompt?: string;
@@ -170,7 +170,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
     // 3. Store the result in Redis with an expiration (e.g., 1 hour)
     await client.set(cacheKey, JSON.stringify(results), { EX: 3600 });
     return results;
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Redis cache error:', err);
     // Fallback to direct semantic search if cache fails
     return [];
@@ -324,7 +324,7 @@ export async function copilotSelfPrompt(
         tokensUsed,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Log error to MCP_TODO_LOG.md for productionization
     /* try {
       // NOTE: Assuming mcpLogError is a typo and the function is named logMcpError
@@ -375,7 +375,7 @@ async function performSemanticSearch(
         }
         return data.results || [];
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
       if (error instanceof Error) {
         console.error('Semantic search service unavailable:', error.name);
@@ -384,7 +384,7 @@ async function performSemanticSearch(
       }
       return []; // Return empty array immediately instead of hanging
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Semantic search failed:', error);
     return []; // Fast fallback for any other errors
   }
@@ -425,7 +425,7 @@ export async function accessMemoryMCP(
         }
         return data.memories || [];
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
       if (error instanceof Error) {
         console.error('Memory MCP service unavailable:', error.name);
@@ -434,7 +434,7 @@ export async function accessMemoryMCP(
       }
       return []; // Fast fallback
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Memory MCP access failed:', error);
     return []; // Fast fallback for any other errors
   }
@@ -467,7 +467,7 @@ async function orchestrateMultiAgentAnalysis(
       type: 'task_based_analysis',
       ...crewaiResult,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Multi-agent analysis failed:', error);
   }
   // Sort agent results by confidence/tokensUsed if available
@@ -518,7 +518,7 @@ Format your response as a structured analysis with clear sections and actionable
     const taskId = await aiWorkerManager.submitTask(synthesisTask);
     const result = await aiWorkerManager.waitForTask(taskId);
     return result.response?.content || generateBasicSummary(prompt, contextResults, memoryResults, agentResults);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Synthesis failed, using fallback:', error);
     return generateBasicSummary(prompt, contextResults, memoryResults, agentResults);
   }
@@ -831,7 +831,7 @@ export class RLRankingDatastore {
   private async initializeRedis() {
     try {
       this.redisClient = await getRedisClient();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to initialize Redis for RL ranking:', error);
     }
   }
@@ -856,7 +856,7 @@ export class RLRankingDatastore {
       // Keep only top 10 summaries
       await this.redisClient.zremrangebyrank(this.summariesKey, 0, -11);
       console.log(`✅ Stored RL summary with effectiveness: ${summary.effectiveness}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to store RL summary:', error);
     }
   }
@@ -865,7 +865,7 @@ export class RLRankingDatastore {
     try {
       const summaries = await this.redisClient.zrevrange(this.summariesKey, 0, limit - 1);
       return summaries.map((s: string) => JSON.parse(s));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get top summaries:', error);
       return [];
     }
@@ -891,7 +891,7 @@ export class RLRankingDatastore {
           break;
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to update user feedback:', error);
     }
   }

@@ -58,7 +58,7 @@ export class LokiCacheVSCodeIntegration {
   private db: any = null;
   // use any for collection values to avoid versioned lokijs typing mismatches
   private collections: Map<string, any> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private dbName = 'legal-ai-cache.db';
   private activity: Array<any> = [];
   private readonly MAX_ACTIVITY = 100;
@@ -798,7 +798,7 @@ export class LokiCacheVSCodeIntegration {
       this.db = null;
     }
     this.collections.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 Loki.js cache cleaned up');
   }
 }

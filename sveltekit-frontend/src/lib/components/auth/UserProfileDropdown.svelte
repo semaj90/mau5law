@@ -1,10 +1,8 @@
 <script lang="ts">
   import { userStore, clearUserSession } from '$lib/stores/user';
   import { User, LogOut, ChevronDown } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
-
+  import { Button } from '$lib/components/ui/button/Button.svelte';
   let isDropdownOpen = $state(false);
-
   async function handleLogout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
@@ -14,16 +12,13 @@
       console.error('Logout error:', error);
     }
   }
-
   function toggleDropdown() {
     isDropdownOpen = !isDropdownOpen;
   }
-
   function closeDropdown() {
-    isDropdownOpen = false;
+    isDropdownOpen = $state(false);
   }
 </script>
-
 {#if $userStore}
   <div class="relative profile-dropdown-wrapper">
     <!-- Signed In Badge + Profile Trigger -->
@@ -39,21 +34,18 @@
         <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
         <span class="text-xs font-medium text-green-700">Signed in</span>
       </div>
-
       <!-- Profile Icon and Avatar -->
       <div
         class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0"
       >
         <User class="w-4 h-4 text-white" />
       </div>
-
       <!-- Dropdown Arrow -->
       <ChevronDown
         class="w-4 h-4 text-slate-500 transition-transform duration-200"
         style={`transform: rotate(${isDropdownOpen ? 180 : 0}deg)`}
       />
     </button>
-
     <!-- Dropdown Menu -->
     {#if isDropdownOpen}
       <div
@@ -70,7 +62,6 @@
             {$userStore.user.email}
           </p>
         </div>
-
         <!-- Menu Items -->
         <div class="py-2">
           <a
@@ -82,7 +73,6 @@
             <User class="w-4 h-4" />
             View Profile
           </a>
-
           <button
             onclick={() => {
               handleLogout();
@@ -96,26 +86,20 @@
           </button>
         </div>
       </div>
-
       <!-- Overlay to close dropdown when clicking outside -->
       <div
         class="fixed inset-0 z-40"
         onclick={closeDropdown}
         role="presentation"
-      ></div>
-    {/if}
-  </div>
-{/if}
-
+      >{/if}
+  {/if}
 <style>
   :global(.profile-dropdown-wrapper) {
     position: relative;
   }
-
   :global(.animate-pulse) {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-
   @keyframes pulse {
     0%,
     100% {
@@ -125,7 +109,6 @@
       opacity: 0.5;
     }
   }
-
   @keyframes slideInFromTop {
     from {
       opacity: 0;
@@ -136,8 +119,7 @@
       transform: translateY(0);
     }
   }
-
   :global(.animate-in.fade-in.slide-in-from-top-2) {
-    animation: slideInFromTop 200ms ease-out;
+    animation: slideInFromTop: 200ms ease-out;
   }
 </style>

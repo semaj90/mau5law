@@ -136,7 +136,7 @@ class QUICClient {
         return true;
       }
       throw new Error(`Server health check failed: ${response.status}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Safely extract message from unknown error to satisfy TS rules
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ QUIC connection failed:', errMsg);
@@ -180,7 +180,7 @@ class QUICClient {
       const endTime = performance.now();
       this.updateLatencyMetrics(endTime - startTime);
       return response;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`QUIC fetch failed for ${path}: ${msg}`);
       throw new Error(msg);
@@ -211,7 +211,7 @@ class QUICClient {
       // Handle streaming response
       await this.handleStreamingResponse(response, streamId, onChunk);
       return streamId;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       this.closeStream(streamId, `Tensor operation error: ${msg}`);
       throw new Error(msg);
@@ -241,7 +241,7 @@ class QUICClient {
       }
       await this.handleStreamingResponse(response, streamId, onChunk);
       return streamId;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       this.closeStream(streamId, `LLM analysis error: ${msg}`);
       throw new Error(msg);
@@ -265,7 +265,7 @@ class QUICClient {
       }
       await this.handleStreamingResponse(response, streamId, onChunk);
       return streamId;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       this.closeStream(streamId, `Vector search error: ${msg}`);
       throw new Error(msg);
@@ -273,7 +273,7 @@ class QUICClient {
   }
 
   // Handle Server-Sent Events for real-time updates
-  async subscribeToUpdates(onUpdate: (event: unknown) => void, onError: (error: Error) => void): Promise<void> {
+  async subscribeToUpdates(onUpdate: (event: any) => void, onError: (error: Error) => void): Promise<void> {
     try {
       // Close existing connection
       if (this.eventSource) {
@@ -288,7 +288,7 @@ class QUICClient {
         try {
           const data = JSON.parse(evt.data);
           onUpdate(data);
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.error('Failed to parse SSE message:', err);
         }
       };
@@ -302,7 +302,7 @@ class QUICClient {
           }
         }, 5000);
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Failed to establish SSE connection:', err);
       const e = err instanceof Error ? err : new Error(String(err));
       onError(e);
@@ -321,7 +321,7 @@ class QUICClient {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-    let done = false;
+    let done = $state(false);
     try {
       while (!done) {
         const result = await reader.read();
@@ -348,7 +348,7 @@ class QUICClient {
         }
       }
       this.closeStream(streamId);
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       this.closeStream(streamId, `Stream processing error: ${msg}`);
       throw new Error(msg);
@@ -376,7 +376,7 @@ class QUICClient {
         const parsed = JSON.parse(trimmed);
         onChunk(parsed, isComplete);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const errObj = err instanceof Error ? err : new Error(String(err));
       console.error(`Failed to process chunk:`, errObj);
     }

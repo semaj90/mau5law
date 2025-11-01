@@ -22,7 +22,7 @@ function textScore(query: string, text: string): number {
   return Number((jaccard * 0.9 + boost * 0.1).toFixed(4));
 }
 
-function safeProsecutionScore(raw: unknown): number {
+function safeProsecutionScore(raw: any): number {
   if (!raw) return 0;
   if (typeof raw === 'number') return raw;
   if (typeof raw === 'string') return Number(raw) || 0;
@@ -33,7 +33,7 @@ function safeProsecutionScore(raw: unknown): number {
       prosecutionScore?: number | string | null;
       score?: number | string | null;
       value?: number | string | null;
-      [key: string]: unknown;
+      [key: string]: any;
     };
     const obj = raw as ScoreContainer;
     const val = obj.prosecutionScore ?? obj.score ?? obj.value;
@@ -44,12 +44,12 @@ function safeProsecutionScore(raw: unknown): number {
   return 0;
 }
 
-function safeString(raw: unknown): string | null {
+function safeString(raw: any): string | null {
   if (raw === null || raw === undefined) return null;
   if (typeof raw === 'string') return raw;
   if (typeof raw === 'number' || typeof raw === 'boolean' || typeof raw === 'bigint') return String(raw);
   try {
-    const obj = raw as { toString?: unknown };
+    const obj = raw as { toString?: any };
     if (typeof obj?.toString === 'function') {
       const maybe = (obj.toString as () => unknown)();
       if (typeof maybe === 'string' && maybe !== '[object Object]') return maybe;
@@ -71,9 +71,9 @@ type VectorSearchHit = {
   aiSummary?: string | null;
   content?: string | null;
   metadata?: Record<string, unknown>;
-  tags?: unknown[];
-  prosecutionScore?: unknown;
-  aiAnalysis?: unknown;
+  tags?: any[];
+  prosecutionScore?: any;
+  aiAnalysis?: any;
   similarity?: number;
   score?: number;
 };
@@ -85,11 +85,11 @@ type VecMetadata = {
   filename?: string | null;
   content?: string | null;
   text?: string | null;
-  tags?: unknown[];
-  prosecutionScore?: unknown;
-  aiAnalysis?: unknown;
-  analysis?: unknown;
-  [key: string]: unknown;
+  tags?: any[];
+  prosecutionScore?: any;
+  aiAnalysis?: any;
+  analysis?: any;
+  [key: string]: any;
 };
 
 type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[] } | { results?: VectorSearchHit[] };
@@ -97,7 +97,7 @@ type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[] } | { r
 function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
   if (Array.isArray(res)) return res;
   if (res && typeof res === 'object') {
-    const obj = res as { hits?: unknown; results?: unknown };
+    const obj = res as { hits?: any; results?: any };
     const hitsCandidate = obj.hits;
     if (Array.isArray(hitsCandidate)) return hitsCandidate as VectorSearchHit[];
     const resultsCandidate = obj.results;
@@ -111,7 +111,7 @@ type Match = {
   filename: string | null;
   content: string;
   similarity: number;
-  tags: unknown;
+  tags: any;
   prosecutionScore: number;
 };
 
@@ -120,8 +120,8 @@ type EvidenceRow = {
   fileName: string | null;
   summary: string | null;
   aiSummary: string | null;
-  tags: unknown;
-  prosecutionScore: unknown;
+  tags: any;
+  prosecutionScore: any;
 };
 
 type VectorSearchOptions = { maxResults?: number; includeMetadata?: boolean };
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence search error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json({ error: 'Search failed', message, matches: [] }, { status: 500 });

@@ -35,10 +35,10 @@ export interface GlobalAppState {
     isLoading: boolean;
   };
   legal: {
-    activeCases: unknown[]; // keep generic for now
-    currentCase: unknown | null;
-    documents: unknown[];
-    evidence: unknown[];
+    activeCases: any[]; // keep generic for now
+    currentCase: any | null;
+    documents: any[];
+    evidence: any[];
   };
 }
 
@@ -59,7 +59,7 @@ export interface User {
   jurisdiction?: string;
   createdAt?: Date | ISODateString;
   updatedAt?: Date | ISODateString;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Minimal local types to avoid importing full machine types during focused checks
@@ -71,27 +71,27 @@ export interface AuthContext {
 
 export interface SessionContext {
   sessionHealth?: { isValid?: boolean } | null;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface AIAssistantContext {
   response?: string;
-  ollamaClusterHealth?: { primary?: boolean; [k: string]: unknown };
+  ollamaClusterHealth?: { primary?: boolean; [k: string]: any };
   conversation?: Array<{ id: string; text?: string; meta?: Record<string, unknown> }>;
   model?: string;
 }
 
 export interface AgentShellContext {
   commands?: string[];
-  lastCommandResult?: unknown;
-  [key: string]: unknown;
+  lastCommandResult?: any;
+  [key: string]: any;
 }
 
 export interface NotificationAction {
   label: string;
   href?: string;
   callback?: () => void;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface Notification {
@@ -105,7 +105,7 @@ export interface Notification {
 
 export interface UploadResponse {
   success: boolean;
-  error?: unknown;
+  error?: any;
 }
 
 // Add missing simple alias for ISO date strings
@@ -121,7 +121,7 @@ export interface RegistrationData {
   department?: string;
   jurisdiction?: string;
   deviceInfo?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Add these local helper types & function near the top of the file (after imports)
@@ -129,7 +129,7 @@ type AnyActorRef = ActorRefFrom<unknown>;
 
 type ActorState<TContext = unknown> = {
   context: TContext;
-  value?: unknown;
+  value?: any;
 };
 
 // Safe helper to get actor context without using `any`
@@ -177,9 +177,9 @@ export class XStateIntegrationService {
     // This avoids hard crashes during module import when machines are incompatible
     // with the runtime XState version. Subscriptions made before the real actor
     // exists are queued and attached when/if the actor starts.
-    const makeActorSafe = (machine: unknown, name = 'actor') => {
+    const makeActorSafe = (machine: any, name = 'actor') => {
       let realActor: any = null;
-      const queuedSubs: Array<(s: unknown) => void> = [];
+      const queuedSubs: Array<(s: any) => void> = [];
 
       // If machine exposes snapshot helpers at top-level, ensure they exist under .logic
       const adaptMachineLogic = (m: any) => {
@@ -238,7 +238,7 @@ export class XStateIntegrationService {
             console.warn('Actor stop failed', err);
           }
         },
-        send: (evt: unknown) => {
+        send: (evt: any) => {
           try {
             if (!realActor) start();
             realActor?.send?.(evt);
@@ -246,7 +246,7 @@ export class XStateIntegrationService {
             console.warn('Actor send failed', err);
           }
         },
-        subscribe: (listener: (s: unknown) => void) => {
+        subscribe: (listener: (s: any) => void) => {
           try {
             if (realActor && typeof realActor.subscribe === 'function') return realActor.subscribe(listener);
           } catch (err) {
@@ -319,8 +319,8 @@ export class XStateIntegrationService {
       [this.authState, this.sessionState, this.aiAssistantState],
       ([$auth, $session, $aiAssistant]) => {
         const authHealthy = !!$auth.user && !$auth.error;
-        const sessionHealthy = $session.sessionHealth?.isValid !== false;
-        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== false; // Fix: Removed extra: ')'
+        const sessionHealthy = $session.sessionHealth?.isValid !== $state(false);
+        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== $state(false); // Fix: Removed extra: ')'
 
         const healthyStates = [authHealthy, sessionHealthy, aiHealthy];
         const healthyCount = healthyStates.filter(item => item).length; // Corrected logic
@@ -551,7 +551,7 @@ export class XStateIntegrationService {
           },
         }));
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to load user data:', error);
     }
   }
@@ -701,7 +701,7 @@ export class XStateIntegrationService {
     return perms.includes(permission) || perms.includes('all');
   }
 
-  public async uploadDocument(file: File, _metadata?: unknown): Promise<UploadResponse> {
+  public async uploadDocument(file: File, _metadata?: any): Promise<UploadResponse> {
     try {
       // const response = await productionServiceClient.execute('file.upload', {
       //   file,
@@ -722,7 +722,7 @@ export class XStateIntegrationService {
         // Refresh documents
       }
       return response;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Document upload failed:', error);
       this.showNotification({
         type: 'error',

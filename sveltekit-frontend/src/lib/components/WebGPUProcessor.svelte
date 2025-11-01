@@ -11,7 +11,7 @@
   		streamingEnabled = true,
   		class: className = '';
   	}: {
-  		documentData?: unknown[];
+  		documentData?: any[];
   		enableWebGPU?: boolean;
   		enableAttentionTracking?: boolean;
   		streamingEnabled?: boolean;
@@ -180,7 +180,7 @@
   		private mousePositions: { x: number; y: number; timestamp: number }[] = [];
   		private scrollPositions: { y: number; timestamp: number }[] = [];
   		private focusRegions: { element: HTMLElement; weight: number }[] = [];
-  		private isTracking = false;
+  		private isTracking = $state(false);
   		constructor(private container: HTMLElement) {
   			this.startTracking();
   		}
@@ -272,7 +272,7 @@
   			const regions: { start: number; end: number; weight: number }[] = [];
   			const threshold = 50; // pixels
   			for (let i = 0; i < positions.length; i++) {
-  				let found = false;
+  				let found = $state(false);
   				for (const region of regions) {
   					const regionCenter = (region.start + region.end) / 2;
   					const distance = Math.abs(positions[i].y - regionCenter);
@@ -295,7 +295,7 @@
   			return regions.sort((a, b) => b.weight - a.weight);
   		}
   		destroy() {
-  			this.isTracking = false;
+  			this.isTracking = $state(false);
   			this.container.removeEventListener('mousemove', this.handleMouseMove.bind(this));
   			this.container.removeEventListener('scroll', this.handleScroll.bind(this));
   			this.container.removeEventListener('focusin', this.handleFocusIn.bind(this));
@@ -308,7 +308,7 @@
     try {
       if (!navigator.gpu) {
         console.warn('WebGPU not supported');
-        webgpuContext.isSupported = false;
+        webgpuContext.isSupported = $state(false);
         return;
       }
       const adapter = await navigator.gpu.requestAdapter({
@@ -351,8 +351,8 @@
       console.log('✅ WebGPU initialized successfully');
     } catch (error) {
       console.error('❌ WebGPU initialization failed:', error);
-      webgpuContext.isSupported = false;
-      webgpuContext.isInitialized = false;
+      webgpuContext.isSupported = $state(false);
+      webgpuContext.isInitialized = $state(false);
     }
   }
   // Initialize compute pipelines
@@ -471,7 +471,7 @@
     }
   	}
   	// Queue tensor operation
-  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {}) {
+  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: any = {}) {
   		const operation: TensorOperation = {
   			id: `op_${++operationId}`,
   			type,
@@ -544,7 +544,7 @@
   		return expScores.map(x => x / sum);
   	}
   	// Process document data
-  	function processDocumentData(data: unknown[]) {
+  	function processDocumentData(data: any[]) {
     if (!data || data.length === 0) return;
     data.forEach((doc: any, index) => {
       // Generate mock embeddings for demonstration
@@ -606,7 +606,6 @@
       animate();
     }
     setup();
-
     return () => {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
@@ -619,7 +618,6 @@
       bufferPool.clear();
     };
   });
-
   // Reactive updates
   $effect(() => {
     if (documentData && isWebGPUReady) {
@@ -646,7 +644,6 @@
   		return tensorOperations.find(op => op.id === operationId);
   	}
 </script>
-
 <!-- Component template -->
 <div class="webgpu-processor bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border {className}">
   <!-- WebGPU Canvas -->
@@ -703,8 +700,7 @@
         </div>
         <span>{gpuMetrics.powerEfficiency.toFixed(1)}%</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Attention Heatmap Visualization -->
   {#if enableAttentionTracking && attentionData}
     <div class="attention-heatmap bg-white dark:bg-gray-800 p-4 rounded border mb-4">
@@ -724,14 +720,13 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Operation Log (for debugging) -->
   {#if tensorOperations.length > 0}
     <details class="operation-log bg-white dark:bg-gray-800 rounded border">
       <summary class="p-3 cursor-pointer font-medium text-gray-900 dark:text-white">Operation Log ({tensorOperations.length})</summary>
       <div class="log-content border-t p-3 max-h-48 overflow-y-auto">
-        {#each tensorOperations.slice(-10) as operation}
+        {#each Array.isArray(tensorOperations.slice(-10)) ? tensorOperations.slice(-10) : [] as operation}
           <div
             class="operation-entry flex gap-3 py-1 text-sm border-b border-gray-100 dark:border-gray-700 last:border-b-0"
             class:text-green-600={operation.status === 'completed'}
@@ -751,7 +746,6 @@
     </details>
   {/if}
 </div>
-
 <style>
   .webgpu-processor {
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
@@ -773,7 +767,7 @@
   }
   /* Animation for smooth updates */
   .progress {
-    transition: width 0.3s ease-out;
+    transition: width: 0.3s ease-out;
   }
   .attention-region {
     transition: all 0.2s ease-out;
@@ -795,7 +789,7 @@
     margin-right: 0.25rem;
   }
 </style>
-    position relative;
+    position: relative;
   }
   .attention-heatmap h3 {
     /* @apply text-lg font-bold mb-3 text-gray-900 dark:text-white; */
@@ -861,7 +855,7 @@
   }
   /* Animation for smooth updates */
   .progress {
-    transition: width 0.3s ease-out;
+    transition: width: 0.3s ease-out;
   }
   .attention-region {
     transition: all 0.2s ease-out;
@@ -880,4 +874,3 @@
     /* @apply text-red-400 mr-1; */
   }
 </style>
-

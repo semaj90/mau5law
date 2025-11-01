@@ -160,7 +160,7 @@ const healthOrchestratorServices = {
         throw new Error(`Unknown service: ${service}`);
     }
   }),
-  sendAlert: fromPromise(async ({ input }: { input: { alert: unknown } }) => {
+  sendAlert: fromPromise(async ({ input }: { input: { alert: any } }) => {
     // Changed alert to unknown
     // Send alert to monitoring systems, webhooks, etc.
     console.warn('🚨 Health Alert:', input.alert);
@@ -484,7 +484,7 @@ async function checkRedisHealth(): Promise<boolean> {
   try {
     const response = await fetch('/api/health/redis');
     return response.ok;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Error checking Redis health:', error);
     return false;
@@ -494,7 +494,7 @@ async function checkPostgresHealth(): Promise<boolean> {
   try {
     const response = await fetch('/api/health/postgres');
     return response.ok;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Error checking Postgres health:', error);
     return false;
@@ -504,7 +504,7 @@ async function checkRabbitMQHealth(): Promise<boolean> {
   try {
     const response = await fetch('/api/health/rabbitmq');
     return response.ok;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Error checking RabbitMQ health:', error);
     return false;
@@ -514,7 +514,7 @@ async function checkCUDAHealth(): Promise<boolean> {
   try {
     const response = await fetch('/api/health/cuda');
     return response.ok;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Error checking CUDA health:', error);
     return false;
@@ -530,7 +530,7 @@ async function checkVectorServiceHealth(): Promise<boolean> {
   try {
     const response = await fetch('/api/health/vector');
     return response.ok;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Error checking Vector Service health:', error);
     return false;
@@ -571,7 +571,7 @@ async function recoverWebGPU(): Promise<boolean> {
   try {
     webgpuPolyfillInstance.dispose();
     return await webgpuPolyfillInstance.initialize();
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('WebGPU recovery failed:', error);
     return false;
@@ -581,7 +581,7 @@ async function recoverWASMLLM(): Promise<boolean> {
   try {
     wasmLLMService.dispose();
     return await wasmLLMService.initialize();
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('WASM LLM recovery failed:', error);
     return false;

@@ -437,7 +437,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       await this.cleanupStaleEntries();
       this.metrics.lastOptimized = new Date();
       console.log('✅ Cache optimization cycle completed');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Cache optimization cycle failed:', String(error));
       this.emit('optimization_error', error);
     }
@@ -492,7 +492,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   // replace simulated query executor with API call
   private async executeQueryForCache(
     query: string
-  ): Promise<{ query: string; results: unknown[]; timestamp: number; fromCache: boolean }> {
+  ): Promise<{ query: string; results: any[]; timestamp: number; fromCache: boolean }> {
     try {
       const res = await fetch('/api/search/execute', {
         method: 'POST',
@@ -511,7 +511,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         timestamp: Date.now(),
         fromCache: false,
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Query execution failed, returning fallback result', String(err));
       // graceful fallback for resilience
       return {
@@ -611,7 +611,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
           .map(q => ({ query: q, score: 1 }));
       }
       this.emit('performance_analyzed', { ...this.metrics });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('analyzePerformance failed:', String(err));
     }
   }
@@ -645,7 +645,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       }
 
       this.emit('ttls_optimized', { count: this.ttlStrategies.size });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('optimizeTTLStrategies failed:', String(err));
     }
   }
@@ -750,7 +750,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
       await this.requestBatcher.executeBatch(tasks);
       this.emit('predictive_preload_completed', { count: candidates.length });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('predictivePreload failed:', String(err));
     }
   }
@@ -787,7 +787,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       }
 
       this.emit('stale_cleanup', { removed: toRemove.length });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('cleanupStaleEntries failed:', String(err));
     }
   }
@@ -801,8 +801,8 @@ type RedisClientLike = {
   setEx?: (key: string, ttl: number, value: string) => Promise<unknown>;
   setex?: (key: string, ttl: number, value: string) => Promise<unknown>;
   // changed: avoid `any[]` — use `unknown[]` to be type-safe while keeping variadic support
-  set?: (key: string, value: string, ...rest: unknown[]) => Promise<unknown>;
+  set?: (key: string, value: string, ...rest: any[]) => Promise<unknown>;
   del?: (key: string) => Promise<number | null>;
   // allow other optional members without using `any`
-  [k: string]: unknown;
+  [k: string]: any;
 };

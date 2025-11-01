@@ -207,7 +207,7 @@ export class AutoGenService {
         startTime: Date.now(),
         metadata: data?.metadata || {},
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to start AutoGen conversation:', msg);
       throw error;
@@ -229,7 +229,7 @@ export class AutoGenService {
         throw new Error(`Failed to get conversation: ${response.status}`);
       }
       return (await response.json()) as AutoGenConversation;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get conversation:', msg);
       throw error;
@@ -254,7 +254,7 @@ export class AutoGenService {
       }
       const data = await response.json();
       return (data.messages || []) as AutoGenMessage[];
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to send message:', msg);
       throw error;
@@ -275,7 +275,7 @@ export class AutoGenService {
       if (!response.ok) {
         throw new Error(`Failed to terminate conversation: ${response.status}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to terminate conversation:', msg);
       throw error;
@@ -344,7 +344,7 @@ export class AutoGenService {
           workflowType,
         },
       } as AIResponse;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Legal workflow execution failed:', error);
       throw error;
     }
@@ -375,7 +375,7 @@ export class AutoGenService {
       const response = await this.withTimeout(fetch(url, { method: 'GET', headers }));
       if (!response.ok) throw new Error('Failed to get capabilities');
       return (await response.json()) as Capabilities;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get capabilities:', msg);
       return {
@@ -427,8 +427,8 @@ export class AutoGenService {
     // resolveNext must expect an AutoGenMessage, as pullMessage returns Promise<AutoGenMessage>
     let resolveNext: ((value: AutoGenMessage | PromiseLike<AutoGenMessage>) => void) | null = null;
     // Use unknown instead of any for better type safety
-    let rejectNext: ((reason?: unknown) => void) | null = null;
-    let isDone = false;
+    let rejectNext: ((reason?: any) => void) | null = null;
+    let isDone = $state(false);
 
     const pullMessage = (): Promise<AutoGenMessage> => {
       return new Promise((resolve, reject) => {
@@ -606,7 +606,7 @@ export async function researchLegalPrecedents(
 export interface UltraJSONParser {
   // Minimal ultra-fast JSON parser interface
   parse<T = unknown>(input: string): T;
-  stringify(input: unknown): string;
+  stringify(input: any): string;
 }
 
 export interface WasmClusteringService {
@@ -627,7 +627,7 @@ export interface RedisClientMinimal {
   set(key: string, value: string, mode?: string, duration?: number): Promise<'OK' | null>;
   // Optionally RedisJSON / ReJSON helpers can be added by concrete implementations
   json_get?(key: string, path?: string): Promise<unknown>;
-  json_set?(key: string, path: string, value: unknown): Promise<unknown>;
+  json_set?(key: string, path: string, value: any): Promise<unknown>;
 }
 
 // Minimal Postgres client interface (drizzle-like or node-postgres wrapper)
@@ -640,9 +640,9 @@ export interface PostgresClientMinimal {
   upsertJsonb?(
     table: string,
     idColumn: string,
-    idValue: unknown,
+    idValue: any,
     jsonColumn: string,
-    jsonValue: unknown
+    jsonValue: any
   ): Promise<void>;
 }
 
@@ -692,11 +692,11 @@ export class OllamaEmbeddingsHelper {
       });
       clearTimeout(id);
       if (!resp.ok) throw new Error(`Ollama embeddings failed: ${resp.status}`);
-      const data: unknown = await resp.json();
+      const data: any = await resp.json();
 
       // Type guards for common response shapes
-      const isNumberArray = (v: unknown): v is number[] => Array.isArray(v) && v.every(i => typeof i === 'number');
-      const isArrayOfNumberArrays = (v: unknown): v is number[][] =>
+      const isNumberArray = (v: any): v is number[] => Array.isArray(v) && v.every(i => typeof i === 'number');
+      const isArrayOfNumberArrays = (v: any): v is number[][] =>
         Array.isArray(v) && v.every(item => Array.isArray(item) && item.every(elem => typeof elem === 'number'));
 
       if (isArrayOfNumberArrays(data)) return data;
@@ -742,7 +742,7 @@ export class RedisCacheHelper {
     }
   }
 
-  async set(key: string, value: unknown, ttlSeconds?: number): Promise<boolean> {
+  async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const payload = typeof value === 'string' ? value : JSON.stringify(value);
     if (typeof ttlSeconds === 'number') {
       await this.client.set(key, payload, 'EX', ttlSeconds);
@@ -788,7 +788,7 @@ export class PostgresJSONPersistence {
    * - idValue: primary key value
    * - jsonColumn: column that stores jsonb
    */
-  async upsertJsonb(table: string, idColumn: string, idValue: unknown, jsonColumn: string, jsonValue: unknown) {
+  async upsertJsonb(table: string, idColumn: string, idValue: any, jsonColumn: string, jsonValue: any) {
     // Prefer specialized client method if present
     if (typeof this.client.upsertJsonb === 'function') {
       return this.client.upsertJsonb(table, idColumn, idValue, jsonColumn, jsonValue);
@@ -804,7 +804,7 @@ export class PostgresJSONPersistence {
   }
 
   // Simple loader
-  async loadById<T = unknown>(table: string, idColumn: string, idValue: unknown): Promise<T | null> {
+  async loadById<T = unknown>(table: string, idColumn: string, idValue: any): Promise<T | null> {
     const sql = `SELECT * FROM ${table} WHERE ${idColumn} = $1 LIMIT 1`;
     const res = await this.client.query(sql, [idValue]);
     // Ensure returned row is cast to T when present to satisfy the generic return type
@@ -820,7 +820,7 @@ export const DefaultUltraJSONParser: UltraJSONParser = {
   parse(input: string) {
     return JSON.parse(input);
   },
-  stringify(input: unknown) {
+  stringify(input: any) {
     return JSON.stringify(input);
   },
 };

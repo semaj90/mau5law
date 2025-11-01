@@ -8,7 +8,7 @@ export interface Case {
   status: string;
   priority: string;
   category: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface Evidence {
   id: string;
@@ -16,10 +16,9 @@ export interface Evidence {
   type: string;
   description?: string;
   fileUrl?: string;
-  metadata?: { [key: string]: unknown };
-  [key: string]: unknown;
+  metadata?: { [key: string]: any };
+  [key: string]: any;
 }
-
 export interface Source {
   id: string;
   title: string;
@@ -28,7 +27,6 @@ export interface Source {
   snippet?: string;
   url?: string;
 }
-
 export interface AIResponse {
   response: string;
   confidence: number;
@@ -43,15 +41,13 @@ export interface AuthResponse {
   role: string;
   permissions: string[];
 }
-
 export interface RegistrationData {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 export interface LegalAIContext {
   user: {
     id: string | null;
@@ -244,14 +240,11 @@ export const legalAIMachine = setup({
           productionServiceClient.makeRequest('/api/system/cluster-status', {}, {}),
           productionServiceClient.makeRequest('/api/system/service-health', {}, {}),
         ]);
-
         if (!clusterStatusResponse.success || !serviceHealthResponse.success) {
           throw new Error('Failed to fetch system status');
         }
-
         const clusterStatus = clusterStatusResponse.data;
         const serviceHealth = serviceHealthResponse.data;
-
         // Calculate overall health metrics
         const totalServices = clusterStatus.totalServices;
         const healthyServices = clusterStatus.healthyServices;
@@ -273,7 +266,7 @@ export const legalAIMachine = setup({
             uptime: Date.now(),
           },
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('System status check failed:', error);
         return {
           connected: false,
@@ -307,7 +300,7 @@ export const legalAIMachine = setup({
           } else {
             throw new Error(response.error || 'Authentication failed');
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.error('Authentication error:', error);
           throw new Error('Authentication service unavailable');
         }
@@ -338,7 +331,7 @@ export const legalAIMachine = setup({
             console.warn('Failed to load cases:', response.error);
             return [];
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.error('Error loading cases:', error);
           return [];
         }
@@ -363,7 +356,7 @@ export const legalAIMachine = setup({
         } else {
           throw new Error(response.error || 'AI query failed');
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('AI query error:', error);
         throw new Error('AI service unavailable');
       }

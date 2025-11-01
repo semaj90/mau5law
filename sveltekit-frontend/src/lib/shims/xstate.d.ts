@@ -2,15 +2,15 @@ declare module '$lib/shims/xstate' {
   // Minimal, safer ambient typings to avoid `any` lint complaints.
   // Keep these deliberately generic; refine later if stricter types are required.
 
-  export function createMachine(config: unknown, options?: unknown): unknown;
+  export function createMachine(config: any, options?: any): any;
 
   // assign takes either a mapping object or a mapper function.
   export function assign(
-    mapping: Record<string, unknown> | ((context: unknown, event: unknown) => Record<string, unknown>)
-  ): unknown;
+    mapping: Record<string, unknown> | ((context: any, event: any) => Record<string, unknown>)
+  ): any;
 
   // fromPromise accepts a function that returns a Promise or a value.
-  export function fromPromise<T = unknown>(fn: (...args: unknown[]) => Promise<T> | T): unknown;
+  export function fromPromise<T = unknown>(fn: (...args: any[]) => Promise<T> | T): any;
 
   // Events expressed with unknown payloads rather than `any`.
   export type AnyEventObject = Record<string, unknown>;
@@ -19,8 +19,8 @@ declare module '$lib/shims/xstate' {
   export type ActorRefFromAny = {
     send: (event: AnyEventObject | string) => void;
     stop?: () => void;
-    getSnapshot?: () => { context?: unknown } | undefined;
+    getSnapshot?: () => { context?: any } | undefined;
     // allow other runtime properties without `any`
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }

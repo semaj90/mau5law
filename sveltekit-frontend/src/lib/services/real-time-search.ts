@@ -150,7 +150,7 @@ interface HTTPSearchOptions {
 export class RealTimeSearchService {
   // Placeholder for NATS connection: integration is planned per Legal AI Platform instructions (see .github/copilot-instructions.md),
   // but not yet implemented. This property is reserved for future real-time messaging via NATS.
-  private _natsConnection: unknown = null;
+  private _natsConnection: any = null;
   private ws: WebSocket | null = null;
   // This property is intended for future NATS integration as per instructions,
   // hence it's currently declared but not fully utilized.
@@ -225,7 +225,7 @@ export class RealTimeSearchService {
       } else {
         console.log('📡 Real-time search running in HTTP-only mode');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.error('❌ Failed to initialize real-time search:', error);
       this.state.update(s => ({
@@ -319,7 +319,7 @@ export class RealTimeSearchService {
           },
           { once: true }
         );
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('❌ WebSocket connection error:', error instanceof Error ? error.message : String(error));
         reject(error);
       }
@@ -337,7 +337,7 @@ export class RealTimeSearchService {
       // Example: const natsClient = new Nats.connect({ servers: [NATS_WS_URL] });
       // This allows immediate testing with the existing Enhanced RAG WebSocket
       console.log(`NATS connection intended for: ${NATS_WS_URL}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ NATS connection failed, using WebSocket only:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -362,7 +362,7 @@ export class RealTimeSearchService {
         default:
           console.log('📨 Received WebSocket message:', message);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to parse WebSocket message:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -393,7 +393,7 @@ export class RealTimeSearchService {
         // limit is not directly in RealTimeSearchOptions, use default or add to options if needed
       };
       return await this.performHTTPSearch(query, httpOptions);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Real-time search failed:', error instanceof Error ? error.message : String(error));
       this.state.update(s => ({
         ...s,
@@ -413,7 +413,7 @@ export class RealTimeSearchService {
     const promise = new Promise<SearchResult[]>((resolve, reject) => {
       const searchId = `search_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const results: SearchResult[] = [];
-      let searchCompleted = false;
+      let searchCompleted = $state(false);
 
       const messageHandler = (event: MessageEvent) => {
         try {
@@ -436,7 +436,7 @@ export class RealTimeSearchService {
               reject(new Error((message.data as SearchErrorData).error));
               break;
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.error('❌ Error processing streaming search response:', error instanceof Error ? error.message : String(error));
         }
       };
@@ -507,7 +507,7 @@ export class RealTimeSearchService {
         const results = data.results || [];
         this.state.update(s => ({ ...s, results, isSearching: false }));
         return results;
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`❌ Endpoint ${endpoint} failed:`, error instanceof Error ? error.message : String(error));
         lastError = error as Error;
         continue;

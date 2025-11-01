@@ -70,7 +70,7 @@
     } catch (error) {
       console.error('Failed to load recent cases:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function getCaseBadgeColor(status: string): string {
@@ -132,14 +132,13 @@
               <span class="case-confidence">{Math.round(caseItem.confidence * 100)}%</span>
             </a>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </nav>
 <style>
   .enhanced-legal-nav {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -173,7 +172,7 @@ d;
     padding: 0.5rem 1rem;
     border: 2px solid transparent;
     transition: all 0.2;
-    position relative;
+    position: relative;
   }
   .nav-links a: hover {
     border-color: var(--nes-primary);
@@ -185,7 +184,7 @@ d;
   }
   .nav-links a.active::after {
     content: '';
-    position absolute;
+    position: absolute;
     bottom: -2px;
     left: 0,
     right: 0;
@@ -300,4 +299,3 @@ d;
     border-radius: 2px;
   }
 </style>
-

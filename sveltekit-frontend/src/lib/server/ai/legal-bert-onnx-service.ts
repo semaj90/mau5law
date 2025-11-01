@@ -53,7 +53,7 @@ export class LegalBertONNXService extends EventEmitter {
   private modelConfig: ONNXModelConfig;
   private session: any = null; // ONNX InferenceSession
   private tokenizer: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private performanceMetrics = {
     totalInferences: 0,
     averageLatency: 0,
@@ -401,7 +401,7 @@ export class LegalBertONNXService extends EventEmitter {
         await this.session.release();
         this.session = null;
       }
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       this.emit('disposed');
     } catch (error) {
       console.error('Error disposing Legal-BERT ONNX service:', error);

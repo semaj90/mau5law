@@ -5,6 +5,14 @@
   let mounted = $state(false);
   let machineId = $state('auth-machine'); // simplified default
   let transitions = $state<any[]>([]);
+  // Precompute a stable sorted list for the template to iterate over.
+  // Using $derived keeps this reactive in Svelte 5 runes mode.
+  let sortedTransitions = $derived(() => {
+    if (!Array.isArray(transitions)) return [];
+    return [...transitions].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+  });
   let currentState = $state('');
   let loading = $state(true);
   let selectedTransition = $state<any | null>(null);
@@ -191,7 +199,8 @@
           </div>
         </div>
         <div class="timeline-container">
-          {#each transitions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as transition}
+          <!-- Replace complex inline each with a simple each over sortedTransitions -->
+          {#each sortedTransitions as transition}
             <button
               type="button"
               class="transition-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
@@ -222,7 +231,8 @@
                     <div class="detail-section">
                       <h4>Guards ({(transition.guards || []).length})</h4>
                       <div class="guards-list">
-                        {#each (transition.guards || []) as guard}
+-                        {#each Array.isArray((transition.guards || [])) ? (transition.guards || []) : [] as guard}
++                        {#each transition.guards || [] as guard}
                           <span class="guard-badge">✓ {guard}</span>
                         {/each}
                         {#if !(transition.guards || []).length}
@@ -233,7 +243,8 @@
                     <div class="detail-section">
                       <h4>Actions ({(transition.actions || []).length})</h4>
                       <div class="actions-list">
-                        {#each (transition.actions || []) as action}
+-                        {#each Array.isArray((transition.actions || [])) ? (transition.actions || []) : [] as action}
++                        {#each transition.actions || [] as action}
                           <span class="action-badge">⚡ {action}</span>
                         {/each}
                       </div>

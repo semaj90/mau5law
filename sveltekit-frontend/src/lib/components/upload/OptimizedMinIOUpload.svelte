@@ -4,7 +4,7 @@
   // @ts-nocheck - Service import compatibility (requires external service definitions for full type safety)
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import { toastService } from '$lib/services/toast-service';
   import { gpuAccelerationService } from '$lib/services/gpu-acceleration-service';
   import { postgresqlVectorService } from '$lib/services/postgresql-vector-service';
@@ -211,7 +211,7 @@
   }
   // Live retry countdown ticker (increments state so countdown re-renders)
   let retryTicker = $state(0);
-  let retryInterval: unknown = null;
+  let retryInterval: any = null;
   function ensureRetryTicker() {
     if (retryInterval) return; // already running
     retryInterval = setInterval(() => {
@@ -240,7 +240,7 @@
       }
       return fs;
     });
-    uploading = false;
+    uploading = $state(false);
     liveMessage = 'All uploads canceled';
     if (enableToastNotifications) {
       toastService.info('Uploads canceled', 'All in‑flight and queued uploads have been canceled.', { duration: 4000 });
@@ -258,12 +258,12 @@
   function handleDragLeave(_event: DragEvent) {
     _event.preventDefault();
     if (disabled || uploading) return;
-    dragOver = false;
+    dragOver = $state(false);
   }
   function handleDrop(_event: DragEvent) {
     _event.preventDefault();
     if (disabled || uploading) return;
-    dragOver = false;
+    dragOver = $state(false);
     const droppedFiles = Array.from(_event.dataTransfer?.files || []);
     processFiles(droppedFiles);
   }
@@ -313,7 +313,6 @@
     fileStates = fileStates.filter((_, i) => i !== index);
     serializeSession();
   }
-
   function cancelUpload(index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
@@ -644,7 +643,6 @@
             }
           })
         }).catch((err) => { console.warn('Redis publish failed:', err); });
-
         fs.progress = 100;
         fs.status = 'completed';
         performanceMetrics.completedFiles++;
@@ -736,8 +734,8 @@
         if (res.ok) {
           const data = await res.json();
           minioHealthy = !!data?.ok;
-        } else minioHealthy = false;
-      } catch { minioHealthy = false; }
+        } else minioHealthy = $state(false);
+      } catch { minioHealthy = $state(false); }
     })();
   });
   // Reactive persistence effect (lightweight)
@@ -747,7 +745,6 @@
     queueMicrotask(serializeSession);
   });
 </script>
-
 <!-- MinIO Upload Zone -->
 <div class="upload-container">
   <!-- Hidden file input -->
@@ -877,8 +874,7 @@
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Upload Progress -->
   {#if uploadStatus !== 'idle'}
@@ -903,8 +899,7 @@
           {errorMessage || 'Upload failed'}
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Performance Metrics Display -->
   {#if uploading || performanceMetrics.completedFiles > 0}
     <div class="performance-metrics">
@@ -925,22 +920,18 @@
           <div class="metric-item">
             <span class="metric-label">Avg Time:</span>
             <span class="metric-value">{Math.round(performanceMetrics.averageUploadTime)}ms</span>
-          </div>
-        {/if}
+          {/if}
         {#if performanceMetrics.gpuTasksSubmitted > 0}
           <div class="metric-item">
             <span class="metric-label">GPU Tasks:</span>
             <span class="metric-value">{performanceMetrics.gpuTasksSubmitted}</span>
-          </div>
-        {/if}
+          {/if}
       </div>
       {#if enableGPUProcessing}
         <div class="gpu-status">
           <span class="gpu-indicator">🚀 GPU Processing Enabled</span>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Upload Actions -->
   <div class="upload-actions">
     <button
@@ -983,8 +974,7 @@
   {#if minioHealthy === false}
     <div class="error-alert mt-2" role="alert">
       <AlertCircle class="w-4 h-4" /> MinIO health check failed – uploads may not persist.
-    </div>
-  {/if}
+    {/if}
   <div class="sr-only" aria-live="polite">{liveMessage}</div>
   <!-- Hidden style usage helper to ensure Svelte marks selectors as used (addresses spurious unused selector warnings) -->
   <div style="display:none" aria-hidden="true" class="mini-progress-bar progress-bar"></div>
@@ -994,7 +984,6 @@
     ></span>
   </div>
 </div>
-
 <style>
   .upload-container {
     width: 100%;
@@ -1388,4 +1377,3 @@
   }
   /* removed duplicated JS block accidentally appended during migration */
 </style>
-

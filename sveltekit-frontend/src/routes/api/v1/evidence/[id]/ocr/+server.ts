@@ -35,7 +35,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const cookieHeader = request.headers.get('cookie');
     const cookies = parseCookies(cookieHeader);
     let anonId = cookies['anon_id'] ?? null;
-    let setAnonCookie = false;
+    let setAnonCookie = $state(false);
     if (!anonId && isAnonymous) {
       anonId = generateAnonId();
       setAnonCookie = true;
@@ -67,7 +67,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       processedAt?: string | number | Date | null;
       captchaToken?: string | null;
       // allow extra fields safely
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     const rawBody = await request.json();
@@ -85,7 +85,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     } = body;
 
     // --- Modified anonymous handling: support client-side fallback & consent flow ---
-    let consentFlow = false;
+    let consentFlow = $state(false);
     let claimToken: string | null = null;
     let claimUrl: string | null = null;
     if (isAnonymous) {
@@ -221,7 +221,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
           claimable?: boolean;
           claimToken?: string;
           claimExpiry?: number;
-          [key: string]: unknown;
+          [key: string]: any;
         };
 
         const metaObj: OCRMetadata = { anon: true, anonId, anonExpiry: expiry, ingestQueued: false };
@@ -258,9 +258,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Enqueue ingestion if tensors not processed
     const enqueueVectorIngestion = async (
       id: number,
-      metadataRaw: unknown,
+      metadataRaw: any,
       isAnonymousFlag: boolean,
-      localsParam: unknown
+      localsParam: any
     ): Promise<boolean> => {
       try {
         const localsObj = (localsParam as LocalsWithPool) ?? ({} as LocalsWithPool);
@@ -295,7 +295,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         // mark ingestQueued in metadata on DB if possible (best-effort)
         try {
           if (updatedEvidence) {
-            const metaObj = parseMetadata((updatedEvidence as unknown as { metadata?: unknown }).metadata);
+            const metaObj = parseMetadata((updatedEvidence as unknown as { metadata?: any }).metadata);
             metaObj.ingestQueued = true;
             const metaUpdate: { metadata: string } = { metadata: JSON.stringify(metaObj) };
             await db.update(evidence).set(metaUpdate).where(eq(evidence.id, evidenceId));
@@ -354,7 +354,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         headers,
       }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Evidence OCR update error:', err);
 
@@ -450,11 +450,11 @@ function generateClaimToken() {
 }
 
 // Add small types and helpers to avoid `any`
-type SharedWorkerPool = { enqueue: (job: unknown) => Promise<void> | void };
+type SharedWorkerPool = { enqueue: (job: any) => Promise<void> | void };
 type LocalsWithPool = Record<string, unknown> & { sharedWorkerPool?: SharedWorkerPool };
 
 // safe metadata parser
-function parseMetadata(raw: unknown): Record<string, unknown> {
+function parseMetadata(raw: any): Record<string, unknown> {
   // handle stringified JSON or plain objects
   if (!raw) return {};
   if (typeof raw === 'string') {

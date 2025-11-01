@@ -14,9 +14,9 @@ const defaultConfig: ApiConfig = {
 // Fix: proper ApiError class implementation
 export class ApiError extends Error {
   public status: number;
-  public data?: unknown;
+  public data?: any;
 
-  constructor(message: string, status = 0, data?: unknown) {
+  constructor(message: string, status = 0, data?: any) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
@@ -56,7 +56,7 @@ export async function apiFetch<T = any>(
     }
     // Fallback to text
     return (await response.text()) as unknown as T;
-  } catch (err: unknown) {
+  } catch (err: any) {
     clearTimeout(timeoutId);
     if (err instanceof ApiError) {
       throw err;

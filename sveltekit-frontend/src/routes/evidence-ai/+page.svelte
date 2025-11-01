@@ -101,7 +101,7 @@
       ws.onopen = () => {
         console.log('✅ WebSocket connected to Python AI Server ->', url);
         wsConnected = true;
-        wsReconnecting = false;
+        wsReconnecting = $state(false);
         resetBackoff();
       };
 
@@ -120,7 +120,7 @@
 
       ws.onclose = () => {
         console.log('🔌 WebSocket disconnected');
-        wsConnected = false;
+        wsConnected = $state(false);
         ws = null;
 
         // Exponential backoff reconnect
@@ -134,7 +134,7 @@
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
-      wsConnected = false;
+      wsConnected = $state(false);
     }
   }
 
@@ -155,7 +155,7 @@
 
       case 'COMPLETE':
         // Streaming complete
-        isStreaming = false;
+        isStreaming = $state(false);
         console.log('✅ AI streaming complete');
 
         // Cache the final analysis
@@ -232,12 +232,12 @@
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    isDragging = false;
+    isDragging = $state(false);
   }
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragging = false;
+    isDragging = $state(false);
 
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
@@ -374,7 +374,7 @@
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
 
@@ -434,7 +434,7 @@
     }, 30000);
 
     return () => {
-      mounted = false;
+      mounted = $state(false);
       clearInterval(heartbeat);
       if (ws) ws.close();
       if (searchTimeout) clearTimeout(searchTimeout);
@@ -690,7 +690,7 @@
             <div class="mt-4 space-y-2">
               <p class="text-sm text-slate-400">💡 AI Suggestions:</p>
               <div class="flex flex-wrap gap-2">
-                {#each aiSuggestions as suggestion}
+                {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
                   <button
                     class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-full text-sm transition-colors"
                     onclick={() => searchQuery = suggestion.insight}
@@ -733,7 +733,7 @@
               🏷️ Auto-Extracted Tags
             </h3>
             <div class="flex flex-wrap gap-2">
-              {#each extractedTags as tag}
+              {#each Array.isArray(extractedTags) ? extractedTags : [] as tag}
                 <span class="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-300 rounded-full text-sm font-medium">
                   #{tag}
                 </span>
@@ -747,7 +747,7 @@
           <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-slate-700">
             <h3 class="text-lg font-semibold mb-4">📊 Search Results ({searchResults.length})</h3>
             <div class="space-y-3">
-              {#each searchResults as result}
+              {#each Array.isArray(searchResults) ? searchResults : [] as result}
                 <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700 hover:border-slate-600 transition-colors">
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="font-medium text-slate-200">{result.filename || result.file_id}</h4>
@@ -762,7 +762,7 @@
                   {/if}
                   {#if result.tags}
                     <div class="flex flex-wrap gap-1">
-                      {#each result.tags as tag}
+                      {#each Array.isArray(result.tags) ? result.tags : [] as tag}
                         <span class="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded">
                           #{tag}
                         </span>

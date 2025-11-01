@@ -1,6 +1,5 @@
 declare module './UploadArea.svelte' {
   import type { SvelteComponentTyped } from 'svelte';
-
   // Minimal props shape for UploadArea used by the example.
   // Add additional props here if UploadArea exposes more.
   interface Props {
@@ -15,6 +14,5 @@ declare module './UploadArea.svelte' {
     allowedMimeTypes?: string[];
     // ...add other known props as needed
   }
-
   export default class UploadArea extends SvelteComponentTyped<Props> {}
 }

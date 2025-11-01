@@ -51,18 +51,18 @@ export interface SystemHealthStatus {
 // Lightweight local shapes to avoid cross-module JobType/JobDefinition mismatches
 interface OrchestratorJobDefinition {
   type?: string; // use plain string here to be permissive
-  payload?: unknown;
+  payload?: any;
   priority?: number;
   dependencies?: string[];
 }
 
 interface OrchestratorLike {
-  start?: (opts?: unknown) => Promise<void> | void;
+  start?: (opts?: any) => Promise<void> | void;
   submitJob: (job: Partial<OrchestratorJobDefinition>) => Promise<string>;
   getProcessingMetrics?: () => Promise<ProcessingMetrics> | ProcessingMetrics;
   getMetrics?: () => Promise<ProcessingMetrics> | ProcessingMetrics;
   shutdown?: () => Promise<void> | void;
-  updateQueueRouting?: (queueName: string, attachment: unknown) => void;
+  updateQueueRouting?: (queueName: string, attachment: any) => void;
 }
 
 // Add concrete shape for queue attachment info (replace loose `any`)
@@ -71,11 +71,11 @@ interface AttachmentInfo {
   currentLoad?: number;
   autoScaling?: { enabled?: boolean } | null;
   performanceMetrics?: { averageProcessingTime?: number } | null;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Helper to safely read numeric fields from unknown objects
-function safeNumber(obj: unknown, key: string, fallback = 0): number {
+function safeNumber(obj: any, key: string, fallback = 0): number {
   if (!obj || typeof obj !== 'object') return fallback;
   const record = obj as Record<string, unknown>;
   const v = record[key];
@@ -90,7 +90,7 @@ function safeNumber(obj: unknown, key: string, fallback = 0): number {
 
 // Type-check for ProcessingMetrics-like shape (runtime-only boolean).
 // Avoid using a TypeScript type predicate here to prevent parse issues in some toolchains.
-function hasProcessingMetricsShape(v: unknown): boolean {
+function hasProcessingMetricsShape(v: any): boolean {
   if (!v || typeof v !== 'object') return false;
   const r = v as Record<string, unknown>;
   // check at least one expected numeric property to identify the shape
@@ -103,23 +103,23 @@ export class UnifiedLegalOrchestrationService {
 
   // Use defensive, minimal shapes so we don't depend on exact exported member names
   private queueManager: {
-    start?: (orchestrator?: unknown, opts?: unknown) => Promise<void> | void;
+    start?: (orchestrator?: any, opts?: any) => Promise<void> | void;
     attachQueue?: (queueName: string, types: JobType[]) => Promise<void> | void;
     // now returns attachments with known-ish shape
     getAttachments?: () => Promise<Map<string, AttachmentInfo>> | Map<string, AttachmentInfo>;
-    optimizeBasedOnJobStatus?: (jobId?: string, status?: unknown) => void;
+    optimizeBasedOnJobStatus?: (jobId?: string, status?: any) => void;
     shutdown?: () => Promise<void> | void;
   } = {};
 
   private stateManager: {
-    start?: (opts?: unknown) => Promise<void> | void;
+    start?: (opts?: any) => Promise<void> | void;
     createJobStatusStore?: (jobId: string) => Readable<JobStatus | undefined>;
-    subscribe?: (sub: { type: string; handler: (data: unknown) => void }) => void;
+    subscribe?: (sub: { type: string; handler: (data: any) => void }) => void;
     getActiveSubscriptions?: () => number;
     shutdown?: () => Promise<void> | void;
   } = {};
 
-  private initialized = false;
+  private initialized = $state(false);
 
   constructor() {
     this.orchestrator = new OptimizedRabbitMQOrchestrator();
@@ -242,7 +242,7 @@ export class UnifiedLegalOrchestrationService {
    */
   async processEvidenceCanvas(
     canvasId: string,
-    evidenceItems: unknown[],
+    evidenceItems: any[],
     analysisType: 'detective' | 'forensic' = 'detective'
   ): Promise<LegalProcessingResult> {
     const pipeline: JobType[] = [
@@ -355,7 +355,7 @@ export class UnifiedLegalOrchestrationService {
     try {
       const orch = this.orchestrator as unknown as OrchestratorLike;
       await Promise.all([orch.shutdown?.(), this.queueManager.shutdown?.(), this.stateManager.shutdown?.()]);
-      this.initialized = false;
+      this.initialized = $state(false);
       console.log('Unified Legal Orchestration Service shutdown completed');
     } catch (error) {
       console.error('Error during shutdown:', error);
@@ -370,7 +370,7 @@ export class UnifiedLegalOrchestrationService {
     // Subscribe state manager to orchestrator job updates
     this.stateManager.subscribe?.({
       type: 'job-status-change',
-      handler: (data: unknown) => {
+      handler: (data: any) => {
         try {
           // safe access: data might be unknown; attempt to read jobId/status
           const rec = data && typeof data === 'object' ? (data as Record<string, unknown>) : {};
@@ -385,7 +385,7 @@ export class UnifiedLegalOrchestrationService {
     // Subscribe orchestrator to queue attachment changes
     this.stateManager.subscribe?.({
       type: 'queue-attachment-change',
-      handler: (data: unknown) => {
+      handler: (data: any) => {
         try {
           const rec = data && typeof data === 'object' ? (data as Record<string, unknown>) : {};
           const queueName = typeof rec.queueName === 'string' ? rec.queueName : undefined;
@@ -461,13 +461,13 @@ export class UnifiedLegalOrchestrationService {
   }
 
   // Add small helper to instantiate imported modules safely
-  private tryInstantiateModule(m: unknown): unknown | undefined {
+  private tryInstantiateModule(m: any): any | undefined {
     if (!m) return undefined;
     const mod = m as Record<string, unknown>;
     const Ctor = (mod.AutoAttachQueueManager ?? mod.AsyncRabbitMQStateManager ?? mod.default ?? mod) as unknown;
     try {
       if (typeof Ctor === 'function') {
-        const ctorTyped = Ctor as { new (): unknown };
+        const ctorTyped = Ctor as { new (): any };
         return new ctorTyped();
       }
       return Ctor;

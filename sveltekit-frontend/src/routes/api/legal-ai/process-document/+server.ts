@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       try {
         const status = await getJobStatus(jobId);
         return json(status);
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed: 'any' to: 'unknown'
         console.error('❌ Error checking job status:', error);
         return json(
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           message: 'Document queued for processing',
           timestamp: new Date().toISOString(),
         });
-      } catch (queueError: unknown) {
+      } catch (queueError: any) {
         // Changed: 'any' to: 'unknown'
         console.error('❌ Queue error, falling back to direct processing:', queueError);
         // Fall through to direct processing
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processed_by: 'go-legal-ai-server-direct',
         timestamp: new Date().toISOString(),
       });
-    } catch (fetchError: unknown) {
+    } catch (fetchError: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Direct processing error:', fetchError);
       return json(
@@ -208,7 +208,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         { status: 503 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('❌ API endpoint error:', error);
     return json(
@@ -250,7 +250,7 @@ export const GET: RequestHandler = async () => {
       integration_status: 'connected',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('❌ Go server health check failed:', error);
     return json(

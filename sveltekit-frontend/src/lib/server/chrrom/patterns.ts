@@ -60,7 +60,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
   // Redis L1 for cross-instance CHR pattern sharing
   let cache: null | {,
     getJSON: <T = unknown>(_key: string) => Promise<T | null>;
-    setJSON: (_key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
+    setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
   } = null;
   try {
     // Lazy import only on server

@@ -13,7 +13,7 @@ export interface BaseMetadata {
   confidence?: number;
   lastUpdated?: number;
   // Changed: replace `any` with `unknown` to avoid unexpected-any lint/TS error
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 /** Generic stored object format used by RAG pipelines */
@@ -80,7 +80,7 @@ export interface NESMemoryStats {
 export interface GPUResourceStub {
   destroy?: () => void;
   // Changed: avoid `any` for runtime-specific fields; use `unknown` to force callers to narrow
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface TextureCacheEntry {

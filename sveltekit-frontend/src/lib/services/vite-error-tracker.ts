@@ -112,7 +112,7 @@ export interface ErrorEvolution {
  */
 export class ViteErrorTracker {
   private config: Required<ErrorTrackerConfig>;
-  private isMonitoring: boolean = false;
+  private isMonitoring: boolean = $state(false);
   private lastSnapshot: ErrorEvolution | null = null;
   private monitoringInterval: NodeJS.Timeout | null = null;
 
@@ -196,7 +196,7 @@ export class ViteErrorTracker {
 
     console.log('🛑 Stopping error monitoring...');
 
-    this.isMonitoring = false;
+    this.isMonitoring = $state(false);
 
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);

@@ -5,17 +5,17 @@
 // =====================================================
 }
 export interface Props {
-  data?: unknown;
+  data?: any;
   children?: import('svelte').Snippet;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface LayoutProps {
-  children: import('svelte').Snippet;
-  data?: unknown;
+   import('svelte').Snippet;
+  data?: any;
 }
 export interface PageProps {
   data: any;
-  form?: unknown;
+  form?: any;
 }
 // =====================================================
 // SYSTEM STATUS & HEALTH
@@ -74,7 +74,7 @@ export interface SearchResults {
 export interface TestResults {
   // Core fields (optional to allow progressive assignment)
   query?: string;
-  results?: unknown[];
+  results?: any[];
   timestamp?: string;
   performance?: {
     embedding_time?: number;
@@ -125,7 +125,7 @@ export interface AnalysisResults {
     | {
         message: string;
         code: string;
-    details?: unknown;
+    details?: any;
       }
   summary?:;
     | {
@@ -378,7 +378,7 @@ export interface ChatSession {
 export interface APIError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
   timestamp: string;
   request_id?: string;
 }
@@ -386,7 +386,7 @@ export interface ValidationError {
   field: string;
   message: string;
   code: string;
-  value?: unknown;
+  value?: any;
 }
 export interface ValidationFormState {
   isValid: boolean;

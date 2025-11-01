@@ -61,4 +61,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     );
   }
 };
-export const prerender = false;
+export const prerender = $state(false);

@@ -10,16 +10,16 @@ https://svelte.dev/e/attribute_duplicate -->
    */
   import { onMount } from 'svelte';
   import { writable, derived, get } from 'svelte/store';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/input/Input.svelte'; // fixed: use default import (component exports default)
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Input } from '$lib/components/ui/input/Input.svelte'; // fixed: use default import (component exports default)
   import type { ComponentType } from 'svelte';
   // Badge replaced with span - not available in enhanced-bits
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import Alert from '$lib/components/ui/alert/Alert.svelte';
-  import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
-  import Separator from '$lib/components/ui/separator/Separator.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import Label from '$lib/components/ui/label/LabelCompat.svelte';
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
+  import { AlertDescription } from '$lib/components/ui/alert/AlertDescription.svelte';
+  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+  import { Label } from '$lib/components/ui/label/LabelCompat.svelte';
   // Your established store patterns
   import {
     aiAgentStore,
@@ -34,7 +34,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let documentContent = '';
   let caseId = '';
   let selectedDocumentType = 'legal';
-  let batchMode = false;
+  let batchMode = $state(false);
   let batchDocuments = writable([]);
   // Processing state
   let ingestResults = writable([] as any[]);
@@ -188,7 +188,6 @@ https://svelte.dev/e/attribute_duplicate -->
   // Add this typed constructor alias so TypeScript treats Input as a component constructor
   const InputCtor = Input as unknown as ComponentType;
 </script>
-
 <!-- Component HTML following your UI patterns -->
 <div class="w-full max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header with system status -->
@@ -248,8 +247,7 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
         <Progress value={$currentProgress} class="w-full" />
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Main Input Form -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="nes-container">
@@ -275,7 +273,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="space-y-2">
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
-            {#each documentTypes as type}
+            {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
               <button
                 class="nes-btn bits-btn justify-start is-small {selectedDocumentType === type.value
                   ? 'is-primary'
@@ -361,8 +359,7 @@ https://svelte.dev/e/attribute_duplicate -->
             >
               Clear Batch
             </Button>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -536,8 +533,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- AI Chat Integration (if active conversation exists) -->
   {#if $currentConversation.length > 0}
     <div class="nes-container">
@@ -546,7 +542,7 @@ https://svelte.dev/e/attribute_duplicate -->
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-4 max-h-60 overflow-y-auto">
-          {#each $currentConversation.slice(-2) as message}
+          {#each Array.isArray($currentConversation.slice(-2)) ? $currentConversation.slice(-2) : [] as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
               <div
                 class="max-w-[80%] p-3 rounded-lg {message.role === 'user'
@@ -559,17 +555,14 @@ https://svelte.dev/e/attribute_duplicate -->
                 {#if message.sources?.length > 0}
                   <div class="text-xs opacity-75 mt-2">
                     Sources: {message.sources.length} documents
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* Custom styles following your YoRHa theme patterns */
   :global(.progress-bar) {

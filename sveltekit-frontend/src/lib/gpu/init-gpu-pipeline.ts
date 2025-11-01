@@ -1,19 +1,16 @@
 import shaderCache from './webgl-shader-cache';
-
 export interface GPUInitResult {
   gl?: WebGL2RenderingContext;
   adapter?: GPUAdapter;
   device?: GPUDevice;
 }
-
 export async function initGPU(): Promise<GPUInitResult> {
   const result: GPUInitResult = {};
-
   // Try WebGPU first
   if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
     try {
       // Use a runtime check and a narrow type to avoid `any` and ts-ignore
-      const nav: unknown = navigator;
+      const nav: any = navigator;
       if (typeof nav === 'object' && nav && 'gpu' in (nav as any)) {
         const gpuNav = nav as { gpu: any };
         const adapter = await gpuNav.gpu.requestAdapter();
@@ -29,7 +26,6 @@ export async function initGPU(): Promise<GPUInitResult> {
       console.warn('WebGPU init failed:', e);
     }
   }
-
   // Fallback to WebGL2
   if (typeof document !== 'undefined') {
     const canvas = document.createElement('canvas');
@@ -47,8 +43,6 @@ export async function initGPU(): Promise<GPUInitResult> {
       }
     }
   }
-
   return result;
 }
-
 export default { initGPU };

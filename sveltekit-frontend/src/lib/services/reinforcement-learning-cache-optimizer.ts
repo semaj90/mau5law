@@ -4,7 +4,7 @@
  * Integrates with GPU Cache Orchestrator for predictive analytics
  */
 // Lightweight local EventEmitter replacement to avoid Node-only 'events' import in frontend code
-type Listener = (...args: unknown[]) => void;
+type Listener = (...args: any[]) => void;
 class LocalEventEmitter {
  private listeners = new Map<string, Listener[]>();
  on(event: string, fn: Listener) {
@@ -22,7 +22,7 @@ class LocalEventEmitter {
    if (!arr) return;
    this.listeners.set(event, arr.filter(l => l !== fn));
  }
- emit(event: string, ...args: unknown[]) {
+ emit(event: string, ...args: any[]) {
    const arr = this.listeners.get(event);
    if (!arr) return false;
    for (const fn of arr.slice()) {
@@ -78,7 +78,7 @@ export interface CacheAction {
     compressionLevel?: number;
     replicationFactor?: number;
     evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'random';
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface Experience {
@@ -99,7 +99,7 @@ export interface CacheMetrics {
   cacheUtilization?: number;
   gpuTemperature?: number;
   // allow other optional numeric metrics from implementation
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // === Neural Network Architecture (Simplified) ===
@@ -120,7 +120,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
   private neuralNetwork: NeuralNetwork | null = null; // DQN network
   private targetNetwork: NeuralNetwork | null = null; // Target DQN network
   private experienceReplay: Experience[] = []; // Experience replay buffer
-  private isTraining = false;
+  private isTraining = $state(false);
   private trainingEpisodes = 0;
   private totalReward = 0;
   private averageReward = 0;
@@ -166,7 +166,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
       }
       this.emit('initialized');
       console.log(`✅ RL Optimizer initialized with ${this.config.algorithm.toUpperCase()}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = toError(error);
       console.error('❌ Failed to initialize RL Optimizer:', err);
       throw err;
@@ -236,12 +236,12 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
         this.updateTargetNetwork();
       }
       this.emit('dqnTrainingComplete', { batchSize: batch.length, episode: this.trainingEpisodes });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = toError(error);
       console.error('DQN training error:', err);
       this.emit('trainingError', err);
     } finally {
-      this.isTraining = false;
+      this.isTraining = $state(false);
     }
   }
   /**
@@ -458,7 +458,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
         actionsExecuted,
         averageReward: actionsExecuted > 0 ? episodeReward / actionsExecuted : 0
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = toError(error);
       console.error('Training episode error:', err);
       throw err;
@@ -792,7 +792,7 @@ export const reinforcementLearningCacheOptimizer = new ReinforcementLearningCach
 // Add: strong types to replace `any` use in action execution and episode return
 export interface CacheActionResult {
   success: boolean;
-  info?: unknown;
+  info?: any;
 }
 
 export interface TrainingEpisodeResult {
@@ -802,7 +802,7 @@ export interface TrainingEpisodeResult {
 }
 
 // Helper: convert unknown to Error for safe handling
-function toError(err: unknown): Error {
+function toError(err: any): Error {
   if (err instanceof Error) return err;
   try {
     return new Error(typeof err === 'string' ? err : JSON.stringify(err));

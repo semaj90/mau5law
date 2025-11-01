@@ -12,7 +12,7 @@
   } from "$lib/stores/sessionStore.svelte";
   import { cn } from '$lib/utils';
   // prefer named exports from the UI barrel to avoid duplicate-prop/import mismatches
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   // lightweight inline icon map (emoji placeholders) — avoids lucide type/export issues
   const ICON_EMOJI: Record<string, string> = {
     FileText: '📄',
@@ -290,7 +290,7 @@
       console.error('Failed to load user data:', err);
       error = 'Failed to load data. Please try again.';
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function navigateToItem(item: any) {
@@ -366,8 +366,7 @@
           <!-- replaced missing <ChevronDown /> -->
           <span class="w-4 h-4 inline-block">{ICON('ChevronDown')}</span>
         </Button>
-      </div>
-    {/if}
+      {/if}
   </div>
 
   {#if !collapsed}
@@ -386,8 +385,7 @@
             <p class="text-xs text-gray-500 capitalize">{user.role}</p>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
 
     <!-- Search and Filters -->
     <div class="p-4 space-y-3 border-b border-gray-200">
@@ -515,10 +513,8 @@
                     </div>
                   </div>
                 {/each}
-              </div>
-            {/if}
-          </div>
-        {/if}
+              {/if}
+          {/if}
 
         <!-- Items List -->
         <div class="p-4">
@@ -568,7 +564,7 @@
                   </div>
                   {#if item.tags && item.tags.length > 0}
                     <div class="flex flex-wrap gap-1 mt-1">
-                      {#each item.tags.slice(0, 2) as tag}
+                      {#each Array.isArray(item.tags.slice(0, 2)) ? item.tags.slice(0, 2) : [] as tag}
                         <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
                           {tag}
                         </span>
@@ -576,8 +572,7 @@
                       {#if item.tags.length > 2}
                         <span class="text-xs text-gray-400">+{item.tags.length - 2}</span>
                       {/if}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </button>
             {/each}
@@ -596,13 +591,10 @@
                     >
                       Clear search
                     </Button>
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
 
     <!-- Footer Actions -->
@@ -620,8 +612,7 @@
           </Button>
         </div>
       </div>
-    </div>
-   {/if}
+    {/if}
  </div>
 
 <style>

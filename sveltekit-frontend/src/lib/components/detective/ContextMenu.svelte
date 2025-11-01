@@ -10,12 +10,12 @@ https://svelte.dev/e/js_parse_error -->
     x: number;
     y: number;
     item: Evidence | null;
-    onauditResults?: (event?: unknown) => void;
-    onauditError?: (event?: unknown) => void;
-    onagentReviewResult?: (event?: unknown) => void;
-    onagentReviewError?: (event?: unknown) => void;
-    onsendToCase?: (event?: unknown) => void;
-    onclose?: (event?: unknown) => void;
+    onauditResults?: (event?: any) => void;
+    onauditError?: (event?: any) => void;
+    onagentReviewResult?: (event?: any) => void;
+    onagentReviewError?: (event?: any) => void;
+    onsendToCase?: (event?: any) => void;
+    onclose?: (event?: any) => void;
   }
   // Destructure all props (Svelte 5 runes)
   let {
@@ -29,10 +29,10 @@ https://svelte.dev/e/js_parse_error -->
     onsendToCase,
     onclose
   }: Props = $props();
-  import DropdownMenuContent from "$lib/components/ui/dropdown-menu/DropdownMenuContent.svelte";
-  import DropdownMenuItem from "$lib/components/ui/dropdown-menu/DropdownMenuItem.svelte";
-  import DropdownMenuRoot from "$lib/components/ui/dropdown-menu/DropdownMenuRoot.svelte";
-  import DropdownMenuSeparator from "$lib/components/ui/dropdown-menu/DropdownMenuSeparator.svelte";
+  import { DropdownMenuContent } from "$lib/components/ui/dropdown-menu/DropdownMenuContent.svelte";
+  import { DropdownMenuItem } from "$lib/components/ui/dropdown-menu/DropdownMenuItem.svelte";
+  import { DropdownMenuRoot } from "$lib/components/ui/dropdown-menu/DropdownMenuRoot.svelte";
+  import { DropdownMenuSeparator } from "$lib/components/ui/dropdown-menu/DropdownMenuSeparator.svelte";
   import type { Case, Evidence } from "$lib/types/index";
   // --- Phase 10: Context7 Evidence Actions ---
   // Trigger semantic audit, agent review, or vector search for this evidence
@@ -47,7 +47,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!res.ok) throw new Error('Failed to audit evidence');
       const data = await res.json();
       onauditResults?.();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message: String(error);
       onauditError?.({ message, evidence: item });
     }
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
     closeMenu();
   }
   function closeMenu() {
-    menuOpen = false;
+    menuOpen = $state(false);
     onclose?.();
   }
 </script>
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
             Send to Case
           </p>
         </div>
-        {#each cases as case_}
+        {#each Array.isArray(cases) ? cases : [] as case_}
           <DropdownMenuItem select={() => sendToCase(case_.id)}>
             <i class="space-y-4"></i>
             <div class="space-y-4">

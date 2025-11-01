@@ -144,7 +144,7 @@ export const POST: RequestHandler = async event => {
     // Prepare sources (omit large content when includeMetadata is false)
     const sources = includeMetadata
       ? ragResponse.sources || []
-      : (ragResponse.sources || []).map((s: unknown) => {
+      : (ragResponse.sources || []).map((s: any) => {
           const src = s as Source;
           return {
             id: src.id,
@@ -181,14 +181,14 @@ export const POST: RequestHandler = async event => {
     };
 
     // Add reasoning if available (safe access without `any`)
-    const reasoning = (ragResponse as unknown as { reasoning?: unknown }).reasoning;
+    const reasoning = (ragResponse as unknown as { reasoning?: any }).reasoning;
     if (reasoning) {
       // response.data is guaranteed above to be an object
       (response.data as Record<string, unknown>).reasoning = reasoning;
     }
 
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('RAG Query API Error:', errMsg);
     // Determine error type and appropriate response
@@ -232,7 +232,7 @@ export const GET: RequestHandler = async () => {
         lastUpdated: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {

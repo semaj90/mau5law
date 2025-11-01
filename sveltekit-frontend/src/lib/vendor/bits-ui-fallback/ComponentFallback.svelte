@@ -13,8 +13,8 @@ https://svelte.dev/e/js_parse_error -->
     variant?: string;
     size?: string;
     disabled?: boolean;
-    children?: unknownn;
-    [key: string]: unknownn;
+    children?: anyn;
+    [key: string]: anyn;
   }
   let {
     class = '',

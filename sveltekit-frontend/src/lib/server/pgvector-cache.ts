@@ -44,7 +44,7 @@ export async function findSimilar(embedding: number[], limit = 5): Promise<Embed
        LIMIT $2`,
       [embeddingStr, limit]
     );
-    return res.rows.map((r: unknown) => {
+    return res.rows.map((r: any) => {
       const row = r as Record<string, unknown>;
       return {
         id: String(row.id),

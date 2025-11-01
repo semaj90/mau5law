@@ -13,26 +13,21 @@ import {
 } from './langchain-ollama-service.js';
 import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js';
 import { webgpuTextTileRenderer, type InstantUIComponent } from '$lib/webgpu/text-tile-renderer.js';
-
 // Add narrowly-scoped helper types (insert near top of file)
 type WebGPURendererLike = {
   initialize?: () => Promise<boolean>;
   getStats?: () => Record<string, unknown>;
-  renderTilesToComponents?: (tiles: unknown, opts?: Record<string, unknown>) => Promise<InstantUIComponent[]>;
+  renderTilesToComponents?: (tiles: any, opts?: Record<string, unknown>) => Promise<InstantUIComponent[]>;
 };
-
 type ProcessingMetadata = {
   totalTokens?: number;
   avgChunkSize?: number;
   model?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
-type SourceItem = { content?: string; [k: string]: unknown };
-
+type SourceItem = { content?: string; [k: string]: any };
 // Add narrowly-scoped types to replace `any`
 type ByteArrayLike = Uint8Array | number[];
-
 /** Minimal representation of a SIMD text tile returned by the simd engine */
 interface TextTile {
   id: string;
@@ -41,16 +36,14 @@ interface TextTile {
   tileMetadata?: {
     semanticDensity?: number;
     categories?: string[];
-    [k: string]: unknown;
+    [k: string]: any;
   };
 }
-
 /** Input shape for batch/document queue */
 interface DocumentInput {
   content: string;
   metadata?: Record<string, unknown>;
 }
-
 export interface SIMDLangChainConfig extends Partial<LangChainConfig> {
   // SIMD-specific configuration
   simdConfig?: Partial<TextTileConfig>;
@@ -64,7 +57,6 @@ export interface SIMDLangChainConfig extends Partial<LangChainConfig> {
   memoryPoolSize?: number; // MB
   gpuAccelerationLevel?: number; // 0-1 scale
 }
-
 export interface SIMDProcessingResult extends ProcessingResult {
   // Enhanced with SIMD compression data
   simdData: {
@@ -82,7 +74,6 @@ export interface SIMDProcessingResult extends ProcessingResult {
     memoryEfficiency: number;
   };
 }
-
 export interface SIMDQueryResult extends QueryResult {
   // Enhanced with instant UI components
   instantComponents: InstantUIComponent[];
@@ -92,14 +83,12 @@ export interface SIMDQueryResult extends QueryResult {
     semanticPreservation: number;
   };
 }
-
 // add near top with other narrow types
 const _simdTypes = ['general', 'legal', 'ocr', 'ui'] as const;
 type SIMDType = (typeof _simdTypes)[number];
-function isSIMDType(v: unknown): v is SIMDType {
+function isSIMDType(v: any): v is SIMDType {
   return typeof v === 'string' && (_simdTypes as readonly string[]).includes(v);
 }
-
 export class LangChainSIMDBridge {
   private config: SIMDLangChainConfig;
   private processingQueue: DocumentInput[] = [];
@@ -110,7 +99,6 @@ export class LangChainSIMDBridge {
     cacheHitRatio: 0,
     gpuUtilizationAverage: 0,
   };
-
   constructor(config: Partial<SIMDLangChainConfig> = {}) {
     this.config = {
       // LangChain defaults (kept minimal)
@@ -149,7 +137,6 @@ export class LangChainSIMDBridge {
       gpuAcceleration: this.config.gpuAccelerationLevel,
     });
   }
-
   /**
    * Process document with integrated LangChain + SIMD pipeline
    */
@@ -165,7 +152,6 @@ export class LangChainSIMDBridge {
     const pipelineStartTime = Date.now();
     const processingId = `simd-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`; // use slice instead of deprecated substr
     console.log(`🚀 SIMD Pipeline processing: ${content.length} chars (ID: ${processingId})`);
-
     // Phase 1: LangChain processing (unless skipped)
     let langchainResult: ProcessingResult;
     let langchainTime = 0;
@@ -183,7 +169,6 @@ export class LangChainSIMDBridge {
         metadata: { totalTokens: Math.ceil(content.length / 4), avgChunkSize: content.length, model: 'direct' },
       } as unknown as ProcessingResult;
     }
-
     // Phase 2: SIMD compression with enhanced configuration
     const simdStart = Date.now();
     // derive a safe SIMD type from metadata.type (metadata is Record<string, unknown>)
@@ -194,7 +179,6 @@ export class LangChainSIMDBridge {
       uiTarget: options.generateUI ? 'component' : undefined,
     });
     const simdCompressionTime = Date.now() - simdStart;
-
     // Phase 3: Instant UI generation (if enabled)
     let instantComponents: InstantUIComponent[] = [];
     let uiGenerationTime = 0;
@@ -219,9 +203,7 @@ export class LangChainSIMDBridge {
       }
       uiGenerationTime = Date.now() - uiStart;
     }
-
     const totalPipelineTime = Date.now() - pipelineStartTime;
-
     // Combine results into enhanced processing result
     const lcMeta = (langchainResult.metadata ?? {}) as ProcessingMetadata;
     const enhancedResult: SIMDProcessingResult = {
@@ -256,7 +238,6 @@ export class LangChainSIMDBridge {
         memoryEfficiency: this.calculateMemoryEfficiency(content.length, simdResult),
       },
     };
-
     // Update performance metrics
     this.updatePerformanceMetrics(enhancedResult);
     console.log(
@@ -267,7 +248,6 @@ export class LangChainSIMDBridge {
     );
     return enhancedResult;
   }
-
   /**
    * Query documents with SIMD-enhanced results
    */
@@ -292,7 +272,6 @@ export class LangChainSIMDBridge {
       averageCompressionRatio: 1,
       semanticPreservation: 1,
     };
-
     if (options.generateInstantComponents !== false) {
       try {
         // Combine answer and source content for SIMD processing
@@ -303,7 +282,6 @@ export class LangChainSIMDBridge {
           context: `query-response-${question.substring(0, 20)}`,
           uiTarget: 'component',
         });
-
         const renderer = webgpuTextTileRenderer as unknown as WebGPURendererLike;
         const initialized = await (renderer.initialize?.() ?? Promise.resolve(false));
         if (initialized && typeof renderer.renderTilesToComponents === 'function') {
@@ -315,7 +293,6 @@ export class LangChainSIMDBridge {
         } else {
           instantComponents = this.generateCPUFallbackComponents(simdResult.compressedTiles);
         }
-
         compressionStats = {
           sourceCompression:
             combinedContent.length /
@@ -330,7 +307,6 @@ export class LangChainSIMDBridge {
         console.warn('SIMD query processing failed:', error);
       }
     }
-
     const processingTime = Date.now() - startTime;
     const enhancedResult: SIMDQueryResult = {
       // Standard query result fields
@@ -345,7 +321,6 @@ export class LangChainSIMDBridge {
     console.log(`✅ SIMD Query complete: ${processingTime}ms, ${instantComponents.length} instant components`);
     return enhancedResult;
   }
-
   /**
    * Batch process multiple documents with optimal SIMD pipeline
    */
@@ -384,7 +359,6 @@ export class LangChainSIMDBridge {
     );
     return results;
   }
-
   /**
    * Generate CPU fallback components when WebGPU is unavailable
    */
@@ -410,7 +384,6 @@ export class LangChainSIMDBridge {
       gpuUtilization: 0,
     }));
   }
-
   /**
    * Calculate memory efficiency of SIMD processing
    */
@@ -424,7 +397,6 @@ export class LangChainSIMDBridge {
     const totalSIMDSize = compressedSize + vertexBufferSize + componentDataSize;
     return Math.max(0, 1 - totalSIMDSize / (originalSize * 4)); // Assuming 4 bytes per char baseline
   }
-
   /**
    * Update performance metrics
    */
@@ -441,7 +413,6 @@ export class LangChainSIMDBridge {
         (result?.pipelineStats?.totalPipelineTime || 0)) /
       this.performanceMetrics.totalProcessed;
   }
-
   /**
    * Get comprehensive system statistics
    */
@@ -469,7 +440,6 @@ export class LangChainSIMDBridge {
       },
     };
   }
-
   /**
    * Update bridge configuration
    */
@@ -477,7 +447,6 @@ export class LangChainSIMDBridge {
     this.config = { ...this.config, ...newConfig };
     console.log('🔧 LangChain-SIMD Bridge config updated:', newConfig);
   }
-
   /**
    * Test the complete pipeline with sample data
    */
@@ -527,7 +496,6 @@ export class LangChainSIMDBridge {
     }
   }
 }
-
 // Export singleton instance for global use
 export const langchainSIMDBridge = new LangChainSIMDBridge({
   compressionTarget: 109, // Target 109:1 for 7-byte tiles

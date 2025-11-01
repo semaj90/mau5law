@@ -54,7 +54,7 @@
       health.set(data.health || {});
       const healthStatus = data.allSystemsOperational ? 'All systems operational' : 'Some systems offline';
       addLog(`Health check: ${healthStatus}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       addLog(`Health check failed: ${(error as Error).message}`);
     }
   }
@@ -64,7 +64,7 @@
       const data = await response.json();
       analytics.set(data.analytics || {});
       addLog('Analytics updated');
-    } catch (error: unknown) {
+    } catch (error: any) {
       addLog(`Analytics failed: ${(error as Error).message}`);
     }
   }
@@ -111,7 +111,7 @@
       } else {
         addLog(`❌ ${selectedOperation} failed: ${data.metadata.errors?.join(', ') || 'Unknown error'}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       addLog(`❌ Request failed: ${(error as Error).message}`);
       results.set(null);
     } finally {
@@ -137,7 +137,6 @@
     return () => clearInterval(interval);
   });
 </script>
-
 <!-- YoRHa-themed UI -->
 <div class="unified-vector-interface bg-black text-green-400 font-mono min-h-screen p-6">
   <!-- Header -->
@@ -181,7 +180,7 @@
     <div class="border border-green-400 p-4">
       <h2 class="text-lg mb-3 text-green-300">ACTIVITY LOG</h2>
       <div class="h-32 overflow-y-auto text-xs space-y-1">
-        {#each $logs as log}
+        {#each Array.isArray($logs) ? $logs : [] as log}
           <div class="text-green-300">{log}</div>
         {/each}
       </div>
@@ -215,8 +214,7 @@
             placeholder="Enter your legal text for analysis..."
             class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm h-24 resize-none"
           ></textarea>
-        </div>
-      {/if}
+        {/if}
       <!-- User Context -->
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div>
@@ -310,7 +308,7 @@
           <div class="border border-green-600 p-3">
             <div class="text-green-200 mb-2">COMPONENTS USED</div>
             <div class="flex flex-wrap gap-1">
-              {#each $results.metadata.componentsUsed as component}
+              {#each Array.isArray($results.metadata.componentsUsed) ? $results.metadata.componentsUsed : [] as component}
                 <span class="bg-green-900 px-2 py-1 text-xs border border-green-400">
                   {component}
                 </span>
@@ -327,14 +325,13 @@
                   <span>{time}ms</span>
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
           <!-- Results Data -->
           {#if $results.results.vectorResults}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">VECTOR RESULTS ({$results.results.vectorResults.length})</div>
               <div class="space-y-1 text-xs max-h-32 overflow-y-auto">
-                {#each $results.results.vectorResults.slice(0, 5) as result}
+                {#each Array.isArray($results.results.vectorResults.slice(0, 5)) ? $results.results.vectorResults.slice(0, 5) : [] as result}
                   <div class="border-l-2 border-green-700 pl-2">
                     <div class="text-green-300">
                       {(result as any).metadata?.title || (result as any).id}
@@ -345,13 +342,12 @@
                   </div>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if $results.results.recommendations}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">RECOMMENDATIONS ({$results.results.recommendations.length})</div>
               <div class="space-y-1 text-xs max-h-32 overflow-y-auto">
-                {#each $results.results.recommendations.slice(0, 3) as rec}
+                {#each Array.isArray($results.results.recommendations.slice(0, 3)) ? $results.results.recommendations.slice(0, 3) : [] as rec}
                   <div class="border-l-2 border-green-700 pl-2">
                     <div class="text-green-300">{rec.title}</div>
                     <div class="text-green-500">
@@ -360,27 +356,23 @@
                   </div>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Errors -->
           {#if $results.metadata.errors && $results.metadata.errors.length > 0}
             <div class="border border-red-600 p-3">
               <div class="text-red-200 mb-2">ERRORS</div>
               <div class="space-y-1 text-xs">
-                {#each $results.metadata.errors as error}
+                {#each Array.isArray($results.metadata.errors) ? $results.metadata.errors : [] as error}
                   <div class="text-red-400">{error}</div>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
       {:else}
-        <div class="text-green-600 text-sm">No results yet. Execute an operation to see results.</div>
-      {/if}
+        <div class="text-green-600 text-sm">No results yet. Execute an operation to see results.{/if}
     </div>
   </div>
 </div>
-
 <style>
   .unified-vector-interface {
     background-image:

@@ -36,7 +36,7 @@ declare global {
   }
   namespace ChatRequest {
     interface Request {
-      messages: unknown[]; // replace `any` with `unknown` to avoid Unexpected any error
+      messages: any[]; // replace `any` with `unknown` to avoid Unexpected any error
       stream?: boolean;
     }
   }

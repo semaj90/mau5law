@@ -56,12 +56,12 @@ interface ProcessedSearchResult {
 // (removed SearchResult type - unused)
 
 // Helper to extract a safe string message from unknown errors
-function extractErrorMessage(err: unknown): string {
+function extractErrorMessage(err: any): string {
   try {
     if (!err) return String(err);
     if (typeof err === 'string') return err;
     if (typeof err === 'object' && err !== null) {
-      if ('message' in err && typeof (err as { message?: unknown }).message === 'string') {
+      if ('message' in err && typeof (err as { message?: any }).message === 'string') {
         return (err as { message?: string }).message ?? String(err);
       }
       return JSON.stringify(err);
@@ -169,7 +169,7 @@ async function vectorSearch(
       .orderBy(desc(sql`1 - (${embeddingsC.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`))
       .limit(limit);
     return rows.map((r: any) => ({ ...r, searchType: 'semantic', score: r.similarity }));
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Vector search failed:', err);
     if (filters) {
       console.log('Retrying vector search without filters');
@@ -230,7 +230,7 @@ async function textSearch(
       searchType: 'text',
       score: r.rank ?? 0,
     }));
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Text search failed:', err);
     try {
       const fallback = await dbC
@@ -253,7 +253,7 @@ async function textSearch(
         searchType: 'text',
         score: 0.7,
       }));
-    } catch (fallbackErr: unknown) {
+    } catch (fallbackErr: any) {
       console.error('Fallback text search failed:', fallbackErr);
       return [];
     }
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         const textResults = await textSearch(query, limit, filters);
         results = results.concat(textResults);
       }
-    } catch (dbErr: unknown) {
+    } catch (dbErr: any) {
       // Detect common DB connectivity errors and return a graceful fallback for dev.
       const msg = extractErrorMessage(dbErr);
       console.warn('[RAG] Database operation failed, returning graceful fallback:', msg);
@@ -375,7 +375,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const emsg = extractErrorMessage(error);
     console.error('Enhanced RAG search error:', emsg);
     return json(

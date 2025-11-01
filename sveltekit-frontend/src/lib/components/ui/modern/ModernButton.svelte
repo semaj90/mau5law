@@ -66,7 +66,6 @@
     onclick?.(event);
   }
 </script>
-
 {#if href}
   <a
     {href}
@@ -101,12 +100,10 @@
   </Button.Root>
 {/if}
 {#if tooltip && $open}
-  <div class="tooltip">{tooltip}</div>
-{/if}
-
+  <div class="tooltip">{tooltip}{/if}
 <style>
   .modern-btn {
-    position relative;
+    position: relative;
     text-transform: uppercase;
     letter-spacing: 0.025em;
     text-decoration none;

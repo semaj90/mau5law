@@ -3,13 +3,10 @@
   export let enableRealtimeUpdates = true;
   export let showMetrics = true;
   export let enableClusterMode = true;
-
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment'; // Import browser environment check
-
   type Status = 'disconnected' | 'connecting' | 'connected' | 'error';
-
   const mcpStatus = writable<Status>('disconnected');
   const clusterMetrics = writable({
     activeWorkers: 0,
@@ -18,12 +15,10 @@
     averageResponseTime: 0,
     cacheHitRate: 0,
   });
-
   // Derived store for success rate percentage
   const successRatePercent = derived(clusterMetrics, $clusterMetrics =>
     Math.round(($clusterMetrics.successRate || 0) * 100)
   );
-
   interface McpTool {
     id: string;
     name: string;
@@ -33,7 +28,6 @@
     errorCount: number;
     lastUsed?: Date;
   }
-
   interface QueryResult {
     source?: string;
     timestamp?: number;
@@ -42,31 +36,25 @@
     result?: any; // made optional to allow error entries without a payload
     error?: string; // Add an explicit error property for failed results
   }
-
   interface ContextualSuggestion {
     id: string;
     title: string;
     description: string; // Fixed syntax
     priority: 'high' | 'medium' | 'low';
   }
-
   const mcpTools = writable<McpTool[]>([]);
   const queryResults = writable<QueryResult[]>([]);
   const contextualSuggestions = writable<ContextualSuggestion[]>([]);
-
   let wsConnection: WebSocket | null = null; // Fixed syntax
   let queryInput = $state(''); // Made reactive
   let selectedTool = $state(''); // Made reactive
   let isProcessing = $state(false); // Made reactive
-
   let metricsInterval: ReturnType<typeof setInterval> | null = null;
-
   const availableMCPTools = [
     { id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description: 'Semantic search with Context7 integration' }, // Fixed syntax
     { id: 'mcp_memory2_create_relations', name: 'Memory Relations', description: 'Create knowledge graph relations' }, // Fixed syntax
     { id: 'mcp_memory2_read_graph', name: 'Memory Read Graph', description: 'Query knowledge graph' }, // Fixed syntax
   ];
-
   onMount(() => {
     if (browser) { // Ensure browser environment for DOM-related operations
       initializeMCPConnection();
@@ -75,12 +63,10 @@
       if (enableClusterMode) startMetricsPolling();
     }
   });
-
   onDestroy(() => {
     if (wsConnection) wsConnection.close();
     if (metricsInterval) clearInterval(metricsInterval);
   });
-
   async function initializeMCPConnection() {
     mcpStatus.set('connecting');
     try {
@@ -99,10 +85,8 @@
       mcpStatus.set('disconnected');
     }
   }
-
   function setupWebSocketConnection() {
     if (!browser) return; // Only run in browser
-
     try {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       // Assuming /mcp/ws is proxied by SvelteKit backend
@@ -131,7 +115,6 @@
       mcpStatus.set('error');
     }
   }
-
   function handleRealtimeUpdate(data: any) {
     if (!data || !data.type) return;
     switch (data.type) {
@@ -154,7 +137,6 @@
         break;
     }
   }
-
   async function loadInitialData() {
     const suggestions: any[] = [];
     if (caseId) {
@@ -167,7 +149,6 @@
     }
     contextualSuggestions.set(suggestions);
   }
-
   function startMetricsPolling() {
     if (metricsInterval) return;
     metricsInterval = setInterval(async () => {
@@ -189,7 +170,6 @@
       }
     }, 5000);
   }
-
   async function executeMCPTool(toolId: string, args: any = {}) {
     if (isProcessing || !toolId) return;
     isProcessing = true;
@@ -237,12 +217,11 @@
         ].slice(0, 20)
       );
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
       mcpTools.update(tools => tools.map(t => (t.id === toolId ? { ...t, status: 'available' } : t)));
     }
   }
 </script>
-
 <div class="nes-container is-dark with-title">
 	<p class="title">Enhanced MCP Integration</p>
 	<div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-4">
@@ -266,7 +245,6 @@
 			{/if}
 		</div>
 	</div>
-
 	{#if showMetrics}
 		<div class="nes-container is-dark is-small mb-4">
 			<p class="nes-text is-primary">Cluster Metrics</p>
@@ -284,16 +262,14 @@
 					<div class="nes-text is-success text-lg font-bold">{$successRatePercent}%</div>
 				</div>
 			</div>
-		</div>
-	{/if}
-
+		{/if}
 	<div class="mb-6">
 		<h3 class="nes-text is-primary mb-2">Run MCP Tool</h3>
 		<div class="nes-field is-inline">
 			<div class="nes-select">
 				<select bind:value={selectedTool}>
 					<option value="">Select tool...</option>
-					{#each $mcpTools as tool}
+					{#each Array.isArray($mcpTools) ? $mcpTools : [] as tool}
 						<option value={tool?.id}>{tool?.name}</option>
 					{/each}
 				</select>
@@ -317,20 +293,18 @@
 			</button>
 		</div>
 	</div>
-
 	<div class="mb-6">
 		<h3 class="nes-text is-primary mb-2">Suggestions</h3>
 		<ul class="nes-list is-disc">
-			{#each $contextualSuggestions as s}
+			{#each Array.isArray($contextualSuggestions) ? $contextualSuggestions : [] as s}
 				<li><span class="nes-text is-warning">{s.title}</span> — <span class="nes-text is-disabled">{s.description}</span></li>
 			{/each}
 		</ul>
 	</div>
-
 	<div>
 		<h3 class="nes-text is-primary mb-2">Recent Results</h3>
 		<div class="space-y-4">
-			{#each $queryResults as result}
+			{#each Array.isArray($queryResults) ? $queryResults : [] as result}
 				<div class="nes-container is-dark is-small">
 					<div class="flex justify-between items-center mb-2">
 						<div class="nes-text is-disabled text-xs">{result?.source || 'mcp'}</div>
@@ -341,15 +315,13 @@
 						{#if result.success}
 							<pre class="whitespace-pre-wrap break-words text-xs">{JSON.stringify(result.result, null, 2)}</pre>
 						{:else}
-							<div class="nes-text is-error">Error: {result.error || 'Unknown error'}</div>
-						{/if}
+							<div class="nes-text is-error">Error: {result.error || 'Unknown error'}{/if}
 					</div>
 				</div>
 			{/each}
 		</div>
 	</div>
 </div>
-
 <style>
 	.connection-indicator {
 		display: flex;
@@ -449,5 +421,3 @@
 		color: #fca5a5;
 	}
 </style>
-
-

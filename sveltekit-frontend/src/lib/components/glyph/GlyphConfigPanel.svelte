@@ -83,12 +83,12 @@ https://svelte.dev/e/expected_token -->
     selectedPreset = preset;
     const presetConfig = GLYPH_PRESETS[preset];
     simdConfig = { ...simdConfig, ...presetConfig.simd_config }
-    useCustomStyle = false;
+    useCustomStyle = $state(false);
   }
   function resetToDefaults() {
     evidenceId = 'demo_evidence_001';
     prompt = 'Legal evidence visualization showing document authenticity';
-    useCustomStyle = false;
+    useCustomStyle = $state(false);
     selectedPreset = 'detective';
     dimensions = [512, 512];
     seed = undefined;
@@ -157,12 +157,11 @@ https://svelte.dev/e/expected_token -->
   {#if validationErrors.length > 0}
     <div class="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded mb-4">
       <ul class="list-disc list-inside space-y-1">
-        {#each validationErrors as error}
+        {#each Array.isArray(validationErrors) ? validationErrors : [] as error}
           <li class="text-sm">{error}</li>
         {/each}
       </ul>
-    </div>
-  {/if}
+    {/if}
   <!-- Basic Configuration -->
   <div class="space-y-4 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -371,8 +370,7 @@ https://svelte.dev/e/expected_token -->
             />
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Action Buttons -->
   <div class="border-t border-gray-700 pt-6 space-y-3">

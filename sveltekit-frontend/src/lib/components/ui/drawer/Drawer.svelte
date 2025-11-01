@@ -2,9 +2,8 @@
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
-  import { X } from 'lucide-svelte';
+  import X from 'lucide-svelte';
   import { onMount } from 'svelte';
-
   interface Props {
     open?: boolean;
     title?: string;
@@ -12,19 +11,14 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     side?: 'left' | 'right' | 'top' | 'bottom';
     size?: 'sm' | 'md' | 'lg' | 'xl';
   }
-
   let { open = $bindable(false), title = '', description = '', side = 'right', size = 'md' }: Props = $props();
-
   let dialogEl = $state<HTMLElement | null>(null);
-
   function handleClose() {
-    open = false;
+    open = $state(false);
   }
-
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) handleClose();
   }
-
   function handleBackdropKey(e: KeyboardEvent) {
     // Support keyboard activation of the overlay: Enter / Space to close,
     // Escape as a common close key as well.
@@ -32,12 +26,10 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       handleClose();
     }
   }
-
   function handleDialogKey(e: KeyboardEvent) {
     // Close dialog on Escape
     if (e.key === 'Escape') handleClose();
   }
-
   onMount(() => {
     if (open && dialogEl) {
       // focus the dialog so that keyboard interactions are available
@@ -45,7 +37,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     }
   });
 </script>
-
 {#if open}
   <div
     class="drawer-overlay"
@@ -85,13 +76,11 @@ https://svelte.dev/e/render_tag_invalid_expression -->
         <slot />
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* @unocss-include */
   .drawer-overlay {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -105,12 +94,11 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     background: white;
     border-radius: 8px;
     padding: 20px;
-    position fixed; /* Crucial for drawer behavior */
+    position: fixed; /* Crucial for drawer behavior */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease-out; /* Animation for sliding in/out */
     overflow-y: auto; /* Allow content to scroll */
   }
-
   /* Side-specific positioning and initial transform (closed state) */
   .drawer-left {
     top: 0,
@@ -140,12 +128,10 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     width: 100%;
     transform: translateY(100%);
   }
-
   /* Open state: reset transform */
   .drawer.is-open {
     transform: translate(0, 0);
   }
-
   /* Size-specific dimensions and responsiveness */
   /* For left/right drawers (width) */
   .drawer-left.drawer-sm,
@@ -168,7 +154,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     width: 900px;
     max-width: 90vw;
   }
-
   /* For top/bottom drawers (height) */
   .drawer-top.drawer-sm,
   .drawer-bottom.drawer-sm {
@@ -190,7 +175,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     height: 500px;
     max-height: 90vh;
   }
-
   .drawer-header {
     display: flex;
     justify-content: space-betweennn;
@@ -217,5 +201,3 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     background: #f5f5f5;
   }
 </style>
-
-

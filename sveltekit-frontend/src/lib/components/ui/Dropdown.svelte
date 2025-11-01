@@ -1,28 +1,23 @@
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
-
   // replaced prop/runtime handling with standard Svelte exports and dispatcher
   export let align: 'left' | 'right' = 'left';
   export let closeOnSelect: boolean = true;
   const dispatch = createEventDispatcher();
-
-  let open: boolean = false;
+  let open: boolean = $state(false);
   let rootEl: HTMLElement | null = null;
-
   function toggle() {
     open = !open;
     if (open) dispatch('open');
     else dispatch('close');
   }
-
   export function close() {
     if (open) {
-      open = false;
+      open = $state(false);
       dispatch('close');
     }
   }
-
   function onDocumentClick(e: MouseEvent) {
     if (!rootEl) return;
     if (!rootEl.contains(e.target as Node)) close();
@@ -30,12 +25,10 @@
   function onKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') close();
   }
-
   // optional helper for menu items to close the menu after action
   export function maybeCloseFromItem() {
     if (closeOnSelect) close();
   }
-
   onMount(() => {
     document.addEventListener('click', onDocumentClick);
     document.addEventListener('keydown', onKeydown);
@@ -44,10 +37,8 @@
     document.removeEventListener('click', onDocumentClick);
     document.removeEventListener('keydown', onKeydown);
   });
-
   $: menuPosition = align === 'right' ? 'right: 0;' : 'left: 0;';
 </script>
-
 <div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
   <button
     type="button"
@@ -65,7 +56,6 @@
     <!-- named slot for trigger; parent can receive `let:open` -->
     <slot name="trigger" {open}></slot>
   </button>
-
   {#if open}
     <div
       role="menu"
@@ -80,10 +70,8 @@
     >
       <!-- default slot used for menu items -->
       <slot></slot>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* Minimal encapsulated styles; toolbar reuses classes (menu-trigger, dropdown-menu, dropdown-item) */
   .dropdown-root {
@@ -102,4 +90,3 @@
     min-width: 12rem;
   }
 </style>
-

@@ -9,7 +9,6 @@
   import { useMachine } from '@xstate/svelte';
   import { crewAIOrchestrationMachine } from '$lib/state/crewAIOrchestrationMachine';
   import { slide, fade } from 'svelte/transition';
-
   function formatTime(date: Date): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
@@ -23,7 +22,6 @@
     return `${hours}h ago`;
   }
 }
-
   // Props
   interface Props {
     documentId: string;
@@ -43,7 +41,6 @@
     enableInlineSuggestions = true,
     readOnly = false
   }: Props = $props();
-
   // State management
   const { state, send } = useMachine(crewAIOrchestrationMachine);
   // Component state
@@ -136,7 +133,7 @@
     send({ type: 'USER_ACTIVITY', activity: 'typing' });
     // Reset typing flag after short delay
     setTimeout(() => {
-      userTyping = false;
+      userTyping = $state(false);
     }, 1000);
     // Handle special key combinations
     if (event.ctrlKey || event.metaKey) {
@@ -324,8 +321,8 @@
     showNotification('Suggestion rejected', 'info');
   }
   function hideAllSuggestions() {
-    showSuggestions = false;
-    aiAssistantVisible = false;
+    showSuggestions = $state(false);
+    aiAssistantVisible = $state(false);
     currentRecommendation = null;
   }
   function showInlineSuggestions() {
@@ -404,7 +401,6 @@
     });
   }
 </script>
-
 <!-- Editor Container -->
 <div class="tiptap-container relative">
   <!-- Editor Element -->
@@ -424,8 +420,7 @@
         <div class="flex items-center space-x-2 text-blue-600">
           <div class="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
           <span>AI reviewing...</span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="flex items-center space-x-2">
       {#if userIntent === 'idle'}
@@ -495,16 +490,14 @@
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
       <!-- Focus Schema Indicator -->
       <div class="mt-4 pt-4 border-t border-gray-200">
         <div class="text-xs text-gray-500">
           Focus: <span class="font-medium">{focusSchema.replace('_', ' ')}</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Inline Suggestions Popup -->
   {#if showSuggestions && currentRecommendation}
     <div
@@ -524,8 +517,7 @@
           Apply
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Keyboard Shortcuts Help -->
   <div class="keyboard-shortcuts text-xs text-gray-400 mt-2">
     <span>Ctrl+S: Save</span> •
@@ -534,7 +526,6 @@
     <span>Esc: Hide suggestions</span>
   </div>
 </div>
-
 <style>
   .tiptap-editor {
     outline: none;
@@ -569,4 +560,3 @@
     }
   }
 </style>
-

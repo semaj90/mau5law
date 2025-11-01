@@ -73,7 +73,7 @@ export class WasmGpuInitService {
   private config: WasmGpuConfig;
   private context: WasmGpuContext;
   private metrics: WasmGpuMetrics;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private initStartTime = 0;
   // Reactive stores
   public initStatus = writable({
@@ -1011,7 +1011,7 @@ export class WasmGpuInitService {
       this.context.gpuDevice.destroy();
     }
     // Reset state
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.initStatus.set({
       phase: 'idle',
       progress: 0,

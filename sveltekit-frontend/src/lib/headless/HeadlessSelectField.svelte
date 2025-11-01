@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import * as Select from '$lib/components/ui/select/index.js';
-  import FormField from './FormField.svelte';
+  import { FormField } from './FormField.svelte';
   // Using custom wrapper and bits-ui re-exports; some may be undefined if not provided
   const SelectRoot = (Select as any).Select || (Select as any).Root || Select.default || (Select as any);
   const SelectTrigger = (Select as any).SelectTrigger || (Select as any).Trigger || (Select as any).SelectTrigger || (Select as any).Select?.Trigger;
@@ -72,7 +72,7 @@
   $effect(() => {
     mounted = true;
     return () => {
-      mounted = false;
+      mounted = $state(false);
     }
   });
   function updateValue(v: string | null) {
@@ -89,7 +89,6 @@
     updateValue(e(vent as CustomEvent).detail);
   }
 </script>
-
 <FormField {name} {errors}>
   {#snippet control()}
     <div class={className} {...rest}>

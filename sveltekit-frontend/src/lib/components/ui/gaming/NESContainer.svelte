@@ -208,8 +208,7 @@
 >
   <!-- Power LED indicator -->
   {#if variant === 'console' || powered}
-    <div class="nes-container__power-led" class:nes-container__power-led--on={powered && isLoaded}></div>
-  {/if}
+    <div class="nes-container__power-led" class:nes-container__power-led--on={powered && isLoaded}>{/if}
   <!-- Cartridge label area (for cartridge variant) -->
   {#if variant === 'cartridge'}
     <div class="nes-container__cartridge-label">
@@ -220,10 +219,8 @@
         {#snippet children(name="title")}Legal Evidence{/snippet}
       </div>
       {#if caseId}
-        <div class="nes-container__case-id">case {caseId}</div>
-      {/if}
-    </div>
-  {/if}
+        <div class="nes-container__case-id">case {caseId}{/if}
+    {/if}
   <!-- Main content area -->
   <div class="nes-container__content">
     {#if children}
@@ -241,10 +238,8 @@
         {#if processingStatus === 'processing'}
           <div class="nes-container__progress-bar">
             <div class="progress-fill" style="width: {processingProgress}%"></div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     {#if confidenceLevel !== undefined}
       <div class="nes-container__confidence" title="Confidence Level: {Math.round(confidenceLevel * 100)}%">
         <span class="confidence-label">CONF:</span>
@@ -252,19 +247,16 @@
         <div class="confidence-bar">
           <div class="confidence-fill" style="width: {confidenceLevel * 100}%"></div>
         </div>
-      </div>
-    {/if}
+      {/if}
     {#if priority}
       <div class="nes-container__priority nes-container__priority--{priority}">
         <span class="priority-label">PRI:</span>
         <span class="priority-value">{priority.toUpperCase()}</span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Scan lines effect for screen variant -->
   {#if variant === 'screen'}
-    <div class="nes-container__scanlines"></div>
-  {/if}
+    <div class="nes-container__scanlines">{/if}
   <!-- Power button for console variant -->
   {#if variant === 'console'}
     <button class="nes-container__power-button" class:nes-container__power-button--on={powered}>
@@ -274,7 +266,7 @@
 </div>
 <style>
   .nes-container {
-    position relative;
+    position: relative;
     background: var(--nes-primary);
     border: 4px solid var(--nes-secondary);
     font-family: 'Courier New', monospace;
@@ -436,7 +428,7 @@
   }
 /* Power LED */ {}
   .nes-container__power-led {
-    position absolute;
+    position: absolute;
     top: 8px;
     right: 8px;
     width: 8px;
@@ -451,7 +443,7 @@
   }
 /* Cartridge label */ {}
   .nes-container__cartridge-label {
-    position absolute;
+    position: absolute;
     top: 8px;
     left: 8px;
     right: 8px;
@@ -475,7 +467,7 @@
   }
 /* Content area */ {}
   .nes-container__content {
-    position relative;
+    position: relative;
     z-index: 2,
     width: 100%;
     height: 100%;
@@ -486,7 +478,7 @@
   }
 /* Status bar */ {}
   .nes-container__status-bar {
-    position absolute;
+    position: absolute;
     bottom: 0,
     left: 0;
     right: 0,
@@ -515,7 +507,7 @@
   .progress-fill {
     height: 100%;
     background: var(--nes-accent);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .nes-container__confidence {
     display: flex;
@@ -532,7 +524,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .nes-container__priority {
     display: flex;
@@ -558,7 +550,7 @@
   }
 /* Scan lines for screen variant */ {}
   .nes-container__scanlines {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -579,7 +571,7 @@ rgba(0, 255, 0, 0.1) 4px {}
   }
 /* Power button for console */ {}
   .nes-container__power-button {
-    position absolute;
+    position: absolute;
     bottom: 8px;
     left: 8px;
     width: 24px;
@@ -641,4 +633,3 @@ rgba(0, 255, 0, 0.1) 4px {}
     }
   }
 </style>
-

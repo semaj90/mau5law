@@ -32,7 +32,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
     redisClient = client;
 
     // typed error parameter and guarded use of the client
-    redisClient.on?.('error', (err: unknown) => console.error('Redis Client Error', err));
+    redisClient.on?.('error', (err: any) => console.error('Redis Client Error', err));
 
     try {
       await redisClient.connect();

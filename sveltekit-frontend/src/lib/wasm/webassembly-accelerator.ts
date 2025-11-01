@@ -326,7 +326,7 @@ export class WebAssemblyAccelerator {
     }
     return new Uint8Array(modules[moduleName] || modules["simdjson"]);
   }
-  private readJSONFromMemory(module: WasmModule, ptr: number): unknown {
+  private readJSONFromMemory(module: WasmModule, ptr: number): any {
     // Read JSON structure from WASM memory
     // This would implement a proper JSON deserializer
     return {}

@@ -2,8 +2,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
-  import { Button } from '$lib/components/ui/enhanced-bits'; // Standardized Button import for bits-ui
-  import * as Card from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // Standardized Button import for bits-ui
+  import * as Card from '$lib/components/ui/card.svelte'';
   import Input from '$lib/components/ui/input/Input.svelte';
   // Svelte 5 Runes - Evidence Board State
   let isConnecting = $state(false);
@@ -130,12 +130,12 @@
         }
         return i;
       });
-      isConnecting = false;
+      isConnecting = $state(false);
       selectedItem = null;
     }
   }
   function cancelConnection() {
-    isConnecting = false;
+    isConnecting = $state(false);
     selectedItem = null;
   }
   // Drag and drop functionality
@@ -254,7 +254,7 @@
       >
         <!-- SVG for connection lines -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
-          {#each connections as connection}
+          {#each Array.isArray(connections) ? connections : [] as connection}
             {@const fromItem = canvasItems.find((i: EvidenceCard) => i.id === connection.from)}
             {@const toItem = canvasItems.find((i: EvidenceCard) => i.id === connection.to)}
             {#if fromItem && toItem}
@@ -360,7 +360,7 @@
             <span class="text-xs text-green-600 font-medium">🔴 Connected</span>
           </div>
           <div class="space-y-2">
-            {#each caseDetails as caseItem}
+            {#each Array.isArray(caseDetails) ? caseDetails : [] as caseItem}
               <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded">
                 <div class="flex-1">
                   <div class="text-sm font-medium text-gray-800">{caseItem.name}</div>
@@ -397,7 +397,7 @@
         <div class="flex-1 p-4 overflow-y-auto">
           <div class="text-sm font-medium text-gray-700 mb-3">Evidence Items</div>
           <div class="space-y-2">
-            {#each canvasItems as item}
+            {#each Array.isArray(canvasItems) ? canvasItems : [] as item}
               <div class="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                 <div class="flex items-center space-x-2">
                   <span class="text-lg">{getTypeIcon(item.type)}</span>

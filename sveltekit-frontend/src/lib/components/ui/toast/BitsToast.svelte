@@ -42,7 +42,6 @@
   }
   const IconComponent = iconMap[variant];
 </script>
-
 <Toast.Root {duration} onOpenChange={open => !open && onClose?.()}>
   <Toast.Content
     class={cn(
@@ -85,7 +84,6 @@
     </Toast.Close>
   </Toast.Content>
 </Toast.Root>
-
 <style>
   :global(.legal-toast-content) {
     backdrop-filter: blur(8px);
@@ -100,4 +98,3 @@
     background-color: rgb(var(--yorha-bg-tertiary) / 0.5);
   }
 </style>
-

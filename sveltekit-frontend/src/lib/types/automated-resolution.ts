@@ -52,7 +52,7 @@ export interface ParameterInfo {
   description: string;
   optional?: boolean;
   // Changed from `any` to `unknown` to avoid unexpected any lint/type errors
-  default?: unknown;
+  default?: any;
 }
 export interface ExampleResult {
   name: string;

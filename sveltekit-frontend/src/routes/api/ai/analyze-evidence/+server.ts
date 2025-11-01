@@ -78,7 +78,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       summary: string;
       tags?: string[];
       confidence?: number;
-      entities?: unknown[];
+      entities?: any[];
       keywords?: string[];
       recommendations?: string[];
     };
@@ -92,7 +92,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 
       // If the concrete service implements analyzeEvidence, call it directly
       if (svc && typeof svc['analyzeEvidence'] === 'function') {
-        return (await (svc['analyzeEvidence'] as (...args: unknown[]) => Promise<AnalysisResult>)(
+        return (await (svc['analyzeEvidence'] as (...args: any[]) => Promise<AnalysisResult>)(
           evidenceId,
           content,
           evidenceType
@@ -109,7 +109,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           content,
         ].join('\n\n');
 
-        const raw = await (svc['generateResponse'] as (...args: unknown[]) => Promise<string>)(prompt, {
+        const raw = await (svc['generateResponse'] as (...args: any[]) => Promise<string>)(prompt, {
           format: 'json',
         });
 
@@ -180,7 +180,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence analysis API error:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation failed', details: error.errors }, { status: 400 });

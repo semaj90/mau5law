@@ -7,9 +7,9 @@ import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js';
 import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js';
 import { simdJSONClient } from './lib/simd/simd-json-worker-client.js';
 // Service Worker Global State
-let isRedisConnected = false;
-let webgpuInitialized = false;
-let somCacheReady = false;
+let isRedisConnected = $state(false);
+let webgpuInitialized = $state(false);
+let somCacheReady = $state(false);
 // Cache warming state
 interface CacheWarmingTask {
   id: string;

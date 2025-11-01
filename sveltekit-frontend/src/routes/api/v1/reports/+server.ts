@@ -86,7 +86,7 @@ const ReportsQuerySchema = z.object({
   reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional(),
 });
 // Helper to format unknown errors into a string message
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   // Preserve structured ZodError / Error handling elsewhere; this is for fallbacks
   if (err instanceof z.ZodError) return 'Validation error';
   if (err instanceof Error) return err.message;
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error fetching reports:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors }, { status: 400 });
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error creating report:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid report data', code: 'INVALID_DATA', details: err.errors }, { status: 400 });

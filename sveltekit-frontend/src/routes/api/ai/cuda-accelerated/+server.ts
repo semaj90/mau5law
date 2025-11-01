@@ -37,7 +37,7 @@ interface CudaInferenceRequest {
   session_id?: string;
   enable_streaming?: boolean;
   context_documents?: string[];
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 interface CudaInferenceResponse {
   success: boolean;
@@ -55,7 +55,7 @@ interface CudaInferenceResponse {
     vram_total_mb: number;
   };
   grpo?: {
-    structured_reasoning: { [key: string]: unknown };
+    structured_reasoning: { [key: string]: any };
     reasoning_steps: string[];
     temporal_score: number;
     recommendations: Array<string>;
@@ -86,7 +86,7 @@ async function checkCudaServerHealth(): Promise<boolean> {
     if (!response.ok) return false;
     const health = await response.json();
     return health.status === 'healthy' && health.cuda_ready === true;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('CUDA server health check failed:', error);
     return false;
   }
@@ -170,7 +170,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const processingTime = Date.now() - performance.now();
     console.error('CUDA-accelerated inference failed:', error);
     return json(
@@ -246,7 +246,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('CUDA status check failed:', error);
     return json(
       {
@@ -304,7 +304,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       vector_dimensions: 768,
       search_algorithm: 'cuda_optimized_cosine_similarity',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -369,7 +369,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       parallel_streams: 8,
       rtx_3060_ti_optimized: true,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -397,7 +397,7 @@ const originalDELETEHandler: RequestHandler = async () => {
       message: 'GPU memory optimization completed',
       rtx_3060_ti_memory: '8GB VRAM optimized',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,

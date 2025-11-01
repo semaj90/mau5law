@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Precedent search error:', error);
     return json({ success: false, error: 'Precedent search failed', results: null }, { status: 500 });
   }

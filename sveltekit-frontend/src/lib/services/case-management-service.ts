@@ -20,7 +20,7 @@ import { eq, and, desc, sql } from 'drizzle-orm';
 // Add typed global extensions to avoid `any`
 type GlobalLoki = {
 	id?: string;
-	startJob?: (job: { id: string; type: string; metadata?: unknown }) => Promise<void>;
+	startJob?: (job: { id: string; type: string; metadata?: any }) => Promise<void>;
 };
 type OCRWorker = {
 	process?: (filePath: string) => Promise<{
@@ -142,7 +142,7 @@ export interface DetectiveModeConfig {
 }
 
 export class CaseManagementService {
-  private initialized = false;
+  private initialized = $state(false);
 
   constructor() {
     // do not await in constructor; initialize lazily in public methods
@@ -336,7 +336,7 @@ export class CaseManagementService {
   // ==================== HELPERS / TIMELINE ====================
   async getEvidence(caseId: string, filters: EvidenceFilters = {}): Promise<Evidence[]> {
 	const { limit = 50, offset = 0 } = filters;
-	const conds: unknown[] = [eq(evidence.caseId, caseId)];
+	const conds: any[] = [eq(evidence.caseId, caseId)];
 	if (filters.evidenceType) conds.push(eq(evidence.evidenceType, filters.evidenceType));
 	if (filters.analyzed !== undefined) conds.push(eq(evidence.analyzed, filters.analyzed));
 	if (filters.search) {
@@ -466,7 +466,7 @@ export class CaseManagementService {
 			});
 		} else {
 			// fallback: publish to rabbitmq or log if globalLoki isn't available
-			await rabbitmq.publish('evidence.analysis.job', request).catch((e: unknown) => {
+			await rabbitmq.publish('evidence.analysis.job', request).catch((e: any) => {
 				console.warn('queueEvidenceAnalysis: fallback publish failed', e);
 			});
 		}
@@ -546,7 +546,7 @@ export class CaseManagementService {
 			return { jobId, status: 'queued' };
 		}
 		// If no worker available, attempt a fallback publish to rabbitmq
-		await rabbitmq.publish('embedding.enqueue', { text, model: 'gemma3-entity-extraction' }).catch((e: unknown) => {
+		await rabbitmq.publish('embedding.enqueue', { text, model: 'gemma3-entity-extraction' }).catch((e: any) => {
 			console.warn('embedding.enqueue fallback publish failed', e);
 		});
 		return { status: 'fallback-published' };
@@ -1481,7 +1481,7 @@ export class CaseManagementService {
   private async clearCaseCache(caseId: string): Promise<void> {
     type CacheClient = {
       get?: (key: string) => Promise<unknown>;
-      set?: (key: string, value: unknown, ttl?: number) => Promise<unknown>;
+      set?: (key: string, value: any, ttl?: number) => Promise<unknown>;
       del?: (key: string) => Promise<unknown>;
       delByPrefix?: (prefix: string) => Promise<unknown>;
       // other optional methods may exist

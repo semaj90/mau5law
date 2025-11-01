@@ -38,7 +38,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
         throw new Error('Invalid embedding response from Ollama');
       }
       return data.embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Embedding generation failed:', error);
       // Return zero vector as fallback for robustness (assuming 768 dimensions for: 'embeddinggemma:latest')
       return new Array(768).fill(0);
@@ -67,7 +67,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
         throw new Error('Invalid completion response from Ollama');
       }
       return data.response;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Completion generation failed:', error);
       return 'Error generating completion.';
     }

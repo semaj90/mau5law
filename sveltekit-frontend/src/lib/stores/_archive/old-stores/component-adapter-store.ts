@@ -20,7 +20,7 @@ export interface UIProps {
   disabled?: boolean;
   class?: string;
   style?: string;
-  [key: string]: unknown; // Use unknown
+  [key: string]: any; // Use unknown
 }
 export interface ComponentAdapter<TData = unknown> {
   // Default to unknown
@@ -94,7 +94,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp?: number;
-  [key: string]: unknown; // Allow additional properties
+  [key: string]: any; // Allow additional properties
 }
 export interface ChatData {
   messages: ChatMessage[]; // Use ChatMessage[]
@@ -142,7 +142,7 @@ export interface SearchResult {
   id: string;
   title: string;
   description: string;
-  [key: string]: unknown; // Allow additional properties
+  [key: string]: any; // Allow additional properties
 }
 export interface SearchData {
   query: string;
@@ -391,7 +391,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
     };
   },
   // Event handler factory for simplified components
-  createHandler: <T extends (...args: unknown[]) => void>( // Use unknown[]
+  createHandler: <T extends (...args: any[]) => void>( // Use unknown[]
     fn: T,
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {

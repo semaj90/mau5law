@@ -1,17 +1,14 @@
 import loki, { Collection } from 'lokijs';
 import type { SearchResult } from './nats-quic-search-service';
-
 type LokiDoc = {
   id: string;
   content: string;
   metadata?: Record<string, unknown>;
   embedding?: number[];
 };
-
 class LokiSearchEngine {
   private db: any;
   private coll: Collection<LokiDoc>;
-
   constructor() {
     this.db = new loki('search.db', { persistenceMethod: 'memory' });
     // If collection already exists (hot-reload), reuse it
@@ -23,7 +20,6 @@ class LokiSearchEngine {
         unique: ['id'],
       });
   }
-
   insertDocument(doc: LokiDoc) {
     const existing = this.coll.by('id', doc.id);
     if (existing) {
@@ -32,7 +28,6 @@ class LokiSearchEngine {
       this.coll.insert(doc);
     }
   }
-
   // Simple vector search using cosine similarity
   async vectorSearch(queryEmbedding: number[], limit: number, threshold: number): Promise<SearchResult[]> {
     const docs = this.coll.find({ embedding: { $ne: null } });
@@ -45,7 +40,6 @@ class LokiSearchEngine {
     results.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
     return results.slice(0, limit);
   }
-
   async textSearch(query: string, limit: number): Promise<SearchResult[]> {
     const lowerQuery = query.toLowerCase();
     const docs = this.coll.find({
@@ -54,7 +48,6 @@ class LokiSearchEngine {
     const results: SearchResult[] = docs.map(d => ({ id: d.id, content: d.content, metadata: d.metadata, score: 1 }));
     return results.slice(0, limit);
   }
-
   private cosineSimilarity(vecA: number[], vecB: number[]): number {
     const dot = vecA.reduce((acc, val, i) => acc + val * (vecB[i] ?? 0), 0);
     const normA = Math.sqrt(vecA.reduce((acc, val) => acc + val ** 2, 0));
@@ -62,6 +55,5 @@ class LokiSearchEngine {
     return normA && normB ? dot / (normA * normB) : 0;
   }
 }
-
 // Singleton engine
 export const lokiSearchEngine = new LokiSearchEngine();

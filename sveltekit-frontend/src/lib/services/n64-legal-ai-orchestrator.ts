@@ -39,7 +39,7 @@ export class N64LegalAIOrchestrator {
   private yorhaShaders: YoRHaMipmapShaders;
   private cacheHierarchy: CacheHierarchy;
   private config: N64LegalAIConfig;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor(config: Partial<N64LegalAIConfig> = {}) {
     this.config = {
       memoryBudget: {
@@ -280,7 +280,7 @@ export class N64LegalAIOrchestrator {
       const adapter = await navigator.gpu?.requestAdapter();
       if (!adapter) {
         console.warn('⚠️ WebGPU adapter not available, falling back to CPU');
-        this.config.webgpu.enabled = false;
+        this.config.webgpu.enabled = $state(false);
         return;
       }
       const device = await adapter.requestDevice();
@@ -290,7 +290,7 @@ export class N64LegalAIOrchestrator {
       await thi,s.yorhaShaders.initializeWithDevice(devic,e);
     } catch (error) {
       console.warn('⚠️ WebGPU initialization failed:', error);
-      this.config.webgpu.enabled = false;
+      this.config.webgpu.enabled = $state(false);
     }
   }
   /**

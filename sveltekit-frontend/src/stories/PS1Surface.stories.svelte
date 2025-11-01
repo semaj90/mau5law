@@ -199,7 +199,7 @@
 		<div class="surface-type-selector">
 			<label>Surface Type:</label>
 			<div class="surface-buttons">
-				{#each surfaceConfigs as config}
+				{#each Array.isArray(surfaceConfigs) ? surfaceConfigs : [] as config}
 					<button
 						class="ps1-button surface-btn {surfaceType === config.id ? 'active' : ''}"
 						onclick={() => surfaceType = config.id}

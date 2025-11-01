@@ -3,13 +3,11 @@
 import { db, adminDb, testRuntimeConnection, closeConnections } from '../db/client.js';
 // add Node createRequire import for TypeScript (server-side helper)
 import { createRequire } from 'module';
-
 /* Lightweight types for expressions/sql tag */
-type ExprFn = (...args: unknown[]) => unknown;
-type SqlTag = ((strings: TemplateStringsArray, ...values: unknown[]) => unknown) & {
+type ExprFn = (...args: any[]) => unknown;
+type SqlTag = ((strings: TemplateStringsArray, ...values: any[]) => unknown) & {
   raw?: (s: string) => unknown;
 };
-
 let eqExpr: ExprFn;
 let andExpr: ExprFn;
 let orExpr: ExprFn;
@@ -20,7 +18,6 @@ let notExpr: ExprFn;
 let ascExpr: ExprFn;
 let descExpr: ExprFn;
 let sqlTag: SqlTag;
-
 try {
   const req = createRequire(import.meta.url);
   // prefer modular deep imports (drizzle v0.44+)
@@ -34,15 +31,13 @@ try {
   notExpr = (exprs.not ?? exprs.default?.not) as ExprFn;
   ascExpr = (exprs.asc ?? exprs.default?.asc) as ExprFn;
   descExpr = (exprs.desc ?? exprs.default?.desc) as ExprFn;
-
   const sqlMod = req('drizzle-orm/sql');
   sqlTag = (sqlMod.sql ?? sqlMod.default ?? sqlMod) as SqlTag;
 } catch (e) {
   // Provide explicit runtime stubs that throw if used so failures are clear at call site.
-  const makeStub = (name: string): ExprFn => (..._args: unknown[]) => {
+  const makeStub = (name: string): ExprFn => (..._args: any[]) => {
     throw new Error(`drizzle-orm expression: '${name}' not available at runtime: ${String(e ?? 'unknown')}`);
   };
-
   eqExpr = makeStub('eq');
   andExpr = makeStub('and');
   orExpr = makeStub('or');
@@ -52,8 +47,7 @@ try {
   notExpr = makeStub('not');
   ascExpr = makeStub('asc');
   descExpr = makeStub('desc');
-
-  const sqlStub = ((..._a: unknown[]) => {
+  const sqlStub = ((..._a: any[]) => {
     throw new Error(`drizzle-orm 'sql' tag not available at runtime: ${String(e ?? 'unknown')}`);
   }) as SqlTag;
   sqlStub.raw = (_s: string) => {
@@ -61,10 +55,8 @@ try {
   };
   sqlTag = sqlStub;
 }
-
 // pg-core exports for schemas/types
 export * from 'drizzle-orm/pg-core';
-
 // Re-exports (friendly names)
 export const eq = eqExpr;
 export const and = andExpr;
@@ -76,10 +68,8 @@ export const not = notExpr;
 export const asc = ascExpr;
 export const desc = descExpr;
 export const sql = sqlTag;
-
 // Export DB instances
 export { db, adminDb };
-
 // pgvector cosine helper (uses sql.raw if available)
 export function pgvectorCosineSql(columnName: string, paramPlaceholder = '$1') {
   const hasRaw = typeof sql.raw === 'function';
@@ -87,7 +77,6 @@ export function pgvectorCosineSql(columnName: string, paramPlaceholder = '$1') {
   const param = hasRaw ? (sql.raw!(paramPlaceholder) as unknown) : paramPlaceholder;
   return (sql as SqlTag)`(1 - (${col} <#> ${param}))`;
 }
-
 // Wait-for-db guard
 export async function waitForDb(retries = 8, delayMs = 500): Promise<boolean> {
   for (let i = 0; i < retries; i++) {
@@ -101,12 +90,9 @@ export async function waitForDb(retries = 8, delayMs = 500): Promise<boolean> {
   }
   return false;
 }
-
 export { testRuntimeConnection as testConnection, closeConnections as closeConnection };
-
 // UUID helper - ESM-safe synchronous fallback
 type CryptoWithRandomUUID = { randomUUID?: () => string };
-
 export function genRandomUUID(): string {
   // prefer global crypto (typed, avoid `any`)
   try {
@@ -117,7 +103,6 @@ export function genRandomUUID(): string {
   } catch {
     // ignore
   }
-
   // try synchronous require via createRequire (works in Node ESM)
   try {
     const req = createRequire(import.meta.url);
@@ -129,7 +114,6 @@ export function genRandomUUID(): string {
   } catch {
     // ignore
   }
-
   // deterministic JS fallback UUIDv4 (not crypto-strong, but avoids throwing)
   // Generates RFC4122 v4-like string using Math.random as a last resort.
   const rnd = () => Math.floor((1 + Math.random()) * 0x100).toString(16).slice(1);
@@ -147,7 +131,6 @@ export function genRandomUUID(): string {
     s4().substr(0, 12)
   ).toLowerCase();
 }
-
 // Default convenience export
 const _default = {
   db,
@@ -167,5 +150,4 @@ const _default = {
   closeConnection: closeConnections,
   genRandomUUID,
 };
-
 export default _default;

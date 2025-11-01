@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { notifications  } from '$lib/stores/unified';
   import {
     Circle,
@@ -18,52 +18,43 @@
     ZoomIn,
     ZoomOut,
   } from 'lucide-svelte';
-
   // State (use normal let bindings so the file is valid)
   let canvasContainer: HTMLDivElement | undefined;
   let fabricCanvas: any = null;
-  let fabricLoaded = false;
+  let fabricLoaded = $state(false);
   let canvasHistory: string[] = [];
   let historyIndex = -1;
   let zoom = 1;
-  let readonly = false;
+  let readonly = $state(false);
   let caseId: string | undefined;
   let evidenceItems: any[] = [];
   let selectedTool = 'select';
-
   // Simple local mode instead of the broken XState bootstrapping
   let currentMode = 'evidence';
-
   function setWorkflowMode(mode: string) {
     currentMode = mode;
   }
-
   onMount(async () => {
     if (!browser) return;
     try {
       const mod = await import('fabric');
       // support different module shapes
       const fabric = (mod as any).fabric ?? (mod as any).default ?? mod;
-
       if (!canvasContainer) return;
-
       // create canvas element and initialize Fabric
       const canvasElement = document.createElement('canvas');
       canvasElement.width = 1200;
       canvasElement.height = 800;
       canvasContainer.appendChild(canvasElement);
-
       fabricCanvas = new fabric.Canvas(canvasElement, {
         backgroundColor: '#f8fafc',
         selection !readonly,
         preserveObjectStacking: true,
         enableRetinaScaling: true,
       });
-
       // listen to changes so we can save state to history
       fabricCanvas.on && fabricCanvas.on('object:modified', saveCanvasState);
       fabricCanvas.on && fabricCanvas.on('object:removed', saveCanvasState);
-
       // load initial evidence items if any
       if (evidenceItems && evidenceItems.length) {
         for (const item of evidenceItems) {
@@ -73,7 +64,6 @@
         }
         fabricCanvas.renderAll();
       }
-
       // push initial state
       saveCanvasState();
       fabricLoaded = true;
@@ -86,19 +76,16 @@
       });
     }
   });
-
   onDestroy(() => {
     if (fabricCanvas && typeof fabricCanvas.dispose === 'function') {
       fabricCanvas.dispose();
     }
   });
-
   async function addEvidenceToCanvas(item: any) {
     if (!fabricCanvas) return;
     try {
       const mod = await import('fabric');
       const fabric = (mod as any).fabric ?? (mod as any).default ?? mod;
-
       if (item?.type === 'image' && item?.thumbnailUrl) {
         // fabric.Image.fromURL is callback-based
         fabric.Image.fromURL(
@@ -147,7 +134,6 @@
       console.error('Error adding evidence to canvas:', error);
     }
   }
-
   function getTypeIcon(type: string | undefined): string {
     switch (type) {
       case 'image':
@@ -161,30 +147,28 @@
       default: return '📎';
     }
   }
-
   function selectTool(tool: string) {
     selectedTool = tool;
     if (!fabricCanvas) return;
     switch (tool) {
       case 'select':
-        fabricCanvas.isDrawingMode = false;
+        fabricCanvas.isDrawingMode = $state(false);
         fabricCanvas.selection = true;
         break;
       case 'draw':
         fabricCanvas.isDrawingMode = true;
-        fabricCanvas.selection = false;
+        fabricCanvas.selection = $state(false);
         break;
       case 'text':
-        fabricCanvas.isDrawingMode = false;
+        fabricCanvas.isDrawingMode = $state(false);
         fabricCanvas.selection = true;
         addTextBox();
         break;
       default:
-        fabricCanvas.isDrawingMode = false;
+        fabricCanvas.isDrawingMode = $state(false);
         fabricCanvas.selection = true;
     }
   }
-
   async function addShape(shape: 'rectangle' | 'circle') {
     if (!fabricCanvas) return;
     try {
@@ -219,7 +203,6 @@
       console.error('Error adding shape:', error);
     }
   }
-
   async function addTextBox() {
     if (!fabricCanvas) return;
     try {
@@ -243,7 +226,6 @@
       console.error('Error adding text:', error);
     }
   }
-
   function saveCanvasState() {
     if (!fabricCanvas) return;
     try {
@@ -261,21 +243,18 @@
       console.error('Failed to save canvas state:', error);
     }
   }
-
   function undo() {
     if (historyIndex > 0) {
       historyIndex--;
       loadCanvasState(canvasHistory[historyIndex]);
     }
   }
-
   function redo() {
     if (historyIndex < canvasHistory.length - 1) {
       historyIndex++;
       loadCanvasState(canvasHistory[historyIndex]);
     }
   }
-
   function loadCanvasState(state: string) {
     if (!fabricCanvas) return;
     try {
@@ -286,7 +265,6 @@
       console.error('Error loading canvas state:', error);
     }
   }
-
   function zoomIn() {
     if (!fabricCanvas) return;
     zoom = Math.min(zoom * 1.2, 3);
@@ -303,7 +281,6 @@
     fabricCanvas.setZoom(1);
     fabricCanvas.viewportTransform = [1, 0, 0, 1, 0, 0];
   }
-
   function deleteSelected() {
     if (!fabricCanvas || readonly) return;
     const activeObjects = fabricCanvas.getActiveObjects ? fabricCanvas.getActiveObjects() : [];
@@ -313,7 +290,6 @@
       saveCanvasState();
     }
   }
-
   async function saveCanvas() {
     if (!fabricCanvas) return;
     try {
@@ -327,7 +303,6 @@
           width: (obj.width ?? (obj.getScaledWidth ? obj.getScaledWidth() : 0)) * (obj.scaleX ?? 1),
           height: (obj.height ?? (obj.getScaledHeight ? obj.getScaledHeight() : 0)) * (obj.scaleY ?? 1),
         }));
-
       const response = await fetch('/api/canvas/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -348,7 +323,6 @@
       console.error('Save error:', error);
     }
   }
-
   async function exportCanvas() {
     if (!fabricCanvas) return;
     try {
@@ -375,7 +349,6 @@
       });
     }
   }
-
   function clearCanvas() {
     if (!fabricCanvas || readonly) return;
     if (confirm('Are you sure you want to clear the entire canvas?')) {
@@ -385,7 +358,6 @@
     }
   }
 </script>
-
 <div class="space-y-4">
   <!-- Toolbar -->
   <div class="space-y-4">
@@ -420,7 +392,6 @@
           <Type />
         </Button>
       </div>
-
       <!-- Shapes -->
       {#if !readonly}
         <div class="space-y-4">
@@ -430,9 +401,7 @@
           <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('circle')}>
             <Circle />
           </Button>
-        </div>
-      {/if}
-
+        {/if}
       <!-- History -->
       <div class="space-y-4">
         <Button
@@ -454,7 +423,6 @@
           <Redo />
         </Button>
       </div>
-
       <!-- Zoom -->
       <div class="space-y-4">
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomOut()}>
@@ -467,7 +435,6 @@
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => resetZoom()}>Reset</Button>
       </div>
     </div>
-
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
@@ -485,27 +452,22 @@
       </Button>
     </div>
   </div>
-
   <!-- Canvas Container -->
   <div>
     <div bind:this={canvasContainer} class="canvas-placeholder"></div>
     {#if !fabricLoaded}
       <div>
         <p>Loading canvas...</p>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Instructions -->
   {#if fabricLoaded && evidenceItems.length === 0}
     <div>
       <Image />
       <p>Evidence Board</p>
       <p>Add evidence items to start building your case visualization</p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .canvas-placeholder canvas {

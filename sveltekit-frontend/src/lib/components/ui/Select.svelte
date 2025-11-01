@@ -108,7 +108,6 @@
     options.find(option => option.value === value)?.label || placeholder
   );
 </script>
-
 <div class="select-wrapper" class:w-full={fullWidth}>
   <SelectRoot {value} onValueChange={handleValueChange} {disabled}>
     <SelectTrigger class={triggerClasses}>
@@ -133,8 +132,7 @@
                 {/each}
               </SelectGroup>
               {#if category !== Object.keys(groupedOptions)[Object.keys(groupedOptions).length - 1]}
-                <div class="h-px bg-border my-1"></div>
-              {/if}
+                <div class="h-px bg-border my-1">{/if}
             {:else}
               {#each categoryOptions as option (option.value)}
                 {@render selectItem(option)}
@@ -148,8 +146,7 @@
   {#if error && errorMessage}
     <div class="mt-1 text-xs text-red-600 font-medium">
       {errorMessage}
-    </div>
-  {/if}
+    {/if}
 </div>
 {#snippet selectItem(option: SelectOption)}
   <SelectItem
@@ -172,12 +169,10 @@
       {#if option.description}
         <div class="text-xs nes-text is-disabled mt-0.5">
           {option.description}
-        </div>
-      {/if}
+        {/if}
     </div>
   </SelectItem>
 {/snippet}
-
 <style>
   .select-wrapper {
     position: relative;

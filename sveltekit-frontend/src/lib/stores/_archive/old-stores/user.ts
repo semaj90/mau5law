@@ -12,11 +12,11 @@ export class User implements Partial<UserType> {
   lastName?: string;
   avatarUrl?: string;
   role: 'prosecutor' | 'investigator' | 'admin' | 'user' = 'user';
-  isActive = false;
+  isActive = $state(false);
   emailVerified?: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
-  isAuthenticated = false;
+  isAuthenticated = $state(false);
   caseId: string | null = null; // Active case ID
 
   constructor(userData: Partial<UserType> = {}) {

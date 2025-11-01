@@ -1,29 +1,24 @@
 import { topKSimilar } from './webgl-shader-cache';
-
 export interface PalaceNode {
   id: string;
   position: { x: number; y: number; z?: number };
   embedding: Float32Array;
   metadata?: Record<string, unknown>;
 }
-
 export class VisualMemoryPalace {
   private nodes: PalaceNode[] = [];
-
   constructor(private dim = 384) {
     // validate provided embedding dimension
     if (!Number.isInteger(dim) || dim <= 0) {
       throw new Error('dim must be a positive integer');
     }
   }
-
   addNode(node: PalaceNode) {
     if (node.embedding.length !== this.dim) throw new Error('Embedding dimension mismatch');
     // protect internal state from external mutation by copying the embedding
     const safeEmbedding = new Float32Array(node.embedding);
     this.nodes.push({ ...node, embedding: safeEmbedding });
   }
-
   query(embedding: Float32Array, k = 5) {
     if (!embedding || embedding.length !== this.dim) throw new Error('Invalid query embedding');
     if (this.nodes.length === 0) return [];
@@ -31,7 +26,6 @@ export class VisualMemoryPalace {
     const top = (topKSimilar(embArr, embedding, k) as Array<{ index: number; score?: number | string | null }>) || [];
     return top.map(t => ({ node: this.nodes[t.index], score: typeof t.score === 'number' ? t.score : Number(t.score) || 0 }));
   }
-
   // Map a query to a visual location (centroid of top results)
   locate(embedding: Float32Array, k = 3) {
     const results = this.query(embedding, k);
@@ -49,7 +43,6 @@ export class VisualMemoryPalace {
     return zAllZero ? { x: pos.x / total, y: pos.y / total } : { x: pos.x / total, y: pos.y / total, z: pos.z / total };
   }
 }
-
 export default VisualMemoryPalace;
 // light typedef for the bridge to clarify expected optional methods
 export interface ShaderSearchResult {
@@ -58,7 +51,6 @@ export interface ShaderSearchResult {
 	metadata?: Record<string, unknown> | null;
 	payload?: Record<string, unknown> | null;
 }
-
 export interface GlyphShaderBridge {
 	// best-effort persistence
 	persistShaderToBanks?: (id: string, text: string) => Promise<void> | void;
@@ -67,7 +59,6 @@ export interface GlyphShaderBridge {
 		findSimilarShaders?: (id: string, topK?: number) => Promise<ShaderSearchResult[]> | ShaderSearchResult[];
 	} | null;
 }
-
 export async function generateVisualMemoryReport(
 	bridge: GlyphShaderBridge, // use explicit, minimal interface
 	entityId: string,
@@ -76,17 +67,14 @@ export async function generateVisualMemoryReport(
 	try {
 		// persist (best-effort)
 		await bridge.persistShaderToBanks?.(entityId, text);
-
 		// safe lookup with optional chaining and fallback
 		const similars = (await bridge.cache?.findSimilarShaders?.(entityId, 3)) || [];
-
 		return {
 			entityId,
 			topMatches: (similars as ShaderSearchResult[]).map((s) => {
 				// Safely normalize/format score:
 				const raw = s?.score;
 				let formatted: string | number = '';
-
 				if (typeof raw === 'number') {
 					formatted = Number(raw.toFixed(3));
 				} else if (typeof raw === 'string') {
@@ -99,7 +87,6 @@ export async function generateVisualMemoryReport(
 				} else if (raw == null) {
 					formatted = '';
 				}
-
 				return {
 					id: s.id,
 					score: formatted,

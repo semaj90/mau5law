@@ -5,7 +5,6 @@
   import { Check, ChevronDown, Search, FileText, User, Folder, Tag, Brain, Zap, Target } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
   import { onMount } from 'svelte';
-
   interface Suggestion {
     term?: string;
     suggestion?: string;
@@ -34,7 +33,6 @@
     learningPhase: 'exploration' | 'learning' | 'proficient' | 'expert';
     preferredIntents: string[];
   }
-
   // Props using Svelte 5 syntax
   let {
     query = $bindable(''),
@@ -61,7 +59,6 @@
     onTaskSelect?: (t: TaskSuggestion) => void;
     onSearch?: (q: string) => void;
   } = $props();
-
   // Local state
   let suggestions = $state<Suggestion[]>([]);
   let taskSuggestions = $state<TaskSuggestion[]>([]);
@@ -72,13 +69,11 @@
   let debounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
   let open = $state(false);
   let inputEl = $state<HTMLInputElement | null>(null);
-
   // Debounced search trigger
   function scheduleSearch(q: string) {
     if (debounceTimer) clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => performSearch(q), 300);
   }
-
   $effect(() => {
     if (query && query.length >= 2) {
       scheduleSearch(query);
@@ -90,7 +85,6 @@
       userProfile = null;
     }
   });
-
   async function performSearch(searchQuery: string) {
     if (!searchQuery || searchQuery.length < 2) {
       suggestions = [];
@@ -127,27 +121,24 @@
       suggestions = [];
       taskSuggestions = [];
       userProfile = null;
-      open = false;
+      open = $state(false);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   function handleSelection(suggestion Suggestion) {
     const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
     query = suggestionText;
     onSelect?.(suggestion);
-    open = false;
+    open = $state(false);
     // keep focus on input for quick further edits
     inputEl?.focus();
   }
-
   function handleTaskSelection(task: TaskSuggestion) {
     onTaskSelect?.(task);
-    open = false;
+    open = $state(false);
     inputEl?.focus();
   }
-
   function getIconComponent(source?: string, type?: string) {
     if (source === 'ai') return Brain;
     if (type === 'task') return Target;
@@ -211,13 +202,12 @@
       default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
     }
   }
-
   // close dropdown when clicking outside
   function handleDocumentClick(e: MouseEvent) {
     const target = e.target as Node;
     if (!inputEl) return;
     if (!inputEl.contains(target) && open) {
-      open = false;
+      open = $state(false);
     }
   }
   onMount(() => {
@@ -225,7 +215,6 @@
     return () => document.removeEventListener('click', handleDocumentClick);
   });
 </script>
-
 <div class="relative w-full">
   <!-- Search Input -->
   <div class="relative">
@@ -242,7 +231,7 @@
           suggestions = [];
           taskSuggestions = [];
           userProfile = null;
-          open = false;
+          open = $state(false);
         }
       }}
       onfocus={() => {
@@ -250,7 +239,7 @@
       }}
       onkeydown={e => {
         if (e.key === 'Escape') {
-          open = false;
+          open = $state(false);
           inputEl?.blur();
         }
       }}
@@ -264,7 +253,6 @@
       <ChevronDown class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
     {/if}
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div
@@ -275,9 +263,7 @@
         <span class="font-medium">Error:</span>
         {error}
       </p>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Metadata Display -->
   {#if metadata.took_ms}
     <div class="mt-1 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
@@ -288,9 +274,7 @@
           AI Enhanced
         </span>
       {/if}
-    </div>
-  {/if}
-
+    {/if}
   <!-- AI-Enhanced Suggestions Dropdown -->
   {#if open && (suggestions.length > 0 || taskSuggestions.length > 0)}
     <div
@@ -353,22 +337,19 @@
                   {/if}
                   {#if suggestion.tags && suggestion.tags.length > 0}
                     <div class="flex gap-1 mt-1">
-                      {#each suggestion.tags.slice(0, 3) as tag}
+                      {#each Array.isArray(suggestion.tags.slice(0, 3)) ? suggestion.tags.slice(0, 3) : [] as tag}
                         <span
                           class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
                         >
                           {tag}
                         </span>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </button>
           {/each}
-        </div>
-      {/if}
-
+        {/if}
       <!-- Task Suggestions -->
       {#if taskSuggestions.length > 0}
         <div class="p-2 border-t border-gray-200 dark:border-gray-600">
@@ -410,9 +391,7 @@
               </div>
             </button>
           {/each}
-        </div>
-      {/if}
-
+        {/if}
       <!-- User Profile -->
       {#if showUserProfile && userProfile}
         <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
@@ -430,21 +409,17 @@
             </div>
             {#if userProfile.preferredIntents.length > 0}
               <div class="flex flex-wrap gap-1 mt-1">
-                {#each userProfile.preferredIntents as intent}
+                {#each Array.isArray(userProfile.preferredIntents) ? userProfile.preferredIntents : [] as intent}
                   <span
                     class="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 rounded-full"
                   >
                     {intent}
                   </span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
-
+        {/if}
+    {/if}
   <!-- No Results -->
   {#if open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
     <div
@@ -462,10 +437,8 @@
           </p>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* Ensure proper z-index stacking for suggestions dropdown (use Bits UI class names) */
   :global(.bits-dialog-overlay) {

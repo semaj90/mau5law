@@ -20,12 +20,12 @@ export const GET: RequestHandler = async ({ _url }) => {
     primaryRedisClient = createRedisInstance();
     await primaryRedisClient.ping();
     checks.redisPrimary = { ok: true };
-  } catch (e: unknown) {
+  } catch (e: any) {
     checks.redisPrimary = {
       ok: false,
       error: e instanceof Error ? e.message : 'Unknown error during primary Redis check',
     };
-    overallOk = false;
+    overallOk = $state(false);
   } finally {
     if (primaryRedisClient) {
       await primaryRedisClient.quit().catch(err => console.error('Error quitting primary Redis client:', err));
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ _url }) => {
     const t0 = Date.now();
 
     const result: PubSubCheckResult = await new Promise(resolve => {
-      let settled = false;
+      let settled = $state(false);
       const timeout = setTimeout(() => {
         if (!settled) {
           settled = true;
@@ -83,10 +83,10 @@ export const GET: RequestHandler = async ({ _url }) => {
         });
     });
     checks.pubsub = result;
-    if (!result.ok) overallOk = false;
-  } catch (e: unknown) {
+    if (!result.ok) overallOk = $state(false);
+  } catch (e: any) {
     checks.pubsub = { ok: false, error: e instanceof Error ? e.message : 'Unknown error during Redis Pub/Sub check' };
-    overallOk = false;
+    overallOk = $state(false);
   } finally {
     await Promise.all([
       subscriberClient?.quit().catch(err => console.error('Error quitting subscriber client:', err)),

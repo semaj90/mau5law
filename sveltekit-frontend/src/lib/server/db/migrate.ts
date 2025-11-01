@@ -8,16 +8,13 @@ import postgres from 'postgres'; // derive runtime client type
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { sql } from 'drizzle-orm';
-
 // Minimal pool shape used by this script
 type PoolLike = {
   end?: () => Promise<void> | void;
   close?: () => Promise<void> | void;
 };
-
 // Derive concrete postgres-js client type
 type PostgresJsClient = ReturnType<typeof postgres>;
-
 interface Migration {
   id: string;
   filename: string;
@@ -34,7 +31,6 @@ async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike) {
       applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
-
   // Get applied migrations (handle multiple possible return shapes)
   const result = await db.execute(sql`
     SELECT id, filename, applied_at FROM migrations ORDER BY applied_at ASC
@@ -42,7 +38,6 @@ async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike) {
   // drizzle/postgres-js clients sometimes return { rows: [...] } or an array directly
   const rows = (result && (result as any).rows) ?? (Array.isArray(result) ? result : ((result as any)[0] ?? []));
   const appliedMigrations = (Array.isArray(rows) ? rows : []) as Migration[];
-
   // Get available migration files
   const migrationsDir = join(process.cwd(), 'src/lib/server/db/migrations');
   if (!existsSync(migrationsDir)) {

@@ -42,7 +42,7 @@ interface CacheMetrics {
 }
 
 // --- added helpers (safe wrappers and error formatter) ---
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
     return JSON.stringify(error);
@@ -166,16 +166,16 @@ async function safeRedisGetStats() {
   }
   // Fallback minimal shape - properly await isHealthy when it's async
   try {
-    let connected = false;
+    let connected = $state(false);
     if (typeof rs.isHealthy === 'function') {
       try {
         const maybe = rs.isHealthy();
         connected = Boolean(maybe instanceof Promise ? await maybe : maybe);
       } catch {
-        connected = false;
+        connected = $state(false);
       }
     } else {
-      connected = false;
+      connected = $state(false);
     }
     return {
       connected,
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -350,7 +350,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -566,7 +566,7 @@ async function getPerformanceMetrics(timeRange: string): Promise<PerformanceMetr
  */
 async function getSystemHealth(): Promise<SystemHealthResponse> {
   // Prefer a guarded method call; fallback to safe redis connected state
-  let isRedisHealthy = false;
+  let isRedisHealthy = $state(false);
   try {
     const maybeFn = (redisService as unknown as Record<string, unknown>).isHealthy;
     if (typeof maybeFn === 'function') {
@@ -578,7 +578,7 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
       isRedisHealthy = Boolean(redisStats.connected);
     }
   } catch {
-    isRedisHealthy = false;
+    isRedisHealthy = $state(false);
   }
 
   const redisStats = await safeRedisGetStats();

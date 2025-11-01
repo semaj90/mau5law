@@ -4,12 +4,12 @@ import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from 
 interface WorkerMessage {
   type: string;
   id?: string; // optional: ping/pong may not include id
-  data?: unknown;
+  data?: any;
   error?: string;
 }
 
 interface PendingRequest {
-  resolve: (value: unknown) => void;
+  resolve: (value: any) => void;
   reject: (error: Error) => void;
   timestamp: number;
 }
@@ -18,7 +18,7 @@ export class EmbeddingsService {
   private workers: Worker[] = [];
   private workerIndex = 0;
   private pendingRequests = new Map<string, PendingRequest>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private readonly maxWorkers =
     typeof navigator !== 'undefined' && navigator?.hardwareConcurrency ? navigator.hardwareConcurrency : 4;
   private readonly requestTimeout = 30000; // 30 seconds
@@ -121,7 +121,7 @@ export class EmbeddingsService {
   }
 
   // Generic sendWorkerMessage: returns Promise<T> so callers can specify expected type
-  private async sendWorkerMessage<T = unknown>(worker: Worker, type: string, data?: unknown): Promise<T> {
+  private async sendWorkerMessage<T = unknown>(worker: Worker, type: string, data?: any): Promise<T> {
     const id = this.getUUID();
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
 
@@ -319,7 +319,7 @@ export class EmbeddingsService {
       }
     }
     this.workers = [];
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 Embeddings service cleaned up');
   }
 }

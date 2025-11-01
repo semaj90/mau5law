@@ -286,9 +286,9 @@ function extractTags(content: string, filename: string): string[] {
 }
 
 // Helper: safely extract a string: 'code' property from unknown errors
-function getErrorCode(e: unknown): string | undefined {
+function getErrorCode(e: any): string | undefined {
   if (e && typeof e === 'object') {
-    const maybe = e as { [key: string]: unknown };
+    const maybe = e as { [key: string]: any };
     const codeVal = maybe['code'];
     return typeof codeVal === 'string' ? codeVal : undefined;
   }
@@ -351,7 +351,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const minioObject = `${timestamp}-${file.name}`;
     const buffer = Buffer.from(arrayBuffer);
 
-    let minioSuccess = false;
+    let minioSuccess = $state(false);
     let storedUri: string | null = null;
     try {
       const result = await putObject('legal-documents', minioObject, buffer, {
@@ -362,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (typeof result === 'string' && result.startsWith('file://')) {
         // local fallback path
         storedUri = result;
-        minioSuccess = false; // stored locally instead of MinIO
+        minioSuccess = $state(false); // stored locally instead of MinIO
         console.log(`ℹ️ Stored locally (MinIO fallback): ${result}`);
       } else {
         minioSuccess = true;
@@ -415,7 +415,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .returning({ id: documents.id });
 
       documentId = newDocument.id;
-    } catch (insertErr: unknown) {
+    } catch (insertErr: any) {
       // If the target DB schema doesn't match (e.g. missing columns such as: 'title'),
       // fallback to inserting into the legacy `legal_documents` table with a mapped shape.
       // Postgres error code 42703 = undefined_column

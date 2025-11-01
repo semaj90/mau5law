@@ -18,7 +18,6 @@
     onClo;
   }: Props = $props();
 </script>
-
 {#if open}
   <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" transitionfade>
     <div
@@ -39,5 +38,4 @@
         use:accessibleClick={{ handler: onClose, label: 'Close dialog' }}>✕</button
       >
     </div>
-  </div>
-{/if}
+  {/if}

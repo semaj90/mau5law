@@ -42,8 +42,8 @@ export class AIAccessibilityPatterns {
     const SR: typeof window extends { SpeechRecognition: infer T } ? any : any =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     this.voiceRecognition = new SR();
-    this.voiceRecognition.continuous = false;
-    this.voiceRecognition.interimResults = false;
+    this.voiceRecognition.continuous = $state(false);
+    this.voiceRecognition.interimResults = $state(false);
     this.voiceRecognition.lang = 'en-US';
     this.voiceRecognition.onresult = (event) => {
       const command = event.results[0][0].transcript.toLowerCase().trim();
@@ -128,8 +128,8 @@ export class AIAccessibilityPatterns {
    */
   createProgressiveDisclosure(
     container: HTMLElement,
-    data: unknown;
-    options: { summary: string; levels: Array<{ label: string; content: unknown; level: number }> }
+    data: any;
+    options: { summary: string; levels: Array<{ label: string; content: any; level: number }> }
   ) {
     if (typeof document === 'undefined' || !this.options.progressiveDisclosure) {
       if (typeof document !== 'undefined') {
@@ -205,7 +205,7 @@ export class AIAccessibilityPatterns {
   /**
    * Create accessible AI result cards with enhanced navigation
    */
-  createAccessibleAIResult(result: unknown, container: HTMLElement) {
+  createAccessibleAIResult(result: any, container: HTMLElement) {
     const card = document.createElement('article');
     card.className = 'ai-result-card ai-component';
     card.setAttribute('role', 'article');

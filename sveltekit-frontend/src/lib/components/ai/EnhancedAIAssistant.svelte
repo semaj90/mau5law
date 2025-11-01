@@ -42,18 +42,15 @@ https://svelte.dev/e/effect_invalid_placement -->
   let messagesContainer: HTMLDivElement;
   let showCitationDialog = $state(false);
   let selectedCitation = $state('');
-
   // Derived state from store
   const messages = $derived(aiAssistant.messages);
   const isProcessing = $derived(aiAssistant.isProcessing);
   const currentBackend = $derived(aiAssistant.currentBackend);
   const backendLatency = $derived(aiAssistant.backendLatency);
   const config = $derived(aiAssistant.config);
-
   // Voice input support
   let isListening = $state(false);
   let recognition: SpeechRecognition | null = null; // fixed type syntax
-
   // Initialize SpeechRecognition only in browser
   $effect(() => {
     if (!browser) return;
@@ -62,18 +59,18 @@ https://svelte.dev/e/effect_invalid_placement -->
     const SR = Win.SpeechRecognition || Win.webkitSpeechRecognition;
     if (!SR) return;
     recognition = new SR() as SpeechRecognition;
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.continuous = $state(false);
+    recognition.interimResults = $state(false);
     recognition.lang = 'en-US';
     recognition.onresult = (event: any) => {
       const transcript = event.results?.[0]?.[0]?.transcript;
       if (transcript) {
         messageInput = transcript;
       }
-      isListening = false;
+      isListening = $state(false);
     };
-    recognition.onerror = () => { isListening = false; };
-    recognition.onend = () => { isListening = false; };
+    recognition.onerror = () => { isListening = $state(false); };
+    recognition.onend = () => { isListening = $state(false); };
     // teardown
     return () => {
       if (recognition) {
@@ -82,7 +79,6 @@ https://svelte.dev/e/effect_invalid_placement -->
       }
     };
   });
-
   // Auto-scroll to bottom when new messages arrive (runs in browser only)
   $effect(() => {
     if (!browser) return;
@@ -90,7 +86,6 @@ https://svelte.dev/e/effect_invalid_placement -->
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   });
-
   // Send message function
   async function sendMessage() {
     if (!messageInput.trim() || isProcessing) return;
@@ -159,7 +154,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   // Insert search result
   function insertSearchResult(result: any) {
     messageInput = (result as { content?: any }).content || '';
-    showSearchResults = false;
+    showSearchResults = $state(false);
   }
   // Backend selection
   function selectBackend(backend: Backend) {
@@ -201,13 +196,11 @@ https://svelte.dev/e/effect_invalid_placement -->
     selectedCitation = citation;
     showCitationDialog = true;
   }
-
   function insertCitation() {
     oncitation?.();
-    showCitationDialog = false;
+    showCitationDialog = $state(false);
   }
 </script>
-
 <!-- Main AI Assistant Interface -->
 <div class="enhanced-ai-assistant">
   <!-- Header with Controls -->
@@ -257,7 +250,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       <div class="setting-group">
         <label>Backend Selection</label>
         <div class="backend-grid">
-          {#each aiAssistant.availableBackends as backend}
+          {#each Array.isArray(aiAssistant.availableBackends) ? aiAssistant.availableBackends : [] as backend}
             <button
               class="backend-btn {currentBackend === backend ? 'active' : ''}"
               class:unavailable={backendLatency[backend] === 0}
@@ -299,8 +292,7 @@ https://svelte.dev/e/effect_invalid_placement -->
           Persist conversation history
         </label>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Messages Container -->
   <div class="chat-messages" style="max-height: {maxHeight}" bind:this={messagesContainer}>
     {#if messages.length === 0}
@@ -314,9 +306,8 @@ https://svelte.dev/e/effect_invalid_placement -->
           <div class="capability">📋 Contract interpretation</div>
           <div class="capability">🔍 Evidence evaluation</div>
         </div>
-      </div>
-    {/if}
-    {#each messages as message}
+      {/if}
+    {#each Array.isArray(messages) ? messages : [] as message}
       <div class="message {message.role}" data-message-id={message.id}>
         <div class="message-header">
           <span class="role-indicator">
@@ -347,14 +338,13 @@ https://svelte.dev/e/effect_invalid_placement -->
         {#if message.metadata?.confidence}
           <div class="confidence-indicator">
             Confidence: {Math.round(message.metadata.confidence * 100)}%
-          </div>
-        {/if}
+          {/if}
         <!-- References from existing implementation -->
         {#if message.references && message.references.length > 0 && showReferences}
           <div class="message-references">
             <h4>References:</h4>
             <ul>
-              {#each message.references as ref}
+              {#each Array.isArray(message.references) ? message.references : [] as ref}
                 <li>
                   <button
                     class="reference-link"
@@ -365,8 +355,7 @@ https://svelte.dev/e/effect_invalid_placement -->
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
       </div>
     {/each}
     {#if isProcessing}
@@ -384,8 +373,7 @@ https://svelte.dev/e/effect_invalid_placement -->
           <Loader2 size={16} />
           <span>Thinking...</span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Search Results Panel -->
   {#if showSearchResults}
@@ -395,7 +383,7 @@ https://svelte.dev/e/effect_invalid_placement -->
         <button type="button" onclick={() => (showSearchResults = false)} aria-label="Close search results">✕</button>
       </div>
       <div class="search-results">
-        {#each searchResults as result}
+        {#each Array.isArray(searchResults) ? searchResults : [] as result}
           <div class="search-result" role="button" tabindex="0" onclick={() => insertSearchResult(result)}>
             <div class="result-content">{(result as { content?: any }).content}</div>
             <div class="result-meta">
@@ -405,11 +393,9 @@ https://svelte.dev/e/effect_invalid_placement -->
           </div>
         {/each}
         {#if searchResults.length === 0}
-          <div class="no-results">No related conversations found.</div>
-        {/if}
+          <div class="no-results">No related conversations found.{/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Input Area -->
   <div class="chat-input">
     <div class="input-controls">
@@ -456,10 +442,9 @@ https://svelte.dev/e/effect_invalid_placement -->
       </button>
     </div>
   </div>
-
   <!-- Citation modal moved outside of submit button and template cleaned up -->
   {#if showCitationDialog}
-    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
+    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = $state(false); }}>
       <div class="modal" role="document">
         <div class="modal-header">
           <Quote size={20} />
@@ -484,8 +469,7 @@ https://svelte.dev/e/effect_invalid_placement -->
           </button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .enhanced-ai-assistant {
@@ -838,7 +822,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   /* Modal styles */
   .modal-overlay {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -937,7 +921,6 @@ https://svelte.dev/e/effect_invalid_placement -->
   .text-green-500 { color: #10b981; }
   .text-yellow-500 { color: #f59e0b; }
   .text-red-500 { color: #ef4444; }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .enhanced-ai-assistant {
@@ -954,4 +937,3 @@ https://svelte.dev/e/effect_invalid_placement -->
     }
   }
 </style>
-

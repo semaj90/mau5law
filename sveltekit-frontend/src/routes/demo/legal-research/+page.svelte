@@ -123,7 +123,7 @@
             <h3 class="font-semibold text-gray-900 dark:text-dark-text">
               Found {demoResults.length} relevant cases
             </h3>
-            {#each demoResults as result}
+            {#each Array.isArray(demoResults) ? demoResults : [] as result}
               <div class="card-evidence">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
@@ -151,7 +151,7 @@
       <h2 class="text-2xl font-bold text-gray-900 dark:text-dark-text mb-6">Research Features</h2>
 
       <div class="grid-legal">
-        {#each activeFeatures as feature}
+        {#each Array.isArray(activeFeatures) ? activeFeatures : [] as feature}
           <button
             class="card-legal hover-lift cursor-pointer text-left w-full"
             class:ring-2={selectedFeature === feature.id}

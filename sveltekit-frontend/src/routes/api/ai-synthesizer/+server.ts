@@ -39,7 +39,7 @@ interface TestResult {
   success: boolean;
   processingTime: number;
   confidence?: number;
-  sourcesUsed?: unknown[];
+  sourcesUsed?: any[];
   expectedSources?: string[];
   error?: string;
 }
@@ -52,7 +52,7 @@ type StreamComplete = { type: 'complete'; result: ProcessResult };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete;
 
 // Safe error-to-string helper
-function errToString(err: unknown): string {
+function errToString(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -66,9 +66,9 @@ type ActiveStreamState = {
   query: string;
   startTime: number;
   status: 'initializing' | 'processing' | 'complete' | 'error';
-  lastUpdate?: unknown;
-  updates?: unknown[];
-  result?: unknown;
+  lastUpdate?: any;
+  updates?: any[];
+  result?: any;
   error?: string;
 };
 const activeStreams = new Map<string, ActiveStreamState>();
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     logger.info(`[API] Processing synthesis request ${requestId}: "${query}"`);
 
     // Check if streaming is requested
-    if ((options as { stream?: unknown }).stream === true) {
+    if ((options as { stream?: any }).stream === true) {
       // Create stream ID for SSE
       const streamId = `stream_${requestId}`;
       // Initialize stream tracking
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         },
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errMsg = errToString(err);
     // Log error
     logger.error('[API] Synthesis error:', errMsg);
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
           // Safely extract sourcesUsed, ensuring it's an array
           const rawSourcesUsed = (raw.metadata as Record<string, unknown>)?.['sourcesUsed'];
-          const sourcesUsedArray: unknown[] = Array.isArray(rawSourcesUsed) ? rawSourcesUsed : [];
+          const sourcesUsedArray: any[] = Array.isArray(rawSourcesUsed) ? rawSourcesUsed : [];
 
           testResults.push({
             query: test.query,
@@ -204,7 +204,7 @@ export const GET: RequestHandler = async ({ url }) => {
             sourcesUsed: sourcesUsedArray,
             expectedSources: test.expectedSources,
           });
-        } catch (err: unknown) {
+        } catch (err: any) {
           testResults.push({
             query: test.query,
             success: false,
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status.status = 'unhealthy';
     }
     return json(status);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errMsg = errToString(err);
     logger.error('[API] Health check error:', errMsg);
     return json(
@@ -329,7 +329,7 @@ export const GET: RequestHandler = async ({ url }) => {
 async function processStreamingRequest(
   streamId: string,
   query: string,
-  context: unknown,
+  context: any,
   options: Record<string, unknown> | undefined
 ): Promise<void> {
   try {
@@ -371,7 +371,7 @@ async function processStreamingRequest(
         }
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errMsg = errToString(err);
     logger.error(`[API] Streaming error for ${streamId}:`, errMsg);
     const stream = activeStreams.get(streamId);

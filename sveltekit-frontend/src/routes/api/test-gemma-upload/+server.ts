@@ -16,7 +16,7 @@ interface MCPMetadata {
   timestamp: string;
   // Add any other known properties that MCP might return in its metadata
   // For now, we'll include the ones we send.
-  [key: string]: unknown; // Allow for additional unknown properties if MCP returns more
+  [key: string]: any; // Allow for additional unknown properties if MCP returns more
 }
 
 // Use centralized configuration instead of hardcoded URLs
@@ -97,7 +97,7 @@ async function uploadToMinIO(
       objectPath,
       url: `${MINIO_ENDPOINT}/${MINIO_BUCKET}/${objectPath}`,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error during MinIO upload',
@@ -135,7 +135,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
     }
     const result = (await response.json()) as MCPProcessingResult['data']; // Cast to specific data type
     return { success: true, data: result };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('MCP processing error:', error);
     return {
       success: false,
@@ -274,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       message: `Successfully processed ${file.name} with Gemma embeddings pipeline`,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[API] Processing error:', error);
     return json(
       {

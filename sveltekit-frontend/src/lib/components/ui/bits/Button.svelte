@@ -111,7 +111,6 @@
     return classes.join(' ');
   });
 </script>
-
 <button class={buttonClasses} {type} disabled={disabled || loading} {onclick} aria-busy={loading} {...restProps}>
   {#if loading}
     <span class="i-lucide-loader-2 animate-spin mr-2 w-4 h-4"></span>
@@ -120,7 +119,6 @@
     {@render children()}
   {/if}
 </button>
-
 <style>
   /* Import NES.css for retro styling option */
   /* Custom NieR enhancements using UnoCSS theme colors */
@@ -128,13 +126,11 @@
     position: relative;
     overflow: hidden;
   }
-
   /* NieR-style shimmer effect (fixed selectors and removed theme() call)
      Using CSS variable fallback or hex to avoid preprocessing theme() errors */
   .yorha-button::before {
     content: '';
   }
-
   .yorha-button-primary::before {
     content: '';
     position: absolute;
@@ -143,18 +139,15 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(var(--color-nier-accent-warm-rgba), 0.18), transparent);
-    transition: left 0.5s ease;
+    transition: left: 0.5s ease;
   }
-
   .yorha-button-primary:hover::before {
     left: 100%;
   }
-
   /* Legal variant glow effect */
   .bg-justice-600:hover {
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.12);
   }
-
   /* Gaming variant pixelated effect */
   .font-nes {
     image-rendering: pixelated;
@@ -162,4 +155,3 @@
     image-rendering: crisp-edge;
   }
 </style>
-

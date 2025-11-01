@@ -47,7 +47,7 @@ https://svelte.dev/e/js_parse_error -->
       // Custom renderer for better control
       const renderer = new marked.Renderer();
       // Customize link rendering for security
-      renderer.link = ({ href, title, tokens }: { href: string; title?: string; tokens?: unknown[] }) => {
+      renderer.link = ({ href, title, tokens }: { href: string; title?: string; tokens?: any[] }) => {
         const titleAttr = title ? ` title="${title}"` : "";
         const target = href.startsWith("http")
           ? ' target="_blank" rel="noopener noreferrer"'
@@ -93,8 +93,7 @@ https://svelte.dev/e/js_parse_error -->
   {:else}
     <div class="space-y-4">
       No content to display
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* @unocss-include */

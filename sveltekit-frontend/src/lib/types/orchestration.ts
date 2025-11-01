@@ -327,7 +327,7 @@ export interface ConfigParameter {
   type: 'string' | 'number' | 'boolean' | 'array' | 'object';
   required: boolean;
   description: string;
-  default_value?: unknown;
+  default_value?: any;
   validation?: string; // regex pattern
 }
 export interface ValidationRule {

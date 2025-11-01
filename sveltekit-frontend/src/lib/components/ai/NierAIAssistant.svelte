@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
-    user?: unknown;
+    user?: any;
     isDarkMode?: boolean;
   }
   // Use $props with no arguments, then provide defaults
@@ -36,7 +36,6 @@
     currentMessage = '';
   }
 </script>
-
 <div class="nier-ai-assistant p-6 bg-black text-green-400 font-mono rounded-lg">
   <div class="mb-4">
     <h3 class="text-xl font-bold">NieR AI Assistant</h3>
@@ -45,7 +44,7 @@
     <small class="opacity-60">User: {user ? String(user) : 'guest'}</small>
   </div>
   <div class="messages space-y-3 max-h-60 overflow-y-auto mb-4">
-    {#each messages as message}
+    {#each Array.isArray(messages) ? messages : [] as message}
       <div class="message" class:text-yellow-400={message.sender === 'ai'}>
         <span class="font-bold">[{message.sender.toUpperCase()}]</span>
         {message.text}
@@ -67,7 +66,6 @@
     </button>
   </div>
 </div>
-
 <style>
   .nier-ai-assistant {
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);

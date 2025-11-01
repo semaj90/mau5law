@@ -122,7 +122,6 @@ export const emailVerificationCodes = pgTable(
     id: serial('id').primaryKey().notNull(),
     userId: uuid('user_id').notNull(),
     email: varchar('email', { length: 255 }).notNull(),
-
     code: varchar('code', { length: 8 }).notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
@@ -1085,9 +1084,7 @@ export const documentChunks = pgTable('document_chunks', {
   metadata: jsonb('metadata').default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });
-
 // === CONTEXTUAL UNDERSTANDING TABLES ===
-
 // Conversation sessions for contextual chat
 export const conversationSessions = pgTable(
   'conversation_sessions',
@@ -1124,7 +1121,6 @@ export const conversationSessions = pgTable(
     index('conversation_sessions_last_active_idx').on(table.lastActiveAt),
   ]
 );
-
 // Conversation turns for detailed history
 export const conversationTurns = pgTable(
   'conversation_turns',
@@ -1156,7 +1152,6 @@ export const conversationTurns = pgTable(
     index('conversation_turns_timestamp_idx').on(table.timestamp),
   ]
 );
-
 // Legal entities extracted from conversations
 export const extractedEntities = pgTable(
   'extracted_entities',
@@ -1191,7 +1186,6 @@ export const extractedEntities = pgTable(
     index('extracted_entities_type_idx').on(table.entityType),
   ]
 );
-
 // HMM state transitions for pattern analysis
 export const hmmStateTransitions = pgTable(
   'hmm_state_transitions',
@@ -1217,7 +1211,6 @@ export const hmmStateTransitions = pgTable(
     index('hmm_state_transitions_session_id_idx').on(table.sessionId),
   ]
 );
-
 // Next-step predictions cache
 export const nextStepPredictions = pgTable(
   'next_step_predictions',
@@ -1245,7 +1238,6 @@ export const nextStepPredictions = pgTable(
     index('next_step_predictions_expires_at_idx').on(table.expiresAt),
   ]
 );
-
 // Embeddings cache with pgvector for similarity search
 export const contextualEmbeddings = pgTable(
   'contextual_embeddings',
@@ -1281,7 +1273,6 @@ export const contextualEmbeddings = pgTable(
     index('contextual_embeddings_type_idx').on(table.embeddingType),
   ]
 );
-
 // === RELATIONS ===
 export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: 'leadProsecutor' }),
@@ -1396,10 +1387,8 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
 // Export commonly used query helpers for consistency
 // Keep helpers minimal here to avoid importing unavailable symbols in this environment.
 export const helpers = { sql };
-
 // Export all tables for easy access
 // Note: do not re-export tables collectively to avoid redeclaration conflicts
-
 // Removed duplicated import and helpers redeclaration that caused TypeScript errors.
 // If you later need `not` and it's available in your environment, import it once at the top:
 // import { not } from 'drizzle-orm';

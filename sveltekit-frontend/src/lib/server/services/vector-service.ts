@@ -23,7 +23,7 @@ type StoredDocument = {
 };
 
 export type AnalysisResult =
-  | { analysis: unknown; type: string; timestamp: string }
+  | { analysis: any; type: string; timestamp: string }
   | { analysis: string; error?: string };
 
 // Add a lightweight in-memory store used by the stubbed redisVectorService
@@ -47,7 +47,7 @@ const redisVectorService = {
   },
   async searchSimilar(
     _embedding: number[],
-    _options?: { topK?: number; threshold?: number; filter?: unknown }
+    _options?: { topK?: number; threshold?: number; filter?: any }
   ): Promise<Array<StoredDocument & { score?: number }>> {
     // naive stub: return stored docs with a placeholder score
     return Array.from(inMemoryVectorStore.values()).map(d => ({ ...d, score: 1 }));
@@ -94,7 +94,7 @@ export class VectorService {
       const data = await response.json();
       // Expecting { embedding: number[] }
       return Array.isArray(data.embedding) ? (data.embedding as number[]) : [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error generating embedding:', message);
       throw new Error(message);
@@ -265,7 +265,7 @@ export class VectorService {
         type: analysisType,
         timestamp: new Date().toISOString(),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error analyzing document:', message);
       return {
@@ -296,7 +296,7 @@ export class VectorService {
       const doc = await redisVectorService.getDocument(`doc:${documentId}`);
       if (!doc) return [];
       return this.findSimilar(doc.embedding, { limit, threshold: 0.7 });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error finding similar documents:', message);
       return [];
@@ -328,7 +328,7 @@ export class VectorService {
   static async getUserEmbeddings(
     userId: string
   ): Promise<
-    Array<{ userId: string; content?: string; embedding: number[]; metadata?: Metadata; createdAt?: unknown }>
+    Array<{ userId: string; content?: string; embedding: number[]; metadata?: Metadata; createdAt?: any }>
   > {
     const results = await redisVectorService.searchSimilar(new Array(384).fill(0), {
       topK: 100,
@@ -340,7 +340,7 @@ export class VectorService {
       content: result.content,
       embedding: (result.metadata as Metadata & { embedding?: number[] })?.embedding ?? [],
       metadata: result.metadata,
-      createdAt: (result.metadata as Metadata & { timestamp?: unknown })?.timestamp,
+      createdAt: (result.metadata as Metadata & { timestamp?: any })?.timestamp,
     }));
   }
 

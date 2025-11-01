@@ -4,15 +4,15 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { UnifiedCanvasIntegration } from '$lib/components/unified';
-  import { NierRichTextEditor } from '$lib/components/editors';
-  import { EnhancedAIAssistant } from '$lib/components/ai';
-  import { CitationsManager } from '$lib/components/citations';
+  import { UnifiedCanvasIntegration } from '$lib/components/unified.svelte'';
+  import { NierRichTextEditor } from '$lib/components/editors.svelte'';
+  import { EnhancedAIAssistant } from '$lib/components/ai.svelte'';
+  import { CitationsManager } from '$lib/components/citations.svelte'';
   // UI components are imported via barrel files for consistency and SSR compatibility.
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
-  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card.svelte'';
+  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs.svelte'';
   import FileText from 'lucide-svelte/icons/file-text';
   import Search from 'lucide-svelte/icons/search';
   import Brain from 'lucide-svelte/icons/brain';
@@ -225,7 +225,7 @@
       console.error('Save error:', error);
       addChatMessage('system', 'Error saving investigation progress.');
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
 </script>
@@ -363,7 +363,7 @@
                       {/if}
                       {#if item.tags.length > 0}
                         <div class="evidence-tags flex flex-wrap gap-1 mt-2">
-                          {#each item.tags as tag}
+                          {#each Array.isArray(item.tags) ? item.tags : [] as tag}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-300">{tag}</span>
                           {/each}
                         </div>

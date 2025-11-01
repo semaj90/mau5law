@@ -180,7 +180,7 @@ export class FlatBufferNodeSerializer {
       const cacheKey = this.generateCacheKey(nodes);
       this.addToCache(cacheKey, buffer);
       return buffer;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from 'any'
       console.error('❌ FlatBuffer serialization failed:', error instanceof Error ? error.message : error);
       throw error;
@@ -276,7 +276,7 @@ export class FlatBufferNodeSerializer {
         nodes,
         totalSize: buffer.byteLength,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from 'any'
       console.error('❌ FlatBuffer deserialization failed:', error instanceof Error ? error.message : error);
       throw error;

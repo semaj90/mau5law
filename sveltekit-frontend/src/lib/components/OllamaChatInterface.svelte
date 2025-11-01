@@ -1,19 +1,17 @@
 <!-- OllamaChatInterface.svelte - Svelte 5 + SvelteKit 2.0 Enhanced AI Chat -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
-  import { Badge } from "$lib/components/ui/badge";
+  import { TokenUsageManager } from "$lib/components/TokenUsageManager.svelte";
+  import { Badge } from '$lib/components/ui/badge.svelte'";
   // explicit default imports for UI primitives
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
+  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   // removed broken remote type import (module wasn't found)
   // import type { ChatRequest, ChatResponse } from "$routes/api/ai/chat/+server";
-
   // removed lucide-svelte named import (caused type/export errors)
   // import { ... } from "lucide-svelte";
   import { tick } from "svelte";
-
   // Local ChatResponse shape (keep in sync with /api/ai/chat)
   interface ChatResponse {
     response: string;
@@ -26,7 +24,6 @@
     suggestions?: string[];
     relatedCases?: string[];
   }
-
   // Type for chat messages
   interface ChatMessage {
     id: string;
@@ -43,7 +40,6 @@
     suggestions?: string[];
     relatedCases?: string[];
   }
-
   // Props
   interface Props {
     caseId?: string;
@@ -63,17 +59,14 @@
   let showSettings = $state(false);
   let temperature = $state(0.7);
   let streamMode = $state(false);
-
   // Chat history and UI state
   let chatHistory = $state<ChatMessage[]>([]);
   // Make element ref reactive so updates trigger correctly in Svelte 5 runes
   let chatContainer = $state<HTMLElement | null>(null);
   // component ref must be reactive as well
   let tokenManager = $state<TokenUsageManager | null>(null);
-
   let ollamaStatus = $state<"unknown" | "healthy" | "unhealthy">("unknown");
   let availableModels = $state<string[]>([]);
-
   // Error and success states
   let errorMessage = $state("");
   let successMessage = $state("");
@@ -112,7 +105,6 @@
       console.error("Health check failed:", error);
     }
   }
-
   // Send message function
   async function sendMessage() {
     if (!canSend) return;
@@ -165,7 +157,7 @@
         timestamp: new Date(),
       });
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function handleNormalResponse(response: Response, messageId: string) {
@@ -264,7 +256,6 @@
     }
   });
 </script>
-
 <!-- Chat Interface -->
 <div class="ollama-chat-interface {className}">
   <!-- Header with Status -->
@@ -282,7 +273,7 @@
         <div class="flex items-center gap-2">
           <!-- Model Selector -->
           <select bind:value={model} class="text-sm border rounded px-2 py-1">
-            {#each availableModels as modelName}
+            {#each Array.isArray(availableModels) ? availableModels : [] as modelName}
               <option value={modelName}>{modelName}</option>
             {/each}
           </select>
@@ -313,8 +304,7 @@
           <span>
             {lastResponse.performance.tokensPerSecond?.toFixed(1)} tok/s
           </span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Advanced Settings -->
     {#if showSettings}
@@ -341,29 +331,23 @@
             <label for="use-rag" class="text-sm">Enhanced RAG</label>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Token Usage Manager: removed unsupported props to satisfy typing -->
   <div class="mb-4">
     <TokenUsageManager bind:this={tokenManager} />
   </div>
-
   <!-- Status Messages -->
   {#if errorMessage}
     <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
       <span aria-hidden="true">⚠️</span>
       <span class="text-red-800">{errorMessage}</span>
-    </div>
-  {/if}
+    {/if}
   {#if successMessage}
     <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
       <span aria-hidden="true">✅</span>
       <span class="text-green-800">{successMessage}</span>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Chat History -->
   <div class="flex-1 mb-4 nes-container">
     <ScrollArea class="h-[600px] p-6" bind:viewport={chatContainer}>
@@ -374,7 +358,7 @@
           <p class="text-sm mt-2">Ask about legal procedures, case analysis, or research questions</p>
         </div>
       {:else}
-        {#each chatHistory as msg}
+        {#each Array.isArray(chatHistory) ? chatHistory : [] as msg}
           <div class="mb-8 {msg.type === 'user' ? 'text-right' : 'text-left'}">
             <!-- Timestamp -->
             <div class="text-xs nes-text is-disabled mb-2 px-2 {msg.type === 'user' ? 'text-right' : 'text-left'}">
@@ -393,31 +377,28 @@
                   <span class="font-mono">{msg.performance.duration}ms</span> •
                   <span class="font-mono">{msg.performance.tokens} tokens</span> •
                   <span class="font-mono">{msg.performance.tokensPerSecond?.toFixed(1)} tok/s</span>
-                </div>
-              {/if}
+                {/if}
             </div>
             <!-- Suggestions -->
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
-                {#each msg.suggestions as suggestion}
+                {#each Array.isArray(msg.suggestions) ? msg.suggestions : [] as suggestion}
                   <!-- removed class prop from Button to satisfy props typing -->
                   <Button variant="ghost" size="sm" onclick={() => selectSuggestion(suggestion)}>
                     {suggestion}
                   </Button>
                 {/each}
-              </div>
-            {/if}
+              {/if}
             <!-- Related Cases -->
             {#if msg.relatedCases && msg.relatedCases.length > 0}
               <div class="mt-2">
                 <p class="text-xs nes-text is-disabled mb-1">Related Cases:</p>
                 <div class="flex flex-wrap gap-1">
-                  {#each msg.relatedCases as caseTitle}
+                  {#each Array.isArray(msg.relatedCases) ? msg.relatedCases : [] as caseTitle}
                     <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseTitle}</span>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
       {/if}
@@ -428,11 +409,9 @@
             <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
           </svg>
           <span>AI is thinking...</span>
-        </div>
-      {/if}
+        {/if}
     </ScrollArea>
   </div>
-
   <!-- Input Area -->
   <div class="flex gap-3 p-4 bg-white border-t border-gray-200 rounded-b-lg">
     <div class="flex-1">
@@ -445,7 +424,6 @@
         data-testid="chat-input"
       />
     </div>
-
     <!-- Keep styling wrapper; remove data-testid and provide required size prop on Button -->
     <div class="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium">
       <Button variant="primary" onclick={() => { sendMessage(); }} disabled={!canSend || ollamaStatus !== 'healthy'} size="sm">
@@ -458,22 +436,18 @@
         {/if}
       </Button>
     </div>
-
     <!-- Additional Actions (add required size prop on Buttons) -->
     <Button variant="ghost" size="sm" onclick={clearChat} disabled={chatHistory.length === 0}>Clear</Button>
     <Button variant="ghost" size="sm" onclick={exportChat} disabled={chatHistory.length === 0}>Export</Button>
   </div>
-
   <!-- Chat Stats -->
   {#if messageCount > 0}
     <div class="mt-4 text-xs nes-text is-disabled text-center">
       {messageCount} messages • Model: {model}
       {#if caseId}
         • case {caseId}{/if}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .ollama-chat-interface {
     display: flex;
@@ -511,5 +485,3 @@
   .spinner .path { stroke: #6b7280; stroke-linecap: round; stroke-dasharray: 90; stroke-dashoffset: 0; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
-
-

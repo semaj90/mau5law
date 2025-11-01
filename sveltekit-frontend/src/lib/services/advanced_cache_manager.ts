@@ -409,18 +409,18 @@ class AdvancedCacheManager {
       let matches = true;
 
       if (query.document_type && item.document_type !== query.document_type) {
-        matches = false;
+        matches = $state(false);
       }
       if (query.confidentiality_level && item.confidentiality_level !== query.confidentiality_level) {
-        matches = false;
+        matches = $state(false);
       }
       if (query.tags && !query.tags.some(tag => item.tags.includes(tag))) {
-        matches = false;
+        matches = $state(false);
       }
       if (query.content_search) {
         const dataStr = JSON.stringify(item.data).toLowerCase();
         if (!dataStr.includes(query.content_search.toLowerCase())) {
-          matches = false;
+          matches = $state(false);
         }
       }
 
@@ -512,7 +512,7 @@ class AdvancedCacheManager {
         confidentiality_level: item.confidentiality_level
       };
 
-      const exportItem: { key: string; metadata: Partial<CacheItem>; data?: unknown } = {
+      const exportItem: { key: string; metadata: Partial<CacheItem>; data?: any } = {
         key,
         metadata
       };

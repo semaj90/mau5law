@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Report save error:', error);
     return json(
       {
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     const reports = await finalQuery.orderBy(aiReports.createdAt);
     return json({ reports }, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Reports load error:', error);
     return json(
       {

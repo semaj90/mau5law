@@ -41,20 +41,20 @@ type MinimalFileLike = {
 export type AvatarUploadFile = File | Blob | MinimalFileLike | null | undefined;
 
 // New helper type-guards & accessors to safely handle File | Blob | MinimalFileLike | null | undefined
-function isMinimalFileLike(f: unknown): f is MinimalFileLike {
+function isMinimalFileLike(f: any): f is MinimalFileLike {
   return (
     !!f &&
-    typeof (f as { size?: unknown }).size === 'number' &&
-    typeof (f as { type?: unknown }).type === 'string' &&
-    typeof (f as { arrayBuffer?: unknown }).arrayBuffer === 'function' &&
-    typeof (f as { name?: unknown }).name === 'string'
+    typeof (f as { size?: any }).size === 'number' &&
+    typeof (f as { type?: any }).type === 'string' &&
+    typeof (f as { arrayBuffer?: any }).arrayBuffer === 'function' &&
+    typeof (f as { name?: any }).name === 'string'
   );
 }
-function isDomFile(f: unknown): f is File {
+function isDomFile(f: any): f is File {
   // runtime check for DOM File; f can be any runtime value
   return typeof File !== 'undefined' && f instanceof File;
 }
-function isDomBlob(f: unknown): f is Blob {
+function isDomBlob(f: any): f is Blob {
   // runtime check for DOM Blob; f can be any runtime value
   return typeof Blob !== 'undefined' && f instanceof Blob;
 }
@@ -200,7 +200,7 @@ export async function handleAvatarUpload(
       fileName,
       url,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Normalize unknown error types safely
     const message = error instanceof Error ? error.message : String(error ?? 'Upload failed');
     console.error('Avatar upload error:', message);
@@ -226,7 +226,7 @@ export function removeAvatarFile(avatarUrl: string | null): boolean {
       unlinkSync(filePath);
     }
     return true;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     console.error('Error removing avatar file:', message);
     return false;

@@ -13,7 +13,7 @@ function OllamaGetEndpoint(): string {
 }
 
 // helper type-guard
-function isNumberArray(v: unknown): v is number[] {
+function isNumberArray(v: any): v is number[] {
   return Array.isArray(v) && (v as unknown[]).every(item => typeof item === 'number');
 }
 
@@ -37,7 +37,7 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
     throw new Error(`Ollama embedding request failed: ${res.status} ${res.statusText} ${errText}`);
   }
   // safer typed fallback instead of `as any`
-  const data: unknown = await res.json().catch((): unknown => ({}));
+  const data: any = await res.json().catch((): any => ({}));
 
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
@@ -96,7 +96,7 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
   }
 
   // safer typed fallback instead of `as any`
-  const data: unknown = await res.json().catch((): unknown => ({}));
+  const data: any = await res.json().catch((): any => ({}));
 
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;

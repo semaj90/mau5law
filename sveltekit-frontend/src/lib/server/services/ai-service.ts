@@ -5,7 +5,6 @@ import type { NewUserAiQuery, NewAutoTag, NewDocumentChunk } from '../db/schema-
 import { generateIdFromEntropySize } from 'lucia';
 import crypto from 'crypto';
 import { db } from '../database/index.js';
-
 /**
  * Add a minimal local type for the Ollama client shape we expect
  */
@@ -16,7 +15,6 @@ type OllamaClient = {
   ): Promise<string>;
   generateEmbedding(text: string): Promise<number[]>;
 };
-
 export interface AIAnalysisResult {
   summary: string;
   tags: string[];
@@ -25,7 +23,6 @@ export interface AIAnalysisResult {
   keywords?: string[];
   recommendations?: string[];
 }
-
 export interface AIQueryOptions {
   model?: string;
   temperature?: number;
@@ -33,14 +30,12 @@ export interface AIQueryOptions {
   includeContext?: boolean;
   saveQuery?: boolean;
 }
-
 export interface VectorSearchResult {
   content: string;
   similarity: number;
   metadata: Record<string, unknown>; // changed from `{ [key: string]: any }`
   documentId: string;
 }
-
 // Add local types for embedding cache rows/inserts
 type EmbeddingCacheRow = {
   id: string;
@@ -49,7 +44,6 @@ type EmbeddingCacheRow = {
   model?: string | null;
   createdAt?: string | null;
 };
-
 type NewEmbeddingCache = {
   id: string;
   textHash: string;
@@ -61,16 +55,13 @@ type NewEmbeddingCache = {
   // createdAt should be a string timestamp and required for insertion.
   createdAt: string;
 };
-
 export class AIService {
   private ollama: OllamaClient;
-
   constructor() {
     // Cast the imported OllamaService instance to our minimal OllamaClient shape.
     // We use unknown->typed cast to avoid leaking `any` while informing TS about required methods.
-    this.ollama = new (OllamaService as unknown as { new (): unknown })() as OllamaClient;
+    this.ollama = new (OllamaService as unknown as { new (): any })() as OllamaClient;
   }
-
   /**
    * Process AI query with context and logging
    */
@@ -88,13 +79,11 @@ export class AIService {
       includeContext = true,
       saveQuery = true,
     } = options;
-
     try {
       // Get relevant context if requested
       let contextDocuments: VectorSearchResult[] = [];
       let systemPrompt =
         'You are a legal AI assistant specialized in prosecutor and detective workflows. Provide accurate, detailed, and actionable legal analysis.';
-
       if (includeContext && caseId) {
         const queryEmbedding = await this.ollama.generateEmbedding(query);
         contextDocuments = await this.findSimilarDocuments(queryEmbedding, 5, 0.7);
@@ -103,18 +92,15 @@ export class AIService {
           systemPrompt += `\n\nRelevant case context:\n${contextText}`;
         }
       }
-
       // Generate AI response
       const response = await this.ollama.generateCompletion(query, {
         systemPrompt,
         temperature,
         maxTokens,
       });
-
       const processingTime = Date.now() - startTime;
       const confidence = this.calculateConfidence(response, contextDocuments.length);
       const contextUsed = contextDocuments.map(doc => doc.documentId);
-
       // Save query log if requested
       let queryId: string | undefined = undefined;
       if (saveQuery) {
@@ -130,17 +116,15 @@ export class AIService {
           embedding: await this.ollama.generateEmbedding(query),
         });
       }
-
       return {
         response,
         confidence,
         contextUsed,
         queryId,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('AI query processing failed:', msg);
-
       // Log failed query
       if (saveQuery) {
         try {
@@ -156,16 +140,14 @@ export class AIService {
             isSuccessful: false,
             errorMessage: msg,
           });
-        } catch (logErr: unknown) {
+        } catch (logErr: any) {
           const lmsg = logErr instanceof Error ? logErr.message : String(logErr);
           console.error('Failed to log failed AI query:', lmsg);
         }
       }
-
       throw error;
     }
   }
-
   /**
    * Analyze evidence and generate auto-tags
    */
@@ -187,13 +169,11 @@ Format your response as JSON with the following structure:
   "keywords": ["keyword1", "keyword2"],
   "recommendations": ["recommendation1", "recommendation2"]
 }`;
-
       const response = await this.ollama.generateCompletion(content, {
         systemPrompt,
         temperature: 0.3,
         maxTokens: 1000,
       });
-
       // Parse AI response
       let analysis: AIAnalysisResult;
       try {
@@ -201,23 +181,19 @@ Format your response as JSON with the following structure:
       } catch {
         analysis = this.parseAnalysisResponse(response);
       }
-
       // Generate and store auto-tags
       if (analysis.tags && analysis.tags.length > 0) {
         await this.generateAutoTags(evidenceId, 'evidence', analysis.tags, analysis.confidence);
       }
-
       // Store document chunk for vector search
       await this.storeDocumentChunk(evidenceId, 'evidence', content, analysis);
-
       return analysis;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Evidence analysis failed:', msg);
       throw error;
     }
   }
-
   /**
    * Find similar documents using vector search (simplified/defensive)
    */
@@ -230,10 +206,9 @@ Format your response as JSON with the following structure:
         id: string;
         document_id: string;
         content: string;
-        metadata: unknown;
+        metadata: any;
         embedding: string | number[] | null;
       }>;
-
       // Normalize and compute similarity
       const results: Array<{
         content: string;
@@ -241,7 +216,6 @@ Format your response as JSON with the following structure:
         metadata: Record<string, unknown>;
         documentId: string;
       }> = []; // updated metadata type
-
       for (const row of rows) {
         try {
           let storedEmbedding: number[] | null = null;
@@ -251,10 +225,8 @@ Format your response as JSON with the following structure:
             // stored as JSON string
             storedEmbedding = JSON.parse(row.embedding) as number[];
           }
-
           if (!storedEmbedding || !Array.isArray(storedEmbedding)) continue;
           if (storedEmbedding.length !== queryEmbedding.length) continue;
-
           const sim = this.computeCosineSimilarity(queryEmbedding, storedEmbedding);
           if (sim >= threshold) {
             results.push({
@@ -269,17 +241,15 @@ Format your response as JSON with the following structure:
           continue;
         }
       }
-
       // sort by similarity desc and limit
       results.sort((a, b) => b.similarity - a.similarity);
       return results.slice(0, limit);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Vector search failed:', msg);
       return [];
     }
   }
-
   /**
    * Find similar queries for smart suggestions
    */
@@ -301,13 +271,12 @@ Format your response as JSON with the following structure:
         )) as Array<{ query: string; response: string; similarity: number }>;
         return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Similar query search failed:', msg);
       return [];
     }
   }
-
   /**
    * Get cached embedding or generate new one
    */
@@ -326,7 +295,6 @@ Format your response as JSON with the following structure:
         .from(embeddingCache)
         .where(eq(embeddingCache.textHash, textHash))
         .limit(1);
-
       const cached = rows[0] as EmbeddingCacheRow | undefined;
       if (cached && cached.embedding) {
         const embField = cached.embedding;
@@ -336,10 +304,8 @@ Format your response as JSON with the following structure:
         }
         return embField as number[];
       }
-
       // Generate new embedding
       const embedding = await this.ollama.generateEmbedding(text);
-
       // Cache the embedding (store as JSON string to match DB schema that expects string)
       const insertData: NewEmbeddingCache = {
         id: generateIdFromEntropySize(10),
@@ -348,17 +314,14 @@ Format your response as JSON with the following structure:
         model: 'gemmaembedding:latest',
         createdAt: new Date().toISOString(),
       };
-
       await db.insert(embeddingCache).values(insertData);
-
       return embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Embedding generation failed:', msg);
       throw error;
     }
   }
-
   /**
    * Log AI query to database
    */
@@ -400,30 +363,26 @@ Format your response as JSON with the following structure:
         // timestamp - include to satisfy possible required column
         createdAt: new Date().toISOString(),
       } as NewUserAiQuery;
-
       // Ensure we have a concrete string fallback id (NewUserAiQuery.id may be optional in the type).
       const generatedId: string = queryData.id ?? generateIdFromEntropySize(10);
-
       // Narrow the returning type to only the `id` field to avoid `any`.
       // Cast the returning result to an array of objects that only contain `id`.
       // This avoids using an invalid key in Pick and keeps the shape narrow.
       const [inserted] = (await db.insert(userAiQueries).values(queryData).returning()) as Array<
         Pick<NewUserAiQuery, 'id'>
       >;
-
       // Ensure we always return a string: prefer DB id if present, otherwise use our generated id.
       const insertedId = inserted?.id;
       if (typeof insertedId === 'string' && insertedId.length > 0) {
         return insertedId;
       }
       return generatedId;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Query logging failed:', msg);
       throw error;
     }
   }
-
   /**
    * Generate and store auto-tags
    */
@@ -446,15 +405,13 @@ Format your response as JSON with the following structure:
         model: 'gemma3-legal:latest',
         // optional fields from the schema (if any) can be omitted or added here
       }));
-
       await db.insert(autoTags).values(tagData);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Auto-tag generation failed:', msg);
       throw error;
     }
   }
-
   /**
    * Store document chunk for vector search
    */
@@ -467,7 +424,6 @@ Format your response as JSON with the following structure:
     try {
       const embedding = await this.ollama.generateEmbedding(content);
       const embeddingString = JSON.stringify(embedding);
-
       // Build a fully-typed chunk object to avoid `any` casts
       const chunkData: NewDocumentChunk = {
         id: generateIdFromEntropySize(10),
@@ -482,16 +438,14 @@ Format your response as JSON with the following structure:
           generatedAt: new Date().toISOString(),
         },
       } as NewDocumentChunk;
-
       // Insert the strongly-typed chunk directly
       await db.insert(documentChunks).values(chunkData);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Document chunk storage failed:', msg);
       throw error;
     }
   }
-
   /**
    * Calculate confidence score based on response and context
    */
@@ -503,7 +457,6 @@ Format your response as JSON with the following structure:
     confidence += Math.min(contextCount * 0.02, 0.15);
     return Math.min(confidence, 0.99);
   }
-
   /**
    * Parse AI analysis response if JSON parsing fails
    */
@@ -517,7 +470,6 @@ Format your response as JSON with the following structure:
       recommendations: this.extractRecommendations(response),
     };
   }
-
   private extractTags(text: string): string[] {
     const tagPatterns = /(?:tag|category|classification)s?:?\s*([^\n]+)/gi;
     const matches = text.match(tagPatterns);
@@ -530,7 +482,6 @@ Format your response as JSON with the following structure:
         )
       : [];
   }
-
   private extractEntities(text: string): string[] {
     const entityPattern = /(?:entity|entities|person|organization)s?:?\s*([^\n]+)/gi;
     const matches = text.match(entityPattern);
@@ -543,7 +494,6 @@ Format your response as JSON with the following structure:
         )
       : [];
   }
-
   private extractKeywords(text: string): string[] {
     const keywordPattern = /(?:keyword|key\s+word)s?:?\s*([^\n]+)/gi;
     const matches = text.match(keywordPattern);
@@ -556,13 +506,11 @@ Format your response as JSON with the following structure:
         )
       : [];
   }
-
   private extractRecommendations(text: string): string[] {
     const recPattern = /(?:recommend|suggestion|advice)s?:?\s*([^\n]+)/gi;
     const matches = text.match(recPattern);
     return matches ? matches.map(m => m.trim()) : [];
   }
-
   /**
    * Small helper: cosine similarity between two numeric vectors
    */
@@ -582,6 +530,5 @@ Format your response as JSON with the following structure:
     return dot / denom;
   }
 }
-
 // Export singleton instance
 export const aiService = new AIService();

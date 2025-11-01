@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
     interface Props {
-        steps?: unknown[];
+        steps?: any[];
         currentStep?: number;
         validationResults?: Record<number, {
             isValid: boolean;
@@ -49,7 +49,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     let progressPercentage = $derived(Math.round((currentStep / (steps.length - 1)) * 100));
 </script>
-
 <div class="progress-indicator bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
   <!-- Progress bar -->
   <div class="w-full bg-gray-200 dark:bg-gray-700 h-1">
@@ -115,8 +114,7 @@ https://svelte.dev/e/js_parse_error -->
                       />
                     </svg>
                   {:else}
-                    <div class="w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500"></div>
-                  {/if}
+                    <div class="w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500">{/if}
                 </div>
                 <!-- Step number badge for smaller screens -->
                 <div
@@ -163,8 +161,7 @@ https://svelte.dev/e/js_parse_error -->
                   {:else if validation.warnings.length > 0}
                     <div class="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
                       {validation.warnings.length} warning{validation.warnings.length !== 1 ? 's' : ''}
-                    </div>
-                  {/if}
+                    {/if}
                 {/if}
               </div>
             </button>
@@ -172,8 +169,7 @@ https://svelte.dev/e/js_parse_error -->
             {#if index < steps.length - 1}
               <div class="hidden lg:block absolute top-1/2 right-0 transform translate-x-2 -translate-y-1/2">
                 <div class="w-4 h-0.5 bg-gray-300 dark:bg-gray-600"></div>
-              </div>
-            {/if}
+              {/if}
           </li>
         {/each}
       </ol>
@@ -186,9 +182,8 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   .progress-indicator li {
-    position relative;
+    position: relative;
   }
 </style>

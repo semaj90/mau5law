@@ -3,10 +3,9 @@
  * Unified entry point that chooses between Ollama, TensorRT-LLM, or other
  * registered backends and applies optional Redis caching.
  */
-
 // Resolve provider and redis at runtime so this file typechecks in isolated runs
 let _getBackend: ((name?: string) => string) | undefined;
-let _redis: unknown = undefined;
+let _redis: any = undefined;
 try {
   // attempt static import if available in the environment
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -15,14 +14,12 @@ try {
 } catch {
   /* runtime fallback: caller must register backends via provider registry */
 }
-
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   _redis = require('$lib/server/cache/redis')?.redis;
 } catch {
   /* redis may be unavailable in isolated checks */
 }
-
 function getBackendSafe(name?: string): string {
   if (_getBackend) return _getBackend(name);
   // default local fallback
@@ -35,26 +32,20 @@ function getBackendSafe(name?: string): string {
     default: return (process.env.PUBLIC_OLLAMA_URL as string) || 'http://localhost:11434';
   }
 }
-
 const redis = _redis;
-
 export type EmbeddingMode = 'tensorrt' | 'ollama' | 'webgpu';
-
 export interface EmbedRequest {
   texts: string[];
   model?: string;
   mode?: EmbeddingMode;
 }
-
 export interface EmbedResponse {
   embeddings: number[][];
   source: string;
   cacheHit: boolean;
 }
-
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const CACHE_TTL_SECONDS = 3600;
-
 function resolveBackend(mode?: EmbeddingMode): string {
   switch (mode) {
     case 'tensorrt':
@@ -65,7 +56,6 @@ function resolveBackend(mode?: EmbeddingMode): string {
     default: return getBackendSafe('ollama');
   }
 }
-
 function resolveEndpoint(base: string, mode?: EmbeddingMode): string {
   const trimmed = base.replace(/\/$/, '');
   if (mode === 'tensorrt') {
@@ -73,8 +63,7 @@ function resolveEndpoint(base: string, mode?: EmbeddingMode): string {
   }
   return `${trimmed}/api/embeddings`;
 }
-
-function normalizeVectors(payload: unknown): number[][] {
+function normalizeVectors(payload: any): number[][] {
   if (!payload || typeof payload !== 'object') return [];
   const data = payload as Record<string, unknown>;
   if (Array.isArray(data.embeddings)) {
@@ -93,12 +82,10 @@ function normalizeVectors(payload: unknown): number[][] {
   }
   return [];
 }
-
 export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }: EmbedRequest): Promise<EmbedResponse> {
   if (!Array.isArray(texts) || texts.length === 0) {
     throw new Error('generateEmbeddings requires a non-empty texts array');
   }
-
   const cacheKey = `emb:${model}:${JSON.stringify(texts)}`;
   if (redis) {
     try {
@@ -115,10 +102,8 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
       console.warn('Embedding cache get failed:', error);
     }
   }
-
   const backend = resolveBackend(mode);
   const endpoint = resolveEndpoint(backend, mode);
-
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -127,17 +112,14 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
       input: texts,
     }),
   });
-
   if (!response.ok) {
     throw new Error(`Embedding request failed: ${response.status} ${response.statusText}`);
   }
-
   const json = await response.json();
   const vectors = normalizeVectors(json);
   if (!vectors.length) {
     throw new Error('Embedding response did not include embeddings');
   }
-
   if (redis) {
     try {
       const r = redis as unknown as { set: (k: string, v: string, opts?: any) => Promise<void> };
@@ -146,14 +128,12 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
       console.warn('Embedding cache set failed:', error);
     }
   }
-
   return {
     embeddings: vectors,
     source: backend,
     cacheHit: false,
   };
 }
-
 export async function generateEmbedding(
   text: string,
   options?: Omit<EmbedRequest, 'texts'>

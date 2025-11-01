@@ -1,7 +1,6 @@
 // Document Upload State Machine - XState v5 compatible
 // Manages file upload workflow with progress tracking and AI processing
 import { createMachine, assign, fromPromise } from 'xstate';
-
 // New small, permissive types for uploaded files and AI results
 type UploadedFile = {
   id: string;
@@ -9,22 +8,19 @@ type UploadedFile = {
   size?: number;
   mimeType?: string;
   // allow extra fields from backend
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type AIProcessingResult = {
   extractedText?: string;
   metadata?: Record<string, unknown>;
   // allow extra fields returned by AI service
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type ProcessingSummary = {
   totalFiles: number;
   successfulProcessing: number;
   extractedTextLength: number;
 };
-
 export interface DocumentUploadContext {
   files: File[];
   uploadProgress: number;
@@ -35,7 +31,6 @@ export interface DocumentUploadContext {
   error: string | null;
   retryCount: number;
 }
-
 // --- Explicit, discriminated event union for external events only ---
 // Note: XState internal events (like 'done.invoke.*', 'error.platform.*') are intentionally omitted.
 // Helper functions below extract data from XState invoke events, ensuring type safety without polluting the event union.
@@ -46,18 +41,15 @@ type DocUploadEvent =
   | { type: 'RETRY' }
   | { type: 'RESET' };
 // Internal XState events are handled by helpers and not included here.
-
 // --- New: helper extractors / guards (avoid `any`) ---
-function asRecord(v: unknown): Record<string, unknown> {
+function asRecord(v: any): Record<string, unknown> {
   return typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
 }
-
-function isSelectFilesEvent(evt: unknown): evt is Extract<DocUploadEvent, { type: 'SELECT_FILES' }> {
+function isSelectFilesEvent(evt: any): evt is Extract<DocUploadEvent, { type: 'SELECT_FILES' }> {
   const e = asRecord(evt);
   return e.type === 'SELECT_FILES' && Array.isArray(e.files);
 }
-
-function extractValidationErrorsFromInvoke(evt: unknown): Record<string, string[]> | null {
+function extractValidationErrorsFromInvoke(evt: any): Record<string, string[]> | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.error) as unknown;
   if (typeof maybe === 'object' && maybe !== null) {
@@ -68,8 +60,7 @@ function extractValidationErrorsFromInvoke(evt: unknown): Record<string, string[
   }
   return null;
 }
-
-function extractErrorMessageFromInvoke(evt: unknown): string | null {
+function extractErrorMessageFromInvoke(evt: any): string | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.error ?? e) as unknown;
   if (typeof maybe === 'object' && maybe !== null) {
@@ -80,8 +71,7 @@ function extractErrorMessageFromInvoke(evt: unknown): string | null {
   if (typeof evt === 'string') return evt;
   return null;
 }
-
-function extractUploadedFilesFromInvoke(evt: unknown): UploadedFile[] {
+function extractUploadedFilesFromInvoke(evt: any): UploadedFile[] {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.output) as unknown;
   if (typeof maybe === 'object' && maybe !== null) {
@@ -92,9 +82,8 @@ function extractUploadedFilesFromInvoke(evt: unknown): UploadedFile[] {
   }
   return [];
 }
-
 function extractAIResultsFromInvoke(
-  evt: unknown
+  evt: any
 ): { processedFiles: AIProcessingResult[]; summary: ProcessingSummary } | null {
   const e = asRecord(evt);
   const maybe = (e.data ?? e.output) as unknown;
@@ -110,7 +99,6 @@ function extractAIResultsFromInvoke(
 const createMachineCompat = createMachine as unknown as (
   config: Parameters<typeof createMachine>[0]
 ) => ReturnType<typeof createMachine>;
-
 // --- Change: avoid generic arity mismatch with XState v5 by casting createMachine ---
 // Explicitly type context and event for stricter type safety
 export const documentUploadMachine = createMachineCompat({
@@ -222,7 +210,7 @@ export const documentUploadMachine = createMachineCompat({
               throw new Error(errorData.error || `HTTP ${response.status}`);
             }
             return response.json();
-          } catch (error: unknown) {
+          } catch (error: any) {
             clearInterval(progressInterval);
             // Normalize unknown into an Error to avoid using `any`
             if (error instanceof Error) {

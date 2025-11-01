@@ -28,11 +28,11 @@ type UserRow = {
 // Provide a small, accurate DB interface used in this module.
 type FromResult = Promise<CountRow[]> & {
   // allow chaining .where(...) on the result of .from(...)
-  where: (cond: unknown) => Promise<CountRow[]>;
+  where: (cond: any) => Promise<CountRow[]>;
 };
 
 type SelectChain = {
-  from (table: unknown) => FromResult;
+  from (table: any) => FromResult;
 };
 
 type DB = {
@@ -48,7 +48,7 @@ type DB = {
           role?: boolean;
           avatarUrl?: boolean;
         };
-        where?: unknown;
+        where?: any;
       }) => Promise<UserRow | null>;
     };
   };

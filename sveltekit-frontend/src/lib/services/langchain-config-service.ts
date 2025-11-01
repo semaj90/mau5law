@@ -30,7 +30,7 @@ interface CaseSummaryInput {
 interface ChainInvokeResult {
   text?: string;
   output?: string;
-  [key: string]: unknown; // Allow for other properties
+  [key: string]: any; // Allow for other properties
 }
 
 export interface LangChainConfig {
@@ -101,7 +101,7 @@ class LangChainConfigService {
   private memories: Map<string, BaseMemory> = new Map();
   private chains: Map<string, any> = new Map();
   private prompts: Map<string, BasePromptTemplate> = new Map();
-  private initialized = false;
+  private initialized = $state(false);
   private constructor() {
     this.config = this.getDefaultConfig();
     this.initializePrompts();
@@ -330,7 +330,7 @@ class LangChainConfigService {
           confidence: this.calculateConfidence(result),
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error(`Failed to execute chain: '${chainName}':`, error);
       throw error;
@@ -384,7 +384,7 @@ class LangChainConfigService {
         throw new Error('Embedding model not initialized');
       }
       return await embeddingModel.embedDocuments(texts);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Failed to generate embeddings:', error);
       throw error;
@@ -410,7 +410,7 @@ class LangChainConfigService {
       }
       this.chains.set(config.name, chain);
       console.log(`✅ Custom chain: '${config.name}' created`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error(`Failed to create custom chain: '${config.name}':`, error);
       throw error;
@@ -434,7 +434,7 @@ class LangChainConfigService {
           lastCheck: new Date().toISOString(),
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Failed to get performance metrics:', error);
       return {

@@ -22,15 +22,15 @@ https://svelte.dev/e/js_parse_error -->
   import { useMachine } from '@xstate/svelte';
   import { chatMachine } from '$lib/machines/chat-machine';
   // Neural sprite rendering
-  import NeuralSpriteRenderer from '$lib/components/three/NeuralSpriteRenderer.svelte';
+  import { NeuralSpriteRenderer } from '$lib/components/three/NeuralSpriteRenderer.svelte';
   // YoRHa UI components
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   // Props
   // Dispatcher
   // XState machine
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
         break;
       case 'complete':
         // Streaming complete
-        aiMessage.streaming = false;
+        aiMessage.streaming = $state(false);
         aiMessage.processed = true;
         break;
     }
@@ -300,8 +300,7 @@ https://svelte.dev/e/js_parse_error -->
                   {Math.round(message.similarity * 100)}%
                 </span>
               {/if}
-            </div>
-          {/if}
+            {/if}
           {#if message.role === 'assistant' && !message.streaming}
             <div class="feedback-buttons">
               <button
@@ -318,8 +317,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 👎
               </button>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Neural Sprite Visualization -->
         {#if message.neuralSprite}
@@ -328,8 +326,7 @@ https://svelte.dev/e/js_parse_error -->
               spriteData={message.neuralSprite}
               size="small"
             />
-          </div>
-        {/if}
+          {/if}
         <div class="message-timestamp">
           {message.timestamp.toLocaleTimeString()}
         </div>
@@ -371,8 +368,7 @@ Clear
         <div class="processing-indicator">
           Processing with {$state.context?.processingMode || 'QLoRA'}...
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>
@@ -427,7 +423,7 @@ Clear
     align-self: flex-start;
   }
   .message-content {
-    position relative;
+    position: relative;
     background: rgba(15, 52, 96, 0.6);
     padding: 1rem;
     border-radius: 8px;
@@ -576,4 +572,3 @@ Clear
     }
   }
 </style>
-

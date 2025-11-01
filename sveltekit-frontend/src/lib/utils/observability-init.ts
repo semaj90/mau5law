@@ -8,7 +8,7 @@ import { observabilityClient, trackPageLoad } from './observability-client.js';
 import { timingMetrics } from './timing-metrics.js';
 import type { Readable } from 'svelte/store';
 // Global observability state
-let isInitialized = false;
+let isInitialized = $state(false);
 let currentRouteId: string | null = null;
 /**
  * Initialize observability system with SvelteKit integration
@@ -164,7 +164,7 @@ function extractRouteId(): string {
 // Svelte store getter fallback
 function get<T>(store?: Readable<T> | { subscribe: (run: (v: T) => void) => () => void } | null): T | undefined {
   // Guard against invalid store
-  if (!store || typeof (store as { subscribe?: unknown }).subscribe !== 'function') return undefined;
+  if (!store || typeof (store as { subscribe?: any }).subscribe !== 'function') return undefined;
   let value: T | undefined;
   // Subscribe synchronously, capture value, then unsubscribe
   const unsubscribe = (store as Readable<T>).subscribe((v: T) => {
@@ -183,7 +183,7 @@ export function createObservableFetch() {
 /**
  * Track a custom performance event
  */
-export function trackCustomEvent(name: string, data?: unknown) {
+export function trackCustomEvent(name: string, data?: any) {
   if (!browser || !isInitialized) return;
   timingMetrics.mark(`custom-${name}`);
   if (observabilityClient.getCapabilities()?.debugMode) {

@@ -317,7 +317,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
   function handleClose() {
-    open = false;
+    open = $state(false);
   }
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;
@@ -367,7 +367,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
-
 <!-- Dialog backdrop -->
 {#if open}
   <div
@@ -386,10 +385,8 @@ if (spatialAudio && typeof window !== 'undefined') {
     <!-- Depth of field blur layers -->
     {#if depthOfField}
       <div class="dof-layer dof-near"></div>
-      <div class="dof-layer dof-far"></div>
-    {/if}
-  </div>
-{/if}
+      <div class="dof-layer dof-far">{/if}
+  {/if}
 <!-- Dialog element -->
 {#if open}
   <dialog
@@ -410,16 +407,13 @@ if (spatialAudio && typeof window !== 'undefined') {
         <div class="texture-filter-layer filter-{textureFiltering}"></div>
         <!-- Anti-aliasing layer -->
         {#if antiAliasing !== 'none'}
-          <div class="aa-layer aa-{antiAliasing}"></div>
-        {/if}
+          <div class="aa-layer aa-{antiAliasing}">{/if}
         <!-- Internal fog layer -->
         {#if fogEffect !== 'none'}
-          <div class="internal-fog-layer"></div>
-        {/if}
+          <div class="internal-fog-layer">{/if}
         <!-- Shadow layer -->
         {#if shadowCasting}
-          <div class="shadow-layer"></div>
-        {/if}
+          <div class="shadow-layer">{/if}
       </div>
       <!-- Dialog content -->
       <article bind:this={contentElement} class="n64-dialog-content" tabindex="-1">
@@ -448,10 +442,9 @@ if (spatialAudio && typeof window !== 'undefined') {
     </div>
   </dialog>
 {/if}
-
 <style>
 /* Dialog backdrop */ .n64-dialog-backdrop {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -467,7 +460,7 @@ d;
     -webkit-backdrop-filter: blur(8px);
   }
 /* Fog layers */ .fog-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -497,7 +490,7 @@ background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 
   .fog-heavy { --fog-density: 0.7, }
   .fog-dense { --fog-density: 0.9, }
 /* Depth of field layers */ .dof-layer {
-    position absolute;
+    position: absolute;
     pointer-events: none;
   }
   .dof-near {
@@ -517,7 +510,7 @@ background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0
     filter: blur(2px);
   }
 /* Dialog element */ .n64-dialog {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -536,7 +529,7 @@ d;
     display: none; /* Use custom backdrop */
   }
   .n64-dialog-container {
-    position relative;
+    position: relative;
     max-width: 90vw;
     max-height: 90vh;
     font-family: 'Press Start 2P', monospace;
@@ -544,7 +537,7 @@ d;
     transform-style: preserve-3d;
   }
 /* Dialog content styling */ .n64-dialog-content {
-    position relative;
+    position: relative;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 3px solid #505050;
@@ -580,7 +573,7 @@ clip-path: polygon( 0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 97% 95%, 90% 100%
 clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 98% 90%, 95% 95%, 90% 98%, 85% 100%, 15% 100%, 10% 98%, 5% 95%, 2% 90%, 0% 85%, 0% 15%, 2% 10%, 5% 5%, 10% 2% );
   }
 /* Visual enhancement layers */ .n64-dialog-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -589,7 +582,7 @@ clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 
     z-index: 1,
   }
 .texture-filter-layer, .aa-layer, .internal-fog-layer, .shadow-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -622,7 +615,7 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     transform: translateY(2px);
   }
 /* Dialog header */ .n64-dialog-header {
-    position relative;
+    position: relative;
     z-index: 11;
     margin-bottom: 20px;
     padding-bottom: 16px;
@@ -644,14 +637,14 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     line-height: 1.6;
   }
 /* Dialog body */ .n64-dialog-body {
-    position relative;
+    position: relative;
     z-index: 11;
     font-size: 12px;
     line-height: 1.6;
     margin-bottom: 20px;
   }
 /* Close button */ .n64-dialog-close {
-    position absolute;
+    position: absolute;
     top: 12px;
     right: 12px;
     width: 32px;
@@ -760,4 +753,3 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     100% { opacity: 0.7; transform: translateY(0px), }
   }
 </style>
-

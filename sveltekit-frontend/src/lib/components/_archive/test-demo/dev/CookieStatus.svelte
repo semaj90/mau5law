@@ -16,7 +16,7 @@
       // remove test cookie
       document.cookie = 'test=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     } catch (e) {
-      cookiesEnabled = false;
+      cookiesEnabled = $state(false);
     }
     // Test localStorage support
     try {
@@ -24,7 +24,7 @@
       localStorageEnabled = localStorage.getItem('test') === '1';
       localStorage.removeItem('test');
     } catch (e) {
-      localStorageEnabled = false;
+      localStorageEnabled = $state(false);
     }
     // Test sessionStorage support
     try {
@@ -32,7 +32,7 @@
       sessionStorageEnabled = sessionStorage.getItem('test') === '1';
       sessionStorage.removeItem('test');
     } catch (e) {
-      sessionStorageEnabled = false;
+      sessionStorageEnabled = $state(false);
     }
     // Check for existing session (safely parse cookie string)
     const sessionCookie = document.cookie

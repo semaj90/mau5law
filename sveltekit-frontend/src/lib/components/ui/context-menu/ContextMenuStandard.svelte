@@ -4,7 +4,6 @@
   // Support both shapes: BitsUI.ContextMenu.{Root, Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
   // Prefer the nested ContextMenu namespace if present, otherwise fall back to flat BitsUI exports.
   const _ns = (BitsUI as any).ContextMenu ?? (BitsUI as any);
-
   // Use Svelte 5 $state for values that will be assigned at runtime so updates are reactive.
   let ContextMenuRoot = $state<any>(null);
   let ContextMenuTrigger = $state<any>(null);
@@ -17,7 +16,6 @@
   let ContextMenuSubTrigger = $state<any>(null);
   let ContextMenuSubContent = $state<any>(null);
   let ContextMenuItem = $state<any>(null);
-
   // Safely assign depending on the shape present (avoid destructuring into reactive $state variables).
   if (_ns) {
     if ('Root' in _ns) {
@@ -47,7 +45,6 @@
       ContextMenuItem = nsany.ContextMenuItem;
     }
   }
-
   // Strongly-typed menu item shapes to avoid: 'unknown' in templates
   type MenuSubItem = {
     label: string;
@@ -55,7 +52,6 @@
     disabled?: boolean;
     onSelect?: (...args: any[]) => void;
   };
-
   type MenuItem =
     | { type?: 'separator' }
     | {
@@ -66,7 +62,6 @@
         onSelect?: (...args: any[]) => void;
         items?: MenuSubItem[];
       };
-
   interface Props {
     open?: boolean;
     trigger: Snippet;
@@ -77,14 +72,13 @@
   }
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
-
 <ContextMenuRoot bind:open {...restProps}>
   <ContextMenuTrigger>
     {@render trigger()}
   </ContextMenuTrigger>
   <ContextMenuPortal>
     <ContextMenuContent {...contentProps}>
-      {#each items as item}
+      {#each Array.isArray(items) ? items : [] as item}
         {#if item.type === 'separator'}
           <ContextMenuSeparator />
         {:else if item.type === 'checkbox'}
@@ -106,7 +100,7 @@
             <ContextMenuSubTrigger>{item.label}</ContextMenuSubTrigger>
             <ContextMenuPortal>
               <ContextMenuSubContent>
-                {#each item.items as subItem}
+                {#each Array.isArray(item.items) ? item.items : [] as subItem}
                   <ContextMenuItem textValue={subItem.label} disabled={subItem.disabled} select={subItem.onSelect}>
                     {subItem.label}
                   </ContextMenuItem>
@@ -120,7 +114,7 @@
           </ContextMenuItem>
         {/if}
       {/each}
-      {@render children?.()}
+      <slot />
     </ContextMenuContent>
   </ContextMenuPortal>
 </ContextMenuRoot>

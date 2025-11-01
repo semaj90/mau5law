@@ -9,11 +9,9 @@ import type {
   VectorSearchQuery,
   VectorSearchResult,
 } from '$lib/types/ai-workflows';
-
 // ============================================================================
 // Configuration
 // ============================================================================
-
 const AI_CONFIG: AIModelConfig = {
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
   ollamaModel: 'gemma3-legal:latest',
@@ -22,11 +20,9 @@ const AI_CONFIG: AIModelConfig = {
   maxRetries: 3,
   timeout: 30000, // 30 seconds
 };
-
 // ============================================================================
 // Ollama Integration
 // ============================================================================
-
 interface OllamaRequest {
   model: string;
   prompt: string;
@@ -37,7 +33,6 @@ interface OllamaRequest {
     top_k?: number;
   };
 }
-
 interface OllamaResponse {
   model: string;
   created_at: string;
@@ -49,10 +44,8 @@ interface OllamaResponse {
   prompt_eval_count?: number;
   eval_count?: number;
 }
-
 async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
   const startTime = Date.now();
-
   try {
     const request: OllamaRequest = {
       model: AI_CONFIG.ollamaModel,
@@ -64,20 +57,16 @@ async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
         top_k: 40,
       },
     };
-
     const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
       signal: AbortSignal.timeout(AI_CONFIG.timeout),
     });
-
     if (!response.ok) {
       throw new Error(`Ollama HTTP ${response.status}: ${response.statusText}`);
     }
-
     const data: OllamaResponse = await response.json();
-
     return {
       text: data.response,
       source: 'ollama',
@@ -94,11 +83,9 @@ async function callOllama(prompt: string, stream = false): Promise<AIResponse> {
     throw error;
   }
 }
-
 // ============================================================================
 // TensorRT-LLM Triton Integration
 // ============================================================================
-
 interface TritonRequest {
   inputs: Array<{
     name: string;
@@ -110,7 +97,6 @@ interface TritonRequest {
     name: string;
   }>;
 }
-
 interface TritonResponse {
   outputs: Array<{
     name: string;
@@ -119,10 +105,8 @@ interface TritonResponse {
     data: string[];
   }>;
 }
-
 async function callTensorRT(prompt: string): Promise<AIResponse> {
   const startTime = Date.now();
-
   try {
     const request: TritonRequest = {
       inputs: [
@@ -139,7 +123,6 @@ async function callTensorRT(prompt: string): Promise<AIResponse> {
         },
       ],
     };
-
     const response = await fetch(
       `${AI_CONFIG.tensorrtUrl}/v2/models/${AI_CONFIG.tensorrtModel}/infer`,
       {
@@ -149,14 +132,11 @@ async function callTensorRT(prompt: string): Promise<AIResponse> {
         signal: AbortSignal.timeout(AI_CONFIG.timeout),
       }
     );
-
     if (!response.ok) {
       throw new Error(`TensorRT HTTP ${response.status}: ${response.statusText}`);
     }
-
     const data: TritonResponse = await response.json();
     const outputText = data.outputs[0]?.data[0] || 'No response from TensorRT';
-
     return {
       text: outputText,
       source: 'tensorrt',
@@ -172,18 +152,15 @@ async function callTensorRT(prompt: string): Promise<AIResponse> {
     throw error;
   }
 }
-
 // ============================================================================
 // AI Agent with Tool Calls
 // ============================================================================
-
 export async function runAIAgent(
   prompt: string,
   enableTools = true,
   preferredModel: 'ollama' | 'tensorrt' = 'ollama'
 ): Promise<AIResponse> {
   let response: AIResponse;
-
   try {
     // Try preferred model first
     if (preferredModel === 'ollama') {
@@ -207,7 +184,6 @@ export async function runAIAgent(
       );
     }
   }
-
   // Execute tool calls if enabled
   if (enableTools) {
     const tools = await executeToolCalls(response.text, prompt);
@@ -215,24 +191,19 @@ export async function runAIAgent(
       response.toolInvocations = tools;
     }
   }
-
   return response;
 }
-
 // ============================================================================
 // Tool Execution System
 // ============================================================================
-
 async function executeToolCalls(aiResponse: string, originalPrompt: string): Promise<ToolInvocation[]> {
   const invocations: ToolInvocation[] = [];
-
   // Parse AI response for tool call patterns
   const toolPatterns = {
     websearch: /\[TOOL:WEBSEARCH\s+"([^"]+)"\]/gi,
     legal_analysis: /\[TOOL:LEGAL_ANALYSIS\]/gi,
     vector_search: /\[TOOL:VECTOR_SEARCH\s+"([^"]+)"\]/gi,
   };
-
   // Web Search Tool
   const webSearchMatches = [...aiResponse.matchAll(toolPatterns.websearch)];
   for (const match of webSearchMatches) {
@@ -240,13 +211,11 @@ async function executeToolCalls(aiResponse: string, originalPrompt: string): Pro
     const invocation = await invokeWebSearch(query);
     invocations.push(invocation);
   }
-
   // Legal Analysis Tool
   if (toolPatterns.legal_analysis.test(aiResponse)) {
     const invocation = await invokeLegalAnalysis(originalPrompt);
     invocations.push(invocation);
   }
-
   // Vector Search Tool
   const vectorSearchMatches = [...aiResponse.matchAll(toolPatterns.vector_search)];
   for (const match of vectorSearchMatches) {
@@ -254,17 +223,13 @@ async function executeToolCalls(aiResponse: string, originalPrompt: string): Pro
     const invocation = await invokeVectorSearch(query);
     invocations.push(invocation);
   }
-
   return invocations;
 }
-
 // ============================================================================
 // Individual Tool Implementations
 // ============================================================================
-
 async function invokeWebSearch(query: string): Promise<ToolInvocation> {
   const startTime = Date.now();
-
   try {
     // Stub: Replace with real web search API (DuckDuckGo, SerpAPI, etc.)
     const results: WebSearchResult[] = [
@@ -275,7 +240,6 @@ async function invokeWebSearch(query: string): Promise<ToolInvocation> {
         relevance: 0.85,
       },
     ];
-
     return {
       tool: 'websearch',
       input: { query },
@@ -293,10 +257,8 @@ async function invokeWebSearch(query: string): Promise<ToolInvocation> {
     };
   }
 }
-
 async function invokeLegalAnalysis(text: string): Promise<ToolInvocation> {
   const startTime = Date.now();
-
   try {
     // Stub: Replace with real legal analysis pipeline
     const analysis: LegalAnalysisResult = {
@@ -306,7 +268,6 @@ async function invokeLegalAnalysis(text: string): Promise<ToolInvocation> {
       citations: ['Citation 1', 'Citation 2'],
       confidence: 0.75,
     };
-
     return {
       tool: 'legal_analysis',
       input: { text },
@@ -324,14 +285,11 @@ async function invokeLegalAnalysis(text: string): Promise<ToolInvocation> {
     };
   }
 }
-
 async function invokeVectorSearch(query: string): Promise<ToolInvocation> {
   const startTime = Date.now();
-
   try {
     // Stub: Replace with real vector search (import vectorStore)
     const results: VectorSearchResult[] = [];
-
     return {
       tool: 'vector_search',
       input: { query },
@@ -349,11 +307,9 @@ async function invokeVectorSearch(query: string): Promise<ToolInvocation> {
     };
   }
 }
-
 // ============================================================================
 // Streaming Support
 // ============================================================================
-
 export async function* streamAIResponse(prompt: string): AsyncGenerator<string> {
   const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
     method: 'POST',
@@ -364,22 +320,17 @@ export async function* streamAIResponse(prompt: string): AsyncGenerator<string> 
       stream: true,
     }),
   });
-
   if (!response.body) {
     throw new Error('No response body for streaming');
   }
-
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
-
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-
       const chunk = decoder.decode(value);
       const lines = chunk.split('\n').filter((line) => line.trim());
-
       for (const line of lines) {
         try {
           const json: OllamaResponse = JSON.parse(line);

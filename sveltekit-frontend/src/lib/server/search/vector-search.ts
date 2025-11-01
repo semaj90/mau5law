@@ -1,7 +1,7 @@
 
 // Complete Vector Search Service - Production Ready
 // Combines PostgreSQL pgvector + Qdrant + Local caching + Loki.js + Fuse.js
-const browser = false; // Server-side only
+const browser = $state(false); // Server-side only
 import { db, isPostgreSQL } from '../db/index.js';
 import { ollamaService } from '../services/OllamaService.js';
 import {

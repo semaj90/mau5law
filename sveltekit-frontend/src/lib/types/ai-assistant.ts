@@ -78,7 +78,7 @@ export interface BackendHealth {
 export interface SearchResult {
   item: ChatMessage;
   score?: number;
-  matches?: unknown[]; // replaced any[] with unknown[]
+  matches?: any[]; // replaced any[] with unknown[]
 }
 export interface ContextualEmbedding {
   id: string;
@@ -207,7 +207,7 @@ export interface WebGPUConfig {
 export interface GoMicroRequest {
   service: string;
   method: string;
-  payload: unknown; // replaced any
+  payload: any; // replaced any
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   timeout?: number;
   retryPolicy?: {
@@ -217,7 +217,7 @@ export interface GoMicroRequest {
 }
 export interface GoMicroResponse {
   success: boolean;
-  data?: unknown; // replaced any
+  data?: any; // replaced any
   error?: string;
   metadata?: {
     processingNodes: string[];
@@ -340,13 +340,13 @@ export interface AIAssistantProps {
 /**
  * Type guards for runtime validation
  */
-export const isChatMessage = (value: unknown): value is ChatMessage => {
+export const isChatMessage = (value: any): value is ChatMessage => {
   return typeof value === 'object' && value !== null && 'id' in value && 'role' in value && 'content' in value;
 };
-export const isBackendResponse = (value: unknown): value is BackendResponse => {
+export const isBackendResponse = (value: any): value is BackendResponse => {
   return typeof value === 'object' && value !== null && 'text' in value && 'backend' in value && 'model' in value;
 };
-export const isLegalContext = (value: unknown): value is LegalContext => {
+export const isLegalContext = (value: any): value is LegalContext => {
   return typeof value === 'object' && value !== null && 'domain' in value && 'confidentiality' in value;
 };
 /**

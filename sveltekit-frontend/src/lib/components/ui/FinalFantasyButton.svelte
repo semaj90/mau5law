@@ -36,7 +36,6 @@
     }
   }
 </script>
-
 <button
   class="relative ff-button {variantClasses[variant]} {sizeClasses[size]}
          {fullWidth ? 'w-full' : ''} {disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -60,7 +59,7 @@
     {:else if icon}
       <span class="text-lg">{icon}</span>
     {/if}
-    {@render children?.()}
+    <slot />
   </span>
   <!-- FF-Style Shine Effect -->
   {#if !disabled && !loading}
@@ -68,10 +67,8 @@
       class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
                 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700
                 skew-x-12"
-    ></div>
-  {/if}
+    >{/if}
 </button>
-
 <style>
   .ff-button {
     clip-path: polygon(

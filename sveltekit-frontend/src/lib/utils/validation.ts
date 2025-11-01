@@ -10,7 +10,7 @@ export interface ValidationResult {
   isValid: boolean;
   errors: string[];
   warnings: string[];
-  value?: unknown;
+  value?: any;
 }
 
 // replace `any` default with `unknown`
@@ -28,7 +28,7 @@ export interface FormFieldConfig {
   min?: number;
   max?: number;
   pattern?: RegExp | string;
-  allowedValues?: unknown[];
+  allowedValues?: any[];
   validators?: ValidationRule[];
   file?: FileValidationConfig;
   // helpful label for messages
@@ -46,7 +46,7 @@ export function createValidationResult(
   isValid: boolean,
   errors: string[] = [],
   warnings: string[] = [],
-  value?: unknown
+  value?: any
 ): ValidationResult {
   return { isValid, errors, warnings, value };
 }
@@ -85,7 +85,7 @@ export function isValidDate(date: string): boolean {
 }
 
 // Change: accept unknown instead of any
-export function validateField(value: unknown, config: FormFieldConfig): ValidationResult {
+export function validateField(value: any, config: FormFieldConfig): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   const label = config.label ? `${config.label}: ` : '';

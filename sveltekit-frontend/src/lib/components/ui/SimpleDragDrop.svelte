@@ -53,13 +53,13 @@ https://svelte.dev/e/js_parse_error -->
       event.clientY > rect.bottom
     );
     if (isOutside) {
-      isDragOver = false;
+      isDragOver = $state(false);
     }
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    isDragOver = false;
+    isDragOver = $state(false);
     if (disabled || isProcessing) return;
     const files = Array.from(event.dataTransfer?.files || []);
     processFiles(files);
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
     if (validFiles.length > 0) {
       onFilesSelected?.(validFiles);
     }
-    isProcessing = false;
+    isProcessing = $state(false);
   }
   function isFileTypeAccepted(file: File): boolean {
     if (accept === '*/*') return true;
@@ -175,8 +175,7 @@ https://svelte.dev/e/js_parse_error -->
           Drop files here
         </p>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Default Content -->
   <div class="drop-content">
     {#if isProcessing}
@@ -195,8 +194,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if accept !== '*/*'}
           <span class="spec">Types: {accept}</span>
         {/if}
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <!-- File List -->
@@ -219,11 +217,10 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
     {/each}
-  </div>
-{/if}
+  {/if}
 <style>
   .drag-drop-zone {
-    position relative;
+    position: relative;
     min-height: 200px;
     border: 3px dashed var(--nes-blue, #3cbcfc);
     border-radius: 8px;
@@ -253,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Drag Overlay */
   .drag-overlay {
-    position absolute;
+    position: absolute;
     inset: 0,
     background: linear-gradient(135deg,
       rgba(255, 215, 0, 0.1) 0%,

@@ -96,7 +96,7 @@ export const POST = async ({ request, locals }) => {
     file = fileEntry;
     caseId = formData.get('caseId')?.toString();
     description = formData.get('description')?.toString();
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     return json(
       {
@@ -160,7 +160,7 @@ export const POST = async ({ request, locals }) => {
 
       // Cleanup temp file
       await unlink(tempFilePath).catch(() => {});
-    } catch (extractError: unknown) {
+    } catch (extractError: any) {
       const msg = extractError instanceof Error ? extractError.message : String(extractError);
       console.warn('⚠️ [Upload] LangExtract failed, using fallback:', msg);
 
@@ -186,7 +186,7 @@ export const POST = async ({ request, locals }) => {
       embeddings = result.embeddings;
       embeddingModel = result.source || 'server-embedding-service';
       console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn('⚠️ [Upload] Server embedding-service failed, falling back to remote services:', msg);
 
@@ -207,7 +207,7 @@ export const POST = async ({ request, locals }) => {
         } else {
           console.warn(`⚠️ [Upload] Fallback embedding service returned status: ${fallbackResp.status}`);
         }
-      } catch (fallbackError: unknown) {
+      } catch (fallbackError: any) {
         console.warn('⚠️ [Upload] All embedding services failed (fallback):', fallbackError);
       }
     }
@@ -261,7 +261,7 @@ export const POST = async ({ request, locals }) => {
     try {
       await queueVectorEmbedding('document', documentId, user.id);
       console.log(`[Upload] Enqueued vector embedding job for document ${documentId}`);
-    } catch (qErr: unknown) {
+    } catch (qErr: any) {
       const msg = qErr instanceof Error ? qErr.message : String(qErr);
       console.warn('[Upload] Failed to enqueue embedding job:', msg);
     }
@@ -288,7 +288,7 @@ export const POST = async ({ request, locals }) => {
         estimated: number;
       };
       console.log(`[Upload] Enqueued document processing job ${procJobId} (est ${estimated}s)`);
-    } catch (procErr: unknown) {
+    } catch (procErr: any) {
       console.warn('[Upload] Failed to enqueue document processing job:', procErr);
     }
 
@@ -330,7 +330,7 @@ export const POST = async ({ request, locals }) => {
     };
 
     return json(response, { status: 201 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('❌ [Upload] Failed:', message);
 
@@ -424,7 +424,7 @@ async function indexInQdrant(
     });
 
     console.log(`✅ [Qdrant] Indexed ${points.length} points for document: ${documentId}`);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('❌ [Qdrant] Indexing failed:', msg);
     throw err;

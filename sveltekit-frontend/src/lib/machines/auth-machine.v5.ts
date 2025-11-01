@@ -33,7 +33,7 @@ export interface AuthContext {
   lastLoginAttempt?: Date;
   lockoutUntil?: Date;
   twoFactorRequired: boolean;
-  registrationData?: unknown;
+  registrationData?: any;
 }
 // Authentication events
 type AuthEvent =
@@ -63,7 +63,7 @@ export interface LoginData {
   password: string;
   rememberMe?: boolean;
   twoFactorCode?: string;
-  deviceInfo?: unknown;
+  deviceInfo?: any;
 }
 export interface RegistrationData {
   email: string;
@@ -75,7 +75,7 @@ export interface RegistrationData {
   jurisdiction: string;
   badgeNumber?: string;
   enableTwoFactor?: boolean;
-  deviceInfo?: unknown;
+  deviceInfo?: any;
 }
 const initialContext: AuthContext = {
   user: null,

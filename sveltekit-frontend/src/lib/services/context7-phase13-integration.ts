@@ -102,10 +102,10 @@ type IntegrationStatus = {
 // --- Moved top-level types & helpers ---
 // lightweight, explicit local types moved to top-level so they are valid TS
 type OrchestrationResult = {
-  semantic?: unknown[];
-  agentResults?: unknown[];
-  bestPractices?: unknown[];
-  [key: string]: unknown;
+  semantic?: any[];
+  agentResults?: any[];
+  bestPractices?: any[];
+  [key: string]: any;
 };
 
 type OrchestratorFunction = (
@@ -119,10 +119,10 @@ type OrchestratorObject = {
 };
 
 type SemanticFn = (query?: string) => Promise<unknown> | unknown;
-type SemanticObject = { results?: unknown[]; search?: (q?: string) => Promise<unknown> | unknown } | unknown[];
+type SemanticObject = { results?: any[]; search?: (q?: string) => Promise<unknown> | unknown } | unknown[];
 
 /** Safe extractor for heterogeneous responses (moved out of class) */
-function extractResults(value: unknown): unknown[] {
+function extractResults(value: any): any[] {
   if (value == null) return [];
   if (Array.isArray(value)) return value;
   if (typeof value === 'object' && value !== null) {
@@ -190,19 +190,19 @@ export class Context7Phase13Integration {
    });
 
   // --- small type-safe helpers (avoids `any` usage) ---
-  private isRecord(v: unknown): v is Record<string, unknown> {
+  private isRecord(v: any): v is Record<string, unknown> {
     return typeof v === 'object' && v !== null && !Array.isArray(v);
   }
-  private getString(v: unknown, fallback = ''): string {
+  private getString(v: any, fallback = ''): string {
     if (typeof v === 'string') return v;
     if (v == null) return fallback;
     return String(v);
   }
-  private getStringArray(v: unknown): string[] {
+  private getStringArray(v: any): string[] {
     if (Array.isArray(v) && v.every(e => typeof e === 'string')) return v;
     return [];
   }
-  private getNumber(v: unknown, fallback = 0): number {
+  private getNumber(v: any, fallback = 0): number {
     return typeof v === 'number' ? v : fallback;
   }
 
@@ -253,7 +253,7 @@ export class Context7Phase13Integration {
         this.startRealTimeUpdates();
       }
       this.updateIntegrationStatus('overall', 'HEALTHY');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Context7 MCP integration failed:', String(error));
       this.updateIntegrationStatus('overall', 'ERROR');
     }
@@ -284,7 +284,7 @@ export class Context7Phase13Integration {
           return (res ?? { semantic: [], agentResults: [], bestPractices: [] }) as OrchestrationResult;
         }
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Orchestrator invocation failed:', String(err));
     }
     // safe empty shape
@@ -311,15 +311,15 @@ export class Context7Phase13Integration {
 
       if (obj && typeof obj === 'object') {
         const maybeObj = obj as SemanticObject;
-        if (Array.isArray((maybeObj as { results?: unknown[] }).results)) {
-          return (maybeObj as { results?: unknown[] }).results ?? [];
+        if (Array.isArray((maybeObj as { results?: any[] }).results)) {
+          return (maybeObj as { results?: any[] }).results ?? [];
         }
         if (typeof (maybeObj as { search?: (q?: string) => unknown }).search === 'function') {
           const res = await Promise.resolve((maybeObj as { search: (q?: string) => unknown }).search!(query));
           return extractResults(res);
         }
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('semanticSearchSafe error:', String(err));
     }
     return [];
@@ -435,7 +435,7 @@ export class Context7Phase13Integration {
         }
       }
       return results;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Context7 semantic search failed, falling back to local semanticSearch:', String(err));
       const fallback = await this.semanticSearchSafe(query);
       return (fallback || []).map(
@@ -490,7 +490,7 @@ export class Context7Phase13Integration {
           enhancedData: { networkPosition: node.connections.length },
         });
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Memory graph enhancement failed:', String(err));
     }
     return memoryResults;
@@ -571,7 +571,7 @@ export class Context7Phase13Integration {
       this.updatePerformanceMetrics('agent', Date.now() - startTime);
       this.updateIntegrationStatus('agentOrchestration', 'IDLE');
       return finalRecommendations;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Agent orchestration failed:', String(error));
       this.updateIntegrationStatus('agentOrchestration', 'ERROR');
       throw error;
@@ -616,7 +616,7 @@ export class Context7Phase13Integration {
       this.memoryGraphNodes.set(Array.from(this.memoryGraph.values()));
       this.updatePerformanceMetrics('memory', Date.now() - startTime);
       this.updateIntegrationStatus('memoryGraph', 'IDLE');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Memory graph sync failed:', String(error));
       this.updateIntegrationStatus('memoryGraph', 'ERROR');
     }
@@ -670,7 +670,7 @@ export class Context7Phase13Integration {
       // publish to the writable store a flattened view of all cached practices
       this.bestPractices.set(Array.from(this.bestPracticesCache.values()).flat());
       this.updateIntegrationStatus('bestPractices', 'IDLE');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Best practices loading failed:', String(error));
       this.updateIntegrationStatus('bestPractices', 'ERROR');
     }

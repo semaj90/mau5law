@@ -84,7 +84,7 @@ export interface DocumentMetadata {
   processingTime?: number;
   chunkCount?: number;
   avgChunkSize?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // ============================================================================
 // AI/ML TYPES

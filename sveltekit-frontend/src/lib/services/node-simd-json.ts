@@ -5,7 +5,7 @@
 import { dev } from '$app/environment';
 // SIMD acceleration detection and optimization
 class NodeSIMDJSONService {
-  private isOptimized: boolean = false;
+  private isOptimized: boolean = $state(false);
   private optimizationLevel: 'none' | 'basic' | 'simd' = 'none';
   private performanceMetrics: Array<any> = [];
   constructor() {
@@ -46,7 +46,7 @@ class NodeSIMDJSONService {
     } catch (error) {
       console.warn('SIMD JSON optimization detection failed:', error);
       this.optimizationLevel = 'none';
-      this.isOptimized = false;
+      this.isOptimized = $state(false);
     }
   }
   /**

@@ -6,14 +6,11 @@ Updated to work with proper SvelteKit data flow instead of global stores
   import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { userStore } from '$lib/stores/unified';
-
   // Replace `export let ...` with $props() usage (runes mode)
   const props = $props();
-
   // Small helper types for local use
   type MaybeUser = { id?: string; role?: string } | null;
   type MaybeSession = { id?: string } | null;
-
   // Extend the imported userStore type locally so TS allows optional methods used here
   type MaybeUserStore = {
     subscribe?: any;
@@ -23,15 +20,12 @@ Updated to work with proper SvelteKit data flow instead of global stores
     // ...other store members if needed...
   };
   const typedUserStore = userStore as MaybeUserStore;
-
   let syncIntervalId: number | null = null;
-
   function debugLog(message: string, ...args: any[]) {
     if ((props.enableDebugLogging as boolean) ?? false) {
       console.log('[SessionInitializer]', message, ...args);
     }
   }
-
   // Initialize user data store when session/props changes
   $effect(() => {
     const user = props.user as MaybeUser;
@@ -43,7 +37,6 @@ Updated to work with proper SvelteKit data flow instead of global stores
       typedUserStore.clear?.();
     }
   });
-
   // Set up periodic sync if enabled
   $effect(() => {
     // clear previous interval if any
@@ -51,20 +44,16 @@ Updated to work with proper SvelteKit data flow instead of global stores
       clearInterval(syncIntervalId);
       syncIntervalId = null;
     }
-
     const enableAutoSync = (props.enableAutoSync as boolean) ?? true;
     const isAuthenticated = (props.isAuthenticated as boolean) ?? false;
     const syncInterval = (props.syncInterval as number) ?? 5 * 60 * 1000;
     const user = props.user as MaybeUser;
-
     if (browser && enableAutoSync && isAuthenticated && user?.id) {
       debugLog('Setting up auto-sync interval:', syncInterval);
-
       syncIntervalId = window.setInterval(() => {
         debugLog('Auto-syncing user data');
         typedUserStore.init?.(user.id as string);
       }, syncInterval);
-
       // cleanup when effect re-runs or component destroyed
       return () => {
         if (syncIntervalId) {
@@ -75,7 +64,6 @@ Updated to work with proper SvelteKit data flow instead of global stores
       };
     }
   });
-
   // Ensure interval is cleared on destroy as a safeguard
   onDestroy(() => {
     if (syncIntervalId) {
@@ -84,7 +72,6 @@ Updated to work with proper SvelteKit data flow instead of global stores
       debugLog('Cleared auto-sync interval on destroy');
     }
   });
-
   // Log session state changes for debugging
   $effect(() => {
     if ((props.enableDebugLogging as boolean) ?? false) {
@@ -97,5 +84,4 @@ Updated to work with proper SvelteKit data flow instead of global stores
     }
   });
 </script>
-
 <!-- This component only initializes data, no UI to render -->

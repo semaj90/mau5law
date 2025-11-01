@@ -15,7 +15,7 @@ import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline'
 
 interface TestResult {
   status: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface TestSummary {
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url }) => {
           documentsCount: docCount[0].count,
         };
         results.performance.database = Date.now() - dbStartTime;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : 'Unknown database error';
         results.errors.push(`Database test failed: ${msg}`);
         results.results.database = { status: 'error', message: msg };
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
           stats,
         };
         results.performance.redis = Date.now() - redisStartTime;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : 'Unknown redis error';
         results.errors.push(`Redis test failed: ${msg}`);
         results.results.redis = { status: 'error', message: msg };
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
           quicEnabled: healthCheck.quicEnabled,
         };
         results.performance.nats = Date.now() - natsStartTime;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : 'Unknown NATS error';
         results.errors.push(`NATS test failed: ${msg}`);
         results.results.nats = { status: 'error', message: msg };
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
           stats: lokiRedisCache.getStats(),
         };
         results.performance.loki = Date.now() - lokiStartTime;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : 'Unknown loki error';
         results.errors.push(`Loki test failed: ${msg}`);
         results.results.loki = { status: 'error', message: msg };
@@ -168,7 +168,7 @@ export const GET: RequestHandler = async ({ url }) => {
           stats,
         };
         results.performance.instantSearch = Date.now() - searchStartTime;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : 'Unknown search error';
         results.errors.push(`Instant search test failed: ${msg}`);
         results.results.instantSearch = { status: 'error', message: msg };
@@ -185,7 +185,7 @@ export const GET: RequestHandler = async ({ url }) => {
           features: ['pgvector', 'gemma_embeddings', 'legal_reranker', 'redis_caching'],
         };
         results.performance.ragPipeline = Date.now() - ragStartTime;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : 'Unknown rag error';
         results.errors.push(`RAG pipeline test failed: ${msg}`);
         results.results.ragPipeline = { status: 'error', message: msg };
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
     };
     console.log(`🧪 System integration test completed: ${passedTests}/${Object.keys(results.results).length} passed`);
     return json(results);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown system integration error';
     console.error('❌ System integration test failed:', error);
     return json(
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await cleanupTestData();
       default: return json({ success: false, error: 'Unknown action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown request error';
     return json({ success: false, error: msg }, { status: 500 });
   }
@@ -335,10 +335,10 @@ async function runEndToEndTest(_options: Record<string, unknown> = {}): Promise<
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown end-to-end test error';
     results.errors.push(msg);
-    results.success = false;
+    results.success = $state(false);
     // Attempt cleanup
     try {
       await db.delete(schema.legalDocuments).where(sql`id = ${testId}`);
@@ -378,7 +378,7 @@ async function cleanupTestData(): Promise<Response> {
         deletedRedisKeys: testKeys.length
       }
     })
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message: 'Unknown cleanup error'
     return json({ success: false, error: msg }, { status: 500 })
   }

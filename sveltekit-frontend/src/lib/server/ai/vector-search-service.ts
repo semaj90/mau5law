@@ -14,13 +14,10 @@
  * - Similarity threshold filtering
  * - Comprehensive error handling
  */
-
 import Redis from 'ioredis';
 import type { Sql } from 'postgres';
-
 // Type for postgres client
 type PostgresClient = Sql<Record<string, unknown>>;
-
 /**
  * Vector search result with metadata and relevance scoring
  */
@@ -34,7 +31,6 @@ export interface VectorSearchResult {
   source: 'pgvector' | 'qdrant';
   timestamp?: Date;
 }
-
 /**
  * Search request parameters
  */
@@ -50,7 +46,6 @@ export interface VectorSearchRequest {
     keyword?: number;
   };
 }
-
 /**
  * Batch search request for multiple queries
  */
@@ -58,7 +53,6 @@ export interface BatchSearchRequest {
   queries: VectorSearchRequest[];
   parallelism?: number;
 }
-
 /**
  * Batch search response
  */
@@ -68,7 +62,6 @@ export interface BatchSearchResponse {
   successful: number;
   failed: number;
 }
-
 /**
  * Vector store provider configuration
  */
@@ -80,7 +73,6 @@ export interface VectorProviderConfig {
   timeout: number;
   maxRetries: number;
 }
-
 /**
  * Vector store status
  */
@@ -93,7 +85,6 @@ export interface VectorStoreStatus {
   successCount: number;
   successRate: number;
 }
-
 /**
  * Unified Vector Search Service
  *
@@ -108,7 +99,6 @@ export class VectorSearchService {
   private redis: Redis;
   private database: PostgresClient; // Corrected type for the database instance
   private cacheTtl: number = 3600; // 1 hour default
-
   // Provider status tracking
   private pgvectorStatus: VectorStoreStatus = {
     provider: 'pgvector',
@@ -119,7 +109,6 @@ export class VectorSearchService {
     successCount: 0,
     successRate: 0,
   };
-
   private qdrantStatus: VectorStoreStatus = {
     provider: 'qdrant',
     status: 'unavailable',
@@ -129,10 +118,8 @@ export class VectorSearchService {
     successCount: 0,
     successRate: 0,
   };
-
   // Health check interval
   private healthCheckInterval?: NodeJS.Timeout;
-
   /**
    * Initialize Vector Search Service
    */
@@ -153,26 +140,21 @@ export class VectorSearchService {
     this.cacheTtl = config.cacheTtl || 3600;
     this.primaryProvider = config.primaryProvider || 'pgvector';
   }
-
   /**
    * Initialize service and start health checks
    */
   async initialize(): Promise<void> {
     console.log('[VectorSearchService] Initializing with providers: pgvector (primary), qdrant (fallback)');
-
     await Promise.all([this.checkPgVectorHealth(), this.checkQdrantHealth()]);
-
     // Start periodic health checks every 30 seconds
     this.startHealthChecks();
   }
-
   /**
    * Main search method - routes to best available provider
    */
   async search(request: VectorSearchRequest): Promise<VectorSearchResult[]> {
     const startTime = Date.now();
     const cacheKey = this.generateCacheKey(request);
-
     // Try cache first
     const cached = await this.redis.get(cacheKey);
     if (cached) {
@@ -182,11 +164,9 @@ export class VectorSearchService {
         await this.redis.del(cacheKey);
       }
     }
-
     // Route to primary provider first
     let results: VectorSearchResult[] = [];
     let usedProvider: 'pgvector' | 'qdrant' = this.primaryProvider;
-
     try {
       if (this.primaryProvider === 'pgvector' && this.pgvectorStatus.status !== 'unavailable') {
         results = await this.searchPgVector(request);
@@ -195,15 +175,12 @@ export class VectorSearchService {
       } else {
         throw new Error(`Primary provider ${this.primaryProvider} unavailable`);
       }
-
       this.updateProviderStatus(usedProvider, true, Date.now() - startTime);
     } catch (error) {
       console.warn(`[VectorSearchService] Primary provider ${this.primaryProvider} failed:`, error);
       this.updateProviderStatus(usedProvider, false, Date.now() - startTime);
-
       // Fallback to secondary provider
       const fallbackProvider = this.primaryProvider === 'pgvector' ? 'qdrant' : 'pgvector';
-
       try {
         if (fallbackProvider === 'pgvector') {
           results = await this.searchPgVector(request);
@@ -218,16 +195,12 @@ export class VectorSearchService {
         throw new Error(`All vector search providers failed: ${error}, ${fallbackError}`);
       }
     }
-
     // Mark results with source
     results = results.map(r => ({ ...r, source: usedProvider as: 'pgvector' | 'qdrant' }));
-
     // Cache results
     await this.redis.set(cacheKey, JSON.stringify(results), 'EX', this.cacheTtl);
-
     return results;
   }
-
   /**
    * Hybrid search combining keyword and vector search
    */
@@ -244,7 +217,6 @@ export class VectorSearchService {
     const vectorWeight = options?.vectorWeight ?? 0.7;
     const keywordWeight = options?.keywordWeight ?? 0.3;
     const limit = options?.limit ?? 10;
-
     // Execute both searches in parallel
     const [vectorResults, keywordResults] = await Promise.all([
       this.search({
@@ -258,17 +230,14 @@ export class VectorSearchService {
         threshold: options?.threshold,
       }),
     ]);
-
     // Merge and score results
     const merged = new Map<string, VectorSearchResult>();
-
     vectorResults.forEach(result => {
       merged.set(result.id, {
         ...result,
         similarity: result.similarity * vectorWeight,
       });
     });
-
     keywordResults.forEach(result => {
       if (merged.has(result.id)) {
         const existing = merged.get(result.id)!;
@@ -280,13 +249,11 @@ export class VectorSearchService {
         });
       }
     });
-
     // Sort by combined score and return top results
     return Array.from(merged.values())
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit);
   }
-
   /**
    * Batch search operations
    */
@@ -295,14 +262,11 @@ export class VectorSearchService {
     const parallelism = request.parallelism ?? 5;
     let successful = 0;
     let failed = 0;
-
     // Process queries in batches to avoid overwhelming the system
     const results: VectorSearchResult[][] = [];
-
     for (let i = 0; i < request.queries.length; i += parallelism) {
       const batch = request.queries.slice(i, i + parallelism);
       const batchResults = await Promise.allSettled(batch.map(q => this.search(q)));
-
       for (const result of batchResults) {
         if (result.status === 'fulfilled') {
           results.push(result.value);
@@ -313,7 +277,6 @@ export class VectorSearchService {
         }
       }
     }
-
     return {
       results,
       totalTime: Date.now() - startTime,
@@ -321,7 +284,6 @@ export class VectorSearchService {
       failed,
     };
   }
-
   /**
    * Search using pgvector backend
    */
@@ -329,10 +291,8 @@ export class VectorSearchService {
     if (!request.embedding) {
       throw new Error('pgvector search requires embedding vector');
     }
-
     const limit = request.limit ?? 10;
     const threshold = request.threshold ?? 0;
-
     try {
       const results = await this.database`
         SELECT
@@ -347,7 +307,6 @@ export class VectorSearchService {
         ORDER BY vector <=> ${JSON.stringify(request.embedding)}::vector
         LIMIT ${limit}
       `;
-
       return (
         results as unknown as Array<{
           id: string;
@@ -371,7 +330,6 @@ export class VectorSearchService {
       throw new Error(`pgvector search failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
-
   /**
    * Search using Qdrant backend
    */
@@ -379,10 +337,8 @@ export class VectorSearchService {
     if (!request.embedding) {
       throw new Error('Qdrant search requires embedding vector');
     }
-
     const limit = request.limit ?? 10;
     const threshold = request.threshold ?? 0.5;
-
     try {
       const response = await fetch(`${this.qdrantUrl}/search/points`, {
         method: 'POST',
@@ -398,11 +354,9 @@ export class VectorSearchService {
           with_vectors: false,
         }),
       });
-
       if (!response.ok) {
         throw new Error(`Qdrant API error: ${response.statusText}`);
       }
-
       const data = (await response.json()) as {
         result: Array<{
           id: string;
@@ -410,7 +364,6 @@ export class VectorSearchService {
           payload: Record<string, unknown>;
         }>;
       };
-
       return data.result.map(item => ({
         id: String(item.id),
         content: String(item.payload.content || ''),
@@ -424,7 +377,6 @@ export class VectorSearchService {
       throw new Error(`Qdrant search failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
-
   /**
    * Index a document in vector store
    */
@@ -436,7 +388,6 @@ export class VectorSearchService {
     documentId?: string;
   }): Promise<void> {
     const startTime = Date.now();
-
     try {
       if (this.pgvectorStatus.status !== 'unavailable') {
         await this.indexPgVector(doc);
@@ -446,7 +397,6 @@ export class VectorSearchService {
       console.warn('[VectorSearchService] pgvector indexing failed:', error);
       this.updateProviderStatus('pgvector', false, Date.now() - startTime);
     }
-
     // Also index in Qdrant as fallback
     try {
       if (this.qdrantStatus.status !== 'unavailable') {
@@ -458,7 +408,6 @@ export class VectorSearchService {
       this.updateProviderStatus('qdrant', false, Date.now() - startTime);
     }
   }
-
   /**
    * Index document in pgvector
    */
@@ -479,7 +428,6 @@ export class VectorSearchService {
         updated_at = CURRENT_TIMESTAMP
     `;
   }
-
   /**
    * Index document in Qdrant
    */
@@ -510,12 +458,10 @@ export class VectorSearchService {
         ],
       }),
     });
-
     if (!response.ok) {
       throw new Error(`Qdrant upsert failed: ${response.statusText}`);
     }
   }
-
   /**
    * Batch index documents
    */
@@ -534,13 +480,11 @@ export class VectorSearchService {
       await Promise.all(batch.map(doc => this.indexDocument(doc)));
     }
   }
-
   /**
    * Check pgvector health
    */
   private async checkPgVectorHealth(): Promise<void> {
     const startTime = Date.now();
-
     try {
       const response = await this.database`SELECT 1`;
       this.pgvectorStatus = {
@@ -560,13 +504,11 @@ export class VectorSearchService {
       };
     }
   }
-
   /**
    * Check Qdrant health
    */
   private async checkQdrantHealth(): Promise<void> {
     const startTime = Date.now();
-
     try {
       const response = await fetch(`${this.qdrantUrl}/health`);
       this.qdrantStatus = {
@@ -586,7 +528,6 @@ export class VectorSearchService {
       };
     }
   }
-
   /**
    * Start periodic health checks
    */
@@ -597,7 +538,6 @@ export class VectorSearchService {
       });
     }, 30000); // Check every 30 seconds
   }
-
   /**
    * Stop health checks
    */
@@ -606,13 +546,11 @@ export class VectorSearchService {
       clearInterval(this.healthCheckInterval);
     }
   }
-
   /**
    * Update provider status after operation
    */
   private updateProviderStatus(provider: 'pgvector' | 'qdrant', success: boolean, responseTime: number): void {
     const status = provider === 'pgvector' ? this.pgvectorStatus : this.qdrantStatus;
-
     if (success) {
       status.successCount++;
       status.status = 'healthy';
@@ -620,12 +558,10 @@ export class VectorSearchService {
       status.errorCount++;
       status.status = status.successCount > status.errorCount ? 'degraded' : 'unhealthy';
     }
-
     status.responseTime = responseTime;
     const total = status.successCount + status.errorCount;
     status.successRate = total > 0 ? status.successCount / total : 0;
   }
-
   /**
    * Generate cache key for search request
    */
@@ -637,11 +573,9 @@ export class VectorSearchService {
       threshold: request.threshold || 0,
       filters: JSON.stringify(request.filters || {}),
     };
-
     const hash = Buffer.from(JSON.stringify(key)).toString('base64');
     return `vector:search:${hash}`;
   }
-
   /**
    * Get service status
    */
@@ -651,7 +585,6 @@ export class VectorSearchService {
       qdrant: this.qdrantStatus,
     };
   }
-
   /**
    * Clear cache
    */
@@ -665,18 +598,14 @@ export class VectorSearchService {
         scan(cursor: string | number, ...args: (string | number)[]): Promise<[string, string[]]>;
         del(keys: string[]): Promise<number>;
       };
-
       const redisClient = this.redis as RedisClientScanned;
-
       do {
         const [nextCursor, scanKeys] = await redisClient.scan(cursor, 'MATCH', 'vector:search:*');
-
         cursor = nextCursor;
         if (scanKeys && scanKeys.length > 0) {
           keysToDelete.push(...scanKeys);
         }
       } while (cursor !== '0');
-
       // Delete collected keys
       if (keysToDelete.length > 0) {
         await redisClient.del(keysToDelete);

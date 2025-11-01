@@ -13,14 +13,14 @@ type AuthOperationResult = { success: boolean; error?: string; sessionId?: strin
 
 // New: explicit lightweight type for the orchestrator shape we expect
 type OrchestratorLike = {
-  makeRequest?: (path: string, body?: unknown, opts?: Record<string, unknown>) => Promise<unknown>;
-  request?: (path: string, body?: unknown, opts?: Record<string, unknown>) => Promise<unknown>;
+  makeRequest?: (path: string, body?: any, opts?: Record<string, unknown>) => Promise<unknown>;
+  request?: (path: string, body?: any, opts?: Record<string, unknown>) => Promise<unknown>;
   processLegalDocument?: (content: string, opts?: Record<string, unknown>) => Promise<unknown>;
 };
 
 // New: small adapter to tolerate different orchestrator shapes and avoid TS errors
 const orchestratorAdapter = {
-  async makeRequest(path: string, body?: unknown, opts?: Record<string, unknown>) {
+  async makeRequest(path: string, body?: any, opts?: Record<string, unknown>) {
     const anyOrch = mcpGPUOrchestrator as unknown as OrchestratorLike;
     if (typeof anyOrch.makeRequest === 'function') {
       return anyOrch.makeRequest(path, body, opts);
@@ -130,15 +130,15 @@ export class AuthService {
         );
       } else {
         authState.user = null;
-        authState.isAuthenticated = false;
+        authState.isAuthenticated = $state(false);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Auth initialization error:', error);
       authState.error = 'Failed to initialize authentication';
       authState.user = null;
-      authState.isAuthenticated = false;
+      authState.isAuthenticated = $state(false);
     } finally {
-      authState.loading = false;
+      authState.loading = $state(false);
     }
   }
   // Login with email and password
@@ -186,13 +186,13 @@ export class AuthService {
         );
         return { success: false, error: result.error };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = 'Network error during login';
       authState.error = errorMessage;
       console.error('Login error:', error);
       return { success: false, error: errorMessage };
     } finally {
-      authState.loading = false;
+      authState.loading = $state(false);
     }
   }
   // Register new user
@@ -237,13 +237,13 @@ export class AuthService {
         authState.error = result.error ?? 'Registration failed';
         return { success: false, error: result.error };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = 'Network error during registration';
       authState.error = errorMessage;
       console.error('Registration error:', error);
       return { success: false, error: errorMessage };
     } finally {
-      authState.loading = false;
+      authState.loading = $state(false);
     }
   }
   // Logout current user
@@ -273,17 +273,17 @@ export class AuthService {
       });
       // Clear state regardless of response
       authState.user = null;
-      authState.isAuthenticated = false;
+      authState.isAuthenticated = $state(false);
       authState.error = null;
       // Redirect to login page
       await goto('/login');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Logout error:', error);
       // Still clear state on error
       authState.user = null;
-      authState.isAuthenticated = false;
+      authState.isAuthenticated = $state(false);
     } finally {
-      authState.loading = false;
+      authState.loading = $state(false);
     }
   }
   // Update user profile
@@ -315,13 +315,13 @@ export class AuthService {
         authState.error = result.error ?? 'Profile update failed';
         return { success: false, error: result.error };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = 'Failed to update profile';
       authState.error = errorMessage;
       console.error('Profile update error:', error);
       return { success: false, error: errorMessage };
     } finally {
-      authState.loading = false;
+      authState.loading = $state(false);
     }
   }
   // Check if user has specific permission

@@ -57,8 +57,8 @@
       return onSubmit({ formElement, formData, action, cancel, submitter, controller });
     }
     return async ({ result, update }) => {
-      if ((result as { type?: unknown; data?: unknown }).type === 'failure' && (result as { type?: unknown; data?: unknown }).data?.validationErrors) {
-        validationErrors = (result as { type?: unknown; data?: unknown }).data.validationError;
+      if ((result as { type?: any; data?: any }).type === 'failure' && (result as { type?: any; data?: any }).data?.validationErrors) {
+        validationErrors = (result as { type?: any; data?: any }).data.validationError;
       }
       await update();
     }
@@ -66,7 +66,6 @@
   // Global form error display
   let hasErrors = $derived(Object.keys(errors).length > 0);
 </script>
-
 <form
   use:enhance={enhancedSubmit}
   aria-label={ariaLabel}
@@ -78,8 +77,7 @@
   {#if header}
     <div class="form-header">
       {@render header()}
-    </div>
-  {/if}
+    {/if}
   {#if hasErrors}
     <div class="form-errors bg-red-50 border border-red-200 rounded-md p-4 mb-4">
       <div class="flex">
@@ -95,7 +93,7 @@
           <div class="mt-2 text-sm text-red-700">
             <ul class="list-disc pl-5 space-y-1">
               {#each Object.entries(validationErrors) as [field, errors]}
-                {#each errors as error}
+                {#each Array.isArray(errors) ? errors : [] as error}
                   <li>{error}</li>
                 {/each}
               {/each}
@@ -103,28 +101,24 @@
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <div class="form-content {variant === 'inline' ? 'flex flex-row items-center gap-4' : spacingClasses[spacing]}">
-    {@render children?.()}
+    <slot />
   </div>
   {#if footer}
     <div class="form-footer {variant !== 'inline' ? 'pt-4 border-t border-gray-200' : ''}">
       {@render footer()}
-    </div>
-  {/if}
+    {/if}
   {#if isSubmitting}
     <div class="form-loading absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg">
       <div class="flex items-center space-x-2">
         <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
         <span class="text-sm text-gray-600">Submitting...</span>
       </div>
-    </div>
-  {/if}
+    {/if}
 </form>
-
 <style>
   .form-standard {
-    position relative;
+    position: relative;
   }
 </style>

@@ -5,21 +5,17 @@ https://svelte.dev/e/js_parse_error -->
   import '@toast-ui/editor/dist/toastui-editor.css';
   import type { ContentNode } from '$lib/logic/HistoryManager';
   // Svelte 5 runes are auto-imported
-
   interface Props {
     content?: ContentNode[];
     height?: string;
     placeholder?: string;
-    onchange?: (event?: unknown) => void;
+    onchange?: (event?: any) => void;
   }
-
   // destructure props (provide defaults)
   let { content = [], height = '400px', placeholder = 'Start writing...', onchange }: Props = $props();
-
   let editorElement: HTMLElement;
   let editor: any;
-  let isInitialized = false;
-
+  let isInitialized = $state(false);
   // Convert ContentNode array to markdown
   function contentToMarkdown(nodes: ContentNode[]): string {
     const nodeToMd = (node: ContentNode): string => {
@@ -33,7 +29,6 @@ https://svelte.dev/e/js_parse_error -->
         if ((node as any).fontSize) text = `<span style="font-size: ${(node as any).fontSize}">${text}</span>`;
         return text;
       }
-
       // handle children
       if ((node as any).children && Array.isArray((node as any).children)) {
         const childText = ((node as any).children as ContentNode[]).map(c => nodeToMd(c)).join('');
@@ -63,21 +58,17 @@ https://svelte.dev/e/js_parse_error -->
       }
       return '';
     };
-
     return nodes.map(n => nodeToMd(n)).join('');
   }
-
   // Convert markdown to ContentNode array (simplified)
   function markdownToContent(markdown: string): ContentNode[] {
     if (!markdown || !markdown.trim()) {
-      return [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
+      return [{ type: 'paragraph',  [{ type: 'text', text: '' }] }];
     }
-
     // Basic markdown parsing - in production, use a proper parser
     const nodes: ContentNode[] = [];
     let currentParagraph: ContentNode | null = null;
     const lines = markdown.split(/\r?\n/);
-
     for (const line of lines) {
       if (line.trim() === '') {
         if (currentParagraph) {
@@ -86,7 +77,6 @@ https://svelte.dev/e/js_parse_error -->
         }
         continue;
       }
-
       // Headings
       if (line.startsWith('#')) {
         const level = line.match(/^#+/)?.[0].length || 1;
@@ -94,67 +84,57 @@ https://svelte.dev/e/js_parse_error -->
         nodes.push({
           type: 'heading',
           level,
-          children: [{ type: 'text', text }],
+           [{ type: 'text', text }],
         } as any);
         continue;
       }
-
       // Lists
       if (line.startsWith('- ') || line.startsWith('* ')) {
         const text = line.replace(/^[-*]\s*/, '');
         nodes.push({
           type: 'list-item',
-          children: [{ type: 'text', text }],
+           [{ type: 'text', text }],
         } as any);
         continue;
       }
-
       // Blockquotes
       if (line.startsWith('> ')) {
         const text = line.replace(/^>\s*/, '');
         nodes.push({
           type: 'blockquote',
-          children: [{ type: 'text', text }],
+           [{ type: 'text', text }],
         } as any);
         continue;
       }
-
       // Regular paragraph
       if (!currentParagraph) {
         currentParagraph = {
           type: 'paragraph',
-          children: [],
+           [],
         } as any;
       }
-
       // Basic inline formatting
       let text = line;
       const textNode: any = { type: 'text', text };
-
       // Bold
       if (/\*\*(.*?)\*\*/.test(text)) {
         textNode.bold = true;
         text = text.replace(/\*\*(.*?)\*\*/g, '$1');
         textNode.text = text;
       }
-
       // Italic (avoid interfering with bold which was already handled)
       if (/\*(.*?)\*/.test(text) && !textNode.bold) {
         textNode.italic = true;
         text = text.replace(/\*(.*?)\*/g, '$1');
         textNode.text = text;
       }
-
       (currentParagraph!.children as any[]).push(textNode);
     }
-
     if (currentParagraph) {
       nodes.push(currentParagraph);
     }
-
-    return nodes.length > 0 ? nodes : [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
+    return nodes.length > 0 ? nodes : [{ type: 'paragraph',  [{ type: 'text', text: '' }] }];
   }
-
   $effect(() => {
     if (!editorElement) return;
     editor = new Editor({
@@ -184,26 +164,22 @@ https://svelte.dev/e/js_parse_error -->
         },
       },
     });
-
     // Listen for content changes
     editor.on('change', () => {
       const markdown = editor.getMarkdown();
       const newContent = markdownToContent(markdown);
       onchange?.(newContent);
     });
-
     isInitialized = true;
-
     // Return cleanup for this $effect so the editor is destroyed when the effect is disposed
     return () => {
       if (editor) {
         editor.destroy();
         editor = null;
-        isInitialized = false;
+        isInitialized = $state(false);
       }
     };
   });
-
   // Reactive update when content prop changes
   $effect(() => {
     if (editor && isInitialized && content) {
@@ -214,48 +190,40 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   });
-
   // Expose methods for parent component (top-level exports)
   export function setContent(newContent: ContentNode[]) {
     if (editor) {
       editor.setMarkdown(contentToMarkdown(newContent));
     }
   }
-
   export function getContent(): ContentNode[] {
     if (editor) {
       return markdownToContent(editor.getMarkdown());
     }
     return content;
   }
-
   export function getMarkdown(): string {
     return editor ? editor.getMarkdown() : '';
   }
-
   export function getHTML(): string {
     return editor ? editor.getHTML() : '';
   }
-
   export function insertText(text: string) {
     if (editor) {
       editor.insertText(text);
     }
   }
-
   export function getSelectedText(): string {
     if (editor) {
       return editor.getSelectedText() || '';
     }
     return '';
   }
-
   export function focus() {
     if (editor) {
       editor.focus();
     }
   }
-
   // Formatting methods
   export function toggleMark(mark: string) {
     if (!editor) return;
@@ -275,7 +243,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     editor.replaceSelection(formattedText);
   }
-
   export function addMark(mark: string, value: string) {
     // Add inline marks such as color or fontSize by wrapping selection in a span
     if (!editor) return;
@@ -295,7 +262,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     editor.replaceSelection(formattedText);
   }
-
   export function insertNode(node: any) {
     if (!editor || !node) return;
     const type = node.type;
@@ -322,10 +288,8 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <!-- Editor mount point -->
 <div bind:this={editorElement} class="editor-container" style="min-height: {height};"></div>
-
 <style>
   :global(.toastui-editor-defaultUI) {
     border: none !important;

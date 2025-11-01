@@ -151,10 +151,10 @@ export const GET: RequestHandler = async ({ url }) => {
       type AnalysisSummary = {
         id: string;
         caseId: string;
-        evidenceAnalysis: unknown;
-        personsData: unknown;
-        caseSynthesis: unknown;
-        neo4jUpdates: unknown;
+        evidenceAnalysis: any;
+        personsData: any;
+        caseSynthesis: any;
+        neo4jUpdates: any;
         analysisDir: string;
         timestamp?: string;
       };

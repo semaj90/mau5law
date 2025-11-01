@@ -48,7 +48,7 @@ export interface LegalEntity {
 }
 class Neo4jService {
   private driver: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private config = {
     uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
     username: process.env.NEO4J_USERNAME || 'neo4j',
@@ -68,7 +68,7 @@ class Neo4jService {
       console.log('✅ Neo4j Service initialized (simulated)');
     } catch (error) {
       console.warn('⚠️ Neo4j not available, using fallback recommendations:', error);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
     }
   }
   private async testConnection(): Promise<boolean> {
@@ -426,7 +426,7 @@ class Neo4jService {
         console.error('❌ Error closing Neo4j driver:', error);
       }
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('✅ Neo4j Service shutdown complete');
   }
 }

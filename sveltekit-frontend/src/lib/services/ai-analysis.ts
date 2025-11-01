@@ -23,7 +23,7 @@ export class AIAnalysisService {
         throw new Error('Analysis failed');
       }
       return await response.json();
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.error('AI Analysis error:', error);
       // Fallback analysis for development
       return {
@@ -62,7 +62,7 @@ export class AIAnalysisService {
         throw new Error('Text analysis failed');
       }
       return await response.json();
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.error('Text Analysis error:', error);
       // Fallback analysis for development
       return {

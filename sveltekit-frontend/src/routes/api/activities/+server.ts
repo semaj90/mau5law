@@ -3,7 +3,6 @@ import { caseActivities } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
 import { sql, desc } from 'drizzle-orm';
 import { eq, or as orExpr } from '$lib/server/db/utils';
-import { eq, or as orExpr } from '$lib/server/db/utils';
 import type { RequestHandler } from './$types.js';
 import { getUserId } from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ locals, url }) => {
@@ -25,7 +24,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const sortBy = url.searchParams.get('sortBy') || 'scheduledFor';
     const sortOrder = url.searchParams.get('sortOrder') || 'asc';
     // Build filters
-    const filters: unknown[] = [];
+    const filters: any[] = [];
     // Add case filter
     if (caseId) {
       filters.push(eq(caseActivities.caseId, caseId));
@@ -97,7 +96,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         total: totalCount,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching activities:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to fetch activities' }, { status: 500 });
   }
@@ -133,7 +132,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     };
     const [newActivity] = await db.insert(caseActivities).values(activityData).returning();
     return json(newActivity, { status: 201 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error creating activity:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to create activity' }, { status: 500 });
   }

@@ -35,7 +35,7 @@ interface WASMEmbeddings {
 }
 class EmbeddingsWorker {
   private wasmModule: WASMEmbeddings | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private embeddingDim = 768; // Default for most models
   async initialize() {
     try {

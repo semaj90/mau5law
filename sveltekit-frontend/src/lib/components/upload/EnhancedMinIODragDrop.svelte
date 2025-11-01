@@ -72,8 +72,8 @@
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         console.log('CUDA Worker Status:', data);
       }
     } catch (err) {
@@ -95,12 +95,12 @@
     const y = event.clientY;
     // Only hide drag overlay if mouse is actually outside the drop zone
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      dragOver = false;
+      dragOver = $state(false);
     }
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     if (disabled || uploading) return;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processDroppedFiles(droppedFiles);
@@ -159,7 +159,7 @@
         });
         // CUDA preprocessing for supported file types
         let preprocessedData = uploadFile.fil;
-        let cudaProcessed = false;
+        let cudaProcessed = $state(false);
         if (enableCudaAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success) {
@@ -170,16 +170,16 @@
         }
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success) {
+        if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).success) {
           uploadFile.status = 'completed';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
           results.push.data);
           // Publish real-time sync event
-          await publishMinIOSyncEvent((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data, caseId);
+          await publishMinIOSyncEvent((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).data, caseId);
         } else {
           uploadFile.status = 'error';
-          uploadFile.errorMessage = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).error;
+          uploadFile.errorMessage = (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).error;
         }
       }
       const endTime = Date.now();
@@ -197,7 +197,7 @@
       errorMessage = errorMsg;
       ondispatch?.(errorMsg);
     } finally {
-      uploading = false;
+      uploading = $state(false);
       uploadProgress = 0;
     }
   }
@@ -221,14 +221,14 @@
         method: 'POST',
         body: formData
       });
-      if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
-        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
-      const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
       return {
         success: true
-        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined;
-        metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).metadata
+        processedFile: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).processedFile ? new File([(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).processedFile], file.name, { type: file.type }) : undefined;
+        metadata: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).metadata
       }
     } catch (error) {
       console.warn('CUDA preprocessing failed:', error);
@@ -255,16 +255,16 @@
       method: 'POST',
       body: formData
     });
-    if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
-      const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+    if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+      const errorData = await (response as { ok?: any; json?: any; statusText?: any }).json();
       return {
         success: false,
         error: errorData.error?.message || 'Upload failed';
       }
     }
-    const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+    const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
     const processingTime = Date.now() - startTime;
-    if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data?.[0]) {
+    if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).success && (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).data?.[0]) {
       return {
         success: true,
         data: {
@@ -321,7 +321,6 @@
     target.value = '';
   }
 </script>
-
 <!-- Enhanced drag-and-drop UI with Clang/LLVM performance indicators -->
 <div class="enhanced-minio-upload relative w-full">
   <!-- Performance Stats -->
@@ -335,8 +334,7 @@
         <span>Avg Processing: {performanceStats.avgProcessingTime.toFixed(0)}ms</span>
         <span>Throughput: {performanceStats.throughputMBps.toFixed(1)} MB/s</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Hidden file input -->
   <input
     type="file"
@@ -370,8 +368,7 @@
           <div class="text-blue-600 text-lg font-semibold mb-2">🚀 Drop files for CUDA acceleration</div>
           <div class="text-blue-500 text-sm">Clang/LLVM optimized • Visual Studio 2022 native</div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Default content -->
     <div class="drop-content p-8 text-center">
       {#if uploading}
@@ -384,8 +381,7 @@
             Progress: {uploadProgress.toFixed(1)}%
           </div>
           {#if enableCudaAcceleration}
-            <div class="text-xs text-blue-600 mt-1">CUDA preprocessing enabled</div>
-          {/if}
+            <div class="text-xs text-blue-600 mt-1">CUDA preprocessing enabled{/if}
         </div>
       {:else}
         <div class="default-state">
@@ -397,13 +393,11 @@
               class="flex items-center justify-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block"
             >
               ⚡ CUDA GPU acceleration enabled
-            </div>
-          {/if}
+            {/if}
           <div class="text-xs text-gray-400 mt-2">
             Max size: {(maxFileSize / (1024 * 1024)).toFixed(0)}MB
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- File List -->
@@ -457,31 +451,25 @@
                 class="bg-blue-600 h-1 rounded-full transition-all duration-300"
                 style="width: {file.progress}%"
               ></div>
-            </div>
-          {/if}
+            {/if}
           <!-- Error message -->
           {#if file.status === 'error' && file.errorMessage}
             <div class="mt-2 text-xs text-red-600">
               {file.errorMessage}
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Messages -->
   {#if errorMessage}
     <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
       {errorMessage}
-    </div>
-  {/if}
+    {/if}
   {#if successMessage}
     <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
       {successMessage}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .drop-zone {
     /* @apply relative border-2 border-dashed rounded-lg transition-all duration-200 min-h-48; */

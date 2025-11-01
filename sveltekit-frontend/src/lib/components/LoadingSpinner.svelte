@@ -7,7 +7,6 @@
     color?: 'blue' | 'green' | 'purple' | 'gray';
   }
   let { size = 'md', message = 'Loading...', showMessage = true, color = 'blue' }: Props = $props();
-
   // tighten parameter types to Props unions
   function getSpinnerSize(sizeValue: Props['size']): string {
     switch (sizeValue) {
@@ -58,7 +57,6 @@
     }
   }
 </script>
-
 <div class="flex items-center justify-center space-x-3">
   <!-- Spinner: use explicit class expression and ring-style spinner (top border transparent) -->
   <div
@@ -72,15 +70,12 @@
     <!-- screen-reader only text -->
     <span class="sr-only">{message}</span>
   </div>
-
   <!-- Loading Message -->
   {#if showMessage}
     <div class={ `${getTextSize(size)} font-medium ${getTextColor(color)}` }>
       {message}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* Custom animation: for smoother spinning */
   @keyframes spin {
@@ -94,7 +89,6 @@
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   /* visually-hidden helper for screen readers */
   .sr-only {
     position: absolute !important;
@@ -108,4 +102,3 @@
     margin: -1px;
   }
 </style>
-

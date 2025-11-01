@@ -125,7 +125,7 @@ export interface ClusteringParams {
 export class VectorSearchErrors {
   private embeddingUrl: string;
   private embeddingModel: string;
-  private initialized: boolean = false;
+  private initialized: boolean = $state(false);
 
   constructor(embeddingUrl: string = 'http://localhost:11434', embeddingModel: string = 'embeddinggemma:latest') {
     this.embeddingUrl = embeddingUrl;

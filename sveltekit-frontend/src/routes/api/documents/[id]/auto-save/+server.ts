@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 type AutoSaveData = {
   content?: string;
   title?: string;
-  citations?: unknown;
+  citations?: any;
   autoSavedAt?: string;
   isDirty?: boolean;
 };
@@ -19,18 +19,18 @@ type LegalDocumentsRow = {
   autoSaveData?: AutoSaveData | null;
   title?: string;
   content?: string;
-  citations?: unknown;
+  citations?: any;
 };
 
-let legalDocuments: unknown | null = null;
+let legalDocuments: any | null = null;
 try {
   // attempt the unified schema first
   const schema = await import('$lib/server/db/unified-schema');
-  legalDocuments = (schema as unknown as { legalDocuments?: unknown }).legalDocuments ?? null;
+  legalDocuments = (schema as unknown as { legalDocuments?: any }).legalDocuments ?? null;
 } catch {
   try {
     const schema = await import('$lib/server/db/schema-postgres');
-    legalDocuments = (schema as unknown as { legalDocuments?: unknown }).legalDocuments ?? null;
+    legalDocuments = (schema as unknown as { legalDocuments?: any }).legalDocuments ?? null;
   } catch {
     console.warn('No legal documents schema available; auto-save will return mock responses.');
     legalDocuments = null;
@@ -38,11 +38,11 @@ try {
 }
 
 // Small helper to extract error messages from unknown
-function extractErrorMessage(err: unknown): string {
+function extractErrorMessage(err: any): string {
   try {
     if (!err) return String(err);
     if (typeof err === 'string') return err;
-    if (err && typeof err === 'object' && 'message' in err && typeof (err as { message?: unknown }).message === 'string') {
+    if (err && typeof err === 'object' && 'message' in err && typeof (err as { message?: any }).message === 'string') {
       return (err as { message?: string }).message || String(err);
     }
     return String(err);
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const body = (await request.json()) as {
       content?: string;
       title?: string;
-      citations?: unknown;
+      citations?: any;
       wordCount?: number;
       isDirty?: boolean;
     };
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           .where(
             eq(
               // column expression is a runtime value; cast to string for the comparison value type
-              (legalDocuments as unknown as { id: unknown }).id as unknown as string,
+              (legalDocuments as unknown as { id: any }).id as unknown as string,
               documentId
             )
           )
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             isDirty: !!row.autoSaveData?.isDirty,
           },
         });
-      } catch (dbErr: unknown) {
+      } catch (dbErr: any) {
         console.warn('Database auto-save failed, returning fallback response:', extractErrorMessage(dbErr));
         // fallthrough to mock response below
       }
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         isDirty: !!updates.autoSaveData.isDirty,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error auto-saving document:', extractErrorMessage(err));
     return json({ success: false, error: 'Failed to auto-save document' }, { status: 500 });
   }
@@ -171,14 +171,14 @@ export const GET: RequestHandler = async ({ params }) => {
         // dynamic select/from/where - keep runtime casts and descriptive comments
         const docs: DocSelectResult[] = await db
           .select({
-            id: (legalDocuments as unknown as { id: unknown }).id,
-            lastSavedAt: (legalDocuments as unknown as { updatedAt?: unknown }).updatedAt,
-            autoSaveData: (legalDocuments as unknown as { autoSaveData?: unknown }).autoSaveData,
+            id: (legalDocuments as unknown as { id: any }).id,
+            lastSavedAt: (legalDocuments as unknown as { updatedAt?: any }).updatedAt,
+            autoSaveData: (legalDocuments as unknown as { autoSaveData?: any }).autoSaveData,
           })
           .from(legalDocuments as unknown)
           .where(
             // cast column expression to string to avoid using `any` in the eq call
-            eq((legalDocuments as unknown as { id: unknown }).id as unknown as string, documentId)
+            eq((legalDocuments as unknown as { id: any }).id as unknown as string, documentId)
           )
           .limit(1);
 
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ params }) => {
             autoSaveData: autoSave,
           },
         });
-      } catch (dbErr: unknown) {
+      } catch (dbErr: any) {
         console.warn('Database query failed, returning mock response:', extractErrorMessage(dbErr));
         // fallthrough to mock response below
       }
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ params }) => {
         autoSaveData: null,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error fetching auto-save status:', extractErrorMessage(err));
     return json({ success: false, error: 'Failed to fetch auto-save status' }, { status: 500 });
   }

@@ -18,11 +18,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     (unified as any).userStats ??
     (unified as any).stats ??
     { totalCases: 0, totalEvidence: 0, totalCitations: 0, totalReports: 0, aiConversations: 0 };
-
   // --- NEW: ensure these commonly-used exports exist to avoid: "not found" errors ---
   const isAuthenticated = (unified as any).isAuthenticated ?? (unified as any).authenticated ?? false;
   const userDataActions = (unified as any).userDataActions ?? (unified as any).userActions ?? null;
-
   import {
     formatRelativeTime,
     formatDetailedTimestamp,
@@ -118,7 +116,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       isCollapsed = !isCollapsed;
     } else {
       activeSection = section;
-      isCollapsed = false;
+      isCollapsed = $state(false);
     }
   }
   function navigateTo(path: string) {
@@ -138,7 +136,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     navigateTo('/reports/create');
   }
 </script>
-
 <aside class="global-sidebar" class:collapsed={isCollapsed} class:closed={!isOpen}>
   <!-- User Profile Section -->
   {#if authenticated && currentUser}
@@ -148,8 +145,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <div class="user-info">
           {#if !isCollapsed}
             <div class="user-name">{truncateText(currentUser.email || currentUser.id, 20)}</div>
-            <div class="user-role nes-badge is-small {getPriorityColor(currentUser.role)}">{currentUser.role}</div>
-          {/if}
+            <div class="user-role nes-badge is-small {getPriorityColor(currentUser.role)}">{currentUser.role}{/if}
         </div>
         <button
           class="nes-btn is-small collapse-btn"
@@ -168,8 +164,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       {:else}
         <button class="nes-btn is-small" onclick={() => (isCollapsed = false)}>⚡</button>
       {/if}
-    </div>
-  {/if}
+    {/if}
   {#if authenticated && !isCollapsed}
     <!-- Search Section -->
     <div class="search-section nes-container is-dark">
@@ -214,8 +209,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
           <button class="nes-btn is-small is-warning" onclick={createReport}> 📋 New Report </button>
           <button class="nes-btn is-small" onclick={() => openAIAssistant()}> 🤖 AI Assistant </button>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Cases Section -->
     <div class="section cases-section nes-container is-dark with-title">
       <button
@@ -252,23 +246,19 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 {#if case_.priority !== 'medium'}
                   <div class="priority-indicator nes-badge is-small {getPriorityColor(case_.priority)}">
                     {case_.priority}
-                  </div>
-                {/if}
+                  {/if}
               </a>
             {/each}
             {#if stats.totalCases > 10}
               <div class="view-all">
                 <a href="/cases" class="nes-btn is-small">View All Cases</a>
-              </div>
-            {/if}
+              {/if}
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No cases found</p>
               <button class="nes-btn is-small" onclick={createQuickCase}>Create First Case</button>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
     <!-- Evidence Section -->
     <div class="section evidence-section nes-container is-dark with-title">
@@ -310,26 +300,22 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 </div>
                 {#if evidence.tags.length > 0}
                   <div class="tags">
-                    {#each evidence.tags.slice(0, 2) as tag}
+                    {#each Array.isArray(evidence.tags.slice(0, 2)) ? evidence.tags.slice(0, 2) : [] as tag}
                       <span class="nes-badge is-small">{tag}</span>
                     {/each}
-                  </div>
-                {/if}
+                  {/if}
               </a>
             {/each}
             {#if stats.totalEvidence > 10}
               <div class="view-all">
                 <a href="/evidence" class="nes-btn is-small">View All Evidence</a>
-              </div>
-            {/if}
+              {/if}
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No evidence found</p>
               <button class="nes-btn is-small" onclick={uploadEvidence}>Upload Evidence</button>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
     <!-- Citations Section -->
     <div class="section citations-section nes-container is-dark with-title">
@@ -374,16 +360,13 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
             {#if stats.totalCitations > 10}
               <div class="view-all">
                 <a href="/citations" class="nes-btn is-small">View All Citations</a>
-              </div>
-            {/if}
+              {/if}
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No citations found</p>
               <a href="/citations/create" class="nes-btn is-small">Add Citation</a>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
     <!-- Reports Section -->
     <div class="section reports-section nes-container is-dark with-title">
@@ -424,16 +407,13 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
             {#if stats.totalReports > 10}
               <div class="view-all">
                 <a href="/reports" class="nes-btn is-small">View All Reports</a>
-              </div>
-            {/if}
+              {/if}
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No reports found</p>
               <button class="nes-btn is-small" onclick={createReport}>Create Report</button>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
     <!-- AI Assistant Section -->
     <div class="section ai-section nes-container is-dark with-title">
@@ -479,14 +459,10 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
             <div class="empty-state">
               <p class="nes-text is-disabled">No AI conversations yet</p>
               <button class="nes-btn is-small" onclick={() => openAIAssistant()}>Start Chat</button>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/if}
+            {/if}
+        {/if}
+    {/if}
 </aside>
-
 <style>
   .global-sidebar {
     width: 320px;
@@ -725,4 +701,3 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     }
   }
 </style>
-

@@ -71,7 +71,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         mimeType: file.type
       }
     })
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("Document ingestion error:", error)
     return json(
       {
@@ -93,7 +93,7 @@ const originalGETHandler: RequestHandler = async () => {
       stats,
       timestamp: new Date().toISOString()
     })
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("Ingestion stats error:", error)
     return json(
       {

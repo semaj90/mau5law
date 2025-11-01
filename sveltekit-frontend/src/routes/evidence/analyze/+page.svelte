@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Dialog,
     DialogContent,
@@ -14,11 +14,11 @@ https://svelte.dev/e/js_parse_error -->
     DialogFooter,
     DialogHeader,
     DialogTitle,
-  } from '$lib/components/ui/dialog';
+  } from '$lib/components/ui/dialog.svelte'';
   import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte'';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax
   let analyzing = $state(false);
@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       const data = await response.json();
       // Handle real AI response directly (no polling needed)
-      analyzing = false;
+      analyzing = $state(false);
       progress = 100;
       showResults = true;
 
@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock analysis results
-      analyzing = false;
+      analyzing = $state(false);
       progress = 100;
       showResults = true;
       results = {
@@ -206,11 +206,11 @@ https://svelte.dev/e/js_parse_error -->
     evidenceFile = null;
     evidenceType = 'police_report';
     priority = 'medium';
-    analyzing = false;
+    analyzing = $state(false);
     results = null;
     error = '';
     progress = 0;
-    showResults = false;
+    showResults = $state(false);
     sessionId = '';
     // Reset steps
     steps.forEach(step => (step.status = 'pending'));
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
               <SelectValue placeholder="Select evidence type" />
             </SelectTrigger>
             <SelectContent>
-              {#each evidenceTypes as type}
+              {#each Array.isArray(evidenceTypes) ? evidenceTypes : [] as type}
                 <SelectItem value={type.value}>{type.label}</SelectItem>
               {/each}
             </SelectContent>
@@ -263,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
               <SelectValue placeholder="Select priority" />
             </SelectTrigger>
             <SelectContent>
-              {#each priorityOptions as option}
+              {#each Array.isArray(priorityOptions) ? priorityOptions : [] as option}
                 <SelectItem value={option.value}>{option.label}</SelectItem>
               {/each}
             </SelectContent>

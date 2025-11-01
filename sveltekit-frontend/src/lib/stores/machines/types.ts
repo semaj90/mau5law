@@ -76,7 +76,7 @@ export interface GoMicroserviceContext extends BaseMachineContext {
 export interface GoServiceRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   path: string;
-  body?: unknown;
+  body?: any;
   headers?: Record<string, string>;
 }
 export interface GoServiceResponse {
@@ -149,7 +149,7 @@ export interface AIProcessingEvents {
 }
 export interface DocumentEvents {
   UPLOAD_DOCUMENT: { file: File };
-  START_OCR: { options?: unknown };
+  START_OCR: { options?: any };
   OCR_COMPLETE: { result: OCRResult };
   EXTRACT_FIELDS: { ocrResult: OCRResult };
   FIELDS_EXTRACTED: { fields: ExtractedField[] };
@@ -171,7 +171,7 @@ export interface GoMicroserviceEvents {
   DISCONNECT: { [key: string]: any };
 }
 export interface RAGEvents {
-  START_QUERY: { query: string; options?: unknown };
+  START_QUERY: { query: string; options?: any };
   ANALYZE_INTENT: { query: RAGQuery };
   INTENT_ANALYZED: { intent: string; expandedQueries: string[] };
   SEARCH_DOCUMENTS: { queries: string[]; filters?: RAGFilters };

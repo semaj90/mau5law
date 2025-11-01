@@ -112,7 +112,7 @@ class DetectiveModeService {
   }
 }
 // -- add helper to extract user id safely from locals
-function getUserId(locals: unknown): string {
+function getUserId(locals: any): string {
   // locals shape may vary between adapters; handle common shapes
   const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } } | undefined;
   if (!l) return 'unknown';
@@ -123,7 +123,7 @@ function getUserId(locals: unknown): string {
 }
 
 // -- add helper to normalize unknown errors to string
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (!err) return 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errMsg = getErrorMessage(err);
     console.error('Error fetching detective insights:', errMsg);
     return json({ success: false, message: 'Failed to fetch insights', details: errMsg }, { status: 500 });
@@ -193,7 +193,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errMsg = getErrorMessage(err);
     console.error('Error running detective analysis:', errMsg);
 

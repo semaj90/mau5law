@@ -50,7 +50,7 @@ const normalizeEmbedding = (embedding: number[] | number[][]): number[] => {
 }
 
 // --- Added helper to format unknown errors consistently ---
-function formatError(error: unknown): string {
+function formatError(error: any): string {
 	// Prefer Error.message, otherwise try JSON.stringify, fall back to String()
 	if (error instanceof Error) return error.message;
 	try {
@@ -116,7 +116,7 @@ interface DocumentAnalysisResult {
 
 class EnhancedAIService {
   private config: AIServiceConfig;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   constructor(config: Partial<AIServiceConfig> = {}) {
     this.config = {
@@ -167,7 +167,7 @@ class EnhancedAIService {
       // default / openai
       const openaiEmb = await this.generateOpenAIEmbeddings(inputs);
       return openaiEmb;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = formatError(error);
       console.error(`Embedding generation failed with ${provider}:`, errMsg);
       if (this.config.fallbackToCloud && provider.startsWith("tauri-")) {
@@ -211,7 +211,7 @@ class EnhancedAIService {
 
       // default openai
       return await this.generateOpenAIResponse(fullPrompt, options);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = formatError(error);
       console.error(`LLM generation failed with ${provider}:`, errMsg);
       if (this.config.fallbackToCloud && provider === "tauri-local") {
@@ -259,7 +259,7 @@ class EnhancedAIService {
         summary,
         riskAssessment
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = formatError(error);
       console.error("Legal document analysis failed:", errMsg);
       throw error;
@@ -287,7 +287,7 @@ class EnhancedAIService {
           classification,
           summary
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = formatError(error);
         results.push({
           id: doc.id,

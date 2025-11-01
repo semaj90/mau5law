@@ -249,7 +249,7 @@
     <h3 class="text-lg font-semibold text-green-300 mb-4">Recent Performance History (Last 10 minutes)</h3>
     {#if metricsHistory.length > 0}
       <div class="space-y-2 max-h-96 overflow-y-auto">
-        {#each metricsHistory.slice(-20) as metric}
+        {#each Array.isArray(metricsHistory.slice(-20)) ? metricsHistory.slice(-20) : [] as metric}
           <div class="text-sm">
             <span class="text-green-600">{metric.timestamp.toLocaleTimeString()}</span>
             - <span class="text-green-400">Health:</span>

@@ -2,14 +2,12 @@ import { synthesizeMultiLLMOutput, type SynthesisResult } from './custom-reranke
 import { fetchLLMOutputs, getUserHistory, getUploadedFiles, fetchMCPServerSummaries } from '$lib/api/client';
 // TODOs and stub mocks for multi-LLM synthesis pipeline integration
 import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData } from './types.js';
-
 // Example usage with real API calls
 export async function runSynthesisExample(): Promise<SynthesisResult> {
   const llmOutputs = await fetchLLMOutputs();
   const userHistory = await getUserHistory();
   const uploadedFiles = await getUploadedFiles();
   const mcpServers = await fetchMCPServerSummaries();
-
   const result = await synthesizeMultiLLMOutput({
     llmOutputs,
     userHistory,
@@ -20,14 +18,12 @@ export async function runSynthesisExample(): Promise<SynthesisResult> {
   console.log('Synthesis result:', result);
   return result;
 }
-
 export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
   // Example: Full pipeline wiring with API calls
   const llmOutputs = await fetchLLMOutputs();
   const userHistory = await getUserHistory();
   const uploadedFiles = await getUploadedFiles();
   const mcpServers = await fetchMCPServerSummaries();
-
   const result = await synthesizeMultiLLMOutput({
     llmOutputs,
     userHistory,

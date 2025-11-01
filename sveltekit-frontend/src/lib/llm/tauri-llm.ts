@@ -11,7 +11,7 @@ async function initializeTauri(): Promise<any> {
   }
 }
 // Initialize on first use
-let tauriInitialized = false;
+let tauriInitialized = $state(false);
 export async function getAvailableModels(): Promise<string[]> {
   if (!tauriInitialized) {
     await initializeTauri();

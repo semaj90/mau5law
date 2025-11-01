@@ -1,19 +1,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
-    user: unknown;
+    user: any;
   }
   let { user = null }: Props = $props();
   import { onMount } from 'svelte';
   import { avatarStore } from '../stores/avatarStore';
-  import Avatar from './Avatar.svelte';
+  import { Avatar } from './Avatar.svelte';
   let dropdownOpen = $state(false);
   let dropdownElement: HTMLElement = $state(undefined as any);
   $effect(() => {
     // Close dropdown when clicking outside
     function handleClickOutside(_event: MouseEvent) {
       if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-        dropdownOpen = false;
+        dropdownOpen = $state(false);
       }
     }
     document.addEventListener('click', handleClickOutside);
@@ -31,7 +31,6 @@
     });
   }
 </script>
-
 <div class="user-dropdown" bind:this={dropdownElement}>
   <button class="user-trigger" onclick={() => toggleDropdown()} aria-expanded={dropdownOpen} aria-haspopup="true">
     <Avatar size="small" />
@@ -92,14 +91,12 @@
           Sign Out
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .user-dropdown {
-    position relative;
+    position: relative;
     display: inline-block;
   }
   .user-trigger {
@@ -132,7 +129,7 @@
     transform: rotate(180deg);
   }
   .dropdown-menu {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0;
     margin-top: 4px;
@@ -239,4 +236,3 @@
     }
   }
 </style>
-

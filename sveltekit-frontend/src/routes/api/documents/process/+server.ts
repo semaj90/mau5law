@@ -11,7 +11,7 @@ import {
 import { json, error } from '@sveltejs/kit';
 
 // small helper to safely extract error info from unknown
-function extractErrorInfo(err: unknown) {
+function extractErrorInfo(err: any) {
   if (err instanceof Error) {
     // Safely read a possible: "status" property without using `any`
     const maybeStatus = (err as unknown as { status?: number | string | undefined }).status;
@@ -45,7 +45,7 @@ function extractErrorInfo(err: unknown) {
 }
 
 // Helper to safely compute processingTime from an unknown ProcessingResult item
-const getProcessingTimeFromUnknown = (item: unknown): number => {
+const getProcessingTimeFromUnknown = (item: any): number => {
   // Ensure item is an object
   if (!item || typeof item !== 'object') return 0;
   const obj = item as Record<string, unknown>;
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const { message, stack, status } = extractErrorInfo(err);
     console.error('❌ Semantic search failed:', message);
     return json(
@@ -116,7 +116,7 @@ export const OPTIONS: RequestHandler = async () => {
       health,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const { message } = extractErrorInfo(err);
     return json(
       {
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
         batchProcess?: (
           files: File[],
           config: DocumentProcessingConfig,
-          metadata: unknown
+          metadata: any
         ) => Promise<ProcessingResult[]>;
       };
       if ((udp as UnifiedWithBatch).batchProcess) {
@@ -305,7 +305,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const { message, stack, status } = extractErrorInfo(err);
     console.error('❌ Document processing failed:', message);
     return json(

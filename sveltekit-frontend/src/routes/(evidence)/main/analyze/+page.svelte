@@ -213,7 +213,7 @@
 
       // Handle real AI response directly (no polling needed)
       updateProgress(4);
-      analyzing = false;
+      analyzing = $state(false);
       showResults = true;
 
       // Transform API response to expected format
@@ -236,7 +236,7 @@
       };
     } catch (err) {
       console.error('Evidence analysis error:', err);
-      analyzing = false;
+      analyzing = $state(false);
 
       // Production error handling
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
@@ -292,11 +292,11 @@
     evidenceFile = null;
     evidenceType = 'police_report';
     priority = 'medium';
-    analyzing = false;
+    analyzing = $state(false);
     results = null;
     error = '';
     progress = 0;
-    showResults = false;
+    showResults = $state(false);
     sessionId = '';
     // Reset steps - need to create new array to trigger reactivity
     steps = steps.map(step => ({ ...step, status: 'pending' as const }));
@@ -343,7 +343,7 @@
               <SelectValue placeholder="Select evidence type" />
             </SelectTrigger>
             <SelectContent>
-              {#each evidenceTypes as type}
+              {#each Array.isArray(evidenceTypes) ? evidenceTypes : [] as type}
                 <SelectItem value={type.value}>{type.label}</SelectItem>
               {/each}
             </SelectContent>
@@ -357,7 +357,7 @@
               <SelectValue placeholder="Select priority" />
             </SelectTrigger>
             <SelectContent>
-              {#each priorityOptions as option}
+              {#each Array.isArray(priorityOptions) ? priorityOptions : [] as option}
                 <SelectItem value={option.value}>{option.label}</SelectItem>
               {/each}
             </SelectContent>
@@ -572,7 +572,7 @@
         <div class="space-y-2">
           <h4 class="text-lg font-semibold">Recommended Next Steps</h4>
           <ul class="list-disc list-inside">
-            {#each results.analysisResults.nextSteps as step}
+            {#each Array.isArray(results.analysisResults.nextSteps) ? results.analysisResults.nextSteps : [] as step}
               <li class="text-sm text-gray-700">{step}</li>
             {/each}
           </ul>

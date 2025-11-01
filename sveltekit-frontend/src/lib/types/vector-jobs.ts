@@ -51,7 +51,7 @@ export interface VectorOperationRequest {
   operation: 'embedding' | 'similarity' | 'autoindex' | 'clustering';
   ownerType: string;
   ownerId: string;
-  data?: unknown;
+  data?: any;
   vector?: number[];
   options?: {
     priority: 'high' | 'medium' | 'low';

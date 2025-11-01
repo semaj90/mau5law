@@ -70,7 +70,7 @@ type RAGDocument = {
     title?: string;
     score?: number;
     documentType?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   pageContent?: string;
   content?: string;
@@ -185,7 +185,7 @@ export interface SynthesizerInput {
   context?: {
     caseId?: string;
     userId: string;
-    legalBertAnalysis?: unknown; // Add missing property
+    legalBertAnalysis?: any; // Add missing property
     conversationHistory?: ConversationMessage[];
     documents?: Document[];
     preferences?: {
@@ -337,7 +337,7 @@ export class AIAssistantInputSynthesizer {
   private processingStats = new Map<string, number>();
 
   // small helper to convert unknown errors to strings
-  private formatError(error: unknown): string {
+  private formatError(error: any): string {
     return error instanceof Error ? error.message : String(error);
   }
 
@@ -351,7 +351,7 @@ export class AIAssistantInputSynthesizer {
       await this.verifyComponents();
       logger.info('[Synthesizer] All components verified successfully');
       metrics.incrementCounter('synthesizer_initializations');
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[Synthesizer] Initialization failed:', this.formatError(error));
       throw error;
     }
@@ -404,7 +404,7 @@ export class AIAssistantInputSynthesizer {
         `[Synthesizer] Request ${this.requestCount} completed in ${processingTime}ms with ${enhancedContext.totalSources} sources`
       );
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[Synthesizer] Processing failed:', this.formatError(error));
       metrics.incrementCounter('synthesizer_errors');
       throw error;
@@ -438,7 +438,7 @@ export class AIAssistantInputSynthesizer {
         ),
         complexity: legalAnalysis.complexity?.legalComplexity ?? 0.5,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn('[Synthesizer] Query analysis failed, returning basic structure', this.formatError(error));
       return {
         original: query,
@@ -504,7 +504,7 @@ export class AIAssistantInputSynthesizer {
             retrievalResults.searchStrategies.push('rag_hybrid');
           }
           logger.debug(`[Synthesizer] RAG search found ${safeRagResults.length} results`);
-        } catch (error: unknown) {
+        } catch (error: any) {
           logger.warn('[Synthesizer] RAG search failed:', this.formatError(error));
         }
       }
@@ -540,7 +540,7 @@ export class AIAssistantInputSynthesizer {
           retrievalResults.searchStrategies.push('enhanced_legal_search');
         }
         logger.debug(`[Synthesizer] Legal search found ${legalSearchResults.length} results`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.warn('[Synthesizer] Enhanced legal search failed:', this.formatError(error));
       }
       // Strategy 3: Context-based retrieval from provided documents
@@ -567,7 +567,7 @@ export class AIAssistantInputSynthesizer {
       }
       retrievalResults.totalSources = retrievalResults.sources.length;
       return retrievalResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[Synthesizer] Multi-strategy retrieval failed:', this.formatError(error));
       return retrievalResults;
     }
@@ -607,7 +607,7 @@ export class AIAssistantInputSynthesizer {
             rerankedScore: c.rerankedScore,
           }));
           logger.debug('[Synthesizer] Applied server-side reranking (including parallel search, MMR, cross-encoder)');
-        } catch (error: unknown) {
+        } catch (error: any) {
           logger.warn('[Synthesizer] Server-side reranking failed:', this.formatError(error));
         }
       }
@@ -623,7 +623,7 @@ export class AIAssistantInputSynthesizer {
         totalSources: sources.length,
         searchStrategies: retrievedContext.searchStrategies,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[Synthesizer] Content processing failed:', this.formatError(error));
       return {
         sources: retrievedContext.sources,
@@ -654,7 +654,7 @@ export class AIAssistantInputSynthesizer {
         instructions,
         constraints,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[Synthesizer] Prompt construction failed:', this.formatError(error));
       return {
         systemPrompt: 'You are a legal AI assistant.',
@@ -686,7 +686,7 @@ export class AIAssistantInputSynthesizer {
         informationCompleteness,
         responseReadiness,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[Synthesizer] Quality assessment failed:', this.formatError(error));
       return {
         contextRelevance: 0.5,
@@ -718,7 +718,7 @@ export class AIAssistantInputSynthesizer {
       try {
         await this.withTimeout(check(), 5000);
         logger.debug(`[Synthesizer] ${name}: OK`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.warn(`[Synthesizer] ${name}: ${this.formatError(error)}`);
       }
     }

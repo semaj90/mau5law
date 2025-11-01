@@ -8,19 +8,19 @@ type ServiceStatus = {
   status?: 'healthy' | 'unhealthy' | 'unknown' | string;
   displayName?: string;
   // allow extra read-only metadata
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type SystemHealth = {
   status?: 'healthy' | 'degraded' | 'down' | string;
   uptime?: number;
-  [s: string]: unknown;
+  [s: string]: any;
 };
 
 type CoordinatorError = {
   message: string;
   priority?: 'critical' | 'high' | 'medium' | 'low' | string;
-  [t: string]: unknown;
+  [t: string]: any;
 };
 
 type CoordinatorStatus = {
@@ -41,7 +41,7 @@ type MasterServiceCoordinator = {
   forceHealthCheck?: () => void;
   clearNonCriticalErrors?: () => void;
   // keep index signature for forward compatibility
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Minimal, robust coordinator endpoint implementation (syntax-clean)
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       { status: 400 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('Coordinator GET error:', err);
     return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 400 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('Coordinator POST error:', err);
     return json({ success: false, error: msg, timestamp: new Date().toISOString() }, { status: 500 });

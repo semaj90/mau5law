@@ -65,7 +65,7 @@ declare global {
       | 'TASK_ERROR'
       | 'TASK_CANCELLED'
       | 'STATUS_UPDATE';
-    data?: unknown;
+    data?: any;
   }
   // Enrichment job interface
   interface EnrichmentJob {

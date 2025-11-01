@@ -13,7 +13,7 @@ export interface LogEntry {
   level: LogLevel;
   category: string;
   message: string;
-  data?: unknown;
+  data?: any;
   error?: Error;
   service?: string;
   userId?: string;
@@ -209,19 +209,19 @@ class LoggingAggregationService {
     }
   }
   // Public logging methods
-  public debug(category: string, message: string, data?: unknown, meta?: { [key: string]: any }) {
+  public debug(category: string, message: string, data?: any, meta?: { [key: string]: any }) {
     this.log('debug', category, message, data, undefined, meta);
   }
-  public info(category: string, message: string, data?: unknown, meta?: { [key: string]: any }) {
+  public info(category: string, message: string, data?: any, meta?: { [key: string]: any }) {
     this.log('info', category, message, data, undefined, meta);
   }
-  public warn(category: string, message: string, data?: unknown, meta?: { [key: string]: any }) {
+  public warn(category: string, message: string, data?: any, meta?: { [key: string]: any }) {
     this.log('warn', category, message, data, undefined, meta);
   }
-  public error(category: string, message: string, data?: unknown, error?: Error, meta?: { [key: string]: any }) {
+  public error(category: string, message: string, data?: any, error?: Error, meta?: { [key: string]: any }) {
     this.log('error', category, message, data, error, meta);
   }
-  public fatal(category: string, message: string, data?: unknown, error?: Error, meta?: { [key: string]: any }) {
+  public fatal(category: string, message: string, data?: any, error?: Error, meta?: { [key: string]: any }) {
     this.log('fatal', category, message, data, error, meta);
   }
   // Structured logging
@@ -242,7 +242,7 @@ class LoggingAggregationService {
     level: LogLevel
     category: string;
     message: string
-    data?: unknown
+    data?: any
     error?: Error
     meta?: { [key: string]: any }
   ) {
@@ -333,7 +333,7 @@ class LoggingAggregationService {
   public disableTransport(name,: string), {
     const transport = this.transports.get(name);
     if (transport) {
-      transport.enabled = false;
+      transport.enabled = $state(false);
     }
   }
   // Buffer management
@@ -518,22 +518,22 @@ class LoggingAggregationService {
 // Singleton instance
 export const loggingService = new LoggingAggregationService();
 // Convenience functions
-export function log(level: LogLevel, category: string, message: string, data?: unknown, error?: Error) {
+export function log(level: LogLevel, category: string, message: string, data?: any, error?: Error) {
   loggingService.log(level, category, message, data, error);
 }
-export function debug(category: string, message: string, data?: unknown) {
+export function debug(category: string, message: string, data?: any) {
   loggingService.debug(category, message, data);
 }
-export function info(category: string, message: string, data?: unknown) {
+export function info(category: string, message: string, data?: any) {
   loggingService.info(category, message, data);
 }
-export function warn(category: string, message: string, data?: unknown) {
+export function warn(category: string, message: string, data?: any) {
   loggingService.warn(category, message, data);
 }
-export function error(category: string, message: string, data?: unknown, errorObj?: Error) {
+export function error(category: string, message: string, data?: any, errorObj?: Error) {
   loggingService.error(category, message, data, errorObj);
 }
-export function fatal(category: string, message: string, data?: unknown, errorObj?: Error) {
+export function fatal(category: string, message: string, data?: any, errorObj?: Error) {
   loggingService.fatal(category, message, data, errorObj);
 }
 // Store exports

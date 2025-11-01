@@ -10,7 +10,7 @@ export class N64LODManager {
   constructor() {
     this.lodCache = new Map();
     this.mipmapCache = new Map();
-    this.streamingActive = false;
+    this.streamingActive = $state(false);
     this.maxCacheSize = 16 * 1024 * 1024; // 16MB cache
     this.currentCacheSize = 0;
     this.apiBaseUrl = 'http://localhost:8097/api'
@@ -153,7 +153,7 @@ export class N64LODManager {
       // Fallback to generated texture
       return this.generateFallbackTexture(documentId, targetLOD);
     } finally {
-      this.streamingActive = false;
+      this.streamingActive = $state(false);
     }
   }
   /**
@@ -435,6 +435,6 @@ export class N64LODManager {
     this.mipmapCache.clear();
     this.chrRomBanks.clear();
     this.currentCacheSize = 0;
-    this.streamingActive = false;
+    this.streamingActive = $state(false);
   }
 }

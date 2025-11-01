@@ -1,6 +1,6 @@
 <script lang="ts">
   // Minimal dashboard implementation - SSR friendly
-  export const csr = false;
+  export const csr = $state(false);
 </script>
 
 <svelte:head>

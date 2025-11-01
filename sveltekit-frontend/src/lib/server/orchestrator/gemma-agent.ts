@@ -5,9 +5,8 @@ import { contextualUnderstanding } from '../ai/contextual-understanding-service'
 import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from '$lib/types/sharedTypes';
 import type { CaseScoringRequest as BaseCaseScoringRequest } from '$lib/types/scoring';
 import getOllamaEndpoint from '$lib/server/utils/env'; // Import getOllamaEndpoint
-
 // Helper for structured logging
-function logError(context: string, error: unknown, details?: Record<string, unknown>) {
+function logError(context: string, error: any, details?: Record<string, unknown>) {
   console.error(
     `[ERROR] ${new Date().toISOString()} - ${context}:`,
     error instanceof Error ? error.message : String(error),
@@ -16,7 +15,6 @@ function logError(context: string, error: unknown, details?: Record<string, unkn
   // TODO: Integrate with Sentry or other structured logging system
   // Sentry.captureException(error, { contexts: { custom: { context, ...details } } });
 }
-
 // Define a local cosineSimilarity function
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   if (vecA.length === 0 || vecB.length === 0) return 0;
@@ -24,25 +22,19 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
     console.warn('Vector lengths do not match for cosine similarity calculation.');
     return 0; // Or throw an error
   }
-
   let dotProduct = 0;
   let magnitudeA = 0;
   let magnitudeB = 0;
-
   for (let i = 0; i < vecA.length; i++) {
     dotProduct += vecA[i] * vecB[i];
     magnitudeA += vecA[i] * vecA[i];
     magnitudeB += vecB[i] * vecB[i];
   }
-
   magnitudeA = Math.sqrt(magnitudeA);
   magnitudeB = Math.sqrt(magnitudeB);
-
   if (magnitudeA === 0 || magnitudeB === 0) return 0;
-
   return dotProduct / (magnitudeA * magnitudeB);
 }
-
 export async function embed(text: string): Promise<number[]> {
   try {
     const result = await aiService.embed({ text }); // Use aiService.embed
@@ -52,7 +44,6 @@ export async function embed(text: string): Promise<number[]> {
     throw new Error('Failed to generate embedding.');
   }
 }
-
 // Define an extended type for specific scoring requests in this agent
 export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
   /**
@@ -69,18 +60,15 @@ export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
   filedDate?: string;
   evidenceCount?: number;
 };
-
 interface CaseScoringServiceResult {
   score: number;
   explanation: string;
   // Add other properties returned by scoreCase if any
 }
-
 // Define the final output type for the agentic scoring result
 export interface AgenticScoringResult extends CaseScoringServiceResult {
   contextualSummary: string;
 }
-
 /**
  * Local LLMRequest type matching the fields used in this file
  */
@@ -90,14 +78,12 @@ type LLMRequest = {
   temperature?: number;
   maxTokens?: number;
 };
-
 // Use getOllamaEndpoint() for OLLAMA_URL
 const OLLAMA_URL = getOllamaEndpoint();
 const WHISPER_URL = process.env.WHISPER_URL || 'http://localhost:8090'; // Assuming Whisper service runs on 8090
 const PIPER_URL = process.env.PIPER_URL || 'http://localhost:8091'; // Assuming Piper TTS service runs on 8091
 const SUMMARIZATION_MODEL = 'gemma3:legal-latest';
 const DEFAULT_MODEL = 'gemma3:latest'; // Added: Define DEFAULT_MODEL
-
 /**
  * Helper function to summarize text using Gemma3.
  * This is extracted from the original agenticFunctions.summarize_text.handler
@@ -107,7 +93,6 @@ async function summarizeWithGemma(params: { query: string; context: string; maxL
   const cacheKey = `summary:${params.query}`;
   const cached = await cognitiveCache.getJsonbDocument<string>(cacheKey);
   if (cached) return cached;
-
   try {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
@@ -122,12 +107,9 @@ async function summarizeWithGemma(params: { query: string; context: string; maxL
         },
       }),
     });
-
     if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
-
     const data = await response.json();
     const summary = data.response || '';
-
     await cognitiveCache.storeJsonbDocument(cacheKey, summary, 600);
     return summary;
   } catch (error) {
@@ -135,25 +117,21 @@ async function summarizeWithGemma(params: { query: string; context: string; maxL
     return 'Summary generation failed.';
   }
 }
-
 export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringRequest): Promise<AgenticScoringResult> {
   // Use cache to avoid re-scoring the same case
   const cacheKey = `caseScore:${request.caseId}`;
   const cached = await cognitiveCache.get<AgenticScoringResult>(cacheKey);
   if (cached) return cached;
-
   const result: CaseScoringServiceResult = await caseScoringService.scoreCase(request);
   const contextualSummary = await summarizeWithGemma({
     query: `Summarize why this case received a score of ${result.score}`,
     context: result.explanation,
   });
-
   const out: AgenticScoringResult = { ...result, contextualSummary };
   await cognitiveCache.set(cacheKey, out, { ttl: 3600 });
   return out;
 }
 // removed unused import import { transcribeBuffer } from './voice/recognizer';
-
 /**
  * 🤖 Gemma3 Multimodal Agentic Functions Orchestrator
  *
@@ -171,7 +149,6 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
  * - Contextual understanding service
  * - Next-step predictions
  */
-
 /**
  * Represents a document record used in retrieval and reranking.
  */
@@ -182,12 +159,10 @@ export interface DocumentRecord {
   meta?: Record<string, unknown>;
   embedding?: number[];
 }
-
 /**
  * Define VectorSearchResult to match DocumentRecord for consistency
  */
 export interface VectorSearchResult extends DocumentRecord {}
-
 /**
  * Agentic task result
  */
@@ -205,7 +180,6 @@ export interface AgentTaskResult {
     cached: boolean;
   }>;
 }
-
 /**
  * Available agentic functions that Gemma3 can call
  */
@@ -233,7 +207,6 @@ export const agenticFunctions = {
       return await contextualUnderstanding.getContextualState(params.sessionId, params.userId);
     },
   },
-
   /**
    * Get next-step predictions based on conversation flow
    */
@@ -257,7 +230,6 @@ export const agenticFunctions = {
       return await contextualUnderstanding.getNextStepPredictions(params.sessionId, params.userId);
     },
   },
-
   /**
    * Extract legal entities from text
    */
@@ -277,7 +249,6 @@ export const agenticFunctions = {
       return contextualUnderstanding.extractLegalEntities(params.text);
     },
   },
-
   /**
    * Get conversation summary for context injection
    */
@@ -305,7 +276,6 @@ export const agenticFunctions = {
       return await contextualUnderstanding.getConversationSummary(params.sessionId, params.userId, params.maxTurns);
     },
   },
-
   /**
    * Get session statistics
    */
@@ -329,7 +299,6 @@ export const agenticFunctions = {
       return await contextualUnderstanding.getSessionStats(params.sessionId, params.userId);
     },
   },
-
   /**
    * 🎙️ Voice-to-text transcription
    */
@@ -353,22 +322,18 @@ export const agenticFunctions = {
       const cacheKey = `voice:${params.audioPath}`;
       const cached = await cognitiveCache.getJsonbDocument<string>(cacheKey);
       if (cached) return cached;
-
       try {
         const response = await fetch(`${WHISPER_URL}/transcribe`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ audioPath: params.audioPath }),
         });
-
         if (!response.ok) {
           const errorBody = await response.text();
           throw new Error(`Whisper API error: ${response.statusText} - ${errorBody}`);
         }
-
         const data = await response.json();
         const transcript = data.text || '';
-
         await cognitiveCache.storeJsonbDocument(cacheKey, transcript, 600);
         return transcript;
       } catch (error) {
@@ -377,7 +342,6 @@ export const agenticFunctions = {
       }
     },
   },
-
   /**
    * 🧠 RAG vector retrieval
    */
@@ -416,21 +380,18 @@ export const agenticFunctions = {
       const filters: Record<string, unknown> = {};
       if (params.sessionId) filters.sessionId = params.sessionId;
       if (params.documentType) filters.documentType = params.documentType;
-
       try {
         // Generate query embedding
         // Removed: 'type: "message"' as it's not supported by the underlying embedding service
         const { embedding: queryEmbeddingVector } = await aiService.embed({
           text: params.query,
         });
-
         // Use the unified enhancedVectorSearchService for hybrid search
         // Pass topK and filters within an options object
         const results: VectorSearchResult[] = await aiService.vectorSearch(
           queryEmbeddingVector, // Pass the embedding directly
           { limit: topK, filters }
         );
-
         // Map results to DocumentRecord interface (already compatible if VectorSearchResult extends DocumentRecord)
         return results.map(r => ({
           id: r.id,
@@ -445,7 +406,6 @@ export const agenticFunctions = {
       }
     },
   },
-
   /**
    * ⚖️ Rerank documents with MMR
    */
@@ -478,18 +438,14 @@ export const agenticFunctions = {
       const cacheKey = `rerank:${params.query}`;
       const cached = await cognitiveCache.getJsonbDocument<DocumentRecord[]>(cacheKey);
       if (cached) return cached;
-
        // Generate query embedding
        const { embedding: queryEmbedding } = await aiService.embed({ text: params.query });
-
       // MMR reranking
       const reranked = await mmrRerank(queryEmbedding, params.documents, lambda);
-
       await cognitiveCache.storeJsonbDocument(cacheKey, reranked, 300);
       return reranked;
     },
   },
-
   /**
    * 🧾 Summarize with Gemma3
    */
@@ -518,7 +474,6 @@ export const agenticFunctions = {
       return await summarizeWithGemma(params);
     },
   },
-
   /**
    * 🔊 Text-to-speech synthesis
    */
@@ -548,12 +503,10 @@ export const agenticFunctions = {
             voice: params.voice || 'en_US-lessac-medium',
           }),
         });
-
         if (!response.ok) {
           const errorBody = await response.text();
           throw new Error(`Piper API error: ${response.statusText} - ${errorBody}`);
         }
-
         const data = await response.json();
         return data.audioPath || '';
       } catch (error) {
@@ -562,7 +515,6 @@ export const agenticFunctions = {
       }
     },
   },
-
   /**
    * Legal case scoring and summarization
    */
@@ -589,23 +541,19 @@ export const agenticFunctions = {
     },
     handler: async (params: ExtendedCaseScoringRequest): Promise<AgenticScoringResult> => {
       console.log(`[Agentic] Starting legal case scoring for caseId: ${params.caseId}`);
-
       // 1. Delegate scoring to CaseScoringService
       const result: CaseScoringServiceResult = await caseScoringService.scoreCase(params);
       console.log(`[Agentic] Case scoring completed with score: ${result.score}`);
-
       // 2. Generate a contextual summary of the scoring explanation using Gemma3
       const contextualSummary = await summarizeWithGemma({
         query: `Summarize why this case received a score of ${result.score} and its key strengths/weaknesses.`,
         context: result.explanation,
       });
       console.log(`[Agentic] Contextual summary generated.`);
-
       return { ...result, contextualSummary };
     },
   },
 };
-
 /**
  * MMR (Maximal Marginal Relevance) reranking
  */
@@ -622,21 +570,16 @@ for (const doc of documents) {
     doc.embedding = result.embedding;
   }
 }
-
   const selected: DocumentRecord[] = [];
   const remaining = [...documents];
-
   while (remaining.length > 0) {
     let bestScore = -Infinity;
     let bestIdx = -1;
-
     for (let i = 0; i < remaining.length; i++) {
       const doc = remaining[i];
       if (!doc.embedding) continue;
-
       // Relevance to query
       const relevance = cosineSimilarity(queryEmbedding, doc.embedding);
-
       // Diversity from selected
       let maxSimilarity = 0;
       for (const selectedDoc of selected) {
@@ -644,16 +587,13 @@ for (const doc of documents) {
         const similarity = cosineSimilarity(doc.embedding, selectedDoc.embedding);
         maxSimilarity = Math.max(maxSimilarity, similarity);
       }
-
       // MMR score
       const mmrScore = lambda * relevance - (1 - lambda) * maxSimilarity;
-
       if (mmrScore > bestScore) {
         bestScore = mmrScore;
         bestIdx = i;
       }
     }
-
     // Corrected: The duplicated: 'if' block was removed.
     // This: 'if' statement correctly follows the: 'for' loop.
     if (bestIdx >= 0) {
@@ -663,10 +603,8 @@ for (const doc of documents) {
       break;
     }
   }
-
   return selected;
 }
-
 /**
  * Agentic LLM Client for Gemma3
  */
@@ -674,12 +612,10 @@ export class AgenticGemma3Client {
   // Use definite assignment assertions so TypeScript knows these will be initialized in the constructor
   private baseUrl!: string;
   private model!: string;
-
   constructor(baseUrl: string = OLLAMA_URL, model: string = DEFAULT_MODEL) {
     this.baseUrl = baseUrl;
     this.model = model;
   }
-
   /**
    * Generate response with agentic function calling
    */
@@ -693,36 +629,30 @@ export class AgenticGemma3Client {
     LLMOutput & {
       functionCalls?: Array<{
         name: string;
-        parameters: unknown;
-        result: unknown;
+        parameters: any;
+        result: any;
       }>;
       duration?: number;
     }
   > {
     const startTime = Date.now();
-
     // Step 1: Get contextual state for enriched prompting
     const contextualState = await contextualUnderstanding.getContextualState(request.sessionId, request.userId);
-
     // Step 2: Build enriched prompt with context
     const enrichedPrompt = this.buildEnrichedPrompt(request, contextualState);
-
     // Step 3: Call Gemma3 via Ollama
     const response = await this.callOllama({
       ...request,
       prompt: enrichedPrompt,
     });
-
     // Step 4: Parse response for function calls
     const functionCalls =
       request.enableFunctions !== false
         ? await this.parseFunctionCalls(response.text, request.sessionId, request.userId)
         : [];
-
     // Step 5: Update contextual state
     const intent = this.extractIntent(request.prompt);
     const entities = contextualUnderstanding.extractLegalEntities(request.prompt);
-
     await contextualUnderstanding.updateContextualState(
       request.sessionId,
       request.userId,
@@ -731,30 +661,25 @@ export class AgenticGemma3Client {
       intent,
       entities
     );
-
     return {
       ...response,
       duration: Date.now() - startTime,
       functionCalls,
     };
   }
-
   /**
    * Build enriched prompt with contextual information
    */
   private buildEnrichedPrompt(request: LLMRequest, contextualState: ContextualState): string {
     const parts: string[] = [];
-
     // System context
     parts.push('You are a legal AI assistant with access to agentic functions.');
     parts.push('You can call functions to retrieve context, predict next steps, and extract entities.');
     parts.push('');
-
     // Current state information
     parts.push(`Current Conversation State: ${this.getStateDescription(contextualState)}`);
     parts.push(`Confidence Level: ${(contextualState.confidence * 100).toFixed(1)}%`);
     parts.push('');
-
     // Recent context (last 3 turns)
     if (contextualState.conversationHistory.length > 0) {
       parts.push('Recent Context:');
@@ -764,7 +689,6 @@ export class AgenticGemma3Client {
       });
       parts.push('');
     }
-
     // Extracted entities
     if (contextualState.extractedEntities.length > 0) {
       parts.push('Known Entities:');
@@ -774,7 +698,6 @@ export class AgenticGemma3Client {
       });
       parts.push('');
     }
-
     // Next-step predictions
     if (contextualState.nextStepPredictions.length > 0) {
       parts.push('Predicted Next Steps:');
@@ -783,21 +706,17 @@ export class AgenticGemma3Client {
       });
       parts.push('');
     }
-
     // Available functions
     parts.push('Available Functions:');
     Object.entries(agenticFunctions).forEach(([name, func]) => {
       parts.push(`- ${name}: ${func.description}`);
     });
     parts.push('');
-
     // User query
     parts.push('User Query:');
     parts.push(request.prompt);
-
     return parts.join('\n');
   }
-
   /**
    * Call Ollama API
    */
@@ -818,14 +737,11 @@ export class AgenticGemma3Client {
           },
         }),
       });
-
       if (!response.ok) {
         const errorBody = await response.text();
         throw new Error(`Ollama API error: ${response.statusText} - ${errorBody}`);
       }
-
       const data = await response.json();
-
       return {
         text: data.response,
         model: request.model || this.model,
@@ -836,7 +752,6 @@ export class AgenticGemma3Client {
       throw new Error('Failed to get response from Ollama API.');
     }
   }
-
   /**
    * Parse function calls from LLM response
    * Looks for pattern: FUNCTION_CALL: function_name(param1=value1, param2=value2)
@@ -845,18 +760,15 @@ export class AgenticGemma3Client {
     text: string,
     sessionId: string,
     userId: string
-  ): Promise<Array<{ name: string; parameters: unknown; result: unknown }>> {
+  ): Promise<Array<{ name: string; parameters: any; result: any }>> {
     const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
-    const calls: Array<{ name: string; parameters: unknown; result: unknown }> = [];
-
+    const calls: Array<{ name: string; parameters: any; result: any }> = [];
     let match;
     while ((match = functionCallRegex.exec(text)) !== null) {
       const functionName = match[1];
       const paramsStr = match[2];
-
       // Parse parameters
       const params: Record<string, unknown> = { sessionId, userId };
-
       if (paramsStr.trim()) {
         const paramPairs = paramsStr.split(',');
         for (const pair of paramPairs) {
@@ -867,7 +779,6 @@ export class AgenticGemma3Client {
           }
         }
       }
-
       // Execute function if it exists
       const func = agenticFunctions[functionName as keyof typeof agenticFunctions];
       if (func) {
@@ -884,16 +795,13 @@ export class AgenticGemma3Client {
         }
       }
     }
-
     return calls;
   }
-
   /**
    * Extract intent from user message
    */
   private extractIntent(message: string): string {
     const messageLower = message.toLowerCase();
-
     if (messageLower.includes('hello') || messageLower.includes('hi')) return 'greeting';
     if (messageLower.includes('case') || messageLower.includes('matter')) return 'case_inquiry';
     if (messageLower.includes('document') || messageLower.includes('contract')) return 'document_analysis';
@@ -901,10 +809,8 @@ export class AgenticGemma3Client {
     if (messageLower.includes('risk')) return 'risk_assessment';
     if (messageLower.includes('recommend')) return 'recommendation';
     if (messageLower.includes('thank') || messageLower.includes('bye')) return 'conclusion';
-
     return 'general_query';
   }
-
   /**
    * Maps HMM state numbers to human-readable state names for legal conversation flows.
    * @param state - The contextual state containing the current HMM state number.
@@ -921,18 +827,14 @@ export class AgenticGemma3Client {
       6: 'Follow-up',
       7: 'Conclusion',
     }; // <-- fixed: close object literal
-
     const current = typeof state?.hmmState?.currentState === 'number' ? state.hmmState.currentState : NaN;
-
     if (!(current in stateNames)) {
       console.warn(`Unmapped HMM state encountered: ${String(current)}`, state);
       return 'Unknown';
     }
-
     return stateNames[current] || 'Unknown';
   }
 } // end of class AgenticGemma3Client
-
 // Export singleton instance
 export const agenticGemma3 = new AgenticGemma3Client();
       parts.push('Known Entities:');
@@ -942,7 +844,6 @@ export const agenticGemma3 = new AgenticGemma3Client();
       });
       parts.push('');
     }
-
     // Next-step predictions
     if (contextualState.nextStepPredictions.length > 0) {
       parts.push('Predicted Next Steps:');
@@ -951,21 +852,17 @@ export const agenticGemma3 = new AgenticGemma3Client();
       });
       parts.push('');
     }
-
     // Available functions
     parts.push('Available Functions:');
     Object.entries(agenticFunctions).forEach(([name, func]) => {
       parts.push(`- ${name}: ${func.description}`);
     });
     parts.push('');
-
     // User query
     parts.push('User Query:');
     parts.push(request.prompt);
-
     return parts.join('\n');
   }
-
   /**
    * Call Ollama API
    */
@@ -986,14 +883,11 @@ export const agenticGemma3 = new AgenticGemma3Client();
           },
         }),
       });
-
       if (!response.ok) {
         const errorBody = await response.text();
         throw new Error(`Ollama API error: ${response.statusText} - ${errorBody}`);
       }
-
       const data = await response.json();
-
       return {
         text: data.response,
         model: request.model || this.model,
@@ -1004,7 +898,6 @@ export const agenticGemma3 = new AgenticGemma3Client();
       throw new Error('Failed to get response from Ollama API.');
     }
   }
-
   /**
    * Parse function calls from LLM response
    * Looks for pattern: FUNCTION_CALL: function_name(param1=value1, param2=value2)
@@ -1013,18 +906,15 @@ export const agenticGemma3 = new AgenticGemma3Client();
     text: string,
     sessionId: string,
     userId: string
-  ): Promise<Array<{ name: string; parameters: unknown; result: unknown }>> {
+  ): Promise<Array<{ name: string; parameters: any; result: any }>> {
     const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
-    const calls: Array<{ name: string; parameters: unknown; result: unknown }> = [];
-
+    const calls: Array<{ name: string; parameters: any; result: any }> = [];
     let match;
     while ((match = functionCallRegex.exec(text)) !== null) {
       const functionName = match[1];
       const paramsStr = match[2];
-
       // Parse parameters
       const params: Record<string, unknown> = { sessionId, userId };
-
       if (paramsStr.trim()) {
         const paramPairs = paramsStr.split(',');
         for (const pair of paramPairs) {
@@ -1035,7 +925,6 @@ export const agenticGemma3 = new AgenticGemma3Client();
           }
         }
       }
-
       // Execute function if it exists
       const func = agenticFunctions[functionName as keyof typeof agenticFunctions];
       if (func) {
@@ -1052,16 +941,13 @@ export const agenticGemma3 = new AgenticGemma3Client();
         }
       }
     }
-
     return calls;
   }
-
   /**
    * Extract intent from user message
    */
   private extractIntent(message: string): string {
     const messageLower = message.toLowerCase();
-
     if (messageLower.includes('hello') || messageLower.includes('hi')) return 'greeting';
     if (messageLower.includes('case') || messageLower.includes('matter')) return 'case_inquiry';
     if (messageLower.includes('document') || messageLower.includes('contract')) return 'document_analysis';
@@ -1069,10 +955,8 @@ export const agenticGemma3 = new AgenticGemma3Client();
     if (messageLower.includes('risk')) return 'risk_assessment';
     if (messageLower.includes('recommend')) return 'recommendation';
     if (messageLower.includes('thank') || messageLower.includes('bye')) return 'conclusion';
-
     return 'general_query';
   }
-
   /**
    * Maps HMM state numbers to human-readable state names for legal conversation flows.
    * @param state - The contextual state containing the current HMM state number.
@@ -1089,17 +973,13 @@ export const agenticGemma3 = new AgenticGemma3Client();
       6: 'Follow-up',
       7: 'Conclusion',
     }; // <-- fixed: close object literal
-
     const current = typeof state?.hmmState?.currentState === 'number' ? state.hmmState.currentState : NaN;
-
     if (!(current in stateNames)) {
       console.warn(`Unmapped HMM state encountered: ${String(current)}`, state);
       return 'Unknown';
     }
-
     return stateNames[current] || 'Unknown';
   }
 } // end of class AgenticGemma3Client
-
 // Export singleton instance
 export const agenticGemma3 = new AgenticGemma3Client();

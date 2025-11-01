@@ -14,7 +14,7 @@
   export let max: $$Props['max'] = 100;
   export let step: $$Props['step'] = 1;
   export let orientation: $$Props['orientation'] = 'horizontal';
-  export let disabled: $$Props['disabled'] = false;
+  export let disabled: $$Props['disabled'] = $state(false);
 
   // Pass through all other props to the primitive root
   let { ...$$restProps } = $$props;

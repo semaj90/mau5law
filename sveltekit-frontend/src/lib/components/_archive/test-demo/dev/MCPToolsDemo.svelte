@@ -133,7 +133,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message: 'Unknown error occurred',
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   // Execute common query
@@ -362,7 +362,7 @@
   <div class="bg-blue-50 p-4 rounded-lg">
     <h3 class="text-lg font-semibold mb-3">Quick Actions</h3>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-      {#each quickQueries as query}
+      {#each Array.isArray(quickQueries) ? quickQueries : [] as query}
         <button
           type="button"
           onclick={() => executeQuickQuery(query.query)}
@@ -387,7 +387,7 @@
           bind:value={selectedTool}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {#each tools as tool}
+          {#each Array.isArray(tools) ? tools : [] as tool}
             <option value={tool.value}>{tool.label}</option>
           {/each}
         </select>
@@ -401,7 +401,7 @@
             bind:value={component}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {#each components as comp}
+            {#each Array.isArray(components) ? components : [] as comp}
               <option value={comp}>{comp}</option>
             {/each}
           </select>
@@ -413,7 +413,7 @@
             bind:value={context}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {#each contexts as ctx}
+            {#each Array.isArray(contexts) ? contexts : [] as ctx}
               <option value={ctx}>{ctx}</option>
             {/each}
           </select>
@@ -426,7 +426,7 @@
             bind:value={area}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {#each areas as ar}
+            {#each Array.isArray(areas) ? areas : [] as ar}
               <option value={ar}>{ar}</option>
             {/each}
           </select>

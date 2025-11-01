@@ -5,17 +5,14 @@
     const ns = await getBitsNamespace();
     ItemCtor = ns.DropdownMenu?.Item ?? ns.DropdownMenuItem ?? ns.Item ?? ns;
   })();
-
   import { cn } from '$lib/utils';
-
   // Replace rune-style $props and $derived with standard Svelte props + rest props
   export let href: string | undefined;
-  export let disabled = false;
-  export let destructive = false;
+  export let disabled = $state(false);
+  export let destructive = $state(false);
   export let onclick: (() => void) | undefined;
   export let onselect: (() => void) | undefined;
   export let className = ''; // optional explicit class prop if consumers use it
-
   // compute classes reactively
   $: itemClasses = cn(
     'legal-ai-dropdown-item relative flex cursor-default select-none items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
@@ -27,7 +24,6 @@
     disabled && 'pointer-events-none opacity-50 cursor-not-allowed',
     className // preserve explicit className prop if provided
   );
-
   function handleClick(event?: MouseEvent) {
     if (disabled) {
       event?.preventDefault?.();
@@ -37,7 +33,6 @@
     onselect?.();
   }
 </script>
-
 {#if href}
   {#if ItemCtor}
     <svelte:component this={ItemCtor} asChild>

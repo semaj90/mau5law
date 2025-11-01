@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
       const quicRes = await fetch('/api/v1/quic/push', { method:'POST', body: JSON.stringify({ latencySamples: [] }), headers:{'content-type':'application/json'} });
       const quicData = await quicRes.json();
       sustained = quicData.sustainedP99;
-      loading = false;
+      loading = $state(false);
     } catch(e:any){ error = e.message; loading=false, }
   }
   function fmt(ts:number){ return new Date(ts).toLocaleTimeString(), }
@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="text-neutral-500">No alerts yet.</div>
   {:else}
     <ul class="space-y-2 max-h-72 overflow-auto">
-      {#each alerts as a}
+      {#each Array.isArray(alerts) ? alerts : [] as a}
         <li class="border px-2 py-1 rounded flex items-start gap-2" data-severity={a.severity}>
           <span class="text-[10px] mt-0.5 px-1 rounded bg-neutral-200 dark:bg-neutral-700 capitalize">{a.severity}</span
           >

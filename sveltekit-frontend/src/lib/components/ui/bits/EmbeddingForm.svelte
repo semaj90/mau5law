@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from './Button.svelte';
-  import Input from './Input.svelte';
-  import Card from './Card.svelte';
+  import { Button } from './Button.svelte';
+  import { Input } from './Input.svelte';
+  import { Card } from './Card.svelte';
   import { z } from "zod";
   import { Search, Database, Zap, AlertCircle, CheckCircle } from 'lucide-svelte';
   // Form validation schema
@@ -131,7 +131,7 @@
       error = err.message || 'Network error occurred';
       onError?.(error);
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
   // Load recent embeddings when component mounts
@@ -144,7 +144,6 @@
   let isValid = $derived(content.length > 0 && content.length <= 10000);
   let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
 </script>
-
 <div class="embedding-form-container">
   <Card title="Enhanced-Bits Embedding Generator" nesStyle={true} {variant}>
     {#snippet children()}
@@ -206,8 +205,7 @@
                 <p class="nes-text">Created: <code>{new Date(result.createdAt).toLocaleString()}</code></p>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if error}
           <div class="error-display">
             <div class="nes-container is-rounded">
@@ -216,8 +214,7 @@
                 {error}
               </p>
             </div>
-          </div>
-        {/if}
+          {/if}
       </form>
     {/snippet}
   </Card>
@@ -225,7 +222,7 @@
     <Card title="Recent Embeddings" nesStyle={true} variant="dark">
       {#snippet children()}
         <div class="recent-embeddings">
-          {#each recentEmbeddings.slice(0, 3) as embedding}
+          {#each Array.isArray(recentEmbeddings.slice(0, 3)) ? recentEmbeddings.slice(0, 3) : [] as embedding}
             <div class="embedding-item">
               <div class="embedding-content">
                 <p class="nes-text">
@@ -245,7 +242,6 @@
     </Card>
   {/if}
 </div>
-
 <style>
   .embedding-form-container {
     max-width: 800px;
@@ -344,5 +340,3 @@
     border-color: #ce372b;
   }
 </style>
-
-

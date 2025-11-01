@@ -1,10 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
-
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/Badge.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
   type SearchResult = {
     id: string;
     title: string;
@@ -17,14 +16,12 @@
       tags?: string[];
     };
   };
-
   type SearchMetrics = {
     totalDocuments: number;
     searchTime: number;
     vectorDimensions: number;
     similarityThreshold: number;
   };
-
   // Modern Svelte 5 runes
   let query = $state('');
   let isSearching = $state(false);
@@ -32,12 +29,10 @@
   let metrics = $state<SearchMetrics | null>(null);
   let error = $state<string | null>(null);
   let selectedResult = $state<SearchResult | null>(null);
-
   // Derived state for UI feedback
   const hasResults = $derived(() => results.length > 0);
   const showMetrics = $derived(() => metrics !== null);
   const searchButtonDisabled = $derived(() => isSearching || query.trim().length === 0);
-
   // Vector intelligence search function
   async function performSemanticSearch() {
     if (!query.trim() || isSearching) return;
@@ -52,7 +47,6 @@
         },
         body: JSON.stringify({ query: query.trim() }),
       });
-
       if (!response.ok) {
         const errText = await response.text();
         let parsed;
@@ -63,10 +57,8 @@
         }
         throw new Error(parsed.error || `Search failed: ${response.statusText}`);
       }
-
       const data = await response.json();
       const searchTime = performance.now() - startTime;
-
       results = (data.results || []).map((r: any) => ({
         id: r.id,
         title: r.title || `Document ${r.id}`,
@@ -75,7 +67,6 @@
         documentType: r.documentType ?? 'deed',
         metadata: r.metadata,
       }));
-
       metrics = {
         totalDocuments: (data.results || []).length,
         searchTime: Math.round(searchTime),
@@ -87,28 +78,24 @@
       results = [];
       metrics = null;
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
-
   // Handle form submission
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     performSemanticSearch();
   }
-
   // Handle Enter key in search input
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !searchButtonDisabled) {
       performSemanticSearch();
     }
   }
-
   // Format similarity score as percentage
   function formatSimilarity(score: number): string {
     return `${Math.round(score * 100)}%`;
   }
-
   // Get document type icon and color
   function getDocumentTypeStyle(type: SearchResult['documentType']) {
     switch (type) {
@@ -123,7 +110,6 @@
       default: return { icon FileText, color: 'bg-gray-100 text-gray-800' };
     }
   }
-
   // Demo placeholder results for development
   const demoResults: SearchResult[] = [
     {
@@ -154,7 +140,6 @@
     },
   ];
 </script>
-
 <!-- Vector Intelligence Demo Component -->
 <div class="max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header Section -->
@@ -197,7 +182,7 @@
       <!-- Example queries -->
       <div class="flex flex-wrap gap-2">
         <span class="text-sm nes-text is-disabled">Try:</span>
-        {#each ['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights'] as example}
+        {#each Array.isArray(['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights']) ? ['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights'] : [] as example}
           <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (query = example)} disabled={isSearching}>
             {example}
           </Button>
@@ -210,8 +195,7 @@
     <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2">
       <AlertCircle class="h-4 w-4 text-red-600" />
       <div class="text-red-800">{error}</div>
-    </div>
-  {/if}
+    {/if}
   <!-- Search Metrics -->
   {#if showMetrics}
     <div class="nes-container">
@@ -235,8 +219,7 @@
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Search Results -->
   {#if hasResults}
     <div class="space-y-4">
@@ -299,13 +282,12 @@
                   </div>
                   {#if result.metadata.tags}
                     <div class="flex flex-wrap gap-1">
-                      {#each result.metadata.tags as tag}
+                      {#each Array.isArray(result.metadata.tags) ? result.metadata.tags : [] as tag}
                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                           >{tag}</span
                         >
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                 {/if}
               </div>
             </div>
@@ -321,8 +303,7 @@
         <h3 class="font-semibold">No results found</h3>
         <p class="text-sm nes-text is-disabled">Try adjusting your search terms or using different keywords</p>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Demo Notice -->
   {#if !hasResults && !isSearching && query.trim().length === 0}
     <div class="border-dashed nes-container">
@@ -349,8 +330,7 @@
           </Button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <!-- Selected Result Modal (future enhancement) -->
 {#if selectedResult}
@@ -372,5 +352,4 @@
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}

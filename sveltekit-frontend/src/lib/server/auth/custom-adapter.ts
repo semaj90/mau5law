@@ -68,7 +68,7 @@ function toDate(value: Date | string | undefined | null): Date | null {
 }
 
 // New helper: safely extract a string: 'code' property from unknown errors
-function extractErrorCode(err: unknown): string | undefined {
+function extractErrorCode(err: any): string | undefined {
   if (!err || typeof err !== 'object') return undefined;
   const record = err as Record<string, unknown>;
   const codeVal = record['code'];

@@ -13,12 +13,10 @@
   // import SIMDGPUParserIntegration, { type ParsedDocument } from '$lib/services/simd-gpu-parser-integration';
   // import { Neo4jRecommendationEngine, type Recommendation } from '$lib/services/neo4j-recommendation-engine';
   // import { getOllamaApiUrl } from '$lib/utils/ollama-helpers';
-
   // --- Type definitions (can be moved to $lib/types) ---
   type Recommendation = { title: string; description: string; score: number; confidence: number; aiGenerated?: boolean };
   type ParsedDocument = { id: string; text: string } | null;
   type ChatMessage = { id: string; type: 'user' | 'ai' | 'system'; content: string; timestamp: number };
-
   // --- Props for component configuration (Svelte 5) ---
   interface Props {
     enableGPUAcceleration?: boolean;
@@ -36,19 +34,16 @@
     maxConcurrentStreams = 100,
     progressAnimationSpeed = 1.0
   }: Props = $props();
-
   // --- Component State (Svelte 5 runes) ---
   let canvasRef: HTMLCanvasElement | null = $state(null);
   let gl: WebGLRenderingContext | WebGL2RenderingContext | null = null;
   let vertexBuffer: WebGLBuffer | null = null;
   let shaderProgram: WebGLProgram | null = null;
-
   // --- Service integrations (placeholders for degraded mode) ---
   let vllmIntegration: any = null;
   let simdParser: any = null;
   let neo4jEngine: any = null;
   let idleDetectionService: any = null;
-
   let isInitialized = $state(false);
   let isProcessing = $state(false);
   let currentProgress = $state(0);
@@ -60,20 +55,16 @@
     { name: 'XState Machine Start', progress: 0, status: 'pending' },
     { name: 'System Ready', progress: 0, status: 'pending' }
   ]);
-
   let userInput = $state('');
   let chatMessages = $state<ChatMessage[]>([]);
   let recommendations = $state<Recommendation[]>([]);
   let parsedDocument: ParsedDocument = null;
-
   let performanceMetrics = $state({ fps: 0, gpuUtilization: 0, memoryUsage: 0, networkLatency: 0, cacheHitRate: 0, aiResponseTime: 0 });
   let streamingChunks = $state<Array<{ id: string; status: 'streaming' | 'completed'; progress: number }>>([]);
-
   let animationFrame: number | null = null;
   let lastFrameTime = 0;
   let deltaTime = 0;
   let errorMessage = $state<string | null>(null);
-
   $effect(() => {
     if (!browser) return;
     initializeSystem().catch(err => {
@@ -82,17 +73,14 @@
       errorMessage = err instanceof Error ? err.message : 'An error occurred';
     });
   });
-
   onDestroy(() => {
     cleanup();
   });
-
   async function initializeSystem() {
     console.log('🚀 Initializing Enhanced 3D Legal AI Interface...');
     await initializeWebGL();
     await initializeServicesWithProgress();
     startAnimationLoop();
-
     if (enableIdleProcessing) {
       // idleDetectionService = createIdleDetectionService({ idleTimeout: 180000, backgroundJobsEnabled: true });
     }
@@ -100,12 +88,10 @@
     addSystemMessage('System initialized successfully. All services operational.');
     console.log('✅ Enhanced 3D Legal AI Interface initialized');
   }
-
   async function initializeWebGL() {
     if (!canvasRef) return;
     gl = canvasRef.getContext('webgl2') || canvasRef.getContext('webgl');
     if (!gl) throw new Error('WebGL not supported');
-
     const vsSource = `
       attribute vec3 position; attribute vec3 color; attribute float progress;
       uniform mat4 mvpMatrix; uniform float time; uniform float globalProgress;
@@ -128,7 +114,6 @@
         if (vProgress > 0.8) { finalColor += vec3(0.2, 0.4, 0.8) * sin(time * 5.0) * 0.3; }
         gl_FragColor = vec4(finalColor, mix(0.3, 1.0, vProgress));
       }`;
-
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
     shaderProgram = createProgram(gl, vertexShader, fragmentShader);
@@ -137,7 +122,6 @@
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   }
-
   function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader {
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
@@ -149,7 +133,6 @@
     }
     return shader;
   }
-
   function createProgram(gl: WebGLRenderingContext, vs: WebGLShader, fs: WebGLShader): WebGLProgram {
     const program = gl.createProgram()!;
     gl.attachShader(program, vs);
@@ -162,7 +145,6 @@
     }
     return program;
   }
-
   function createVertexBuffer() {
     if (!gl) return;
     const vertices: number[] = [], colors: number[] = [], progressValues: number[] = [];
@@ -185,12 +167,10 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(interleavedData), gl.DYNAMIC_DRAW);
   }
-
   async function initializeServicesWithProgress() {
     const stages = progressStages;
     try {
       stages[0].status = 'active'; stages[0].progress = 0.1;
-
       stages[1].status = 'active';
       if (enableGPUAcceleration) {
         // simdParser = new SIMDGPUParserIntegration({ ... });
@@ -198,7 +178,6 @@
         await new Promise(r => setTimeout(r, 150)); // No-op fallback
       }
       stages[1].progress = 1.0; stages[1].status = 'completed';
-
       stages[2].status = 'active';
       // vllmIntegration = new EnhancedVLLMCudaIntegration({
       //   serverUrl: 'http://triton-or-tensorrt-llm:8001', // Connect to Triton/TensorRT
@@ -208,7 +187,6 @@
       // await vllmIntegration.initializeGPU();
       await new Promise(r => setTimeout(r, 200)); // No-op fallback
       stages[2].progress = 1.0; stages[2].status = 'completed';
-
       stages[3].status = 'active';
       if (enableAIRecommendations) {
         // neo4jEngine = new Neo4jRecommendationEngine();
@@ -216,7 +194,6 @@
         await new Promise(r => setTimeout(r, 100)); // No-op fallback
       }
       stages[3].progress = 1.0; stages[3].status = 'completed';
-
       stages[4].status = 'active'; stages[4].progress = 1.0; stages[4].status = 'completed';
       stages[5].status = 'active'; stages[5].progress = 1.0; stages[5].status = 'completed';
       stages[0].progress = 1.0; stages[0].status = 'completed';
@@ -225,7 +202,6 @@
       throw error;
     }
   }
-
   function startAnimationLoop() {
     const animate = (currentTime: number) => {
       deltaTime = currentTime - lastFrameTime;
@@ -238,14 +214,12 @@
     };
     animationFrame = requestAnimationFrame(animate);
   }
-
   function render3DScene(currentTime: number) {
     if (!gl || !shaderProgram || !vertexBuffer || !canvasRef) return;
     gl.viewport(0, 0, canvasRef.width, canvasRef.height);
     gl.clearColor(0.02, 0.02, 0.03, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(shaderProgram);
-
     const stride = (3 + 3 + 1) * 4;
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     const posLoc = gl.getAttribLocation(shaderProgram, 'position');
@@ -254,23 +228,19 @@
     if (posLoc >= 0) { gl.enableVertexAttribArray(posLoc); gl.vertexAttribPointer(posLoc, 3, gl.FLOAT, false, stride, 0); }
     if (colorLoc >= 0) { gl.enableVertexAttribArray(colorLoc); gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, stride, 12); }
     if (progLoc >= 0) { gl.enableVertexAttribArray(progLoc); gl.vertexAttribPointer(progLoc, 1, gl.FLOAT, false, stride, 24); }
-
     const timeLoc = gl.getUniformLocation(shaderProgram, 'time');
     const globalProgressLoc = gl.getUniformLocation(shaderProgram, 'globalProgress');
     const mvpLoc = gl.getUniformLocation(shaderProgram, 'mvpMatrix');
     if (timeLoc) gl.uniform1f(timeLoc, currentTime / 1000);
     if (globalProgressLoc) gl.uniform1f(globalProgressLoc, currentProgress);
     if (mvpLoc) gl.uniformMatrix4fv(mvpLoc, false, [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
-
     const vertexCount = (gl.getBufferParameter(gl.ARRAY_BUFFER, gl.BUFFER_SIZE) / stride) | 0;
     gl.drawArrays(gl.POINTS, 0, vertexCount);
   }
-
   function updateProgressAnimations(currentTime: number) {
     const targetProgress = progressStages.filter(s => s.status === 'completed').length / progressStages.length;
     currentProgress += (targetProgress - currentProgress) * 0.05 * progressAnimationSpeed;
   }
-
   function updateStreaming(currentTime: number) {
     streamingChunks.forEach(c => {
       if (c.status === 'streaming') {
@@ -279,7 +249,6 @@
       }
     });
   }
-
   async function handleUserInput() {
     const text = userInput.trim();
     if (!text || isProcessing) return;
@@ -287,7 +256,6 @@
     userInput = '';
     isProcessing = true;
     errorMessage = null;
-
     try {
       // This calls a SvelteKit API endpoint that securely communicates with Ollama/Triton/etc.
       const response = await fetch('/api/ai/chat', {
@@ -299,35 +267,28 @@
           context: { document: parsedDocument, history: chatMessages }
         })
       });
-
       if (!response.ok) throw new Error(`API Error: ${response.status} ${response.statusText}`);
-
       const result = await response.json();
       addSystemMessage(result.response || 'No response from AI.', 'ai');
       if (result.recommendations) recommendations = result.recommendations;
-
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unknown error occurred.';
       addSystemMessage(`Error: ${message}`, 'system');
       errorMessage = message;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
-
   function addSystemMessage(content: string, type: 'user' | 'ai' | 'system' = 'system') {
     chatMessages = [...chatMessages, { id: crypto.randomUUID(), type, content, timestamp: Date.now() }];
   }
-
   function cleanup() {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     // idleDetectionService?.stop();
   }
 </script>
-
 <div class="enhanced-3d-legal-ai-interface {theme}">
   <canvas bind:this={canvasRef} class="visualization-canvas"></canvas>
-
   <div class="status-panel">
     <div class="status-header">
       <h3>System Status</h3>
@@ -337,7 +298,7 @@
       </div>
     </div>
     <div class="initialization-progress">
-      {#each progressStages as stage}
+      {#each Array.isArray(progressStages) ? progressStages : [] as stage}
         <div class="stage" class:active={stage.status === 'active'} class:completed={stage.status === 'completed'}>
           <div class="stage-name">{stage.name}</div>
           <div class="stage-progress">
@@ -354,10 +315,8 @@
       <div class="metric"><span class="metric-label">GPU</span> <span class="metric-value">{performanceMetrics.gpuUtilization.toFixed(1)}%</span></div>
     </div>
     {#if errorMessage}
-      <div class="error-message">{errorMessage}</div>
-    {/if}
+      <div class="error-message">{errorMessage}{/if}
   </div>
-
   <div class="chat-interface">
     <div class="chat-header">
       <h3>Contextual Chat</h3>
@@ -384,11 +343,10 @@
       </button>
     </div>
   </div>
-
   {#if recommendations.length > 0}
     <div class="recommendations-panel">
       <h3>AI Recommendations</h3>
-      {#each recommendations as rec}
+      {#each Array.isArray(recommendations) ? recommendations : [] as rec}
         <div class="recommendation">
           <div class="rec-title">{rec.title}</div>
           <div class="rec-description">{rec.description}</div>
@@ -397,14 +355,11 @@
             <span class="rec-confidence">Confidence: {(rec.confidence * 100).toFixed(0)}%</span>
           </div>
           {#if rec.aiGenerated}
-            <div class="rec-ai-badge">AI Generated</div>
-          {/if}
+            <div class="rec-ai-badge">AI Generated{/if}
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .enhanced-3d-legal-ai-interface {
     display: grid;
@@ -448,7 +403,6 @@
   .status-indicator.active { color: #00d4aa; }
   .pulse { width: 8px; height: 8px; border-radius: 50%; background: #888; animation: pulse 2s infinite; }
   .status-indicator.active .pulse { background: #00d4aa; }
-
   .initialization-progress { margin-bottom: 16px; }
   .stage { margin-bottom: 8px; padding: 8px; border: 1px solid #333; border-radius: 4px; font-size: 12px; }
   .stage.active { border-color: #00d4aa; background: rgba(0, 212, 170, 0.1); }
@@ -456,16 +410,13 @@
   .stage-name { font-weight: bold; margin-bottom: 4px; }
   .stage-progress { display: flex; align-items: center; gap: 8px; }
   .progress-bar { flex: 1; height: 4px; background: #333; border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4aa, #00ff88); border-radius: 2px; transition: width 0.3s ease; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4aa, #00ff88); border-radius: 2px; transition: width: 0.3s ease; }
   .progress-text { font-size: 10px; color: #888; min-width: 30px; text-align: right; }
-
   .performance-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
   .metric { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; background: rgba(0, 0, 0, 0.5); border-radius: 4px; font-size: 11px; }
   .metric-label { color: #888; }
   .metric-value { color: #00d4aa; font-weight: bold; }
-
   .error-message { background-color: rgba(255, 0, 0, 0.2); border: 1px solid red; padding: 8px; border-radius: 4px; color: #ffcccc; font-size: 12px; margin-top: 16px; }
-
   .chat-interface {
     grid-column: 1;
     grid-row: 2;
@@ -496,17 +447,13 @@
   .chat-input button { padding: 10px 16px; background: #00d4aa; border: none; border-radius: 4px; color: #000; font-family: inherit; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
   .chat-input button:hover:not(:disabled) { background: #00ff88; }
   .chat-input button:disabled { background: #333; color: #666; cursor: not-allowed; }
-
   .recommendations-panel { display: none; /* Hidden for now to simplify layout */ }
-
   .yorha .visualization-canvas { border-color: #d4af37; }
   .yorha .status-indicator.active { color: #d4af37; }
   .yorha .status-indicator.active .pulse { background: #d4af37; }
   .yorha .stage.active { border-color: #d4af37; background: rgba(212, 175, 55, 0.1); }
   .yorha .metric-value { color: #d4af37; }
-
   @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
   @media (max-width: 1200px) {
     .enhanced-3d-legal-ai-interface { grid-template-columns: 1fr; grid-template-rows: 300px auto auto; }
     .visualization-canvas { grid-column: 1; grid-row: 1; height: auto; }
@@ -633,7 +580,7 @@
   {#if recommendations.length > 0}
     <div class="recommendations-panel">
       <h3>AI Recommendations</h3>
-      {#each recommendations as rec}
+      {#each Array.isArray(recommendations) ? recommendations : [] as rec}
         <div class="recommendation">
           <div class="rec-title">{rec.title}</div>
           <div class="rec-description">{rec.description}</div>
@@ -642,14 +589,11 @@
             <span class="rec-confidence">Confidence: {(rec.confidence * 100).toFixed(0)}%</span>
           </div>
           {#if rec.aiGenerated}
-            <div class="rec-ai-badge">AI Generated</div>
-          {/if}
+            <div class="rec-ai-badge">AI Generated{/if}
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .enhanced-3d-legal-ai-interface {
@@ -753,7 +697,7 @@
     height: 100%;
     background: linear-gradient(90deg, #00d4aa, #00ff88);
     border-radius: 2px;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .progress-text {
     font-size: 10px;
@@ -850,7 +794,7 @@
     height: 100%;
     background: #00d4aa;
     border-radius: 2px;
-    transition: width 0.1s linear;
+    transition: width: 0.1s linear;
   }
   .chunk-status {
     color: #888;
@@ -995,7 +939,7 @@
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid #333;
     border-radius: 4px;
-    position: relative; /* Fixed: position relative; -> position: relative; */
+    position: relative; /* Fixed: position: relative; -> position: relative; */
   }
   .rec-title {
     font-weight: bold;
@@ -1019,7 +963,7 @@
     font-weight: bold;
   }
   .rec-ai-badge {
-    position: absolute; /* Fixed: position absolute; -> position: absolute; */
+    position: absolute; /* Fixed: position: absolute; -> position: absolute; */
     top: 8px;
     right: 8px;
     background: rgba(33, 150, 243, 0.2);
@@ -1094,5 +1038,3 @@
     }
   }
 </style>
-
-

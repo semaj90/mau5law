@@ -105,7 +105,7 @@ export class LegalRAGEngine {
   async processDocument(content: string, metadata: Partial<LegalDocument>): Promise<string> {
     try {
       // Use Context7 MCP for stack-aware analysis if available
-      let $stackAnalysis: unknown | null = null; // Renamed to $stackAnalysis
+      let $stackAnalysis: any | null = null; // Renamed to $stackAnalysis
       if (metadata.caseType) {
         try {
           $stackAnalysis = await context7Service.analyzeLegalDocument(
@@ -113,7 +113,7 @@ export class LegalRAGEngine {
             metadata.caseType,
             metadata.jurisdiction
           );
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed from any
           console.warn('Context7 analysis failed, continuing with local processing:', error);
         }
@@ -153,7 +153,7 @@ export class LegalRAGEngine {
         summary, // Ensure summary is passed here
       });
       return evidenceId;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Error processing legal document:', error);
       throw new Error(`Failed to process legal document: ${(error as Error).message}`);
@@ -197,7 +197,7 @@ export class LegalRAGEngine {
 
       // Return top N results after filtering, respecting original limit.
       return finalResults.slice(0, options.limit ?? DEFAULT_SEARCH_LIMIT);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Error in legal RAG search:', error);
       // Provide a more informative error message for production debugging
@@ -397,7 +397,7 @@ export class LegalRAGEngine {
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       return await this.ollama.generateEmbedding(text);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Error generating embedding:', error);
       throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error'}`);
@@ -425,7 +425,7 @@ export class LegalRAGEngine {
         jurisdictions: extracted.jurisdictions || [],
         caseTypes: extracted.caseTypes || [],
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.warn('Context7 entity extraction failed, using local fallback:', error);
       // Fallback to local entity extraction
@@ -464,7 +464,7 @@ export class LegalRAGEngine {
         score: Math.max(0, Math.min(100, parsed.score || 25)),
         confidence: Math.max(0, Math.min(1, parsed.confidence || 0.7)),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.warn('Risk assessment failed, using default:', error);
       return { score: 25, confidence: 0.5 };
@@ -513,7 +513,7 @@ export class LegalRAGEngine {
         ${content.substring(0, 2000)}`
       );
       return response;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Error generating summary:', error);
       return 'Summary generation failed';
@@ -530,7 +530,7 @@ export class LegalRAGEngine {
       );
       const tags = JSON.parse(response);
       return Array.isArray(tags) ? tags : ['legal', 'document'];
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('Error generating tags:', error);
       return ['legal', 'document'];

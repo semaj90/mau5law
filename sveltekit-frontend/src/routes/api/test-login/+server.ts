@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
         expiresAt: expiresAt.toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Use `unknown` and narrow to Error to avoid `any`
     console.error('[TEST LOGIN] Error:', error);
     const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error';

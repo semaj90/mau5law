@@ -25,7 +25,7 @@ export const EvidenceAnalysisSchema = z.object({
 export interface AnalysisResult {
   type: string;
   confidence: number;
-  results: unknown;
+  results: any;
   processingTime: number;
   model: string;
   timestamp: Date;
@@ -340,7 +340,7 @@ class AdvancedEvidenceAnalyzer {
   /**
    * Safely extract the first non-empty string value for the provided keys from an unknown object.
    */
-  private getStringFromObject(obj: unknown, keys: string[]): string | null {
+  private getStringFromObject(obj: any, keys: string[]): string | null {
     if (!obj || typeof obj !== 'object') return null;
     const record = obj as Record<string, unknown>;
     for (const k of keys) {
@@ -543,7 +543,7 @@ class AdvancedEvidenceAnalyzer {
     return null;
   }
 
-  private createErrorResult(type: string, error: unknown, startedAt: number): AnalysisResult {
+  private createErrorResult(type: string, error: any, startedAt: number): AnalysisResult {
     const message = error instanceof Error ? error.message : String(error);
     return {
       type,

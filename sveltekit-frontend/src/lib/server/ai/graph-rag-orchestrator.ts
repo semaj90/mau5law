@@ -1,5 +1,4 @@
 // src/lib/server/ai/graph-rag-orchestrator.ts
-
 import embed from '$lib/server/ai/embedder';
 import * as env from '$env/static/private';
 import { Pool } from 'pg';
@@ -8,13 +7,11 @@ import neo4j from 'neo4j-driver';
 import {
   qdrant, // Import the actual qdrant client instance
 } from '$lib/server/services/qdrant-client';
-
 // --- Environment variables ---
 const NEO4J_URI = env.NEO4J_URI;
 const NEO4J_USER = env.NEO4J_USER;
 const NEO4J_PASSWORD = env.NEO4J_PASSWORD;
 const POSTGRES_URI = env.POSTGRES_URI;
-
 // --- Constants ---
 const COLLECTION = process.env.QDRANT_COLLECTION || 'documents';
 const ALPHA = 0.7;
@@ -22,10 +19,8 @@ const BETA = 0.2;
 const GAMMA = 0.1;
 const DEFAULT_LIMIT = 10;
 const DEFAULT_EXPAND = 2;
-
 // --- Initialize Clients ---
 // Qdrant URL and client are handled by the resilient qdrant-client module
-
 // typed neo4j driver alias (derived from runtime function)
 type Neo4jDriver = ReturnType<typeof neo4j.driver>;
 let neo4jDriver: Neo4jDriver | null = null;
@@ -46,53 +41,45 @@ if (NEO4J_URI && NEO4J_USER && NEO4J_PASSWORD) {
     neo4jDriver = null;
   }
 }
-
 let pgPool: Pool | null = null;
 if (POSTGRES_URI) {
   pgPool = new Pool({ connectionString: POSTGRES_URI });
 }
-
 // --- Optional caching hook ---
 const enhancedCachingOptimizerRankingHook = async (results: RagResult[]): Promise<RagResult[]> => {
   console.log('[EnhancedCachingOptimizer] ranking hook called');
   return results;
 };
-
 // --- replace the loose: "any"-based adapter with explicit minimal Qdrant shapes ---
 // Minimal, focused types aligned to common Qdrant REST client shapes used in this repo.
 type CollectionsListResponse = {
   collections?: Array<{ name: string }>;
 };
-
 type CreateCollectionBody = {
   vectors: { size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' };
   // optional additional fields used by some SDKs
   replication?: number;
   on_disk?: boolean;
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
 type PayloadIndexBody = {
   field_name: string;
   field_schema?: string;
   wait?: boolean;
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
 type SearchRequestBody = {
   vector?: number[]; // when searching by vector
   limit?: number;
   with_payload?: boolean;
   filter?: Record<string, unknown>;
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
 type SearchHit = {
   id: string;
   score?: number;
   payload?: Record<string, unknown>;
 };
-
 type CollectionsApiShape = {
   getCollections?: () => Promise<CollectionsListResponse>;
   createCollection?: (body: CreateCollectionBody & { collection_name?: string }) => Promise<unknown>;
@@ -100,11 +87,9 @@ type CollectionsApiShape = {
   createFieldIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
   search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
 };
-
 type PointsApiShape = {
   search?: (body: SearchRequestBody & { collection_name?: string }) => Promise<SearchHit[]>;
 };
-
 type QdrantLike = {
   // high-level client methods some versions expose
   getCollections?: () => Promise<CollectionsListResponse>;
@@ -112,16 +97,13 @@ type QdrantLike = {
   createPayloadIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
   createFieldIndex?: (collectionName: string, body: PayloadIndexBody) => Promise<unknown>;
   search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
-
   // nested APIs
   collectionsApi?: CollectionsApiShape;
   collections?: { get?: () => Promise<CollectionsListResponse> };
   points?: PointsApiShape;
 };
-
 // cast the runtime client to the narrowed adapter
 const qdrantClient = qdrant as unknown as QdrantLike;
-
 // typed helper signatures (implementation unchanged)
 async function qdrantGetCollections(): Promise<CollectionsListResponse | undefined> {
   if (typeof qdrantClient.collectionsApi?.getCollections === 'function') {
@@ -135,7 +117,6 @@ async function qdrantGetCollections(): Promise<CollectionsListResponse | undefin
   }
   return undefined;
 }
-
 async function qdrantCreateCollection(name: string, body: CreateCollectionBody): Promise<unknown> {
   if (typeof qdrantClient.collectionsApi?.createCollection === 'function') {
     // some SDKs expect full body with collection_name
@@ -149,7 +130,6 @@ async function qdrantCreateCollection(name: string, body: CreateCollectionBody):
   }
   throw new Error('createCollection not supported by this Qdrant client');
 }
-
 async function qdrantCreatePayloadIndex(collectionName: string, body: PayloadIndexBody): Promise<unknown> {
   if (typeof qdrantClient.collectionsApi?.createPayloadIndex === 'function') {
     return qdrantClient.collectionsApi.createPayloadIndex(collectionName, body);
@@ -165,7 +145,6 @@ async function qdrantCreatePayloadIndex(collectionName: string, body: PayloadInd
   }
   throw new Error('createPayloadIndex is not supported by this Qdrant client shape');
 }
-
 async function qdrantSearch(collectionName: string, body: SearchRequestBody): Promise<SearchHit[]> {
   if (typeof qdrantClient.collectionsApi?.search === 'function') {
     return qdrantClient.collectionsApi.search(collectionName, body);
@@ -176,7 +155,6 @@ async function qdrantSearch(collectionName: string, body: SearchRequestBody): Pr
   if (typeof qdrantClient.points?.search === 'function') {
     return qdrantClient.points.search({ collection_name: collectionName, ...body });
   }
-
   // Fallback for older client shapes that might expose a top-level `search` method
   // Use `unknown` -> typed shape cast to avoid `any`
   const legacySearch = (
@@ -187,10 +165,8 @@ async function qdrantSearch(collectionName: string, body: SearchRequestBody): Pr
   if (typeof legacySearch === 'function') {
     return legacySearch(collectionName, body);
   }
-
   throw new Error('search not supported by this Qdrant client shape');
 }
-
 // -----------------------------------------------------------------------------
 // Qdrant Init
 // -----------------------------------------------------------------------------
@@ -203,7 +179,6 @@ export async function initQdrantIndexes() {
       await qdrantCreateCollection(COLLECTION, { vectors: { size: vectorSize, distance: 'Cosine' } });
       console.log(`✅ Created Qdrant collection: ${COLLECTION}`);
     }
-
     // Payload indexes
     for (const [field, schema] of [
       ['type', 'keyword'],
@@ -220,14 +195,12 @@ export async function initQdrantIndexes() {
         /* ignore if unsupported */
       }
     }
-
     return { ok: true };
   } catch (e) {
     console.error('initQdrantIndexes failed:', e);
     return { ok: false, error: String(e) };
   }
 }
-
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
@@ -239,7 +212,6 @@ function normalizeWeights(items: Array<{ id: string; weight?: number }>) {
     norm: max > 0 ? weights[idx] / max : 0,
   }));
 }
-
 async function queryPostgresGraph(
   query: string,
   pool: Pool
@@ -253,14 +225,12 @@ async function queryPostgresGraph(
       [`%${query}%`]
     );
     client.release();
-
     // Postgres row type shim
     type PostgresEdgeRow = {
       target_node_id: string | number | null;
       weight: number | null;
       relation: string | null;
     };
-
     return (res.rows as PostgresEdgeRow[]).map(r => ({
       id: String(r.target_node_id ?? ''),
       weight: Number(r.weight ?? 0),
@@ -271,11 +241,9 @@ async function queryPostgresGraph(
     return [];
   }
 }
-
 async function getRedisBoost(_id: string): Promise<number> {
   return 0; // Placeholder; integrate Redis later
 }
-
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
@@ -295,14 +263,12 @@ export interface RagResult {
   content: string;
   metadata?: Record<string, unknown>;
 }
-
 // -----------------------------------------------------------------------------
 // Core Orchestrator
 // -----------------------------------------------------------------------------
 export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   const limit = Math.min(opts.limit ?? DEFAULT_LIMIT, Number(process.env.RAG_MAX_RESULTS || '50'));
   const expand = opts.expandNeighbors ?? DEFAULT_EXPAND;
-
   // 1️⃣ Embed text
   let embedding = opts.embedding;
   if (!embedding) {
@@ -310,18 +276,15 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
     // embed module exposes embedText/embedTexts — call the explicit method
     embedding = await embed.embedText(opts.text);
   }
-
   // 2️⃣ Qdrant search
   let baseHits: RagResult[] = [];
   try {
     type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
-
     const res = (await qdrantSearch(COLLECTION, {
       vector: embedding,
       limit,
       with_payload: true,
     })) as QdrantHit[];
-
     baseHits = (res ?? []).map((r: QdrantHit) => ({
       id: r.id,
       similarity: r.score ?? 0,
@@ -332,11 +295,8 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   } catch (e) {
     console.warn('[graph-rag] Qdrant search failed:', e);
   }
-
   if (baseHits.length === 0) return [];
-
   const baseIds = baseHits.map(h => h.id);
-
   // 3️⃣ Graph expansion
   let neighbors: { id: string; weight: number }[] = [];
   if (neo4jDriver) {
@@ -352,7 +312,6 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
         ids: baseIds,
         limit: expand * limit,
       });
-
       // Neo4j record shim
       type Neo4jRecordShim = { get: (k: string) => unknown };
       neighbors = (result.records as Neo4jRecordShim[]).map(rec => ({
@@ -368,26 +327,21 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   } else if (pgPool) {
     neighbors = await queryPostgresGraph(opts.text ?? '', pgPool);
   }
-
   // 4️⃣ Merge & score
   const graphMap = new Map<string, number>();
   for (const n of neighbors) {
     const prev = graphMap.get(n.id) ?? 0;
     graphMap.set(n.id, prev + n.weight);
   }
-
   const normalized = normalizeWeights(Array.from(graphMap.entries()).map(([id, weight]) => ({ id, weight })));
   const graphWeightById = new Map<string, number>(normalized.map(g => [g.id, g.norm]));
-
   const candidates = new Map<string, RagResult>();
-
   for (const h of baseHits) {
     const gw = graphWeightById.get(h.id) ?? 0;
     const boost = await getRedisBoost(h.id);
     const score = ALPHA * h.similarity + BETA * gw + GAMMA * boost;
     candidates.set(h.id, { ...h, graphWeight: gw, score });
   }
-
   for (const n of neighbors) {
     const id = n.id;
     if (candidates.has(id)) continue;
@@ -403,14 +357,11 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
       metadata: {},
     });
   }
-
   let results = Array.from(candidates.values())
     .sort((a, b) => b.score - a.score)
     .slice(0, Math.min(limit, Number(process.env.RAG_CANDIDATES || '4')));
-
   if (opts.wireCaching) {
     results = await enhancedCachingOptimizerRankingHook(results);
   }
   return results;
 }
-

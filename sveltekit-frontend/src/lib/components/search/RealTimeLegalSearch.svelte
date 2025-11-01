@@ -12,7 +12,6 @@
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   // Icons
   import { Search, Loader2, Zap, AlertCircle, TrendingUp, Filter, Settings, Wifi, WifiOff } from 'lucide-svelte';
-
   // Export the event payload type so parents can import/use it
   export type SearchResultEventDetail = {
     id: string;
@@ -21,9 +20,7 @@
     category?: string;
     score?: number;
   };
-
   // Svelte 5: events are exposed as callback props; onselect is defined in Props below
-
   // Props with enhanced configuration
   interface Props {
     placeholder?: string;
@@ -48,16 +45,14 @@
     class: className = '', // Renamed: 'class' to: 'className' to avoid conflict with Svelte's reserved keyword
     onselect,
   }: Props = $props();
-
   // Real-time search hooks
   const { state: searchState, searchStatus, search, disconnect } = useRealTimeSearch();
   // Local state
   let inputValue = $state('');
   let open = $state(false);
-  let selectedResult: unknown = $state(null);
+  let selectedResult: any = $state(null);
   // add missing search history state (was referenced but not declared)
   let searchHistory = $state<string[]>([]);
-
   // Reactive computations (fixed: derive from the actual variables via functions)
   let filteredResults = $derived(() => (searchState?.results ?? []).slice(0, maxResults));
   let isStreaming = $derived(() => searchStatus === 'searching' && enableRealTime);
@@ -65,7 +60,6 @@
   let searchMetrics = $derived(
     () => searchState?.searchMetrics ?? { totalQueries: 0, averageResponseTime: 0, lastQueryTime: 0 }
   );
-
   // Enhanced debounced search
   const debouncedSearch = debounce(async (query: string) => {
     if (!query.trim() || query.length < 2) return;
@@ -92,10 +86,10 @@
     }
   }
   // Handle result selection
-  function handleSelect(result: unknown) {
+  function handleSelect(result: any) {
     selectedResult = result;
     inputValue = (result as { title?: string }).title || ''; // Corrected: 'titl' to: 'title' and added fallback
-    open = false;
+    open = $state(false);
     // Call the onselect callback if provided (Svelte 5 pattern)
     onselect?.(result as SearchResultEventDetail);
   }
@@ -132,7 +126,6 @@
     disconnect();
     console.log('🔌 Real-Time Legal Search Component destroyed');
   });
-
   // Dynamically load client-only UI primitives to avoid SSR render errors
   // Use Svelte 5 reactive state ($state) so assignments from the dynamic
   // import in onMount will trigger updates in the template.
@@ -140,7 +133,6 @@
   let CommandInput = $state<any>(null);
   let CommandContent = $state<any>(null);
   let CommandItem = $state<any>(null);
-
   onMount(async () => {
     // onMount only runs in the browser; explicit `browser` guard is redundant but harmless.
     if (!browser) return;
@@ -158,7 +150,6 @@
       console.warn('Failed to dynamically load Command primitive:', e);
     }
   });
-
   // Example: when a result is clicked or selected, call `select(...)`
   function handleResultClick(result: SearchResultEventDetail) {
     // ...any internal logic...
@@ -166,7 +157,6 @@
     onselect?.(result);
   }
 </script>
-
 <!-- Enhanced Real-Time Search Interface -->
 <div class="real-time-search-container {className}">
   <!-- Search Header with Status -->
@@ -192,15 +182,13 @@
             <WifiOff class="w-3 h-3 text-gray-400" />
             <span class="text-gray-500">Disconnected</span>
           {/if}
-        </div>
-      {/if}
+        {/if}
       <!-- Search Metrics -->
       {#if searchMetrics.totalQueries > 0}
         <div class="text-xs text-gray-500">
           {searchMetrics.totalQueries} queries •
           {searchMetrics.averageResponseTime}ms avg
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Enhanced Search Input -->
@@ -264,7 +252,7 @@
               <span class="text-sm">Searching with AI enhancement...</span>
             </div>
             <!-- Streaming Results -->
-            {#each filteredResults as result ((result as { title?: unknown; id?: unknown }).id)}
+            {#each filteredResults as result ((result as { title?: any; id?: any }).id)}
               {#if CommandItem}
                 <CommandItem
                   value={(result as any).id}
@@ -363,8 +351,7 @@
                       <div class="mt-2 text-xs text-blue-600">
                         <span class="font-medium">Highlights:</span>
                         {(result as any).highlights[0]?.substring(0, 80)}...
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
                 </CommandItem>
               {:else}
@@ -405,7 +392,7 @@
             <!-- Search History -->
             <div class="p-3">
               <div class="text-xs font-medium text-gray-700 mb-2">Recent Searches</div>
-              {#each searchHistory.slice(0, 5) as query}
+              {#each Array.isArray(searchHistory.slice(0, 5)) ? searchHistory.slice(0, 5) : [] as query}
                 <button
                   type="button"
                   class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
@@ -414,8 +401,7 @@
                   {query}
                 </button>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </CommandContent>
       {/if}
     </CommandRoot>
@@ -433,17 +419,14 @@
       <!-- Basic static results rendering for SSR previews -->
       {#if filteredResults && filteredResults.length > 0}
         <div class="mt-2 max-h-80 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
-          {#each filteredResults as result}
+          {#each Array.isArray(filteredResults) ? filteredResults : [] as result}
             <div class="px-3 py-2 border-b last:border-b-0">
               <div class="font-medium text-gray-900 truncate">{(result as any).title}</div>
               <div class="text-xs text-gray-600 mt-1 line-clamp-2">{(result as any).content?.substring(0, 120)}...</div>
             </div>
           {/each}
-        </div>
-      {/if}
-    </div>
-  {/if}
-
+        {/if}
+    {/if}
   <!-- Search Status Bar -->
   {#if enableRealTime}
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
@@ -467,25 +450,21 @@
       {#if searchMetrics.totalQueries > 0}
         <div>
           Performance: {searchMetrics.averageResponseTime}ms avg
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   :global(.real-time-search-container) {
     /* @apply relative w-full max-w-2xl mx-auto; */
     /* The @apply rule typically requires PostCSS and Tailwind CSS to be configured in your build process. */
     /* If you intend to use Tailwind CSS, ensure your svelte.config.js and postcss.config.js are set up correctly. */
     /* For a direct fix within this file, we replace it with standard CSS: */
-    position relative;
+    position: relative;
     width: 100%;
     max-width: 42rem; /* Equivalent to Tailwind's max-w-2xl */
     margin-left: auto;
     margin-right: auto;
   }
-
   /* Multi-line truncation utility with both vendor-prefixed and
      non-prefixed declarations for broader compatibility. Keep
      -webkit-line-clamp (widely supported) and add a non-prefixed

@@ -8,7 +8,6 @@
   }
   let { children, trigger }: Props = $props();
 </script>
-
 <button>
-  {@render children?.()}
+  <slot />
 </button>

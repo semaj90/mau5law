@@ -21,7 +21,6 @@
     className?: string;
     open?: boolean;
   }
-
   // Props using Svelte 5 syntax
   let {
     shortcuts = [],
@@ -36,11 +35,9 @@
     className?: string;
     open?: boolean;
   } = $props();
-
   // Local state
   let searchQuery = $state('');
   let selectedCategory = $state('all');
-
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
     // Case Management
@@ -87,10 +84,8 @@
     { id: 'documentation', keys: ['f1'], description: 'Open Documentation', category: 'Help' }, // Added colon
     { id: 'support', keys: ['ctrl', 'shift', 'h'], description: 'Contact Support', category: 'Help' }, // Added colon
   ];
-
   // Reactive derived data using Svelte 5 runes
   let allShortcuts = $derived([...defaultShortcuts, ...shortcuts].filter(s => s.enabled !== false));
-
   let filteredShortcuts = $derived.by(() => {
     let result = allShortcuts.slice();
     // Filter by category
@@ -109,9 +104,7 @@
     }
     return result;
   });
-
   let categories = $derived(['all', ...Array.from(new Set(allShortcuts.map(s => s.category))).sort()]);
-
   let groupedShortcuts = $derived.by(() => {
     const result: Record<string, KeyboardShortcut[]> = {};
     for (const sh of filteredShortcuts) {
@@ -120,7 +113,6 @@
     }
     return result;
   });
-
   // Format key combination for display
   function formatKeys(keys: string[]): string {
     return keys
@@ -147,21 +139,18 @@
       })
       .join(' + ');
   }
-
   // Handle escape key to close
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      open = false;
+      open = $state(false);
     }
   }
-
   // Handle backdrop click
   function handleBackdropClick(e: MouseEvent) {
     if ((e.target as EventTarget) === (e.currentTarget as EventTarget)) {
-      open = false;
+      open = $state(false);
     }
   }
-
   // Global shortcut listener (Shift + ? toggles panel)
   onMount(() => {
     if (!browser) return;
@@ -174,10 +163,8 @@
     document.addEventListener('keydown', handleGlobalShortcut);
     return () => document.removeEventListener('keydown', handleGlobalShortcut);
   });
-
   // add a ref for the dialog so we can focus it when opened
   let dialogEl = $state<HTMLElement | null>(null);
-
   // When the panel opens, focus the dialog to satisfy a11y and ensure keydown events are received.
   $effect(() => {
     if (open && dialogEl) {
@@ -186,7 +173,6 @@
     }
   });
 </script>
-
 <!-- Help Panel Modal -->
 {#if open}
   <div
@@ -212,7 +198,6 @@
           </svg>
         </button>
       </div>
-
       <!-- Search and Filters -->
       {#if searchable || showCategories}
         <div class="p-6 border-b border-nier-border-muted">
@@ -225,26 +210,22 @@
                   bind:value={searchQuery}
                   class="w-full px-4 py-2 border border-nier-border-muted rounded-lg bg-nier-bg-secondary text-nier-text-primary placeholder-nier-text-muted focus:outline-none focus:ring-2 focus:ring-nier-accent-cool"
                 />
-              </div>
-            {/if}
+              {/if}
             {#if showCategories}
               <div class="sm:w-48">
                 <select
                   bind:value={selectedCategory}
                   class="w-full px-4 py-2 border border-nier-border-muted rounded-lg bg-nier-bg-secondary text-nier-text-primary focus:outline-none focus:ring-2 focus:ring-nier-accent-cool"
                 >
-                  {#each categories as category}
+                  {#each Array.isArray(categories) ? categories : [] as category}
                     <option value={category}>
                       {category === 'all' ? 'All Categories' : category}
                     </option>
                   {/each}
                 </select>
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
-
+        {/if}
       <!-- Shortcuts Content -->
       <div class="flex-1 overflow-y-auto p-6">
         {#if filteredShortcuts.length === 0}
@@ -278,7 +259,7 @@
                   {category}
                 </h3>
                 <div class="grid gap-3">
-                  {#each categoryShortcuts as shortcut}
+                  {#each Array.isArray(categoryShortcuts) ? categoryShortcuts : [] as shortcut}
                     <div
                       class="flex items-center justify-between p-3 rounded-lg bg-nier-bg-tertiary border border-nier-border-muted hover:bg-nier-bg-secondary transition-colors"
                     >
@@ -304,10 +285,8 @@
                 </div>
               </div>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </div>
-
       <!-- Footer -->
       <div class="p-6 border-t border-nier-border-muted bg-nier-bg-secondary">
         <div class="flex items-center justify-between">
@@ -335,9 +314,7 @@
         </div>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   kbd {
     box-shadow:

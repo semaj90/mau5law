@@ -263,7 +263,7 @@ export interface ErrorResponse {
   error: string;
 }
 // Type Guards for Runtime Validation
-export function isAPIResponse<T>(obj: unknown): obj is APIResponse<T> {
+export function isAPIResponse<T>(obj: any): obj is APIResponse<T> {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   const meta = o.meta as Record<string, unknown> | undefined;
@@ -276,7 +276,7 @@ export function isAPIResponse<T>(obj: unknown): obj is APIResponse<T> {
     (meta.source === 'ssr' || meta.source === 'api')
   );
 }
-export function isUser(obj: unknown): obj is User {
+export function isUser(obj: any): obj is User {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return (
@@ -289,7 +289,7 @@ export function isUser(obj: unknown): obj is User {
     Array.isArray(o.permissions)
   );
 }
-export function isCase(obj: unknown): obj is Case {
+export function isCase(obj: any): obj is Case {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return (
@@ -301,7 +301,7 @@ export function isCase(obj: unknown): obj is Case {
     Array.isArray(o.tags)
   );
 }
-export function isEvidence(obj: unknown): obj is Evidence {
+export function isEvidence(obj: any): obj is Evidence {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return (

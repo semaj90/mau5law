@@ -31,7 +31,7 @@ export interface ParallelCacheRequest {
   type: 'embedding' | 'shader' | 'context' | 'rag' | 'quantized' | 'hybrid';
   priority: 'low' | 'normal' | 'high' | 'critical';
   keys: string[];
-  data?: unknown[];
+  data?: any[];
   ttl?: number;
   resourceLimits?: Partial<CacheResourceAllocation>;
   concurrencyGroup?: number; // 0 = immediate, 1 = after group 0
@@ -74,13 +74,13 @@ type PerformanceMemory = {
 
 export interface ParallelCacheResponse {
   success: boolean;
-  data: unknown[];
+  data: any[];
   metrics: CacheExecutionMetrics;
   cacheResults: CacheEntry[];
 }
 
 type CacheActor = {
-  send: (msg: { type: string; input?: unknown }) => Promise<{ success: boolean; hit?: boolean; data?: unknown }>;
+  send: (msg: { type: string; input?: any }) => Promise<{ success: boolean; hit?: boolean; data?: any }>;
 };
 
 class ParallelCacheOrchestrator {
@@ -442,7 +442,7 @@ class ParallelCacheOrchestrator {
     if (!state || !state.isOpen) return false;
     const timeSinceLastFailure = Date.now() - state.lastFailure;
     if (timeSinceLastFailure > this.resourceAllocation.circuitBreakers.recoveryTime) {
-      state.isOpen = false;
+      state.isOpen = $state(false);
       state.failures = 0;
       this.circuitBreakerState.set(operation, state);
       console.log(`✅ Circuit breaker CLOSED for ${operation} - recovered`);
@@ -506,7 +506,7 @@ class ParallelCacheOrchestrator {
    */
   async getPerformanceStats(): Promise<{
     currentMetrics: CacheExecutionMetrics;
-    cacheStats: { l1Size: number; l2Size: number; l3Size: number; xstateStats: unknown; shaderStats: unknown };
+    cacheStats: { l1Size: number; l2Size: number; l3Size: number; xstateStats: any; shaderStats: any };
     systemResources: CacheResourceAllocation;
   }> {
     return {

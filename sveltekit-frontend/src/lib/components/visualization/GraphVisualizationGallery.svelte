@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
   import { MultiLayerCache } from '$lib/services/multi-layer-cache';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   // Props
   let {
     graphData = $bindable(),
@@ -262,8 +262,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="progress-container">
       <progress class="nes-progress is-success" value={$generationProgress} max="100"></progress>
       <p class="nes-text is-success">Generating visualizations... {Math.round($generationProgress)}%</p>
-    </div>
-  {/if}
+    {/if}
   <!-- Caching Stats -->
   <div class="cache-stats nes-container is-rounded">
     <p class="nes-text is-warning">
@@ -333,8 +332,7 @@ generateVisualizationsForAllAlgorithms()}
       >
         Generate Visualizations
 </Button>
-    </div>
-  {/if}
+    {/if}
   <!-- Real-time Canvas (Hidden, used for generation) -->
   <canva;
     bind:this={canvas as any}
@@ -389,13 +387,11 @@ generateVisualizationsForAllAlgorithms()}
             <div class="metadata-item">
               <span class="nes-text is-warning">Compression</span>
               <span class="nes-text is-success">{($selectedVisualization.metadata.compressionRatio * 100).toFixed(1)}%</span>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .graph-gallery-container {
     padding: 2rem;
@@ -462,7 +458,7 @@ generateVisualizationsForAllAlgorithms()}
     border-color: #8e44ad;
   }
   .item-preview {
-    position relative;
+    position: relative;
     cursor: pointer;
     overflow: hidden;
   }
@@ -476,7 +472,7 @@ generateVisualizationsForAllAlgorithms()}
     transform: scale(1.05);
   }
   .item-overlay {
-    position absolute;
+    position: absolute;
     bottom: 0,
     left: 0;
     right: 0,
@@ -518,7 +514,7 @@ generateVisualizationsForAllAlgorithms()}
   }
   /* Modal Styles */
   .modal-overlay {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -535,12 +531,12 @@ d;
     max-width: 90vw;
     max-height: 90vh;
     overflow: auto;
-    position relative;
+    position: relative;
     background: #212529;
     border: 2px solid #4a90e2;
   }
   .modal-close {
-    position absolute;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     z-index: 1001,

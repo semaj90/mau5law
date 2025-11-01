@@ -8,7 +8,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   import { writable } from 'svelte/store';
   import { redisStats, redisOrchestratorClient  } from '$lib/stores/unified';
   // Create unified SIMD parser instance
-  let unifiedSIMDParser: unknown;
+  let unifiedSIMDParser: any;
   // Real-time metrics stores
   const liveMetrics = writable({
     timestamp: Date.now(),
@@ -22,7 +22,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const alertsLog = writable([]);
   let updateInterval: NodeJS.Timeout;
   let wsConnection WebSocket;
-  let isConnected = false;
+  let isConnected = $state(false);
   // Nintendo-style color scheme
   const nintendoColors = {
     primary: '#00d800',
@@ -70,12 +70,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         updateLiveMetrics(data);
       }
       wsConnection.onerror = () => {
-        isConnected = false;
+        isConnected = $state(false);
         console.warn('⚠️ WebSocket connection failed, falling back to polling');
       }
     } catch (error) {
       console.warn('WebSocket not available, using polling mode');
-      isConnected = false;
+      isConnected = $state(false);
     }
   }
   async function startPerformancePolling() {
@@ -149,8 +149,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   async function getMCPStats() {
     try {
       const response = await fetch('http://localhost:3002/mcp/metrics')
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        return await (response as { ok?: unknown; json?: unknown }).json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        return await (response as { ok?: any; json?: any }).json();
       }
       return { active_workers: 16, rps: 0, avg_response_ms: 0 }
     } catch {
@@ -161,7 +161,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     // Calculate performance improvement based on cache hit rate
     return hitRate > 0 ? Math.round((hitRate / 100) * 2500) : 0; // Up to 2500x improvement
   }
-  function checkPerformanceAlerts(metrics: unknown) {
+  function checkPerformanceAlerts(metrics: any) {
     const alerts = [];
     if (metrics.redis.hit_rate < 70) {
       alerts.push({ type: 'warning', message: 'Redis hit rate below 70%' });
@@ -189,7 +189,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const formatNumber = (num: number, decimals = 1) =>
     num?.toFixed(decimals) || '0.0';
 </script>
-
 <div class="nintendo-dashboard">
   <div class="dashboard-header">
     <h1>🎮 Redis Orchestrator Command Center</h1>
@@ -314,22 +313,20 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           <span class="legend-item"><span class="gpu-color"></span> GPU Utilization</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Alerts Panel -->
   {#if $alertsLog.length > 0}
     <div class="alerts-panel">
       <h3>⚠️ System Alerts</h3>
       <div class="alerts-list">
-        {#each $alertsLog as alert}
+        {#each Array.isArray($alertsLog) ? $alertsLog : [] as alert}
           <div class="alert-item {alert.type}">
             <span class="alert-time">{new Date(alert.timestamp).toLocaleTimeString()}</span>
             <span class="alert-message">{alert.message}</span>
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Control Panel -->
   <div class="control-panel">
     <h3>🎮 System Controls</h3>
@@ -343,7 +340,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
   </div>
 </div>
-
 <style>
   .nintendo-dashboard {
     background: #0f0f23;
@@ -447,7 +443,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00d800, #3cbcfc);
-    transition: width 1s ease;
+    transition: width: 1s ease;
   }
   .status-text {
     font-size: 1.1em;
@@ -567,5 +563,3 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     }
   }
 </style>
-
-

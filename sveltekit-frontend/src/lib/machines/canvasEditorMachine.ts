@@ -2,9 +2,7 @@
  * Canvas Editor State Machine (XState v5)
  * Manages canvas editor state with collaboration, history, and auto-save
  */
-
 import { createMachine, assign } from 'xstate';
-
 export interface CanvasEditorContext {
   reportId: string;
   canvasState: any | null;
@@ -15,7 +13,6 @@ export interface CanvasEditorContext {
   isCollaborating: boolean;
   lastSaved: Date | null;
 }
-
 export type CanvasEditorEvent =
   | { type: 'CANVAS_INITIALIZED' }
   | { type: 'STATE_LOADED'; state: any }
@@ -32,7 +29,6 @@ export type CanvasEditorEvent =
   | { type: 'COLLABORATION_ENABLED' }
   | { type: 'COLLABORATION_DISABLED' }
   | { type: 'REMOTE_CHANGE'; change: any };
-
 export const canvasEditorMachine = createMachine({
   id: 'canvasEditor',
   initial: 'idle',

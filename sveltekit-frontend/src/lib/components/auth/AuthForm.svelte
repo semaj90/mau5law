@@ -1,7 +1,7 @@
 <script lang="ts">
   import { superForm } from 'sveltekit-superforms';
   interface Props {
-    data: unknown;
+    data: any;
     formType: 'login' | 'register';
   }
   let { data, formType }: Props = $props();
@@ -9,7 +9,6 @@
     resetForm: true,
   });
 </script>
-
 <form method="POST" action="?/{formType}" use:enhance>
   {#if $message}<p class="form-message">{$message}</p>{/if}
   <div class="form-field">
@@ -27,13 +26,11 @@
       <label for="confirmPassword">Confirm Password</label>
       <input id="confirmPassword" name="confirmPassword" type="password" bind:value={$form.confirmPassword} />
       {#if $errors.confirmPassword}<span class="error">{$errors.confirmPassword}</span>{/if}
-    </div>
-  {/if}
+    {/if}
   <button type="submit" class="submit-button">
     {#if formType === 'login'}Log In{:else}Create Account{/if}
   </button>
 </form>
-
 <style>
   /* @unocss-include */
   .form-field {
@@ -56,4 +53,3 @@
     cursor: pointer;
   }
 </style>
-

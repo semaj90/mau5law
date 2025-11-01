@@ -10,8 +10,8 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { writable } from 'svelte/store';
   // import named UI components (avoid namespace import)
-  import Dialog from '$lib/components/ui/dialog';
-  import { Button, Input, Textarea, Label, Separator } from '$lib/components/ui/enhanced-bits';
+  import { Dialog } from '$lib/components/ui/dialog.svelte'';
+  import { Button, Input, Textarea, Label, Separator } from '$lib/components/ui/enhanced-bits.svelte'';
 
   import * as legalPlatformClient from '$lib/services/legal-platform-client';
   import type { CaseData, ApiResponse } from '$lib/services/legal-platform-client';
@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={$formData.priority ?? 'medium'}
                 onchange={(e) => formData.update(f => ({ ...f, priority: (e.target as HTMLSelectElement).value as CaseData['priority'] }))}
               >
-                {#each priorityOptions as option}
+                {#each Array.isArray(priorityOptions) ? priorityOptions : [] as option}
                   <option value={option.value}>{option.label}</option>
                 {/each}
               </select>
@@ -276,7 +276,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={$formData.status ?? 'open'}
                 onchange={(e) => formData.update(f => ({ ...f, status: (e.target as HTMLSelectElement).value as CaseData['status'] }))}
               >
-                {#each statusOptions as option}
+                {#each Array.isArray(statusOptions) ? statusOptions : [] as option}
                   <option value={option.value}>{option.label}</option>
                 {/each}
               </select>
@@ -333,15 +333,13 @@ https://svelte.dev/e/js_parse_error -->
   {#if $error}
     <div role="alert" class="mb-6 border-red-200 bg-red-50 p-3 rounded">
       <p class="text-red-800">{$error}</p>
-    </div>
-  {/if}
+    {/if}
 
   <!-- Loading State -->
   {#if $loading}
     <div class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-    </div>
-  {/if}
+    {/if}
 
   <!-- Cases Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -412,8 +410,7 @@ https://svelte.dev/e/js_parse_error -->
           </Button>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 
   <!-- Edit Dialog -->
   <Dialog bind:open={$isEditDialogOpen}>
@@ -456,7 +453,7 @@ https://svelte.dev/e/js_parse_error -->
               value={$formData.priority ?? 'medium'}
               onchange={(e) => formData.update(f => ({ ...f, priority: (e.target as HTMLSelectElement).value as CaseData['priority'] }))}
             >
-              {#each priorityOptions as option}
+              {#each Array.isArray(priorityOptions) ? priorityOptions : [] as option}
                 <option value={option.value}>{option.label}</option>
               {/each}
             </select>
@@ -470,7 +467,7 @@ https://svelte.dev/e/js_parse_error -->
               value={$formData.status ?? 'open'}
               onchange={(e) => formData.update(f => ({ ...f, status: (e.target as HTMLSelectElement).value as CaseData['status'] }))}
             >
-              {#each statusOptions as option}
+              {#each Array.isArray(statusOptions) ? statusOptions : [] as option}
                 <option value={option.value}>{option.label}</option>
               {/each}
             </select>

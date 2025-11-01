@@ -119,8 +119,7 @@ https://svelte.dev/e/js_parse_error -->
               <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2z"/>
             </svg>
             {#if status === 'model-loading' || status === 'inference'}
-              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-            {/if}
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse">{/if}
           </div>
           <div>
             <h3 class="font-semibold text-gray-800 text-sm">RTX 3060 Ti</h3>
@@ -200,17 +199,14 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-gray-700 ml-1">Ollama</span>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Custom content slot -->
       {#if children}
         <div class="mt-4">
           {@render children()}
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .gpu-progress-container {
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);

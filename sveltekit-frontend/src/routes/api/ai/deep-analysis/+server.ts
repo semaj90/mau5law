@@ -60,7 +60,7 @@ async function getEmbedder(): Promise<EmbedderFn | null> {
   if (embedder) return embedder;
   try {
     // minimal type guard for dynamic import
-    type TransformersModule = { pipeline?: (...args: unknown[]) => Promise<unknown> | unknown };
+    type TransformersModule = { pipeline?: (...args: any[]) => Promise<unknown> | unknown };
     const mod = (await import('@xenova/transformers')) as unknown as TransformersModule;
     if (typeof mod?.pipeline === 'function') {
       // pipeline can return various shapes; cast to our function signature
@@ -191,11 +191,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // 5) Optional orchestration postprocess (comprehensive service)
     type AnalysisResult = {
       confidence?: number;
-      entities?: unknown[];
+      entities?: any[];
       summary?: string;
-      concepts?: unknown;
-      sentiment?: unknown;
-      [k: string]: unknown;
+      concepts?: any;
+      sentiment?: any;
+      [k: string]: any;
     } | null;
 
     let analysis: AnalysisResult = null;
@@ -234,7 +234,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
 
     return json(result);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Deep analysis API error:', error);
     return json(
       {

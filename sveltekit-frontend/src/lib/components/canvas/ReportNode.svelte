@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
   import type { Report } from '$lib/data/types';
   // UI Components
-  import * as ContextMenu from '$lib/components/ui/context-menu';
+  import * as ContextMenu from '$lib/components/ui/context-menu.svelte'';
   // Icons
   import { Link, Sparkles } from 'lucide-svelte';
   let nodeElement: HTMLDivElement | null = null;
@@ -31,7 +31,7 @@
     }
   }
   function handleMouseUp() {
-    isDragging = false;
+    isDragging = $state(false);
   }
   async function saveCitation(text: string) {
     if (!text.trim()) return;
@@ -52,7 +52,6 @@
     };
   });
 </script>
-
 <ContextMenu.Root>
   <ContextMenu.Trigger>
     <div
@@ -90,7 +89,6 @@
     </ContextMenu.Item>
   </ContextMenu.Content>
 </ContextMenu.Root>
-
 <style>
   /* @unocss-include */
 </style>

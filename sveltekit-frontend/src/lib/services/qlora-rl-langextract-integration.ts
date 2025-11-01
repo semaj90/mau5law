@@ -547,7 +547,7 @@ export class QLorARLLangExtractOrchestrator {
       qloraFineTuningEnabled: false
     }
   }
-  private encodeDataToTile(data: unknown, tileIndex: number): Uint8Array {
+  private encodeDataToTile(data: any, tileIndex: number): Uint8Array {
     const tile = new Uint8Array(8)
     let dataStr: string
     if (typeof data === 'string') dataStr = data

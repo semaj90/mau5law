@@ -23,13 +23,13 @@
     metadata?: {
       title?: string;
       type?: string;
-      [k: string]: unknown;
+      [k: string]: any;
     } | null;
     content?: string | null;
     score?: number | null;
-    [k: string]: unknown;
+    [k: string]: any;
   };
-  // typed array to avoid never[] inference
+  // typed array to avoid any[] inference
   let vectorResults = $state<VectorResult[]>([]);
   let isSearching = $state(false);
   // Demo data
@@ -73,19 +73,19 @@
         message: 'Vector search service unavailable',
       });
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
 
   // --- safe helpers for preview and score formatting ---
-  function getPreview(content: unknown): string | null {
+  function getPreview(content: any): string | null {
     if (typeof content === 'string' && content.length > 0) {
       return content.length > 100 ? `${content.slice(0, 100)}...` : content;
     }
     return null;
   }
 
-  function getScorePercent(score: unknown): string {
+  function getScorePercent(score: any): string {
     const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
     return (n * 100).toFixed(1);
   }
@@ -121,7 +121,7 @@
         <div class="mt-4">
           <h4 class="text-lg font-semibold text-gold mb-2">Search Results:</h4>
           <div class="space-y-2">
-            {#each vectorResults as result}
+            {#each Array.isArray(vectorResults) ? vectorResults : [] as result}
               <div class="p-3 bg-nier-surface-light rounded border border-nier-border">
                 <div class="flex justify-between items-start">
                   <div>
@@ -321,7 +321,7 @@
         <div class="p-6">
           <h3 class="text-lg font-semibold text-nier-white mb-4">Recent Activity</h3>
           <div class="space-y-3">
-            {#each layoutData.recentActivity as activity}
+            {#each Array.isArray(layoutData.recentActivity) ? layoutData.recentActivity : [] as activity}
               <div class="flex items-center gap-3 p-3 bg-nier-surface-light rounded">
                 <div class="w-2 h-2 bg-nier-accent rounded-full"></div>
                 <div>

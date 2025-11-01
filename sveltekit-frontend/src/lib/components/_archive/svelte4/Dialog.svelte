@@ -175,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="mx-auto px-4 max-w-7xl">
 				<h3 class="mx-auto px-4 max-w-7xl">Select AI Vibe:</h3>
 				<div class="mx-auto px-4 max-w-7xl">
-					{#each vibes as vibe}
+					{#each Array.isArray(vibes) ? vibes : [] as vibe}
 						<button
 							class="mx-auto px-4 max-w-7xl"
 						 class:active={selectedVibe === vibe.id}
@@ -204,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
 						</ul>
 					</div>
 				{:else}
-					{#each history as message}
+					{#each Array.isArray(history) ? history : [] as message}
 						<div class="mx-auto px-4 max-w-7xl" class:user={message.role === 'user'} class:error={message.isError}>
 							<div class="mx-auto px-4 max-w-7xl">
 								{#if message.role === 'user'}

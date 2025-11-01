@@ -64,7 +64,7 @@ export class LegalAIApiClient {
     endpoint: string,
     options: {
       method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-      body?: unknown;
+      body?: any;
       query?: Record<string, unknown>;
       headers?: Record<string, string>;
       signal?: AbortSignal;
@@ -96,13 +96,13 @@ export class LegalAIApiClient {
       requestInit.body = JSON.stringify(body as unknown);
     }
 
-    let lastError: unknown;
+    let lastError: any;
     const maxAttempts = retry.attempts ?? 1;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         const response = await fetch(url.toString(), requestInit);
 
-        let parsed: unknown = null;
+        let parsed: any = null;
         const contentType = response.headers.get('content-type') || '';
         if (contentType.includes('application/json')) {
           parsed = await response.json().catch(() => null);
@@ -254,7 +254,7 @@ export class LegalAIApiClient {
       mimeType?: string;
       hash?: string;
       tags?: string[];
-      chainOfCustody?: unknown[];
+      chainOfCustody?: any[];
       aiSummary?: string;
       summary?: string;
       isAdmissible?: boolean;
@@ -283,7 +283,7 @@ export class LegalAIApiClient {
       mimeType: string;
       hash: string;
       tags: string[];
-      chainOfCustody: unknown[];
+      chainOfCustody: any[];
       aiSummary: string;
       summary: string;
       isAdmissible: boolean;

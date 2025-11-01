@@ -147,9 +147,9 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected mesh!: THREE.Mesh;
   protected animationMixer?: THREE.AnimationMixer;
   protected boundingBox: THREE.Box3;
-  protected isHovered: boolean = false;
-  protected isActive: boolean = false;
-  protected isDisabled: boolean = false;
+  protected isHovered: boolean = $state(false);
+  protected isActive: boolean = $state(false);
+  protected isDisabled: boolean = $state(false);
   protected eventListeners: Map<string, Array<(event?: any) => void>> = new Map();
   protected customAnimations: Map<string, (deltaTime: number) => void> = new Map();
   constructor(style: YoRHaStyle = {}) {
@@ -410,7 +410,6 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       (uniforms.time as NumericUniform).value += deltaTime;
     });
   }
-
   protected createGlitchAnimation(_animation: YoRHaAnimation): void {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
@@ -616,7 +615,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected onUnhover(): void {
     if (this.isDisabled) return;
-    this.isHovered = false;
+    this.isHovered = $state(false);
     this.resetMaterialState();
   }
   protected onClick(): void {
@@ -633,7 +632,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected onMouseUp(): void {
     if (this.isDisabled) return;
-    this.isActive = false;
+    this.isActive = $state(false);
     this.resetMaterialState();
   }
   protected applyStateStyle(stateStyle: Partial<YoRHaStyle>): void {
@@ -725,7 +724,6 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     return Promise.resolve();
   }
 }
-
 // Add strict uniform types to avoid `any`
 type NumericUniform = { value: number };
 type ColorUniform = { value: THREE.Color };

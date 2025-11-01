@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
       });
     }
     return json({ success: false, error: 'Invalid action' }, { status: 400 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Performance test error:', error);
     const message = error instanceof Error ? error.message : 'An unknown error occurred';
     return json({ success: false, error: message }, { status: 500 });

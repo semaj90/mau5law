@@ -31,7 +31,7 @@ export class WebGPURAGEngine {
   private bufferPool: Map<string, GPUBuffer> = new Map();
   private bindGroupLayouts: Map<string, GPUBindGroupLayout> = new Map();
   private wasmModule: WebAssembly.Module | null = null;
-  private cudaInterop: boolean = false;
+  private cudaInterop: boolean = $state(false);
 
   constructor(
     private config: WebGPURAGConfig = {},

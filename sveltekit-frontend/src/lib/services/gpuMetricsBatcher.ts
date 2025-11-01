@@ -36,7 +36,7 @@ class GPUMetricsBatcher {
   private batchSize = 50;
   private flushInterval = 10000; // 10 seconds
   private visibilityFlushTimeout = 2000; // 2 seconds after visibility change
-  private isActive = false;
+  private isActive = $state(false);
   private flushTimer?: ReturnType<typeof setInterval>;
   private lastFrameTime = 0;
   private frameCount = 0;
@@ -82,7 +82,7 @@ class GPUMetricsBatcher {
    */
   stop(): void {
     if (!this.isActive) return;
-    this.isActive = false;
+    this.isActive = $state(false);
     // Clear timers
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
@@ -375,7 +375,7 @@ class GPUMetricsBatcher {
     }
   }
   private handleHealthCheckFailure(): void {
-    this.serverHealthy = false;
+    this.serverHealthy = $state(false);
     this.consecutiveFailures++;
     // Exponential backoff with max cap
     if (this.consecutiveFailures >= this.maxConsecutiveFailures) {
@@ -468,7 +468,7 @@ class GPUMetricsBatcher {
   }
   private handleServerError(): void {
     this.consecutiveFailures++;
-    this.serverHealthy = false;
+    this.serverHealthy = $state(false);
     // Keep only recent metrics to prevent memory buildup
     if (this.metrics.length > this.batchSize * 3) {
       this.metrics = this.metrics.slice(-this.batchSize * 2);

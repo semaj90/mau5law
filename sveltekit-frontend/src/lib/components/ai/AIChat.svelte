@@ -2,8 +2,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { useChatActor, chatActions } from '\/stores/chat.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/bits/Input.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Input } from '$lib/components/ui/bits/Input.svelte';
   import { serviceStatus } from '\/stores/chat.svelte';
   // Use the XState machine through the store
   const actor = useChatActor();
@@ -37,7 +37,6 @@
     // Add any initialization here
   });
 </script>
-
 <div class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8 nes-container">
   <div class="flex items-center justify-between border-b p-4">
     <div>
@@ -72,8 +71,7 @@
           <p>Error: {$stateStore.context.error?.message || 'Unknown error'}</p>
           <p>Please try again.</p>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Input area -->
   <div class="border-t p-4">
@@ -97,7 +95,6 @@
     </form>
   </div>
 </div>
-
 <style>
   .chat-message {
     display: flex;
@@ -155,4 +152,3 @@
     }
   }
 </style>
-

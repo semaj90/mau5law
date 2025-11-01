@@ -5,7 +5,6 @@
 import { pgTable, text, varchar, timestamp, integer, boolean, jsonb, uuid } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 import { relations } from 'drizzle-orm';
-
 // Main documents table with vector embeddings
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),

@@ -31,11 +31,9 @@ https: //svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="space-y-4">
   {output}
 </div>
-
 <style>
   /* @unocss-include */
   .typewriter {
@@ -57,4 +55,3 @@ https: //svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-

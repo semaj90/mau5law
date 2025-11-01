@@ -139,7 +139,7 @@ function createCitationStore() {
             recentCitations: data.recentCitations || [],
           }));
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Failed to load citations:', message);
       }
@@ -160,7 +160,7 @@ function createCitationStore() {
           }));
           return savedCitation;
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Failed to save citation:', message);
       }

@@ -162,13 +162,13 @@
 </div>
 <style>
   .parallax-container {
-    position relative;
+    position: relative;
     min-height: 100vh;
     overflow: hidden;
     background: var(--console-gradient-main, linear-gradient(180deg, #0a0a1f, #1a0a2f));
   }
   .parallax-layer {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -180,7 +180,7 @@ d;
     backface-visibility: hidden;
   }
   .gradient-overlay {
-    position fixed;
+    position: fixed;
 d;
     left: 0,
     right: 0;
@@ -205,12 +205,12 @@ d;
     );
   }
   .parallax-content {
-    position relative;
+    position: relative;
     z-index: 100;
     min-height: 100vh;
   }
   .scroll-indicator {
-    position fixed;
+    position: fixed;
 d;
     bottom: 2rem;
     left: 50%;

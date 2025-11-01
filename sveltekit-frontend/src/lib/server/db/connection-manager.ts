@@ -11,8 +11,8 @@ import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Minimal pool/client shapes to avoid importing: 'pg' types broadly
 type LocalClientLike = {
   query: (
-    textOrConfig: string | { text: string; values?: unknown[] },
-    params?: unknown[]
+    textOrConfig: string | { text: string; values?: any[] },
+    params?: any[]
   ) => Promise<{ rows?: RowLike[] }>;
   release?: () => void;
 };
@@ -20,7 +20,7 @@ type LocalClientLike = {
 type LocalPoolLike = {
   connect?: () => Promise<LocalClientLike>;
   end?: () => Promise<void>;
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
   totalCount?: number;
   idleCount?: number;
   waitingCount?: number;
@@ -33,7 +33,7 @@ type RowLike = Record<string, unknown>;
 // Global connection instances
 let appPool: LocalPoolLike | null = null;
 let adminPool: LocalPoolLike | null = null;
-let postgresJsClient: unknown | null = null;
+let postgresJsClient: any | null = null;
 let drizzleDb: PostgresJsDatabase<typeof schema> | null = null;
 
 /**
@@ -95,7 +95,7 @@ export function getAdminPool(): LocalPoolLike {
 /**
  * Get postgres.js client (for complex queries and better performance)
  */
-export function getPostgresJsClient(): unknown {
+export function getPostgresJsClient(): any {
   if (!postgresJsClient) {
     // Use the shared postgres-js client provided by the shim
     if (!pgClient) {

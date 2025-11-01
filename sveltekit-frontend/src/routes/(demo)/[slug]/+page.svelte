@@ -5,7 +5,7 @@
   import type { SvelteComponent } from 'svelte';
 
   interface Props {
-    data?: unknown;
+    data?: any;
   }
 
   let { data }: Props = $props();
@@ -56,7 +56,7 @@
       error = `Failed to load demo: ${message}`;
       currentComponent = null;
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 
@@ -167,7 +167,7 @@
 
       {#if metadata.tags.length > 0}
         <div class="demo-tags">
-          {#each metadata.tags as tag}
+          {#each Array.isArray(metadata.tags) ? metadata.tags : [] as tag}
             <span class="demo-tag">{tag}</span>
           {/each}
         </div>

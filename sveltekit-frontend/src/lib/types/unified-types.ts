@@ -157,7 +157,7 @@ export interface LegalEntity {
   startPos: number;
   endPos: number;
   confidence: number;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 export interface LegalClause {
   id: string;
@@ -235,12 +235,12 @@ export interface ValidationError {
   field: string;
   message: string;
   code: string;
-  value?: unknown;
+  value?: any;
 }
 export interface ApiError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
   timestamp: string;
   requestId?: string;
   validationErrors?: ValidationError[];
@@ -248,7 +248,7 @@ export interface ApiError {
 // ===== SEARCH & FILTERING TYPES =====
 export interface SearchOptions {
   query?: string;
-  filters?: { [key: string]: unknown };
+  filters?: { [key: string]: any };
   sort?: {
     field: string;
     direction: 'asc' | 'desc';
@@ -262,13 +262,13 @@ export interface SearchResult<T = unknown> {
   item: T;
   score?: number;
   highlights?: string[];
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 export interface SearchResponse<T = unknown> {
   results: SearchResult<T>[];
   total: number;
   query: string;
-  filters?: { [key: string]: unknown };
+  filters?: { [key: string]: any };
   processingTime: number;
   suggestions?: string[];
 }
@@ -332,21 +332,21 @@ export interface WorkflowContext {
   currentStep: string;
   progress: number;
   errors: string[];
-  data: { [key: string]: unknown };
+  data: { [key: string]: any };
   aiRecommendations?: string[];
   confidence?: number;
 }
 export interface WorkflowEvent {
   type: string;
-  payload?: unknown;
+  payload?: any;
   timestamp: Date;
   userId: string;
 }
 // ===== MCP & INTEGRATION TYPES =====
 export interface MCPRequest {
   tool: string;
-  parameters: { [key: string]: unknown };
-  context?: { [key: string]: unknown };
+  parameters: { [key: string]: any };
+  context?: { [key: string]: any };
 }
 export interface MCPResponse<T = unknown> {
   success: boolean;
@@ -383,7 +383,7 @@ export interface FormField {
 }
 export interface FormSchema {
   fields: FormField[];
-  validation?: { [key: string]: unknown };
+  validation?: { [key: string]: any };
 }
 // ===== COMPONENT PROPS TYPES =====
 export interface BaseComponentProps {
@@ -406,15 +406,15 @@ export interface ButtonProps extends BaseComponentProps {
   type?: 'button' | 'submit' | 'reset';
 }
 // ===== TYPE GUARDS =====
-export function isEmbeddingResponse(obj: unknown): obj is EmbeddingResponse {
+export function isEmbeddingResponse(obj: any): obj is EmbeddingResponse {
   return obj && typeof obj === 'object' && 'embedding' in obj && Array.isArray((obj as EmbeddingResponse).embedding);
 }
-export function isRAGResult(obj: unknown): obj is RAGResult {
+export function isRAGResult(obj: any): obj is RAGResult {
   return (
     obj && typeof obj === 'object' && 'source' in obj && 'score' in obj && typeof (obj as RAGResult).score === 'number'
   );
 }
-export function isApiError(obj: unknown): obj is ApiError {
+export function isApiError(obj: any): obj is ApiError {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -424,7 +424,7 @@ export function isApiError(obj: unknown): obj is ApiError {
     typeof (obj as ApiError).message === 'string'
   );
 }
-export function isLegalCase(obj: unknown): obj is LegalCase {
+export function isLegalCase(obj: any): obj is LegalCase {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -434,7 +434,7 @@ export function isLegalCase(obj: unknown): obj is LegalCase {
     typeof (obj as LegalCase).title === 'string'
   );
 }
-export function isUser(obj: unknown): obj is User {
+export function isUser(obj: any): obj is User {
   return (
     obj &&
     typeof obj === 'object' &&

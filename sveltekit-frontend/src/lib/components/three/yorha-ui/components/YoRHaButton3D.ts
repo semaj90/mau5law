@@ -268,8 +268,8 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       }
     });
     // Hide other content during loading
-    if (this.textMesh) this.textMesh.visible = false;
-    if (this.iconMesh) this.iconMesh.visible = false;
+    if (this.textMesh) this.textMesh.visible = $state(false);
+    if (this.iconMesh) this.iconMesh.visible = $state(false);
   }
   private static getVariantStyle(variant: string, size: string): Partial<YoRHaStyle> {
     const sizeStyles = {

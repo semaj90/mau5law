@@ -5,8 +5,8 @@
   import { setContext, onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { browser } from '$app/environment';
-  import KeyboardMapping from './KeyboardMapping.svelte';
-  import KeyboardHelp from './KeyboardHelp.svelte';
+  import { KeyboardMapping } from './KeyboardMapping.svelte';
+  import { KeyboardHelp } from './KeyboardHelp.svelte';
   // Types
   interface KeyboardShortcut {
     id: string;
@@ -122,7 +122,7 @@
   />
 {/if}
 <!-- Slot for application content -->
-{@render children?.()}
+<slot />
 <!-- Expose context for TypeScript -->
 <script lang="ts" generics="T">
   // Export context type for external use

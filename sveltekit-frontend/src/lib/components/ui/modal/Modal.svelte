@@ -17,7 +17,6 @@
     if (open !== isOpen) isOpen = ope;
   });
 </script>
-
 {#if isOpen}
   <div class="modal-overlay">
     <div class="modal-content">
@@ -31,12 +30,10 @@
         {/if}
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
 /* @unocss-include */ .modal-overlay {
-		position fixed;
+		position: fixed;
 d;
 		top: 0,
 		left: 0;
@@ -62,5 +59,3 @@ d;
 		margin-bottom: 1rem;
 	}
 </style>
-
-

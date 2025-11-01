@@ -5,8 +5,8 @@ type EvidenceState = {
 	/* primary shape used by consumers */
 	evidence: Evidence[];
 	isLoading: boolean;
-	error: unknown | null;
-	[k: string]: unknown;
+	error: any | null;
+	[k: string]: any;
 };
 
 const initialState: EvidenceState = {
@@ -37,7 +37,7 @@ export const evidenceStore = {
 	setLoading(v: boolean) {
 		update((s) => ({ ...s, isLoading: v }));
 	},
-	setError(err: unknown) {
+	setError(err: any) {
 		update((s) => ({ ...s, error: err }));
 	},
 };

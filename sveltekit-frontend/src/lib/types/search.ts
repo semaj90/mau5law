@@ -61,11 +61,11 @@ export interface TestResults {
     duration: number;
     documentsSearched: number;
   };
-  error?: unknown;
+  error?: any;
 }
 export interface TensorOperation {
   type: string;
-  data: unknown;
+  data: any;
   shape?: number[];
 }
 export interface MetricData {

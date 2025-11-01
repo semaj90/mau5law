@@ -10,12 +10,12 @@ type UploadResult = {
   filename?: string;
   size?: number;
   content?: string;
-  embeddings?: unknown;
+  embeddings?: any;
   processing_time_ms?: number;
 };
 
 // --- added: small helpers to safely read values from unknown JSON bodies ---
-function asBoolean(v: unknown): boolean | undefined {
+function asBoolean(v: any): boolean | undefined {
   if (typeof v === 'boolean') return v;
   if (typeof v === 'string') {
     const s = v.trim().toLowerCase();
@@ -24,10 +24,10 @@ function asBoolean(v: unknown): boolean | undefined {
   }
   return undefined;
 }
-function asString(v: unknown): string | undefined {
+function asString(v: any): string | undefined {
   return typeof v === 'string' ? v : undefined;
 }
-function asNumber(v: unknown): number | undefined {
+function asNumber(v: any): number | undefined {
   return typeof v === 'number' ? v : undefined;
 }
 // --- end helpers ---
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Optionally perform GPU processing if enabled
-    let gpuProcessingResult: unknown = null;
+    let gpuProcessingResult: any = null;
     if (ENABLE_GPU && enable_gpu) {
       try {
         const gpuReq = {

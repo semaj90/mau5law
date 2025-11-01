@@ -47,7 +47,7 @@ async function testOllamaConnection(): Promise<HealthResult> {
       success: true,
       message: 'Ollama is running but model list unavailable',
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return { success: false, message: `Ollama connection failed: ${msg}` };
   }
@@ -66,14 +66,14 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
     } else {
       return { success: false, message: 'llama.cpp server not responding properly' };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return { success: false, message: `llama.cpp connection failed: ${msg}` };
   }
 }
 
 // Normalizes various return shapes to string[]
-function mapModelsToNames(input: unknown): string[] {
+function mapModelsToNames(input: any): string[] {
   // expected shapes: string[] or Array<{ name?: string, model?: string, id?: string, ... }>
   if (!Array.isArray(input)) return [];
   return input
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async () => {
       (async () => {
         try {
           // Safely read service outputs
-          let available = false;
+          let available = $state(false);
           let models: string[] = [];
           let gemmaModel: string | null = null;
 
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async () => {
           }
 
           return { available, models, gemmaModel };
-        } catch (error: unknown) {
+        } catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
           return { available: false, error: msg };
         }
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async () => {
         ],
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Local AI health check failed:', msg);
     return json(
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
             };
           }
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         result = {
           success: false,
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json(result);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return json(
       {

@@ -1,36 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Resilient Qdrant client: SDK-first dynamic import, HTTP fallback, API key support,
 // and Docker-friendly URL resolution. Export a small facade and bootstrap helpers.
-
 type SearchRequestBody = {
   vector?: number[];
   limit?: number;
   with_payload?: boolean;
   filter?: Record<string, unknown>;
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
 type SearchHit = { id: string | number; score?: number; payload?: Record<string, unknown> };
 type CollectionsListResponse = { collections?: Array<{ name: string }> };
-type PayloadIndexBody = { field_name: string; field_schema?: string; wait?: boolean; [k: string]: unknown };
-type CreateCollectionBody = { vectors: { size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: unknown };
-
+type PayloadIndexBody = { field_name: string; field_schema?: string; wait?: boolean; [k: string]: any };
+type CreateCollectionBody = { vectors: { size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: any };
 const DEFAULT_QDRANT = 'http://localhost:6333';
-
 function getQdrantUrl(): string {
   if (process.env.QDRANT_URL) return process.env.QDRANT_URL;
   if (process.env.QDRANT_HOST && process.env.QDRANT_PORT)
     return `http://${process.env.QDRANT_HOST}:${process.env.QDRANT_PORT}`;
   return DEFAULT_QDRANT;
 }
-
 function getApiKeyHeader(): Record<string, string> {
   const key = process.env.QDRANT_API_KEY || '';
   return key ? { Authorization: `ApiKey ${key}` } : {};
 }
-
 type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
-
 async function ensureFetch(): Promise<FetchFn> {
   if (typeof globalThis.fetch === 'function') return globalThis.fetch as unknown as FetchFn;
   try {
@@ -41,7 +34,6 @@ async function ensureFetch(): Promise<FetchFn> {
     throw new Error('fetch is not available and node-fetch cannot be loaded');
   }
 }
-
 interface SdkClientLike {
   collections?: {
     list?: () => Promise<CollectionsListResponse>;
@@ -62,7 +54,6 @@ interface SdkClientLike {
   upsert?: (collectionName: string, body: Record<string, unknown>) => Promise<unknown>;
   delete?: (collectionName: string, body: Record<string, unknown>) => Promise<unknown>;
 }
-
 async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
   try {
     const mod = await import('@qdrant/js-client-rest');
@@ -81,8 +72,7 @@ async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
     return null;
   }
 }
-
-async function httpRequest(path: string, method = 'GET', body?: unknown) {
+async function httpRequest(path: string, method = 'GET', body?: any) {
   const f = await ensureFetch();
   const base = getQdrantUrl().replace(/\/$/, '');
   const headers: Record<string, string> = { 'Content-Type': 'application/json', ...getApiKeyHeader() };
@@ -97,15 +87,12 @@ async function httpRequest(path: string, method = 'GET', body?: unknown) {
   if (res.status === 204) return null;
   return res.json().catch(() => null);
 }
-
 async function httpGetCollections(): Promise<CollectionsListResponse> {
   return (await httpRequest('/collections')) as CollectionsListResponse;
 }
-
 async function httpCreateCollection(name: string, body: CreateCollectionBody) {
   return await httpRequest(`/collections/${encodeURIComponent(name)}`, 'PUT', body);
 }
-
 async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndexBody) {
   const base = getQdrantUrl().replace(/\/$/, '');
   const tries = [
@@ -129,7 +116,6 @@ async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndex
   }
   throw new Error('createPayloadIndex failed (all HTTP endpoints tried)');
 }
-
 async function httpSearch(collectionName: string, body: SearchRequestBody): Promise<SearchHit[]> {
   return (await httpRequest(
     `/collections/${encodeURIComponent(collectionName)}/points/search`,
@@ -137,15 +123,12 @@ async function httpSearch(collectionName: string, body: SearchRequestBody): Prom
     body
   )) as SearchHit[];
 }
-
 async function httpUpsert(collectionName: string, points: Array<Record<string, unknown>>) {
   return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points?wait=true`, 'PUT', { points });
 }
-
 async function httpDelete(collectionName: string, ids: (string | number)[]) {
   return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points/delete`, 'POST', { points: ids });
 }
-
 const qdrant = {
   async getCollections(): Promise<CollectionsListResponse> {
     const sdk = await tryCreateSdkClient();
@@ -159,7 +142,6 @@ const qdrant = {
     }
     return await httpGetCollections();
   },
-
   async createCollection(collectionName: string, body: CreateCollectionBody) {
     const sdk = await tryCreateSdkClient();
     if (sdk) {
@@ -172,7 +154,6 @@ const qdrant = {
     }
     return await httpCreateCollection(collectionName, body);
   },
-
   async createPayloadIndex(collectionName: string, body: PayloadIndexBody) {
     const sdk = await tryCreateSdkClient();
     if (sdk) {
@@ -187,7 +168,6 @@ const qdrant = {
     }
     return await httpCreatePayloadIndex(collectionName, body);
   },
-
   async search(collectionName: string, body: SearchRequestBody) {
     const sdk = await tryCreateSdkClient();
     if (sdk) {
@@ -201,7 +181,6 @@ const qdrant = {
     }
     return await httpSearch(collectionName, body);
   },
-
   async upsert(collectionName: string, points: Array<Record<string, unknown>>) {
     const sdk = await tryCreateSdkClient();
     if (sdk) {
@@ -216,7 +195,6 @@ const qdrant = {
     }
     return await httpUpsert(collectionName, points);
   },
-
   async delete(collectionName: string, ids: (string | number)[]) {
     const sdk = await tryCreateSdkClient();
     if (sdk) {
@@ -232,7 +210,6 @@ const qdrant = {
     return await httpDelete(collectionName, ids);
   },
 };
-
 async function qdrantHealthCheck(): Promise<boolean> {
   try {
     const f = await ensureFetch();
@@ -243,7 +220,6 @@ async function qdrantHealthCheck(): Promise<boolean> {
     return false;
   }
 }
-
 async function waitForQdrantReady(maxRetries = 15, delayMs = 2000): Promise<boolean> {
   for (let i = 0; i < maxRetries; i++) {
     if (await qdrantHealthCheck()) {
@@ -256,7 +232,6 @@ async function waitForQdrantReady(maxRetries = 15, delayMs = 2000): Promise<bool
   console.error('❌ Qdrant did not become ready in time.');
   return false;
 }
-
 async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION || 'documents') {
   try {
     const cols = await qdrant.getCollections();
@@ -266,7 +241,6 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
       await qdrant.createCollection(collectionName, { vectors: { size: vectorSize, distance: 'Cosine' } });
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
     }
-
     const pairs: Array<[string, string]> = [
       ['type', 'keyword'],
       ['title', 'text'],
@@ -285,11 +259,9 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
     return { ok: false, error: String(e) };
   }
 }
-
 async function bootstrapQdrant(collectionName?: string) {
   const ready = await waitForQdrantReady();
   if (!ready) throw new Error('Qdrant startup timeout');
   return await initQdrantIndexes(collectionName || process.env.QDRANT_COLLECTION || 'documents');
 }
-
 export { qdrant, initQdrantIndexes, qdrantHealthCheck, waitForQdrantReady, bootstrapQdrant };

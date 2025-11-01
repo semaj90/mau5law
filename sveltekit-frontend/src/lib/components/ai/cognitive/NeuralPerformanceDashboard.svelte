@@ -5,10 +5,8 @@
 <script lang="ts">
   // Props (fixed: don't redeclare: 'number' etc.)
   const { updateInterval = 2000, maxHistoryPoints = 30, showAdvancedMetrics = true } = $props();
-
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
-
   // Performance metrics interface (fixed colons)
   interface PerformanceMetrics {
     timestamp: number;
@@ -19,7 +17,6 @@
     activeConnections: number;
     temperature: number;
   }
-
   interface ServiceStatus {
     gpu: 'healthy' | 'degraded' | 'offline';
     webgpu: 'healthy' | 'degraded' | 'offline';
@@ -27,7 +24,6 @@
     vectordb: 'healthy' | 'degraded' | 'offline';
     lastCheck: Date;
   }
-
   // Real-time data stores (fixed trailing comma/semicolons)
   const performanceHistory = writable<PerformanceMetrics[]>([]);
   const currentMetrics = writable<PerformanceMetrics | null>(null);
@@ -39,13 +35,11 @@
     lastCheck: new Date(),
   });
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
-
   // Dashboard state
   let isMonitoring = $state(false);
   let monitoringInterval: ReturnType<typeof setInterval> | null = null;
   let lastUpdate = $state(Date.now());
   let selectedTimeRange = $state('5min');
-
   // Derived performance indicators
   const overallGrade = derived(currentMetrics, ($metrics) => {
     if (!$metrics) return { grade: 'N/A', color: 'text-gray-400', bg: 'bg-gray-500/20' };
@@ -57,7 +51,6 @@
     if (efficiency >= 60) return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-500/20' };
     return { grade: 'D', color: 'text-red-400', bg: 'bg-red-500/20' };
   });
-
   // Fixed derived: compute service health properly
   const systemHealthScore = derived(serviceStatus, ($status) => {
     const services = Object.values($status).filter(v => typeof v === 'string') as string[];
@@ -70,7 +63,6 @@
     if (percentage >= 50) return { score: percentage, status: 'Service Degradation', color: 'text-orange-400' };
     return { score: percentage, status: 'Critical Issues', color: 'text-red-400' };
   });
-
   // Generate realistic performance data (fixed object literal commas & keys)
   function generateMetrics(): PerformanceMetrics {
     const now = Date.now();
@@ -85,7 +77,6 @@
       temperature: 65 + Math.sin(now / 25000) * 8 + (Math.random() - 0.5) * 3,
     };
   }
-
   // Update performance history
   function updateHistory(metrics: PerformanceMetrics) {
     performanceHistory.update(history => {
@@ -93,7 +84,6 @@
       return newHistory.slice(-maxHistoryPoints);
     });
   }
-
   // Simulate service health checks (fixed trailing comma)
   function checkServiceHealth(): ServiceStatus {
     return {
@@ -104,7 +94,6 @@
       lastCheck: new Date(),
     };
   }
-
   // Start / Stop monitoring (monitoringInterval typed correctly; use updateInterval)
   function startMonitoring() {
     if (isMonitoring) return;
@@ -127,17 +116,15 @@
       }
     }, updateInterval);
   }
-
   function stopMonitoring() {
     if (!isMonitoring) return;
-    isMonitoring = false;
+    isMonitoring = $state(false);
     connectionStatus.set('disconnected');
     if (monitoringInterval) {
       clearInterval(monitoringInterval);
       monitoringInterval = null;
     }
   }
-
   // Use onMount / onDestroy lifecycle instead of $effect to avoid unused imports/issues
   onMount(() => {
     startMonitoring();
@@ -145,7 +132,6 @@
   onDestroy(() => {
     stopMonitoring();
   });
-
   // Helper functions
   function formatNumber(num: number, decimals: number = 1): string {
     return num.toFixed(decimals);
@@ -167,7 +153,6 @@
     }
   }
 </script>
-
 <div class="neural-dashboard">
   <!-- Header -->
   <div class="dashboard-header">
@@ -289,8 +274,7 @@
               : 'Needs Improvement'}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Service Status -->
   <div class="service-status">
     <h3>🔧 Service Health Monitor</h3>
@@ -373,10 +357,8 @@
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .neural-dashboard {
     max-width: 1400px;
@@ -567,7 +549,7 @@
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 3px;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .service-status {
     background: linear-gradient(145deg, #1e293b, #0f172a);
@@ -728,5 +710,3 @@
     }
   }
 </style>
-
-

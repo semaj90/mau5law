@@ -1,10 +1,12 @@
 <script lang="ts">
   // Props
-  export let forId: string | undefined = undefined;
-  export let required: boolean = false;
-  export let srOnly: boolean = false;
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  export let className: string = '';
+  let { forId = undefined, required = false, srOnly = false, size = 'md', className = '' } = $props<{
+    forId?: string;
+    required?: boolean;
+    srOnly?: boolean;
+    size?: 'sm' | 'md' | 'lg';
+    className?: string;
+  }>();
 
   // Small utility for class names (keeps component minimal)
   const sizeMap = {
@@ -12,9 +14,10 @@
     md: 'text-base',
     lg: 'text-lg'
   } as const;
-  $: sizeClass = sizeMap[size] ?? sizeMap.md;
-  $: srOnlyClass = srOnly ? 'sr-only' : '';
-  $: computedClass = `${sizeClass} ${srOnlyClass} ${className}`.trim();
+
+  const sizeClass = $derived(sizeMap[size] ?? sizeMap.md);
+  const srOnlyClass = $derived(srOnly ? 'sr-only' : '');
+  const computedClass = $derived(`${sizeClass} ${srOnlyClass} ${className}`.trim());
 </script>
 
 <label class={computedClass} {...(forId ? { for: forId } : {})}>

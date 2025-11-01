@@ -12,7 +12,6 @@ https://svelte.dev/e/js_parse_error -->
   import type { Writable } from 'svelte/store';
   // NOTE: Removed Card* imports to avoid SvelteComponentTyped constructor/type mismatch.
   // Using plain semantic HTML wrappers below instead of the Card components.
-
   // Use native <label>, <textarea>, <input type="checkbox"> to avoid SvelteComponentTyped constructor/type mismatch
   // Removed broken select module import. Using native <select> instead.
   import { AlertCircle, Loader2, Save, CheckCircle, Upload, FileText, Calendar, Users, Scale } from 'lucide-svelte';
@@ -22,13 +21,13 @@ https://svelte.dev/e/js_parse_error -->
   import type { SuperValidated } from 'sveltekit-superforms';
   // Svelte 5 Props Interface
   interface Props {
-    data?: unknown; // SuperValidated<CaseForm>
+    data?: any; // SuperValidated<CaseForm>
     submitAction?: string;
     editMode?: boolean;
     enableAutoSave?: boolean;
     enableRealTimeValidation?: boolean;
     onsubmit?: (_event: { data: CaseForm }) => void;
-    onsuccess?: (_event: { caseItem: unknown }) => void;
+    onsuccess?: (_event: { caseItem: any }) => void;
     onerror?: (_event: { message: string }) => void;
     ondraft?: (_event: { data: CaseForm }) => void;
   }
@@ -55,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     onSuccess: result => {
       if (onsuccess) onsuccess({ caseItem: result });
     },
-    onError: (error: unknown) => {
+    onError: (error: any) => {
       const message = formatError(error);
       if (onerror) onerror({ message });
       componentError = new Error(message);
@@ -63,12 +62,10 @@ https://svelte.dev/e/js_parse_error -->
   });
   // only take properties we actually use; other members on the integration may not exist
   const { form: rawForm, errors } = formIntegration;
-
   const form = rawForm as unknown as Writable<CaseForm>;
   // SuperForm may not expose isValid/isSubmitting/progress — derive locals instead
   // replace the invalid destructure:
   // const { isValid, isSubmitting, progress } = formIntegration.form;
-
   // Use Svelte 5 $state runes so these mutating variables are reactive
   let isValid = $state<boolean>(true);
   let progress = $state<number>(0);
@@ -79,14 +76,11 @@ https://svelte.dev/e/js_parse_error -->
   let componentError = $state<Error | null>(null);
   let lastSaved = $state<Date | null>(null);
   let isAutoSaving = $state<boolean>(false);
-
   // interval/timeouts for progress animation
   let progressInterval: ReturnType<typeof setInterval> | null = null;
   let progressTimeout: ReturnType<typeof setTimeout> | null = null;
-
   // debounce handle for validation
   let _validationTimeout: ReturnType<typeof setTimeout> | null = null;
-
   // keep validation in sync (reactive)
   // use $effect (runes mode compliant) to keep `isValid` updated
   $effect(() => {
@@ -97,7 +91,6 @@ https://svelte.dev/e/js_parse_error -->
       isValid = Object.keys($errors || {}).length === 0;
     }
   });
-
   // progress animation: watcher (runes-mode compliant)
   $effect(() => {
     if (isSubmitting) {
@@ -119,7 +112,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   });
-
   onDestroy(() => {
     if (progressInterval) clearInterval(progressInterval);
     if (progressTimeout) clearTimeout(progressTimeout);
@@ -130,7 +122,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'medium', label: 'Medium Priority', color: 'text-yellow-600' },
     { value: 'high', label: 'High Priority', color: 'text-red-600' },
   ];
-
   // Status options (fixed: added missing: ':' for description)
   const statusOptions = [
     { value: 'draft', label: 'Draft', description: 'Case is being prepared' },
@@ -164,7 +155,6 @@ https://svelte.dev/e/js_parse_error -->
     return enhance(node, ({ formData }) => {
       // mark submission started
       isSubmitting = true;
-
       // Add uploaded files to form data
       uploadedFiles.forEach((file, index) => {
         formData.append(`attachments[${index}]`, file);
@@ -178,7 +168,6 @@ https://svelte.dev/e/js_parse_error -->
           autoSaved: lastSaved !== null,
         })
       );
-
       return async ({ result, update }) => {
         try {
           if (result?.type === 'success') {
@@ -188,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
             }
             // update lastSaved on success
             lastSaved = new Date();
-            isAutoSaving = false;
+            isAutoSaving = $state(false);
           } else {
             // Safely construct an error message by narrowing on the discriminant: 'type'
             let errorMsg = 'Submission failed';
@@ -219,21 +208,19 @@ https://svelte.dev/e/js_parse_error -->
                 errorMsg = String(result) || errorMsg;
               }
             }
-
             if (onerror) onerror({ message: errorMsg });
             componentError = new Error(errorMsg);
           }
         } finally {
           // always stop submitting and update form UI
-          isSubmitting = false;
+          isSubmitting = $state(false);
           await update();
         }
       };
     });
   }
-
   // Add a safe error formatter for unknown values
-  function formatError(e: unknown): string {
+  function formatError(e: any): string {
     if (e instanceof Error) return e.message;
     if (typeof e === 'string') return e;
     try {
@@ -242,12 +229,10 @@ https://svelte.dev/e/js_parse_error -->
       return String(e);
     }
   }
-
   // Add helper to update nested fields on the Writable form store
   function setFormField<K extends keyof CaseForm>(field: K, value: CaseForm[K]) {
     form.update(f => ({ ...(f as any), [field]: value }));
   }
-
   // === NEW: reactive debounced schema validation (replaces $effect / $state duplication) ===
   // debounced schema validation using $effect (runes mode compliant)
   $effect(() => {
@@ -261,7 +246,6 @@ https://svelte.dev/e/js_parse_error -->
     }, 300);
   });
 </script>
-
 {#if !componentError}
   <!-- Replaced Card* components with semantic wrappers to avoid typing mismatch -->
   <div class="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-sm">
@@ -285,8 +269,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="bg-primary h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
             </div>
             <span class="text-sm nes-text is-disabled">{Math.round(progress)}%</span>
-          </div>
-        {/if}
+          {/if}
       </div>
     </header>
     <section class="px-6 py-6">
@@ -315,10 +298,8 @@ https://svelte.dev/e/js_parse_error -->
                 <AlertCircle class="h-4 w-4 text-red-600" />
                 <span class="text-sm text-red-600">Issues found</span>
               {/if}
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
       <form
         method="POST"
         action={submitAction}
@@ -364,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
               class={$errors?.priority ? 'border-destructive' : ''}
             >
               <option value="" disabled selected hidden>Select priority</option>
-              {#each priorityLevels as priority}
+              {#each Array.isArray(priorityLevels) ? priorityLevels : [] as priority}
                 <option value={priority.value} class={priority.color}>{priority.label}</option>
               {/each}
             </select>
@@ -420,7 +401,6 @@ https://svelte.dev/e/js_parse_error -->
           >
             {showAdvanced ? 'Hide' : 'Show'} Advanced Options
           </button>
-
           {#if showAdvanced}
             <div class="space-y-6 border-l-2 border-muted pl-6">
               <!-- Status -->
@@ -433,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
                   onchange={e => setFormField('status', (e.target as HTMLSelectElement).value as any)}
                 >
                   <option value="" disabled selected hidden>Select status</option>
-                  {#each statusOptions as status}
+                  {#each Array.isArray(statusOptions) ? statusOptions : [] as status}
                     <option value={status.value}>
                       {status.label} — {status.description}
                     </option>
@@ -501,10 +481,8 @@ https://svelte.dev/e/js_parse_error -->
                   <label for="notifyAssignee">Notify assignee when case is updated</label>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
-
         <!-- File Upload Section -->
         <div class="border-t pt-6">
           <div class="space-y-4">
@@ -559,11 +537,9 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
-
         <!-- Form Actions -->
         <div class="flex items-center justify-between pt-6 border-t">
           <div class="flex items-center space-x-4">
@@ -581,7 +557,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="flex items-center space-x-3">
             <button type="button" class="inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5">Cancel</button>
-
             <!-- moved conditional outside the Button to avoid invalid block continuation -->
             {#if isSubmitting}
               <button type="submit" disabled={true} class="min-w-[120px] inline-flex items-center justify-center px-4 py-2 rounded-md text-sm bg-primary/90 text-white" aria-busy="true">
@@ -599,9 +574,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </form>
     </section>
-  </div>
-{/if}
-
+  {/if}
 {#if componentError}
   <div class="error-boundary bg-red-50 border border-red-200 rounded-lg p-6 m-4">
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
@@ -616,10 +589,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       Dismiss Error
     </button>
-  </div>
-{/if}
-
+  {/if}
 <style lang="postcss">
   /*$$__STYLE_CONTENT__$$*/
 </style>
-

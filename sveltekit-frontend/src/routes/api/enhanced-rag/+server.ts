@@ -12,7 +12,7 @@ type RerankResult = {
   rerankScore?: number | string;
   finalScore?: number;
   // allow extra fields without using `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Enhanced RAG endpoint with reranker, Neo4j, memory, and docs
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // treat docs as unknown and runtime-check to avoid `any`
     const docsRaw = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as unknown;
 
-    const isStringArray = (v: unknown): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string');
+    const isStringArray = (v: any): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string');
 
     // Final scoring pass
     const highScoreRecommendations = reranked
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
       confidence: highScoreRecommendations[0]?.finalScore ?? 0,
       highScoreRecommendations,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     return json({ error: message || 'Failed to run enhanced RAG' }, { status: 500 });
   }

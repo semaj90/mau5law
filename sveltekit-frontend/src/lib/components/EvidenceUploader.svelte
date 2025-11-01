@@ -4,7 +4,7 @@
   interface Props {
     caseId: string;
     maxFileSize?: number;
-    onuploaded?: (_event: { file: File; evidence: unknown }) => void;
+    onuploaded?: (_event: { file: File; evidence: any }) => void;
   }
   // Svelte 5 props with event handlers
   let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props();
@@ -21,21 +21,19 @@
     documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
     audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'],
   }
-
   // Flatten safely for TypeScript
   const allAllowedTypes: string[] = Object.values(allowedTypes).reduce((acc, arr) => acc.concat(arr), [] as string[]);
-
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     // use .files (DataTransfer.files) not .file
     const droppedFiles = e.dataTransfer?.files;
     if (droppedFiles && droppedFiles.length > 0) {
@@ -86,7 +84,7 @@
           if (onuploaded) {
             onuploaded({
               file,
-              evidence: (result as { evidence?: unknown }).evidence
+              evidence: (result as { evidence?: any }).evidence
             });
           }
         } else {
@@ -104,7 +102,7 @@
       uploadStatus = `Upload error: ${errorMsg}`;
       componentError = error instanceof Error ? error : new Error(errorMsg);
     } finally {
-      uploading = false;
+      uploading = $state(false);
       files = null;
     }
   }
@@ -130,7 +128,6 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 {#if componentError}
   <div class="error-boundary bg-red-900 border border-red-500 rounded-lg p-6 m-4">
     <h2 class="text-xl font-bold text-red-300 mb-2">Upload Error</h2>
@@ -176,8 +173,7 @@
         {#if uploadProgress > 0}
           <div class="progress-bar">
             <div class="progress-fill" style="width: {uploadProgress}%"></div>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else}
       <div class="upload-prompt">
@@ -193,14 +189,13 @@
         <div class="size-limit">
           Max file size: {formatFileSize(maxFileSize)}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- File preview if files selected but not uploaded yet -->
   {#if files && files.length > 0 && !uploading}
     <div class="file-preview">
       <h4>Selected Files ({files.length})</h4>
-      {#each Array.from(files) as file}
+      {#each Array.isArray(Array.from(files)) ? Array.from(files) : [] as file}
         <div class="file-item">
           <span class="file-icon">{getFileIcon(file.type)}</span>
           <div class="file-info">
@@ -211,11 +206,8 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
-</div>
+    {/if}
 {/if}
-
 <style>
   .evidence-uploader {
     width: 100%;
@@ -301,7 +293,7 @@
   .progress-fill {
     height: 100%;
     background: var(--primary, #007bff);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .file-preview {
     margin-top: 1rem;

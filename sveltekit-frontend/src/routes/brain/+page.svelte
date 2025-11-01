@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // onMount not used; Svelte 5 runes are used instead
-  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
   import * as THREE from 'three';
   let layout = $state(null) as any;
   // --- added types to make node/link shapes explicit ---
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="p-3 border rounded bg-zinc-900/40">
       <h2 class="font-semibold mb-2">Nodes ({graphData.nodes.length})</h2>
       <div class="flex flex-wrap gap-2 text-[10px]">
-        {#each graphData.nodes as n}
+        {#each Array.isArray(graphData.nodes) ? graphData.nodes : [] as n}
           <span class="px-2 py-1 rounded bg-zinc-800/70 border border-zinc-700/60"><code>{n.id}</code></span>
         {/each}
       </div>
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="p-4 border rounded bg-zinc-900/40">
     <h2 class="font-semibold mb-2">Links ({graphData.links.length})</h2>
     <ul class="text-xs max-h-72 overflow-auto space-y-1">
-      {#each graphData.links as l}
+      {#each Array.isArray(graphData.links) ? graphData.links : [] as l}
         <li><code>{l.source} → {l.target}</code> <span class="opacity-60">{l.kind}</span></li>
       {/each}
     </ul>

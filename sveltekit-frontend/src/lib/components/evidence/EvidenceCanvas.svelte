@@ -5,8 +5,8 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import DraggableEvidenceNode from './DraggableEvidenceNode.svelte';
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  import { DraggableEvidenceNode } from './DraggableEvidenceNode.svelte';
+  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Plus, Zap, Search, Brain, Download } from 'lucide-svelte';
   interface EvidenceConnection {
     id: string;
@@ -177,7 +177,7 @@ await embeddingsService.initialize();
       console.error('❌ Analysis failed:', error);
       showError('Evidence analysis failed');
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   // Utility functions
@@ -387,8 +387,7 @@ await embeddingsService.initialize();
             <h3 class="text-lg font-medium mb-2">No evidence on canvas</h3>
             <p class="text-sm">Drag evidence items here to start building your case</p>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </Card>
 </div>

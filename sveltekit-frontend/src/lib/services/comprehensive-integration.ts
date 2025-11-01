@@ -23,7 +23,7 @@ export interface RAGQuery {
 }
 export interface RAGResult {
   relevanceScore?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface RAGResponse {
   results: RAGResult[]; // replaced Array<any>
@@ -131,7 +131,7 @@ export interface IntegratedResponse {
 export type KeyValue = Record<string, unknown>;
 
 export interface Neo4jResultRow {
-  row: unknown[];
+  row: any[];
 }
 
 // Add small domain types to avoid `any`
@@ -150,7 +150,7 @@ export interface QdrantSearchResult {
 // Replace `any` with explicit/unknown types
 export interface DatabaseOperations {
   postgresql: {
-    query: (sql: string, params?: unknown[]) => Promise<unknown[]>;
+    query: (sql: string, params?: any[]) => Promise<unknown[]>;
     insert: (table: string, data: KeyValue) => Promise<string>;
     update: (table: string, id: string, data: KeyValue) => Promise<boolean>;
   };
@@ -164,7 +164,7 @@ export interface DatabaseOperations {
     upsert: (collection: string, points: QdrantPoint[]) => Promise<boolean>;
   };
   neo4j: {
-    query: (cypher: string, params?: unknown) => Promise<Neo4jResultRow[]>;
+    query: (cypher: string, params?: any) => Promise<Neo4jResultRow[]>;
     createNode: (label: string, properties: KeyValue) => Promise<string>;
     createRelationship: (from string, to: string, type: string, properties?: KeyValue) => Promise<string>;
   };
@@ -243,7 +243,7 @@ class ComprehensiveIntegrationService {
         try {
           response.semanticAnalysis = await semanticAnalyzer.analyzeDocument(query.query, `query_${Date.now()}`);
           console.log('✅ Semantic analysis completed');
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn('⚠️ Semantic analysis failed:', error);
         }
       }
@@ -265,7 +265,7 @@ class ComprehensiveIntegrationService {
           };
           response.ragResults = await semanticAnalyzer.enhancedQuery(ragQuery);
           console.log('✅ RAG query completed');
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn('⚠️ RAG query failed:', error);
         }
       }
@@ -287,7 +287,7 @@ class ComprehensiveIntegrationService {
             };
             console.log('✅ WebGPU acceleration applied (similarity:', similarity, ')');
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn('⚠️ WebGPU acceleration failed:', error);
         }
       }
@@ -301,7 +301,7 @@ class ComprehensiveIntegrationService {
             analysis: response.semanticAnalysis,
           } as KeyValue);
           console.log('✅ Real-time streaming initiated');
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn('⚠️ Real-time streaming failed:', error);
         }
       }
@@ -314,7 +314,7 @@ class ComprehensiveIntegrationService {
       response.confidence = this.calculateConfidence(response);
       console.log(`✅ Integrated query completed in ${response.processingTime.toFixed(2)}ms`);
       return response;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Integrated query failed:', error);
       throw error;
     }
@@ -351,7 +351,7 @@ class ComprehensiveIntegrationService {
       } else {
         throw new Error('Enhanced RAG health check failed');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.systemStatus.enhancedRAG.status = 'offline';
       console.warn('⚠️ Enhanced RAG system offline:', error);
     }
@@ -369,8 +369,8 @@ class ComprehensiveIntegrationService {
         performance: capabilities.available ? 100 : 0,
       };
       console.log(capabilities.available ? '✅ WebGPU acceleration available' : 'ℹ️ WebGPU not available');
-    } catch (error: unknown) {
-      this.systemStatus.webGPU.available = false;
+    } catch (error: any) {
+      this.systemStatus.webGPU.available = $state(false);
       console.warn('⚠️ WebGPU initialization failed:', error);
     }
   }
@@ -391,7 +391,7 @@ class ComprehensiveIntegrationService {
         primaryChannel: 'websocket',
       };
       console.log('✅ Real-time communication initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Real-time communication initialization failed:', error);
     }
   }
@@ -404,28 +404,28 @@ class ComprehensiveIntegrationService {
       const respPg = await fetch('http://localhost:8094/api/database/postgres/health');
       this.systemStatus.databases.postgresql = respPg.ok;
     } catch {
-      this.systemStatus.databases.postgresql = false;
+      this.systemStatus.databases.postgresql = $state(false);
     }
 
     try {
       const respRedis = await fetch('http://localhost:8094/api/database/redis/health');
       this.systemStatus.databases.redis = respRedis.ok;
     } catch {
-      this.systemStatus.databases.redis = false;
+      this.systemStatus.databases.redis = $state(false);
     }
 
     try {
       const respQ = await fetch('http://localhost:6333/collections');
       this.systemStatus.databases.qdrant = respQ.ok;
     } catch {
-      this.systemStatus.databases.qdrant = false;
+      this.systemStatus.databases.qdrant = $state(false);
     }
 
     try {
       const respNeo = await fetch('http://localhost:7474/');
       this.systemStatus.databases.neo4j = respNeo.ok;
     } catch {
-      this.systemStatus.databases.neo4j = false;
+      this.systemStatus.databases.neo4j = $state(false);
     }
 
     console.log('🗄️ Database connection status checked');
@@ -438,17 +438,17 @@ class ComprehensiveIntegrationService {
     try {
       const response = await fetch('http://localhost:11434/api/tags');
       if (response.ok) {
-        const tags: unknown = await response.json();
+        const tags: any = await response.json();
 
         // Safely extract models array without using `any`
-        let models: unknown[] = [];
+        let models: any[] = [];
         if (this.isRecord(tags)) {
           const maybeModels = tags['models'];
           if (Array.isArray(maybeModels)) models = maybeModels;
         }
 
         // Helper to safely read a `name` property from a model entry
-        const getModelName = (entry: unknown): string | undefined => {
+        const getModelName = (entry: any): string | undefined => {
           if (typeof entry === 'object' && entry !== null && 'name' in entry) {
             const val = (entry as Record<string, unknown>)['name'];
             return typeof val === 'string' ? val : undefined;
@@ -458,18 +458,18 @@ class ComprehensiveIntegrationService {
 
         this.systemStatus.models = {
           ollama: models.length > 0,
-          embeddings: models.some((m: unknown) => {
+          embeddings: models.some((m: any) => {
             const name = getModelName(m);
             return typeof name === 'string' && name.includes('nomic-embed');
           }),
-          gemma3Legal: models.some((m: unknown) => {
+          gemma3Legal: models.some((m: any) => {
             const name = getModelName(m);
             return typeof name === 'string' && name.includes('gemma3-legal');
           }),
         };
         console.log('🤖 Model availability checked');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.systemStatus.models = { ollama: false, embeddings: false, gemma3Legal: false };
       console.warn('⚠️ Model availability check failed:', error);
     }
@@ -571,7 +571,7 @@ class ComprehensiveIntegrationService {
   }
 
   // Database operation implementations (fixed payloads & parameter names)
-  private async executePostgreSQLQuery(sql: string, params?: unknown[]): Promise<unknown[]> {
+  private async executePostgreSQLQuery(sql: string, params?: any[]): Promise<unknown[]> {
     const response = await fetch('http://localhost:8094/api/database/postgres/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -644,11 +644,11 @@ class ComprehensiveIntegrationService {
     return response.ok;
   }
 
-  private isRecord(v: unknown): v is Record<string, unknown> {
+  private isRecord(v: any): v is Record<string, unknown> {
     return typeof v === 'object' && v !== null;
   }
 
-  private async queryNeo4j(cypher: string, params?: unknown): Promise<Neo4jResultRow[]> {
+  private async queryNeo4j(cypher: string, params?: any): Promise<Neo4jResultRow[]> {
     const response = await fetch('http://localhost:7474/db/neo4j/tx/commit', {
       method: 'POST',
       headers: {
@@ -660,7 +660,7 @@ class ComprehensiveIntegrationService {
       }),
     });
     if (!response.ok) throw new Error('Neo4j query failed');
-    const result: unknown = await response.json();
+    const result: any = await response.json();
 
     // normalize result.results[0].data to our Neo4jResultRow[] using safe checks
     if (!this.isRecord(result)) return [];

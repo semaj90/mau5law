@@ -4,7 +4,7 @@
  * Force-cast an unknown value to T.
  * Use sparingly; prefers explicit type-safe conversions elsewhere.
  */
-export function assertAny<T>(value: unknown): T {
+export function assertAny<T>(value: any): T {
 	return value as T;
 }
 
@@ -12,13 +12,13 @@ export function assertAny<T>(value: unknown): T {
  * Safely access nested properties using a dot path.
  * Works with objects and arrays; returns defaultValue when path cannot be resolved.
  */
-export function safeAccess<T>(obj: unknown, path: string, defaultValue?: T): T | undefined {
+export function safeAccess<T>(obj: any, path: string, defaultValue?: T): T | undefined {
   if (obj == null) return defaultValue;
   if (!path) return obj as unknown as T;
 
   try {
     const parts = path.split('.');
-    let cur: unknown = obj;
+    let cur: any = obj;
     for (const p of parts) {
       if (cur == null) return defaultValue;
       // handle numeric index for arrays
@@ -86,30 +86,30 @@ export function asBuffer(
  * Type-guard: is the value an Iterable<number>?
  * Avoids using `any` when checking Symbol.iterator.
  */
-function isIterableOfNumber(value: unknown): value is Iterable<number> {
+function isIterableOfNumber(value: any): value is Iterable<number> {
   if (value == null) return false;
-  const maybe = value as { [Symbol.iterator]?: unknown };
+  const maybe = value as { [Symbol.iterator]?: any };
   return typeof maybe[Symbol.iterator] === 'function';
 }
 
 /**
  * Narrowing helper: is obj a plain record (object).
  */
-export function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: any): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 /**
  * Property access helpers
  */
-export function hasProperty(obj: unknown, prop: string): obj is Record<string, unknown> {
+export function hasProperty(obj: any, prop: string): obj is Record<string, unknown> {
   return isRecord(obj) && Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
 /**
  * Get a property with a typed fallback. Returns fallback when property missing.
  */
-export function getProperty<T>(obj: unknown, prop: string, fallback?: T): T | undefined {
+export function getProperty<T>(obj: any, prop: string, fallback?: T): T | undefined {
   if (hasProperty(obj, prop)) {
     return (obj as Record<string, unknown>)[prop] as unknown as T;
   }

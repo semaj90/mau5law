@@ -34,7 +34,7 @@ export interface CUDAResult {
 export class CUDATensorService {
   private readonly config: CUDAConfig;
   private readonly operationQueue: TensorOperation[] = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   // RTX 3060 optimized configuration
   private readonly RTX_3060_CONFIG: CUDAConfig = {
     deviceId: 0,
@@ -294,7 +294,7 @@ export class CUDATensorService {
         this.handleBatchResults(results);
       }
     } finally {
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
     }
   }
   private handleBatchResults(results: CUDAResult[]): void {

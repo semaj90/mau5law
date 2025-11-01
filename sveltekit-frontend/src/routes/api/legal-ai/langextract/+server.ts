@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       service: 'langextract-ollama',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('LangExtract API error:', error);
     const message =
       error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error occurred';
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async () => {
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('LangExtract status error:', error);
     return json(
       {

@@ -87,7 +87,7 @@
   <div class="actions-section">
     <h2>🚀 Quick Actions</h2>
     <div class="actions-grid">
-      {#each legalRoutes as route}
+      {#each Array.isArray(legalRoutes) ? legalRoutes : [] as route}
         <Card class="action-card">
           <CardHeader>
             <CardTitle>{route.icon} {route.label}</CardTitle>

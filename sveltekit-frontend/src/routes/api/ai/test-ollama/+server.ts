@@ -17,7 +17,7 @@ export const GET: RequestHandler = async () => {
       if (response.ok) {
         ollamaDetails = await response.json();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed to unknown
       // Ollama not accessible
     }
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
         ollamaDirectEndpoint: '/api/ai/ollama-gemma3',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     return json(
       {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         timestamp: new Date().toISOString(),
       });
-    } catch (generateError: unknown) {
+    } catch (generateError: any) {
       // Changed to unknown
       return json(
         {
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 500 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     return json(
       {

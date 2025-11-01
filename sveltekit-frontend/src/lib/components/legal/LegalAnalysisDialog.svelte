@@ -4,10 +4,10 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
-    isOpen?: unknown;
+    isOpen?: any;
     caseId: string | undefined ;
     evidenceId: string | undefined ;
-    onAnalysisComplete: (analysis: unknown) ;
+    onAnalysisComplete: (analysis: any) ;
   }
   let {
     isOpen = false,
@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     onAnalysisComplete = > void = () => } = $props();
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import Dialog from '$lib/components/Dialog.svelte';
+  import { Dialog } from '$lib/components/Dialog.svelte';
   interface LegalAnalysis {
     sessionId: string
     analysis: string;
@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   let prompt = '';
   let analysisType: 'case_analysis' | 'legal_research' | 'document_review' | 'precedent_search' = 'case_analysis';
-  let loading = false;
+  let loading = $state(false);
   let analysis: LegalAnalysis | null = null;
   let error = '';
   const analysisTypes = [
@@ -70,24 +70,23 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: 'Analysis failed';
       console.error('Legal analysis error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function resetDialog() {
     prompt = '';
     analysis = null;
     error = '';
-    loading = false;
+    loading = $state(false);
   }
   function closeDialog() {
-    isOpen = false;
+    isOpen = $state(false);
     resetDialog();
   }
   $effect(() => { if (!isOpen) {
     resetDialog();
   }
 </script>
-
 <Dialog.Root bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
   <div class="space-y-6">
     {#if !analysis}
@@ -100,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={analysisType}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {#each analysisTypes as type}
+            {#each Array.isArray(analysisTypes) ? analysisTypes : [] as type}
               <option value={type.value}>{type.label}</option>
             {/each}
           </select>
@@ -118,8 +117,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if error}
           <div class="p-3 bg-red-50 border border-red-200 rounded-md">
             <p class="text-sm text-red-600">{error}</p>
-          </div>
-        {/if}
+          {/if}
         <div class="flex gap-3 pt-4">
           <button
             type="button"
@@ -163,20 +161,19 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <h4 class="font-medium mb-2">Recommendations</h4>
             <ul class="space-y-1">
-              {#each analysis.recommendations as recommendation}
+              {#each Array.isArray(analysis.recommendations) ? analysis.recommendations : [] as recommendation}
                 <li class="text-sm text-gray-700 flex items-start gap-2">
                   <span class="text-blue-600 mt-1">•</span>
                   {recommendation}
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
         {#if analysis.sources.length > 0}
           <div>
             <h4 class="font-medium mb-2">Sources Referenced</h4>
             <div class="space-y-2">
-              {#each analysis.sources as source}
+              {#each Array.isArray(analysis.sources) ? analysis.sources : [] as source}
                 <div class="bg-white p-3 border border-gray-200 rounded-md">
                   <div class="flex items-center justify-between mb-1">
                     <span class="text-sm font-medium">{source.title}</span>
@@ -189,8 +186,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
         <div class="text-xs text-gray-500">
           Processing time: {analysis.processingTime}ms
         </div>
@@ -210,8 +206,7 @@ https://svelte.dev/e/js_parse_error -->
             Close
           </button>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </Dialog.Root>
 ;

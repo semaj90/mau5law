@@ -67,7 +67,7 @@ export class TextureStreamingEvaluator {
   private canvas: HTMLCanvasElement | null = null;
   private cacheManager: any | null = null; // PalaceCacheManager
   private samples: PerformanceSample[] = [];
-  private isEvaluating = false;
+  private isEvaluating = $state(false);
   // N64-inspired test scenarios
   private readonly scenarios: EvaluationScenario[] = [
     {
@@ -205,7 +205,7 @@ export class TextureStreamingEvaluator {
       frameDrops: this.calculateFrameDrops(),
       visualQuality: this.calculateVisualQuality()
     }
-    this.isEvaluating = false;
+    this.isEvaluating = $state(false);
     return {
       scenario,
       metrics,

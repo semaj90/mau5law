@@ -12,8 +12,8 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   // Svelte 5 runes for state management
   let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
   let isProcessing = $state(false);
@@ -127,7 +127,7 @@
     } catch (error) {
       errorMessage = error instanceof Error ? error.message: 'Unknown error occurred',
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Format processing time
@@ -158,8 +158,7 @@
       {#if Object.keys(errors).length > 0}
         <div class="text-xs text-gray-500">
           Services: {Object.values.filter-length}/{Object.keys(errors).length} online
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -273,8 +272,7 @@ Load Demo Data
                   </select>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if selectedWorkflow === 'document-processing'}
             <div class="space-y-4">
               <div>
@@ -294,8 +292,7 @@ Load Demo Data
                   <option value="regulation">Regulation</option>
                 </select>
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if selectedWorkflow === 'case-creation'}
             <div class="space-y-4">
               <div>
@@ -332,8 +329,7 @@ Load Demo Data
                   </select>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Execute Button -->
           <div class="pt-4 border-t border-gray-200">
             <Button
@@ -386,8 +382,7 @@ Load Demo Data
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Results -->
   {#if errorMessage}
     <div class="border-red-200 bg-red-50 nes-container">
@@ -397,8 +392,7 @@ Load Demo Data
       <div class="yorha-panel-content">
         <p class="text-red-600">{errorMessage}</p>
       </div>
-    </div>
-  {/if}
+    {/if}
   {#if workflowResult}
     <div class="border-green-200 bg-green-50 nes-container">
       <div class="yorha-panel-header">
@@ -421,12 +415,11 @@ Load Demo Data
               <div>
                 <h4 class="font-medium text-green-800">Recommendations</h4>
                 <ul class="list-disc list-inside text-sm text-green-700 space-y-1">
-                  {#each workflowResult.recommendations.slice(0, 3) as rec}
+                  {#each Array.isArray(workflowResult.recommendations.slice(0, 3)) ? workflowResult.recommendations.slice(0, 3) : [] as rec}
                     <li>{rec}</li>
                   {/each}
                 </ul>
-              </div>
-            {/if}
+              {/if}
           {#if selectedWorkflow === 'document-processing'}
             <div>
               <h4 class="font-medium text-green-800">Document Summary</h4>
@@ -436,18 +429,16 @@ Load Demo Data
               <div>
                 <h4 class="font-medium text-green-800">Key Terms</h4>
                 <div class="flex flex-wrap gap-2 mt-1">
-                  {#each workflowResult.keyTerms.slice(0, 8) as term}
+                  {#each Array.isArray(workflowResult.keyTerms.slice(0, 8)) ? workflowResult.keyTerms.slice(0, 8) : [] as term}
                     <span class="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs">{term}</span>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
             {#if workflowResult.entities?.length > 0}
               <div>
                 <h4 class="font-medium text-green-800">Extracted Entities</h4>
                 <div class="text-sm text-green-700">Found {workflowResult.entities.length} entities</div>
-              </div>
-            {/if}
+              {/if}
           {#if selectedWorkflow === 'case-creation'}
             <div>
               <h4 class="font-medium text-green-800">Case Created: {workflowResult.caseId}</h4>
@@ -457,22 +448,19 @@ Load Demo Data
               <div>
                 <h4 class="font-medium text-green-800">Research Suggestions</h4>
                 <ul class="list-disc list-inside text-sm text-green-700 space-y-1">
-                  {#each workflowResult.researchSuggestions.slice(0, 4) as suggestion}
+                  {#each Array.isArray(workflowResult.researchSuggestions.slice(0, 4)) ? workflowResult.researchSuggestions.slice(0, 4) : [] as suggestion}
                     <li>{suggestion}</li>
                   {/each}
                 </ul>
-              </div>
-            {/if}
+              {/if}
             {#if workflowResult.timeline?.milestones?.length > 0}
               <div>
                 <h4 class="font-medium text-green-800">Timeline Created</h4>
                 <div class="text-sm text-green-700">{workflowResult.timeline.milestones.length} milestones planned</div>
-              </div>
-            {/if}
+              {/if}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* Custom styles for enhanced UI */

@@ -3,20 +3,18 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been declared -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  let { checked = $state(false), label = '', id = ''  }: { checked = $state(false), label = '', id = '' : unknown } = $props();
+  let { checked = $state(false), label = '', id = ''  }: { checked = $state(false), label = '', id = '' : any } = $props();
   // Generate a unique ID if not provided
   if (!id) {
     id = `checkbox-${Math.random.toString-substr(2, 9)}`;
   }
 </script>
-
 <div class="checkbox-container">
   <input type="checkbox" {id} bind:checked class="checkbox-input" />
   {#if label}
     <label for={id} class="checkbox-label">{label}</label>
   {/if}
 </div>
-
 <style>
   .checkbox-container {
     display: flex;
@@ -33,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #ccc;
     border-radius: 0.25rem;
     cursor: pointer;
-    position relative;
+    position: relative;
     outline: none;
     transition: all 0.2s ease-in-out;
   }
@@ -43,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .checkbox-input:checked::after {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0.1875rem;
     left: 0.1875rem;
     width: 0.625rem;
@@ -62,4 +60,3 @@ https://svelte.dev/e/js_parse_error -->
     color: #333;
   }
 </style>
-

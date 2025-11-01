@@ -754,7 +754,6 @@ class WebGPUTopologyAccelerator {
     const shaderCode = `
       @group(0) @binding(0) var<storage, read> inputData: array<f32>;
       @group(0) @binding(1) var<storage, read_write> outputData: array<f32>;
-
       @compute @workgroup_size(1)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         if (global_id.x != 0u) { return; }
@@ -784,7 +783,6 @@ class WebGPUTopologyAccelerator {
     // We expect 8 float outputs from the shader
     const outputFloatCount = 8;
     const outputByteSize = outputFloatCount * Float32Array.BYTES_PER_ELEMENT;
-
     // Create buffers with explicit sizes
     const inputBuffer = device.createBuffer({
       size: inputData.byteLength,
@@ -798,10 +796,8 @@ class WebGPUTopologyAccelerator {
       size: outputByteSize,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
     });
-
     // Upload input data
     device.queue.writeBuffer(inputBuffer, 0, inputData.buffer, inputData.byteOffset, inputData.byteLength);
-
     // Create bind group layout and bind group
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
@@ -809,7 +805,6 @@ class WebGPUTopologyAccelerator {
         { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
       ],
     });
-
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
@@ -817,13 +812,11 @@ class WebGPUTopologyAccelerator {
         { binding: 1, resource: { buffer: outputBuffer } },
       ],
     });
-
     // Create pipeline
     const pipeline = device.createComputePipeline({
       layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
       compute: { module: this.computeShader!, entryPoint: 'main' },
     });
-
     // Dispatch compute work (single invocation)
     const encoder = device.createCommandEncoder();
     const pass = encoder.beginComputePass();
@@ -833,14 +826,12 @@ class WebGPUTopologyAccelerator {
     pass.end();
     encoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, outputByteSize);
     device.queue.submit([encoder.finish()]);
-
     // Read results
     await readBuffer.mapAsync(GPUMapMode.READ);
     const mapped = readBuffer.getMappedRange();
     // Copy the mapped range to detach from the mapped buffer
     const resultArray = new Float32Array(mapped.slice(0));
     readBuffer.unmap();
-
     // Cleanup: destroy temporary buffers if supported
     try {
       inputBuffer.destroy();
@@ -851,14 +842,13 @@ class WebGPUTopologyAccelerator {
     try {
       readBuffer.destroy();
     } catch {}
-
     return resultArray;
   }
   private optimizeTopologyCPU(
     state: QLoRATopologyState,
     hmmPrediction: { probability?: number },
-    similarPatterns: unknown[],
-    llmEnhancement: unknown
+    similarPatterns: any[],
+    llmEnhancement: any
   ): {
     optimalRank: number;
     optimalAlpha: number;

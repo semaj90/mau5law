@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { X } from 'lucide-svelte';
-
+  import X from 'lucide-svelte';
   interface Props {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
@@ -10,7 +9,6 @@
     class?: string;
     children?: Snippet;
   }
-
   let {
     open = $bindable(false),
     onOpenChange,
@@ -19,19 +17,16 @@
     class: className = '',
     children,
   }: Props = $props();
-
   function handleClose() {
-    open = false;
+    open = $state(false);
     onOpenChange?.(false);
   }
-
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       handleClose();
     }
   }
 </script>
-
 {#if open}
   <div
     class="dialog-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
@@ -73,18 +68,14 @@
         {/if}
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .dialog-backdrop {
     animation: fadeIn 0.2s ease-out;
   }
-
   .dialog-content {
     animation: slideIn 0.3s ease-out;
   }
-
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -93,7 +84,6 @@
       opacity: 1;
     }
   }
-
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -105,4 +95,3 @@
     }
   }
 </style>
-

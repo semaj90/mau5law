@@ -9,7 +9,7 @@ interface LearningModel {
 }
 class ReinforcementLearningCache {
   private cache = new Map<string, any>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private hitRatio = 0.85; // Mock hit ratio
   private learningModel: LearningModel | null = null;
   constructor() {

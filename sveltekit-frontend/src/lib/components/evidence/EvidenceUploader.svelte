@@ -21,7 +21,7 @@ export default ;
     disabled = false,
     ariaLabel = 'Upload evidence files'
   }: Props = $props();
-  let files = [];
+  let files = $state([]);
   let inputEl;
   function bytesToSize(bytes) {
 	if (bytes === 0) return '0 B';
@@ -148,8 +148,7 @@ export default ;
   {#if maxSize}
 	<div style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">
 	  Max file size: {bytesToSize(maxSize)}
-	</div>
-  {/if}
+	{/if}
 </div>
 {#if files.length}
   <div class="files" aria-live="polite">
@@ -164,6 +163,4 @@ export default ;
 		</div>
 	  </div>
 	{/each}
-  </div>
-{/if}
-
+  {/if}

@@ -11,7 +11,7 @@ class PgVectorService {
     try {
       await upsertToPGVector(item);
       return { ok: true };
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       // Minimal, non-intrusive logging; adapt to your logger if available
       console.error('[PgVectorService] upsert error:', message);
@@ -23,7 +23,7 @@ class PgVectorService {
     try {
       const results = await searchPGVector(queryVector, topK);
       return { results, error: null };
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('[PgVectorService] search error:', message);
       return { results: [], error: message };

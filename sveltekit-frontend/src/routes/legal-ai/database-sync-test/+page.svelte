@@ -237,7 +237,7 @@
         <h3>Recent Sessions ({recentSessions.length})</h3>
         {#if recentSessions.length > 0}
           <ul>
-            {#each recentSessions as session}
+            {#each Array.isArray(recentSessions) ? recentSessions : [] as session}
               <li>
                 <button
                   use:accessibleClick={{
@@ -262,7 +262,7 @@
         <h3>Recent Documents ({recentDocuments.length})</h3>
         {#if recentDocuments.length > 0}
           <ul>
-            {#each recentDocuments as doc}
+            {#each Array.isArray(recentDocuments) ? recentDocuments : [] as doc}
               <li class="document-item">
                 <strong>{doc.title}</strong>
                 <p>{doc.summary}</p>
@@ -272,7 +272,7 @@
                 </div>
                 {#if doc.keyTerms?.length}
                   <div class="key-terms">
-                    {#each doc.keyTerms.slice(0, 3) as term}
+                    {#each Array.isArray(doc.keyTerms.slice(0, 3)) ? doc.keyTerms.slice(0, 3) : [] as term}
                       <span class="term">{term}</span>
                     {/each}
                   </div>
@@ -390,7 +390,7 @@
           {#if testResults.keyTerms?.length}
             <h4>Key Terms</h4>
             <div class="key-terms">
-              {#each testResults.keyTerms as term}
+              {#each Array.isArray(testResults.keyTerms) ? testResults.keyTerms : [] as term}
                 <span class="term">{term}</span>
               {/each}
             </div>
@@ -398,7 +398,7 @@
           {#if testResults.entities?.length}
             <h4>Legal Entities</h4>
             <ul class="entities-list">
-              {#each testResults.entities as entity}
+              {#each Array.isArray(testResults.entities) ? testResults.entities : [] as entity}
                 <li>{typeof entity === 'string' ? entity : entity.text}</li>
               {/each}
             </ul>
@@ -419,7 +419,7 @@
     <h2>Test Execution Log</h2>
     <div class="log-container" role="log" aria-label="Test execution log">
       {#if testLog.length > 0}
-        {#each testLog as entry}
+        {#each Array.isArray(testLog) ? testLog : [] as entry}
           <div class="log-entry">{entry}</div>
         {/each}
       {:else}

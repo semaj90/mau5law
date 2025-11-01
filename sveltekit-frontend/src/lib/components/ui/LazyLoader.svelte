@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { componentLoader } from '$lib/utils/dynamic-imports';
-  import AILoadingIndicator from './AILoadingIndicator.svelte';
+  import { AILoadingIndicator } from './AILoadingIndicator.svelte';
   interface Props {
     loader: () => Promise<any>;
     key: string;
@@ -29,7 +29,7 @@
       error = err as Error;
       console.error(`Failed to load component ${key}:`, err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   $effect(() => {
@@ -40,7 +40,6 @@
     loadComponent();
   }
 </script>
-
 {#if isLoading}
   <AILoadingIndicator isLoading={true} title={fallback} operation="processing" size="md" variant="inline" />
 {:else if error}
@@ -56,7 +55,6 @@
 {:else if Component}
   <Component {...componentProps} />
 {/if}
-
 <style>
   .lazy-load-error {
     min-height: 100px;
@@ -65,4 +63,3 @@
     justify-content: center;
   }
 </style>
-

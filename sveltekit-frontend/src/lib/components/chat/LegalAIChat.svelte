@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
       return ollamaConnected;
     } catch (error) {
       console.warn('Ollama connection check failed:', error);
-      ollamaConnected = false;
+      ollamaConnected = $state(false);
       webAssemblyMode = true;
       return false;
     }
@@ -305,8 +305,8 @@ https://svelte.dev/e/js_parse_error -->
         return updated;
       });
     } finally {
-      isLoading = false;
-      isStreaming = false;
+      isLoading = $state(false);
+      isStreaming = $state(false);
       await tick();
       scrollToBottom();
     }
@@ -415,7 +415,7 @@ https://svelte.dev/e/js_parse_error -->
           class="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           title="Select AI Model"
         >
-          {#each availableModels as model}
+          {#each Array.isArray(availableModels) ? availableModels : [] as model}
             <option value={model.value}>{model.label}</option>
           {/each}
         </select>
@@ -447,8 +447,7 @@ https://svelte.dev/e/js_parse_error -->
               {#if message.metadata?.type === 'welcome'}
                 {/* JSX syntax converted to Svelte */}
               {:else}
-                <div class="whitespace-pre-wrap">{message.content}</div>
-              {/if}
+                <div class="whitespace-pre-wrap">{message.content}{/if}
               {#if message.metadata?.streaming}
                 <span class="inline-block w-2 h-4 bg-current opacity-75 animate-pulse ml-1"></span>
               {/if}
@@ -475,12 +474,10 @@ https://svelte.dev/e/js_parse_error -->
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                   </button>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     {/each}
     <!-- Loading Indicator -->
     {#if isLoading && !isStreaming}
@@ -495,8 +492,7 @@ https://svelte.dev/e/js_parse_error -->
             <span class="text-sm text-gray-600">AI is thinking...</span>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Input Area -->
   {#if !readonly}
@@ -564,8 +560,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .legal-ai-chat {

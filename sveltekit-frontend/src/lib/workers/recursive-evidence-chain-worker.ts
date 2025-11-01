@@ -8,7 +8,7 @@ interface EvidenceChainNode {
   evidenceId: string;
   depth: number;
   chainOfCustody: ChainEntry[];
-  children: EvidenceChainNode[];
+   EvidenceChainNode[];
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   confidence: number;
@@ -51,7 +51,7 @@ type EvidenceData = {
   createdAt?: string | number;
   location?: string;
   evidenceType?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type CorrelationResult = {
@@ -59,7 +59,7 @@ type CorrelationResult = {
   evidenceB?: string;
   correlationType?: string;
   strength?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Main Recursive Evidence Chain Processor
@@ -91,7 +91,7 @@ export class RecursiveEvidenceChainProcessor {
         evidenceId: rootEvidenceId,
         depth: currentDepth,
         chainOfCustody: await this.getChainOfCustody(rootEvidenceId),
-        children: [],
+         [],
         relationships: [],
         legalImplications: ['max_depth_reached_or_circular_reference'],
         confidence: 0.1,
@@ -143,14 +143,14 @@ export class RecursiveEvidenceChainProcessor {
           analysisTimestamp: new Date().toISOString(),
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error(`Error processing evidence ${rootEvidenceId}:`, msg);
       return {
         evidenceId: rootEvidenceId,
         depth: currentDepth,
         chainOfCustody: [],
-        children: [],
+         [],
         relationships: [],
         legalImplications: [`error_processing: ${msg}`],
         confidence: 0.0,
@@ -171,7 +171,7 @@ export class RecursiveEvidenceChainProcessor {
       }
       // keep as unknown shape but typed as EvidenceData
       return (await response.json()) as EvidenceData;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn(`Could not fetch evidence data for ${evidenceId}:`, msg);
       return { id: evidenceId, error: msg } as EvidenceData;
@@ -186,7 +186,7 @@ export class RecursiveEvidenceChainProcessor {
       }
       const data = await response.json();
       return data.chainOfCustody || [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn(`Could not fetch chain of custody for ${evidenceId}:`, msg);
       return [];
@@ -208,7 +208,7 @@ export class RecursiveEvidenceChainProcessor {
       if (!response.ok) {
         return [];
       }
-      const correlationResults = (await response.json()) as { correlations?: unknown };
+      const correlationResults = (await response.json()) as { correlations?: any };
 
       const correlations = Array.isArray(correlationResults.correlations)
         ? (correlationResults.correlations as unknown[])
@@ -237,7 +237,7 @@ export class RecursiveEvidenceChainProcessor {
           })
           .filter((r): r is RelatedEvidence => r !== null) || []
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn(`Could not find related evidence for ${evidenceId}:`, msg);
       return [];

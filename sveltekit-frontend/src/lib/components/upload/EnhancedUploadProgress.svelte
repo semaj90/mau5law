@@ -1,9 +1,9 @@
 <script lang="ts">
   import { enhancedUploadStore, type EnhancedUploadState  } from '$lib/stores/unified';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
   import { CheckCircle, AlertCircle, Clock, Zap, Database, Network, Cpu, Brain, Eye } from 'lucide-svelte';
   // Reactive state from enhanced upload machine
   let uploadState = $state<EnhancedUploadState>();
@@ -172,8 +172,7 @@
             <Button onclick={resetUpload} variant="ghost" size="sm">
               Reset
             </Button>
-          </div>
-        {/if}
+          {/if}
       </div>
     </CardContent>
   </Card>
@@ -248,8 +247,7 @@
                 <span class="ml-2 font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
                   {formatJobId(jobId)}
                 </span>
-              </div>
-            {/if}
+              {/if}
           {/each}
         </div>
       </CardContent>
@@ -269,21 +267,19 @@
               <Progress value={uploadState.context.results.ocrConfidence || 0} class="h-2 flex-1" />
               <span class="text-sm">{(uploadState.context.results.ocrConfidence || 0).toFixed(1)}%</span>
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if uploadState.context.aiAssistant?.analysis}
           <div>
             <h4 class="font-medium text-sm mb-2">AI Analysis</h4>
             <p class="text-sm text-muted-foreground line-clamp-3">
               {uploadState.context.aiAssistant.analysis}
             </p>
-          </div>
-        {/if}
+          {/if}
         {#if uploadState.context.results?.neo4jNodes?.length}
           <div>
             <h4 class="font-medium text-sm mb-2">Graph Entities</h4>
             <div class="flex flex-wrap gap-1">
-              {#each uploadState.context.results.neo4jNodes.slice(0, 5) as node}
+              {#each Array.isArray(uploadState.context.results.neo4jNodes.slice(0, 5)) ? uploadState.context.results.neo4jNodes.slice(0, 5) : [] as node}
                 <Badge variant="outline" class="text-xs">{node}</Badge>
               {/each}
               {#if uploadState.context.results.neo4jNodes.length > 5}
@@ -292,21 +288,19 @@
                 </Badge>
               {/if}
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if uploadState.context.results?.ragKeyPoints?.length}
           <div>
             <h4 class="font-medium text-sm mb-2">Key Points</h4>
             <ul class="text-sm text-muted-foreground space-y-1">
-              {#each uploadState.context.results.ragKeyPoints.slice(0, 3) as point}
+              {#each Array.isArray(uploadState.context.results.ragKeyPoints.slice(0, 3)) ? uploadState.context.results.ragKeyPoints.slice(0, 3) : [] as point}
                 <li class="flex items-start gap-2">
                   <span class="text-blue-500 mt-1">•</span>
                   <span>{point}</span>
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
       </CardContent>
     </Card>
   {/if}

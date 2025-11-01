@@ -4,9 +4,9 @@
   import { tick } from 'svelte';
   import { browser } from '$app/environment';
   import Button from '$lib/components/ui/Button.svelte'; // Corrected casing
-  import { ScrollArea } from '$lib/components/ui/scroll-area'; // Changed to named import
-  import { Separator } from '$lib/components/ui/separator';
-  import { Input } from '$lib/components/ui/input';
+  import { ScrollArea } from '$lib/components/ui/scroll-area.svelte''; // Changed to named import
+  import { Separator } from '$lib/components/ui/separator.svelte'';
+  import { Input } from '$lib/components/ui/input.svelte'';
   import { Bot, Send, Wifi, WifiOff, Loader2 } from 'lucide-svelte';
   import Root from '$lib/components/ui/sheet/Root.svelte';
   import Trigger from '$lib/components/ui/sheet/Trigger.svelte';
@@ -75,7 +75,7 @@
     if (!isOpen || !browser) {
       chatSocket?.close();
       chatSocket = null;
-      isConnected = false;
+      isConnected = $state(false);
       return;
     }
 
@@ -90,7 +90,7 @@
       console.log('Connected to YorhaAI chat service');
       chatSocket = socket;
       isConnected = true;
-      isConnecting = false;
+      isConnecting = $state(false);
       chatSession.messages.push({
         id: `sys_${Date.now()}`,
         role: 'system',
@@ -130,8 +130,8 @@
     socket.onclose = () => {
       console.log('Chat service disconnected');
       chatSocket = null;
-      isConnected = false;
-      isConnecting = false;
+      isConnected = $state(false);
+      isConnecting = $state(false);
       if (isOpen) {
         chatSession.messages.push({
           id: `sys_${Date.now()}`,
@@ -144,8 +144,8 @@
 
     socket.onerror = err => {
       console.error('Chat socket error:', err);
-      isConnected = false;
-      isConnecting = false;
+      isConnected = $state(false);
+      isConnecting = $state(false);
     };
 
     return () => {
@@ -189,11 +189,11 @@
         streamingMessage.content += token || '';
       }
     } else {
-      isStreaming = false;
+      isStreaming = $state(false);
       const streamingIndex = chatSession.messages.findIndex(m => m.streaming);
       if (streamingIndex !== -1) {
         // End the streaming message
-        chatSession.messages[streamingIndex].streaming = false;
+        chatSession.messages[streamingIndex].streaming = $state(false);
       }
 
       // Regular message from assistant
@@ -241,7 +241,7 @@
         content: 'No active WebSocket connection. Please wait for the assistant to connect.',
         timestamp: new Date(),
       });
-      isConnected = false;
+      isConnected = $state(false);
       return;
     }
 

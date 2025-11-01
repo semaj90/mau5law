@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
       step: 'analysis_complete',
       analysis,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Evidence analysis failed:', err);
     throw error(500, `Analysis failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       { status: 404 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Failed to fetch analysis:', err);
     throw error(500, `Failed to fetch analysis: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }

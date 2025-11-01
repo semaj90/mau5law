@@ -17,25 +17,20 @@ import {
   selectNearestCentroid,
   euclidean,
 } from './cluster-service';
-
 // --- TYPE DEFINITIONS ---
-
-type Document = { id?: string; title?: string; excerpt?: string; [key: string]: unknown };
-
+type Document = { id?: string; title?: string; excerpt?: string; [key: string]: any };
 type OllamaMessage = {
   role: 'user' | 'system' | 'assistant';
   content: string;
 };
-
 type ProcessOptions = {
-  context?: unknown;
+  context?: any;
   requestId?: string;
   mcpRecord?: McpServerRecord | null;
   timeoutMs?: number;
   streamId?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type ProcessResult = {
   synthesis: string;
   sources: Array<{ title: string; excerpt: string; type: string }>;
@@ -51,12 +46,10 @@ type ProcessResult = {
     steps: string[];
   };
 };
-
 type StreamUpdate =
   | { type: 'stage'; stage: string; detail?: string }
   | { type: 'chunk'; chunk: string }
   | { type: 'complete'; result: ProcessResult };
-
 type SOMClusterRunOptions = SOMBitmapOptions & {
   cacheKey?: string;
   cacheTtlSeconds?: number;
@@ -64,13 +57,11 @@ type SOMClusterRunOptions = SOMBitmapOptions & {
   heatmapSampleSize?: number;
   metadata?: Record<string, unknown>;
 };
-
 type SOMClusterResult = {
   bitmap: SOMBitmapResult;
   cacheKey: string;
   fromCache: boolean;
 };
-
 type ClusterAssignmentResult = {
   clusterId: string;
   centroid: ClusterCentroid;
@@ -79,52 +70,41 @@ type ClusterAssignmentResult = {
   snapshotVersion: string;
   candidateVector: number[];
 };
-
 type ServiceStatusValue = 'healthy' | 'degraded' | 'unhealthy' | 'offline' | 'unknown';
-
 interface ServiceStatus {
   [service: string]: ServiceStatusValue;
 }
-
 interface HealthReport {
   status: 'healthy' | 'degraded' | 'unhealthy';
   initialized: boolean;
   services: ServiceStatus;
   timestamp: string;
 }
-
 // Removed: unused top-level IntentInfo type declaration
-
 type TritonOutput = {
   name?: string;
   data?: number[]; // older Triton payloads
   contents?: { fp32_contents?: number[] } | { fp32_contents?: number[] };
   // other fields may exist, keep minimal
 };
-
 type RedisOrchestrator = {
-  zadd?: (...args: unknown[]) => Promise<unknown>;
-  incr?: (...args: unknown[]) => Promise<unknown>;
-  callRedis?: (...args: unknown[]) => Promise<unknown>;
-  [key: string]: unknown;
+  zadd?: (...args: any[]) => Promise<unknown>;
+  incr?: (...args: any[]) => Promise<unknown>;
+  callRedis?: (...args: any[]) => Promise<unknown>;
+  [key: string]: any;
 };
-
 type RabbitWorkers = {
-  publish?: (...args: unknown[]) => Promise<unknown>;
-  enqueue?: (...args: unknown[]) => Promise<unknown>;
-  [key: string]: unknown;
+  publish?: (...args: any[]) => Promise<unknown>;
+  enqueue?: (...args: any[]) => Promise<unknown>;
+  [key: string]: any;
 };
-
 // --- CONSTANTS ---
-
 const DEFAULT_OLLAMA_MODELS = {
   primary: 'gemma3-legal:latest',
   comparison: 'gemma270:m',
   embeddings: 'embeddinggemma:latest',
 };
-
 const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
-
 /**
  * Fetches user intent information.
  * This is a stub/mock implementation. In a real system, this would query an intent detection service.
@@ -140,48 +120,40 @@ async function fetchIntent(
     if (cached) {
       return JSON.parse(cached) as { clusterId?: string; predictedIntent?: string; confidence?: number };
     }
-
     // Mock implementation: In a real scenario, this would call a service.
     const mockIntent = {
       clusterId: 'cluster_legal_research_docs',
       predictedIntent: 'summarize_case_law',
       confidence: 0.91,
     };
-
     // Cache the mock intent for 5 minutes
     await setCache(cacheKey, JSON.stringify(mockIntent), 300);
-
     return mockIntent;
   } catch (error) {
     logger.debug('[Orchestrator] fetchIntent helper failed', { error: String(error), userId });
     return null;
   }
 }
-
 // --- ORCHESTRATOR CLASS ---
-
 class EnhancedAISynthesisOrchestrator {
   private readonly ollamaUrl: string;
   private readonly models: typeof DEFAULT_OLLAMA_MODELS;
   private readonly tritonUrl: string | null;
-  private initialized = false;
+  private initialized = $state(false);
   private lastMcpRecord: McpServerRecord | null = null;
-  private lastFunctionResult: unknown = null;
+  private lastFunctionResult: any = null;
   private lastError: string | null = null;
-
   constructor() {
     this.ollamaUrl = process.env.OLLAMA_URL ?? process.env.VITE_OLLAMA_URL ?? FALLBACK_OLLAMA_URL;
     this.models = { ...DEFAULT_OLLAMA_MODELS };
     const tritonEnv = process.env.TRITON_URL ?? process.env.VITE_TRITON_URL ?? null;
     this.tritonUrl = tritonEnv ? String(tritonEnv) : null;
   }
-
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
     logger.info('[Orchestrator] Initializing enhanced AI synthesis orchestrator');
     this.initialized = true;
   }
-
   private composePrompt(query: string, options: ProcessOptions): string {
     const sections: string[] = [];
     sections.push('You are an expert legal analyst.\n');
@@ -200,11 +172,9 @@ class EnhancedAISynthesisOrchestrator {
     sections.push(query);
     return sections.join('');
   }
-
   private toNumberArray(vector: number[] | Float32Array): number[] {
     return vector instanceof Float32Array ? Array.from(vector) : Array.from(vector);
   }
-
   private averageVectors(vectors: number[][]): number[] {
     if (vectors.length === 0) return [];
     const dimension = vectors[0]?.length ?? 0;
@@ -220,7 +190,6 @@ class EnhancedAISynthesisOrchestrator {
     }
     return accumulator;
   }
-
   private async callOllama(messages: OllamaMessage[], model?: string) {
     const chosenModel = model ?? this.models.primary;
     const response = await fetch(`${this.ollamaUrl}/api/chat`, {
@@ -234,7 +203,6 @@ class EnhancedAISynthesisOrchestrator {
     }
     return response.json();
   }
-
   private makeSources(query: string, record?: McpServerRecord | null) {
     const sources: Array<{ title: string; excerpt: string; type: string }> = [];
     if (record) {
@@ -251,18 +219,15 @@ class EnhancedAISynthesisOrchestrator {
     });
     return sources;
   }
-
   async process(query: string, options: ProcessOptions = {}): Promise<ProcessResult> {
     await this.ensureInitialized();
     const start = Date.now();
     const requestId = options.requestId;
     const steps: string[] = [];
-
     const record = options.mcpRecord ?? this.lastMcpRecord;
     if (record) steps.push(`MCP_SERVER_DISCOVERED:${record.name}`);
     const prompt = this.composePrompt(query, { ...options, mcpRecord: record });
     steps.push('PROMPT_COMPOSED');
-
     let responseText = 'Unable to generate response.';
     try {
       const data = await this.callOllama([
@@ -276,7 +241,6 @@ class EnhancedAISynthesisOrchestrator {
       steps.push('OLLAMA_FAILED');
       throw error;
     }
-
     const sources = this.makeSources(query, record);
     const result: ProcessResult = {
       synthesis: responseText,
@@ -293,10 +257,8 @@ class EnhancedAISynthesisOrchestrator {
         steps,
       },
     };
-
     return result;
   }
-
   async *processStream(query: string, options: ProcessOptions = {}): AsyncGenerator<StreamUpdate> {
     await this.ensureInitialized();
     const record = options.mcpRecord ?? this.lastMcpRecord;
@@ -305,7 +267,6 @@ class EnhancedAISynthesisOrchestrator {
       yield { type: 'stage', stage: 'mcp-context', detail: `Using MCP server ${record.name}` };
     }
     yield { type: 'stage', stage: 'generating', detail: 'Generating response with Gemma3' };
-
     const result = await this.process(query, { ...options, streamId: options.streamId });
     const chunks = result.synthesis.split(/(?<=\.)\s+/);
     for (const chunk of chunks) {
@@ -314,7 +275,6 @@ class EnhancedAISynthesisOrchestrator {
     }
     yield { type: 'complete', result };
   }
-
   async health(): Promise<HealthReport> {
     const services: ServiceStatus = {
       redis: 'unknown',
@@ -325,20 +285,17 @@ class EnhancedAISynthesisOrchestrator {
       gpuOrchestrator: 'unknown',
       context7: this.lastMcpRecord ? 'healthy' : 'degraded',
     };
-
     try {
       const resp = await fetch(`${this.ollamaUrl}/api/tags`);
       services.ollama = resp.ok ? 'healthy' : 'unhealthy';
     } catch {
       services.ollama = 'offline';
     }
-
     services.redis = 'degraded';
     services.postgres = 'degraded';
     services.neo4j = 'degraded';
     services.enhancedRAG = 'degraded';
     services.gpuOrchestrator = 'degraded';
-
     const healthyCount = Object.values(services).filter(s => s === 'healthy').length;
     const status: HealthReport = {
       status: healthyCount >= 3 ? 'healthy' : 'degraded',
@@ -348,41 +305,34 @@ class EnhancedAISynthesisOrchestrator {
     };
     return status;
   }
-
-  private emitXStateEvent(event: { type: string; [key: string]: unknown }): boolean {
+  private emitXStateEvent(event: { type: string; [key: string]: any }): boolean {
     try {
       const integration = xstateIntegration as unknown as {
-        agentShellActor?: { send?: (evt: unknown) => void };
-        aiAssistantActor?: { send?: (evt: unknown) => void };
+        agentShellActor?: { send?: (evt: any) => void };
+        aiAssistantActor?: { send?: (evt: any) => void };
       };
-
       if (integration?.agentShellActor?.send) {
         integration.agentShellActor.send(event);
         return true;
       }
-
       if (integration?.aiAssistantActor?.send) {
         integration.aiAssistantActor.send(event);
         return true;
       }
-
       return false;
     } catch (error) {
       logger.debug('[Orchestrator] Failed to emit XState event', { error });
       return false;
     }
   }
-
   handleMcpServerDiscovered(record: McpServerRecord) {
     this.lastMcpRecord = record;
     logger.info('[Orchestrator] Registered MCP server discovery', { name: record.name });
   }
-
-  handleMcpFunctionCalled(payload: unknown) {
+  handleMcpFunctionCalled(payload: any) {
     this.lastFunctionResult = payload;
     logger.debug('[Orchestrator] MCP function result stored');
   }
-
   async analyzeCluster(promptText: string, clusterId: string, userId?: string) {
     try {
       // avoid: "await has no effect on the type of this expression" by not using `as typeof import(...)` with await
@@ -395,7 +345,6 @@ class EnhancedAISynthesisOrchestrator {
       return null;
     }
   }
-
   async analyzeClusterSOM(userId: string, vectors: Float32Array[]) {
     const embeddings = vectors.map(vec => Array.from(vec));
     const result = await this.runClusterSOM(userId, embeddings, {
@@ -405,7 +354,6 @@ class EnhancedAISynthesisOrchestrator {
     });
     return result?.bitmap ?? null;
   }
-
   async predictNextContext(sequence: string[], topK = 3, meta: Record<string, unknown> = {}) {
     try {
       const predictions = await this.predictTransitionSequence(sequence, topK, {
@@ -421,7 +369,6 @@ class EnhancedAISynthesisOrchestrator {
       return [] as Array<{ id: string; probability?: number }>;
     }
   }
-
   private makeSomCacheKey(userId: string, flattened: Float32Array, options: SOMBitmapOptions = {}): string {
     const hash = createHash('sha256');
     // sample first N values to keep the key stable and small
@@ -434,7 +381,6 @@ class EnhancedAISynthesisOrchestrator {
     hash.update(String(options.palette ?? ''));
     return `som:${userId}:${hash.digest('hex')}`;
   }
-
   async runClusterSOM(
     userId: string,
     vectors: Array<number[] | Float32Array>,
@@ -452,15 +398,13 @@ class EnhancedAISynthesisOrchestrator {
         flattened.set(arr, offset);
         offset += arr.length;
       }
-
       const { cacheKey, cacheTtlSeconds, emit = true, heatmapSampleSize, metadata, ...rest } = options;
       const visualizerOptions = rest as SOMBitmapOptions;
-      const includeSvg = visualizerOptions.includeSvg !== false;
+      const includeSvg = visualizerOptions.includeSvg !== $state(false);
       const primaryCacheKey = this.makeSomCacheKey(userId, flattened, options);
-
       // try cache
       let bitmap: SOMBitmapResult | null = null;
-      let fromCache = false;
+      let fromCache = $state(false);
       const cached = await getFromCache(cacheKey ?? primaryCacheKey);
       if (cached) {
         try {
@@ -484,7 +428,6 @@ class EnhancedAISynthesisOrchestrator {
           logger.debug('[Orchestrator] Failed to parse SOM cache payload, recomputing', { err: String(err) });
         }
       }
-
       if (!bitmap) {
         bitmap = await this.generateSomBitmapFromEmbedding(Array.from(flattened), {
           ...visualizerOptions,
@@ -510,7 +453,6 @@ class EnhancedAISynthesisOrchestrator {
           logger.debug('[Orchestrator] SOM cache write failed', { err: String(err) });
         });
       }
-
       if (emit && bitmap) {
         const sampleSize = Math.max(0, Math.min(bitmap.heatmap.length, heatmapSampleSize ?? 64));
         const heatmapSample = sampleSize > 0 ? Array.from(bitmap.heatmap.slice(0, sampleSize)) : undefined;
@@ -529,32 +471,27 @@ class EnhancedAISynthesisOrchestrator {
           heatmapSample,
         });
       }
-
       return { bitmap, cacheKey: cacheKey ?? primaryCacheKey, fromCache };
     } catch (err) {
       logger.error('[Orchestrator] runClusterSOM failed', { err: String(err) });
       return null;
     }
   }
-
   async runClusterKMeans(
     personId: string,
     vectors: Array<number[] | Float32Array>,
     options: { autoEncode?: boolean; emit?: boolean } = {}
   ): Promise<ClusterAssignmentResult | null> {
     if (!personId || !Array.isArray(vectors) || vectors.length === 0) return null;
-
     try {
       const snapshot = await getClusterModelSnapshot();
       if (!snapshot) {
         logger.debug('[Orchestrator] runClusterKMeans skipped (no snapshot available)');
         return null;
       }
-
       const normalized = vectors.map(v => this.toNumberArray(v as number[]));
       const averaged = this.averageVectors(normalized);
       if (averaged.length === 0) return null;
-
       let candidateVector = averaged;
       if (options.autoEncode !== false) {
         try {
@@ -564,20 +501,17 @@ class EnhancedAISynthesisOrchestrator {
           logger.debug('[Orchestrator] runClusterKMeans autoencoder fallback', { err: String(err) });
         }
       }
-
       const centroid = selectNearestCentroid(snapshot, candidateVector);
       if (!centroid) {
         logger.debug('[Orchestrator] runClusterKMeans found no centroid match');
         return null;
       }
-
       const distance = euclidean(candidateVector, centroid.vector ?? []);
       await addClusterMember(centroid.id, personId, {
         snapshotVersion: snapshot.version,
         algorithm: snapshot.algorithm,
         distance,
       });
-
       const neighbors = await getClusterMembers(centroid.id, { exclude: personId });
       if (options.emit !== false) {
         emitClusterEvent({
@@ -593,7 +527,6 @@ class EnhancedAISynthesisOrchestrator {
           timestamp: Date.now(),
         });
       }
-
       return {
         clusterId: centroid.id,
         centroid,
@@ -607,7 +540,6 @@ class EnhancedAISynthesisOrchestrator {
       return null;
     }
   }
-
   async selectAdapterByCluster(clusterId: string): Promise<string | null> {
     try {
       const manifest = await getFromCache(`foaf:cluster:${clusterId}:adapter`);
@@ -618,7 +550,6 @@ class EnhancedAISynthesisOrchestrator {
       return null;
     }
   }
-
   async generateAdaptiveResponse(userId: string, query: string, options: ProcessOptions = {}): Promise<ProcessResult> {
     let intentInfo: { clusterId?: string | null; predictedIntent?: string | null; confidence?: number } | null = null;
     try {
@@ -627,26 +558,21 @@ class EnhancedAISynthesisOrchestrator {
     } catch (err) {
       logger.debug('[Orchestrator] fetchIntent failed', { err: String(err), userId });
     }
-
     let adapterName: string | null = null;
     if (intentInfo?.clusterId) {
       adapterName = await this.selectAdapterByCluster(intentInfo.clusterId);
     }
-
     const mergedContext: Record<string, unknown> = {
       ...((options.context as Record<string, unknown>) ?? {}),
       intent: intentInfo,
       adapterName,
       userId,
     };
-
     const enrichedQuery = intentInfo?.predictedIntent
       ? `User intent: ${intentInfo.predictedIntent} (confidence ${(intentInfo.confidence ?? 0).toFixed(2)}).\n\n${query}`
       : query;
-
     return this.process(enrichedQuery, { ...options, context: mergedContext });
   }
-
   async runAutoencoder(input: number[], mode: 'gpu' | 'wasm' = 'gpu'): Promise<number[]> {
     try {
       // 1) Triton (GPU) path
@@ -654,7 +580,6 @@ class EnhancedAISynthesisOrchestrator {
         const latent = await this.runAutoencoderViaTriton(input);
         if (latent && latent.length) return latent;
       }
-
       // 2) Native binary fallback
       try {
         const os = await import('node:os');
@@ -676,7 +601,6 @@ class EnhancedAISynthesisOrchestrator {
       } catch {
         // ignore native fallback errors and try wasm
       }
-
       // 3) WASM fallback
       try {
         const mod = await import('$lib/wasm/autoencoder-wasm');
@@ -687,14 +611,12 @@ class EnhancedAISynthesisOrchestrator {
       } catch (e) {
         logger.debug('[Orchestrator] WASM autoencoder failed', { error: String(e) });
       }
-
       return [];
     } catch (err) {
       logger.error('[Orchestrator] runAutoencoder failed', { err: String(err) });
       return [];
     }
   }
-
   private async runAutoencoderViaTriton(input: number[]): Promise<number[] | null> {
     if (!this.tritonUrl) return null;
     try {
@@ -730,7 +652,6 @@ class EnhancedAISynthesisOrchestrator {
       return null;
     }
   }
-
   async generateSomBitmapFromEmbedding(
     embedding: number[],
     options: SOMBitmapOptions = {}
@@ -744,7 +665,6 @@ class EnhancedAISynthesisOrchestrator {
       return null;
     }
   }
-
   async predictTransitionSequence(
     sequence: string[],
     topK = 3,
@@ -777,7 +697,6 @@ class EnhancedAISynthesisOrchestrator {
       return [];
     }
   }
-
   async recordTransitionObservation(observation: TransitionObservation): Promise<void> {
     try {
       const mod = await import('./hmm-transition-predictor');
@@ -788,8 +707,7 @@ class EnhancedAISynthesisOrchestrator {
       logger.debug('[Orchestrator] recordTransitionObservation failed', { err: String(err), observation });
     }
   }
-
-  handleMcpError(message: string, details: { requestId?: string; stage?: string; error?: unknown } = {}): void {
+  handleMcpError(message: string, details: { requestId?: string; stage?: string; error?: any } = {}): void {
     this.lastError = message;
     const timestamp = new Date().toISOString();
     const logContext: Record<string, unknown> = {
@@ -801,7 +719,6 @@ class EnhancedAISynthesisOrchestrator {
       hasMcpResult: Boolean(this.lastFunctionResult),
       timestamp,
     };
-
     if (details.error instanceof Error) {
       logContext.errorMessage = details.error.message;
       logContext.errorName = details.error.name;
@@ -809,9 +726,7 @@ class EnhancedAISynthesisOrchestrator {
     } else if (typeof details.error !== 'undefined') {
       logContext.error = details.error;
     }
-
     logger.warn('[Orchestrator] MCP error recorded', logContext);
-
     // emit XState event if available
     const dispatched = this.emitXStateEvent({
       type: 'MCP_ERROR',
@@ -823,7 +738,6 @@ class EnhancedAISynthesisOrchestrator {
     if (!dispatched) {
       logger.debug('[Orchestrator] XState integration not available for MCP_ERROR event dispatch');
     }
-
     // best-effort background pushes (redis/rabbit)
     (async () => {
       try {
@@ -842,7 +756,6 @@ class EnhancedAISynthesisOrchestrator {
         } catch (redisErr) {
           logger.debug('[Orchestrator] Redis metrics push failed', { error: String(redisErr) });
         }
-
         try {
           const rabbitModule = await import('$lib/server/queue/rabbitmq-workers');
           const rm = rabbitModule as unknown as RabbitWorkers;
@@ -861,10 +774,8 @@ class EnhancedAISynthesisOrchestrator {
     })();
   }
 }
-
 // ensure single instance export (remove duplicates)
 export const aiOrchestrator = new EnhancedAISynthesisOrchestrator();
-
 // --- XSTATE MACHINE & TYPES ---
 // Replace malformed machine with a minimal, valid machine
 type OrchestrationContext = {
@@ -880,13 +791,11 @@ type OrchestrationContext = {
   error: Error | null;
   context7Results: Document[] | null;
 };
-
 type OrchestrationEvent =
   | { type: 'START'; query?: string }
   | { type: 'MCP_SERVER_DISCOVERED'; record: McpServerRecord }
-  | { type: 'MCP_FUNCTION_CALLED'; payload: unknown }
-  | { type: 'MCP_ERROR'; message: string; context?: unknown; timestamp?: string };
-
+  | { type: 'MCP_FUNCTION_CALLED'; payload: any }
+  | { type: 'MCP_ERROR'; message: string; context?: any; timestamp?: string };
 export const orchestrationMachine = createMachine({
   types: {} as {
     context: OrchestrationContext;

@@ -13,13 +13,13 @@ export type QueryResult = { rows: QueryResultRow[] };
 
 // Minimal client/pool interfaces to reduce widespread `any` usage when migrating from node-postgres
 export interface ClientLike {
-  query: (textOrConfig: string | { text: string; values?: unknown[] }, params?: unknown[]) => Promise<QueryResult>;
+  query: (textOrConfig: string | { text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
   release?: () => void;
 }
 
 export interface PoolLike {
   connect: () => Promise<ClientLike>;
-  query: (textOrConfig: string | { text: string; values?: unknown[] }, params?: unknown[]) => Promise<QueryResult>;
+  query: (textOrConfig: string | { text: string; values?: any[] }, params?: any[]) => Promise<QueryResult>;
   end?: () => Promise<void>;
 }
 
@@ -31,8 +31,8 @@ const sqlClient = sql as ReturnType<typeof postgres> & SqlWithClose;
 
 // Shared query normalization logic to DRY up code
 async function runQuery(
-  textOrConfig: string | { text: string; values?: unknown[] },
-  params?: unknown[]
+  textOrConfig: string | { text: string; values?: any[] },
+  params?: any[]
 ): Promise<QueryResult> {
   const text = typeof textOrConfig === 'string' ? textOrConfig : textOrConfig.text;
   const values = typeof textOrConfig === 'string' ? params : textOrConfig.values;
@@ -50,10 +50,10 @@ async function runQuery(
   } else if (Array.isArray(resultRaw)) {
     // postgres-js returns an array of rows
     rows = resultRaw as QueryResultRow[];
-  } else if ((resultRaw as { rows?: unknown[] })?.rows && Array.isArray((resultRaw as { rows: unknown[] }).rows)) {
+  } else if ((resultRaw as { rows?: any[] })?.rows && Array.isArray((resultRaw as { rows: any[] }).rows)) {
     // node-postgres-like result shape
     rows = (resultRaw as { rows: QueryResultRow[] }).rows;
-  } else if ((resultRaw as { 0?: unknown })?.[0]) {
+  } else if ((resultRaw as { 0?: any })?.[0]) {
     // array-like objects
     rows = Array.from(resultRaw as Iterable<QueryResultRow>);
   } else {

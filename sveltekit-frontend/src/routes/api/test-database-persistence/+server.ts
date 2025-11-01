@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
       results: testResults,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,
@@ -146,7 +146,7 @@ async function testCreateUser(): Promise<TestResult<{ userId: string; email: str
       data: { userId: insertedId, email: testEmail },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Create User',
       success: false,
@@ -178,7 +178,7 @@ async function testCreateChatSession(userId: string): Promise<TestResult<{ sessi
       data: { sessionId },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Create Chat Session',
       success: false,
@@ -213,7 +213,7 @@ async function testEmbeddingGeneration(
       },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Embedding Generation',
       success: false,
@@ -270,7 +270,7 @@ async function testStoreMessage(
       },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Store Message',
       success: false,
@@ -332,7 +332,7 @@ async function testStoreRecommendations(
       },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Store Recommendations',
       success: false,
@@ -372,7 +372,7 @@ async function testVectorSimilaritySearch(
       },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Vector Similarity Search',
       success: false,
@@ -389,8 +389,8 @@ type DBRecommendationRow = {
   content: string | null;
   type: string | null;
   confidence: number | null;
-  metadata: unknown;
-  feedback: unknown;
+  metadata: any;
+  feedback: any;
 };
 
 // Add named type to avoid nested-generic '>>' parsing issues
@@ -449,7 +449,7 @@ async function testRetrieveRecommendations(userId: string): Promise<TestResult<R
       },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Retrieve Recommendations',
       success: false,
@@ -505,7 +505,7 @@ async function testUpdateRecommendationFeedback(
       },
       responseTime: Date.now() - startTime,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     return {
       test: 'Update Recommendation Feedback',
       success: false,
@@ -523,7 +523,7 @@ async function cleanupTestData(userId: string, sessionId: string): Promise<void>
     await db.delete(chatSessions).where(eq(chatSessions.id, sessionId));
     await db.delete(users).where(eq(users.id, userId));
     console.log('Test data cleaned up successfully');
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('Failed to clean up test data:', err instanceof Error ? err.message : String(err));
   }
 }
@@ -539,7 +539,7 @@ export const GET: RequestHandler = async () => {
       message: 'Database persistence test endpoint is operational',
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         status: 'unhealthy',

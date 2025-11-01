@@ -19,9 +19,8 @@
     class="space-y-4"
     /* transition: removed */}
   >
-    {@render children?.()}
-  </div>
-{/if}
+    <slot />
+  {/if}
 <style>/* @unocss-include */ .context-menu {
     animation: contextMenuFadeIn 150ms ease-out;
 }

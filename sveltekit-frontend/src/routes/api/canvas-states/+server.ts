@@ -6,7 +6,7 @@ import { eq, and, like, desc, sql } from 'drizzle-orm';
 import { getUserId } from '$lib/server/auth/utils';
 
 // Small helper to safely format unknown errors for logging
-function formatError(e: unknown): string {
+function formatError(e: any): string {
   // Prefer Error message when available, otherwise stringify
   if (e instanceof Error) return e.stack ?? e.message;
   try {
@@ -41,7 +41,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       return json(canvasState);
     } else {
       // Build filters
-      const filters: unknown[] = [];
+      const filters: any[] = [];
       // Add case filter
       if (caseId) {
         filters.push(eq(canvasLayouts.caseId, caseId));
@@ -86,7 +86,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
         },
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching canvas states:', formatError(error));
     return json({ error: 'Failed to fetch canvas states' }, { status: 500 });
   }
@@ -115,7 +115,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
     };
     const [newCanvasState] = await db.insert(canvasLayouts).values(canvasStateData).returning();
     return json(newCanvasState, { status: 201 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error creating canvas state:', formatError(error));
     return json({ error: 'Failed to create canvas state' }, { status: 500 });
   }
@@ -156,7 +156,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       .where(eq(canvasLayouts.id, data.id))
       .returning();
     return json(updatedCanvasState);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error updating canvas state:', formatError(error));
     return json({ error: 'Failed to update canvas state' }, { status: 500 });
   }
@@ -182,7 +182,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
     // Delete the canvas state
     const [deletedCanvasState] = await db.delete(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).returning();
     return json({ success: true, deletedCanvasState });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error deleting canvas state:', formatError(error));
     return json({ error: 'Failed to delete canvas state' }, { status: 500 });
   }
@@ -236,7 +236,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       .where(eq(canvasLayouts.id, canvasId))
       .returning();
     return json(updatedCanvasState);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error patching canvas state:', formatError(error));
     return json({ error: 'Failed to update canvas state' }, { status: 500 });
   }

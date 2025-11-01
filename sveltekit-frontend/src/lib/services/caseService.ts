@@ -130,7 +130,7 @@ export function createCaseService() {
       }
 
       return text ? (JSON.parse(text) as T) : (undefined as unknown as T);
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message =
         err instanceof Error
           ? err.message
@@ -153,7 +153,7 @@ export function createCaseService() {
       reports.set(data?.reports ?? []);
       evidence.set(data?.evidence ?? []);
       pois.set(data?.pois ?? []);
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Log normalized message but avoid any-typed catch
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to load case:', msg);
@@ -184,7 +184,7 @@ export function createCaseService() {
       });
       reports.update(items => [...items, newReport]);
       return newReport;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create report:', msg);
       return null;
@@ -209,7 +209,7 @@ export function createCaseService() {
       });
       evidence.update(items => [...items, newEvidence]);
       return newEvidence;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create evidence:', msg);
       return null;
@@ -234,7 +234,7 @@ export function createCaseService() {
       });
       pois.update(items => [...items, newPOI]);
       return newPOI;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to create POI:', msg);
       return null;
@@ -267,7 +267,7 @@ export function createCaseService() {
           pois.update(items => applyUpdate(items));
           break;
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`Failed to update ${type} position:`, msg);
     }
@@ -293,7 +293,7 @@ export function createCaseService() {
           pois.update(items => filterOut(items));
           break;
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`Failed to delete ${type}:`, msg);
     }
@@ -315,7 +315,7 @@ export function createCaseService() {
         }),
       });
       error.set(null);
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error('Failed to save all:', msg);
     } finally {

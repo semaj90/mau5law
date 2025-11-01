@@ -114,7 +114,7 @@
         content: `Error: ${error.message}`
       });
     } finally {
-      isStreaming = false;
+      isStreaming = $state(false);
       currentStreamContent = '';
       streamController = null;
     }
@@ -122,7 +122,7 @@
   async function searchSimilarDocuments(embedding: Float32Array) {
     try {
       const results = await pipeline.semanticSearch.join(','), // Convert embedding to query
-        5, // Get top 5 similar
+        5, // Get top: 5 similar
         0.7 // Similarity threshold
       );
       similarDocuments = results.map(r => ({
@@ -136,7 +136,7 @@
   function stopStreaming() {
     if (streamController) {
       streamController.abort();
-      isStreaming = false;
+      isStreaming = $state(false);
     }
   }
   function clearChat() {
@@ -154,7 +154,6 @@
     }, 300);
   }
 </script>
-
 <div class="gpu-streaming-chat">
   <!-- Memory Stats Dashboard -->
   <div class="memory-stats" transitionfade>
@@ -206,8 +205,7 @@
             <div class="embedding-indicator">
               <Database size={12} />
               <span>Embedded</span>
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
     </div>
@@ -215,7 +213,7 @@
     {#if similarDocuments.length > 0}
       <div class="similar-docs" transitionslide>
         <h3>📚 Similar Documents</h3>
-        {#each similarDocuments as doc}
+        {#each Array.isArray(similarDocuments) ? similarDocuments : [] as doc}
           <div class="similar-doc">
             <div class="similarity-score">
               {(doc.similarity * 100).toFixed(1)}%
@@ -225,8 +223,7 @@
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Input Area -->
   <div class="input-area">
@@ -260,7 +257,6 @@
     </form>
   </div>
 </div>
-
 <style>
   .gpu-streaming-chat {
     display: flex;
@@ -307,7 +303,7 @@
     border-radius: 8px;
     padding: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    position relative;
+    position: relative;
   }
   .message.user {
     background: rgba(59, 130, 246, 0.1);
@@ -352,7 +348,7 @@
     51%, 100% { opacity: 0; }
   }
   .embedding-indicator {
-    position absolute;
+    position: absolute;
     top: 0.5rem;
     right: 0.5rem;
     display: flex;
@@ -476,4 +472,3 @@
     background: rgba(255, 255, 255, 0.3);
   }
 </style>
-

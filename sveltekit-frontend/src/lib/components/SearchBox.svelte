@@ -6,17 +6,15 @@
     limit = 5,
     cudaServiceUrl = 'http://localhost:8096',
     onResults = null as ((data: any) => void) | null,
-    onError = null as ((err: unknown) => void) | null,
+    onError = null as ((err: any) => void) | null,
   } = $props();
-
   interface ResultItem {
     id?: string;
     score?: number;
     task_id?: string;
     payload?: string;
-    metadata?: unknown;
+    metadata?: any;
   }
-
   // Svelte 5 reactive state (typed)
   let query = $state<string>('');
   let isSearching = $state<boolean>(false);
@@ -25,7 +23,6 @@
   let lastSearchTime = $state<number>(0);
   // Derived state for search button (fix trim usage)
   let canSearch = $derived(() => query.trim().length > 0 && !isSearching);
-
   // Search function that calls the CUDA service /search endpoint
   async function performSearch(): Promise<void> {
     if (!canSearch) return;
@@ -64,7 +61,7 @@
         onError(err);
       }
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   // Handle Enter key in search box
@@ -79,7 +76,7 @@
     return (1 - score).toFixed(3); // Convert distance to similarity
   }
   // Parse metadata if it's a JSON string
-  function parseMetadata(metadata: unknown): Record<string, any> | undefined {
+  function parseMetadata(metadata: any): Record<string, any> | undefined {
     try {
       if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string, any>;
       if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string, any>;
@@ -89,7 +86,6 @@
     }
   }
 </script>
-
 <div class="search-container nes-container with-title">
   <p class="title">🔍 Legal AI Search</p>
   <!-- Search input and button -->
@@ -131,8 +127,7 @@
   {#if error}
     <div class="nes-container is-dark error-container">
       <p class="nes-text is-error">❌ {error}</p>
-    </div>
-  {/if}
+    {/if}
   <!-- Results display -->
   {#if results.length > 0}
     <div class="results-container">
@@ -190,10 +185,8 @@
   {:else if query.trim() && !isSearching && !error}
     <div class="no-results nes-container is-rounded">
       <p class="nes-text">🔍 No results found for: "{query}"</p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .search-container {
     max-width: 800px;
@@ -336,4 +329,3 @@
     }
   }
 </style>
-

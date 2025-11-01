@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Worker system test failed:', error);
       testJobResult = { error: 'Test failed: ' + (((error as any)?.message) ?? String(error)) };
     } finally {
-      isSubmittingJob = false;
+      isSubmittingJob = $state(false);
     }
   }
 
@@ -185,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function stopMonitoring() {
-    isMonitoring = false;
+    isMonitoring = $state(false);
   }
 
   // start monitoring on mount to avoid unused import warnings and provide UX
@@ -317,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-4">
             <h4 class="text-sm font-semibold text-slate-300 mb-2">AI Recommendations:</h4>
             <ul class="text-xs space-y-1">
-              {#each systemStatus.recommendations as rec}
+              {#each Array.isArray(systemStatus.recommendations) ? systemStatus.recommendations : [] as rec}
                 <li class="text-blue-300">• {rec}</li>
               {/each}
             </ul>

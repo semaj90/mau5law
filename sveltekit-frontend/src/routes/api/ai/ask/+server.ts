@@ -51,7 +51,7 @@ type AIServiceType = {
 
 type CacheClient = {
   get: (key: string) => Promise<unknown>;
-  set: (key: string, value: unknown, opts?: { ex?: number }) => Promise<void>;
+  set: (key: string, value: any, opts?: { ex?: number }) => Promise<void>;
 };
 
 type TauriLLMType = {
@@ -63,8 +63,8 @@ type TauriLLMType = {
 
 // Add a safe UnknownModule type and a function guard to avoid `any`
 type UnknownModule = Record<string, unknown>;
-type AnyFunction = (...args: unknown[]) => unknown;
-function isAnyFunction(v: unknown): v is AnyFunction {
+type AnyFunction = (...args: any[]) => unknown;
+function isAnyFunction(v: any): v is AnyFunction {
   return typeof v === 'function';
 }
 
@@ -114,7 +114,7 @@ try {
     // fallback stub when no known export shapes are present
     vectorSearch = async () => ({ results: [] });
   }
-} catch (error: unknown) {
+} catch (error: any) {
   console.warn('Vector search not available:', error);
   vectorSearch = async () => ({ results: [] });
 }
@@ -125,7 +125,7 @@ try {
   const mod = aiServiceModuleRaw as unknown;
 
   // local helper to safely get a bound function if present
-  const getBoundFn = (obj: unknown, name: string): AnyFunction | undefined => {
+  const getBoundFn = (obj: any, name: string): AnyFunction | undefined => {
     if (obj && typeof obj === 'object') {
       const rec = obj as Record<string, unknown>;
       const val = rec[name];
@@ -175,7 +175,7 @@ try {
       generateResponse: async () => 'AI service not available',
     };
   }
-} catch (error: unknown) {
+} catch (error: any) {
   console.warn('AI service not available:', error);
   aiService = {
     generateResponse: async () => 'AI service not available',
@@ -188,7 +188,7 @@ try {
   const cm = cacheModuleRaw as unknown as Record<string, unknown>;
 
   // Typed helper: safely get a bound function from an unknown object without using `any`
-  const getBoundFunction = (obj: unknown, name: string): AnyFunction | undefined => {
+  const getBoundFunction = (obj: any, name: string): AnyFunction | undefined => {
     if (!obj || typeof obj !== 'object') return undefined;
     const rec = obj as Record<string, unknown>;
     const val = rec[name];
@@ -209,7 +209,7 @@ try {
     if (getFn && setFn) {
       cache = {
         get: async (k: string) => await getFn(k),
-        set: async (k: string, v: unknown, opts?: { ex?: number }) => {
+        set: async (k: string, v: any, opts?: { ex?: number }) => {
           await setFn(k, v, opts);
         },
       } as CacheClient;
@@ -224,7 +224,7 @@ try {
     if (getFn && setFn) {
       cache = {
         get: async (k: string) => await getFn(k),
-        set: async (k: string, v: unknown, opts?: { ex?: number }) => {
+        set: async (k: string, v: any, opts?: { ex?: number }) => {
           await setFn(k, v, opts);
         },
       };
@@ -239,7 +239,7 @@ try {
     if (getFn && setFn) {
       cache = {
         get: async (k: string) => await getFn(k),
-        set: async (k: string, v: unknown, opts?: { ex?: number }) => {
+        set: async (k: string, v: any, opts?: { ex?: number }) => {
           await setFn(k, v, opts);
         },
       } as CacheClient;
@@ -253,7 +253,7 @@ try {
       set: async () => {},
     };
   }
-} catch (error: unknown) {
+} catch (error: any) {
   console.warn('Cache not available:', error);
   cache = {
     get: async () => null,
@@ -265,11 +265,11 @@ try {
   // previous risky casts -> replace with a runtime adapter that probes exports safely
   const tauriModule = (await import('../../../../lib/services/tauri-llm.js')) as UnknownModule;
 
-  const isFunction = (v: unknown): v is (...args: unknown[]) => unknown => typeof v === 'function';
-  const asRecord = (v: unknown): Record<string, unknown> | undefined =>
+  const isFunction = (v: any): v is (...args: any[]) => unknown => typeof v === 'function';
+  const asRecord = (v: any): Record<string, unknown> | undefined =>
     typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : undefined;
 
-  const normalizeModels = (v: unknown): Record<string, string> => {
+  const normalizeModels = (v: any): Record<string, string> => {
     const out: Record<string, string> = {};
     const rec = asRecord(v);
     if (!rec) return out;
@@ -286,7 +286,7 @@ try {
     const modRec = asRecord(mod) ?? {};
     const defaultRec = asRecord(modRec['default']);
     // Derive candidate in order of preference without `any`
-    const candidateRaw: unknown =
+    const candidateRaw: any =
       modRec['tauriLLM'] ?? (defaultRec ? defaultRec['tauriLLM'] : undefined) ?? defaultRec ?? modRec;
 
     const candidateRec = asRecord(candidateRaw);
@@ -371,7 +371,7 @@ try {
   };
 
   tauriLLM = createTauriAdapter(tauriModule);
-} catch (error: unknown) {
+} catch (error: any) {
   console.warn('Tauri LLM not available:', error);
   tauriLLM = {
     isAvailable: () => false,
@@ -620,7 +620,7 @@ Instructions:
       success: true,
       data: response,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error processing request:', error);
     return json(
       {

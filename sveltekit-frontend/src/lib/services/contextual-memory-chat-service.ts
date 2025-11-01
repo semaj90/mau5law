@@ -34,7 +34,7 @@ export interface ContextualPrompt {
 export interface UserPreferences {
   communication_style?: string | null;
   // allow other arbitrary preference keys
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Add the missing MemoryCacheEntry type used by the in-memory cache.

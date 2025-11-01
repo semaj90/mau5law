@@ -6,10 +6,9 @@
   let {
     class: className = '',
     childre;
-  }: Props & { children?: unknown } = $props();
+  }: Props & { children?: any } = $props();
   let classes = $derived(className);
 </script>
-
 <div class="{classes} space-y-4">
   {#if children}
     {@render children()}

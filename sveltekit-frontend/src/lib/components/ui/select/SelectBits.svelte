@@ -77,7 +77,6 @@
     options.find(option => option.value === selected)
   );
 </script>
-
 <div class="legal-ai-select-group space-y-2">
   {#if label}
     <label for={selectId} class="block text-sm font-semibold text-slate-300">
@@ -110,7 +109,7 @@
       transitionConfig={{ duration 150, start: 0.95 }}
       sideOffset={8}
     >
-      {#each options as option}
+      {#each Array.isArray(options) ? options : [] as option}
         <SelectPrimitive.Item
           value={option.value}
           disabled={option.disabled}
@@ -161,7 +160,6 @@
     </p>
   {/if}
 </div>
-
 <style>
   :global(.legal-ai-select-trigger) {
     font-family: var(--legal-ai-font-family-sans);
@@ -195,4 +193,3 @@
     }
   }
 </style>
-

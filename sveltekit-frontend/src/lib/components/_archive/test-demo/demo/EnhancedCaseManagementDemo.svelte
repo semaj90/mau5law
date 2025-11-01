@@ -283,7 +283,7 @@ Refresh
             <div class="mt-4">
               <h4 class="font-medium mb-2">Search Results ({context.searchResults.length})</h4>
               <div class="space-y-2 max-h-40 overflow-y-auto">
-                {#each context.searchResults as result}
+                {#each Array.isArray(context.searchResults) ? context.searchResults : [] as result}
                   <div class="p-2 bg-gray-50 rounded text-sm">
                     <div class="font-medium">{(result as { title?: any; description?: any }).title}</div>
                     <div class="text-gray-600 truncate">{(result as { title?: any; description?: any }).description}</div>

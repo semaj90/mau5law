@@ -253,11 +253,11 @@ https://svelte.dev/e/js_parse_error -->
         newFormData.customTags = [...(node.customTags || [])];
       }
       formData.set(newFormData);
-      hasUnsavedChanges = false; // Reset after populating
+      hasUnsavedChanges = $state(false); // Reset after populating
     } catch (error) {
       console.error('Auto-population failed:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -451,7 +451,7 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
       if (response.ok) {
-        hasUnsavedChanges = false;
+        hasUnsavedChanges = $state(false);
         lastSavedAt = new Date();
         dispatch('nodeUpdated', updatedNode);
       }
@@ -509,7 +509,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       if (response.ok) {
         const result = await response.json();
-        hasUnsavedChanges = false;
+        hasUnsavedChanges = $state(false);
         lastSavedAt = new Date();
         dispatch('nodeUpdated', result.evidence);
         dispatch('toast', {
@@ -526,7 +526,7 @@ https://svelte.dev/e/js_parse_error -->
         message: 'Failed to save evidence',
       });
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
   async function reanalyzeWithAI() {
@@ -548,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
         message: 'AI re-analysis failed',
       });
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function formatDate(dateStr: string) {

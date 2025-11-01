@@ -26,8 +26,8 @@ type ServiceStatus = {
 
 type ServiceResult = {
   success: boolean;
-  data?: unknown;
-  error?: unknown;
+  data?: any;
+  error?: any;
 };
 
 type OperationSummary = {
@@ -58,7 +58,7 @@ export class ServiceOrchestrator {
   // use proper timer names (match usage in startHealthMonitoring/startPerformanceMonitoring)
   private healthCheckInterval?: NodeJS.Timeout;
   private performanceMonitor?: NodeJS.Timeout;
-  private emergencyMode = false;
+  private emergencyMode = $state(false);
 
   constructor() {
     this.initializeServices();
@@ -163,7 +163,7 @@ export class ServiceOrchestrator {
         const targetInstances = options?.scale_factor ?? this.calculateOptimalScale(serviceName);
         const res = await this.scaleService(serviceName, targetInstances);
         results[serviceName] = { success: true, data: res };
-      } catch (error: unknown) {
+      } catch (error: any) {
         results[serviceName] = {
           success: false,
           error: error instanceof Error ? error.message : String(error),
@@ -188,7 +188,7 @@ export class ServiceOrchestrator {
         const res = await this.deployService(serviceName, options);
         results[serviceName] = { success: true, data: res };
         await this.verifyServiceHealth(serviceName);
-      } catch (error: unknown) {
+      } catch (error: any) {
         results[serviceName] = {
           success: false,
           error: error instanceof Error ? error.message : 'Deployment failed',
@@ -212,7 +212,7 @@ export class ServiceOrchestrator {
     for (const serviceName of servicesToCheck) {
       try {
         healthData[serviceName] = await this.checkServiceHealth(serviceName);
-      } catch (error: unknown) {
+      } catch (error: any) {
         healthData[serviceName] = {
           name: serviceName,
           status: 'unhealthy',

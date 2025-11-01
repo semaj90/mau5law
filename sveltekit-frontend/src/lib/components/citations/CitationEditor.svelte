@@ -167,7 +167,7 @@ try {
     } catch (error) {
       console.error('Save error:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Delete citation
@@ -190,7 +190,7 @@ try {
     } catch (error) {
       console.error('Delete error:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Add tag
@@ -259,7 +259,7 @@ try {
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
           required
         >
-          {#each citationTypes as type}
+          {#each Array.isArray(citationTypes) ? citationTypes : [] as type}
             <option value={type.value}>{type.label}</option>
           {/each}
         </select>
@@ -406,7 +406,7 @@ try {
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
         >
-          {#each citationPurposes as purpose}
+          {#each Array.isArray(citationPurposes) ? citationPurposes : [] as purpose}
             <option value={purpose.value}>{purpose.label}</option>
           {/each}
         </select>
@@ -441,7 +441,7 @@ try {
       />
       {#if formData.tags.length > 0}
         <div class="flex flex-wrap gap-2 mt-2">
-          {#each formData.tags as tag}
+          {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {tag}
               <button
@@ -455,8 +455,7 @@ try {
               </button>
             </span>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Verification -->
     <div class="flex items-center space-x-2">

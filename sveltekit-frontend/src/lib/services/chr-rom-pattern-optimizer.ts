@@ -133,7 +133,7 @@ export type PatternInputData = {
     entities?: Array<Record<string, unknown>>;
     similarities?: number[];
   };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export class CHRROMPatternOptimizer {
@@ -238,7 +238,7 @@ export class CHRROMPatternOptimizer {
     // Clear with transparency
     this.ctx.clearRect(0, 0, width, height);
     // Disable anti-aliasing for pixel-perfect art
-    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = $state(false);
     let pngDataURL = '';
     switch (patternType) {
       case 'status_indicator':

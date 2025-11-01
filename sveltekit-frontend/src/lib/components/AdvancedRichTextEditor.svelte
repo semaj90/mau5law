@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'
+  import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'
   // Svelte 5 runes are auto-imported with Advanced Rich Text Editor/Google Slides/Photoshop-like Features
   import { onMount, onDestroy } from 'svelte';
   import { Editor as TiptapEditor } from "@tiptap/core";
@@ -46,10 +46,8 @@
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-
   // Import LokiJS client functions
   import { saveDraft, loadDraft } from '$lib/client/db/loki-client';
-
   // Svelte 5 props
   let {
     content = $bindable(),
@@ -64,7 +62,6 @@
     reportId?: string;
     caseId?: string;
   } = $props();
-
   // define editor state shape for TypeScript
   type EditorState = {
     canUndo: boolean;
@@ -84,7 +81,6 @@
     isOrderedList: boolean;
     isQuote: boolean;
   };
-
   const defaultEditorState: EditorState = {
     canUndo: false,
     canRedo: false,
@@ -103,7 +99,6 @@
     isOrderedList: false,
     isQuote: false,
   };
-
   // typed editor and elements
   let editor: InstanceType<typeof TiptapEditor> | null = $state(null);
   let editorElement: HTMLElement | null;
@@ -114,20 +109,16 @@
   let showRuler = $state(true);
   let wordCount = $state(0);
   let characterCount = $state(0);
-
   // local plain object used in template for property access
   let state: EditorState = $state(defaultEditorState);
-
   // Auto-save timeout typed to be compatible with browser/node
   let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
-
   // --- NEW: provide the missing data used by the template ---
   const fontFamilies = ["Inter", "Roboto", "Georgia", "Times New Roman", "Arial"];
   const colorPalettes = {
     highlight: ["#fff59d", "#ffcc80", "#80deea", "#c5e1a5", "transparent"]
   };
   // --- end new definitions ---
-
   // Editor state stores
   // Auto-save functionality
   onMount(() => {
@@ -138,7 +129,6 @@
       characterCount = draft.characterCount;
     }
   });
-
   onDestroy(() => {
     if (editor) {
       editor.destroy();
@@ -148,18 +138,15 @@
       autoSaveTimeout = null;
     }
   });
-
   // Initialize editor only after editorElement is bound
   $effect(() => {
     if (editorElement && !editor) {
       initializeEditor();
     }
   });
-
   // Top-level $effect for keyboard shortcuts, reacting to editor initialization
   $effect(() => {
     if (!editor) return; // Only set up shortcuts when editor is initialized
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
@@ -177,14 +164,11 @@
         }
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   });
-
   function initializeEditor() {
     editor = new TiptapEditor({
       element: editorElement,
@@ -265,7 +249,6 @@
       isQuote: editor.isActive("blockquote"),
     };
   }
-
   // typed functions accepting the editor instance
   function updateWordCount(editorInstance: InstanceType<typeof TiptapEditor> | null): void {
     if (!editorInstance) return;
@@ -273,7 +256,6 @@
     wordCount = text.split(' ').filter((word: string) => word.length > 0).length;
     characterCount = text.length;
   }
-
   function scheduleAutoSave(editorInstance: InstanceType<typeof TiptapEditor> | null): void {
     if (autoSaveTimeout) {
       clearTimeout(autoSaveTimeout);
@@ -282,17 +264,14 @@
       saveContent(editorInstance);
     }, 2000);
   }
-
   async function saveContent(editorInstance: InstanceType<typeof TiptapEditor> | null): Promise<void> {
     if (!editorInstance) return;
     const jsonContent = editorInstance.getJSON(); // Renamed to avoid conflict with prop: 'content'
     const html = editorInstance.getHTML();
     // Update the bindable prop to reflect the latest content
     content = jsonContent;
-
     // Save offline immediately (Loki)
     saveDraft({ reportId, caseId, content: jsonContent, html, wordCount, characterCount });
-
     try {
       const response = await fetch("/api/reports/save", {
         method: "POST",
@@ -317,7 +296,6 @@
       errorMessage = error && error.message ? error.message : 'An error occurred';
     }
   }
-
   function showSaveIndicator() {
     // Implement visual save indicator
     const indicator = document.createElement("div");
@@ -465,8 +443,6 @@
   // Reactive statements
   // 'state' is updated via the editorState subscription above and used in the template.
 </script>
-
-
 <ErrorBoundary>
   <div
     class="mx-auto px-4 max-w-7xl min-h-[500px] rounded-lg overflow-hidden"
@@ -528,7 +504,7 @@
             value={state.currentFontFamily}
             onchange={(e) => { e.preventDefault(); setFontFamily((e.target as HTMLSelectElement).value); }}
           >
-            {#each fontFamilies as font}
+            {#each Array.isArray(fontFamilies) ? fontFamilies : [] as font}
               <option value={font}>{font}</option>
             {/each}
           </select>
@@ -601,7 +577,7 @@
           <div
             class="absolute top-full left-0 bg-white border border-gray-200 rounded-md shadow-md py-1 z-20 min-w-[150px] hidden group-hover:block grid grid-cols-5 gap-1 p-2 min-w-[200px]"
           >
-            {#each colorPalettes.highlight as color}
+            {#each Array.isArray(colorPalettes.highlight) ? colorPalettes.highlight : [] as color}
               <button
                 aria-label={color === "transparent"
                   ? "Remove highlight"
@@ -737,15 +713,13 @@
         </button>
       </div>
     </div>
-
     <!-- Secondary Toolbar -->
     <div class="flex items-center justify-between gap-2 p-2 border-b bg-gray-50 text-sm text-gray-600">
       <div class="flex items-center gap-1">Words: <span class="font-medium">{wordCount}</span> | Characters: <span class="font-medium">{characterCount}</span></div>
       <div class="flex-grow"></div>
-      {#if errorMessage}<div class="text-red-500 text-xs">{errorMessage}</div>{/if}
-      {#if autosave}<div class="text-xs text-gray-500">Auto-save enabled</div>{/if}
+      {#if errorMessage}<div class="text-red-500 text-xs">{errorMessage}{/if}
+      {#if autosave}<div class="text-xs text-gray-500">Auto-save enabled{/if}
     </div>
-
     {#if showRuler}
       <div class="h-6 w-full bg-gray-100 border-b flex items-center relative overflow-hidden" style="background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 10px, #e5e7eb 10px, #e5e7eb 11px);">
         {#each Array(20) as _, i}
@@ -753,9 +727,7 @@
             {#if i % 2 === 0}<span class="text-xs text-gray-600 -mb-1">{i}</span>{/if}
           </div>
         {/each}
-      </div>
-    {/if}
-
+      {/if}
     <!-- Editor Container -->
     <div class="flex flex-col flex-1 overflow-auto min-h-[400px]" class:bg-[linear-gradient(to_right,#f3f4f6_1px,transparent_1px),linear-gradient(to_bottom,#f3f4f6_1px,transparent_1px)]={showGrid} class:bg-size-[20px_20px]={showGrid}>
       <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
@@ -802,11 +774,9 @@
       </div>
       <div class="flex-grow"></div>
       {#if errorMessage}
-        <div class="text-red-500 text-xs">{errorMessage}</div>
-      {/if}
+        <div class="text-red-500 text-xs">{errorMessage}{/if}
       {#if autosave}
-        <div class="text-xs text-gray-500">Auto-save enabled</div>
-      {/if}
+        <div class="text-xs text-gray-500">Auto-save enabled{/if}
     </div>
     <!-- Ruler (if enabled) -->
     {#if showRuler}
@@ -823,8 +793,7 @@
             {/if}
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Editor Container -->
     <div
       class="flex flex-col flex-1 overflow-auto min-h-[400px]"
@@ -845,11 +814,9 @@
       </div>
       <div class="flex-grow"></div>
       {#if errorMessage}
-        <div class="text-red-500 text-xs">{errorMessage}</div>
-      {/if}
+        <div class="text-red-500 text-xs">{errorMessage}{/if}
       {#if autosave}
-        <div class="text-xs text-gray-500">Auto-save enabled</div>
-      {/if}
+        <div class="text-xs text-gray-500">Auto-save enabled{/if}
     </div>
     <!-- Ruler (if enabled) -->
     {#if showRuler}
@@ -866,8 +833,7 @@
             {/if}
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Editor Container -->
     <div
       class="flex flex-col flex-1 overflow-auto min-h-[400px]"
@@ -879,5 +845,3 @@
   </div>
   <!-- All styles have been moved to UnoCSS classes in the markup. -->
 </ErrorBoundary>
-
-

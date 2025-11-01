@@ -85,7 +85,7 @@ export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
 };
 
 export class LegalCacheWarmer {
-  private isWarming = false;
+  private isWarming = $state(false);
   private lastWarmingTime = 0;
   private warmingHistory: WarmingResult[] = [];
   private userBehaviorData = new Map<string, any>();
@@ -128,7 +128,7 @@ export class LegalCacheWarmer {
       console.log(`🎮 Loaded ${result.texturesLoaded} textures, using ${(result.memoryUsed / 1024).toFixed(1)}KB`);
       return result;
     } finally {
-      this.isWarming = false;
+      this.isWarming = $state(false);
     }
   }
   /**

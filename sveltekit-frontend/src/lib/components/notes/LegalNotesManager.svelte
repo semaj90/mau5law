@@ -19,11 +19,11 @@
     type NoteFilters,
   } from '$lib/stores/enhanced-saved-notes';
   import xstateIntegration from '$lib/services/xstate-integration'; // Import xstateIntegration
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // Import components into intermediate names and cast to any to avoid TS errors
-  import Input_ from '$lib/components/ui/input/Input.svelte';
-  import Textarea_ from '$lib/components/ui/textarea/Textarea.svelte';
+  import { Input_ } from '$lib/components/ui/input/Input.svelte';
+  import { Textarea_ } from '$lib/components/ui/textarea/Textarea.svelte';
   const Input = Input_ as unknown as any;
   const Textarea = Textarea_ as unknown as any;
   import {
@@ -51,11 +51,11 @@
   let searchQuery: string = '';
   let selectedNoteType: string = '';
   let selectedRiskLevel: string = '';
-  let showFilters: boolean = false;
-  let showCreateNote: boolean = false;
+  let showFilters: boolean = $state(false);
+  let showCreateNote: boolean = $state(false);
   let editingNote: LegalNote | null = null;
   let semanticResults: LegalNote[] = [];
-  let showSemanticSearch: boolean = false;
+  let showSemanticSearch: boolean = $state(false);
   // New note form
   let newNote: {
     title: string;
@@ -88,7 +88,6 @@
     loadLegalNotes().catch(err => {
       console.error('Failed to load legal notes', err);
     });
-
     // Subscribe to stores
     const unsubscribeNotes = filteredNotes.subscribe(value => {
       notes = value;
@@ -99,7 +98,6 @@
     const unsubscribeFilters = noteFilters.subscribe(value => {
       currentFilters = value;
     });
-
     // synchronous cleanup function
     return () => {
       unsubscribeNotes();
@@ -124,7 +122,6 @@
   // Note creation
   async function createNote() {
     if (!newNote.title.trim() || !newNote.content.trim()) return;
-
     // Safely obtain the XState global state:
     // prefer xstateIntegration.getGlobalState() if available, otherwise read the Svelte store snapshot
     // cast to any to avoid TS error if getGlobalState is not declared on the integration type
@@ -133,7 +130,6 @@
       typeof maybeGetGlobalState === 'function' ? maybeGetGlobalState() : get((xstateIntegration as any).globalState);
     // Read user id from the plain object (fallback to anonymous)
     const userId = globalState?.context?.auth?.user?.id ?? 'anonymous';
-
     const noteId = `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const tags = newNote.tags.length > 0 ? newNote.tags : [newNote.noteType];
     const note: Omit<LegalNote, 'savedAt' | 'updatedAt'> = {
@@ -157,7 +153,7 @@
     };
     await saveLegalNote(note);
     resetNewNoteForm();
-    showCreateNote = false;
+    showCreateNote = $state(false);
   }
   function resetNewNoteForm() {
     newNote = {
@@ -260,7 +256,6 @@
     newNote.tags = newNote.tags.filter((_, i) => i !== index);
   }
 </script>
-
 <div class="space-y-6 p-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -442,8 +437,7 @@
               Brief
             </button>
           </div>
-        </div>
-      {/if}
+        {/if}
     </CardContent>
   </Card>
   <!-- Create New Note -->
@@ -550,7 +544,7 @@
       </CardHeader>
       <CardContent>
         <div class="space-y-4">
-          {#each semanticResults as note}
+          {#each Array.isArray(semanticResults) ? semanticResults : [] as note}
             <div class="border rounded p-4">
               <div class="flex justify-between items-start mb-2">
                 <h3 class="font-semibold">{note.title}</h3>
@@ -646,7 +640,7 @@
                     {note.content.length > 300 ? note.content.substring(0, 300) + '...' : note.content}
                   </p>
                   <div class="flex flex-wrap gap-1 mb-3">
-                    {#each note.tags as tag}
+                    {#each Array.isArray(note.tags) ? note.tags : [] as tag}
                       <Badge variant="outline" class="text-xs">
                         <Tag class="h-3 w-3 mr-1" />
                         {tag}
@@ -705,17 +699,15 @@
                 <div class="border-t pt-3">
                   <h4 class="font-medium text-sm mb-2">Legal Citations</h4>
                   <div class="space-y-1">
-                    {#each note.metadata.legalCitations.slice(0, 3) as citation}
+                    {#each Array.isArray(note.metadata.legalCitations.slice(0, 3)) ? note.metadata.legalCitations.slice(0, 3) : [] as citation}
                       <div class="text-xs text-muted-foreground">
                         <Badge variant="outline" class="mr-2">{citation.type}</Badge>
                         {citation.citation} (relevance: {citation.relevance})
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/if}
-            </div>
-          {/if}
+                {/if}
+            {/if}
         </CardContent>
       </Card>
     {/each}

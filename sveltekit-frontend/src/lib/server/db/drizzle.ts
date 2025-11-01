@@ -10,13 +10,11 @@ import { sql } from 'drizzle-orm/sql';
 import { qdrantClient } from '$lib/services/qdrant-client';
 import { Client as MinioClient } from 'minio';
 import { eq } from './utils.js';
-
 // Safe runtime config placeholder (falls back to undefined so calls like _CFG?.X work)
 const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
-
 // Lazy-load project's cache/redis helper at runtime.
 // Returns undefined when the module cannot be found or fails to import.
-let _cacheInitialized = false;
+let _cacheInitialized = $state(false);
 let _cache: any = undefined;
 async function getCache(): Promise<any | undefined> {
   // simple memoization to avoid repeated dynamic imports
@@ -31,12 +29,9 @@ async function getCache(): Promise<any | undefined> {
   }
   return _cache;
 }
-
 export const schemaDb = schema;
-
 // db is lazy-loaded proxy from client.ts
 export const db = lazyDb;
-
 // Cached query helper using Redis
 export async function cachedQuery<T>(key: string, queryFn: () => Promise<T>, ttlMs = 1000 * 60 * 10): Promise<T> {
   try {
@@ -48,9 +43,7 @@ export async function cachedQuery<T>(key: string, queryFn: () => Promise<T>, ttl
   } catch (err) {
     console.warn('⚠️ Cache read failed:', err);
   }
-
   const result = await queryFn();
-
   try {
     const cache = await getCache();
     if (cache && typeof cache.set === 'function') {
@@ -62,12 +55,11 @@ export async function cachedQuery<T>(key: string, queryFn: () => Promise<T>, ttl
   }
   return result;
 }
-
 // Hybrid vector search: prefer qdrant, fallback to pgvector via SQL
 export async function hybridVectorSearch<T = unknown>(
   embedding: number[],
   table: T,
-  column: unknown,
+  column: any,
   limit = 10
 ): Promise<unknown[]> {
   try {
@@ -83,7 +75,6 @@ export async function hybridVectorSearch<T = unknown>(
   } catch (err) {
     console.warn('⚠️ Qdrant search failed, falling back to pgvector:', err);
   }
-
   // Fallback to pgvector: compute cosine distance via SQL fragment
   try {
     const rows = await (db as any)
@@ -98,10 +89,9 @@ export async function hybridVectorSearch<T = unknown>(
     return [];
   }
 }
-
 // Store embedding in Postgres + Qdrant + Redis cache
 export async function storeEmbedding(
-  table: unknown,
+  table: any,
   recordId: string,
   vectorColumn: { name?: string } | unknown,
   embedding: number[],
@@ -116,7 +106,6 @@ export async function storeEmbedding(
   } catch (err) {
     console.warn('⚠️ Failed to update embedding in Postgres:', err);
   }
-
   try {
     if (qdrantClient) {
       // cast to any to bypass strict typings; use collectionName as the client expects
@@ -128,7 +117,6 @@ export async function storeEmbedding(
   } catch (err) {
     console.warn('⚠️ Failed to upsert to Qdrant:', err);
   }
-
   try {
     const cache = await getCache();
     if (cache && typeof cache.set === 'function') {
@@ -138,7 +126,6 @@ export async function storeEmbedding(
     // ignore cache write errors
   }
 }
-
 // MinIO helper using project's Minio usage patterns (create client if library not exported centrally)
 function makeMinioClient(): MinioClient {
   const endpoint = _CFG?.MINIO_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost:9000';
@@ -153,7 +140,6 @@ function makeMinioClient(): MinioClient {
     secretKey,
   });
 }
-
 export async function fetchDocumentFromMinIO(bucket: string, key: string) {
   try {
     const client = makeMinioClient();
@@ -166,5 +152,4 @@ export async function fetchDocumentFromMinIO(bucket: string, key: string) {
     return '';
   }
 }
-
 export default db;

@@ -27,7 +27,7 @@ export interface PredictedAsset {
 type BitmapSig = strin;g;
 type RedisJSON =  ;{
   getJSON: <T = unknown>(_key: string) => Promise<T | null>;
-  setJSON: (_key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
+  setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
 }
 class HiddenMarkovSOM {
   private transitions = new Map<BitmapSig, Map<BitmapSig, number>();

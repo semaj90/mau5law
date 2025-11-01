@@ -8,7 +8,7 @@ https://svelte.dev/e/expected_token -->
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
 
-  // Define Machine shape so TS can infer types (fixes never[])
+  // Define Machine shape so TS can infer types (fixes any[])
   interface Machine {
     id: string;
     name: string;
@@ -82,7 +82,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Failed to load state machines:', error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 
@@ -172,7 +172,7 @@ https://svelte.dev/e/expected_token -->
               <div class="transitions">
                 <span class="label">Available Transitions:</span>
                 <div class="transition-tags">
-                  {#each machine.transitions as transition}
+                  {#each Array.isArray(machine.transitions) ? machine.transitions : [] as transition}
                     <span class="transition-tag">{transition}</span>
                   {/each}
                 </div>

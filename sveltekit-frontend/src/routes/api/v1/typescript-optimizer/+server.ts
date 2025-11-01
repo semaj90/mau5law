@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
       `✅ TypeScript Optimizer: ${stats.fixes_applied ?? 'unknown'} fixes applied, ${stats.remaining_errors ?? 'unknown'} remaining`
     );
     return json(enhancedResult);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);
     console.error('TypeScript Optimizer Error:', details);
     return json(
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
         benchmark: '/api/v1/typescript-optimizer/benchmark',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);
     return json(
       {

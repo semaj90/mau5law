@@ -40,7 +40,7 @@ export interface ProtocolFallbackRequest {
   method: string;
   path: string;
   headers?: Record<string, string>;
-  body?: unknown;
+  body?: any;
   metadata?: Record<string, unknown>;
   timeout?: number;
   max_retries?: number;
@@ -50,7 +50,7 @@ export interface ProtocolFallbackRequest {
 export interface ProtocolFallbackResponse {
   success: boolean;
   status_code?: number;
-  body?: unknown;
+  body?: any;
   headers?: Record<string, string>;
   protocol_used: ProtocolType;
   endpoint_used: string;
@@ -137,7 +137,7 @@ export const GET: RequestHandler = async ({ url }) => {
         retry_attempts: GATEWAY_CONFIG.retryAttempts,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Multi-protocol gateway status check failed:', err);
     throw error(
       500,
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
       statusCode = response.status_code || 500;
     }
     return json(response, { status: statusCode });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Multi-protocol request failed:', err);
     throw error(
       500,
@@ -197,7 +197,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Gateway configuration updated',
       config: result,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Gateway configuration update failed:', err);
     throw error(
       500,
@@ -234,7 +234,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       endpoint,
       result,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Circuit breaker reset failed:', err);
     throw error(
       500,
@@ -248,7 +248,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 /*
  * Validate protocol fallback request
  */
-function validateFallbackRequest(data: unknown): ProtocolFallbackRequest {
+function validateFallbackRequest(data: any): ProtocolFallbackRequest {
   if (typeof data !== 'object' || data === null) {
     throw new Error('Invalid request data: expected an object');
   }
@@ -316,7 +316,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
         metadata: { gateway_error: true },
       };
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const totalLatency = Date.now() - startTime;
     return {
       success: false,

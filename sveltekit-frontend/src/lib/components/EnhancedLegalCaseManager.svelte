@@ -7,31 +7,29 @@ https://svelte.dev/e/js_parse_error -->
 	// Removed direct imports from '$app/stores' and: '$app/navigation' to avoid missing type declarations
 	// We'll read the URL and navigate at runtime using the browser APIs (window.location / history).
 	// import { dev } from '$app/environment';
-
 	// Import subcomponents
 	// Use safer imports and silence TypeScript when the project uses named exports
 	// (this prevents: "has no default export" errors when UI libs export named components)
 	// @ts-ignore
-	import CaseInfoForm from './CaseInfoForm.svelte';
+	import { CaseInfoForm } from './CaseInfoForm.svelte';
 	// @ts-ignore
-	import DocumentUploadForm from './DocumentUploadForm.svelte';
+	import { DocumentUploadForm } from './DocumentUploadForm.svelte';
 	// @ts-ignore
-	import EvidenceAnalysisForm from './EvidenceAnalysisForm.svelte';
+	import { EvidenceAnalysisForm } from './EvidenceAnalysisForm.svelte';
 	// @ts-ignore
-	import AIAnalysisForm from './AIAnalysisForm.svelte';
+	import { AIAnalysisForm } from './AIAnalysisForm.svelte';
 	// @ts-ignore
-	import ReviewSubmitForm from './ReviewSubmitForm.svelte';
+	import { ReviewSubmitForm } from './ReviewSubmitForm.svelte';
 	// @ts-ignore
-	import ProgressIndicator from './subcomponents/ProgressIndicator.svelte';
+	import { ProgressIndicator } from './subcomponents/ProgressIndicator.svelte';
 	// @ts-ignore
-	import LoadingSpinner from './LoadingSpinner.svelte';
+	import { LoadingSpinner } from './LoadingSpinner.svelte';
 	// Import enhanced services
 	// Consolidate store imports to reduce missing-export churn
 	// @ts-ignore
 	import { ocrProcessor } from '$lib/services/enhanced-ocr-processor';
 	// @ts-ignore
 	import { caseStore, type CaseData, notifications, analyticsStore } from '$lib/stores/unified';
-
 	// Extended case data interface for the form
 	interface ExtendedCaseData extends Partial<CaseData> {
 		clientInfo?: {
@@ -40,9 +38,9 @@ https://svelte.dev/e/js_parse_error -->
 			phone: string;
 			address: string;
 		}
-		documents?: unknown[];
-		aiAnalysis?: unknown;
-		[key: string]: unknown; // Allow additional properties
+		documents?: any[];
+		aiAnalysis?: any;
+		[key: string]: any; // Allow additional properties
 	}
 	// Types
 	// import type { ComponentType } from 'svelte';
@@ -147,10 +145,8 @@ https://svelte.dev/e/js_parse_error -->
 	let estimatedTimeRemaining = $derived(() =>
 		steps.reduce((sum, step) => sum + step.estimatedTime, 0)
 	);
-
 	// Add reference for ProgressIndicator to attach event listener instead of inline on:step-onclick
 	let progressRef = $state<any | null>(null);
-
 	// Lightweight notification helper (tries common shapes)
 	function notify(payload: { type?: string; title?: string; message?: string; duration?: number }) {
 		try {
@@ -289,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
 				duration: 5000,
 			});
 		} finally {
-			isProcessing = false;
+			isProcessing = $state(false);
 		}
 	}
 	async function previousStep(): Promise<void> {
@@ -313,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
 						message: `Cannot skip required step: ${steps[i].title}`,
 						duration: 5000,
 					});
-					canJump = false;
+					canJump = $state(false);
 					break;
 				}
 			}
@@ -367,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
 			console.error('Case submission failed:', error);
 			notify({ type: 'error', title: 'Submission Error', message: 'Failed to submit case. Please try again.', duration: 5000 });
 		} finally {
-			isProcessing = false;
+			isProcessing = $state(false);
 		}
 	}
 	// Safe navigation helper: prefer SPA-style history navigation, fallback to full navigation
@@ -388,7 +384,6 @@ https://svelte.dev/e/js_parse_error -->
 	}
 	async function resetCase(): Promise<void> {
 		if (!confirm('Are you sure you want to reset all case data? This cannot be undone.')) return;
-
 		// reset top-level fields
 		caseData.id = '';
 		caseData.title = '';
@@ -411,7 +406,6 @@ https://svelte.dev/e/js_parse_error -->
 			version: 1,
 			workflow: 'standard',
 		};
-
 		currentStep = 0;
 		validationResults = {};
 		notify({ type: 'info', title: 'Reset', message: 'Case data reset', duration: 3000 });
@@ -426,15 +420,15 @@ https://svelte.dev/e/js_parse_error -->
 		if (!Rec) return;
 		try {
 			recognition = new Rec();
-			recognition.continuous = false;
-			recognition.interimResults = false;
+			recognition.continuous = $state(false);
+			recognition.interimResults = $state(false);
 			recognition.lang = 'en-US';
 			recognition.onresult = (event: any) => {
 				const transcript = (event?.results?.[0]?.[0]?.transcript || '').toLowerCase();
 				handleVoiceCommand(transcript);
 			};
-			recognition.onerror = () => { isListening = false; };
-			recognition.onend = () => { isListening = false; };
+			recognition.onerror = () => { isListening = $state(false); };
+			recognition.onend = () => { isListening = $state(false); };
 		} catch (e) {
 			console.warn('SpeechRecognition init failed', e);
 			recognition = null;
@@ -450,9 +444,9 @@ https://svelte.dev/e/js_parse_error -->
 		}
 		if (isListening) {
 			try { recognition.stop(); } catch (e) { /* ignore */ }
-			isListening = false;
+			isListening = $state(false);
 		} else {
-			try { recognition.start(); isListening = true; } catch (e) { console.warn(e); isListening = false; }
+			try { recognition.start(); isListening = true; } catch (e) { console.warn(e); isListening = $state(false); }
 		}
 	}
 	function handleVoiceCommand(command: string): void {
@@ -497,10 +491,8 @@ https://svelte.dev/e/js_parse_error -->
 		ocrProcessor?.on?.('processing:complete', (result: any) => {
 			processingQueue = processingQueue.filter(item => item !== (result as any)?.filename);
 		});
-
 		setupVoiceCommands();
 		analyticsStore?.logEvent?.({ type: 'page_view', page: '/case/new' });
-
 		// read caseId from the current URL at runtime (browser-only)
 		try {
 			let caseId: string | null = null;
@@ -548,17 +540,15 @@ https://svelte.dev/e/js_parse_error -->
 		if (currentStep >= 0) validateCurrentStep();
 	});
 	// small type helpers to avoid calling .trim/.length on unknowns
-	function hasText(v: unknown): v is string {
+	function hasText(v: any): v is string {
 		return typeof v === 'string' && v.trim().length > 0;
 	}
-	function arrayLength(a: unknown): number {
+	function arrayLength(a: any): number {
 		return Array.isArray(a) ? a.length : 0;
 	}
 </script>
-
 <!-- Use Svelte 5 window event attribute form -->
 <svelte:window onkeydown={handleKeydown} />
-
 <div class="legal-case-manager min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header with progress -->
     <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -601,8 +591,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#if estimatedTimeRemaining > 0}
                         <div class="text-sm text-gray-500 dark:text-gray-400">
                             ~{estimatedTimeRemaining} min remaining
-                        </div>
-                    {/if}
+                        {/if}
                 </div>
             </div>
         </div>
@@ -627,8 +616,7 @@ https://svelte.dev/e/js_parse_error -->
                     </span>
                 </div>
             </div>
-        </div>
-    {/if}
+        {/if}
     <!-- Main content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -658,8 +646,7 @@ https://svelte.dev/e/js_parse_error -->
                             validationresult={validationResults[currentStep]}
                         />
                     {:else}
-                        <div class="text-sm text-gray-500">Component unavailable for this step.</div>
-                    {/if}
+                        <div class="text-sm text-gray-500">Component unavailable for this step.{/if}
                 {/if}
             </div>
             <!-- Navigation footer -->

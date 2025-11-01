@@ -10,8 +10,8 @@ export interface CommonProps {
   tabIndex?: number;
   tabindex?: number;
   // Allow arbitrary data-* and aria-* attributes
-  [attr: `data-${string}`]: unknown;
-  [attr: `aria-${string}`]: unknown;
+  [attr: `data-${string}`]: any;
+  [attr: `aria-${string}`]: any;
 }
 export interface ButtonProps extends CommonProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'legal' | 'evidence' | 'case';

@@ -113,7 +113,7 @@ export class MCPSIMDParser {
   private config: SIMDParserConfig;
   private mcpServerUrl: string;
   private metrics: ParsingMetrics;
-  private initialized: boolean = false;
+  private initialized: boolean = $state(false);
 
   constructor(config: Partial<SIMDParserConfig> = {}) {
     // Default configuration from mcp-multicore-config.json

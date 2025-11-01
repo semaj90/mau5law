@@ -2,13 +2,10 @@
  * Singleton instance of VectorSearchService
  * Provides lazy initialization for the search service
  */
-
 import { VectorSearchService } from './vector-search-service';
 import { redis } from '$lib/server/cache/redis';
 import { db } from '$lib/server/db/client';
-
 let serviceInstance: VectorSearchService | null = null;
-
 /**
  * Get or create the vector search service instance
  */
@@ -23,7 +20,6 @@ export async function getVectorSearchService(): Promise<VectorSearchService> {
       cacheTtl: 3600,
       primaryProvider: 'pgvector',
     });
-
     try {
       await serviceInstance.initialize();
     } catch (error) {
@@ -31,10 +27,8 @@ export async function getVectorSearchService(): Promise<VectorSearchService> {
       // Service will still work with degraded capabilities
     }
   }
-
   return serviceInstance;
 }
-
 /**
  * Export a proxy object that lazily initializes the service
  */
@@ -43,37 +37,30 @@ export const enhancedVectorSearchService = {
     const service = await getVectorSearchService();
     return service.healthCheck();
   },
-
   async getSearchStats() {
     const service = await getVectorSearchService();
     return service.getSearchStats();
   },
-
   async search(request: any) {
     const service = await getVectorSearchService();
     return service.search(request);
   },
-
   async batchSearch(request: any) {
     const service = await getVectorSearchService();
     return service.batchSearch(request);
   },
-
   async upsertDocument(doc: any, embedding: number[]) {
     const service = await getVectorSearchService();
     return service.upsertDocument(doc, embedding);
   },
-
   async deleteDocument(id: string) {
     const service = await getVectorSearchService();
     return service.deleteDocument(id);
   },
-
   async getStats() {
     const service = await getVectorSearchService();
     return service.getStats();
   },
-
   async clearCache() {
     const service = await getVectorSearchService();
     return service.clearCache();

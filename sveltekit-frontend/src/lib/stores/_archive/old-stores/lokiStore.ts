@@ -9,15 +9,15 @@ type Evidence = {
   fileName?: string;
   description?: string;
   tags?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 interface Collection<T = Record<string, unknown>> {
-  find(query?: unknown): T[];
-  findOne(query?: unknown): T | null;
+  find(query?: any): T[];
+  findOne(query?: any): T | null;
   insert(doc: T): T;
   update(doc: T): void;
-  findAndRemove(query: unknown): void;
+  findAndRemove(query: any): void;
   clear(): void;
 }
 
@@ -44,7 +44,7 @@ async function initLoki(): Promise<void> {
       autosave: true,
       autosaveInterval: 5000,
     } as Record<string, unknown>);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to initialize Loki:', error);
   }
 }
@@ -134,7 +134,7 @@ export const loki = {
   },
   // Canvas state operations
   canvasState: {
-    save(reportId: string, canvasData: unknown) {
+    save(reportId: string, canvasData: any) {
       if (!canvasStateCollection) return;
       const existing = canvasStateCollection.findOne({ reportId });
       const stateData = {

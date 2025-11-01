@@ -27,8 +27,8 @@
       }
     }
     data: {
-      configRoutes: unknown[];
-      fileRoutes: unknown[];
+      configRoutes: any[];
+      fileRoutes: any[];
       apiEndpoints: string[];
       configMissingFiles: string[];
       filesMissingConfig: string[];
@@ -98,7 +98,7 @@ if (!browser) return;
       console.error('Failed to load route data:', err);
       error = err instanceof Error ? err.message: 'Unknown error',
     } finally {
-      loading = false;
+      loading = $state(false);
     }
     })();
   });
@@ -238,7 +238,7 @@ if (!browser) return;
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Categories</option>
-              {#each categories as category}
+              {#each Array.isArray(categories) ? categories : [] as category}
                 <option value={category}>{category}</option>
               {/each}
             </select>
@@ -251,7 +251,7 @@ if (!browser) return;
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Statuses</option>
-              {#each statuses as status}
+              {#each Array.isArray(statuses) ? statuses : [] as status}
                 <option value={status}>{status}</option>
               {/each}
             </select>
@@ -264,7 +264,7 @@ if (!browser) return;
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Tags</option>
-              {#each allTags as tag}
+              {#each Array.isArray(allTags) ? allTags : [] as tag}
                 <option value={tag}>{tag}</option>
               {/each}
             </select>
@@ -347,7 +347,7 @@ if (!browser) return;
             <div class="mt-6 p-4 bg-blue-50 rounded-lg">
               <h4 class="font-medium text-blue-900 mb-2">💡 Recommendations</h4>
               <ul class="space-y-1">
-                {#each routeData.analytics.recommendations as rec}
+                {#each Array.isArray(routeData.analytics.recommendations) ? routeData.analytics.recommendations : [] as rec}
                   <li class="text-sm text-blue-800">• {rec}</li>
                 {/each}
               </ul>
@@ -363,7 +363,7 @@ if (!browser) return;
         <div class="p-6">
           {#if viewMode === 'grid'}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {#each filteredRoutes as route}
+              {#each Array.isArray(filteredRoutes) ? filteredRoutes : [] as route}
                 <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
                   <div class="flex items-start justify-between mb-2">
                     <h3 class="font-medium text-gray-900 truncate">{route.label}</h3>
@@ -378,7 +378,7 @@ if (!browser) return;
                     </span>
                     {#if route.tags?.length > 0}
                       <div class="flex gap-1">
-                        {#each route.tags.slice(0, 2) as tag}
+                        {#each Array.isArray(route.tags.slice(0, 2)) ? route.tags.slice(0, 2) : [] as tag}
                           <span class="px-1 py-0.5 text-xs bg-gray-100 rounded">{tag}</span>
                         {/each}
                         {#if route.tags.length > 2}
@@ -403,7 +403,7 @@ if (!browser) return;
                   </tr>
                 </thead>
                 <tbody>
-                  {#each filteredRoutes as route}
+                  {#each Array.isArray(filteredRoutes) ? filteredRoutes : [] as route}
                     <tr class="border-b hover:bg-gray-50">
                       <td class="py-3">{route.label}</td>
                       <td class="py-3 font-mono text-sm">{route.route}</td>
@@ -420,7 +420,7 @@ if (!browser) return;
                       <td class="py-3">
                         {#if route.tags?.length > 0}
                           <div class="flex gap-1 flex-wrap">
-                            {#each route.tags.slice(0, 3) as tag}
+                            {#each Array.isArray(route.tags.slice(0, 3)) ? route.tags.slice(0, 3) : [] as tag}
                               <span class="px-1 py-0.5 text-xs bg-gray-100 rounded">{tag}</span>
                             {/each}
                             {#if route.tags.length > 3}

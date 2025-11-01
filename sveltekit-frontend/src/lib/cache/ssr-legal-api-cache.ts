@@ -16,7 +16,7 @@ export interface SSRCacheConfig {
 }
 export interface LegalAPIResponse {
   success: boolean;
-  data: unknown;
+  data: any;
   meta?: {
     userId?: string;
     timestamp?: string;
@@ -50,7 +50,7 @@ export interface SSRCacheEntry {
 }
 
 // Helper function to validate if an object is a LegalAPIResponse
-function isLegalAPIResponse(obj: unknown): obj is LegalAPIResponse {
+function isLegalAPIResponse(obj: any): obj is LegalAPIResponse {
   return typeof obj === 'object' && obj !== null && typeof (obj as LegalAPIResponse).success === 'boolean';
 }
 
@@ -200,7 +200,7 @@ class SSRLegalAPICache {
       await parallelCacheOrchestrator.storeParallel(cacheKey, this.serializeEntry(cacheEntry), {
         tier: this.selectOptimalTier(endpoint, processedResponse),
         ttl: cacheEntry.ttl,
-        priority: this.determinePriority(endpoint) as: 'low' | 'normal' | 'high',
+        priority: this.determinePriority(endpoint), // Removed incorrect type assertion syntax
         type: 'ssr_legal_api',
       });
       console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
@@ -216,7 +216,7 @@ class SSRLegalAPICache {
     options: {
       method?: 'GET' | 'POST';
       params?: Params;
-      body?: unknown;
+      body?: any;
       headers?: Record<string, string>;
       ttl?: number;
       quantize?: boolean;
@@ -396,7 +396,7 @@ class SSRLegalAPICache {
     options: {
       method?: 'GET' | 'POST';
       params?: Params;
-      body?: unknown;
+      body?: any;
       headers?: Record<string, string>;
     }
   ): Promise<LegalAPIResponse> {
@@ -421,7 +421,7 @@ class SSRLegalAPICache {
     });
 
     const text = await res.text();
-    let parsed: unknown = null;
+    let parsed: any = null;
     try {
       parsed = text ? JSON.parse(text) : null;
     } catch {
@@ -471,33 +471,5 @@ class ResponseQuantizer {
     }
     return quantized;
   }
-  private quantizeAny(value: unknown): unknown {
-    if (value === null || value === undefined) return value;
-    if (typeof value === 'string') {
-      if (value.length > 100) return this.compressString(value);
-      return value;
-    }
-    if (typeof value === 'number') {
-      return Math.round(value * 100) / 100;
-    }
-    if (Array.isArray(value)) {
-      return value.map(v => this.quantizeAny(v));
-    }
-    if (typeof value === 'object') {
-      const obj = value as Record<string, unknown>;
-      const out: Record<string, unknown> = {};
-      for (const [k, v] of Object.entries(obj)) {
-        out[k] = this.quantizeAny(v);
-      }
-      return out;
-    }
-    return value;
-  }
-  private compressString(str: string): string {
-    // Simple compression - remove extra whitespace and trim
-    return str.replace(/\s+/g, ' ').trim();
-  }
-}
-// Export singleton instance
-export const ssrLegalAPICache = new SSRLegalAPICache();
-export default ssrLegalAPICache;
+  private quantizeAny(value: any): any {
+    if

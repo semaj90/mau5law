@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { quintOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import { notifications, type Notification } from '../../stores/notification';
@@ -87,7 +87,7 @@
           <!-- Actions -->
           {#if notification.actions && notification.actions.length > 0}
             <div class="mt-3 flex gap-2 flex-wrap">
-              {#each notification.actions as action}
+              {#each Array.isArray(notification.actions) ? notification.actions : [] as action}
                 <Button
                   class="bits-btn"
                   size="sm"
@@ -97,8 +97,7 @@
                   {action.label}
                 </Button>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
 
         <!-- Close button -->
@@ -122,8 +121,7 @@
             class="h-full bg-indigo-600"
             style="animation: shrink {notification.duration}ms linear forwards;"
           ></div>
-        </div>
-      {/if}
+        {/if}
     </div>
   {/each}
 </div>

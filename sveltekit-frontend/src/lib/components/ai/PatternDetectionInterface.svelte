@@ -6,8 +6,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
-  import * as Dialog from '$lib/components/ui/dialog';
-
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
   // Pattern detection state
   let patterns = $state<DetectedPattern[]>([]);
   let selectedPattern = $state<DetectedPattern | null>(null);
@@ -19,7 +18,6 @@
   let confidenceThreshold = $state(70);
   let timeRange = $state<'1d' | '7d' | '30d' | '90d' | 'all'>('30d');
   let selectedDataSources = $state<string[]>(['evidence', 'communications', 'financial']);
-
   interface DetectedPattern {
     id: string;
     type: 'temporal' | 'behavioral' | 'financial' | 'communication' | 'location';
@@ -60,11 +58,9 @@
     insights: string[];
     recommendations: string[];
   }
-
   $effect(() => {
     loadExistingPatterns();
   });
-
   async function loadExistingPatterns() {
     try {
       const response = await fetch('/api/ai/pattern-detection', {
@@ -81,7 +77,6 @@
       console.error('Error loading patterns:', error);
     }
   }
-
   async function runPatternAnalysis() {
     isAnalyzing = true;
     try {
@@ -108,10 +103,9 @@
     } catch (error) {
       console.error('Error running pattern analysis:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
-
   function getPatternTypeIcon(type: string): string {
     switch (type) {
       case 'temporal': return '⏰';
@@ -141,7 +135,6 @@
       default: return 'text-gray-600';
     }
   }
-
   let filteredPatterns = $derived(() => {
     let filtered = patterns.slice();
     // Apply type filter
@@ -154,12 +147,10 @@
     filtered.sort((a, b) => b.significance - a.significance);
     return filtered;
   });
-
   function openPatternDetails(pattern: DetectedPattern) {
     selectedPattern = pattern;
     showPatternDetails = true;
   }
-
   function formatDuration(duration: string): string {
     // Convert duration string to human readable format (expects like: "3d" or: "12h" or: "30m")
     const match = duration.match(/(\d+)([dhm])/);
@@ -175,11 +166,9 @@
     return duration;
   }
 </script>
-
 <svelte:head>
   <title>Pattern Detection - Legal AI Platform</title>
 </svelte:head>
-
 <div class="pattern-detection-interface">
   <header class="detection-header">
     <div class="header-content">
@@ -192,7 +181,6 @@
       </button>
     </div>
   </header>
-
   <!-- Analysis Controls -->
   <section class="controls-section">
     <div class="controls-grid">
@@ -247,7 +235,6 @@
       </div>
     </div>
   </section>
-
   <!-- Analysis Results Summary -->
   {#if analysisResults}
     <section class="results-summary">
@@ -277,17 +264,15 @@
             <div class="insights-section">
               <h4>Key Insights:</h4>
               <ul class="insights-list">
-                {#each analysisResults.insights.slice(0, 3) as insight}
+                {#each Array.isArray(analysisResults.insights.slice(0, 3)) ? analysisResults.insights.slice(0, 3) : [] as insight}
                   <li>{insight}</li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </section>
   {/if}
-
   <!-- Patterns Grid -->
   <main class="patterns-grid">
     {#if isAnalyzing}
@@ -321,9 +306,7 @@
               </span>
             </div>
           </header>
-
           <p class="pattern-description">{pattern.description}</p>
-
           <div class="card-content">
             <div class="pattern-stats">
               <div class="stat">
@@ -342,11 +325,10 @@
                 <span class="stat-value">{formatDuration(pattern.timeframe.duration)}</span>
               </div>
             </div>
-
             <div class="pattern-entities">
               <h4>Key Entities:</h4>
               <div class="entities-list">
-                {#each pattern.entities.slice(0, 4) as entity}
+                {#each Array.isArray(pattern.entities.slice(0, 4)) ? pattern.entities.slice(0, 4) : [] as entity}
                   <span class="entity-tag" title="{entity.role} - {entity.involvement}% involvement">
                     {entity.name}
                   </span>
@@ -356,17 +338,14 @@
                 {/if}
               </div>
             </div>
-
             {#if pattern.correlations.length > 0}
               <div class="pattern-correlations">
                 <h4>Correlations:</h4>
                 <div class="correlations-preview">
                   {pattern.correlations.length} related pattern{pattern.correlations.length !== 1 ? 's' : ''}
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
-
           <footer class="card-actions">
             <button class="nes-btn ghost sm" onclick={() => openPatternDetails(pattern)}>
               View Details
@@ -380,7 +359,6 @@
     {/if}
   </main>
 </div>
-
 <!-- Pattern Details Dialog -->
 <Dialog.Root bind:open={showPatternDetails}>
   <!-- Use Portal + conditional pattern required by Bits UI v1 / Svelte 5 runes -->
@@ -432,12 +410,11 @@
                   </p>
                 </div>
               </section>
-
               <!-- Entities -->
               <section class="entities-section">
                 <h3>Involved Entities</h3>
                 <div class="entities-grid">
-                  {#each selectedPattern.entities as entity}
+                  {#each Array.isArray(selectedPattern.entities) ? selectedPattern.entities : [] as entity}
                     <div class="entity-nier-bits-card">
                       <h4>{entity.name}</h4>
                       <p class="entity-type">{entity.type}</p>
@@ -450,13 +427,12 @@
                   {/each}
                 </div>
               </section>
-
               <!-- Correlations -->
               {#if selectedPattern.correlations.length > 0}
                 <section class="correlations-section">
                   <h3>Pattern Correlations</h3>
                   <div class="correlations-list">
-                    {#each selectedPattern.correlations as correlation}
+                    {#each Array.isArray(selectedPattern.correlations) ? selectedPattern.correlations : [] as correlation}
                       <div class="correlation-item">
                         <div class="correlation-header">
                           <span class="correlation-type">{correlation.type}</span>
@@ -468,25 +444,23 @@
                   </div>
                 </section>
               {/if}
-
               <!-- Recommendations -->
               {#if selectedPattern.recommendations.length > 0}
                 <section class="recommendations-section">
                   <h3>Recommendations</h3>
                   <ul class="recommendations-list">
-                    {#each selectedPattern.recommendations as recommendation}
+                    {#each Array.isArray(selectedPattern.recommendations) ? selectedPattern.recommendations : [] as recommendation}
                       <li class="recommendation-item">{recommendation}</li>
                     {/each}
                   </ul>
                 </section>
               {/if}
-
               <!-- Evidence -->
               {#if selectedPattern.evidence.length > 0}
                 <section class="evidence-section">
                   <h3>Supporting Evidence</h3>
                   <div class="evidence-list">
-                    {#each selectedPattern.evidence as evidenceId}
+                    {#each Array.isArray(selectedPattern.evidence) ? selectedPattern.evidence : [] as evidenceId}
                       <div class="evidence-item">
                         Evidence ID: {evidenceId}
                       </div>
@@ -494,14 +468,12 @@
                   </div>
                 </section>
               {/if}
-            </div>
-          {/if}
+            {/if}
         </div>
       </Dialog.Content>
     {/if}
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   .pattern-detection-interface {
     max-width: 1400px;
@@ -701,7 +673,7 @@
   .stat-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3s;
+    transition: width: 0.3s;
   }
   .stat-value {
     font-size: 0.75rem;
@@ -849,7 +821,7 @@
   .involvement-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s;
+    transition: width: 0.3s;
   }
   .involvement-percentage {
     font-size: 0.75rem;
@@ -947,4 +919,3 @@
 </style>
   }
 </style>
-

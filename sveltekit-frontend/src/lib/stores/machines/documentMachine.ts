@@ -29,7 +29,7 @@ export interface DocumentContext {
   currentStep?: string;
   extractedText?: string;
   embedding?: number[];
-  entities?: unknown[];
+  entities?: any[];
   riskScore?: number;
   confidence?: number;
   processedAt?: Date;

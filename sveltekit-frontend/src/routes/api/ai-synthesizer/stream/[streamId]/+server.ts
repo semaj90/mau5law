@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
   const stream = new ReadableStream({
     async start(controller) {
       // runtime type guard for our StreamUpdate union
-      const isStreamUpdate = (v: unknown): v is StreamUpdate => {
+      const isStreamUpdate = (v: any): v is StreamUpdate => {
         if (typeof v !== 'object' || v === null) return false;
         const obj = v as Record<string, unknown>; // Cast to a record for safer property access
         const t = obj.type;
@@ -43,11 +43,11 @@ export const GET: RequestHandler = async ({ params, request }) => {
       };
 
       // Subscribe to stream updates; accept unknown and narrow at runtime
-      const unsubscribe = streamingService.subscribe(streamId, (evt: unknown) => {
+      const unsubscribe = streamingService.subscribe(streamId, (evt: any) => {
         try {
           // Normalize event type & payload safely without assuming .data exists
           let eventType = 'message';
-          let payload: unknown = evt;
+          let payload: any = evt;
 
           if (isStreamUpdate(evt)) {
             eventType = evt.type;
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
               }
             }, 100);
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           // If serialization/enqueue fails, ensure we unsubscribe and close the controller
           try {
             unsubscribe();
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
         const heartbeat = `event: heartbeat\ndata: ${JSON.stringify({ timestamp: Date.now() })}\n\n`;
         try {
           controller.enqueue(encoder.encode(heartbeat));
-        } catch (err: unknown) {
+        } catch (err: any) {
           clearInterval(heartbeatInterval);
           logger.debug(`[AI-Synthesizer] Error sending heartbeat for stream ${streamId}: ${String(err)}`);
         }

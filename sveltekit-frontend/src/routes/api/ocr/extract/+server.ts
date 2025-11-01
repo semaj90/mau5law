@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(result);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('OCR processing error:', err);
     const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
     throw error(500, `OCR processing failed: ${errorMessage}`);

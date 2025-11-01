@@ -4,5 +4,5 @@ export type LegalDocWASMOutput = {
   sections?: string[];
   text?: string;
   // allow extra shape from WASM parser
-  [key: string]: unknown;
+  [key: string]: any;
 };

@@ -20,7 +20,7 @@ export interface InteractionContext {
   route: string;
   sessionId: string;
   accuracy: number;
-  [key: string]: unknown; // Allow for additional properties if needed
+  [key: string]: any; // Allow for additional properties if needed
 }
 
 // Define an interface for BitmapHMMSOMPredictor to work around the: "Cannot use namespace as a type" error.
@@ -39,7 +39,7 @@ export interface HMMSOMMetrics {
   learningRate: number;
   totalInteractions: number;
   // Add other relevant metrics from BitmapHMMSOMPredictor if known
-  [key: string]: unknown; // Allow for additional properties if needed
+  [key: string]: any; // Allow for additional properties if needed
 }
 
 // Training data point for QLoRA fine-tuning
@@ -88,7 +88,7 @@ export class QLoRAReinforcementLearningService {
   private redis: IORedis;
   private hmmSomPredictor: IBitmapHMMSOMPredictor; // Use the interface here
   private trainingQueue: TrainingExample[] = [];
-  private isTraining = false;
+  private isTraining = $state(false);
   private modelPerformance: ModelPerformance;
   private qloraConfig: QLoRAConfig;
   private dataFlywheel: Map<string, TrainingExample[]> = new Map();
@@ -283,7 +283,7 @@ export class QLoRAReinforcementLearningService {
     } catch (error) {
       console.error('❌ QLoRA training failed:', error);
     } finally {
-      this.isTraining = false;
+      this.isTraining = $state(false);
     }
   }
   /**

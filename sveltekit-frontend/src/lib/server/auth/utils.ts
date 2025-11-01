@@ -4,9 +4,7 @@
  * Provides shared helpers for authentication, user resolution,
  * and development bypass functionality across API endpoints.
  */
-
 import { dev } from '$app/environment';
-
 /**
  * Typed environment access for import.meta.env
  */
@@ -15,22 +13,19 @@ export type MetaEnv = {
   DEV_BYPASS_AUTH?: string;
   [key: string]: string | undefined;
 };
-
 /**
  * Get typed access to import.meta.env
  */
 export function getMetaEnv(): MetaEnv {
   return (import.meta as unknown as { env: MetaEnv }).env;
 }
-
 // --- Added types to avoid relying on App.Locals['user'] which may not exist ---
 export type User = {
   id: string;
   email?: string | null;
   name?: string | null;
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
 /**
  * Development stub user returned when DEV_BYPASS_AUTH is enabled
  * typed to match `User` so downstream functions can rely on a single User type.
@@ -41,20 +36,17 @@ export const DEV_STUB_USER: User = {
   name: 'Developer',
 };
 // --- end added types ---
-
 // Define a small local type for SvelteKit locals.
 // SvelteKit does not export a concrete `Locals` type here, so use an extendable record.
 // If your app declares `App.Locals` elsewhere via module augmentation, replace `AppLocals` accordingly.
 export type AppLocals = {
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 // Keep previous API but base it on the local AppLocals type
 export type LocalsWithUser = AppLocals & {
   // optional because not all requests will have an authenticated user
   user?: User | null;
 };
-
 /**
  * Return true when running in dev and DEV_BYPASS_AUTH is set to a truthy value.
  * Allowed truthy values: "1", "true", "yes", "on" (case-insensitive).
@@ -62,16 +54,13 @@ export type LocalsWithUser = AppLocals & {
 export function isDevBypassEnabled(): boolean {
   // quick guard: only allow bypass in dev environment
   if (!dev) return false;
-
   const env = getMetaEnv();
   const raw = String(env.DEV_BYPASS_AUTH ?? '')
     .trim()
     .toLowerCase();
   if (!raw) return false;
-
   return ['1', 'true', 'yes', 'on'].includes(raw);
 }
-
 /**
  * Resolve user from locals with optional development bypass
  *
@@ -92,17 +81,14 @@ export function resolveUser(locals: LocalsWithUser): User | null {
   if (locals?.user) {
     return locals.user as User;
   }
-
   // In development with bypass enabled, return stub user
   if (isDevBypassEnabled()) {
     console.warn('⚠️ DEV_BYPASS_AUTH active — returning development stub user');
     return DEV_STUB_USER;
   }
-
   // No user found
   return null;
 }
-
 /**
  * Require authenticated user or throw error
  *
@@ -119,14 +105,11 @@ export function resolveUser(locals: LocalsWithUser): User | null {
  */
 export function requireUser(locals: LocalsWithUser, errorMessage = 'User authentication required'): User {
   const user = resolveUser(locals);
-
   if (!user) {
     throw new Error(errorMessage);
   }
-
   return user;
 }
-
 /**
  * Get user ID safely with dev bypass support
  *
@@ -137,7 +120,6 @@ export function getUserId(locals: LocalsWithUser): string | null {
   const user = resolveUser(locals);
   return (user as User | null)?.id ?? null;
 }
-
 /**
  * Check if user is authenticated (including dev bypass)
  */

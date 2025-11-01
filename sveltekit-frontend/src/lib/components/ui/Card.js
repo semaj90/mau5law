@@ -1,5 +1,5 @@
-// Compatibility barrel for named imports from '$lib/components/ui/Card'
-// Ensures `import { Card, CardHeader, ... } from '$lib/components/ui/Card'` works (JS runtime friendly)
+// Compatibility barrel for named imports from '$lib/components/ui/Card.svelte''
+// Ensures `import { Card, CardHeader, ... } from '$lib/components/ui/Card.svelte''` works (JS runtime friendly)
 export { default as Card } from './Card/Card.svelte';
 export { default as CardHeader } from './Card/CardHeader.svelte';
 export { default as CardContent } from './Card/CardContent.svelte';

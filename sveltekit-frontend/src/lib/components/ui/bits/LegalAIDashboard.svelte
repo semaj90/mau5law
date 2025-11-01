@@ -14,7 +14,7 @@
     initializeEnhancedBits,
     LegalDesignTokens
   } from './index';
-  import LegalPOICard from './LegalPOICard.svelte';
+  import { LegalPOICard } from './LegalPOICard.svelte';
   // Import all three legal systems
   import { citationsStore } from '$lib/stores/legal-citations.js';
   import { reportsStore } from '$lib/stores/legal-reports.js';
@@ -56,7 +56,7 @@
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   // Quick actions
@@ -202,7 +202,6 @@
     }
   ]);
 </script>
-
 <div class="legal-dashboard">
   <!-- Header -->
   <header class="dashboard-header">
@@ -293,8 +292,7 @@
               </CardContent>
             </Card>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- POI Tab -->
       {#if activeTab === 'poi'}
         <div class="poi-section">
@@ -303,7 +301,7 @@
             <Button onclick={() => alert('Create new POI')}>➕ Add POI</Button>
           </div>
           <div class="poi-grid">
-            {#each samplePOIs as poi}
+            {#each Array.isArray(samplePOIs) ? samplePOIs : [] as poi}
               <LegalPOICard
                 {poi}
                 onEdit={p => alert(`Edit POI: ${p.name}`)}
@@ -311,8 +309,7 @@
               />
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Citations Tab -->
       {#if activeTab === 'citations'}
         <div class="citations-section">
@@ -326,8 +323,7 @@
               <p>Integration with legal-citations.ts store</p>
             </CardContent>
           </Card>
-        </div>
-      {/if}
+        {/if}
       <!-- Reports Tab -->
       {#if activeTab === 'reports'}
         <div class="reports-section">
@@ -341,8 +337,7 @@
               <p>Integration with legal-reports.ts store</p>
             </CardContent>
           </Card>
-        </div>
-      {/if}
+        {/if}
       <!-- Search Results -->
       {#if searchQuery && Object.keys(searchResults).length > 0}
         <div class="search-results">
@@ -353,7 +348,7 @@
                 <CardTitle>📚 Citations ({searchResults.citations.length})</CardTitle>
               </CardHeader>
               <CardContent>
-                {#each searchResults.citations.slice(0, 3) as citation}
+                {#each Array.isArray(searchResults.citations.slice(0, 3)) ? searchResults.citations.slice(0, 3) : [] as citation}
                   <div class="search-result-item">
                     <strong>{citation.title}</strong>
                     <p>{citation.description}</p>
@@ -368,7 +363,7 @@
                 <CardTitle>📊 Reports ({searchResults.reports.length})</CardTitle>
               </CardHeader>
               <CardContent>
-                {#each searchResults.reports.slice(0, 3) as report}
+                {#each Array.isArray(searchResults.reports.slice(0, 3)) ? searchResults.reports.slice(0, 3) : [] as report}
                   <div class="search-result-item">
                     <strong>{report.title}</strong>
                     <p>{report.description}</p>
@@ -383,7 +378,7 @@
                 <CardTitle>👥 Persons of Interest ({searchResults.poi.length})</CardTitle>
               </CardHeader>
               <CardContent>
-                {#each searchResults.poi.slice(0, 3) as person}
+                {#each Array.isArray(searchResults.poi.slice(0, 3)) ? searchResults.poi.slice(0, 3) : [] as person}
                   <div class="search-result-item">
                     <strong>{person.name}</strong>
                     <p>Role: {person.role} | Risk: {person.metadata.riskLevel}</p>
@@ -392,8 +387,7 @@
               </CardContent>
             </Card>
           {/if}
-        </div>
-      {/if}
+        {/if}
     </Tabs>
     <!-- Navigation Tabs -->
     <nav class="dashboard-nav">
@@ -410,7 +404,6 @@
     </nav>
   </main>
 </div>
-
 <style>
   .legal-dashboard {
     min-height: 100vh;
@@ -573,5 +566,3 @@
     }
   }
 </style>
-
-

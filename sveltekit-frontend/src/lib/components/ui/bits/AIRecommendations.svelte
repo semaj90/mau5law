@@ -9,10 +9,10 @@
     UiCardContent as CardContent,
   } from '$lib/index.js';
   interface Props {
-    userContext?: unknown;
-    neo4jContext?: unknown;
-    analyticsLog?: (_event: unknown) => void;
-    onRecommendations?: (results: unknown) => void;
+    userContext?: any;
+    neo4jContext?: any;
+    analyticsLog?: (_event: any) => void;
+    onRecommendations?: (results: any) => void;
   }
   const {
     userContext = null,
@@ -38,12 +38,11 @@
     } catch (error) {
       analyticsLog({ event: 'ai_recommendations_error', error: error.message, timestamp: Date.now() });
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   $effect(fetchRecommendations);
 </script>
-
 <div class="w-full nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary">AI Recommendations</h3>
@@ -55,7 +54,7 @@
       <div class="text-gray-400">No recommendations available.</div>
     {:else}
       <ul class="space-y-2">
-        {#each recommendations as rec}
+        {#each Array.isArray(recommendations) ? recommendations : [] as rec}
           <li class="border-b last:border-b-0 pb-2">
             <div class="font-semibold">{rec.title || rec.intent || rec.id}</div>
             <div class="text-xs text-gray-500">{rec.content || rec.description}</div>

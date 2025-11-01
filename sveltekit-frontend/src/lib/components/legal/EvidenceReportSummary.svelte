@@ -10,8 +10,7 @@
     Scale,
     Target,
   } from "lucide-svelte";
-  import AISummaryReader from "./AISummaryReader.svelte";
-
+  import { AISummaryReader } from "./AISummaryReader.svelte";
   export interface EvidenceReport {
     id: string;
     title: string;
@@ -61,18 +60,14 @@
       size: number;
     }[];
   }
-
   // Export props (Svelte pattern)
   export let evidenceId!: string;
   export let caseId!: string;
   export let reportData!: EvidenceReport;
   export let allowExport: boolean = true;
-
   const { state, send } = useMachine(aiSummaryMachine);
-
   // reactive derived content so it updates when reportData changes
   $: analysisContent = generateAnalysisContent(reportData);
-
   function generateAnalysisContent(report: EvidenceReport): string {
     return `
   EVIDENCE ANALYSIS REPORT
@@ -109,7 +104,6 @@
   ${report.attachments.map((att) => `• ${att.name} (${att.type})`).join("\n")}
     `.trim();
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case "completed":
@@ -155,7 +149,6 @@
       default: return "📋";
     }
   }
-
   function exportReport() {
     const content = `# Evidence Analysis Report Export\n\n${analysisContent}`;
     const blob = new Blob([content], { type: "text/markdown" });
@@ -169,7 +162,6 @@
     URL.revokeObjectURL(url);
   }
 </script>
-
 <div class="evidence-report-summary space-y-6">
   <!-- Report Header -->
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -304,7 +296,7 @@
             <div>
               <p class="text-sm font-medium text-gray-600">Procedures</p>
               <ul class="mt-1 text-sm text-gray-900 list-disc list-inside">
-                {#each reportData.methodology.procedures as procedure}
+                {#each Array.isArray(reportData.methodology.procedures) ? reportData.methodology.procedures : [] as procedure}
                   <li>{procedure}</li>
                 {/each}
               </ul>
@@ -312,7 +304,7 @@
             <div>
               <p class="text-sm font-medium text-gray-600">Tools</p>
               <div class="mt-1 flex flex-wrap gap-1">
-                {#each reportData.methodology.tools as tool}
+                {#each Array.isArray(reportData.methodology.tools) ? reportData.methodology.tools : [] as tool}
                   <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">{tool}</span>
                 {/each}
               </div>
@@ -331,7 +323,7 @@
         <div>
           <label class="text-sm font-medium text-gray-700">Potential Charges</label>
           <div class="mt-2 space-y-1">
-            {#each reportData.legalImplications.charges as charge}
+            {#each Array.isArray(reportData.legalImplications.charges) ? reportData.legalImplications.charges : [] as charge}
               <div class="flex items-center gap-2">
                 <CheckCircle class="w-4 h-4 text-green-600 flex-shrink-0" />
                 <span class="text-sm text-gray-900">{charge}</span>
@@ -342,7 +334,7 @@
         <div>
           <label class="text-sm font-medium text-gray-700">Challenge Points</label>
           <div class="mt-2 space-y-1">
-            {#each reportData.legalImplications.challengePoints as challenge}
+            {#each Array.isArray(reportData.legalImplications.challengePoints) ? reportData.legalImplications.challengePoints : [] as challenge}
               <div class="flex items-start gap-2">
                 <AlertTriangle class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
                 <span class="text-sm text-gray-900">{challenge}</span>
@@ -353,7 +345,7 @@
         <div>
           <label class="text-sm font-medium text-gray-700">Relevant Precedents</label>
           <div class="mt-2 space-y-1">
-            {#each reportData.legalImplications.precedents as precedent}
+            {#each Array.isArray(reportData.legalImplications.precedents) ? reportData.legalImplications.precedents : [] as precedent}
               <div class="text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
                 {precedent}
               </div>
@@ -391,7 +383,7 @@
       <div>
         <h4 class="font-medium text-gray-900 mb-3">Key Points</h4>
         <ul class="space-y-2">
-          {#each reportData.findings.keyPoints as point}
+          {#each Array.isArray(reportData.findings.keyPoints) ? reportData.findings.keyPoints : [] as point}
             <li class="flex items-start gap-2">
               <CheckCircle class="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
               <span class="text-gray-700">{point}</span>
@@ -402,15 +394,14 @@
           <div class="mt-4">
             <h4 class="font-medium text-gray-900 mb-3">Limitations</h4>
             <ul class="space-y-2">
-              {#each reportData.findings.limitations as limitation}
+              {#each Array.isArray(reportData.findings.limitations) ? reportData.findings.limitations : [] as limitation}
                 <li class="flex items-start gap-2">
                   <AlertTriangle class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <span class="text-gray-700">{limitation}</span>
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -419,7 +410,7 @@
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">Attachments</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each reportData.attachments as attachment}
+        {#each Array.isArray(reportData.attachments) ? reportData.attachments : [] as attachment}
           <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-blue-100 rounded-lg">
@@ -437,14 +428,12 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- AI Summary Reader -->
   <div class="mt-8">
     <AISummaryReader documentId={evidenceId} {caseId} initialContent={analysisContent} documentType="evidence" />
   </div>
 </div>
-
 <style>
   .evidence-report-summary {
     max-width: 80rem;

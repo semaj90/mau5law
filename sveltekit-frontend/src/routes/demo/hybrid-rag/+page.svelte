@@ -131,7 +131,7 @@
       error = err.message || 'Processing failed';
       processingStage = '';
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 
@@ -169,7 +169,7 @@
       error = err.message || 'Search failed';
       processingStage = '';
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 
@@ -389,7 +389,7 @@
               <div class="mb-3">
                 <div class="text-xs text-slate-400 mb-1">Keywords</div>
                 <div class="flex flex-wrap gap-1">
-                  {#each result.keywords.slice(0, 10) as keyword}
+                  {#each Array.isArray(result.keywords.slice(0, 10)) ? result.keywords.slice(0, 10) : [] as keyword}
                     <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-xs">
                       {keyword}
                     </span>

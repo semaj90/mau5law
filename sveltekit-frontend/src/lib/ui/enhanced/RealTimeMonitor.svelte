@@ -16,7 +16,7 @@
 
   let services: ServiceHealth[] = [];
   let lastUpdated: Date | null = null;
-  let loading = false;
+  let loading = $state(false);
   let error: string | null = null;
   let timer: number | null = null;
 
@@ -73,7 +73,7 @@
     } catch (err: any) {
       error = err?.message ?? String(err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 

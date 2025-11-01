@@ -81,7 +81,7 @@ async function determineProcessingPath(
   operation: string
 ): Promise<'cuda' | 'webgpu' | 'wasm' | 'default'> {
   // Check service availability and request preferences
-  const preferences: { useWebGPU?: boolean; [k: string]: unknown } = (request as any).options || {};
+  const preferences: { useWebGPU?: boolean; [k: string]: any } = (request as any).options || {};
   // Priority order: CUDA > WebGPU > WASM > Default
   // Check CUDA availability
   try {

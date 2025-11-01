@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Dropdown from './Dropdown.svelte';
-  import Checkbox from './Checkbox.svelte';
-  import SearchBar from './SearchBar.svelte';
+  import { Dropdown } from './Dropdown.svelte';
+  import { Checkbox } from './Checkbox.svelte';
+  import { SearchBar } from './SearchBar.svelte';
   // Test data for dropdown
   const legalCaseTypes = [
     { value: 'contract', label: 'Contract Dispute' },
@@ -26,7 +26,6 @@
   // Computed validation
   // TODO: Convert to $derived: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0
 </script>
-
 <div class="validation-container">
   <h2>Phase 1 Component Integration Validation</h2>
   <div class="component-section">
@@ -83,10 +82,8 @@
     <div class="success-message">
       ✅ <strong>PHASE 1 VALIDATION COMPLETE</strong><br />
       All critical UI components are functional and ready for legal workflows!
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .validation-container {
     max-width: 800px;
@@ -161,4 +158,3 @@
     border-bottom: 3px solid #007bff;
   }
 </style>
-

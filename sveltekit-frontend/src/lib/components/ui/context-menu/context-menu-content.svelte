@@ -3,45 +3,35 @@
   import { getContext, onMount, onDestroy } from 'svelte';
   import type { Writable } from 'svelte/store';
   import type { Snippet } from 'svelte';
-
   // Use a safe prop name instead of the reserved word `class`
   let { className = '', children }: { className?: string; children?: Snippet } = $props();
-
   type Position = { x: number; y: number };
-
   const ctx = getContext<{
     isOpen: Writable<boolean>;
     position Writable<Position>;
     close: () => void;
   }>('context-menu');
-
   const { isOpen, position, close } = ctx;
-
   let menuElement = $state<HTMLDivElement | null>(null);
-
   function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
       close();
     }
   }
-
   function handleEscape(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       close();
     }
   }
-
   onMount(() => {
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
   });
-
   onDestroy(() => {
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleEscape);
   });
 </script>
-
 {#if $isOpen}
   <div
     bind:this={menuElement}
@@ -50,14 +40,12 @@
     role="menu"
     tabindex={-1}
   >
-    {@render children?.()}
-  </div>
-{/if}
-
+    <slot />
+  {/if}
 <style>
   /* @unocss-include */
   .context-menu-content {
-    position fixed;
+    position: fixed;
     z-index: 1000;
     min-width: 12rem;
     background-color: white;

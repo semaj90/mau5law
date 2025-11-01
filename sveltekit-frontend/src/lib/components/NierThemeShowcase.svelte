@@ -31,7 +31,7 @@
 
   // Add modal helper functions for keyboard accessibility
   function closeModal() {
-    showModal = false;
+    showModal = $state(false);
   }
 
   function handleOverlayKeydown(e: KeyboardEvent) {
@@ -82,7 +82,7 @@
     </section>
     <!-- Tabs -->
     <div class="flex gap-2 border-b nier-divider">
-      {#each ['overview', 'components', 'forms', 'cards'] as tab}
+      {#each Array.isArray(['overview', 'components', 'forms', 'cards']) ? ['overview', 'components', 'forms', 'cards'] : [] as tab}
         <button
           onclick={() => activeTab = tab}
           class="px-6 py-3 font-medium capitalize nier-transition"
@@ -242,8 +242,7 @@
                   Confirm
                 </button>
               </div>
-            </div>
-          {/if}
+            {/if}
         </section>
       {/if}
       {#if activeTab === 'forms'}
@@ -272,7 +271,7 @@
                 bind:value={selectedStatus}
                 class="nier-input"
               >
-                {#each statuses as status}
+                {#each Array.isArray(statuses) ? statuses : [] as status}
                   <option value={status}>{status}</option>
                 {/each}
               </select>

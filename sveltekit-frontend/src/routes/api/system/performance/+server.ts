@@ -209,7 +209,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Cache-Control': 'public, max-age=30', // 30-second cache
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     productionLogger.error(`Performance metrics collection failed: ${message}`);
     return json(

@@ -18,8 +18,8 @@
     profile?: Record<string, unknown> | null;
   }
   // User management state (use $state so updates trigger reactivity)
-  let users = $state([] as (AdminUser & { profile?: unknown })[]);
-  let filteredUsers = $state([] as (AdminUser & { profile?: unknown })[]);
+  let users = $state([] as (AdminUser & { profile?: any })[]);
+  let filteredUsers = $state([] as (AdminUser & { profile?: any })[]);
   let selectedUsers = $state(new Set<string>());
   let isLoading = $state(true);
   let showCreateModal = $state(false);
@@ -58,7 +58,7 @@
     modalContent: 'bg-[#0b0b0b] border border-[#333333] p-6 w-full max-w-2xl rounded',
   }
   // Paginated users container
-  let paginatedUsers = $state([] as (AdminUser & { profile?: unknown })[]);
+  let paginatedUsers = $state([] as (AdminUser & { profile?: any })[]);
   // Use runes-friendly effect to recompute filteredUsers when dependencies change
     $effect(() => {
       filteredUsers = users.filter(user => {
@@ -109,7 +109,7 @@
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function createUser(_event: Event) {
@@ -135,7 +135,7 @@
       });
       if (response.ok) {
         await loadUsers();
-        showCreateModal = false;
+        showCreateModal = $state(false);
         resetNewUserForm();
       } else {
         const error = await response.json();
@@ -158,7 +158,7 @@
       });
       if (response.ok) {
         await loadUsers();
-        showEditModal = false;
+        showEditModal = $state(false);
         currentEditUser = null;
       } else {
         const error = await response.json();
@@ -393,7 +393,7 @@
           <label class="block text-sm font-bold mb-2"
             >USER ROLE
             <select bind:value={newUser.role} class={yorhaClasses.select}>
-              {#each ROLE_HIERARCHY as role}
+              {#each Array.isArray(ROLE_HIERARCHY) ? ROLE_HIERARCHY : [] as role}
                 {#if canAssignRole(role)}
                   <option value={role}>{getRoleDisplayName(role)}</option>
                 {/if}
@@ -465,7 +465,7 @@
           <label class="block text-sm font-bold mb-2"
             >USER ROLE
             <select bind:value={currentEditUser.role} class={yorhaClasses.select}>
-              {#each ROLE_HIERARCHY as role}
+              {#each Array.isArray(ROLE_HIERARCHY) ? ROLE_HIERARCHY : [] as role}
                 {#if canAssignRole(role)}
                   <option value={role}>{getRoleDisplayName(role)}</option>
                 {/if}

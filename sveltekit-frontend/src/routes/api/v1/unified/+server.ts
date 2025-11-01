@@ -51,7 +51,7 @@ type UnifiedRequestBody = {
   caseId?: string;
   fileName?: string;
   size?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default: return json(createResponse(false, null, `Unknown action: ${action}`));
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return json(createResponse(false, null, message), { status: 500 });
   }
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default: return json(createResponse(false, null, `Unknown action: ${action}`));
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return json(createResponse(false, null, message), { status: 500 });
   }

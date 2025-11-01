@@ -99,8 +99,8 @@ type LangChainOllamaService = {
 	generateEmbedding?: (text: string) => Promise<number[]>;
 	// optional RAG-like entrypoints (may vary by integration)
 	ragQuery?: (prompt: string, contexts?: string[], flag?: boolean) => Promise<{ answer?: string; confidence?: number } | undefined>;
-	runRag?: (...args: unknown[]) => Promise<unknown>;
-	generateCompletion?: (prompt: string, opts?: unknown) => Promise<unknown>;
+	runRag?: (...args: any[]) => Promise<unknown>;
+	generateCompletion?: (prompt: string, opts?: any) => Promise<unknown>;
 	// other helpers may exist; keep optional
 };
 
@@ -108,7 +108,7 @@ export class Neo4jTransformersSummarization {
   private driver: Neo4jDriver | null = null;
   private session: Neo4jSession | null = null;
   private config: Required<SummarizationConfig>;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   constructor(config: SummarizationConfig = {}) {
     this.config = {
@@ -150,7 +150,7 @@ export class Neo4jTransformersSummarization {
       await this.testServiceIntegrations();
       this.isInitialized = true;
       console.log('✅ Neo4j transformers pipeline initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Neo4j initialization failed:', error instanceof Error ? error.message : String(error));
       throw error;
     }
@@ -218,7 +218,7 @@ export class Neo4jTransformersSummarization {
         processingTime,
         graphNodes
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Document processing failed:', error instanceof Error ? error.message : String(error));
       throw error;
     }
@@ -229,7 +229,7 @@ export class Neo4jTransformersSummarization {
       const prompt = `Provide a concise legal summary focusing on key issues, parties, dates, obligations. Document: ${content.slice(0, 4000)}`;
       const resp = await this.callRag(prompt, [], true);
       return resp?.answer ?? 'Summary could not be generated';
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Summary generation failed:', error instanceof Error ? error.message : String(error));
       return 'Summary generation failed due to processing error';
     }
@@ -241,7 +241,7 @@ export class Neo4jTransformersSummarization {
       const prompt = `Extract legal entities as JSON array [{"type":"person|organization|case|statute|precedent|contract","name":"...","context":"..."}]. Document: ${content.slice(0, 3000)}`;
       const resp = await this.callRag(prompt, [], true);
       const raw = resp?.answer ?? '[]';
-      let parsed: unknown[] = [];
+      let parsed: any[] = [];
       try {
         const maybe = JSON.parse(raw);
         if (Array.isArray(maybe)) parsed = maybe;
@@ -271,7 +271,7 @@ export class Neo4jTransformersSummarization {
       // dedupe by lowercased name
       const unique = entities.filter((ent, idx, arr) => idx === arr.findIndex(a => a.name.toLowerCase() === ent.name.toLowerCase()));
       return unique;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Entity extraction failed:', error instanceof Error ? error.message : String(error));
       return this.extractEntitiesWithRegex(content);
     }
@@ -313,7 +313,7 @@ export class Neo4jTransformersSummarization {
       const prompt = `Identify relationships between entities: ${entities.map(e => `${e.type}:${e.name}`).join('; ')}. Return JSON array [{"from":"name","to":"name","type":"...","strength":0.8}]. Context: ${content.slice(0, 2000)}`;
       const resp = await this.callRag(prompt, [], true);
       const raw = resp?.answer ?? '[]';
-      let parsed: unknown[] = [];
+      let parsed: any[] = [];
       try {
         const maybe = JSON.parse(raw);
         if (Array.isArray(maybe)) parsed = maybe;
@@ -343,7 +343,7 @@ export class Neo4jTransformersSummarization {
       // If parsing failed, use simple heuristics
       if (relationships.length === 0) relationships.push(...this.extractHeuristicRelationships(entities, content));
       return relationships;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Relationship extraction failed, using heuristic fallback:', error instanceof Error ? error.message : String(error));
       return this.extractHeuristicRelationships(entities, content);
     }
@@ -414,7 +414,7 @@ export class Neo4jTransformersSummarization {
       }
 
       return graphNodes;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Graph storage failed:', error instanceof Error ? error.message : String(error));
       throw error;
     }
@@ -428,7 +428,7 @@ export class Neo4jTransformersSummarization {
     try {
       await vectorProxy.store?.(`doc-${documentId}`, documentEmbedding, { ...metadata, type: 'document', model: 'nomic-embed-text', neo4j_node_id: documentId });
       await vectorProxy.store?.(`summary-${documentId}`, summaryEmbedding, { ...metadata, type: 'summary', model: 'nomic-embed-text', neo4j_node_id: documentId, parent_document: documentId });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Vector embedding storage failed:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -449,7 +449,7 @@ export class Neo4jTransformersSummarization {
       const vectorResults = await vectorProxy.search?.(qEmbedding, { query, threshold: searchOptions.vectorThreshold, limit: searchOptions.limit * 2, useGPU: true }) ?? { success: false, data: [] as unknown[] };
 
       const ids = (vectorResults && vectorResults.success && Array.isArray(vectorResults.data))
-        ? vectorResults.data.map((r: unknown) => {
+        ? vectorResults.data.map((r: any) => {
             if (r && typeof r === 'object') {
               const rr = r as Record<string, unknown>;
               const meta = rr.metadata as Record<string, unknown> | undefined;
@@ -479,7 +479,7 @@ export class Neo4jTransformersSummarization {
           const rawEntities = (typeof rec.get === 'function' ? rec.get('entities') ?? [] : []);
 
           const ents: LegalEntity[] = Array.isArray(rawEntities)
-            ? rawEntities.map((e: unknown) => {
+            ? rawEntities.map((e: any) => {
                 // treat each element as Neo4jNode to access properties safely
                 const node = e as Neo4jNode & Record<string, unknown>;
                 const props = node.properties ?? {};
@@ -504,12 +504,12 @@ export class Neo4jTransformersSummarization {
             processingTime: 0,
             graphNodes: []
           });
-        } catch (e: unknown) {
+        } catch (e: any) {
           console.warn(`⚠️ Failed to fetch document ${id}:`, e instanceof Error ? e.message : String(e));
         }
       }
       return results;
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error('❌ Document search failed:', e instanceof Error ? e.message : String(e));
       throw e;
     }
@@ -545,7 +545,7 @@ export class Neo4jTransformersSummarization {
         });
       }
       return { connectedDocuments, entityNetwork: [], relationshipPaths: [] };
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error('❌ Failed to get document connections:', e instanceof Error ? e.message : String(e));
       throw e;
     }
@@ -582,24 +582,24 @@ export class Neo4jTransformersSummarization {
         entityInsights,
         confidence: typeof resp?.confidence === 'number' ? resp.confidence : 0.75
       };
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error('❌ Graph-enhanced analysis failed:', e instanceof Error ? e.message : String(e));
       throw e;
     }
   }
 
   // Defensive adapter to call available RAG-like entrypoints on the imported service.
-  private async callRag(prompt: string, contexts: string[] = [], returnAnswer = true): Promise<{ answer?: string; confidence?: number; raw?: unknown }> {
+  private async callRag(prompt: string, contexts: string[] = [], returnAnswer = true): Promise<{ answer?: string; confidence?: number; raw?: any }> {
     const svc = this.getLangChainService();
     const candidates = ['ragQuery', 'runRag', 'runRAG', 'queryRAG', 'rag_query', 'query', 'ask', 'run', 'rag']; // common variants
 
     for (const name of candidates) {
       const fnCandidate = (svc as unknown as Record<string, unknown>)[name];
       if (typeof fnCandidate === 'function') {
-        const fn = fnCandidate as (...a: unknown[]) => Promise<unknown>;
+        const fn = fnCandidate as (...a: any[]) => Promise<unknown>;
         try {
           // try common signatures: (prompt, contexts, flag) | (prompt, contexts) | (prompt)
-          let res: unknown;
+          let res: any;
           if (fn.length >= 3) res = await fn(prompt, contexts, returnAnswer);
           else if (fn.length === 2) res = await fn(prompt, contexts);
           else res = await fn(prompt);
@@ -609,7 +609,7 @@ export class Neo4jTransformersSummarization {
             const confidence = extractConfidenceFrom(res);
             return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: res };
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.warn(`⚠️ RAG candidate: "${name}" failed:`, err instanceof Error ? err.message : String(err));
           // try next candidate
           continue;
@@ -624,7 +624,7 @@ export class Neo4jTransformersSummarization {
         const answer = extractAnswerFrom(r);
         const confidence = extractConfidenceFrom(r);
         return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: r };
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.warn('⚠️ generateCompletion failed:', err instanceof Error ? err.message : String(err));
       }
     }
@@ -641,16 +641,16 @@ type RagResponse = {
   result?: string;
   confidence?: number;
   score?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
-function extractAnswerFrom(res: unknown): string | undefined {
+function extractAnswerFrom(res: any): string | undefined {
   if (res == null) return undefined;
   const obj = res as RagResponse;
   return obj.answer ?? obj.text ?? obj.result ?? (typeof res === 'string' ? res : undefined);
 }
 
-function extractConfidenceFrom(res: unknown): number | undefined {
+function extractConfidenceFrom(res: any): number | undefined {
   if (res == null) return undefined;
   const obj = res as RagResponse;
   if (typeof obj.confidence === 'number') return obj.confidence;

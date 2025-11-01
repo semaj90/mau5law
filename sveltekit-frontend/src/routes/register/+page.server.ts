@@ -80,7 +80,7 @@ export const actions: Actions = {
         .returning();
       console.log('[Register] User created successfully:', newUser.id);
       throw redirect(302, '/login?registered=true');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('[Register] Error:', error);
       if (error instanceof Response) throw error;
       return message(form, 'Registration failed. Please try again.', {

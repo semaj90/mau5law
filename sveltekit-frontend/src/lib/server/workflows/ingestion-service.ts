@@ -7,12 +7,12 @@ import { jobTracker } from '$lib/services/job-tracker.js';
 import { setupQueues } from '$lib/server/rabbitmq.js';
 
 // --- Added lightweight types for the workflow actor & responses ---
-type ServiceResponse = { success: boolean; [key: string]: unknown };
+type ServiceResponse = { success: boolean; [key: string]: any };
 
 // New: explicit minimal actor type to avoid `any`
 type WorkflowActor =
   | {
-      send?: (event: { type: string; data?: unknown }) => void;
+      send?: (event: { type: string; data?: any }) => void;
       stop?: () => void | Promise<void>;
     }
   | undefined;

@@ -34,7 +34,7 @@ interface AiAgentError {
   type: string;
   message: string;
   timestamp: Date;
-  context?: unknown;
+  context?: any;
   resolved: boolean;
   retryable: boolean;
 }
@@ -63,7 +63,7 @@ interface IngestApiResponse {
   document_id: string;
   embedding_id: string;
   process_time_ms: number;
-  service_info?: unknown;
+  service_info?: any;
 }
 
 interface BatchIngestApiResponse {
@@ -79,7 +79,7 @@ interface BatchIngestApiResponse {
     embedding_id: string;
     process_time_ms: number;
   }>;
-  performance?: unknown;
+  performance?: any;
 }
 
 export class EnhancedIngestService {
@@ -165,7 +165,7 @@ export class EnhancedIngestService {
         processingTime: apiResponse.process_time_ms,
         metadata: apiResponse.service_info
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Error handling following your aiAgentStore pattern
       aiAgentStore.update((state: AiAgentStoreState) => ({
         ...state,
@@ -269,7 +269,7 @@ export class EnhancedIngestService {
         })),
         performance: apiResponse.performance
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Fail the batch job in AI agent store
       aiAgentStore.update((state: AiAgentStoreState) => ({
         ...state,
@@ -367,13 +367,13 @@ export class EnhancedIngestService {
       }
       // Use your existing similar document search
       return await aiAgent.searchSimilarDocuments?.(searchQuery, limit) || [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Similar document search failed:', error);
       return [];
     }
   }
   // Private helper methods following your established patterns
-  private async callIngestAPI(endpoint: string, data: unknown): Promise<unknown> {
+  private async callIngestAPI(endpoint: string, data: any): Promise<unknown> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
     try {
@@ -391,7 +391,7 @@ export class EnhancedIngestService {
         throw new Error(`API call failed: ${response.status} - ${errorText}`);
       }
       return await response.json();
-    } catch (error: unknown) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
       throw error;
     }

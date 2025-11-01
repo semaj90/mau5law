@@ -154,7 +154,7 @@ class EnhancedOllamaService extends EventEmitter {
       } else {
         await this.ensureModels();
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Keep the existing local list on any error and avoid throwing to preserve stub behavior.
       // Optionally log in dev-only environments:
       try {
@@ -355,7 +355,7 @@ class EnhancedOllamaService extends EventEmitter {
         timestamp: new Date().toISOString(),
         details: { models: this.availableModels.length, cache: this.cache.size },
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Safely extract a string message from unknown error
       const message =
         err instanceof Error

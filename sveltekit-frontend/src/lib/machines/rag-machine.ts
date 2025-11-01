@@ -3,7 +3,6 @@
  * Manages complex RAG system states and transitions
  */
 import { createMachine, assign } from 'xstate';
-
 export interface RAGResult {
   id: string;
   score: number;
@@ -11,11 +10,9 @@ export interface RAGResult {
   content: string;
   metadata?: Record<string, any>;
 }
-
 export interface RAGContext {
   query: string;
   results: RAGResult[];
-
   error: string | null;
   retryCount: number;
   searchStartTime: number;
@@ -30,7 +27,6 @@ export type RAGEvent =
   | { type: 'OPTIMIZE' }
   | { type: 'CACHE_HIT'; results: RAGResult[] }
   | { type: 'RESET' };
-
 const initialRAGContext: RAGContext = {
   query: '',
   results: [],
@@ -40,7 +36,6 @@ const initialRAGContext: RAGContext = {
   cacheStatus: 'miss',
   optimizationLevel: 'basic',
 };
-
 // Helper to determine the next optimization level in the upgrade path
 function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAGContext['optimizationLevel'] {
   switch (current) {
@@ -51,7 +46,6 @@ function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAG
     default: return 'neural';
   }
 }
-
 export const ragStateMachine = createMachine({
   id: 'ragSystem',
   types: {} as {

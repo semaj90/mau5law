@@ -25,11 +25,11 @@ export interface SemanticAuditResult {
 
 export interface AgentTrigger {
   type?: string;
-  data?: unknown; // Changed from any to unknown
+  data?: any; // Changed from any to unknown
   todoId?: string;
   action?: string;
   status?: string;
-  result?: unknown; // Added result property
+  result?: any; // Added result property
 }
 
 export interface Context7SearchOptions {
@@ -106,10 +106,10 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
           `[Real Agent Trigger] Completed ${action} for ${result.todoId}:`,
           snippet ? snippet + '...' : '<no-result>'
         ); // Removed any cast
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed error type to unknown
         console.error(`[Real Agent Trigger] Failed ${action} for ${result.todoId}:`, error); // Removed any cast
-        result.agentTriggered = false; // Removed any cast
+        result.agentTriggered = $state(false); // Removed any cast
       }
     }
   }
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' },
       }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed error type to unknown
     console.error('[Real Semantic Audit] Error:', error);
     // Log the error using Context7 orchestrator

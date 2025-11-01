@@ -113,7 +113,7 @@
     } catch (error) {
       console.error('❌ Benchmark failed:', error);
     } finally {
-      benchmarkRunning = false;
+      benchmarkRunning = $state(false);
     }
   }
   /**
@@ -145,7 +145,7 @@
     } catch (error) {
       console.error(`❌ Legal scenario failed: ${selectedScenario.name}`, error);
     } finally {
-      benchmarkRunning = false;
+      benchmarkRunning = $state(false);
     }
   }
   /**
@@ -327,7 +327,7 @@
           class="bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 w-full"
           disabled={benchmarkRunning}
         >
-          {#each legalTestScenarios as scenario}
+          {#each Array.isArray(legalTestScenarios) ? legalTestScenarios : [] as scenario}
             <option value={scenario}>{scenario.name}</option>
           {/each}
         </select>
@@ -390,7 +390,7 @@
               </tr>
             </thead>
             <tbody>
-              {#each benchmarkResults as result}
+              {#each Array.isArray(benchmarkResults) ? benchmarkResults : [] as result}
                 <tr class="border-b border-gray-700/50">
                   <td class="py-2 px-4 font-medium">{(result as { operation?: any; time?: any; throughput?: any }).operation}</td>
                   <td class="py-2 px-4 text-right font-mono">{Math.round.time)}</td>

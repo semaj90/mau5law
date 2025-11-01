@@ -4,20 +4,15 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-
   // Replace the original imports: remove Select and Card (Card was unused; Select not exported)
   import { Button as RawButton, Input as RawInput } from './index.js';
-
   // Generic permissive component type
   type AnyComponent = new (...args: any[]) => any;
-
   // Re-cast the imported components to the permissive type
   const Button = RawButton as unknown as AnyComponent;
   const Input = RawInput as unknown as AnyComponent;
-
   // Local SelectOption type (avoid relying on ./index.js export for this)
   type SelectOption = { value: string; label: string; description?: string; category?: string };
-
   import type { VectorSearchResult, SemanticEntity } from '$lib/types/ai';
   import { cn } from '$lib/utils/cn';
   import { Search, Brain, FileText, Users, MapPin, Calendar, Scale, Zap } from 'lucide-svelte';
@@ -206,7 +201,7 @@
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   // Clear results
@@ -225,7 +220,6 @@
   function formatConfidence(score: number): string {
     return `${Math.round(score * 100)}%`;
   }
-
   // Add: spread-safe attribute objects to avoid TS errors for custom attributes on native elements
   const yorhaDivAttrs = { variant: 'yorha', legal: true } as Record<string, any>;
   const resultItemDivAttrs = { variant: 'default', evidenceCard: true, hoverable: true, clickable: true } as Record<
@@ -233,7 +227,6 @@
     any
   >;
 </script>
-
 <div class="vector-intelligence-demo yorha-panel p-6 max-w-6xl mx-auto">
   <!-- Header -->
   <div class="yorha-panel-header mb-6">
@@ -253,25 +246,23 @@
       <div class="flex flex-col">
         <label class="text-xs font-medium text-nier-text-muted mb-1">Search Algorithm</label>
         <select bind:value={selectedSearchType} class="yorha-select p-2 rounded border">
-          {#each searchTypes as opt}
+          {#each Array.isArray(searchTypes) ? searchTypes : [] as opt}
             <option value={opt.value}>{opt.label}</option>
           {/each}
         </select>
       </div>
-
       <div class="flex flex-col">
         <label class="text-xs font-medium text-nier-text-muted mb-1">Confidence Filter</label>
         <select bind:value={selectedConfidence} class="yorha-select p-2 rounded border">
-          {#each confidenceFilters as opt}
+          {#each Array.isArray(confidenceFilters) ? confidenceFilters : [] as opt}
             <option value={opt.value}>{opt.label}</option>
           {/each}
         </select>
       </div>
-
       <div class="flex flex-col">
         <label class="text-xs font-medium text-nier-text-muted mb-1">Analysis Depth</label>
         <select bind:value={analysisDepth} class="yorha-select p-2 rounded border">
-          {#each analysisOptions as opt}
+          {#each Array.isArray(analysisOptions) ? analysisOptions : [] as opt}
             <option value={opt.value}>{opt.label}</option>
           {/each}
         </select>
@@ -322,8 +313,7 @@
             Processing vector embeddings and semantic analysis...
           </span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Semantic Entities -->
   {#if semanticEntities.length > 0}
@@ -349,8 +339,7 @@
           <strong>{analysisDepth}</strong> analysis depth
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Search Results -->
   {#if filteredResults.length > 0}
     <div class="demo-results-section">
@@ -400,7 +389,7 @@
               <!-- Action Buttons -->
               <div class="flex items-center justify-between pt-2 border-t border-nier-border-muted">
                 <div class="flex gap-2">
-                  {#each result.highlights || [] as highlight}
+                  {#each Array.isArray(result.highlights || []) ? result.highlights || [] : [] as highlight}
                     <span class="text-xs px-2 py-1 bg-nier-bg-tertiary rounded text-nier-text-secondary">
                       {highlight}
                     </span>
@@ -433,8 +422,7 @@
           Try Sample Query
         </Button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Performance Metrics -->
   {#if searchResults.length > 0}
     <div class="mt-6 pt-4 border-t border-nier-border-secondary">
@@ -462,10 +450,8 @@
           <div class="text-xs text-nier-text-muted">Query Time</div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   /* Vector Intelligence specific styling */
@@ -519,18 +505,18 @@
   /* Vector result item enhancements */
   :global(.vector-result-item) {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   :global(.vector-result-item::after) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--color-ai-status-online), transparent);
-    transition: left 0.5s ease;
+    transition: left: 0.5s ease;
   }
   :global(.vector-result-item:hover::after) {
     left: 100%;
@@ -563,4 +549,3 @@
     color: var(--color-nier-text-primary);
   }
 </style>
-

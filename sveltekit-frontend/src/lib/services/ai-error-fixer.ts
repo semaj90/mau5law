@@ -55,13 +55,13 @@ export interface ErrorAnalysisResult {
   fixable?: boolean;
   confidence?: number;
   dependencies?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // --- Added typed interfaces for external services & server-side helpers ---
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): Promise<T>;
-  stringify(obj: unknown): Promise<string>;
+  stringify(obj: any): Promise<string>;
 }
 
 export interface WasmClusteringService {

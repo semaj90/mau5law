@@ -106,8 +106,8 @@ class CognitiveSmartRouter {
   }
   private metrics: CognitiveMetrics;
   private engineHealthCache: Map<string, { healthy: boolean; lastCheck: number }>;
-  private isWebGPUAvailable: boolean = false;
-  private isOllamaAvailable: boolean = false;
+  private isWebGPUAvailable: boolean = $state(false);
+  private isOllamaAvailable: boolean = $state(false);
   private gpuLayers: number = 35; // Reasonable default, not 999
   constructor() {
     this.metrics = {
@@ -324,7 +324,7 @@ class CognitiveSmartRouter {
         const adapter = await navigator.gpu.requestAdapter();
         this.isWebGPUAvailable = !!adapter;
       } catch (e) {
-        this.isWebGPUAvailable = false;
+        this.isWebGPUAvailable = $state(false);
       }
     }
     // Check Ollama availability
@@ -332,7 +332,7 @@ class CognitiveSmartRouter {
       const response = await fetch('http://localhost:11434/api/version');
       this.isOllamaAvailable = (response as { json?: any; ok?: any }).ok;
     } catch (e) {
-      this.isOllamaAvailable = false;
+      this.isOllamaAvailable = $state(false);
     }
     // Initialize NES orchestrator
     if (nesCacheOrchestrator.initialize) {
@@ -349,7 +349,7 @@ class CognitiveSmartRouter {
     if (cached && now - cached.lastCheck < 30000) {
       return cached;
     }
-    let healthy = false;
+    let healthy = $state(false);
     switch (engine) {
       case 'webasm-cache':
         healthy = this.isWebGPUAvailable && typeof webLlamaService !== 'undefined';
@@ -365,7 +365,7 @@ class CognitiveSmartRouter {
         healthy = this.isOllamaAvailable; // Fallback for now
         break;
       default:
-        healthy = false;
+        healthy = $state(false);
     }
     const result = { healthy, lastCheck: now };
     this.engineHealthCache.set(engine, result);

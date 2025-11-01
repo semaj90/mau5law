@@ -42,7 +42,7 @@ export interface ChatContext {
 }
 export type ChatEvent =
   | { type: "SEND_MESSAGE"; message: string }
-  | { type: "RECEIVE_MESSAGE"; message: string; metadata?: unknown }
+  | { type: "RECEIVE_MESSAGE"; message: string; metadata?: any }
   | { type: "START_STREAMING" }
   | { type: "STREAM_CHUNK"; chunk: string }
   | { type: "STREAM_COMPLETE" }

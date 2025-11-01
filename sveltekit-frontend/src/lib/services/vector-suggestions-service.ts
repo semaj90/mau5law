@@ -96,7 +96,7 @@ export class VectorSuggestionsService {
 
       // Deduplicate and rank
       return this.deduplicateAndRankSuggestions(suggestions);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Vector contextual suggestions failed:', error);
       throw error;
     }
@@ -164,7 +164,7 @@ export class VectorSuggestionsService {
       }
 
       return vectorContext.sort((a, b) => b.similarityScore - a.similarityScore);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get vector context:', error);
       return [];
     }
@@ -224,7 +224,7 @@ export class VectorSuggestionsService {
       });
 
       return { relatedNodes: nodes, relationships };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get graph context:', error);
       return null;
     }
@@ -381,7 +381,7 @@ export class VectorSuggestionsService {
       }
 
       return suggestions.slice(0, 3);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get similar case suggestions:', error);
       return [];
     }
@@ -462,7 +462,7 @@ export class VectorSuggestionsService {
       }
 
       return suggestions.slice(0, 5);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get evidence-based suggestions:', error);
       return [];
     }
@@ -486,7 +486,7 @@ export class VectorSuggestionsService {
         cache: true,
       });
       return embedding ?? [];
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Failed to generate embedding:', err);
       return [];
     }

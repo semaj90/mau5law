@@ -8,7 +8,6 @@ export type UploadResult = {
   size?: number;
   message?: string;
 };
-
 export type FileState = {
   file: File;
   status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
@@ -17,7 +16,6 @@ export type FileState = {
   error?: string | null;
   result?: UploadResult | null;
 };
-
 export interface UploadManagerOptions {
   maxConcurrency?: number;
   maxRetries?: number;
@@ -26,13 +24,11 @@ export interface UploadManagerOptions {
   onProgress?: (state: FileState[]) => void;
   onComplete?: (results: UploadResult[]) => void;
 }
-
 export class UploadManager {
   fileStates: FileState[] = [];
   queue: FileState[] = [];
   active = 0;
   opts: Required<UploadManagerOptions>;
-
   constructor(opts?: UploadManagerOptions) {
     this.opts = Object.assign(
       {
@@ -46,7 +42,6 @@ export class UploadManager {
       opts || {}
     );
   }
-
   addFiles(files: File[]) {
     const newStates = files.map(
       f => ({ file: f, status: 'pending', progress: 0, attempts: 0, error: null, result: null }) as FileState
@@ -55,12 +50,10 @@ export class UploadManager {
     this.queue.push(...newStates);
     this.emitProgress();
   }
-
   start() {
     const startWorkers = Math.min(this.opts.maxConcurrency, this.queue.length);
     for (let i = 0; i < startWorkers; i++) this.processQueue();
   }
-
   private async processQueue() {
     if (this.active >= this.opts.maxConcurrency) return;
     const next = this.queue.shift();
@@ -76,7 +69,6 @@ export class UploadManager {
       this.opts.onComplete(this.fileStates.filter(s => !!s.result).map(s => s.result as UploadResult));
     }
   }
-
   private async uploadSingle(state: FileState) {
     state.status = 'uploading';
     state.attempts = (state.attempts || 0) + 1;
@@ -97,7 +89,6 @@ export class UploadManager {
       };
       state.progress = 100;
       state.status = 'completed';
-
       // Optionally enqueue GPU processing / embeddings - best effort
       if (this.opts.enableGPUProcessing) {
         try {
@@ -121,7 +112,7 @@ export class UploadManager {
           // ignore
         }
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       // Narrow unknown to a message string safely without using `any`
       const message = e instanceof Error ? e.message : String(e ?? 'Unknown error');
       state.error = message;
@@ -136,7 +127,6 @@ export class UploadManager {
       this.emitProgress();
     }
   }
-
   cancelAll() {
     this.queue = [];
     this.fileStates.forEach(s => {
@@ -144,7 +134,6 @@ export class UploadManager {
     });
     this.emitProgress();
   }
-
   private emitProgress() {
     try {
       this.opts.onProgress(this.fileStates);
@@ -153,5 +142,4 @@ export class UploadManager {
     }
   }
 }
-
 export default UploadManager;

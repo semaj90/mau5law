@@ -2,7 +2,6 @@ import { lucia } from 'lucia';
 import { pg } from '@lucia-auth/adapter-drizzle';
 import { db } from '$lib/server/db/client';
 import { users, sessions } from '$lib/server/db/schema-postgres-embeddinggemma';
-
 export const auth = lucia({
   adapter: pg(db, { user: users, session: sessions }),
   env: import.meta.env.MODE === 'production' ? 'PROD' : 'DEV',
@@ -11,5 +10,4 @@ export const auth = lucia({
     role: user.role,
   }),
 });
-
 export type Auth = typeof auth;

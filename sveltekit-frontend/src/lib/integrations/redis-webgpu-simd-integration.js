@@ -11,7 +11,6 @@ import {
   generateIntelligentTodosOptimized,
 } from '$lib/integrations/redis-webgpu-simd-integration.js';
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
-
 // GET: Demonstrate system capabilities and status
 export const GET = async ({ url }) => {
   try {
@@ -326,11 +325,9 @@ async function runPerformanceBenchmark() {
   results.traditional.vectorSimilarity = performance.now() - cpuSimStart;
   // WebGPU similarity (simulated)
   results.optimized.vectorSimilarity = results.traditional.vectorSimilarity * 0.1; // 10x improvement
-
   // Test 3: Cache Performance
   const cacheKey = 'test_operation_' + Date.now();
   const testData = { result: 'computed_value', complexity: 'high' };
-
   // Traditional: Always recompute
   const recomputeStart = performance.now();
   for (let i = 0; i < 10; i++) {
@@ -338,7 +335,6 @@ async function runPerformanceBenchmark() {
     await new Promise(resolve => setTimeout(resolve, 50));
   }
   results.traditional.cacheOperations = performance.now() - recomputeStart;
-
   // Optimized: Cache hit simulation
   const cacheOptimizedStart = performance.now();
   await redisWebGPUIntegration.set(cacheKey, testData, 60); // Simulate setting to cache
@@ -346,7 +342,6 @@ async function runPerformanceBenchmark() {
     await redisWebGPUIntegration.get(cacheKey); // Simulate fast cache hit
   }
   results.optimized.cacheOperations = performance.now() - cacheOptimizedStart;
-
   // Calculate improvements
   results.improvement.jsonParsing = `${(results.traditional.jsonParsing / results.optimized.jsonParsing).toFixed(1)}x faster`;
   results.improvement.vectorSimilarity = `${(results.traditional.vectorSimilarity / results.optimized.vectorSimilarity).toFixed(1)}x faster`;

@@ -192,7 +192,7 @@ export class MatrixLODSystem {
       console.log(`🚀 Matrix LOD System using ${this.hybridGPU?.getActiveContextType?.() ?? 'hybrid'} acceleration`);
     } catch (error) {
       console.warn('⚠️ Hybrid GPU initialization failed or factory not found, using WebGL2 fallback:', error);
-      this.useHybridAcceleration = false;
+      this.useHybridAcceleration = $state(false);
     }
   }
   /**

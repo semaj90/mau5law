@@ -5,5 +5,4 @@
   }
   let { type = 'nes-mario', size = 'medium' }: Props = $props();
 </script>
-
 <i class={`${type} is-${size}`}></i>

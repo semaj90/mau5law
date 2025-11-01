@@ -6,8 +6,8 @@
     emptyMessage?: string;
     loadingMessage?: string;
     skeleton?: 'card' | 'list' | 'table' | 'dashboard' | 'custom';
-    children?: unknown;
-    fallback?: unknown;
+    children?: any;
+    fallback?: any;
   }
   let {
     loading = false,
@@ -20,7 +20,6 @@
     fallback,
   }: Props = $props();
 </script>
-
 <!-- Error State -->
 {#if error}
   <div class="flex flex-col items-center justify-center p-golden-xl text-center">
@@ -60,7 +59,7 @@
     {#if skeleton === 'dashboard'}
       <!-- Dashboard Skeleton -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-golden-lg">
-        {#each Array(4) as _}
+        {#each Array.isArray(Array(4)) ? Array(4) : [] as _}
           <div class="bg-nier-bg-secondary border border-nier-border-muted rounded p-golden-lg animate-pulse">
             <div class="space-y-golden-sm">
               <div class="h-8 w-16 bg-nier-bg-tertiary rounded"></div>
@@ -70,12 +69,12 @@
         {/each}
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-golden-xl">
-        {#each Array(3) as _}
+        {#each Array.isArray(Array(3)) ? Array(3) : [] as _}
           <div class="bg-nier-bg-secondary border border-nier-border-muted rounded p-golden-lg animate-pulse">
             <div class="space-y-golden-sm">
               <div class="h-6 w-32 bg-nier-bg-tertiary rounded"></div>
               <div class="space-y-golden-xs">
-                {#each Array(5) as _}
+                {#each Array.isArray(Array(5)) ? Array(5) : [] as _}
                   <div class="h-4 bg-nier-bg-tertiary rounded"></div>
                 {/each}
               </div>
@@ -86,7 +85,7 @@
     {:else if skeleton === 'list'}
       <!-- List Skeleton -->
       <div class="space-y-golden-sm">
-        {#each Array(6) as _}
+        {#each Array.isArray(Array(6)) ? Array(6) : [] as _}
           <div class="bg-nier-bg-secondary border border-nier-border-muted rounded p-golden-md animate-pulse">
             <div class="flex items-center gap-golden-sm">
               <div class="w-10 h-10 bg-nier-bg-tertiary rounded-full"></div>
@@ -104,15 +103,15 @@
       <div class="bg-nier-bg-secondary border border-nier-border-muted rounded overflow-hidden">
         <div class="p-golden-md border-b border-nier-border-muted animate-pulse">
           <div class="grid grid-cols-4 gap-golden-sm">
-            {#each Array(4) as _}
+            {#each Array.isArray(Array(4)) ? Array(4) : [] as _}
               <div class="h-4 bg-nier-bg-tertiary rounded"></div>
             {/each}
           </div>
         </div>
-        {#each Array(8) as _}
+        {#each Array.isArray(Array(8)) ? Array(8) : [] as _}
           <div class="p-golden-md border-b border-nier-border-muted animate-pulse">
             <div class="grid grid-cols-4 gap-golden-sm">
-              {#each Array(4) as _}
+              {#each Array.isArray(Array(4)) ? Array(4) : [] as _}
                 <div class="h-4 bg-nier-bg-tertiary rounded"></div>
               {/each}
             </div>
@@ -122,7 +121,7 @@
     {:else if skeleton === 'card'}
       <!-- Card Skeleton -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-golden-lg">
-        {#each Array(6) as _}
+        {#each Array.isArray(Array(6)) ? Array(6) : [] as _}
           <div class="bg-nier-bg-secondary border border-nier-border-muted rounded p-golden-lg animate-pulse">
             <div class="space-y-golden-sm">
               <div class="h-6 bg-nier-bg-tertiary rounded w-3/4"></div>
@@ -162,9 +161,8 @@
   </div>
   <!-- Content State -->
 {:else}
-  {@render children?.()}
+  <slot />
 {/if}
-
 <style>
   .animation-delay-150 {
     animation-delay: 150m;
@@ -202,4 +200,3 @@
     animation-delay: 500ms;
   }
 </style>
-

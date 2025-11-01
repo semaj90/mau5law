@@ -72,7 +72,7 @@
     textureCanvas.height = 128; // 16x8 characters
     textureCtx = textureCanvas.getContext('2d')!;
     // Configure for NES-style pixel art
-    textureCtx.imageSmoothingEnabled = false;
+    textureCtx.imageSmoothingEnabled = $state(false);
     textureCtx.font = '8px "Courier New", monospace';
     textureCtx.textAlign = 'left';
     textureCtx.textBaseline = 'top';
@@ -257,7 +257,7 @@
     const frameDelay = 1000 / 60; // 16.67ms per frame
     typewriterInterval = setInterval(() => {
       if (currentIndex >= text.length) {
-        isTyping = false;
+        isTyping = $state(false);
         clearInterval(typewriterInterval);
         onComplete?.();
         return;
@@ -334,7 +334,6 @@
     }
   });
 </script>
-
 <div
   bind:this={containerElement}
   class="nes-typewriter-container"
@@ -350,7 +349,6 @@
     █
   </span>
 </div>
-
 <style>
   /* NES.css inspired typewriter styling */
   .nes-typewriter-container {
@@ -362,7 +360,7 @@
     padding: 8px;
     border: 2px solid transparent;
     word-wrap: break-word;
-    position relative;
+    position: relative;
   }
   /* Theme variations */
   .nes-classic {
@@ -471,4 +469,3 @@
     }
   }
 </style>
-

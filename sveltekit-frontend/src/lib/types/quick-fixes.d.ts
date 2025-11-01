@@ -33,7 +33,7 @@ interface VectorOperations {
 
 // Interface for a production service client (e.g., Go microservices)
 interface ProductionServiceClient {
-  makeRequest<T = unknown>(endpoint: string, data: unknown): Promise<T>;
+  makeRequest<T = unknown>(endpoint: string, data: any): Promise<T>;
   // Add other common methods if known
 }
 

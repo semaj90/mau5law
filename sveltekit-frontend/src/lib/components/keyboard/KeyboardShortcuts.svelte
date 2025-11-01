@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
-  import Button from "$lib/components/ui/button/Button.svelte";
+  import { Button } from "$lib/components/ui/button/Button.svelte";
   import { notifications } from '$lib/stores/unified';
   import { FocusManager } from "$lib/utils/accessibility";
   // Keep named imports that are exported by the package, and import problematic icons
@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   // These imports reference the individual Svelte icon components.
   // If your installation has icons under a different path (e.g. src/icons or dist/icons),
   // update the paths accordingly.
-  import HelpCircle from "lucide-svelte/dist/icons/HelpCircle.svelte";
+  import { HelpCircle } from "lucide-svelte/dist/icons/HelpCircle.svelte";
   import X from "lucide-svelte/dist/icons/X.svelte";
 
   // Svelte 5 $props destructuring
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
         switch (event.key) {
           case "Escape":
             event.preventDefault();
-            open = false;
+            open = $state(false);
             break;
           case "ArrowDown":
             event.preventDefault();
@@ -264,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function executeCommand(command: CommandItem) { // Typed parameter: 'command'
     if (!command) return;
-    open = false;
+    open = $state(false);
     searchQuery = "";
     try {
       command.action && command.action();
@@ -306,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function closeModals() {
     document.dispatchEvent(new CustomEvent("close-modals"));
-    open = false;
+    open = $state(false);
   }
 
   function toggleDarkMode() {
@@ -387,7 +387,7 @@ https://svelte.dev/e/js_parse_error -->
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    onclick={(e) => { if (e.target === e.currentTarget) open = false; }}
+    onclick={(e) => { if (e.target === e.currentTarget) open = $state(false); }}
     onkeydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
@@ -444,8 +444,7 @@ https://svelte.dev/e/js_parse_error -->
                     {/if}
                   </div>
                   {#if shortcut.aiSummary}
-                    <div class="command-description text-xs text-gray-500 mt-1">{shortcut.aiSummary}</div>
-                  {/if}
+                    <div class="command-description text-xs text-gray-500 mt-1">{shortcut.aiSummary}{/if}
                   <div class="command-key text-xs text-gray-400 mt-1">{shortcut.key}</div>
                 </div>
               </li>
@@ -455,8 +454,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="empty-state">
             <Search class="w-8 h-8" />
             <p>No shortcuts found for: "{searchQuery}"</p>
-          </div>
-        {/if}
+          {/if}
       </div>
 
       <div class="command-palette-footer">
@@ -467,8 +465,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <!-- Keyboard Shortcuts Help Modal -->
 <div class="space-y-4">

@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { WebGPUEvidenceGraph, type GraphNode, type GraphEdge } from '$lib/services/webgpu-evidence-graph';
   import type { EvidenceAnalysis, Correlation, Entity } from '$lib/services/ai-evidence-analyzer';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   interface Props {
     analysis: EvidenceAnalysi;
     relatedAnalyses?: EvidenceAnalysis[];
@@ -11,8 +11,8 @@
   let { analysis, relatedAnalyses = [] }: Props = $props();
   let canvas: HTMLCanvasElement;
   let graph: WebGPUEvidenceGraph;
-  let isWebGPUSupported = false;
-  let isInitialized = false;
+  let isWebGPUSupported = $state(false);
+  let isInitialized = $state(false);
   let error: string | null = null;
   // Graph layout settings
   let layoutType: 'force' | 'circular' | 'hierarchical' = 'force';
@@ -347,8 +347,7 @@
         <div class="loading-overlay">
           <div class="loading-spinner"></div>
           <p>Initializing WebGPU...</p>
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="graph-legend">
       <h4 class="legend-title">Legend</h4>
@@ -370,8 +369,7 @@
           <span>Correlations</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .webgpu-graph-container {

@@ -66,11 +66,11 @@
                 currentStep = 'complete';
             }
             ondispatch?.({ analysisResult, recommendations });
-        } catch (err: unknown) {
+        } catch (err: any) {
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err);
         } finally {
-            isProcessing = false;
+            isProcessing = $state(false);
         }
     }
     function reset() {
@@ -94,7 +94,6 @@
         return `${(score * 100).toFixed(0)}%`;
     }
 </script>
-
 <div class="legal-ai-workflow">
   <!-- Header -->
   <div class="workflow-header">
@@ -143,8 +142,7 @@
       <span class="error-icon">❌</span>
       <span>{error}</span>
       <button onclick={reset} class="retry-btn">Try Again</button>
-    </div>
-  {/if}
+    {/if}
   <!-- Upload Section -->
   {#if currentStep === 'upload'}
     <div class="upload-section">
@@ -191,8 +189,7 @@
       <button onclick={processDocument} disabled={!canProcess} class="process-btn">
         {isProcessing ? 'Processing...' : 'Analyze Document'}
       </button>
-    </div>
-  {/if}
+    {/if}
   <!-- Progress Display -->
   {#if isProcessing}
     <div class="progress-section">
@@ -203,8 +200,7 @@
         {currentStep === 'analysis' ? 'Analyzing document...' : 'Getting recommendations...'}
         {progressPercentage > 0 ? `${progressPercentage}%` : ''}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Results Section -->
   {#if hasResults && analysisResult}
     <div class="results-section">
@@ -231,28 +227,25 @@
         <div class="summary-section">
           <h4>Summary</h4>
           <p>{analysisResult.summary}</p>
-        </div>
-      {/if}
+        {/if}
       {#if analysisResult.key_entities && analysisResult.key_entities.length > 0}
         <div class="entities-section">
           <h4>Key Entities</h4>
           <div class="entity-tags">
-            {#each analysisResult.key_entities as entity}
+            {#each Array.isArray(analysisResult.key_entities) ? analysisResult.key_entities : [] as entity}
               <span class="entity-tag">{entity}</span>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if analysisResult.legal_concepts && analysisResult.legal_concepts.length > 0}
         <div class="concepts-section">
           <h4>Legal Concepts</h4>
           <div class="concept-tags">
-            {#each analysisResult.legal_concepts as concept}
+            {#each Array.isArray(analysisResult.legal_concepts) ? analysisResult.legal_concepts : [] as concept}
               <span class="concept-tag">{concept}</span>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if analysisResult.risk_assessment}
         <div class="risk-section">
           <h4>Risk Assessment</h4>
@@ -265,15 +258,13 @@
               <div class="predicted-outcome">
                 Predicted Outcome: {analysisResult.risk_assessment.predicted_outcome}
                 ({formatConfidence(analysisResult.risk_assessment.outcome_probability || 0)})
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if analysisResult.similar_cases && analysisResult.similar_cases.length > 0}
         <div class="similar-cases-section">
           <h4>Similar Cases</h4>
-          {#each analysisResult.similar_cases.slice(0, 3) as similarCase}
+          {#each Array.isArray(analysisResult.similar_cases.slice(0, 3)) ? analysisResult.similar_cases.slice(0, 3) : [] as similarCase}
             <div class="similar-case">
               <div class="case-title">{similarCase.title}</div>
               <div class="case-details">
@@ -282,10 +273,8 @@
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Recommendations Section -->
   {#if hasRecommendations && recommendations}
     <div class="recommendations-section">
@@ -305,7 +294,7 @@
         </div>
       </div>
       <div class="recommendations-list">
-        {#each recommendations.recommendations as recommendation}
+        {#each Array.isArray(recommendations.recommendations) ? recommendations.recommendations : [] as recommendation}
           <div class="recommendation-nier-bits-card">
             <div class="recommendation-header">
               <h4 class="recommendation-title">{recommendation.title}</h4>
@@ -328,16 +317,14 @@
             </div>
             {#if recommendation.legal_concepts && recommendation.legal_concepts.length > 0}
               <div class="recommendation-concepts">
-                {#each recommendation.legal_concepts as concept}
+                {#each Array.isArray(recommendation.legal_concepts) ? recommendation.legal_concepts : [] as concept}
                   <span class="concept-tag small">{concept}</span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Action Buttons -->
   {#if currentStep === 'complete'}
     <div class="action-buttons">
@@ -345,10 +332,8 @@
       <button onclick={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
         Export Results
       </button>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
     .legal-ai-workflow {
         max-width: 1200px;
@@ -514,7 +499,7 @@
     .progress-fill {
         height: 100%;
         background: #3b82f6;
-        transition: width 0.3;
+        transition: width: 0.3;
     }
     .progress-text {
         margin-top: 0.5rem;
@@ -695,5 +680,3 @@
         }
     }
 </style>
-
-

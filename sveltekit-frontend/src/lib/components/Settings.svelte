@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
   interface Settings {
     theme: string;
     language: string;
@@ -14,7 +13,6 @@
     fontFamily: string;
     fontSize: string;
   }
-
   // Default settings object
   const defaultSettings: Settings = {
     theme: 'light',
@@ -29,13 +27,10 @@
     fontFamily: 'Arial',
     fontSize: '16px',
   };
-
   // --- Fix: expose props via standard Svelte exports (avoid $props / $bindable) ---
-  export let isOpen: boolean = false;
+  export let isOpen: boolean = $state(false);
   export let settings: Settings = defaultSettings;
-
   const dispatch = createEventDispatcher();
-
   function saveSettings(event: Event) {
     // prevent default if used without preventDefault modifier
     event.preventDefault();
@@ -43,7 +38,6 @@
     dispatch('save', { settings });
   }
 </script>
-
 {#if isOpen}
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -118,5 +112,4 @@
         <button type="submit">Save Settings</button>
       </form>
     </div>
-  </div>
-{/if}
+  {/if}

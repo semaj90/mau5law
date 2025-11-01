@@ -42,13 +42,11 @@ https://svelte.dev/e/js_parse_error -->
   };
   @group(0) @binding(0) var<uniform> uniforms: Uniforms;
   @group(0) @binding(1) var<storage, read> embeddings: array<vec3<f32>>;
-
   struct VertexOutput {
     @builtin(position) position vec4<f32>;
     @location(0) color: vec3<f32>;
     @location(1) pointSize: f32;
   };
-
   @vertex
   fn main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
     var output: VertexOutput;
@@ -299,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
     render();
   }
   function handleMouseUp() {
-    mouseDown = false;
+    mouseDown = $state(false);
   }
   function handleWheel(e: WheelEvent) {
     e.preventDefault();
@@ -336,7 +334,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="webgpu-viewer">
   <div class="controls">
     <button onclick={togglePlay} class="control-btn" title={isPlaying ? 'Pause' : 'Play'}>
@@ -377,20 +374,18 @@ https://svelte.dev/e/js_parse_error -->
           • {label}
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .webgpu-viewer {
-    position relative;
+    position: relative;
     background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   .controls {
-    position absolute;
+    position: absolute;
     top: 1rem;
     left: 1rem;
     display: flex;
@@ -432,7 +427,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grabbing;
   }
   .labels {
-    position absolute;
+    position: absolute;
     bottom: 1rem;
     left: 1rem;
     display: flex;
@@ -449,4 +444,3 @@ https://svelte.dev/e/js_parse_error -->
     backdrop-filter: blur(10px);
   }
 </style>
-

@@ -35,7 +35,7 @@ export interface EmbeddingResult {
 }
 export class EnhancedEmbeddingWorker {
   private redis: Redis | null = null;
-  private running = false;
+  private running = $state(false);
   private queueName = 'embedding:jobs';
   private processingQueue = 'embedding:processing';
   private maxRetries = 3;
@@ -44,7 +44,7 @@ export class EnhancedEmbeddingWorker {
   private currentBatch: EmbeddingJob[] = [];
   private batchTimer?: NodeJS.Timeout;
   private concurrencyLimit = 5;
-  private initialized = false;
+  private initialized = $state(false);
   // --- Redis compatibility helpers (ioredis v4/v5) ---
   private async redisBlpop(_key: string, timeout: number): Promise<[string, string] | null> {
     const r = this.redis as unknown as {
@@ -75,7 +75,7 @@ export class EnhancedEmbeddingWorker {
   }
   private async redisSetNXEX(_key: string, value: string, exSeconds: number): Promise<string | null> {
     const r = this.redis as unknown as {
-      set: (...args: unknown[]) => Promise<string | null>;
+      set: (...args: any[]) => Promise<string | null>;
     }
     // Try modern options form first
     try {
@@ -132,7 +132,7 @@ export class EnhancedEmbeddingWorker {
     // Start the main processing loop
     this.runWorkerLoop().catch((error) => {
       console.error('❌ Enhanced worker loop failed:', error);
-      this.running = false;
+      this.running = $state(false);
     });
     // Start batch processing timer
     this.startBatchProcessor();
@@ -141,7 +141,7 @@ export class EnhancedEmbeddingWorker {
    * Stop the worker
    */
   async stop(): Promise<void> {
-    this.running = false;
+    this.running = $state(false);
     if (this.batchTimer) {
       clearTimeout(this.batchTimer);
     }
@@ -171,7 +171,7 @@ export class EnhancedEmbeddingWorker {
         console.log(
           'Available blpop methods:',
           typeof this.redis.blpop,
-          typeof (this.redis as unknown as { blPop?: unknown }).blPop
+          typeof (this.redis as unknown as { blPop?: any }).blPop
         );
         // Block until a job is available (timeout after 30 seconds)
         const result = (await this.redisBlpop(this.queueName, 30)) as unknown as
@@ -281,7 +281,7 @@ export class EnhancedEmbeddingWorker {
       // Step 4: Try to get cached embedding first
       await globalLoki.updateProgress(job.id, 25);
       let embedding: number[] | null = null;
-      let cached = false;
+      let cached = $state(false);
       try {
         embedding = await this.getCachedEmbedding(job.text, job.model);
         cached = !!embedding;
@@ -325,11 +325,11 @@ export class EnhancedEmbeddingWorker {
       console.log(
         `✅ Job ${job.id} completed in ${processingTime}ms (cached: ${cached}, batch: ${batchId})`
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const processingTime = Date.now() - startTime;
       const errorMessage =
         typeof error === 'object' && error && 'message' in error
-          ? String((error as { message?: unknown }).message)
+          ? String((error as { message?: any }).message)
           : String(error ?? 'Unknown error');
       console.error(`❌ Job ${job.id} failed after ${processingTime}ms:`, errorMessage);
       // Mark as failed in global state
@@ -442,7 +442,7 @@ export class EnhancedEmbeddingWorker {
           updated_at = NOW()
       `);
       console.log(`💾 Embedding ${id} (${embedding.length}D) saved to database`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Database upsert failed:', error);
       throw new Error(`Database persistence failed: ${String(error)}`);
     }
@@ -528,7 +528,7 @@ export class EnhancedEmbeddingWorker {
     maxRetries: number;
     batchTimeoutMs: number;
     redisConnected: boolean;
-    lokiStats: unknown;
+    lokiStats: any;
     performance: {
       avgBatchProcessingTime: number;
       cacheHitRate: number;

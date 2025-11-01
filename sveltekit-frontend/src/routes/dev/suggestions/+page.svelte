@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
-  let items: unknown[] = $state([]);
+  let items: any[] = $state([]);
   let count = $state(0);
   $effect(() => {
     (async () => {
@@ -18,7 +18,7 @@ try {
 <h1>Svelte Suggestions</h1>
 <p>Total parsed: {count}</p>
 <ul>
-  {#each items as it}
+  {#each Array.isArray(items) ? items : [] as it}
     <li>
       <strong>{it.file}:{it.line}</strong>
       <div>{it.suggestion}</div>

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import OptimisticList from '$lib/headless/OptimisticList.svelte';
   // Icons
@@ -250,8 +250,8 @@
       theories = [mockTheory, ...theories];
       currentTheory = mockTheory;
     } finally {
-      isBuilding = false;
-      showTheoryDialog = false;
+      isBuilding = $state(false);
+      showTheoryDialog = $state(false);
     }
   }
   async function generateMockTheoryAnalysis(
@@ -382,7 +382,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import OptimisticList from '$lib/headless/OptimisticList.svelte';
   // Icons
@@ -629,8 +629,8 @@
       theories = [mockTheory, ...theories];
       currentTheory = mockTheory;
     } finally {
-      isBuilding = false;
-      showTheoryDialog = false;
+      isBuilding = $state(false);
+      showTheoryDialog = $state(false);
     }
   }
   async function generateMockTheoryAnalysis(

@@ -88,14 +88,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const req: LegalPlatformRequest = await request.json();
     // Handle health check
     if (req.action === ('health' as any)) {
-      let dbHealthy = false;
+      let dbHealthy = $state(false);
       try {
         // Simple query to check database connectivity
         await db.execute(sql`SELECT 1`);
         dbHealthy = true;
       } catch (e) {
         console.error('Database health check failed:', e);
-        dbHealthy = false;
+        dbHealthy = $state(false);
       }
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
@@ -415,7 +415,7 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<Respon
       data: searchResults,
       message: 'Search completed successfully',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Fallback to traditional database search
     const fallbackResults = await db
       .select()
@@ -439,7 +439,7 @@ async function handleUploadOperations(req: LegalPlatformRequest): Promise<Respon
       data: uploadResult,
       message: 'Upload processed successfully',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     throw error(500, `Upload service error: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 }
@@ -471,20 +471,20 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
       data: result,
       message: `AI operation ${operation} completed successfully`,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     throw error(500, `AI service error: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 }
 // Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
-  let dbHealthy = false;
+  let dbHealthy = $state(false);
   try {
     // Simple query to check database connectivity
     await db.execute(sql`SELECT 1`);
     dbHealthy = true;
   } catch (e) {
     console.error('Database health check failed:', e);
-    dbHealthy = false;
+    dbHealthy = $state(false);
   }
   const healthChecks = await Promise.allSettled([
     callGoService('enhanced_rag', '/api/health'),

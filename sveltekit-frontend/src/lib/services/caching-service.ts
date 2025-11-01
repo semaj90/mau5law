@@ -30,7 +30,7 @@ type AdvancedCacheManagerLike =
       // Accept either TTL number or full options object
       set?: (
         key: string,
-        value: unknown,
+        value: any,
         ttlOrOptions?: number | CacheOptions
       ) => Promise<boolean | undefined> | Promise<void>;
       getStats?: () => Record<string, unknown>;
@@ -43,14 +43,14 @@ type NESCacheOrchestratorLike =
       getFromOptimalTier?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
       setToOptimalTier?: (
         key: string,
-        value: unknown,
+        value: any,
         options?: CacheOptions
       ) => Promise<boolean | undefined> | Promise<void>;
       // fallback generic API
       get?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
       set?: (
         key: string,
-        value: unknown,
+        value: any,
         ttlOrOptions?: number | CacheOptions
       ) => Promise<boolean | undefined> | Promise<void>;
       getMemoryUsage?: () => string | number;
@@ -59,18 +59,18 @@ type NESCacheOrchestratorLike =
     };
 
 // Helper type-guards / wrappers to avoid unsafe: 'any' and handle multiple function signatures
-function hasInitialize(obj: unknown): obj is { initialize: () => Promise<void> } {
-  return !!obj && typeof (obj as { initialize?: unknown }).initialize === 'function';
+function hasInitialize(obj: any): obj is { initialize: () => Promise<void> } {
+  return !!obj && typeof (obj as { initialize?: any }).initialize === 'function';
 }
 // removed unused generic parameter to avoid: "T is defined but never used"
-function hasConstructorNamed(mod: unknown, name: string): boolean {
+function hasConstructorNamed(mod: any, name: string): boolean {
   return !!mod && typeof (mod as Record<string, unknown>)[name] === 'function';
 }
 
 // New runtime helper: safely fetch a method from any object/module using bracket access.
 // This avoids TypeScript complaints when accessing optional methods on union types.
 // NOTE: return `unknown` and cast at call sites to avoid unsafe `Function` or `any`.
-function getMethod(target: unknown, name: string): unknown | undefined {
+function getMethod(target: any, name: string): any | undefined {
   if (!target) return undefined;
   const maybe = (target as Record<string, unknown>)[name];
   if (typeof maybe === 'function') {
@@ -79,7 +79,7 @@ function getMethod(target: unknown, name: string): unknown | undefined {
   return undefined;
 }
 
-async function tryCallGetter<T>(target: unknown, key: string, options?: CacheOptions): Promise<T | null> {
+async function tryCallGetter<T>(target: any, key: string, options?: CacheOptions): Promise<T | null> {
   if (!target) return null;
   // prefer getFromOptimalTier
   const candidate1 = getMethod(target, 'getFromOptimalTier') as
@@ -103,10 +103,10 @@ async function tryCallGetter<T>(target: unknown, key: string, options?: CacheOpt
   return null;
 }
 
-async function tryCallSetter(target: unknown, key: string, value: unknown, options?: CacheOptions): Promise<boolean> {
+async function tryCallSetter(target: any, key: string, value: any, options?: CacheOptions): Promise<boolean> {
   if (!target) return false;
   const candidateFn = (getMethod(target, 'setToOptimalTier') ?? getMethod(target, 'set')) as
-    | ((k: string, v: unknown, o?: CacheOptions | number) => Promise<boolean | undefined> | Promise<void>)
+    | ((k: string, v: any, o?: CacheOptions | number) => Promise<boolean | undefined> | Promise<void>)
     | undefined;
   if (candidateFn) {
     // try calling with full options
@@ -167,7 +167,7 @@ class EnhancedCachingService {
         return;
       }
       // default export instance or constructor
-      const def = (mod as { default?: unknown }).default;
+      const def = (mod as { default?: any }).default;
       if (def) {
         if (hasInitialize(def)) {
           this.nesCacheOrchestrator = def as NESCacheOrchestratorLike;
@@ -201,7 +201,7 @@ class EnhancedCachingService {
         await this.advancedCacheManager.initialize?.();
         return;
       }
-      const def = (imported as { default?: unknown }).default;
+      const def = (imported as { default?: any }).default;
       if (def) {
         if (hasInitialize(def)) {
           this.advancedCacheManager = def as AdvancedCacheManagerLike;
@@ -341,7 +341,7 @@ class EnhancedCachingService {
   // ============================================================================
   // LEGAL AI SPECIFIC METHODS
   // ============================================================================
-  async cacheSearchResults(query: string, results: unknown[], options: SearchCacheOptions = {}): Promise<void> {
+  async cacheSearchResults(query: string, results: any[], options: SearchCacheOptions = {}): Promise<void> {
     const cacheKey = `search:${this.hashQuery(query)}`;
     const cacheData = {
       query,
@@ -361,13 +361,13 @@ class EnhancedCachingService {
   }
   async getCachedSearchResults(query: string, options: SearchCacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `search:${this.hashQuery(query)}`;
-    const cached = await this.get<Record<string, unknown> & { results?: unknown[] }>(cacheKey, options);
+    const cached = await this.get<Record<string, unknown> & { results?: any[] }>(cacheKey, options);
     if (cached && Array.isArray(cached.results)) {
       return cached.results;
     }
     return null;
   }
-  async cacheDocumentAnalysis(documentId: string, analysis: unknown, options: CacheOptions = {}): Promise<void> {
+  async cacheDocumentAnalysis(documentId: string, analysis: any, options: CacheOptions = {}): Promise<void> {
     const cacheKey = `analysis:${documentId}`;
     await this.set(cacheKey, analysis, {
       ttl: options.ttl || 3600000, // 1 hour default for document analysis
@@ -379,7 +379,7 @@ class EnhancedCachingService {
     const cacheKey = `analysis:${documentId}`;
     return await this.get<unknown>(cacheKey, options);
   }
-  async cacheVectorSimilarity(queryHash: string, results: unknown[], options: CacheOptions = {}): Promise<void> {
+  async cacheVectorSimilarity(queryHash: string, results: any[], options: CacheOptions = {}): Promise<void> {
     const cacheKey = `vector:${queryHash}`;
     await this.set(cacheKey, results, {
       ttl: options.ttl || 1800000, // 30 minutes default for vector results
@@ -439,7 +439,7 @@ class EnhancedCachingService {
       await this.delete(testKey);
       serviceHealthy = result === 'test';
     } catch {
-      serviceHealthy = false;
+      serviceHealthy = $state(false);
     }
     const layerHealth = null; // Simple implementation
     return {
@@ -532,7 +532,7 @@ export async function getWithFallback<T>(key: string, fallbackFn: () => Promise<
 
 export async function cacheSearchResults(
   query: string,
-  results: unknown[],
+  results: any[],
   options?: SearchCacheOptions
 ): Promise<void> {
   return cachingService.cacheSearchResults(query, results, options);
@@ -544,7 +544,7 @@ export async function getCachedSearchResults(query: string, options?: SearchCach
 
 export async function cacheDocumentAnalysis(
   documentId: string,
-  analysis: unknown,
+  analysis: any,
   options?: CacheOptions
 ): Promise<void> {
   return cachingService.cacheDocumentAnalysis(documentId, analysis, options);

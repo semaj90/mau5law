@@ -36,7 +36,7 @@ class LocalCache {
 export class EnhancedCachingService {
   private localCache = new LocalCache();
   private redisCacheInstance: RedisCache | undefined;
-  private isRedisReady: boolean = false;
+  private isRedisReady: boolean = $state(false);
 
   constructor() {
     if (!browser) {

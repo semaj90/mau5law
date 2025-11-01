@@ -150,10 +150,8 @@ export class QdrantPostgreSQLService {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-
       // Get document with embeddings
       const document = await this.db.select().from(legalDocuments).where(eq(legalDocuments.id, documentId)).limit(1);
-
       if (!document || document.length === 0) {
         throw new Error(`Document ${documentId} not found`);
       }
@@ -164,7 +162,6 @@ export class QdrantPostgreSQLService {
       // Ensure collection exists
       const collectionName = doc.qdrantCollection || 'legal_documents';
       await this.ensureCollection(collectionName);
-
       // Create Qdrant point
       const point = {
         id: documentId,
@@ -179,12 +176,10 @@ export class QdrantPostgreSQLService {
           metadata: doc.metadata ?? null,
         },
       };
-
       // Upsert to Qdrant
       await this.qdrant.upsert(collectionName, {
         points: [point],
       });
-
       // Update document with Qdrant sync info
       await this.db
         .update(legalDocuments)
@@ -194,7 +189,6 @@ export class QdrantPostgreSQLService {
           updatedAt: new Date(),
         })
         .where(eq(legalDocuments.id, documentId));
-
       // Update operation as completed in vectorMetadata
       await this.db
         .update(vectorMetadata)
@@ -209,7 +203,6 @@ export class QdrantPostgreSQLService {
           updatedAt: new Date(),
         })
         .where(eq(vectorMetadata.contentHash, operationId));
-
       console.log(`✅ Synced document ${documentId} to Qdrant`);
       return true;
     } catch (error: any) {
@@ -268,7 +261,6 @@ export class QdrantPostgreSQLService {
     const results: Array<any> = [];
     let postgresqlTime: number | undefined;
     let qdrantTime: number | undefined;
-
     // PostgreSQL search
     if (usePostgreSQL) {
       const pgStart = Date.now();
@@ -296,7 +288,6 @@ export class QdrantPostgreSQLService {
         console.error('PostgreSQL search error:', error);
       }
     }
-
     // Qdrant search
     if (useQdrant) {
       const qdrantStart = Date.now();
@@ -309,7 +300,6 @@ export class QdrantPostgreSQLService {
               })),
             }
           : undefined;
-
         const qdrantResults = await this.qdrant.search(collection, {
           vector: queryEmbedding,
           limit,
@@ -317,16 +307,13 @@ export class QdrantPostgreSQLService {
           with_payload: true,
           filter: qdrantFilter,
         });
-
         qdrantTime = Date.now() - qdrantStart;
-
         const qdrantIds = qdrantResults.map(r => String(r.id));
         if (qdrantIds.length > 0) {
           const pgDocuments = await this.db
             .select()
             .from(legalDocuments)
             .where(sql`${legalDocuments.id} = ANY(${qdrantIds})`);
-
           const docMap = new Map((pgDocuments as any[]).map(doc => [String((doc as any).id), doc]));
           for (const result of qdrantResults) {
             const rid = String((result as any).id);
@@ -345,7 +332,6 @@ export class QdrantPostgreSQLService {
         console.error('Qdrant search error:', error);
       }
     }
-
     // Deduplicate and sort results
     const uniqueResults = new Map<string, any>();
     for (const result of results) {
@@ -358,7 +344,6 @@ export class QdrantPostgreSQLService {
     const finalResults = Array.from(uniqueResults.values())
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, limit);
-
     return {
       results: finalResults,
       performance: {
@@ -390,12 +375,10 @@ export class QdrantPostgreSQLService {
           )
           .limit(batchSize)
           .offset(offset);
-
         if (!batch || (batch as any[]).length === 0) {
-          hasMore = false;
+          hasMore = $state(false);
           break;
         }
-
         // Process batch
         for (const document of batch as any[]) {
           const success = await this.syncDocumentToQdrant((document as any).id);
@@ -419,8 +402,8 @@ export class QdrantPostgreSQLService {
   // HEALTH CHECK AND MONITORING
   // ============================================================================
   async healthCheck(): Promise<any> {
-    let postgresql = false;
-    let qdrant = false;
+    let postgresql = $state(false);
+    let qdrant = $state(false);
     let collections: string[] = [];
     // Check PostgreSQL
     try {

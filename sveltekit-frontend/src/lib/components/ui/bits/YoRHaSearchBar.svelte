@@ -180,8 +180,8 @@
   function handleBlur() {
     // Delay hiding suggestions to allow for clicks
     setTimeout(() => {
-      isFocused = false;
-      showSuggestions = false;
+      isFocused = $state(false);
+      showSuggestions = $state(false);
       selectedIndex = -1;
     }, 200);
     dispatch('blur');
@@ -206,7 +206,7 @@
         }
         break;
       case 'Escape':
-        showSuggestions = false;
+        showSuggestions = $state(false);
         selectedIndex = -1;
         inputElement.blur();
         break;
@@ -220,7 +220,7 @@
   }
   function selectSuggestion(suggestion SearchSuggestion) {
     value = suggestion.text;
-    showSuggestions = false;
+    showSuggestions = $state(false);
     selectedIndex = -1;
     dispatch('suggestionSelect', { suggestion });
     handleSearch();
@@ -241,7 +241,7 @@
   function clearSearch() {
     value = '';
     searchTerms = [];
-    showSuggestions = false;
+    showSuggestions = $state(false);
     selectedIndex = -1;
     inputElement.focus();
     dispatch('clear');
@@ -275,7 +275,6 @@
     !isFocused && value === '' ? fullPlaceholder.slice(0, placeholderIndex) + '▊' : placeholder
   );
 </script>
-
 <div class="relative w-full max-w-2xl mx-auto">
   <!-- Main Search Container -->
   <div
@@ -294,8 +293,7 @@
       {:else}
         <div class={`text-xl ${styles.icon}`}>
           {theme === 'yorha' ? '◉' : '🔍'}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Search Input -->
     <input
@@ -340,8 +338,7 @@
             {term}
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Suggestions Dropdown -->
   {#if showSuggestions && allSuggestions().length > 0}
@@ -401,15 +398,13 @@
               `}
               >
                 {suggestion.description}
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Selection Indicator -->
           {#if index === selectedIndex}
             <div class={`ml-2 ${styles.icon}`}>
               {theme === 'yorha' ? '→' : '▶'}
-            </div>
-          {/if}
+            {/if}
         </button>
       {/each}
       <!-- Footer with shortcuts -->
@@ -420,12 +415,9 @@
             <span>ENTER SELECT</span>
             <span>ESC CLOSE</span>
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   /* Custom scrollbar for suggestions */
   .overflow-y-auto {
@@ -475,4 +467,3 @@
     transform: scale(1.01);
   }
 </style>
-

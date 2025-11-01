@@ -4,7 +4,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
 <!-- LazyChart.svelte - Lazy loading wrapper for heavy chart components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import LazyLoader from '../LazyLoader.svelte';
+  import { LazyLoader } from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
   // Props for chart configuration
   let {
@@ -25,7 +25,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
   // Dynamic import for chart library
-  let chartComponent: unknown = $state(null);
+  let chartComponent: any = $state(null);
   let loadError: Error | null = $state(null);
   // Load chart component when visible
   async function loadChartComponent() {
@@ -106,8 +106,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
         </div>
     {:else}
       <!-- This shouldn't render as the placeholder is handled by LazyLoader -->
-      <div class="chart-loading">Loading chart component...</div>
-    {/if}
+      <div class="chart-loading">Loading chart component...{/if}
   </div>
   <!-- Custom placeholder content in the slot -->
   <div
@@ -167,14 +166,13 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
               ></div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </LazyLoader>
 <style>
   .lazy-chart-container {
-    position relative;
+    position: relative;
     background: rgba(0, 0, 0, 0.02);
     border-radius: 8px;
     overflow: hidden;
@@ -186,7 +184,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   }
   .chart-content {
     flex: 1,
-    position relative;
+    position: relative;
   }
   /* Mock chart styles (replace with your actual chart styling) */
   .mock-chart {
@@ -268,12 +266,12 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    position relative;
+    position: relative;
     overflow: hidden;
     animation: pie-rotate 3s linear infinite;
   }
   .pie-slice {
-    position absolute;
+    position: absolute;
     width: 50%;
     height: 50%;
     transform-origin: 100% 100%;
@@ -377,4 +375,3 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     }
   }
 </style>
-

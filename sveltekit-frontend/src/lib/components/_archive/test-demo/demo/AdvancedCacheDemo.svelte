@@ -106,7 +106,7 @@
   		} catch (error) {
   			console.error('Failed to generate recommendations:', error);
   		} finally {
-  			isLoading = false;
+  			isLoading = $state(false);
   		}
   	}
   	function generateSampleActivity() {
@@ -176,7 +176,7 @@
   	}
   	function selectQuery(query: string) {
   		demoQuery = query;
-  		showTypewriter = false;
+  		showTypewriter = $state(false);
   		recommendations = [];
   	}
   	function getRiskLevelClass(level: string) {
@@ -408,7 +408,7 @@
           class="bg-yorha-warning text-yorha-bg-primary px-4 py-2 rounded border border-yorha-warning hover:opacity-80 transition-opacity focus-ring-enhanced"
           onclick={() => {
             recommendations = [];
-            showTypewriter = false;
+            showTypewriter = $state(false);
           }}
         >
           Clear Results
@@ -459,7 +459,7 @@
 </style>
           onclick={() => {
             recommendations = [];
-            showTypewriter = false;
+            showTypewriter = $state(false);
           }}
         >
           Clear Results

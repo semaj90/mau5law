@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import LegalCaseManager from './LegalCaseManager.svelte';
-
+import { LegalCaseManager } from './LegalCaseManager.svelte';
 // Add explicit props interface to match story args (avoids 'unknown property' errors)
 interface LegalCaseManagerProps {
   caseId?: string | null;
@@ -10,7 +9,6 @@ interface LegalCaseManagerProps {
   enableAI?: boolean;
   showStats?: boolean;
 }
-
 const meta: Meta<LegalCaseManagerProps> = {
   title: 'Business/LegalCaseManager',
   component: LegalCaseManager,
@@ -46,7 +44,6 @@ const meta: Meta<LegalCaseManagerProps> = {
   },
   tags: ['autodocs'],
 }; // explicit typed Meta to avoid: 'satisfies' parsing issues
-
 export default meta;
 type Story = StoryObj<LegalCaseManagerProps>;
 export const Default: Story = {

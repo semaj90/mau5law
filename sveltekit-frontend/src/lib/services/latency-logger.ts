@@ -25,7 +25,7 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
   const sub = service.subscribe((snapshot) => {
     // derive a compact entry
     // safely narrow the snapshot.context to the minimal shape we need
-    const state = snapshot as unknown as StateFrom<typeof systemMonitorMachine> | { context?: unknown };
+    const state = snapshot as unknown as StateFrom<typeof systemMonitorMachine> | { context?: any };
     const ctx = (state.context as unknown as {
       latency?: number | null;
       fallbackMode?: boolean;
@@ -101,7 +101,7 @@ export async function captureLatency(entry: LatencyEntry) {
   }
 }
 
-async function idbSetSafe(key: string, value: unknown) {
+async function idbSetSafe(key: string, value: any) {
   try {
     await set(key, value);
   } catch (e) {

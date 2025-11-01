@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const { embeddings } = await embedText(fetch, [text], model);
       const embed = embeddings[0];
       await cache.set(`embedding:${model}:${hash}`, embed, 24 * 60 * 60 * 1000);
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn('embed failed (will enqueue):', msg);
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       }
     }
     return json({ ok: true, id }, { status: 202 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return json({ ok: false, error: msg }, { status: 500 });
   }

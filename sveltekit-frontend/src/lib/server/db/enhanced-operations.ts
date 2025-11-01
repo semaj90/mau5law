@@ -3,7 +3,6 @@ import { db } from '../db/index';
 import { cases, evidence } from './schema-postgres';
 import { eq, and, or, desc, sql } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
-
 export class DbCaseOperations {
   /**
    * Search cases with advanced filtering
@@ -19,10 +18,8 @@ export class DbCaseOperations {
     useVectorSearch?: boolean;
   }) {
     const { query, status, priority, assignedTo, limit = 50, offset = 0 } = params;
-
     // Build where conditions
     const conditions: SQL[] = [];
-
     if (query) {
       conditions.push(
         or(
@@ -32,22 +29,17 @@ export class DbCaseOperations {
         )!
       );
     }
-
     if (status && status.length > 0) {
       conditions.push(sql`${cases.status}::text IN ${status}`);
     }
-
     if (priority && priority.length > 0) {
       conditions.push(sql`${cases.priority} IN ${priority}`);
     }
-
     if (assignedTo) {
       conditions.push(eq(cases.assignedAttorney, assignedTo));
     }
-
     // Build final query
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
     // Execute query with explicit field selection
     const caseResults = await db
       .select({
@@ -66,35 +58,28 @@ export class DbCaseOperations {
       .orderBy(desc(cases.createdAt))
       .limit(limit)
       .offset(offset);
-
     // Get total count
     const totalQuery = await db
       .select({ count: sql<number>`cast(count(*) as integer)` })
       .from(cases)
       .where(whereClause);
-
     return {
       cases: caseResults,
       total: totalQuery[0]?.count || 0,
     };
   }
-
   /**
    * Get case with relations
    */
   static async getWithRelations(id: string) {
     const [caseData] = await db.select().from(cases).where(eq(cases.id, id)).limit(1);
-
     if (!caseData) return null;
-
     const evidenceData = await db.select().from(evidence).where(eq(evidence.caseId, id));
-
     return {
       ...caseData,
       evidence: evidenceData,
     };
   }
-
   /**
    * Create new case
    */
@@ -121,10 +106,8 @@ export class DbCaseOperations {
         updatedAt: new Date(),
       })
       .returning();
-
     return newCase;
   }
-
   /**
    * Update existing case
    */
@@ -148,36 +131,28 @@ export class DbCaseOperations {
       })
       .where(eq(cases.id, id))
       .returning();
-
     if (!updatedCase) {
       throw new Error('Case not found');
     }
-
     return updatedCase;
   }
 }
-
 export class DbEvidenceOperations {
   /**
    * Search evidence with filtering
    */
   static async search(params: { caseId?: string; query?: string; limit?: number; offset?: number }) {
     const { caseId, query, limit = 50, offset = 0 } = params;
-
     const conditions: SQL[] = [];
-
     if (caseId) {
       conditions.push(eq(evidence.caseId, caseId));
     }
-
     if (query) {
       conditions.push(
         or(sql`${evidence.title} ILIKE ${`%${query}%`}`, sql`${evidence.description} ILIKE ${`%${query}%`}`)!
       );
     }
-
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
     const evidenceResults = await db
       .select()
       .from(evidence)
@@ -185,12 +160,10 @@ export class DbEvidenceOperations {
       .orderBy(desc(evidence.collectedAt))
       .limit(limit)
       .offset(offset);
-
     const totalQuery = await db
       .select({ count: sql<number>`cast(count(*) as integer)` })
       .from(evidence)
       .where(whereClause);
-
     return {
       evidence: evidenceResults,
       total: totalQuery[0]?.count || 0,

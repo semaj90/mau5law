@@ -82,9 +82,9 @@ const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
 export class AIAssistantManager {
   private actor = aiAssistantActor;
   private healthCheckInterval: number | null = null;
-  private webAssemblyEnabled = false;
+  private webAssemblyEnabled = $state(false);
   private webAssemblyFallback = true;
-  private langChainBridgeEnabled = false;
+  private langChainBridgeEnabled = $state(false);
   constructor() {
     if (browser && this.actor) {
       this.initialize();
@@ -117,8 +117,8 @@ export class AIAssistantManager {
         }
       } catch (error) {
         console.error('[AI Assistant] WebAssembly setup error:', error);
-        this.webAssemblyEnabled = false;
-        this.langChainBridgeEnabled = false;
+        this.webAssemblyEnabled = $state(false);
+        this.langChainBridgeEnabled = $state(false);
       }
     }
     // Start the XState actor
@@ -246,7 +246,7 @@ export class AIAssistantManager {
       aiAssistantState.conversationHistory.push(userEntry, assistantEntry);
       // Update state
       aiAssistantState.response = response.content;
-      aiAssistantState.isProcessing = false;
+      aiAssistantState.isProcessing = $state(false);
       // Update usage statistics
       aiAssistantState.usage.totalQueries++;
       aiAssistantState.usage.totalTokens += response.metadata.tokensGenerated;
@@ -261,7 +261,7 @@ export class AIAssistantManager {
     } catch (error: any) {
       console.error('[AI Assistant] WebAssembly processing failed:', error);
       // Update error state
-      aiAssistantState.isProcessing = false;
+      aiAssistantState.isProcessing = $state(false);
       aiAssistantState.error = `WebAssembly AI error: ${error.message}`;
       // Fallback to XState machine if WebAssembly fails
       if (this.webAssemblyFallback && this.actor) {
@@ -322,7 +322,7 @@ export class AIAssistantManager {
       aiAssistantState.conversationHistory.push(userEntry, assistantEntry);
       // Update state
       aiAssistantState.response = ragResult.answer;
-      aiAssistantState.isProcessing = false;
+      aiAssistantState.isProcessing = $state(false);
       // Update usage statistics
       aiAssistantState.usage.totalQueries++;
       aiAssistantState.usage.totalTokens += ragResult.answer.split(' ').length * 1.3;
@@ -339,7 +339,7 @@ export class AIAssistantManager {
     } catch (error: any) {
       console.error('[AI Assistant] LangChain RAG processing failed:', error);
       // Update error state
-      aiAssistantState.isProcessing = false;
+      aiAssistantState.isProcessing = $state(false);
       aiAssistantState.error = `LangChain RAG error: ${error.message}`;
       // Fallback to WebAssembly-only processing
       if (this.webAssemblyEnabled && this.webAssemblyFallback) {
@@ -616,7 +616,7 @@ export const clusterHealth = () => aiAssistantState.ollamaClusterHealth;
 export const context7Analysis = () => aiAssistantState.context7Analysis;
 export const aiUsage = () => aiAssistantState.usage;
 // Convenience functions
-export const sendAIMessage = (message: string, options?: unknown) => {
+export const sendAIMessage = (message: string, options?: any) => {
   aiAssistantManager.sendMessage(message, options);
 }
 export const setAIModel = (model: string) => aiAssistantManager.setModel(model);

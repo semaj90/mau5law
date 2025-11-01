@@ -37,12 +37,12 @@ type ManagerLike = {
   currentLOD?: { name?: string } | null;
   adjustLODLevel?: (level: number) => void | Promise<void>;
   maxMemoryMB?: number;
-  usageHistory?: unknown[];
+  usageHistory?: any[];
   clusters?: ClusterLike | Map<unknown, unknown>;
   isTraining?: boolean;
   predictMemoryUsage?: (horizon: number) => Promise<MemoryPredictionResult | null>;
   generatePerformanceReport?: () => Promise<PerformanceReport | null>;
-  emit?: (event: string, payload?: unknown) => void;
+  emit?: (event: string, payload?: any) => void;
 };
 
 // Global manager singleton with Windows optimization
@@ -68,7 +68,7 @@ async function initializeManager(): Promise<NeuralMemoryManager> {
     }
     console.log(`🧠 Neural Memory Manager initialized with ${systemMemoryMB}MB`);
     return neuralManager;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Safely log unknown error types
     if (error instanceof Error) {
       console.error('❌ Neural manager initialization failed:', error);
@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
       default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error('Neural memory API error:', error);
     } else {
@@ -344,7 +344,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
       default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error('Neural memory POST error:', error);
     } else {

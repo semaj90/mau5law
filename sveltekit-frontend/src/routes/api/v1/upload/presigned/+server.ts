@@ -99,7 +99,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         status: document.processingStatus,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
     console.error('Presigned URL generation error:', errForLog);
     if (error instanceof z.ZodError) {
@@ -120,7 +120,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
       return json({ error: 'Document not found' }, { status: 404 });
     }
     // Check if file exists in MinIO
-    let fileExists = false;
+    let fileExists = $state(false);
     let fileSize = 0;
     try {
       const stat = await minioClient.statObject(BUCKET_NAME, document.minioPath);
@@ -147,7 +147,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
         uploadedAt: document.createdAt,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
     console.error('Upload status check error:', errForLog);
     return json({ error: 'Internal server error' }, { status: 500 });

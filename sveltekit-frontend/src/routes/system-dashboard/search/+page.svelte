@@ -135,7 +135,7 @@
       console.error('Search error:', err);
       error = err instanceof Error ? err.message : 'Search failed';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 
@@ -290,7 +290,7 @@
              <span class="text-sm text-nier-text-muted">Document Types:</span>
            </div>
 
-           {#each documentTypes as docType}
+           {#each Array.isArray(documentTypes) ? documentTypes : [] as docType}
              <button
                 onclick={() => toggleDocumentType(docType.value)}
                 class={
@@ -408,7 +408,7 @@
                  <div class="mb-3">
                    <h4 class="text-xs font-medium text-nier-text-muted mb-2">Key Highlights:</h4>
                    <div class="flex flex-wrap gap-1">
-                     {#each result.highlights.slice(0, 3) as highlight}
+                     {#each Array.isArray(result.highlights.slice(0, 3)) ? result.highlights.slice(0, 3) : [] as highlight}
                        <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm rounded">
                          {highlight}
                        </span>
@@ -468,7 +468,7 @@
 
      <div class="nes-container mt-3">
        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-         {#each searchSuggestions as suggestion}
+         {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
            <button
             onclick={() => setSuggestionQuery(suggestion)}
              class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"

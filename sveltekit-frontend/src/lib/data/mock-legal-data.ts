@@ -197,7 +197,7 @@ export type LegalDocument = {
   content?: string;
   embedding?: number[] | null;
   // allow other fields present in mocks
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export type ChatMessage = {
@@ -205,7 +205,7 @@ export type ChatMessage = {
   senderId?: string;
   content?: string;
   contentEmbedding?: number[] | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Placeholders for collections referenced by initializer to avoid missing-symbol errors

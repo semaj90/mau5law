@@ -10,38 +10,31 @@
  * Model: embeddinggemma:latest (384 dimensions)
  * Date: 2025-10-17
  */
-
 export const VECTOR_CONFIG = {
   // Primary embedding model
   MODEL: 'embeddinggemma:latest',
-
   // Standard dimension size
   DIMENSIONS: 384,
-
   // Distance metrics
   DISTANCE_METRIC: {
     POSTGRES: 'vector_cosine_ops',
     QDRANT: 'Cosine',
     FAISS: 'METRIC_INNER_PRODUCT'
   },
-
   // Index configuration
   INDEX: {
     // HNSW parameters for PostgreSQL pgvector
     HNSW_M: 16,              // Max connections per layer
     HNSW_EF_CONSTRUCTION: 64, // Size of dynamic candidate list
     HNSW_EF_SEARCH: 40,      // Size of search list
-
     // Qdrant collection config
     QDRANT_ON_DISK: true,
     QDRANT_HNSW_M: 16,
     QDRANT_HNSW_EF: 128,
-
     // FAISS GPU config
     FAISS_NLIST: 100,        // Number of clusters
     FAISS_NPROBE: 10         // Clusters to search
   },
-
   // Collection names
   COLLECTIONS: {
     LEGAL_DOCUMENTS: 'legal_documents_384',
@@ -51,7 +44,6 @@ export const VECTOR_CONFIG = {
     CHAT_MESSAGES: 'chat_messages_384',
     KNOWLEDGE_BASE: 'knowledge_base_384'
   },
-
   // Docker Desktop URLs (production-ready)
   DOCKER_SERVICES: {
     QDRANT_URL: process.env.QDRANT_URL || 'http://localhost:6333',
@@ -59,14 +51,12 @@ export const VECTOR_CONFIG = {
     OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
     REDIS_URL: process.env.REDIS_URL || 'redis://:redis@localhost:6379/0'
   },
-
   // Batch processing
   BATCH_SIZE: {
     EMBEDDING_GENERATION: 100,  // Generate 100 embeddings at a time
     DATABASE_INSERT: 1000,      // Insert 1000 vectors at a time
     SEARCH_LIMIT: 50            // Default search result limit
   },
-
   // Performance tuning
   PERFORMANCE: {
     ENABLE_CACHE: true,
@@ -75,21 +65,17 @@ export const VECTOR_CONFIG = {
     TIMEOUT_MS: 30000           // 30 second timeout
   }
 } as const;
-
 // Type exports
 export type VectorDistance = typeof VECTOR_CONFIG.DISTANCE_METRIC[keyof typeof VECTOR_CONFIG.DISTANCE_METRIC];
 export type CollectionName = typeof VECTOR_CONFIG.COLLECTIONS[keyof typeof VECTOR_CONFIG.COLLECTIONS];
-
 // Validation function
 export function validateVectorDimensions(vector: number[]): boolean {
   return vector.length === VECTOR_CONFIG.DIMENSIONS;
 }
-
 // Helper to get collection name with dimension suffix
 export function getCollectionName(baseName: string): string {
   return `${baseName}_${VECTOR_CONFIG.DIMENSIONS}`;
 }
-
 // Export environment check
 export function checkVectorEnvironment(): {
   postgres: boolean;
@@ -104,7 +90,6 @@ export function checkVectorEnvironment(): {
     redis: !!process.env.REDIS_URL || !!process.env.REDIS_PASSWORD
   };
 }
-
 // Configuration summary for logging
 export function getVectorConfigSummary(): string {
   return `

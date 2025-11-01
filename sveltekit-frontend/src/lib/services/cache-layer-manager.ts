@@ -66,7 +66,7 @@ export class CacheLayerManager {
           layer.hitRate = layer.hitRate * 0.9 + 0.1;
           return data;
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Cache layer ${layer.name} failed:`, String(error));
       }
     }
@@ -98,7 +98,7 @@ export class CacheLayerManager {
                   layer.hitRate = layer.hitRate * 0.9 + 0.1;
                   break;
                 }
-              } catch (error: unknown) {
+              } catch (error: any) {
                 console.warn(`Batch cache layer ${layer.name} failed for key ${key}:`, String(error));
               }
             }
@@ -110,7 +110,7 @@ export class CacheLayerManager {
     return results;
   }
 
-  async set(key: string, data: unknown, _dataType: string, ttl?: number): Promise<void> {
+  async set(key: string, data: any, _dataType: string, ttl?: number): Promise<void> {
     const optimalLayers = this.selectOptimalLayers(key, _dataType);
     const targets = optimalLayers.slice(0, 2);
     await Promise.allSettled(targets.map(layer => this.setInLayer(layer.name, key, data, ttl)));
@@ -161,7 +161,7 @@ export class CacheLayerManager {
             if (data !== null && data !== undefined) {
               await this.set(key, data, _dataType, 3600);
             }
-          } catch (error: unknown) {
+          } catch (error: any) {
             console.warn(`Cache warming failed for key ${key}:`, String(error));
           }
         });
@@ -197,7 +197,7 @@ export class CacheLayerManager {
     }
   }
 
-  private async setInLayer(layerName: string, key: string, data: unknown, ttl?: number): Promise<void> {
+  private async setInLayer(layerName: string, key: string, data: any, ttl?: number): Promise<void> {
     switch (layerName) {
       case 'memory':
         return this.setInMemory(key, data, ttl);
@@ -214,7 +214,7 @@ export class CacheLayerManager {
   }
 
   // Layer-specific implementations
-  private memoryCache = new Map<string, { data: unknown; expires?: number }>();
+  private memoryCache = new Map<string, { data: any; expires?: number }>();
 
   private async getFromMemory(key: string): Promise<unknown> {
     const item = this.memoryCache.get(key);
@@ -226,7 +226,7 @@ export class CacheLayerManager {
     return item.data;
   }
 
-  private async setInMemory(key: string, data: unknown, ttl?: number): Promise<void> {
+  private async setInMemory(key: string, data: any, ttl?: number): Promise<void> {
     const expires = ttl ? Date.now() + ttl * 1000 : undefined;
     this.memoryCache.set(key, { data, expires });
   }
@@ -243,7 +243,7 @@ export class CacheLayerManager {
       // client.connect may throw; propagate as null on failure
       await client.connect();
       return client;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to create/connect redis client:', String(err));
       return null;
     }
@@ -262,7 +262,7 @@ export class CacheLayerManager {
         // if parsing fails, return raw string
         return raw;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Redis get error:', String(error));
       try {
         await client.disconnect();
@@ -273,7 +273,7 @@ export class CacheLayerManager {
     }
   }
 
-  private async setInRedis(key: string, data: unknown, ttl?: number): Promise<void> {
+  private async setInRedis(key: string, data: any, ttl?: number): Promise<void> {
     const client = await this.createConnectedRedisClient();
     if (!client) return;
     try {
@@ -284,7 +284,7 @@ export class CacheLayerManager {
         await client.set(key, serialized);
       }
       await client.disconnect();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Redis set error:', String(error));
       try {
         await client.disconnect();
@@ -307,13 +307,13 @@ export class CacheLayerManager {
       });
       const json = await res.json();
       return json?.result?.[0]?.payload?.data ?? null;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Qdrant get error:', String(error));
       return null;
     }
   }
 
-  private async setInQdrant(key: string, data: unknown): Promise<void> {
+  private async setInQdrant(key: string, data: any): Promise<void> {
     try {
       // ensure collection exists (idempotent)
       await fetch(`http://localhost:6333/collections/cache`, {
@@ -337,7 +337,7 @@ export class CacheLayerManager {
           ],
         }),
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Qdrant set error:', String(error));
     }
   }
@@ -346,7 +346,7 @@ export class CacheLayerManager {
     // Placeholder for PostgreSQL implementation
     return null;
   }
-  private async setInPostgres(_key: string, _data: unknown): Promise<void> {
+  private async setInPostgres(_key: string, _data: any): Promise<void> {
     // Placeholder for PostgreSQL implementation
   }
 
@@ -354,7 +354,7 @@ export class CacheLayerManager {
     // Placeholder for Neo4j implementation
     return null;
   }
-  private async setInNeo4j(_key: string, _data: unknown): Promise<void> {
+  private async setInNeo4j(_key: string, _data: any): Promise<void> {
     // Placeholder for Neo4j implementation
   }
 

@@ -348,7 +348,7 @@
           <div class="associates-section">
             <h3>Known Associates</h3>
             <ul class="associates-list">
-              {#each selectedPerson.knownAssociates as associate}
+              {#each Array.isArray(selectedPerson.knownAssociates) ? selectedPerson.knownAssociates : [] as associate}
                 <li>{associate}</li>
               {/each}
             </ul>
@@ -357,7 +357,7 @@
           <div class="habits-section">
             <h3>Known Habits</h3>
             <ul class="habits-list">
-              {#each selectedPerson.knownHabits as habit}
+              {#each Array.isArray(selectedPerson.knownHabits) ? selectedPerson.knownHabits : [] as habit}
                 <li>{habit}</li>
               {/each}
             </ul>

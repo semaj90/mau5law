@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
       libraries,
       count: libraries.length,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to search libraries:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: `Libraries synced successfully${source ? ` for ${source}` : ''}`,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to sync libraries:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(

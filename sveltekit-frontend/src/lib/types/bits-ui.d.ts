@@ -10,14 +10,14 @@ declare module 'bits-ui' {
     // Use Event instead of any for onClick parameter
     onClick?: (e?: Event) => void;
     // Allow arbitrary props but avoid `any`
-    [key: string]: unknown;
+    [key: string]: any;
   }
   export class Button extends SvelteComponentTyped<ButtonProps> {}
 
   export interface CardProps {
     class?: string;
     // Avoid `any` for index signature
-    [key: string]: unknown;
+    [key: string]: any;
   }
   export class Card extends SvelteComponentTyped<CardProps> {}
   export class CardHeader extends SvelteComponentTyped<{ class?: string }> {}
@@ -28,15 +28,15 @@ declare module 'bits-ui' {
   export class Icon extends SvelteComponentTyped<{ name?: string; size?: number | string }> {}
 
   // Fallback for any other named exports — prefer unknown over any
-  export const __any: unknown;
+  export const __any: any;
   // ...existing code...
 }
 
 declare module '$lib/components/ui/*' {
   // Provide both named and default exports so imports like:
-  // import { Card, CardContent } from '$lib/components/ui/card';
+  // import { Card, CardContent } from '$lib/components/ui/card.svelte'';
   // and
-  // import Card from '$lib/components/ui/card';
+  // import Card from '$lib/components/ui/card.svelte'';
   // both type-check.
   import { SvelteComponentTyped } from 'svelte';
 

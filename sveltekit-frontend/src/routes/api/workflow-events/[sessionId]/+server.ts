@@ -61,7 +61,7 @@ export const GET = async (event: RequestEvent) => {
   const channel = `workflow:session:${sessionId}`;
 
   // helper to safely stringify unknown errors for logging (avoid `any`)
-  function stringifyError(e: unknown): string {
+  function stringifyError(e: any): string {
     if (e instanceof Error) return e.message;
     try {
       return JSON.stringify(e);
@@ -171,12 +171,12 @@ export const GET = async (event: RequestEvent) => {
           // best-effort cleanup; methods may be async - guard with try/catch
           try {
             if (typeof redis.unsubscribe === 'function') await redis.unsubscribe(channel);
-          } catch (e: unknown) {
+          } catch (e: any) {
             console.warn('[SSE] Error during redis.unsubscribe:', stringifyError(e));
           }
           try {
             if (typeof redis.quit === 'function') await redis.quit();
-          } catch (e: unknown) {
+          } catch (e: any) {
             console.warn('[SSE] Error during redis.quit:', stringifyError(e));
           }
 
@@ -202,10 +202,10 @@ export const GET = async (event: RequestEvent) => {
       }
 
       if (typeof redis.unsubscribe === 'function') {
-        redis.unsubscribe(channel).catch((e: unknown) => console.warn('[SSE] unsubscribe error:', stringifyError(e)));
+        redis.unsubscribe(channel).catch((e: any) => console.warn('[SSE] unsubscribe error:', stringifyError(e)));
       }
       if (typeof redis.quit === 'function') {
-        redis.quit().catch((e: unknown) => console.warn('[SSE] quit error:', stringifyError(e)));
+        redis.quit().catch((e: any) => console.warn('[SSE] quit error:', stringifyError(e)));
       }
     },
   });

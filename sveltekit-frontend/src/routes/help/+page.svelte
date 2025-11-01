@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits'; // Changed from default to named import
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // Changed from default to named import
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
   import ArrowRight from 'lucide-svelte/icons/arrow-right';
   import Book from 'lucide-svelte/icons/book';
@@ -448,7 +448,7 @@
               </div>
             </div>
           </button>
-          {#each categories as category}
+          {#each Array.isArray(categories) ? categories : [] as category}
             <button
               type="button"
               class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors"
@@ -500,7 +500,7 @@
         </div>
         {#if filteredArticles.length > 0}
           <div class="divide-y divide-gray-200">
-            {#each filteredArticles as article}
+            {#each Array.isArray(filteredArticles) ? filteredArticles : [] as article}
               <div class="p-6 hover:bg-gray-50 transition-colors">
                 <div class="flex items-start gap-4">
                   <div class="flex-shrink-0 mt-1">
@@ -556,7 +556,7 @@
           Frequently Asked Questions
         </h2>
         <div class="space-y-4">
-          {#each faqs as faq}
+          {#each Array.isArray(faqs) ? faqs : [] as faq}
             <details class="group">
               <summary
                 class="flex justify-between items-center w-full p-4 text-left bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"

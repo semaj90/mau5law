@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json({ error: 'No text or texts provided' }, { status: 400 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('Error in /api/embeddings/generate:', err);
     return json({ error: message || 'Embedding generation failed' }, { status: 500 });

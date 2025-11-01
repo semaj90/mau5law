@@ -110,7 +110,7 @@ export class ApiClient {
       }
     }
 
-    let lastError: unknown = null;
+    let lastError: any = null;
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const controller = new AbortController();
@@ -137,7 +137,7 @@ export class ApiClient {
           dataCache.set(cacheKey, data as unknown as T, cacheTtl);
         }
         return { data: data as T, success: true };
-      } catch (error: unknown) {
+      } catch (error: any) {
         lastError = error;
         // Don't retry on abort
         const errName = (error as { name?: string } | null)?.name;
@@ -166,7 +166,7 @@ export class ApiClient {
   }
   async post<T = unknown>(
     endpoint: string,
-    body?: unknown,
+    body?: any,
     options?: ApiOptions
   ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
@@ -177,7 +177,7 @@ export class ApiClient {
   }
   async put<T = unknown>(
     endpoint: string,
-    body?: unknown,
+    body?: any,
     options?: ApiOptions
   ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
@@ -200,7 +200,7 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  custom?: (value: unknown) => boolean | string;
+  custom?: (value: any) => boolean | string;
 }
 export interface ValidationSchema {
   [key: string]: ValidationRule;
@@ -284,7 +284,7 @@ export const storage = {
       return defaultValue || null;
     }
   },
-  set(key: string, value: unknown): boolean {
+  set(key: string, value: any): boolean {
     if (!browser) return false;
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -406,10 +406,10 @@ export function parseQueryString(search: string): Record<string, string | string
 export interface AppError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
   timestamp: Date;
 }
-export function createError(code: string, message: string, details?: unknown): AppError {
+export function createError(code: string, message: string, details?: any): AppError {
   return {
     code,
     message,
@@ -417,7 +417,7 @@ export function createError(code: string, message: string, details?: unknown): A
     timestamp: new Date(),
   };
 }
-export function handleApiError(error: unknown): AppError {
+export function handleApiError(error: any): AppError {
   const err = (error as { name?: string; message?: string } | undefined) || {};
   if (err.name === 'AbortError') {
     return createError('REQUEST_CANCELLED', 'Request was cancelled');
@@ -470,9 +470,9 @@ export class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 // Data synchronization helpers
 export class DataSync {
-  private syncQueue = new Map<string, { data: unknown; timestamp: number }>();
-  private syncing = false;
-  queue(key: string, data: unknown): void {
+  private syncQueue = new Map<string, { data: any; timestamp: number }>();
+  private syncing = $state(false);
+  queue(key: string, data: any): void {
     this.syncQueue.set(key, { data, timestamp: Date.now() });
     this.processQueue();
   }
@@ -494,7 +494,7 @@ export class DataSync {
         })
       );
     } finally {
-      this.syncing = false;
+      this.syncing = $state(false);
       // Process any items that were queued during sync
       if (this.syncQueue.size > 0) {
         setTimeout(() => this.processQueue(), 1000);

@@ -9,9 +9,7 @@
  * - TypeScript native
  * - Fully controllable with custom prompts
  */
-
 import { OLLAMA_BASE_URL } from '$env/static/private';
-
 /**
  * Extract keywords from text using Ollama Gemma 3:270m
  * Returns top keywords relevant to the legal document
@@ -23,20 +21,16 @@ export async function extractKeywords(text: string): Promise<string[]> {
   try {
     // Limit text to first 8000 chars to avoid token overflow
     const limitedText = text.slice(0, 8000);
-
     // Use Gemma 3:270m for keyword extraction
     const prompt = `Extract the most important legal and factual keywords from this legal document.
 Return ONLY a comma-separated list of keywords (no explanations).
 Focus on: parties, legal concepts, dates, amounts, evidence types, jurisdictions.
 Limit to 15-20 keywords.
-
 Document:
 ---
 ${limitedText}
 ---
-
 Keywords (comma-separated):`;
-
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -50,34 +44,28 @@ Keywords (comma-separated):`;
         },
       }),
     });
-
     if (!response.ok) {
       console.warn('⚠️ Ollama API error:', response.statusText);
       return extractKeywordsFallback(text);
     }
-
     const data = await response.json();
     const rawKeywords = data.response || '';
-
     // Parse comma-separated keywords
     const keywords = rawKeywords
       .split(',')
       .map((k: string) => k.trim())
       .filter((k: string) => k.length > 0 && k.length < 100) // Filter empty/too long
       .slice(0, 20); // Return max 20 keywords
-
     if (keywords.length === 0) {
       console.warn('⚠️ Gemma extraction returned no keywords, using fallback');
       return extractKeywordsFallback(text);
     }
-
     return keywords;
   } catch (error) {
     console.warn('⚠️ Gemma keyword extraction failed, using fallback extraction:', error);
     return extractKeywordsFallback(text);
   }
 }
-
 /**
  * Fallback keyword extraction using pattern matching
  * Used when Ollama is unavailable or returns empty results
@@ -90,12 +78,10 @@ Keywords (comma-separated):`;
 function extractKeywordsFallback(text: string): string[] {
   try {
     const keywords: Set<string> = new Set();
-
     // Extract capitalized phrases (likely proper nouns/entities)
     const capitalizedRegex = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/g;
     const capitalizedMatches = text.match(capitalizedRegex) || [];
     capitalizedMatches.slice(0, 10).forEach(k => keywords.add(k));
-
     // Extract common legal terms found in document
     const legalTerms = [
       // Parties: 'plaintiff', 'defendant', 'appellant', 'respondent', 'claimant', 'petitioner',
@@ -110,22 +96,18 @@ function extractKeywordsFallback(text: string): string[] {
       // Time/money
       'damages', 'compensation', 'settlement', 'fee', 'cost', 'penalty',
     ];
-
     legalTerms.forEach(term => {
       if (new RegExp(`\\b${term}\\b`, 'gi').test(text)) {
         keywords.add(term);
       }
     });
-
     // Extract dates and money amounts
     const dateRegex = /\b(January|February|March|April|May|June|July|August|September|October|November|December|\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4})\b/gi;
     const dateMatches = text.match(dateRegex) || [];
     dateMatches.slice(0, 5).forEach(d => keywords.add(d));
-
     const moneyRegex = /\$[\d,]+(?:\.\d{2})?|\b\d+\s(?:million|thousand|billion|dollars|cents)\b/gi;
     const moneyMatches = text.match(moneyRegex) || [];
     moneyMatches.slice(0, 5).forEach(m => keywords.add(m));
-
     // Convert to array and return top 20
     return Array.from(keywords).slice(0, 20);
   } catch (error) {

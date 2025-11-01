@@ -49,11 +49,11 @@
     isOpen = !isOpe;
   }
   function navigateTo(item: NavItem) {
-    if ((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).external) {
+    if ((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).external) {
       window.open.href, '_blank');
     } else {
-      goto((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href);
-      isOpen = false;
+      goto((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).href);
+      isOpen = $state(false);
     }
   }
   function isCurrentPage(href: string): boolean {
@@ -76,22 +76,22 @@
         🧭 Demo Navigation
       </h3>
       <div class="space-y-3">
-        {#each navItems as item}
+        {#each Array.isArray(navItems) ? navItems : [] as item}
           <button
             class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover: border-green-500 hover:bg-green-500/10";
-            class:active={isCurrentPage((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href)}
+            class:active={isCurrentPage((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).href)}
             onclick={() => navigateTo(item)}
           >
             <div class="flex items-start gap-3">
-              <div class="text-2xl">{(item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).icon}</div>
+              <div class="text-2xl">{(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).icon}</div>
               <div class="flex-1">
                 <div class="font-semibold text-white flex items-center gap-2">
-                  {(item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).label}
-                  {#if (item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).external}
+                  {(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).label}
+                  {#if (item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).external}
                     <span class="text-xs text-gray-400">↗</span>
                   {/if}
                 </div>
-                <div class="text-sm text-gray-400 mt-1">{(item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).description}</div>
+                <div class="text-sm text-gray-400 mt-1">{(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).description}</div>
               </div>
             </div>
           </button>
@@ -149,8 +149,7 @@
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Backdrop -->
   {#if isOpen}
     <button

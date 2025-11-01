@@ -229,10 +229,10 @@ export const legalAIStore = (() => {
           doc.embedding = data.embedding;
         }
 
-        state.isProcessing = false;
+        state.isProcessing = $state(false);
       } catch (err) {
         state.error = err instanceof Error ? err.message : 'Unknown error';
-        state.isProcessing = false;
+        state.isProcessing = $state(false);
       }
     },
 
@@ -254,10 +254,10 @@ export const legalAIStore = (() => {
 
         const data = await response.json();
         state.searchResults = data.results;
-        state.isProcessing = false;
+        state.isProcessing = $state(false);
       } catch (err) {
         state.error = err instanceof Error ? err.message : 'Unknown error';
-        state.isProcessing = false;
+        state.isProcessing = $state(false);
       }
     },
 
@@ -268,7 +268,7 @@ export const legalAIStore = (() => {
     reset: () => {
       state.documents = [];
       state.selectedDocument = null;
-      state.isProcessing = false;
+      state.isProcessing = $state(false);
       state.error = null;
       state.searchQuery = '';
       state.searchResults = [];

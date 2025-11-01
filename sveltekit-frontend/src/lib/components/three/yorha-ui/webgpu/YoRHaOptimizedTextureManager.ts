@@ -43,7 +43,7 @@ export interface TextureStreamingSession {
  */
 export class YoRHaOptimizedTextureManager {
   private device: GPUDevice | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // NES-style texture memory banks
   private textureBanks = new Map<string, {
     config: TextureBankConfig;
@@ -537,7 +537,7 @@ export class YoRHaOptimizedTextureManager {
     this.streamingSessions.clear();
     // Dispose mipmap shaders
     yorhaMipmapShaders.dispose();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 YoRHa Optimized Texture Manager disposed');
   }
 }

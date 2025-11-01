@@ -39,7 +39,7 @@ class KMeansWorker {
     const startTime = Date.now();
     // Initialize centroids using k-means++ algorithm
     const centroids = this.initializeCentroidsKMeansPlusPlus(data, k, dimensions);
-    let hasConverged = false;
+    let hasConverged = $state(false);
     let iteration = 0;
     const clusters = Array.from({ length: k }, () => []);
     // Send progress updates to main thread
@@ -78,7 +78,7 @@ class KMeansWorker {
         // Mark as not converged if assignment changed
         if (point.clusterId !== bestCluster) {
           point.clusterId = bestCluster;
-          hasConverged = false;
+          hasConverged = $state(false);
         }
       }
       // Update centroids
@@ -100,7 +100,7 @@ class KMeansWorker {
         // Check convergence
         const centroidMovement = this.euclideanDistance(centroids[i], newCentroid);
         if (centroidMovement > this.convergenceThreshold) {
-          hasConverged = false;
+          hasConverged = $state(false);
         }
         centroids[i] = newCentroid;
       }

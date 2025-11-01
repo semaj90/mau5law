@@ -13,9 +13,9 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import CanvasEditor from './CanvasEditor.svelte';
-  import InspectorPanel from './InspectorPanel.svelte';
-  import AIAssistantPanel from './AIAssistantPanel.svelte';
+  import { CanvasEditor } from './CanvasEditor.svelte';
+  import { InspectorPanel } from './InspectorPanel.svelte';
+  import { AIAssistantPanel } from './AIAssistantPanel.svelte';
   // Store for selected node
   export const selectedNode = writable(null);
   // Props
@@ -37,7 +37,6 @@ https://svelte.dev/e/js_parse_error -->
     // await fetch('/api/evidence', { method: 'POST', body: JSON.stringify(nodeData) })
   }
 </script>
-
 <div class="space-y-4">
   <!-- Golden Ratio Layout: 61.8% main canvas, 19.1% inspector, 19.1% AI assistant -->
   <div class="space-y-4">
@@ -69,7 +68,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .visual-evidence-editor {

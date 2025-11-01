@@ -99,8 +99,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
         </p>
       {/if}
       {#if title}
-        <div class="scan-line-overlay mt-4"></div>
-      {/if}
+        <div class="scan-line-overlay mt-4">{/if}
     </header>
   {/if}
   <main class={mainClass}>
@@ -171,4 +170,3 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     }
   }
 </style>
-

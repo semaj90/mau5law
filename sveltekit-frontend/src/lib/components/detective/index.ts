@@ -8,5 +8,5 @@ export type DetectiveContext = {
   entityId: string;
   entityType: 'person' | 'location' | 'document' | 'event' | 'evidence';
   actions: DetectiveAction[];
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 };

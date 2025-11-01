@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
   	import { onDestroy, onMount } from 'svelte';
   	import type { PageData } from "./$types";
   	// Case ID - extract from data or generate
-  	function resolveCaseId(d: unknown) {
+  	function resolveCaseId(d: any) {
   		return d?.reportData?.id
   			|| d?.reportId
   			|| d?.canvasState?.caseId
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   				completedUploads[fileId] = {
   					name: file.name,
   					hash: hash,
-  					id: (result as { id?: unknown; uploaded?: unknown }).id
+  					id: (result as { id?: any; uploaded?: any }).id
   				}
   				uploadProgress[fileId] = 100;
   				// Remove from uploading after delay
@@ -146,11 +146,11 @@ https://svelte.dev/e/js_parse_error -->
   			method: 'POST',
   			body: formData
   		});
-  		if (!(response as { ok?: unknown; json?: unknown }).ok) {
+  		if (!(response as { ok?: any; json?: any }).ok) {
   			throw new Error('Upload failed');
   }
-  		const result = await (response as { ok?: unknown; json?: unknown }).json();
-  		return { id: (result as { id?: unknown; uploaded?: unknown }).uploaded?.[0]?.id || crypto.randomUUID() }
+  		const result = await (response as { ok?: any; json?: any }).json();
+  		return { id: (result as { id?: any; uploaded?: any }).uploaded?.[0]?.id || crypto.randomUUID() }
   }
 </script>
 <svelte:head>

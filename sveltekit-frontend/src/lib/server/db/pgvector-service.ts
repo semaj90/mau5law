@@ -4,16 +4,13 @@
  */
 import pgClient, { poolShim } from '$lib/server/db-shim';
 import { drizzle } from 'drizzle-orm/postgres-js';
-
 // Add types to replace `any`
 type DrizzleDB = ReturnType<typeof drizzle>;
-
 // Replaced invalid interface with a concrete class implementation
 class PgVectorService {
   private db: DrizzleDB | null = null;
   private pool: any = null;
-  private isConnected = false;
-
+  private isConnected = $state(false);
   constructor() {
     // Use drizzle with postgres-js client for compatibility
     try {
@@ -31,7 +28,6 @@ class PgVectorService {
           ? (pgClient as any).pool
           : null;
   }
-
   // NEW: unified query client helper that normalizes pool / client differences
   private async getQueryClient(): Promise<{
     query: (sql: string, params?: any[]) => Promise<any>;
@@ -47,14 +43,12 @@ class PgVectorService {
         },
       };
     }
-
     // If pool itself has query (simple poolShim / client)
     if (this.pool && typeof this.pool.query === 'function') {
       return {
         query: (sql: string, params?: any[]) => this.pool.query(sql, params),
       };
     }
-
     // postgres-js clients are often callable functions: treat pgClient as query fn
     if (pgClient && typeof (pgClient as any) === 'function') {
       return {
@@ -64,10 +58,8 @@ class PgVectorService {
         },
       };
     }
-
     return null;
   }
-
   /**
    * Test PostgreSQL + pgvector connection
    * Best Practice: Always verify extensions and permissions
@@ -88,7 +80,6 @@ class PgVectorService {
       return { success: false, details: { error: (error as Error).message } };
     }
   }
-
   /**
    * Insert document with vector embedding
    * Best Practice: Use transactions and validate vector dimensions
@@ -105,13 +96,11 @@ class PgVectorService {
       if (embedding.length !== 768 && embedding.length !== 1536) {
         return { success: false, error: `Invalid embedding dimension: ${embedding.length}` };
       }
-
       const embeddingStr = `[${embedding.join(',')}]`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
         return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };
       }
-
       // Use metadata column consistently (JSON) and store embedding as ::vector
       const insertQuery = `
         INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
@@ -126,7 +115,6 @@ class PgVectorService {
         JSON.stringify(metadata || {}),
         embeddingStr,
       ];
-
       try {
         const res = await clientWrapper.query(insertQuery, params);
         if (typeof clientWrapper.release === 'function') clientWrapper.release();
@@ -140,7 +128,6 @@ class PgVectorService {
       return { success: false, error: (error as Error).message };
     }
   }
-
   /**
    * Vector similarity search with multiple distance metrics
    * Best Practice: Support cosine, euclidean, and inner product distances
@@ -163,14 +150,10 @@ class PgVectorService {
       if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
         throw new Error(`Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`);
       }
-
       const { limit = 10, distanceMetric = 'cosine', threshold, documentType, includeContent = false } = options;
-
       const distanceOperator =
         distanceMetric === 'euclidean' ? '<->' : distanceMetric === 'inner_product' ? '<#>' : '<=>';
-
       const embeddingStr = `[${queryEmbedding.join(',')}]`;
-
       // Build SELECT with proper commas and alias
       const contentSelect = includeContent ? 'ld.content,' : '';
       let query = `
@@ -185,30 +168,24 @@ class PgVectorService {
         FROM legal_documents ld
         WHERE ld.embedding IS NOT NULL
       `;
-
       const params: any[] = [embeddingStr];
-
       // Optional threshold filter — use next parameter index
       if (typeof threshold === 'number') {
         params.push(threshold);
         query += ` AND (ld.embedding ${distanceOperator} $1::vector) < $${params.length}`;
       }
-
       // Optional documentType filter
       if (documentType) {
         params.push(documentType);
         query += ` AND ld.document_type = $${params.length}`;
       }
-
       // Final ordering and limit
       params.push(limit);
       query += ` ORDER BY distance ASC LIMIT $${params.length}`;
-
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
         return { success: false, error: 'No DB client available' };
       }
-
       const startTime = Date.now();
       try {
         const result = await clientWrapper.query(query, params);
@@ -237,7 +214,6 @@ class PgVectorService {
       };
     }
   }
-
   /**
    * Batch insert multiple documents with embeddings
    * Best Practice: Use prepared statements and batch processing
@@ -254,15 +230,12 @@ class PgVectorService {
       if (!Array.isArray(documents)) return { success: false, errors: ['Invalid documents array'] };
       const errors: string[] = [];
       let inserted = 0;
-
       const clientWrapper = await this.getQueryClient();
       const transactional = !!(clientWrapper && typeof clientWrapper.release === 'function');
-
       try {
         if (transactional) {
           await clientWrapper!.query('BEGIN');
         }
-
         for (const doc of documents) {
           try {
             if (!doc.embedding || !Array.isArray(doc.embedding)) {
@@ -271,7 +244,6 @@ class PgVectorService {
             }
             const embeddingStr = `[${doc.embedding.join(',')}]`;
             const metadataJson = JSON.stringify(doc.metadata || {});
-
             if (clientWrapper) {
               try {
                 await clientWrapper.query(
@@ -326,7 +298,6 @@ class PgVectorService {
             errors.push(`${doc.documentId}: ${(docError as Error).message}`);
           }
         }
-
         if (transactional) {
           await clientWrapper!.query('COMMIT');
         }
@@ -342,13 +313,11 @@ class PgVectorService {
       } finally {
         if (typeof clientWrapper?.release === 'function') clientWrapper.release();
       }
-
       return { success: true, inserted, errors: errors.length > 0 ? errors : undefined };
     } catch (error) {
       return { success: false, errors: [(error as Error).message] };
     }
   }
-
   /**
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
@@ -369,12 +338,10 @@ class PgVectorService {
         metric === 'cosine' || metric === 'euclidean' || metric === 'inner_product' ? metric : 'cosine';
       const indexName = `idx_${safeTable}_${safeColumn}_${safeMetric}`;
       const start = Date.now();
-
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
         return { success: false, error: 'No DB client available for index creation' };
       }
-
       try {
         await clientWrapper.query(`DROP INDEX IF EXISTS ${indexName}`);
         const opClass =
@@ -410,7 +377,6 @@ class PgVectorService {
       return { success: false, error: (error as Error).message };
     }
   }
-
   /**
    * Get database statistics for monitoring
    * Best Practice: Monitor performance and usage metrics
@@ -419,7 +385,6 @@ class PgVectorService {
     try {
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) return { success: false, error: 'No DB client available' };
-
       try {
         const vectorStats = await clientWrapper.query(`
           SELECT
@@ -483,7 +448,6 @@ class PgVectorService {
       };
     }
   }
-
   /**
    * Close database connections gracefully
    * Best Practice: Cleanup resources
@@ -508,6 +472,5 @@ class PgVectorService {
     }
   }
 }
-
 // Export singleton instance
 export const pgVectorService = new PgVectorService();

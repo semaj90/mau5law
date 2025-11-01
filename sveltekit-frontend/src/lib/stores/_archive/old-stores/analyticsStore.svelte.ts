@@ -101,16 +101,16 @@ const createAnalyticsStore = () => {
           // Clear flushed events
           analyticsState.events = [];
           analyticsState.lastFlushAt = Date.now();
-          analyticsState.isLoading = false;
+          analyticsState.isLoading = $state(false);
           return true;
         } else {
           console.warn('Analytics flush failed:', response.status, response.statusText);
-          analyticsState.isLoading = false;
+          analyticsState.isLoading = $state(false);
           return false;
         }
       } catch (error) {
         console.error('Analytics flush error:', error);
-        analyticsState.isLoading = false;
+        analyticsState.isLoading = $state(false);
         return false;
       }
     },
@@ -190,7 +190,7 @@ const createAnalyticsStore = () => {
       analyticsState.isEnabled = true;
     },
     disable: () => {
-      analyticsState.isEnabled = false;
+      analyticsState.isEnabled = $state(false);
     },
     setUserId: (userId: string) => {
       // Update all future events with user ID

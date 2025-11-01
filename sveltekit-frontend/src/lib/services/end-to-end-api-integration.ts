@@ -9,7 +9,7 @@ import { browser } from '$app/environment';
 export class LegalAIIntegrationClient {
   private baseUrl: string;
   private healthStatus = writable<Record<string, boolean>>({});
-  private requestCache = new Map<string, { data: unknown; timestamp: number }>();
+  private requestCache = new Map<string, { data: any; timestamp: number }>();
   private cacheTimeout = 5 * 60 * 1000; // 5 minutes
   constructor(baseUrl = '') {
     this.baseUrl = baseUrl;
@@ -38,7 +38,7 @@ export class LegalAIIntegrationClient {
             });
             results[service] = response.ok;
           } catch {
-            results[service] = false;
+            results[service] = $state(false);
           }
         })
       );

@@ -13,7 +13,7 @@ import { db } from './index.js';
  * - object -> JSON.stringify(...) quoted
  * - other -> string quoted with single-quotes escaped
  */
-function escapeLiteral(val: unknown): string {
+function escapeLiteral(val: any): string {
   if (val === null || val === undefined) return 'NULL';
 
   // Booleans should be SQL booleans
@@ -51,7 +51,7 @@ function escapeLiteral(val: unknown): string {
  * - undefined -> SQL NULL (so optional metadata becomes NULL)
  * - otherwise -> JSON.stringify(...) quoted safely for SQL
  */
-function escapeJSON(obj: unknown): string {
+function escapeJSON(obj: any): string {
   if (obj === undefined) return 'NULL';
   try {
     const json = JSON.stringify(obj ?? {});
@@ -65,15 +65,15 @@ function escapeJSON(obj: unknown): string {
 // Add a Row alias and small helpers to avoid `any` usage
 type Row = Record<string, unknown>;
 
-function asString(v: unknown): string {
+function asString(v: any): string {
   if (v === null || v === undefined) return '';
   return String(v);
 }
-function asNumber(v: unknown, fallback = 0): number {
+function asNumber(v: any, fallback = 0): number {
   const n = Number(v);
   return Number.isFinite(n) ? n : fallback;
 }
-function asObject(v: unknown): Record<string, unknown> | undefined {
+function asObject(v: any): Record<string, unknown> | undefined {
   return v && typeof v === 'object' ? (v as Record<string, unknown>) : undefined;
 }
 
@@ -180,7 +180,7 @@ export async function initializePgVector(): Promise<boolean> {
     `);
     console.log('✅ pgvector utilities initialized successfully');
     return true;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Failed to initialize pgvector:', error);
     return false;
   }
@@ -210,7 +210,7 @@ export function vectorToArray(vectorString: string): number[] {
     // Remove brackets and split by comma
     const cleaned = vectorString.replace(/^\[|\]$/g, '');
     return cleaned.split(',').map(val => parseFloat(val.trim()));
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.warn('Failed to parse vector string:', vectorString, 'error:', msg);
     return [];
@@ -241,7 +241,7 @@ export async function searchSimilarMessages(
       metadata: includeMetadata ? asObject(row.metadata) : undefined,
       documentType: 'chat_message',
     }));
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for messages failed:', msg);
     return [];
@@ -282,7 +282,7 @@ export async function searchSimilarEvidence(
         : undefined,
       documentType: 'evidence',
     }));
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for evidence failed:', msg);
     return [];
@@ -315,7 +315,7 @@ export async function insertChatMessageWithEmbedding(messageData: {
     `;
     await db.execute(sql);
     return true;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Failed to insert chat message with embedding:', msg);
     return false;
@@ -347,7 +347,7 @@ export async function updateEvidenceEmbeddings(
     `;
     await db.execute(sql);
     return true;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Failed to update evidence embeddings:', msg);
     return false;
@@ -389,7 +389,7 @@ export async function searchAcrossAllVectors(
     const combined = results.flat();
     // Sort by similarity and limit results
     return combined.sort((a, b) => b.similarity - a.similarity).slice(0, limit);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Batch vector search failed:', msg);
     return [];
@@ -456,7 +456,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
       version: first.version || 'unknown',
       functions: availableFunctions.filter(Boolean),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return {
       available: false,

@@ -4,13 +4,13 @@ import { json } from '@sveltejs/kit';
 export interface TestResult {
   test: string;
   status: 'success' | 'error' | 'warning';
-  data?: unknown;
+  data?: any;
   error?: string;
   duration?: number;
 }
 
 // Helper to normalize unknown errors
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err ?? 'Unknown error');
 }
 
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         results.push({
           test: 'embedding_service_config',
           status: 'error',
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         results.push({
           test: 'embedding_generation',
           status: 'error',
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         results.push({
           test: 'document_chunking',
           status: 'error',
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         results.push({
           test: 'similarity_search',
           status: 'error',
@@ -220,7 +220,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         results.push({
           test: 'legal_analysis_integration',
           status: 'error',
@@ -251,7 +251,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: performanceData,
           duration: Date.now() - startTime,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         results.push({
           test: 'performance_metrics',
           status: 'error',
@@ -293,7 +293,7 @@ export const GET: RequestHandler = async ({ url }) => {
         vector_dimensions: '768 (corrected)',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,
@@ -348,7 +348,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       },
       { status: 400 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,

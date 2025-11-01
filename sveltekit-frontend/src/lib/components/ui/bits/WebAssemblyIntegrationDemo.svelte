@@ -9,7 +9,7 @@
     Input,
     Alert,
     AlertDescription
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Database, Cpu, Zap, Palette, Globe, Server } from 'lucide-svelte';
   // Svelte 5 state
   let integrationStatus = $state<IntegrationStatus | null>(null);
@@ -41,7 +41,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       error = `Integration check failed: ${err.message}`;
       console.error('❌ Integration check error:', err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function testWebAssemblyRuntime() {
@@ -129,7 +129,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     return 'text-gray-400';
   }
 </script>
-
 <!-- WebAssembly Integration Demo -->
 <div class="w-full max-w-6xl mx-auto space-y-6">
   <!-- Header -->
@@ -322,8 +321,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       {:else}
         <div class="text-center py-8">
           <p class="text-gray-400">Click "Refresh Status" to check integration status</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   </Card>
   <!-- Integration Tests -->
@@ -376,8 +374,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
         <div class="mt-6 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
           <h3 class="text-green-400 font-semibold mb-2">AI Response:</h3>
           <p class="text-green-100 text-sm leading-relaxed">{testResult}</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   </Card>
   <!-- Architecture Overview -->
@@ -430,7 +427,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     </div>
   </Card>
 </div>
-
 <style>
   .yorha-card {
     /* Professional card styling with gaming accents */
@@ -453,4 +449,3 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     border-color: rgba(251, 191, 36, 0.2);
   }
 </style>
-

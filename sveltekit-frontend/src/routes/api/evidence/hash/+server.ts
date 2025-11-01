@@ -6,11 +6,11 @@ import { db } from '$lib/server/db/index';
 import { getUser } from '$lib/server/auth'; // use getUser (getUserId does not exist)
 
 // replace previous getUserIdFromLocals implementation with a small type-safe helper
-function isRecord(obj: unknown): obj is Record<string, unknown> {
+function isRecord(obj: any): obj is Record<string, unknown> {
   return typeof obj === 'object' && obj !== null;
 }
 
-function extractUserId(u: unknown): string | number | null {
+function extractUserId(u: any): string | number | null {
   if (!u) return null;
   if (typeof u === 'string' || typeof u === 'number') return u;
   if (isRecord(u)) {
@@ -24,7 +24,7 @@ function extractUserId(u: unknown): string | number | null {
 }
 
 // new helper to avoid `any` in catch blocks
-function extractErrorMessage(err: unknown): string {
+function extractErrorMessage(err: any): string {
   if (!err) return 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
@@ -97,7 +97,7 @@ export const GET = async (event: RequestEvent) => {
       hash,
       evidence: evidenceResults,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error searching evidence by hash:', extractErrorMessage(err));
     return json(
       {
@@ -118,7 +118,7 @@ export const POST = async (event: RequestEvent) => {
     return json({ error: 'Not authenticated' }, { status: 401 });
   }
   const body = await request.json().catch(() => null);
-  const { hash, evidenceId } = (body ?? {}) as { hash?: unknown; evidenceId?: unknown };
+  const { hash, evidenceId } = (body ?? {}) as { hash?: any; evidenceId?: any };
 
   // Validate types for incoming fields
   if (typeof hash !== 'string' || !['string', 'number'].includes(typeof evidenceId)) {
@@ -178,7 +178,7 @@ export const POST = async (event: RequestEvent) => {
       uploadedAt: item.uploadedAt,
       fileSize: item.fileSize,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error verifying evidence hash:', extractErrorMessage(err));
     return json(
       {

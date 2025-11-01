@@ -444,7 +444,6 @@
     }
   });
 </script>
-
 <div
   class="evidence-canvas-container nes-container with-title"
   role="region"
@@ -496,21 +495,16 @@
         <div><strong>Chain of Custody:</strong> {selectedFile.chainOfCustody ? '✓ Valid' : '✗ Broken'}</div>
         <div><strong>Confidentiality:</strong> {selectedFile.confidentialityLevel || 'Public'}</div>
         {#if selectedFile.fileSize}
-          <div><strong>File Size:</strong> {(selectedFile.fileSize / 1024 / 1024).toFixed(2)} MB</div>
-        {/if}
+          <div><strong>File Size:</strong> {(selectedFile.fileSize / 1024 / 1024).toFixed(2)} MB{/if}
         {#if selectedFile.createdAt}
-          <div><strong>Created:</strong> {selectedFile.createdAt.toLocaleDateString()}</div>
-        {/if}
+          <div><strong>Created:</strong> {selectedFile.createdAt.toLocaleDateString()}{/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   {#if children}
     <div class="additional-content">
       {@render children()}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .evidence-canvas-container {
     margin: 1rem;
@@ -519,7 +513,7 @@
     border: 2px solid var(--yorha-text-muted);
   }
   .canvas-wrapper {
-    position relative;
+    position: relative;
     display: inline-block;
     border: 2px solid var(--yorha-secondary);
     background: var(--yorha-bg-primary);
@@ -606,4 +600,3 @@
     }
   }
 </style>
-

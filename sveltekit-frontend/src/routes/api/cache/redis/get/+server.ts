@@ -30,14 +30,14 @@ export const POST: RequestHandler = async ({ request }) => {
         const raw = await client.get(key);
         if (raw == null) return json({ success: true, key, value: null, message: 'Key not found in Redis cache' });
         // Try to parse JSON-stored values, otherwise return raw string
-        let parsed: unknown = raw;
+        let parsed: any = raw;
         try {
           parsed = JSON.parse(String(raw));
         } catch {
           parsed = raw;
         }
         return json({ success: true, key, value: parsed, message: 'Value retrieved from Redis cache' });
-      } catch (err: unknown) {
+      } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
         console.error('[cache/get] Redis GET error:', message);
         // fallthrough to memoryCache handling below
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const mem = getFromMemoryCache(key);
     if (!mem.found) return json({ success: true, key, value: null, message: 'Key not found in cache' });
     return json({ success: true, key, value: mem.value, message: 'Value retrieved from cache (memory fallback)' });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json({ success: false, error: message }, { status: 500 });
   }

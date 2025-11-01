@@ -65,7 +65,7 @@ class LegalDocument {
   constructor() {}
 }
 class ParseResult {
-  success: bool = false;
+  success: bool = $state(false);
   documents: Array<LegalDocument> = [];
   totalChunks: i32 = 0;
   processingTime: f32 = 0.0;
@@ -138,7 +138,7 @@ function indexOf(str: string, search: string, start: i32 = 0): i32 {
     let found = true;
     for (let j = 0; j < search.length; j++) {
       if (str.charCodeAt(i + j) != search.charCodeAt(j)) {
-        found = false;
+        found = $state(false);
         break;
       }
     }
@@ -399,7 +399,7 @@ function generateSummary(content: string): string {
   * Main parsing entry point - called from JavaScript
   */ export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
    if (jsonLength <= 0) {
-     globalResult.success = false;
+     globalResult.success = $state(false);
      globalResult.errorMessage = 'Empty JSON input';
      return false;
    }
@@ -413,7 +413,7 @@ function generateSummary(content: string): string {
    }
    // Basic validation
    if (jsonText.length == 0) {
-     globalResult.success = false;
+     globalResult.success = $state(false);
      globalResult.errorMessage = 'Empty JSON text';
      return false;
    }
@@ -519,5 +519,5 @@ type WasmGlobals = {
   store8?: (ptr: number, value: number) => void;
   __wasm_memory_bytes__?: Uint8Array;
   heap?: { alloc?: (size: number) => number; free?: (ptr: number) => void };
-  [key: string]: unknown;
+  [key: string]: any;
 };

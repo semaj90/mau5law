@@ -27,14 +27,14 @@ export interface VectorSearchItem {
   metadata?: Record<string, unknown>;
   embedding?: number[];
   // allow extra fields from different backends — avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // --- Add small local types and helper to avoid `any`/`unknown` leaks ---
 export type HybridSearchOptions = {
   limit?: number;
   threshold?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export type EvidenceRecord = {
@@ -42,10 +42,10 @@ export type EvidenceRecord = {
   title: string;
   description: string;
   type: string;
-  tags: unknown[];
+  tags: any[];
   createdAt: Date;
   updatedAt: Date;
-  attachments: unknown[];
+  attachments: any[];
   metadata: Record<string, unknown>;
 };
 
@@ -76,7 +76,7 @@ export class EndToEndPipeline {
   // (moved type aliases to top-level)
 
   // normalize unknown backend results to our VectorSearchItem shape (no `any`)
-  private normalizeToVectorSearchItem(r: unknown): VectorSearchItem {
+  private normalizeToVectorSearchItem(r: any): VectorSearchItem {
     if (!r || typeof r !== 'object') return {};
     const obj = r as Record<string, unknown>;
     const embedding = Array.isArray(obj.embedding)
@@ -114,7 +114,7 @@ export class EndToEndPipeline {
 
         // Use a properly-typed options object
         const opts: HybridSearchOptions = { limit: 20, threshold: 0.7 };
-        const rawSearchResults: unknown = await vectorService.hybridSearch(query, opts);
+        const rawSearchResults: any = await vectorService.hybridSearch(query, opts);
 
         // normalize/marshal into VectorSearchItem[] (no `any`)
         const searchResults: VectorSearchItem[] = (Array.isArray(rawSearchResults) ? rawSearchResults : []).map(r =>
@@ -194,7 +194,7 @@ export class EndToEndPipeline {
 
         // C) Service Worker routing (simulated)
         await this.serviceWorkerRoute(result);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error(`❌ Error processing result ${result?.id ?? '(unknown)'}:`, String(error));
       }
     }

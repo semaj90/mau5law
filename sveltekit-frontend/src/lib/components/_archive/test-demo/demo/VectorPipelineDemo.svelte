@@ -2,13 +2,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   // Using Svelte 4 store pattern instead of conflicting $state runes
   let machineState = $vectorPipelineStat;
   // Sample job data
@@ -229,7 +229,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {#each batchInfo.jobs as job}
+                  {#each Array.isArray(batchInfo.jobs) ? batchInfo.jobs : [] as job}
                     <tr class="border-b hover:bg-gray-50">
                       <td class="p-2 font-mono text-xs">{job.jobId}</td>
                       <td class="p-2">{job.ownerType}</td>

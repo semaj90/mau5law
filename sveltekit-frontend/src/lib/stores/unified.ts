@@ -134,7 +134,7 @@ export type AIAssistantEvent =
   | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
   | { type: 'SET_CASE'; payload: { caseId: string | null } }
   // Fallback to allow custom/extension events while still avoiding `any`
-  | { type: string; [key: string]: unknown };
+  | { type: string; [key: string]: any };
 
 // Function to send events to the AI Assistant XState machine
 export function sendToAIAssistant(event: AIAssistantEvent) {

@@ -6,24 +6,18 @@
     placeholder?: string;
   }
   let { content = '', placeholder = 'Initialize data input...' }: Props = $props();
-
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
-
   let editor = $state<InstanceType<typeof Editor> | null>(null);
   let editorElement: HTMLElement | null = null;
-
   let selectedFont = $state<string>('Inter');
-
   // Create editor only once when editorElement is available.
   $effect(() => {
     if (!editorElement) return;
     if (editor) return; // guard: don't recreate the editor if it already exists
     if (typeof window === 'undefined') return; // client-only
-
     // capture initial font to avoid creating a reactivity dependency on selectedFont
     const initialFont = selectedFont;
-
     editor = new Editor({
       element: editorElement,
       extensions: [StarterKit],
@@ -35,31 +29,26 @@
         },
       },
     });
-
     // apply initial captured font
     const pmInitial = editorElement?.querySelector('.ProseMirror') as HTMLElement | null;
     if (pmInitial && initialFont) pmInitial.style.fontFamily = initialFont;
-
     return () => {
       editor?.destroy();
       editor = null;
     };
   });
-
   // Ensure font re-applies when user changes it
   $effect(() => {
     if (!editorElement) return;
     const pm = editorElement.querySelector('.ProseMirror') as HTMLElement | null;
     if (pm) pm.style.fontFamily = selectedFont;
   });
-
   const fontOptions = [
     { value: 'JetBrains Mono', label: 'JetBrains Mono' },
     { value: 'Courier New', label: 'Courier New' },
     { value: 'Inter', label: 'Inter' },
   ];
 </script>
-
 <div class="nier-panel">
   <!-- Toolbar -->
   <div class="nier-toolbar">
@@ -72,10 +61,8 @@
         ↷
       </button>
     </div>
-
     <!-- simple visual separator to replace Separator component -->
     <div class="nier-toolbar-separator"></div>
-
     <div class="nier-toolbar-group">
       <!-- Native select replacing custom Select components -->
       <label class="sr-only" for="font-select">Font</label>
@@ -87,14 +74,12 @@
           /* font application handled by separate $effect above */
         }}
       >
-        {#each fontOptions as font}
+        {#each Array.isArray(fontOptions) ? fontOptions : [] as font}
           <option value={font.value}>{font.label}</option>
         {/each}
       </select>
     </div>
-
     <div class="nier-toolbar-separator"></div>
-
     <div class="nier-toolbar-group">
       <button
         type="button"
@@ -114,19 +99,16 @@
       </button>
     </div>
   </div>
-
   <!-- Editor -->
   <div class="nier-editor">
     <div bind:this={editorElement}></div>
   </div>
-
   <!-- Status Bar -->
   <div class="nier-status-bar">
     <span>STATUS: OPERATIONAL</span>
     <span>DATA INTEGRITY: 100%</span>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   /* @import '../styles/nier-design-system.css'; */

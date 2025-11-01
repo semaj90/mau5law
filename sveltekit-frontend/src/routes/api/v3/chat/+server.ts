@@ -84,7 +84,7 @@ interface RateLimitResult {
 }
 
 // Initialize database on startup (attempt to create embeddings table once)
-let chatDbInitialized = false;
+let chatDbInitialized = $state(false);
 async function ensureDbInitialized() {
   // Run once
   if (chatDbInitialized) return Promise.resolve();
@@ -93,7 +93,7 @@ async function ensureDbInitialized() {
     await initializeChatEmbeddingsTable();
     chatDbInitialized = true;
     console.log('[chat-api-v3] Chat embeddings table initialized');
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Non-fatal: log and continue (keeps API available even if DB is down)
     const msg = err instanceof Error ? err.message : String(err);
     console.warn('[chat-api-v3] Failed to initialize chat embeddings table:', msg);
@@ -149,18 +149,18 @@ async function performHealthChecks(): Promise<HealthCheckResults> {
     });
     results.ollama = ollamaResponse.ok;
   } catch {
-    results.ollama = false;
+    results.ollama = $state(false);
   }
   try {
     await ensureDbInitialized();
     results.database = true;
   } catch {
-    results.database = false;
+    results.database = $state(false);
   }
   return results;
 }
 // Validate request input
-function validateChatRequest(body: unknown): { valid: boolean; error?: string } {
+function validateChatRequest(body: any): { valid: boolean; error?: string } {
   if (body === null || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' };
   }
@@ -353,7 +353,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         },
         { status: 400 }
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any to unknown
       const errorMessage = error instanceof Error ? error.message : String(error);
       requestLogger.error('GET request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
@@ -385,7 +385,7 @@ export const POST: RequestHandler = async ({ request }) => {
       let body: EnhancedChatRequest;
       try {
         body = (await request.json()) as EnhancedChatRequest;
-      } catch (parseError: unknown) {
+      } catch (parseError: any) {
         // Changed from any to unknown
         const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
         requestLogger.warn('Invalid JSON in request body', 'chat-api-v3', { errorMessage });
@@ -506,7 +506,7 @@ export const POST: RequestHandler = async ({ request }) => {
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
                 duration: Date.now() - startTime,
               });
-            } catch (error: unknown) {
+            } catch (error: any) {
               // Changed from any to unknown
               const errorMessage = error instanceof Error ? error.message : String(error);
               conversationLogger.error(
@@ -541,7 +541,7 @@ export const POST: RequestHandler = async ({ request }) => {
       conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
       let fullResponse = '';
       let sources: VectorSearchResult[] = [];
-      let vectorSearchUsed = false;
+      let vectorSearchUsed = $state(false);
       const streamGenerator = ollamaChatStream()({
         message: userMessage,
         model,
@@ -588,7 +588,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
       };
       return json(response);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any to unknown
       const processingTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);

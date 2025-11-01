@@ -6,7 +6,7 @@
   export let type: 'button' | 'submit' | 'reset' = 'button';
   export let variant: ButtonVariant = 'default';
   export let size: ButtonSize = 'default';
-  export let disabled: boolean = false;
+  export let disabled: boolean = $state(false);
   export let href: string | undefined = undefined; // For anchor-like behavior
 
   // Event dispatcher for custom events

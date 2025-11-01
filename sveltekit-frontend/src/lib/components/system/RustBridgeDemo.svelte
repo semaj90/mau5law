@@ -46,7 +46,7 @@
         console.error('Error initializing Rust bridge:', error);
         errorMessage = `Initialization error: ${error}`;
       } finally {
-        isLoading = false;
+        isLoading = $state(false);
       }
     })();
   });
@@ -71,7 +71,7 @@
       console.error('Error processing text:', error);
       errorMessage = `Text processing error: ${error}`;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function runBenchmark() {
@@ -83,7 +83,7 @@
       console.error('Error running benchmark:', error);
       errorMessage = `Benchmark error: ${error}`;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function formatMemory(bytes: number): string {
@@ -91,7 +91,6 @@
     return `${gb.toFixed(2)} GB`;
   }
 </script>
-
 <div class="rust-bridge-demo">
   <div class="demo-header">
     <h2>🦀 Rust WASM Bridge Demo</h2>
@@ -119,8 +118,7 @@
           <li>Ensure the WASM package is built to <code>src/lib/wasm/pkg</code></li>
         </ol>
       </div>
-    </div>
-  {/if}
+    {/if}
   {#if bridgeInitialized}
     <div class="demo-sections">
       <!-- System Information -->
@@ -153,25 +151,23 @@
               <span>{new Date(systemInfo.timestamp).toLocaleString()}</span>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- GPU Information -->
       {#if gpuInfo.length > 0}
         <div class="demo-section">
           <h3>🎮 GPU Acceleration</h3>
           <div class="gpu-list">
-            {#each gpuInfo as gpu}
+            {#each Array.isArray(gpuInfo) ? gpuInfo : [] as gpu}
               <div class="gpu-item">{gpu}</div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Windows Services -->
       {#if windowsServices.length > 0}
         <div class="demo-section">
           <h3>🔧 Windows Services Status</h3>
           <div class="services-list">
-            {#each windowsServices as service}
+            {#each Array.isArray(windowsServices) ? windowsServices : [] as service}
               <div class="service-item">
                 <span class="service-name">{service.name}</span>
                 <span class="service-status" class:running={service.status === 'Running'}>
@@ -183,8 +179,7 @@
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Text Processing Demo -->
       <div class="demo-section">
         <h3>📄 Legal Text Processing</h3>
@@ -195,8 +190,7 @@
           <div class="processing-result">
             <h4>Processing Results:</h4>
             <pre>{JSON.stringify(textProcessingResult, null, 2)}</pre>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Performance Benchmark -->
       <div class="demo-section">
@@ -223,8 +217,7 @@
                 <span>{benchmarkResults.overallScore.toFixed(0)}</span>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Bridge Status -->
       {#if bridgeStatus}
@@ -246,22 +239,19 @@
             <div class="capabilities">
               <label>Capabilities:</label>
               <div class="capability-list">
-                {#each bridgeStatus.capabilities as capability}
+                {#each Array.isArray(bridgeStatus.capabilities) ? bridgeStatus.capabilities : [] as capability}
                   <span class="capability">{capability}</span>
                 {/each}
               </div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Refresh Button -->
       <div class="demo-actions">
         <button onclick={loadSystemData} disabled={!bridgeInitialized || isLoading}> 🔄 Refresh Data </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .rust-bridge-demo {
     padding: 2rem;
@@ -434,5 +424,3 @@
     color: #f39c12;
   }
 </style>
-
-

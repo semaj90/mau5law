@@ -7,25 +7,25 @@ type HealthInfo = {
   status: string;
   memoryUsage?: number;
   cacheHits?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export interface TestResult {
   test: string;
   status: 'success' | 'error' | 'warning';
-  data?: unknown;
+  data?: any;
   error?: string;
   duration?: number;
 }
 
 // more specific search result shape (avoid `any`)
 interface QdrantSearchResult {
-  results: unknown[];
+  results: any[];
   stats: {
     searchTimeMs: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface UpsertVector {
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: health,
           duration: Date.now() - startTime,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           test: 'qdrant_health_check',
           status: 'error',
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: { message: 'Collection ensured with 768-dimensional nomic-embed vectors' },
           duration: Date.now() - startTime,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           test: 'collection_setup',
           status: 'error',
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           test: 'vector_search',
           status: 'error',
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           test: 'vector_upsert',
           status: 'error',
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           test: 'postgresql_sync_test',
           status: 'error',
@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           duration: Date.now() - startTime,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           test: 'performance_test',
           status: 'error',
@@ -270,7 +270,7 @@ export const GET: RequestHandler = async ({ url }) => {
         memory_limit_mb: 32,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         result: syncResult,
         timestamp: new Date().toISOString(),
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       return json(
         {
           success: false,

@@ -501,7 +501,7 @@ export class LegalDocumentStreamService {
   async closeConnection(connectionId: string): Promise<void> {
     const connection = this.connections.get(connectionId);
     if (connection) {
-      connection.isActive = false;
+      connection.isActive = $state(false);
       this.connections.delete(connectionId);
       this.eventListeners.delete(connectionId);
       this.statistics.activeConnections = this.connections.size;

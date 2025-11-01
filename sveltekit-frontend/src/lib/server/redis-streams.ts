@@ -43,9 +43,9 @@ export async function produceTokenChunk(
   const fields: string[] = ['seq', String(seq), 'chunk', chunk, 'meta', JSON.stringify(meta)];
   // Use a lightweight RedisLike abstraction to avoid direct `any` usage
   type RedisLike = {
-    xadd?: (...args: unknown[]) => Promise<unknown>;
-    xAdd?: (...args: unknown[]) => Promise<unknown>;
-    call?: (...args: unknown[]) => Promise<unknown>;
+    xadd?: (...args: any[]) => Promise<unknown>;
+    xAdd?: (...args: any[]) => Promise<unknown>;
+    call?: (...args: any[]) => Promise<unknown>;
   };
   const redisLike = client as unknown as RedisLike;
   if (typeof redisLike.xadd === 'function' || typeof redisLike.xAdd === 'function') {
@@ -94,8 +94,8 @@ export async function trimTokenStream(requestId: string, maxLen = 1000): Promise
  */
 async function callRedisRaw(reader: RedisType, ...args: string[]): Promise<unknown> {
   const c = reader as unknown as {
-    call?: (...a: unknown[]) => Promise<unknown>;
-    sendCommand?: (...a: unknown[]) => Promise<unknown>;
+    call?: (...a: any[]) => Promise<unknown>;
+    sendCommand?: (...a: any[]) => Promise<unknown>;
   };
   if (typeof c.call === 'function') return c.call(...args);
   if (typeof c.sendCommand === 'function') return c.sendCommand(args as unknown[]);
@@ -103,7 +103,7 @@ async function callRedisRaw(reader: RedisType, ...args: string[]): Promise<unkno
   const anyClient = reader as unknown as Record<string, unknown>;
   const maybeCall = anyClient['call'] as unknown;
   if (typeof maybeCall === 'function')
-    return (maybeCall as (...a: unknown[]) => Promise<unknown>).apply(reader, args as unknown[]);
+    return (maybeCall as (...a: any[]) => Promise<unknown>).apply(reader, args as unknown[]);
   return Promise.reject(new Error('Redis client does not support call/sendCommand'));
 }
 
@@ -160,8 +160,8 @@ export async function consumeTokenStream(
     try {
       // ioredis may expose quit() to gracefully close connection; fall back to disconnect()
       const rAny = reader as unknown as Record<string, unknown>;
-      if (typeof (rAny.quit as unknown) === 'function') await (rAny.quit as (...a: unknown[]) => Promise<unknown>)();
-      else if (typeof (rAny.disconnect as unknown) === 'function') (rAny.disconnect as (...a: unknown[]) => void)();
+      if (typeof (rAny.quit as unknown) === 'function') await (rAny.quit as (...a: any[]) => Promise<unknown>)();
+      else if (typeof (rAny.disconnect as unknown) === 'function') (rAny.disconnect as (...a: any[]) => void)();
     } catch {
       // ignore disconnect errors
     }
@@ -179,8 +179,8 @@ function safeJsonParse<T = unknown>(s: string, fallback: T): T {
 function redisCall(...args: string[]): Promise<unknown> {
   if (!client) return Promise.reject(new Error('Redis client not initialized'));
   const c = client as unknown as {
-    call?: (...a: unknown[]) => Promise<unknown>;
-    sendCommand?: (...a: unknown[]) => Promise<unknown>;
+    call?: (...a: any[]) => Promise<unknown>;
+    sendCommand?: (...a: any[]) => Promise<unknown>;
   };
   if (typeof c.call === 'function') return c.call(...args);
   if (typeof c.sendCommand === 'function') return c.sendCommand(args as unknown[]);
@@ -188,7 +188,7 @@ function redisCall(...args: string[]): Promise<unknown> {
   const anyClient = client as unknown as Record<string, unknown>;
   const maybeCall = anyClient['call'] as unknown;
   if (typeof maybeCall === 'function')
-    return (maybeCall as (...a: unknown[]) => Promise<unknown>).apply(client, args as unknown[]);
+    return (maybeCall as (...a: any[]) => Promise<unknown>).apply(client, args as unknown[]);
   return Promise.reject(new Error('Redis client does not support call/sendCommand'));
 }
 
@@ -203,7 +203,7 @@ export { client as redisClient };
  */
 export interface UltraJSONParser {
   parse<T = unknown>(json: string | Uint8Array): T;
-  stringify(obj: unknown): string;
+  stringify(obj: any): string;
 }
 
 /**
@@ -250,7 +250,7 @@ export class RedisCache {
     return data ? (JSON.parse(data) as T) : null;
   }
 
-  static async set(key: string, value: unknown, ttlSeconds = 3600): Promise<void> {
+  static async set(key: string, value: any, ttlSeconds = 3600): Promise<void> {
     if (!client) return;
     await client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
   }

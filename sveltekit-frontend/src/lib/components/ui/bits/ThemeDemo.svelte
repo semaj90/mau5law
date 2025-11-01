@@ -1,10 +1,10 @@
 <script lang="ts">
-  import ThemeProvider from './ThemeProvider.svelte';
-  import ThemeToggle from './ThemeToggle.svelte';
-  import DocumentCard from './DocumentCard.svelte';
-  import Button from './Button.svelte';
-  import Select from './Select.svelte';
-  import Tabs from './Tabs.svelte';
+  import { ThemeProvider } from './ThemeProvider.svelte';
+  import { ThemeToggle } from './ThemeToggle.svelte';
+  import { DocumentCard } from './DocumentCard.svelte';
+  import { Button } from './Button.svelte';
+  import { Select } from './Select.svelte';
+  import { Tabs } from './Tabs.svelte';
   import { getContext } from 'svelte';
   interface ThemeDemoProps {
     theme?: 'default' | 'legal' | 'gaming';
@@ -70,7 +70,6 @@
     console.log(`${action} action for:`, doc.title);
   }
 </script>
-
 <ThemeProvider defaultTheme="light" enableSystem={true}>
   <div
     class={`
@@ -136,7 +135,7 @@
             {#if item.value === 'documents'}
               <!-- Document Cards Grid -->
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {#each sampleDocuments as doc}
+                {#each Array.isArray(sampleDocuments) ? sampleDocuments : [] as doc}
                   <DocumentCard
                     title={doc.title}
                     fileType={doc.fileType}
@@ -188,8 +187,7 @@
                 >
                   Content for {item.label.toLowerCase()} would be displayed here.
                 </p>
-              </div>
-            {/if}
+              {/if}
           </div>
         {/snippet}
       </Tabs>
@@ -272,7 +270,6 @@
     </div>
   </div>
 </ThemeProvider>
-
 <style>
   /* Ensure smooth theme transitions */
   :global(*) {
@@ -281,4 +278,3 @@
       border-color 0.2s ease;
   }
 </style>
-

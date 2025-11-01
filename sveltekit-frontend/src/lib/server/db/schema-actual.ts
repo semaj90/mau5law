@@ -6,7 +6,6 @@
 import { pgTable, uuid, integer, varchar, text, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { customType } from 'drizzle-orm/pg-core';
-
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
 const vector = customType<{ data: number[]; config: { dimensions?: number } }>({
   dataType(config) {
@@ -15,12 +14,11 @@ const vector = customType<{ data: number[]; config: { dimensions?: number } }>({
   toDriver(value: number[]): string {
     return `[${value.join(',')}]`;
   },
-  fromDriver(value: unknown): number[] {
+  fromDriver(value: any): number[] {
     const vectorString = String(value);
     return vectorString.slice(1, -1).split(',').map(Number);
   },
 });
-
 // Users table
 export const users = pgTable('users', {
   id: integer('id').primaryKey(),
@@ -30,7 +28,6 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 // Cases table - MATCHES ACTUAL DATABASE
 export const cases = pgTable(
   'cases',
@@ -54,7 +51,6 @@ export const cases = pgTable(
     caseNumberUnique: index('cases_case_number_unique').on(table.caseNumber),
   })
 );
-
 // Evidence table - MATCHES ACTUAL DATABASE
 export const evidence = pgTable('evidence', {
   id: uuid('id')
@@ -69,7 +65,6 @@ export const evidence = pgTable('evidence', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 // Documents table (if needed for vector operations)
 export const documents = pgTable('documents', {
   id: uuid('id')

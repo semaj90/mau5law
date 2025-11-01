@@ -38,7 +38,7 @@ interface ServiceWorkerStatus {
 
 export class WebGPUAIService {
   private worker: Worker | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private pendingTasks = new Map<
     string,
     {
@@ -545,7 +545,7 @@ export class WebGPUAIService {
         this.worker = null;
       }, 1000);
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
 

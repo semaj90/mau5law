@@ -4,14 +4,15 @@
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { loginSchema } from '$lib/schemas/auth';
   import type { PageData } from './$types';
-  let { data }: { data: PageData } = $props();
+  // SvelteKit page data is provided via exported prop
+  export let data: PageData;
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(loginSchema),
     resetForm: true,
     taintedMessage: null,
   });
-  // Show success banner if coming from registration
-  let registrationSuccess = $derived(data.registrationSuccess);
+  // Show success banner if coming from registration (read value from page data)
+  let registrationSuccess = data?.registrationSuccess ?? null;
 </script>
 
 {#if registrationSuccess}

@@ -77,7 +77,7 @@ class GPUVectorProcessor {
 export class WebGPUVectorProcessor {
   private device: GPUDevice | null = null;
   private queue: GPUQueue | null = null;
-  private initialized = false;
+  private initialized = $state(false);
   async initialize(): Promise<boolean> {
     try {
       if (!('gpu' in navigator)) {

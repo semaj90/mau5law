@@ -73,7 +73,7 @@ type ParallelOptions = {
   priority?: 'low' | 'normal' | 'high' | string;
   timeout?: number;
   // allow other optional fields but keep them unknown to avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // --- ADDED: shape for orchestrator responses and runtime guard ---
@@ -85,12 +85,12 @@ type OrchestratorResponse = {
     execution_path?: string;
     latency_ms?: number;
     cached?: boolean;
-    [key: string]: unknown;
+    [key: string]: any;
   } | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
-function isOrchestratorResponse(x: unknown): x is OrchestratorResponse {
+function isOrchestratorResponse(x: any): x is OrchestratorResponse {
   if (typeof x !== 'object' || x === null) return false;
   // Accept object if it has any of the commonly expected properties
   const o = x as Record<string, unknown>;
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Chat API error:', getErrorMessage(error));
     // Track error analytics
     try {
@@ -245,7 +245,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         },
         { responseTimeMs: Date.now() - startTime }
       );
-    } catch (trackErr: unknown) {
+    } catch (trackErr: any) {
       console.warn('analytics.trackEvent failed', getErrorMessage(trackErr));
     }
 
@@ -455,12 +455,12 @@ async function handleParallelChatExecution({
     }
 
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Parallel chat execution error:', getErrorMessage(error));
     // Fallback to single-service execution
     try {
       // contextualMemoryChatService.sendMessage has a zero-arg signature; call it accordingly
-      const fallbackResult: unknown = await contextualMemoryChatService.sendMessage();
+      const fallbackResult: any = await contextualMemoryChatService.sendMessage();
 
       const content = isFallbackResult(fallbackResult) ? (fallbackResult.response ?? fallbackResult.content ?? '') : '';
 
@@ -493,7 +493,7 @@ async function handleParallelChatExecution({
           fallback: true,
         },
       });
-    } catch (fallbackError: unknown) {
+    } catch (fallbackError: any) {
       console.error('Fallback also failed:', getErrorMessage(fallbackError));
       // Re-throw original error to be handled upstream
       throw error;
@@ -507,7 +507,7 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (!err) return String(err);
   if (typeof err === 'string') return err;
   if (typeof err === 'object' && err !== null) {
@@ -523,26 +523,26 @@ function getErrorMessage(err: unknown): string {
   return String(err);
 }
 
-function isFallbackResult(x: unknown): x is { response?: string; content?: string } {
+function isFallbackResult(x: any): x is { response?: string; content?: string } {
   return typeof x === 'object' && x !== null && ('response' in x || 'content' in x);
 }
 
 // Add helper to robustly call orchestrator exports (handles multiple possible export shapes)
-async function callOrchestratorProcessRequest(orchestrationRequest: unknown): Promise<unknown> {
+async function callOrchestratorProcessRequest(orchestrationRequest: any): Promise<unknown> {
   // Try several common shapes without causing TypeScript compile errors by using unknown casts
   const mod = orchestrator as unknown as Record<string, unknown>;
 
   // 1) named export processRequest
   if (typeof mod.processRequest === 'function') {
-    return (mod.processRequest as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+    return (mod.processRequest as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
   }
 
   // 2) alternative named exports commonly used
   if (typeof mod.process === 'function') {
-    return (mod.process as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+    return (mod.process as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
   }
   if (typeof mod.execute === 'function') {
-    return (mod.execute as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+    return (mod.execute as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
   }
 
   // 3) default export that may be an object or a function with a processRequest method
@@ -550,18 +550,18 @@ async function callOrchestratorProcessRequest(orchestrationRequest: unknown): Pr
   if (def) {
     if (typeof def === 'function') {
       // default export is a function
-      return (def as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+      return (def as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
     }
     if (typeof def === 'object' && def !== null) {
       const d = def as Record<string, unknown>;
       if (typeof d.processRequest === 'function') {
-        return (d.processRequest as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+        return (d.processRequest as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
       }
       if (typeof d.process === 'function') {
-        return (d.process as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+        return (d.process as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
       }
       if (typeof d.execute === 'function') {
-        return (d.execute as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+        return (d.execute as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
       }
     }
   }
@@ -570,7 +570,7 @@ async function callOrchestratorProcessRequest(orchestrationRequest: unknown): Pr
   const p = parallelOrchestrationMaster as unknown as Record<string, unknown>;
   if (typeof p.executeParallel === 'function') {
     // Note: orchestrationRequest may need adaptation; try to call directly and let the fallback handle errors
-    return (p.executeParallel as (...args: unknown[]) => Promise<unknown>)(orchestrationRequest);
+    return (p.executeParallel as (...args: any[]) => Promise<unknown>)(orchestrationRequest);
   }
 
   // 5) nothing found: throw a clear runtime error

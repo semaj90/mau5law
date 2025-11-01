@@ -107,7 +107,7 @@
   $effect(() => {
     mounted = true;
     return () => {
-      mounted = false;
+      mounted = $state(false);
     };
   });
   function backdropClick(e: MouseEvent) {
@@ -121,7 +121,6 @@
     e.stopPropagation();
   }
 </script>
-
 {#if open && mounted}
   <!-- Portal to body for proper z-index stacking -->
   <div
@@ -150,7 +149,7 @@
         </div>
         <!-- Dialog content -->
         <div class="px-6 py-4">
-          {@render children?.()}
+          <slot />
         </div>
         <!-- Dialog footer -->
         <div class="px-6 pb-6">
@@ -173,9 +172,7 @@
         </button>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   @keyframes fadeIn {
     from {

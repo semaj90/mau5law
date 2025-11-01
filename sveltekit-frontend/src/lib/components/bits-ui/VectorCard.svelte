@@ -1,13 +1,11 @@
 <script lang="ts">
   export let r: any;
 </script>
-
 <div class="vector-card">
   <div class="title">{r?.meta?.title ?? r?.id ?? 'Document'}</div>
   <div class="snippet">{r?.meta?.snippet ?? r?.text?.slice(0,200)}</div>
   <div class="meta">Score: {r?.score ?? r?.distance ?? 'n/a'}</div>
 </div>
-
 <style>
 .vector-card{ padding:.5rem; border:1px solid #e5e7eb; border-radius:6px; margin-bottom:.5rem }
 .title{ font-weight:600 }

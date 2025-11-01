@@ -3,14 +3,14 @@
   // Svelte 5 runes are auto-imported
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
-  import BitsInput from '../input/BitsInput.svelte';
-  import Button from '../button/Button.svelte';
+  import { BitsInput } from '../input/BitsInput.svelte';
+  import { Button } from '../button/Button.svelte';
   export interface DataTableColumn<T = any> {
     key: string;
     label: string;
     sortable?: boolean;
     filterable?: boolean;
-    render?: (_value: unknown, row: T) => string;
+    render?: (_value: any, row: T) => string;
     class?: string;
     width?: string;
   }
@@ -122,8 +122,7 @@
             size="sm"
             leftIcon={() => Search}
           />
-        </div>
-      {/if}
+        {/if}
       {#if filterable}
         <Button class="bits-btn" variant="ghost" size="sm">
 <Filter class="w-4 h-4" />
@@ -151,7 +150,7 @@
                 />
               </th>
             {/if}
-            {#each columns as column}
+            {#each Array.isArray(columns) ? columns : [] as column}
               <th
                 class={cn(
                   'px-3 py-3 text-left text-xs font-medium text-yorha-text-secondary uppercase tracking-wider font-mono',
@@ -171,8 +170,7 @@
                         <ChevronDown class="w-3 h-3" />
                       {/if}
                     {:else}
-                      <div class="w-3 h-3"></div>
-                    {/if}
+                      <div class="w-3 h-3">{/if}
                 </div>
               </th>
             {/each}
@@ -199,7 +197,7 @@
                   />
                 </td>
               {/if}
-              {#each columns as column}
+              {#each Array.isArray(columns) ? columns : [] as column}
                 <td class={cn(
                   'px-3 py-3 text-sm text-yorha-text-primary font-mono whitespace-nowrap',
                   column.class
@@ -246,8 +244,7 @@ currentPage = Math.max(0, currentPage - 1)}
           onclick={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
         >
           Next
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>

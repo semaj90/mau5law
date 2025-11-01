@@ -3,23 +3,19 @@
   interface Props {
     message: any;
   }
-
   // receive props via Svelte 5 rune
   let { message }: Props = $props();
-
   // Use named imports from lucide-svelte
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { chatActions } from '$lib/stores/chat'; // adjusted store path
   import { notifications } from '$lib/stores/unified';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';
   import '../chat/chat-message.css';
-
   // reactive derived values - correct Svelte 5 usage
   let isUser = $derived.by(() => message?.role === 'user' || message?.type === 'user');
   let isAssistant = $derived.by(() => message?.role === 'assistant' || message?.type === 'assistant');
   let emotionalTone = $derived.by(() => message?.metadata?.emotionalTone ?? null);
   let isProactive = $derived.by(() => !!message?.metadata?.proactive);
-
   function copyToClipboard() {
     if (!message?.content) return;
     navigator.clipboard.writeText(message.content).then(
@@ -39,16 +35,13 @@
       }
     );
   }
-
   function toggleSaved() {
     chatActions.toggleMessageSaved?.(message.id);
   }
-
   function formatTime(timestamp: Date | string | number): string {
     const date = new Date(timestamp ?? Date.now());
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
       case 'encouraging': return 'text-green-600';
@@ -59,7 +52,6 @@
       default: return 'text-gray-500';
     }
   }
-
   function getEmotionalToneIcon(tone: string) {
     switch (tone) {
       case 'encouraging': return ThumbsUp;
@@ -69,15 +61,12 @@
     }
   }
 </script>
-
 <div class="chat-message-container flex gap-2 mb-4" class:justify-end={isUser}>
   {#if !isUser}
     <!-- Bot Avatar -->
     <div class="avatar flex-shrink-0">
       <Bot class="w-8 h-8 nes-text is-primary" />
-    </div>
-  {/if}
-
+    {/if}
   <div class="message-content-wrapper flex flex-col max-w-[70%]">
     <div class="message-bubble nes-container p-3" class:is-dark={isUser} class:is-rounded={isUser}>
       <!-- Proactive Indicator -->
@@ -85,8 +74,7 @@
         <div class="flex items-center gap-1 text-xs text-gray-400 mb-1">
           <Clock class="w-3 h-3" />
           <span>Proactive suggestion</span>
-        </div>
-      {/if}
+        {/if}
       <!-- Message Text -->
       <div class="message-text message-content">
         {@html message.content}
@@ -99,10 +87,8 @@
             <svelte:component this={ToneIcon} class="w-3 h-3" />
           {/if}
           <span>{emotionalTone}</span>
-        </div>
-      {/if}
+        {/if}
     </div>
-
     <!-- Message Actions and Timestamp -->
     <div class="flex items-center gap-2 mt-1 text-xs text-gray-500" class:justify-end={isUser} class:justify-start={!isUser}>
       <span class="timestamp">
@@ -136,7 +122,6 @@
         </Button>
       </div>
     </div>
-
     <!-- Metadata (for AI messages) -->
     {#if isAssistant && message.metadata}
       <div class="message-metadata text-xs text-gray-500 mt-1" class:text-right={isUser} class:text-left={!isUser}>
@@ -146,23 +131,17 @@
             {#if message.metadata.latency}
               <span>• {message.metadata.latency}ms</span>
             {/if}
-          </div>
-        {/if}
+          {/if}
         {#if message.metadata.tokenCount}
-          <div class={isUser ? 'text-right' : 'text-left'}>Tokens: {message.metadata.tokenCount}</div>
-        {/if}
-      </div>
-    {/if}
+          <div class={isUser ? 'text-right' : 'text-left'}>Tokens: {message.metadata.tokenCount}{/if}
+      {/if}
   </div>
-
   {#if isUser}
     <!-- User Avatar -->
     <div class="avatar flex-shrink-0">
       <Users class="w-8 h-8 nes-text is-success" />
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   :global(.message-content) {

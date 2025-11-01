@@ -3,10 +3,8 @@
   // Svelte 5 runes are auto-imported
   import createToast from 'bits-ui';
   import BitsToast, { type ToastProps } from './BitsToast.svelte';
-
   // Destructure Root and Viewport from createToast()
   const { Root, Viewport } = createToast();
-
   interface ToastWithId extends ToastProps {
     id: string;
   }
@@ -81,7 +79,6 @@
     });
   }
 </script>
-
 <Root.Provider swipeDirection="right">
   {#each toasts as toast (toast.id)}
     <BitsToast {...toast} onClose={() => removeToast(toast.id)} />

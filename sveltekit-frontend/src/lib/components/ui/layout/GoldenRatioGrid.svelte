@@ -96,7 +96,6 @@
     }
   );
 </script>
-
 <div
   class={gridClasses}
   style="
@@ -124,7 +123,7 @@
     </aside>
   {/if}
   <main class="golden-main">
-    {@render children?.()}
+    <slot />
   </main>
   {#if secondary}
     <section class="golden-secondary">
@@ -137,14 +136,13 @@
     </footer>
   {/if}
 </div>
-
 <style>
 /* @unocss-include */ /* Base Golden Ratio Grid */ {}
   :global(.golden-ratio-grid) {
     display: grid;
     width: 100%;
     height: 100%;
-    position relative;
+    position: relative;
   }
 /* Horizontal Golden Ratio Layout */ {}
   :global(.golden-horizontal) {
@@ -242,11 +240,11 @@ background-position {}
       -10px 0px;
   }
   :global(.yorha-evidence-grid .golden-main) {
-    position relative;
+    position: relative;
   }
   :global($1) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -337,4 +335,3 @@ var(--color-nier-accent-cool) {}
     }
   }
 </style>
-

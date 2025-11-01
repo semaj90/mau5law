@@ -12,24 +12,24 @@ import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
 // --- Added minimal types to satisfy TS and lint checks ---
 // Represents the snapshot shape we log/use from XState actors.
 type MachineSnapshot = {
-  value?: unknown;
-  context?: unknown;
-  [key: string]: unknown;
+  value?: any;
+  context?: any;
+  [key: string]: any;
 };
 
 // Minimal error payload shape used by utilities
 interface ErrorPayload {
   message: string;
   code?: string | number;
-  details?: unknown;
+  details?: any;
 }
 
 // Minimal window shape for Redux DevTools availability check
 interface DevtoolsWindow extends Window {
   __REDUX_DEVTOOLS_EXTENSION__?: {
-    connect: (opts?: { name?: string; [key: string]: unknown }) => {
-      send: (action: unknown, state?: unknown) => void;
-      init: (state: unknown) => void;
+    connect: (opts?: { name?: string; [key: string]: any }) => {
+      send: (action: any, state?: any) => void;
+      init: (state: any) => void;
     };
   };
 }
@@ -37,14 +37,14 @@ interface DevtoolsWindow extends Window {
 // Inspection event shape used by the devtools inspector callback
 interface InspectionEvent {
   type?: string;
-  event?: unknown;
-  snapshot?: unknown;
+  event?: any;
+  snapshot?: any;
 }
 
 // Store persistence interface
 export interface StoreState {
-  appState: unknown;
-  legalCaseState: unknown;
+  appState: any;
+  legalCaseState: any;
   timestamp: number;
 }
 // Configuration for store behavior
@@ -135,9 +135,9 @@ class XStateStoreManager {
       inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
     });
     // Create reactive Svelte store
-    const { subscribe } = readable(this.appActor.getSnapshot(), (set: (v: unknown) => void) => {
+    const { subscribe } = readable(this.appActor.getSnapshot(), (set: (v: any) => void) => {
       // Subscribe to state changes
-      const subscription = this.appActor!.subscribe((state: unknown) => {
+      const subscription = this.appActor!.subscribe((state: any) => {
         if (this.config.logTransitions) {
           const snap = state as unknown as MachineSnapshot;
           console.log('🔄 App State Transition:', snap?.value, snap?.context);
@@ -178,7 +178,7 @@ class XStateStoreManager {
   public initializeLegalCase(): {
     legalCaseStore: Readable<unknown>;
     legalCaseActor: ActorRefFrom<typeof legalCaseMachine>;
-    send: (_event: unknown) => void;
+    send: (_event: any) => void;
     selectors: typeof legalCaseSelectors;
   } {
     if (this.legalCaseActor) {
@@ -192,9 +192,9 @@ class XStateStoreManager {
       inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
     });
     // Create reactive Svelte store
-    const { subscribe: subscribeCase } = readable(this.legalCaseActor.getSnapshot(), (set: (v: unknown) => void) => {
+    const { subscribe: subscribeCase } = readable(this.legalCaseActor.getSnapshot(), (set: (v: any) => void) => {
       // Subscribe to state changes
-      const subscription = this.legalCaseActor!.subscribe((state: unknown) => {
+      const subscription = this.legalCaseActor!.subscribe((state: any) => {
         if (this.config.logTransitions) {
           const snap = state as unknown as MachineSnapshot;
           console.log('⚖️ Legal Case State Transition:', snap?.value, snap?.context);
@@ -216,7 +216,7 @@ class XStateStoreManager {
       };
     });
     // Send function for dispatching events
-    const sendCase = (event: unknown) => {
+    const sendCase = (event: any) => {
       if (this.config.logTransitions) {
         console.log('📤 Legal Case Event:', event);
       }
@@ -309,7 +309,7 @@ class XStateStoreManager {
   }
   // Private helper methods
   private createDevtoolsInspector(machineId: string) {
-    return (inspectionEvent: unknown) => {
+    return (inspectionEvent: any) => {
       const win = typeof window !== 'undefined' ? (window as DevtoolsWindow) : undefined;
       if (win && win.__REDUX_DEVTOOLS_EXTENSION__) {
         const devtools = win.__REDUX_DEVTOOLS_EXTENSION__.connect({
@@ -337,7 +337,7 @@ class XStateStoreManager {
         timestamp: Date.now(),
       };
       localStorage.setItem(this.config.persistKey!, JSON.stringify(state));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to persist XState store:', String(error));
     }
   }
@@ -354,12 +354,12 @@ class XStateStoreManager {
         return null;
       }
       return state;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to load persisted XState store:', String(error));
       return null;
     }
   }
-  private handleCrossTabSync(data: unknown): void {
+  private handleCrossTabSync(data: any): void {
     // Handle synchronization between tabs
     if (!data || typeof data !== 'object' || !('type' in (data as Record<string, unknown>))) return;
     const d = data as { type: string };

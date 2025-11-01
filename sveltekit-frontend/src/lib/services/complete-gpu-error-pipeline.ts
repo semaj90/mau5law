@@ -33,7 +33,7 @@ interface FlashAttentionResult {
   performance?: {
     gpu_utilization?: number;
     tokens_per_second?: number;
-    [k: string]: unknown;
+    [k: string]: any;
   };
 }
 
@@ -62,7 +62,7 @@ export interface ErrorProcessingPipeline {
 
 export class CompleteGPUErrorPipeline {
   private pipeline: ErrorProcessingPipeline;
-  private isRunning = false;
+  private isRunning = $state(false);
 
   constructor() {
     this.pipeline = this.initializePipeline();
@@ -95,13 +95,13 @@ export class CompleteGPUErrorPipeline {
       await this.stage5_ApplyFixes();
       this.stage6_Complete();
       return this.pipeline;
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.pipeline.stage = 'error';
       this.pipeline.currentTask = `Pipeline failed: ${String(error)}`;
       console.error('❌ Error processing pipeline failed:', error);
       throw error;
     } finally {
-      this.isRunning = false;
+      this.isRunning = $state(false);
     }
   }
 
@@ -146,7 +146,7 @@ export class CompleteGPUErrorPipeline {
         console.log('⚠️ Using npm run check fallback...');
         this.pipeline.errors.total = 9000;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Error scanning failed, using estimated count:', String(error));
       this.pipeline.errors.total = 9000;
     }
@@ -166,7 +166,7 @@ export class CompleteGPUErrorPipeline {
       }
       console.log(`✅ Indexed ${mockErrors.length} errors in IndexedDB with Fuse.js`);
       this.pipeline.errors.processed = mockErrors.length;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Error indexing failed:', String(error));
     }
     console.log('✅ Stage 3 complete: Error indexing finished');
@@ -206,7 +206,7 @@ export class CompleteGPUErrorPipeline {
       );
 
       console.log(`⚡ GPU processing complete: ${this.pipeline.errors.fixed} high-confidence fixes`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ GPU processing failed:', String(error));
       this.pipeline.errors.failed = this.pipeline.errors.total;
     }
@@ -225,7 +225,7 @@ export class CompleteGPUErrorPipeline {
           : [];
       console.log(`📋 Found ${Array.isArray(searchResults) ? searchResults.length : 0} indexed errors for review`);
       console.log('🎯 Fix application simulated (would apply real fixes in production)');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Fix application failed:', String(error));
     }
     console.log('✅ Stage 5 complete: Fixes applied');

@@ -296,7 +296,7 @@ class EvidenceGlobalStore {
     this.ui.modalOpen = true;
   }
   closeModal() {
-    this.ui.modalOpen = false;
+    this.ui.modalOpen = $state(false);
     this.ui.modalType = null;
     this.ui.editingNode = null;
   }
@@ -328,7 +328,7 @@ class EvidenceGlobalStore {
     } finally {
       // Reset after delay to show processing state
       setTimeout(() => {
-        this.ui.aiProcessing = false;
+        this.ui.aiProcessing = $state(false);
       }, 1000);
     }
   }
@@ -361,7 +361,7 @@ class EvidenceGlobalStore {
     } catch (error) {
       console.error('AI connection generation failed:', error);
     } finally {
-      this.ui.aiProcessing = false;
+      this.ui.aiProcessing = $state(false);
     }
   }
   private initializeAIWorker() {

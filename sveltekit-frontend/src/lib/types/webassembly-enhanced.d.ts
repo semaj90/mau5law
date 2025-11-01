@@ -30,11 +30,11 @@ export const webAssemblyGPUUtils = {
     };
   },
   // Type assertion helper for GPU device conversion
-  assertGPUDevice: (device: unknown): device is GPUDevice => {
+  assertGPUDevice: (device: any): device is GPUDevice => {
     return device !== null && typeof device === 'object' && 'createBuffer' in (device as any);
   },
   // Safe type conversion for analysis results
-  convertAnalysisResult: (analysis: unknown): any => {
+  convertAnalysisResult: (analysis: any): any => {
     if (analysis && typeof analysis === 'object') {
       return {
         summary: (analysis as any).summary || 'No summary available',

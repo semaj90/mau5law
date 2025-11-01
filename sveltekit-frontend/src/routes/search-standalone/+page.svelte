@@ -47,12 +47,12 @@
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   };
 
   // Utility function for score formatting
-  function getScorePercent(score: unknown): string {
+  function getScorePercent(score: any): string {
     const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
     return (n * 100).toFixed(1);
   }

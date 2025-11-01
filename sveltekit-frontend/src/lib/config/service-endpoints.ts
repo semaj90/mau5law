@@ -13,7 +13,6 @@
 export function getServiceUrl(path: string): string {
   // ensure path starts with /
   const p = path.startsWith('/') ? path : `/${path}`;
-
   // client-side public envs (Vite / SvelteKit)
   try {
     // import.meta.env is available in bundler; access via global to avoid ts error in node context
@@ -32,15 +31,12 @@ export function getServiceUrl(path: string): string {
   } catch {
     // ignore - fallback to server-side logic below
   }
-
   // server-side / node: read process.env and prefer Docker service names
   const serverEnv = (typeof process !== 'undefined' && process.env) ? process.env : {};
   const serverBase = serverEnv.API_URL || serverEnv.DOCKER_API_URL || serverEnv.VITE_API_URL || '';
-
   if (serverBase && serverBase.length > 0) {
     return `${serverBase.replace(/\/$/, '')}${p}`;
   }
-
   // final fallback for Docker Compose: use container name: 'api' on port 5173 (adjust if needed)
   const dockerFallback = 'http://api:5173';
   return `${dockerFallback.replace(/\/$/, '')}${p}`;

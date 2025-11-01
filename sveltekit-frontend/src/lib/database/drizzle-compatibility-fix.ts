@@ -11,20 +11,20 @@ export interface QueryResult<T = DBRow> {
   rows?: T[];
   rowCount?: number;
   command?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface DBClient {
-  query?: (...args: unknown[]) => Promise<QueryResult>;
-  execute?: (...args: unknown[]) => Promise<QueryResult>;
+  query?: (...args: any[]) => Promise<QueryResult>;
+  execute?: (...args: any[]) => Promise<QueryResult>;
   connect?: () => Promise<unknown>;
   end?: () => Promise<void>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Fallback ensureProperties in case barrelStore.database.ensureProperties is not present.
 // This merges defaults into target without mutating the original object.
-const fallbackEnsureProperties = <T extends DBRow>(target: unknown, defaults: T): T => {
+const fallbackEnsureProperties = <T extends DBRow>(target: any, defaults: T): T => {
   const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } : {};
   for (const [k, v] of Object.entries(defaults)) {
     if (!(k in base) || base[k] === undefined || base[k] === null) {
@@ -45,7 +45,7 @@ export const getBarrelStore = (): any => {
 };
 
 // Safe accessor for optional runtime-provided ensureProperties
-export const safeEnsureProperties = <T extends DBRow>(obj: unknown, defaults: T): T => {
+export const safeEnsureProperties = <T extends DBRow>(obj: any, defaults: T): T => {
   try {
     const barrelStore = getBarrelStore();
     const fn = barrelStore?.database?.ensureProperties;
@@ -59,7 +59,7 @@ export const safeEnsureProperties = <T extends DBRow>(obj: unknown, defaults: T)
 };
 
 // Type guard for QueryResult
-const isQueryResult = (v: unknown): v is QueryResult => {
+const isQueryResult = (v: any): v is QueryResult => {
   if (typeof v !== 'object' || v === null) return false;
   const candidate = v as Record<string, unknown>;
   if ('rows' in candidate) return Array.isArray(candidate.rows);
@@ -81,7 +81,7 @@ const defaultRowShape: DBRow = {
 };
 
 // Robust handler that normalizes many driver result shapes into an array of rows
-export const handleQueryResult = <T extends DBRow = DBRow>(result: unknown): T[] => {
+export const handleQueryResult = <T extends DBRow = DBRow>(result: any): T[] => {
   if (result == null) return [];
 
   if (Array.isArray(result)) {
@@ -102,7 +102,7 @@ export const handleQueryResult = <T extends DBRow = DBRow>(result: unknown): T[]
 };
 
 // Safe nested property access helper
-export const safePropertyAccess = <T>(obj: unknown, path: string, fallback: T): T => {
+export const safePropertyAccess = <T>(obj: any, path: string, fallback: T): T => {
   if (typeof obj !== 'object' || obj === null) return fallback;
   const keys = path.split('.');
   let current: any = obj;
@@ -168,12 +168,12 @@ export const ensureConnection = async (client: DBClient | Sql | unknown): Promis
 };
 
 // Small helper to enforce result typing by merging defaults
-export const enhanceResultWithTypes = <T extends DBRow>(result: unknown, defaults: T): T =>
+export const enhanceResultWithTypes = <T extends DBRow>(result: any, defaults: T): T =>
   safeEnsureProperties(result, defaults);
 
 // Common entity enhancers with sensible defaults
 export const entityEnhancers = {
-  legalDocument: (doc: unknown) =>
+  legalDocument: (doc: any) =>
     enhanceResultWithTypes(doc, {
       id: null,
       case_id: null,
@@ -188,7 +188,7 @@ export const entityEnhancers = {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }),
-  chatMessage: (msg: unknown) =>
+  chatMessage: (msg: any) =>
     enhanceResultWithTypes(msg, {
       id: null,
       message: '',
@@ -200,7 +200,7 @@ export const entityEnhancers = {
       metadata: {},
       created_at: new Date().toISOString()
     }),
-  cacheEntry: (entry: unknown) =>
+  cacheEntry: (entry: any) =>
     enhanceResultWithTypes(entry, {
       key: '',
       value: null,
@@ -211,7 +211,7 @@ export const entityEnhancers = {
       size: 0,
       version: 1
     }),
-  vectorOperation: (op: unknown) =>
+  vectorOperation: (op: any) =>
     enhanceResultWithTypes(op, {
       id: null,
       operation_type: 'embedding',
@@ -229,9 +229,9 @@ export const entityEnhancers = {
 // Lightweight query wrapper that normalizes execute/all/get to return typed rows
 export const createTypeSafeQuery = <Q extends Record<string, unknown>>(base: Q) => ({
   ...base,
-  async execute(...args: unknown[]): Promise<DBRow[]> {
+  async execute(...args: any[]): Promise<DBRow[]> {
     try {
-      const fn = (base as any).execute as ((...a: unknown[]) => Promise<unknown>) | undefined;
+      const fn = (base as any).execute as ((...a: any[]) => Promise<unknown>) | undefined;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
     } catch (e) {
@@ -239,7 +239,7 @@ export const createTypeSafeQuery = <Q extends Record<string, unknown>>(base: Q) 
       return [];
     }
   },
-  async all(...args: unknown[]): Promise<DBRow[]> {
+  async all(...args: any[]): Promise<DBRow[]> {
     try {
       const fn = (base as any).all ?? (base as any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;
@@ -249,7 +249,7 @@ export const createTypeSafeQuery = <Q extends Record<string, unknown>>(base: Q) 
       return [];
     }
   },
-  async get(...args: unknown[]): Promise<DBRow | null> {
+  async get(...args: any[]): Promise<DBRow | null> {
     try {
       const fn = (base as any).get ?? (base as any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;

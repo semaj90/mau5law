@@ -9,11 +9,9 @@
  *
  * Expected improvement: 3.75x faster query responses (300ms → 80ms)
  */
-
 import { getRedisMetricsCache } from '../cache/redis-metrics';
 import type { RedisMetricsCache } from '../cache/redis-metrics';
 import crypto from 'crypto';
-
 export interface CacheConfig {
   redis: {
     enabled: boolean;
@@ -29,7 +27,6 @@ export interface CacheConfig {
     patterns: string[];      // Common query patterns to pre-cache
   };
 }
-
 export interface CachedQuery<T = any> {
   data: T;
   cachedAt: string;
@@ -37,28 +34,23 @@ export interface CachedQuery<T = any> {
   queryHash: string;
   semanticKey?: string;
 }
-
 export interface CacheHit {
   hit: boolean;
   source: 'redis' | 'semantic' | 'fallback' | 'miss';
   latency: number;
   cachedAt?: string;
 }
-
 /**
  * Query Cache Manager
  */
 export class QueryCache {
   private redis: RedisMetricsCache;
   private config: CacheConfig;
-  private warmingInProgress = false;
-
+  private warmingInProgress = $state(false);
   // Semantic cache: map similar queries to the same cached result
   private semanticIndex = new Map<string, string[]>(); // pattern → [queryHashes]
-
   constructor(config?: Partial<CacheConfig>) {
     this.redis = getRedisMetricsCache();
-
     this.config = {
       redis: {
         enabled: config?.redis?.enabled ?? true,
@@ -79,7 +71,6 @@ export class QueryCache {
       },
     };
   }
-
   /**
    * Get cached query result or execute query function
    */
@@ -93,7 +84,6 @@ export class QueryCache {
     }
   ): Promise<{ data: T; cacheHit: CacheHit }> {
     const startTime = performance.now();
-
     // Bypass cache if requested
     if (options?.bypassCache || !this.config.redis.enabled) {
       const data = await queryFn();
@@ -106,12 +96,10 @@ export class QueryCache {
         },
       };
     }
-
     // Generate cache key
     const queryHash = this.hashQuery(query);
     const namespace = options?.namespace || 'query';
     const cacheKey = `${namespace}:${queryHash}`;
-
     // 1. Try direct Redis cache hit
     const cached = await this.redis.get(cacheKey);
     if (cached) {
@@ -130,7 +118,6 @@ export class QueryCache {
         console.warn('Failed to parse cached query, fetching fresh data');
       }
     }
-
     // 2. Try semantic similarity cache
     if (this.config.semantic.enabled) {
       const semanticResult = await this.findSemanticallyS imilar<T>(queryHash, namespace);
@@ -146,20 +133,16 @@ export class QueryCache {
         };
       }
     }
-
     // 3. Cache miss - execute query
     const data = await queryFn();
     const latency = performance.now() - startTime;
-
     // 4. Store in cache
     const ttl = options?.ttl ?? this.config.redis.defaultTTL;
     await this.set(cacheKey, data, ttl, queryHash);
-
     // 5. Update semantic index
     if (this.config.semantic.enabled) {
       this.updateSemanticIndex(queryHash, namespace);
     }
-
     return {
       data,
       cacheHit: {
@@ -169,7 +152,6 @@ export class QueryCache {
       },
     };
   }
-
   /**
    * Set cached query result
    */
@@ -180,10 +162,8 @@ export class QueryCache {
       ttl,
       queryHash,
     };
-
     await this.redis.set(key, JSON.stringify(cachedQuery), ttl);
   }
-
   /**
    * Invalidate cache by key or pattern
    */
@@ -195,7 +175,6 @@ export class QueryCache {
     }
     return await this.redis.del(keyOrPattern);
   }
-
   /**
    * Invalidate cache by namespace
    */
@@ -205,7 +184,6 @@ export class QueryCache {
     console.log(`Invalidating namespace: ${namespace}:*`);
     // TODO: Implement SCAN-based invalidation
   }
-
   /**
    * Hash query to consistent string
    */
@@ -213,7 +191,6 @@ export class QueryCache {
     const queryString = typeof query === 'string' ? query : JSON.stringify(query);
     return crypto.createHash('sha256').update(queryString).digest('hex');
   }
-
   /**
    * Find semantically similar cached queries
    */
@@ -224,16 +201,13 @@ export class QueryCache {
     // Check if this query pattern has similar cached queries
     const pattern = this.extractPattern(queryHash);
     const similarHashes = this.semanticIndex.get(pattern);
-
     if (!similarHashes || similarHashes.length === 0) {
       return null;
     }
-
     // Try to find a valid cached result from similar queries
     for (const hash of similarHashes) {
       const cacheKey = `${namespace}:${hash}`;
       const cached = await this.redis.get(cacheKey);
-
       if (cached) {
         try {
           return JSON.parse(cached) as CachedQuery<T>;
@@ -242,10 +216,8 @@ export class QueryCache {
         }
       }
     }
-
     return null;
   }
-
   /**
    * Extract pattern from query hash (for semantic grouping)
    */
@@ -254,26 +226,22 @@ export class QueryCache {
     // In production, use actual semantic similarity (embeddings)
     return queryHash.substring(0, 8);
   }
-
   /**
    * Update semantic index
    */
   private updateSemanticIndex(queryHash: string, namespace: string): void {
     const pattern = this.extractPattern(queryHash);
     const existing = this.semanticIndex.get(pattern) || [];
-
     // Add hash if not already present
     if (!existing.includes(queryHash)) {
       existing.push(queryHash);
       this.semanticIndex.set(pattern, existing);
-
       // Limit to most recent 10 hashes per pattern
       if (existing.length > 10) {
         existing.shift();
       }
     }
   }
-
   /**
    * Cache warming: Pre-cache common queries
    */
@@ -281,13 +249,10 @@ export class QueryCache {
     if (!this.config.warming.enabled || this.warmingInProgress) {
       return { warmed: 0, failed: 0 };
     }
-
     this.warmingInProgress = true;
     console.log('🔥 Starting cache warming...');
-
     let warmed = 0;
     let failed = 0;
-
     for (const pattern of this.config.warming.patterns) {
       try {
         // Execute common query patterns
@@ -299,20 +264,16 @@ export class QueryCache {
         failed++;
       }
     }
-
-    this.warmingInProgress = false;
+    this.warmingInProgress = $state(false);
     console.log(`✅ Cache warming complete: ${warmed} warmed, ${failed} failed`);
-
     return { warmed, failed };
   }
-
   /**
    * Get cache statistics
    */
   async getStats() {
     const redisMetrics = this.redis.getMetrics();
     const insights = this.redis.getPerformanceInsights();
-
     return {
       redis: redisMetrics,
       semantic: {
@@ -332,11 +293,9 @@ export class QueryCache {
     };
   }
 }
-
 /**
  * Specialized caches for common use cases
  */
-
 /**
  * Vector Search Cache
  * Caches vector similarity search results
@@ -349,7 +308,6 @@ export class VectorSearchCache extends QueryCache {
       warming: { enabled: true, patterns: ['top-vectors', 'recent-searches'] },
     });
   }
-
   /**
    * Cache vector search with embedding-based deduplication
    */
@@ -364,14 +322,12 @@ export class VectorSearchCache extends QueryCache {
       caseId: options?.caseId,
       type: 'vector-search',
     };
-
     return this.getOrQuery(query, searchFn, {
       ttl: options?.ttl,
       namespace: 'vector-search',
     });
   }
 }
-
 /**
  * Case Query Cache
  * Caches case-related queries with automatic invalidation
@@ -384,7 +340,6 @@ export class CaseQueryCache extends QueryCache {
       warming: { enabled: true, patterns: ['active-cases', 'recent-evidence'] },
     });
   }
-
   /**
    * Cache case query with automatic invalidation on updates
    */
@@ -399,13 +354,11 @@ export class CaseQueryCache extends QueryCache {
       type: queryType,
       timestamp: Date.now(),
     };
-
     return this.getOrQuery(query, queryFn, {
       ttl: options?.ttl,
       namespace: `case:${caseId}`,
     });
   }
-
   /**
    * Invalidate all cache for a specific case
    */
@@ -413,7 +366,6 @@ export class CaseQueryCache extends QueryCache {
     await this.invalidateNamespace(`case:${caseId}`);
   }
 }
-
 /**
  * RAG Query Cache
  * Caches RAG (Retrieval Augmented Generation) results
@@ -426,7 +378,6 @@ export class RAGQueryCache extends QueryCache {
       warming: { enabled: true, patterns: ['common-legal-questions'] },
     });
   }
-
   /**
    * Cache RAG query with context awareness
    */
@@ -441,27 +392,23 @@ export class RAGQueryCache extends QueryCache {
       contextIds: contextIds.sort(), // Sort for consistent hashing
       type: 'rag-query',
     };
-
     return this.getOrQuery(query, ragFn, {
       ttl: options?.ttl,
       namespace: 'rag',
     });
   }
 }
-
 // Export singleton instances
 export const vectorSearchCache = new VectorSearchCache();
 export const caseQueryCache = new CaseQueryCache();
 export const ragQueryCache = new RAGQueryCache();
 export const defaultQueryCache = new QueryCache();
-
 /**
  * Integration examples
  */
 export const QUERY_CACHE_EXAMPLES = `
 // 1. BASIC QUERY CACHING
 import { defaultQueryCache } from '$lib/server/optimize/query-cache';
-
 const { data, cacheHit } = await defaultQueryCache.getOrQuery(
   { caseId: '123', type: 'evidence-list' },
   async () => {
@@ -470,13 +417,10 @@ const { data, cacheHit } = await defaultQueryCache.getOrQuery(
   },
   { ttl: 3600, namespace: 'evidence' }
 );
-
 console.log(\`Cache \${cacheHit.hit ? 'HIT' : 'MISS'} (\${cacheHit.source})\`);
 console.log(\`Latency: \${cacheHit.latency.toFixed(2)}ms\`);
-
 // 2. VECTOR SEARCH CACHING
 import { vectorSearchCache } from '$lib/server/optimize/query-cache';
-
 const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSearch(
   queryEmbedding,
   async () => {
@@ -485,10 +429,8 @@ const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSea
   },
   { ttl: 1800, caseId: '123' }
 );
-
 // 3. RAG QUERY CACHING
 import { ragQueryCache } from '$lib/server/optimize/query-cache';
-
 const { data: ragResponse, cacheHit } = await ragQueryCache.cacheRAGQuery(
   "What are the key evidence in this case?",
   ['case_123', 'doc_456'],
@@ -498,19 +440,14 @@ const { data: ragResponse, cacheHit } = await ragQueryCache.cacheRAGQuery(
   },
   { ttl: 600 }
 );
-
 // 4. CACHE INVALIDATION
 import { caseQueryCache } from '$lib/server/optimize/query-cache';
-
 // After updating case data
 await caseQueryCache.invalidateCase('123');
-
 // 5. CACHE WARMING (ON SERVER START)
 import { defaultQueryCache } from '$lib/server/optimize/query-cache';
-
 // In hooks.server.ts
 await defaultQueryCache.warmCache();
-
 // 6. CACHE STATISTICS
 const stats = await defaultQueryCache.getStats();
 console.log(\`Hit rate: \${stats.redis.hitRate.toFixed(1)}%\`);

@@ -18,8 +18,8 @@ export interface WASMModule {
 }
 export class WASMLLMService {
 	private wasmModule: WASMModule | null = null;
-	private isInitialized = false;
-	private modelLoaded = false;
+	private isInitialized = $state(false);
+	private modelLoaded = $state(false);
 	private currentConfig: WASMLLMConfig | null = null;
 	// Model cache
 	private modelCache = new Map<string, ArrayBuffer>();
@@ -340,8 +340,8 @@ export class WASMLLMService {
 			this.wasmModule._cleanup();
 		}
 		this.modelCache.clear();
-		this.isInitialized = false;
-		this.modelLoaded = false;
+		this.isInitialized = $state(false);
+		this.modelLoaded = $state(false);
 		this.wasmModule = null;
 		console.log('🧹 WASM LLM service disposed');
 	}

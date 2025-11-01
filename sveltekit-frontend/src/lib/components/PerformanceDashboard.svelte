@@ -19,7 +19,6 @@
     database: 'healthy' | 'warning' | 'error';
     storage: number;
   }
-
   // --- NEW: strongly-typed logs ---
   interface LogEntry {
     id?: string | number;
@@ -28,7 +27,6 @@
     message?: string;
     metadata?: Record<string, any>;
   }
-
   const metrics = writable<PerformanceMetrics | null>(null);
   const health = writable<SystemHealth | null>(null);
   const logs = writable<LogEntry[]>([]); // changed from unknown[]
@@ -94,7 +92,6 @@
     return hour === 0 ? '12 AM' : hour === 12 ? '12 PM' : hour < 12 ? `${hour} AM` : `${hour - 12} PM`;
   }
 </script>
-
 <svelte:head>
   <title>Performance Dashboard - Legal Case Management</title>
 </svelte:head>
@@ -138,8 +135,7 @@
           <div class="space-y-4" style="width: {$health.storage}%"></div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Performance Metrics -->
   {#if $metrics}
     <div class="space-y-4">
@@ -162,7 +158,7 @@
     <div class="space-y-4">
       <h2>Slowest Endpoints</h2>
       <div class="space-y-4">
-        {#each $metrics.slowestEndpoints as endpoint}
+        {#each Array.isArray($metrics.slowestEndpoints) ? $metrics.slowestEndpoints : [] as endpoint}
           <div class="space-y-4">
             <div class="space-y-4">{endpoint.endpoint}</div>
             <div class="space-y-4">
@@ -177,7 +173,7 @@
     <div class="space-y-4">
       <h2>Peak Hours</h2>
       <div class="space-y-4">
-        {#each $metrics.peakHours as peak}
+        {#each Array.isArray($metrics.peakHours) ? $metrics.peakHours : [] as peak}
           <div class="space-y-4">
             <div
               class="space-y-4"
@@ -188,13 +184,12 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Recent Logs -->
   <div class="space-y-4">
     <h2>Recent System Logs</h2>
     <div class="space-y-4 logs-container">
-      {#each $logs as log}
+      {#each Array.isArray($logs) ? $logs : [] as log}
         <div class="log-entry {log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'info'}">
           <div class="log-timestamp">{log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}</div>
           <div class="log-level">{(log.level || '').toUpperCase()}</div>
@@ -202,14 +197,12 @@
           {#if log.metadata}
             <div class="log-metadata">
               {JSON.stringify(log.metadata, null, 2)}
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .performance-dashboard {
@@ -311,7 +304,7 @@
   .progress-fill {
     height: 100%;
     background: var(--primary-color);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .chart-section {
     background: white;
@@ -460,4 +453,3 @@
     color: #6b7280;
   }
 </style>
-

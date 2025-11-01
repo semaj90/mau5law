@@ -16,7 +16,7 @@ declare module 'fuse.js' {
   interface FuseResult<T> {
     item: T;
     score?: number;
-    matches?: unknown[];
+    matches?: any[];
   }
   class Fuse<T> {
     constructor(list: T[], options?: FuseOptions<T>);
@@ -60,7 +60,7 @@ declare module '@tiptap/extension-table' {
     resizable?: boolean;
     handleWidth?: number;
     cellMinWidth?: number;
-    View?: unknown;
+    View?: any;
     lastColumnResizable?: boolean;
     allowTableNodeSelection?: boolean;
   }
@@ -74,8 +74,8 @@ declare module '@tailwindcss/postcss' {
 // Global type declarations
 declare global {
   interface Window {
-    __TAURI__?: unknown;
-    electronAPI?: unknown;
+    __TAURI__?: any;
+    electronAPI?: any;
   }
   interface HTMLElement {
     inert?: boolean;

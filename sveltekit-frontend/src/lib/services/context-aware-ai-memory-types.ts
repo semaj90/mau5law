@@ -141,7 +141,7 @@ export interface GameElements {
   confidenceDisplay: string;
   responseRarity: 'epic' | 'rare' | 'common';
   experienceGained: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface AIResponse {

@@ -9,7 +9,7 @@ export const GET = async () => {
     return json(healthReport, {
       status: healthReport.overall_health === 'healthy' ? 200 : healthReport.overall_health === 'degraded' ? 206 : 503,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         overall_health: 'critical',
@@ -22,7 +22,7 @@ export const GET = async () => {
   }
 };
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {

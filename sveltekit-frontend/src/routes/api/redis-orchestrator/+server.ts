@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
       ...detailedStats,
       recommendations: generatePerformanceRecommendations(comprehensiveStats),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('🎮 Redis orchestrator status check failed:', err);
     throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
       orchestrated: false,
       processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('🎮 Redis orchestrator processing failed:', err);
     throw error(500, `Query processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
@@ -130,8 +130,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
       message: message,
       cleared_keys: clearedCount,
     });
-  } catch (err: unknown) {
-    // Changed: 'err' to: 'err: unknown' for type safety
+  } catch (err: any) {
+    // Changed: 'err' to: 'err: any' for type safety
     console.error('🎮 Cache clear failed:', err);
     throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }

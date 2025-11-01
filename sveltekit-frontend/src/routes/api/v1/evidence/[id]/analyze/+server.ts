@@ -53,12 +53,12 @@ type EvidenceRecord = {
   metadata?: {
     fileSize?: number | string;
     aiAnalysis?: Record<string, AnalysisAggregate> | undefined;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   createdAt?: string;
   updatedAt?: string;
   // other fields allowed but unknown
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type AnalysisOptions = {
@@ -82,7 +82,7 @@ type BaseAnalysisResult = {
   recommendations: string[];
   alerts: string[];
   timestamp?: string;
-  [type: string]: unknown;
+  [type: string]: any;
 };
 
 type ContentAnalysisResult = BaseAnalysisResult & {
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         aiServiceConfig: AI_SERVICE_CONFIG,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error analyzing evidence:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -285,7 +285,7 @@ async function performAIAnalysis(
     analysisResults.recommendations = generateRecommendations(analysisResults);
     analysisResults.alerts = generateAlerts(analysisResults);
     return analysisResults;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('AI analysis error:', error);
     const details = error instanceof Error ? error.message : 'Unknown error';
     return {

@@ -3,13 +3,13 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Separator } from '$lib/components/ui/separator';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { Progress } from '$lib/components/ui/progress';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Separator } from '$lib/components/ui/separator.svelte'';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
+  import { Progress } from '$lib/components/ui/progress.svelte'';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes
@@ -237,7 +237,7 @@
           break;
       }
     }
-    analysisInProgress = false;
+    analysisInProgress = $state(false);
     detectiveSystem.status = 'complete';
     detectiveSystem.processingStage = 'Motive analysis complete';
     detectiveSystem.motiveConfidence = calculateOverallConfidence();
@@ -615,7 +615,7 @@
             <div>
               <div class="text-sm text-gray-600 mb-2">Psychological Markers</div>
               <div class="flex flex-wrap gap-2">
-                {#each suspectProfile.psychologicalMarkers as marker}
+                {#each Array.isArray(suspectProfile.psychologicalMarkers) ? suspectProfile.psychologicalMarkers : [] as marker}
                   <Badge class="bg-transparent border text-sm px-2 py-0.5">{marker}</Badge>
                 {/each}
               </div>
@@ -659,7 +659,7 @@
     </TabsContent>
     <TabsContent value="motives">
       <div class="space-y-4">
-        {#each motiveMatrix as motive}
+        {#each Array.isArray(motiveMatrix) ? motiveMatrix : [] as motive}
           <Card>
             <CardHeader>
               <div class="flex items-center justify-between">
@@ -678,7 +678,7 @@
                 <div>
                   <div class="text-sm font-medium text-green-700 mb-2">Supporting Evidence</div>
                   <ul class="text-sm space-y-1">
-                    {#each motive.supportingEvidence as evidence}
+                    {#each Array.isArray(motive.supportingEvidence) ? motive.supportingEvidence : [] as evidence}
                       <li class="flex items-center gap-2">
                         <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                         {evidence}
@@ -689,7 +689,7 @@
                 <div>
                   <div class="text-sm font-medium text-red-700 mb-2">Contradicting Evidence</div>
                   <ul class="text-sm space-y-1">
-                    {#each motive.contradictingEvidence as evidence}
+                    {#each Array.isArray(motive.contradictingEvidence) ? motive.contradictingEvidence : [] as evidence}
                       <li class="flex items-center gap-2">
                         <div class="w-2 h-2 bg-red-500 rounded-full"></div>
                         {evidence}
@@ -705,7 +705,7 @@
               <div>
                 <div class="text-sm font-medium text-purple-700 mb-2">Trigger Events</div>
                 <div class="flex flex-wrap gap-2">
-                  {#each motive.triggerEvents as trigger}
+                  {#each Array.isArray(motive.triggerEvents) ? motive.triggerEvents : [] as trigger}
                     <Badge class="bg-transparent border text-sm px-2 py-0.5 text-purple-700">{trigger}</Badge>
                   {/each}
                 </div>
@@ -722,7 +722,7 @@
         </CardHeader>
         <CardContent>
           <div class="space-y-4">
-            {#each timelineEvents as event}
+            {#each Array.isArray(timelineEvents) ? timelineEvents : [] as event}
               <div class="border-l-4 border-blue-500 pl-4">
                 <div class="flex items-center justify-between mb-2">
                   <div class="font-medium">{new Date(event.timestamp).toLocaleString()}</div>
@@ -804,7 +804,7 @@
     </TabsContent>
     <TabsContent value="recommendations">
       <div class="space-y-4">
-        {#each investigativeRecommendations as rec}
+        {#each Array.isArray(investigativeRecommendations) ? investigativeRecommendations : [] as rec}
           <Card>
             <CardHeader>
               <div class="flex items-center justify-between">
@@ -829,7 +829,7 @@
                 <div>
                   <div class="text-sm font-medium text-gray-700">Required Resources</div>
                   <div class="flex flex-wrap gap-2 mt-1">
-                    {#each rec.resources ?? [] as resource}
+                    {#each Array.isArray(rec.resources ?? []) ? rec.resources ?? [] : [] as resource}
                       <Badge class="bg-transparent border text-sm px-2 py-0.5">{resource}</Badge>
                     {/each}
                   </div>
@@ -848,7 +848,7 @@
       </CardHeader>
       <CardContent>
         <div class="grid gap-4">
-          {#each behaviorPatterns as pattern}
+          {#each Array.isArray(behaviorPatterns) ? behaviorPatterns : [] as pattern}
             <div class="border rounded-lg p-4">
               <div class="flex items-center justify-between mb-2">
                 <div class="font-medium">{pattern.pattern}</div>
@@ -860,7 +860,7 @@
               <div class="text-sm text-gray-600">
                 <div class="font-medium mb-1">Timeline:</div>
                 <ul class="list-disc list-inside space-y-1">
-                  {#each pattern.timeline as event}
+                  {#each Array.isArray(pattern.timeline) ? pattern.timeline : [] as event}
                     <li>{event}</li>
                   {/each}
                 </ul>
@@ -881,7 +881,7 @@
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Primary Traits</div>
             <div class="space-y-1">
-              {#each psychologicalProfile.primaryTraits as trait}
+              {#each Array.isArray(psychologicalProfile.primaryTraits) ? psychologicalProfile.primaryTraits : [] as trait}
                 <div class="text-sm bg-blue-50 p-2 rounded">{trait}</div>
               {/each}
             </div>
@@ -889,7 +889,7 @@
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Risk Factors</div>
             <div class="space-y-1">
-              {#each psychologicalProfile.riskFactors as factor}
+              {#each Array.isArray(psychologicalProfile.riskFactors) ? psychologicalProfile.riskFactors : [] as factor}
                 <div class="text-sm bg-red-50 p-2 rounded">{factor}</div>
               {/each}
             </div>
@@ -897,7 +897,7 @@
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Protective Factors</div>
             <div class="space-y-1">
-              {#each psychologicalProfile.protectiveFactors as factor}
+              {#each Array.isArray(psychologicalProfile.protectiveFactors) ? psychologicalProfile.protectiveFactors : [] as factor}
                 <div class="text-sm bg-green-50 p-2 rounded">{factor}</div>
               {/each}
             </div>

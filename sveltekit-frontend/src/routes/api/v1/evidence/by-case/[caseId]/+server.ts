@@ -8,7 +8,7 @@ import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
 // Helper: safely extract user id from locals (added)
-function getUserId(locals: unknown): string {
+function getUserId(locals: any): string {
   const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } };
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
     // Get evidence for the case
     // Replace loose-typed evidenceResult with typed version
-    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: unknown } =
+    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any } =
       await evidenceService.listByCase(caseId, serviceOptions);
 
     if (!evidenceResult.success) {
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 if (!d) return undefined;
                 const ev = d.embeddingVector;
                 if (Array.isArray(ev) && ev.every(v => typeof v === 'number')) return ev as number[];
-                const legacy = (d as { embedding?: unknown }).embedding;
+                const legacy = (d as { embedding?: any }).embedding;
                 if (Array.isArray(legacy) && legacy.every(v => typeof v === 'number')) return legacy as number[];
                 return undefined;
               };
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
               };
             }
             return evidence;
-          } catch (analysisError: unknown) {
+          } catch (analysisError: any) {
             // Narrow & log unknown analysis errors safely
             console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError);
             return evidence;
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         caseId,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error retrieving evidence by case:', err);
 
     // Zod validation errors
@@ -236,7 +236,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 // Helper to avoid JSON.stringify circular reference crashes
 function getCircularReplacer() {
   const seen = new WeakSet();
-  return (_key: string, value: unknown) => {
+  return (_key: string, value: any) => {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value as object)) return '[Circular]';
       seen.add(value as object);
@@ -250,11 +250,11 @@ type AiAnalysis = {
   keyTerms: string[];
   classification?: string;
   importance: number;
-  entities: unknown[];
+  entities: any[];
   summary?: string;
   embeddingVector?: number[];
   // legacy/older responses may include `embedding` with unknown shape
-  embedding?: unknown;
+  embedding?: any;
   confidence: number;
   analyzedAt: string;
   analyzedBy: string;
@@ -263,7 +263,7 @@ type AiAnalysis = {
 type EvidenceMetadata = {
   fileSize?: number;
   aiAnalysis?: AiAnalysis | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type EvidenceItem = {
@@ -272,5 +272,5 @@ type EvidenceItem = {
   metadata?: EvidenceMetadata;
   content?: string;
   title?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };

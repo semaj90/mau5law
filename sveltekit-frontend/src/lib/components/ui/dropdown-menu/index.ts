@@ -7,7 +7,6 @@ export { default as DropdownMenuItem } from './DropdownMenuItem.svelte';
 // Re-export bits-ui components that don't need customization
 // Avoid direct dependency on: 'bits-ui' runtime shape; provide a small adapter export
 import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-
 export async function DropdownMenu() {
   const ns = await getBitsNamespace();
   return ns?.DropdownMenu ?? ns;

@@ -8,10 +8,10 @@
     title?: string;
     dismissible?: boolean;
     icon?: any;
-    children?: any;
   }
-  let { variant = 'info', title, dismissible = false, icon, children }: Props = $props();
-  let visible = $state(true);
+  let { variant = 'info', title, dismissible = false, icon } = $props<Props>();
+  let visible = true;
+
   function dismiss() {
     visible = false;
   }
@@ -30,7 +30,7 @@
           <div class="alert-title">{title}</div>
         {/if}
         <div class="alert-message">
-          {@render children?.()}
+          <slot />
         </div>
       </div>
       {#if dismissible}
@@ -46,7 +46,7 @@
     padding: 16px;
     margin: 16px 0;
     border: 1px solid;
-    position relative;
+    position: relative;
   }
   .alert-content {
     display: flex;
@@ -54,12 +54,12 @@
     gap: 12px;
   }
   .alert-icon {
-    flex-shrink: 0,
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
   }
   .alert-body {
-    flex: 1,
+    flex: 1;
   }
   .alert-title {
     font-weight: 600;
@@ -69,7 +69,7 @@
     line-height: 1.5;
   }
   .alert-dismiss {
-    position absolute;
+    position: absolute;
     top: 12px;
     right: 12px;
     background: none;
@@ -85,7 +85,7 @@
   .alert-dismiss:hover {
     opacity: 1;
   }
-/* Variants */ {}
+  /* Variants */
   .alert-info {
     background: #eff6ff;
     border-color: #3b82f6;
@@ -113,4 +113,3 @@
     }
   }
 </style>
-

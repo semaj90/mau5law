@@ -38,7 +38,7 @@
     enableParticles?: boolean;
     glowIntensity?: number;
     // Content
-    children?: unknown;
+    children?: any;
     class?: string;
   }
   let {
@@ -149,7 +149,7 @@
       createParticleEffect();
     }
     setTimeout(() => {
-      isPressed = false;
+      isPressed = $state(false);
     }, 150);
     onClick?.();
     // ondispatch removed;
@@ -161,7 +161,7 @@
     // ondispatch removed;
   }
   const handleUnhover = () => {
-    isHovered = false;
+    isHovered = $state(false);
   }
   const handleFocus = () => {
     if (disabled) return;
@@ -170,7 +170,7 @@
     // ondispatch removed;
   }
   const handleBlur = () => {
-    isFocused = false;
+    isFocused = $state(false);
   }
   const createParticleEffect = () => {
     // Simple particle effect using CSS animations
@@ -181,7 +181,7 @@
       const particle = document.createElement('div');
       particle.className = 'n64-particle';
       particle.style.cssText = `
-        position absolute;
+        position: absolute;
         width: 4px;
         height: 4px;
         background: radial-gradient(circle, #fff, #4a90e2);
@@ -342,14 +342,12 @@
     </div>
   {:else}
     <div class="button-content">
-      {@render children?.()}
+      <slot />
     </div>
     {#if enableLighting}
-      <div class="lighting-overlay"></div>
-    {/if}
+      <div class="lighting-overlay">{/if}
     {#if enableReflections}
-      <div class="reflection-overlay"></div>
-    {/if}
+      <div class="reflection-overlay">{/if}
 </BitsButton.Root>
 <style>
   :global(.n64-3d-button) {
@@ -381,7 +379,7 @@
 /* Text styling */ text-transform: uppercase;
     letter-spacing: 0.8px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-/* Layout */ position relative;
+/* Layout */ position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -390,11 +388,11 @@
 /* Fog effect */ background-image: var(--material-bg), radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
 /* Button content wrapper */ .button-content {
-    position relative;
+    position: relative;
     z-index: 2,
   }
 /* Lighting overlay */ .lighting-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -404,7 +402,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255,
     z-index: 1,
   }
 /* Reflection overlay */ .reflection-overlay {
-    position absolute;
+    position: absolute;
     top: 10%;
     left: 10%;
     right: 60%;
@@ -508,7 +506,7 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
   }
 /* Fog effects */ :global($1) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,

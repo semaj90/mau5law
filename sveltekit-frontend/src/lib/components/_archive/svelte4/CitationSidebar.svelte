@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
       <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="container mx-auto px-4" />
     </div>
     <select bind:value={selectedCategory} class="container mx-auto px-4">
-      {#each categories as category}
+      {#each Array.isArray(categories) ? categories : [] as category}
         <option value={category.value}>{category.label}</option>
       {/each}
     </select>
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Tags -->
           {#if (citation.tags ?? []).length > 0}
             <div class="citation-tags">
-              {#each citation.tags as tag}
+              {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
                 <span class="category-badge">{tag}</span>
               {/each}
             </div>

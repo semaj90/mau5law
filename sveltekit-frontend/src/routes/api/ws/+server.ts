@@ -73,13 +73,13 @@ function initializeWebSocket() {
     // Handle attention tracking
     socket.on(
       'user-attention',
-      (data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: unknown }) => {
+      (data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }) => {
         // Track user attention for AI context switching
         trackUserAttention(socket.id, data);
       }
     );
     // Handle real-time collaboration
-    socket.on('document-edit', (data: { documentId: string; change: unknown; userId: string }) => {
+    socket.on('document-edit', (data: { documentId: string; change: any; userId: string }) => {
       // Destructure and forward unknown change payload as-is
       const { documentId, change, userId } = data;
       socket.to(`doc-${documentId}`).emit('document-change', {
@@ -103,7 +103,7 @@ function setupRedisSubscriptions() {
   if (!io || pubSub) return;
   pubSub = createPubSubHelper({
     patterns: ['progress:*', 'result:*', 'error:*'],
-    onMessage: ({ channel, message }: { channel: unknown; message: unknown }) => {
+    onMessage: ({ channel, message }: { channel: any; message: any }) => {
       metrics.pubsubMessages++;
       metrics.lastMessageAt = new Date().toISOString();
       try {
@@ -167,7 +167,7 @@ function setupRedisSubscriptions() {
 // Track user attention for AI context switching
 async function trackUserAttention(
   socketId: string,
-  data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: unknown }
+  data: { type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'; timestamp: string; metadata?: any }
 ): Promise<void> {
   if (!redisPrimary) return;
   const attentionEvent = {
@@ -176,7 +176,7 @@ async function trackUserAttention(
     serverTimestamp: new Date().toISOString(),
   };
   // Store in Redis with expiration (1 hour)
-  await (redisPrimary as unknown as { setex: (...args: unknown[]) => Promise<unknown> }).setex(
+  await (redisPrimary as unknown as { setex: (...args: any[]) => Promise<unknown> }).setex(
     `attention:${socketId}:${Date.now()}`,
     3600,
     JSON.stringify(attentionEvent)
@@ -210,7 +210,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
         confidence: context.confidence,
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Narrow unknown to preserve useful logging without using `any`
     const errForLog = error instanceof Error ? { message: error.message, stack: error.stack } : String(error);
     console.error('❌ AI context switching failed:', errForLog);
@@ -230,7 +230,7 @@ async function getCurrentProgress(uploadId: string): Promise<unknown | null> {
   }
 }
 // Broadcast progress update to specific rooms
-export function _broadcastProgress(uploadId: string, caseId: string, progress: unknown) {
+export function _broadcastProgress(uploadId: string, caseId: string, progress: any) {
   if (!io) return;
   const progressData = {
     uploadId,
@@ -244,7 +244,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, progress: u
   io.to(`case-${caseId}`).emit('case-progress', progressData);
 }
 // Broadcast tensor processing results
-export function _broadcastTensorResult(jobId: string, result: unknown) {
+export function _broadcastTensorResult(jobId: string, result: any) {
   if (!io) return;
   io.to(`tensor-${jobId}`).emit('tensor-result', {
     jobId,
@@ -253,7 +253,7 @@ export function _broadcastTensorResult(jobId: string, result: unknown) {
   });
 }
 // Broadcast search results in real-time
-export function _broadcastSearchResults(searchId: string, results: unknown) {
+export function _broadcastSearchResults(searchId: string, results: any) {
   if (!io) return;
   io.to(`search-${searchId}`).emit('search-results', {
     searchId,
@@ -336,19 +336,19 @@ export function _closeWebSocket() {
   }
 }
 // Utility to check if an object has a disconnect method
-function hasDisconnect(obj: unknown): obj is { disconnect: () => void } {
+function hasDisconnect(obj: any): obj is { disconnect: () => void } {
   // Ensure obj is a non-null object, has the: 'disconnect' key, and that key is a function
   return (
     typeof obj === 'object' &&
     obj !== null &&
     'disconnect' in obj &&
-    typeof (obj as { disconnect?: unknown }).disconnect === 'function'
+    typeof (obj as { disconnect?: any }).disconnect === 'function'
   );
 }
 // Utility to check if an object has a quit method (avoids using `any`)
-function hasQuit(obj: unknown): obj is { quit: () => void | Promise<unknown> } {
+function hasQuit(obj: any): obj is { quit: () => void | Promise<unknown> } {
   return (
-    typeof obj === 'object' && obj !== null && 'quit' in obj && typeof (obj as { quit?: unknown }).quit === 'function'
+    typeof obj === 'object' && obj !== null && 'quit' in obj && typeof (obj as { quit?: any }).quit === 'function'
   );
 }
 // Expose metrics endpoint data (can be imported by health/metrics route)

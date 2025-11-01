@@ -191,10 +191,10 @@
           break;
       }
     }
-    analysisInProgress = false;
+    analysisInProgress = $state(false);
     legalSystem.status = 'complete';
     legalSystem.processingStage = 'Precedent analysis complete';
-    legalSystem.vectorSearchActive = false;
+    legalSystem.vectorSearchActive = $state(false);
     legalSystem.aiConfidence = calculateOverallConfidence();
   }
   function startSystemMonitoring() {
@@ -608,7 +608,7 @@
       </TabsList>
       <TabsContent value="matches">
         <div class="space-y-4">
-          {#each precedentMatches as match}
+          {#each Array.isArray(precedentMatches) ? precedentMatches : [] as match}
             <NesCard>
               <NesCardHeader>
                 <div class="flex items-start justify-between">
@@ -637,7 +637,7 @@
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">Key Facts</div>
                     <ul class="text-sm space-y-1">
-                      {#each match.keyFacts as fact}
+                      {#each Array.isArray(match.keyFacts) ? match.keyFacts : [] as fact}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                           {fact}
@@ -665,7 +665,7 @@
                   <div>
                     <div class="text-sm font-medium text-orange-700 mb-2">Distinguishing Factors</div>
                     <div class="flex flex-wrap gap-2">
-                      {#each match.distinguishingFactors as factor}
+                      {#each Array.isArray(match.distinguishingFactors) ? match.distinguishingFactors : [] as factor}
                         <Badge variant="ghost" class="text-orange-700 border-orange-300">{factor}</Badge>
                       {/each}
                     </div>
@@ -678,7 +678,7 @@
       </TabsContent>
       <TabsContent value="reasoning">
         <div class="space-y-4">
-          {#each legalReasoningChain as step}
+          {#each Array.isArray(legalReasoningChain) ? legalReasoningChain : [] as step}
             <NesCard>
               <NesCardHeader>
                 <div class="flex items-center justify-between">
@@ -703,7 +703,7 @@
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">Supporting Cases</div>
                     <div class="flex flex-wrap gap-2">
-                      {#each step.supportingCases as caseId}
+                      {#each Array.isArray(step.supportingCases) ? step.supportingCases : [] as caseId}
                         <Badge variant="ghost" class="text-blue-700 border-blue-300">{caseId}</Badge>
                       {/each}
                     </div>
@@ -711,7 +711,7 @@
                   <div>
                     <div class="text-sm font-medium text-red-700 mb-2">Vulnerabilities</div>
                     <ul class="text-sm space-y-1">
-                      {#each step.vulnerabilities as vulnerability}
+                      {#each Array.isArray(step.vulnerabilities) ? step.vulnerabilities : [] as vulnerability}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
                           {vulnerability}
@@ -727,7 +727,7 @@
       </TabsContent>
       <TabsContent value="citations">
         <div class="space-y-4">
-          {#each citationNetworkMap as network}
+          {#each Array.isArray(citationNetworkMap) ? citationNetworkMap : [] as network}
             <NesCard>
               <NesCardHeader>
                 <NesCardTitle>Citation Network: {network.caseId}</NesCardTitle>
@@ -756,7 +756,7 @@
                     </div>
                     <div class="max-h-40 overflow-y-auto">
                       <div class="flex flex-wrap gap-1">
-                        {#each network.citingCases.slice(0, 10) as citingCase}
+                        {#each Array.isArray(network.citingCases.slice(0, 10)) ? network.citingCases.slice(0, 10) : [] as citingCase}
                           <Badge variant="ghost" class="text-xs">{citingCase}</Badge>
                         {/each}
                         {#if network.citingCases.length > 10}
@@ -771,7 +771,7 @@
                     </div>
                     <div class="max-h-40 overflow-y-auto">
                       <div class="flex flex-wrap gap-1">
-                        {#each network.citedCases.slice(0, 10) as citedCase}
+                        {#each Array.isArray(network.citedCases.slice(0, 10)) ? network.citedCases.slice(0, 10) : [] as citedCase}
                           <Badge variant="ghost" class="text-xs">{citedCase}</Badge>
                         {/each}
                         {#if network.citedCases.length > 10}
@@ -844,7 +844,7 @@
               <div>
                 <div class="text-sm font-medium text-gray-700 mb-2">Recommendations</div>
                 <ul class="space-y-1">
-                  {#each applicabilityAnalysis.recommendations as recommendation}
+                  {#each Array.isArray(applicabilityAnalysis.recommendations) ? applicabilityAnalysis.recommendations : [] as recommendation}
                     <li class="flex items-start gap-2 text-sm">
                       <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                       {recommendation}
@@ -882,7 +882,7 @@
                   <div>
                     <div class="text-sm font-medium text-green-700 mb-2">Strengths</div>
                     <ul class="text-sm space-y-1">
-                      {#each strengthAssessment.strengths as strength}
+                      {#each Array.isArray(strengthAssessment.strengths) ? strengthAssessment.strengths : [] as strength}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                           {strength}
@@ -893,7 +893,7 @@
                   <div>
                     <div class="text-sm font-medium text-red-700 mb-2">Vulnerabilities</div>
                     <ul class="text-sm space-y-1">
-                      {#each strengthAssessment.vulnerabilities as vulnerability}
+                      {#each Array.isArray(strengthAssessment.vulnerabilities) ? strengthAssessment.vulnerabilities : [] as vulnerability}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
                           {vulnerability}

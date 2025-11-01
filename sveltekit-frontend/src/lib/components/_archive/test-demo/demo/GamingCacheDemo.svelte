@@ -346,14 +346,14 @@ and performance monitoring across N64 and YoRHa gaming components
       }
     } catch (error) {
       console.error('[Gaming Cache Demo] Demo start failed:', error);
-      demoStarted = false;
+      demoStarted = $state(false);
     }
   }
   /**
    * Stop demo scenarios
    */
   function stopDemo() {
-    demoStarted = false;
+    demoStarted = $state(false);
     if (demoTimer) {
       clearInterval(demoTimer);
       demoTimer = null;
@@ -543,7 +543,7 @@ and performance monitoring across N64 and YoRHa gaming components
         await tick(); // Allow UI updates
       }
     }
-    stressTestMode = false;
+    stressTestMode = $state(false);
     console.log('[Gaming Cache Demo] Stress test completed');
   }
   /**
@@ -600,7 +600,7 @@ and performance monitoring across N64 and YoRHa gaming components
   <nav class="border-b border-purple-500/20 bg-black/10">
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex space-x-8 overflow-x-auto">
-        {#each ['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics'] as tab}
+        {#each Array.isArray(['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics']) ? ['overview', 'n64', 'yorha', 'performance', 'wasm', 'analytics'] : [] as tab}
           <button
             class="py-4 px-2 border-b-2 transition-colors whitespace-nowrap {
               activeDemo === tab
@@ -796,7 +796,7 @@ and performance monitoring across N64 and YoRHa gaming components
           <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 backdrop-blur-sm">
             <h3 class="text-lg font-semibold mb-4 text-purple-300">WASM Performance</h3>
             <div class="space-y-4">
-              {#each ['texture-compression', 'shader-optimization', 'memory-defragmentation'] as operation}
+              {#each Array.isArray(['texture-compression', 'shader-optimization', 'memory-defragmentation']) ? ['texture-compression', 'shader-optimization', 'memory-defragmentation'] : [] as operation}
                 <div class="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
                   <span class="text-slate-300 capitalize">{operation.replace('-', ' ')}</span>
                   <div class="flex items-center gap-2">

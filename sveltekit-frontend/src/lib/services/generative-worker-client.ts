@@ -43,7 +43,7 @@ export class GenerativeWorkerClient {
         } else if (msg.type === 'TASK_ERROR' || msg.type === 'TASK_CANCELLED') {
           this.pending.delete(taskId);
           const errPayload = msg.payload as unknown;
-          const extractErrorMessage = (p: unknown): string => {
+          const extractErrorMessage = (p: any): string => {
             if (p == null) return 'Worker error';
             if (typeof p === 'string') return p;
             if (typeof p === 'object') {

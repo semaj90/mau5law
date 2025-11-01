@@ -100,14 +100,14 @@ export class RAGPipelineIntegrator {
       }));
       // Step 3: Cross-encoder reranking for improved relevance
       let rerankedResults = searchResults;
-      let rerankingApplied = false;
+      let rerankingApplied = $state(false);
       if (this.config.enableCrossEncoderReranking) {
         rerankedResults = await this.applyCrossEncoderReranking(query, searchResults);
         rerankingApplied = true;
       }
       // Step 4: MMR-based summarization with diversity optimization
       let summary = '';
-      let summaryGenerated = false;
+      let summaryGenerated = $state(false);
       if (this.config.enableMMRSummarization) {
         const topDocuments = rerankedResults
           .filter((result) => result.score >= this.config.rerankThreshold)

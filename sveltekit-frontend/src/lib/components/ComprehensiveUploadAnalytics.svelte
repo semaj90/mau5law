@@ -112,16 +112,13 @@
         expertise: expertiseLevel
       }
     } as any;
-
     uploadActor = createUploadAnalyticsActor({
       userAnalytics
     });
-
     // Subscribe to state changes
     uploadActor.subscribe((state: any) => {
       machineState = state;
     });
-
     uploadActor.start?.();
   }
   function setupUserTracking() {
@@ -187,7 +184,7 @@
   }
   function handleDrop(evt: DragEvent) {
     evt.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     if (evt.dataTransfer?.files) {
       const files = Array.from(evt.dataTransfer.files);
       selectFiles(files);
@@ -198,7 +195,7 @@
     dragOver = true;
   }
   function handleDragLeave() {
-    dragOver = false;
+    dragOver = $state(false);
   }
   function selectFiles(files: File[]) {
     // Filter by allowed types
@@ -296,14 +293,13 @@
       <div class="user-insights-badge">
         <span class="expertise-level">{currentUserInsights.behaviorPattern}</span>
         <span class="engagement-score">Engagement: {Math.round(engagementScore * 100)}%</span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Contextual AI Prompts - Before Upload -->
   {#if enableAIPrompts && beforeUploadPrompts.length > 0}
     <div class="ai-prompts before-upload">
       <h3>💡 AI Suggestions</h3>
-      {#each beforeUploadPrompts as prompt}
+      {#each Array.isArray(beforeUploadPrompts) ? beforeUploadPrompts : [] as prompt}
         <div class="ai-prompt" class:high-confidence={prompt.confidence > 0.8}>
           <p class="prompt-content">{prompt.content}</p>
           <div class="prompt-actions">
@@ -325,8 +321,7 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- File Selection Area -->
   <div
     class="file-drop-zone"
@@ -380,8 +375,7 @@
                 {:else}
                   <span class="status-error">✗ Failed</span>
                 {/if}
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
         {#if !isUploading && !isComplete}
@@ -392,16 +386,14 @@
             <button class="nes-btn" onclick={() => { selectedFiles = []; }}>
               Clear Files
             </button>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
   </div>
   <!-- Contextual AI Prompts - During Upload -->
   {#if enableAIPrompts && duringUploadPrompts.length > 0 && isUploading}
     <div class="ai-prompts during-upload">
       <h3>🤖 Processing Insights</h3>
-      {#each duringUploadPrompts as prompt}
+      {#each Array.isArray(duringUploadPrompts) ? duringUploadPrompts : [] as prompt}
         <div class="ai-prompt processing">
           <p class="prompt-content">{prompt.content}</p>
           <div class="prompt-confidence">
@@ -409,8 +401,7 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Upload Progress -->
   {#if isUploading}
     <div class="upload-progress">
@@ -448,8 +439,7 @@
           Cancel Upload
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Upload Results -->
   {#if isComplete && uploadResults.length > 0}
     <div class="upload-results">
@@ -469,7 +459,7 @@
         </div>
       </div>
       <div class="results-list">
-        {#each uploadResults as result}
+        {#each Array.isArray(uploadResults) ? uploadResults : [] as result}
           <div class="result-item" class:success={(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success} class:error={!(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success}>
             <div class="result-info">
               <span class="result-filename">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).fileName}</span>
@@ -487,33 +477,28 @@
                     {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities as entity}
                       <span class="entity-tag">{entity.value} ({entity.type})</span>
                     {/each}
-                  </div>
-                {/if}
+                  {/if}
                 {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags}
                   <div class="suggested-tags">
                     <strong>Suggested Tags:</strong>
                     {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags as tag}
                       <span class="tag">{tag}</span>
                     {/each}
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
             {#if !(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
               <div class="error-message">
                 <strong>Error:</strong> {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Contextual AI Prompts - After Upload -->
   {#if enableAIPrompts && afterUploadPrompts.length > 0 && isComplete}
     <div class="ai-prompts after-upload">
       <h3>🎯 Next Steps</h3>
-      {#each afterUploadPrompts as prompt}
+      {#each Array.isArray(afterUploadPrompts) ? afterUploadPrompts : [] as prompt}
         <div class="ai-prompt next-step">
           <p class="prompt-content">{prompt.content}</p>
           <div class="prompt-actions">
@@ -532,13 +517,12 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Error Handling -->
   {#if hasErrors}
     <div class="error-section">
       <h3>⚠️ Issues Detected</h3>
-      {#each machineState.context.errors as error}
+      {#each Array.isArray(machineState.context.errors) ? machineState.context.errors : [] as error}
         <div class="error-item">
           <p>{error}</p>
         </div>
@@ -551,8 +535,7 @@
           Start Over
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Analytics Dashboard (Optional) -->
   {#if enableAnalytics && currentUserInsights}
     <details class="analytics-dashboard">
@@ -572,7 +555,7 @@
         <div class="insight-nier-bits-card">
           <h4>Recommendations</h4>
           <ul class="recommendations-list">
-            {#each currentUserInsights.recommendations as recommendation}
+            {#each Array.isArray(currentUserInsights.recommendations) ? currentUserInsights.recommendations : [] as recommendation}
               <li>{recommendation}</li>
             {/each}
           </ul>
@@ -591,8 +574,7 @@
           Get AI Suggestions
         </button>
       {/if}
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .comprehensive-upload-analytics {
@@ -757,7 +739,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .pipeline-status {
     display: flex;
@@ -875,7 +857,6 @@
   }
   /* Removed unused .btn-primary / .btn-secondary selectors to avoid unused CSS warnings.
      Existing buttons use .btn-select-files, .btn-cancel, .btn-retry, .btn-reset or NES classes. */
-
   /* Button Styles */
   .btn-accept {
     background: #10b981;

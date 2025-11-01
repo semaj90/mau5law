@@ -27,7 +27,7 @@ type AIAnalysis = {
   summary?: string;
   tags?: string[];
   evidenceType?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     try {
       const raw = (evidenceRecord.aiAnalysis as string) ?? '{}';
       aiAnalysis = JSON.parse(raw) as AIAnalysis;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to parse AI analysis JSON', err);
       aiAnalysis = {};
     }
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       updatedAnalysis: aiAnalysis,
       message: valid ? 'Validation recorded successfully' : 'Correction recorded successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Validation error:', message);
     return json(
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     try {
       const raw = (evidenceRecord.aiAnalysis as string) ?? '{}';
       aiAnalysis = JSON.parse(raw) as AIAnalysis;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to parse AI analysis JSON', err);
       aiAnalysis = {};
     }
@@ -172,7 +172,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       totalValidations: validations.length,
       validValidations,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Get validations error:', message);
     return json(

@@ -23,7 +23,7 @@ interface WebGPUDevice {
 class WebGPUCudaBridge {
   private webgpuDevice: WebGPUDevice | null = null;
   private processingQueue: CudaProcessingTask[] = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   private ollamaEndpoint = 'http://localhost:11434';
   private cudaServiceEndpoint = 'http://localhost:8085'; // Enhanced Legal CUDA Server
   constructor() {
@@ -140,7 +140,7 @@ class WebGPUCudaBridge {
         timestamp: new Date().toISOString(),
       });
     } finally {
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
     }
   }
   // Rename parameter to: "task" (was _task) so usage below compiles
@@ -631,7 +631,7 @@ class WebGPUCudaBridge {
   cleanup(): void {
     console.log('🧹 Cleaning up WebGPU to CUDA Bridge');
     this.processingQueue = [];
-    this.isProcessing = false;
+    this.isProcessing = $state(false);
     if (this.webgpuDevice?.device) {
       this.webgpuDevice.device.destroy();
     }

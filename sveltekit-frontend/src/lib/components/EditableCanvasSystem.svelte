@@ -6,8 +6,8 @@ https: //svelte.dev/e/js_parse_error -->
   interface Props {
     userId: string;
     canvasId: string | null ;
-    readonly?: unknown;
-    maxNodes?: unknown;
+    readonly?: any;
+    maxNodes?: any;
   }
   let {
     userId,
@@ -17,7 +17,7 @@ https: //svelte.dev/e/js_parse_error -->
   }: Props = $props();
   import { onMount, onDestroy } from "svelte";
   import { writable, derived } from 'svelte/store';
-  import type { EditableNode, CanvasState } from '$lib/components/types';
+  import type { EditableNode, CanvasState } from '$lib/components/types.svelte'';
   import type { Evidence } from '$lib/types';
   // Component props with validation
   // Event dispatcher for parent communication
@@ -226,7 +226,7 @@ mounted = true;
     if (reconnectTimeout) {
       clearTimeout(reconnectTimeout);
     }
-    mounted = false;
+    mounted = $state(false);
   }
   function resetCanvas() {
     if (readonly) return;

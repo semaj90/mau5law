@@ -35,7 +35,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
       }
       console.warn('Ollama embedding response did not contain a valid embedding array.');
       return [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Ollama embedding generation failed:', error);
       // Return zero vector as fallback or an empty array if dimension is unknown
       // A common embedding dimension for: 'embeddinggemma' is 768, but returning empty array is safer if not guaranteed.

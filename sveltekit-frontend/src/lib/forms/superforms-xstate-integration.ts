@@ -7,34 +7,32 @@ import { createActor } from 'xstate';
 import { z } from 'zod';
 import { DocumentUploadSchema, CaseCreationSchema, SearchQuerySchema, AIAnalysisSchema } from '$lib/schemas/forms';
 import { documentUploadMachine, caseCreationMachine, searchMachine, aiAnalysisMachine } from '$lib/machines';
-
 // Lightweight local types to reduce broad casting and improve readability
-type SuperFormSnapshot = { valid?: boolean; data?: unknown; errors?: Record<string, unknown> };
-type ActorSnapshotRec = { status?: string | number; value?: unknown; context?: Record<string, unknown> };
-
+type SuperFormSnapshot = { valid?: boolean; data?: any; errors?: Record<string, unknown> };
+type ActorSnapshotRec = { status?: string | number; value?: any; context?: Record<string, unknown> };
 // Focused actor context shapes used by the integration (keep minimal and optional)
 type ValidationErrors = Record<string, string[]>;
 type UploadContext = {
   uploadProgress?: number;
   processingProgress?: number;
-  aiResults?: unknown;
+  aiResults?: any;
   validationErrors?: ValidationErrors;
   error?: string;
 };
 type CaseContext = {
-  createdCase?: unknown;
+  createdCase?: any;
   isAutoSaving?: boolean;
   error?: string;
   validationErrors?: ValidationErrors;
 };
 type SearchContext = {
-  results?: unknown[];
-  analytics?: unknown;
+  results?: any[];
+  analytics?: any;
   error?: string;
   validationErrors?: ValidationErrors;
 };
 type AnalysisContext = {
-  analysisResults?: unknown;
+  analysisResults?: any;
   confidence?: number;
   processingTime?: number;
   tokensUsed?: number;
@@ -42,11 +40,10 @@ type AnalysisContext = {
   error?: string;
   validationErrors?: ValidationErrors;
 };
-
 // ============================================================================
 // FORM STATE INTEGRATION TYPES
 // ============================================================================
-export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: unknown; context: unknown };
+export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any };
 export interface FormMachineIntegration<M extends { getSnapshot: () => unknown }> {
   form: ReturnType<typeof superForm>;
   actor: M;
@@ -63,11 +60,10 @@ export interface FormOptions {
   autoSave?: boolean;
   autoSaveDelay?: number;
   resetOnSuccess?: boolean;
-  onSubmit?: (formData: unknown) => Promise<unknown> | void;
-  onSuccess?: (data: unknown) => void;
-  onError?: (error: unknown) => void;
+  onSubmit?: (formData: any) => Promise<unknown> | void;
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
 }
-
 // ============================================================================
 // DOCUMENT UPLOAD FORM INTEGRATION
 // ============================================================================
@@ -110,7 +106,7 @@ export function createDocumentUploadForm(
   );
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
-    const flattenErrors = (obj: unknown, prefix = ''): void => {
+    const flattenErrors = (obj: any, prefix = ''): void => {
       const rec = obj as Record<string, unknown> | undefined;
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -175,7 +171,6 @@ export function createDocumentUploadForm(
     progress,
   };
 }
-
 // ============================================================================
 // CASE CREATION FORM INTEGRATION
 // ============================================================================
@@ -211,7 +206,7 @@ export function createCaseCreationForm(
   const isSubmitting = derived(state, $state => $state === 'submitting' || $state === 'validating');
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
-    const flattenErrors = (obj: unknown, prefix = ''): void => {
+    const flattenErrors = (obj: any, prefix = ''): void => {
       const rec = obj as Record<string, unknown> | undefined;
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -261,7 +256,6 @@ export function createCaseCreationForm(
     progress,
   };
 }
-
 // ============================================================================
 // SEARCH FORM INTEGRATION
 // ============================================================================
@@ -300,7 +294,7 @@ export function createSearchForm(
   const isSubmitting = derived(state, $state => $state === 'searching' || $state === 'validating');
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
-    const flattenErrors = (obj: unknown, prefix = ''): void => {
+    const flattenErrors = (obj: any, prefix = ''): void => {
       const rec = obj as Record<string, unknown> | undefined;
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -342,7 +336,6 @@ export function createSearchForm(
     progress,
   };
 }
-
 // ============================================================================
 // AI ANALYSIS FORM INTEGRATION
 // ============================================================================
@@ -374,7 +367,7 @@ export function createAIAnalysisForm(
   const isSubmitting = derived(state, $state => $state === 'analyzing' || $state === 'validating');
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
-    const flattenErrors = (obj: unknown, prefix = ''): void => {
+    const flattenErrors = (obj: any, prefix = ''): void => {
       const rec = obj as Record<string, unknown> | undefined;
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -423,26 +416,24 @@ export function createAIAnalysisForm(
     progress,
   };
 }
-
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
 export function createFormValidator<T extends z.ZodType>(schema: T) {
   return {
-    validate: (data: unknown): data is z.infer<T> => {
+    validate: (data: any): data is z.infer<T> => {
       return schema.safeParse(data).success;
     },
-    getErrors: (data: unknown): Record<string, string[]> => {
+    getErrors: (data: any): Record<string, string[]> => {
       const result = schema.safeParse(data);
       if (result.success) return {};
       return result.error.flatten().fieldErrors;
     },
-    validateAsync: async (data: unknown): Promise<z.infer<T>> => {
+    validateAsync: async (data: any): Promise<z.infer<T>> => {
       return schema.parseAsync(data);
     },
   };
 }
-
 export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
   const currentStep = writable(0);
   const isLastStep = derived(currentStep, $step => $step === schemas.length - 1);
@@ -459,17 +450,16 @@ export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
     goToStep: (step: number) => {
       if (step >= 0 && step < schemas.length) currentStep.set(step);
     },
-    validateStep: (step: number, data: unknown) => {
+    validateStep: (step: number, data: any) => {
       if (step >= 0 && step < schemas.length) return createFormValidator(schemas[step]).validate(data);
       return false;
     },
-    getStepErrors: (step: number, data: unknown) => {
+    getStepErrors: (step: number, data: any) => {
       if (step >= 0 && step < schemas.length) return createFormValidator(schemas[step]).getErrors(data);
       return {};
     },
   };
 }
-
 // ============================================================================
 // FORM STATE PERSISTENCE
 // ============================================================================
@@ -478,14 +468,14 @@ export class FormStatePersistence {
   constructor(storageKey: string) {
     this.storageKey = storageKey;
   }
-  save(data: unknown): void {
+  save(data: any): void {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify({ data, timestamp: Date.now() }));
     } catch (error) {
       console.warn('Failed to save form state:', error);
     }
   }
-  load(): unknown | null {
+  load(): any | null {
     try {
       const stored = localStorage.getItem(this.storageKey);
       if (stored) {
@@ -512,7 +502,6 @@ export class FormStatePersistence {
     });
   }
 }
-
 // ============================================================================
 // EXPORTS
 // ============================================================================

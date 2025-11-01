@@ -18,7 +18,7 @@ type SystemEventData = {
   status: 'healthy' | 'degraded' | 'critical';
   metrics?: Record<string, unknown>;
   uptime_seconds?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 let natsService: EnhancedNATSMessagingService | null = null;
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Legal NATS API Error:', error);
     const details = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return json(

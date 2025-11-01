@@ -2,7 +2,6 @@
  * Route Groups Configuration for Phase 2 Consolidation
  * Organized route structure with proper categorization and theming
  */
-
 export interface RouteGroupDefinition {
   id: string;
   label: string;
@@ -12,7 +11,6 @@ export interface RouteGroupDefinition {
   theme: 'matrix' | 'cyberpunk' | 'amber' | 'retro';
   routes: RouteDefinition[];
 }
-
 export interface RouteDefinition {
   id: string;
   label: string;
@@ -22,7 +20,6 @@ export interface RouteDefinition {
   status: 'active' | 'beta' | 'experimental' | 'deprecated';
   tags: string[];
 }
-
 // New consolidated route groups
 export const routeGroups: RouteGroupDefinition[] = [
   {
@@ -409,7 +406,6 @@ export const routeGroups: RouteGroupDefinition[] = [
     ],
   },
 ];
-
 // Legacy routes that need migration
 export const legacyRouteMapping: Record<string, string> = {
   '/aiassistant': '/(ai)/assistant',
@@ -455,22 +451,18 @@ export const legacyRouteMapping: Record<string, string> = {
   '/nes-bits': '/demo/enhanced-bits-showcase',
   // '/ai-chat': '/(ai)/assistant', // Removed duplicate of earlier mapping: '/chat': '/(ai)/assistant',
 };
-
 // Get route group by theme
 export function getRouteGroupByTheme(theme: string) {
   return routeGroups.find(group => group.theme === theme);
 }
-
 // Get all routes flattened
 export function getAllRoutes(): RouteDefinition[] {
   return routeGroups.flatMap(group => group.routes);
 }
-
 // Get route by ID
 export function getRouteById(id: string): RouteDefinition | undefined {
   return getAllRoutes().find(route => route.id === id);
 }
-
 // Get route group containing a specific route
 export function getRouteGroup(routeId: string): RouteGroupDefinition | undefined {
   return routeGroups.find(group => group.routes.some(route => route.id === routeId));

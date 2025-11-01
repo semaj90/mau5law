@@ -36,12 +36,12 @@ https: //svelte.dev/e/js_parse_error -->
     priority: string; // Added comma
     createdAt: string; // Added comma
     updatedAt: string; // Added comma
-    analyst: unknown;
-    evidence: unknown;
-    methodology: unknown;
-    findings: unknown; // Added comma
-    legalImplications: unknown;
-    attachments: unknown[];
+    analyst: any;
+    evidence: any;
+    methodology: any;
+    findings: any; // Added comma
+    legalImplications: any;
+    attachments: any[];
   }
   interface SynthesisContext {
     caseId: string
@@ -488,7 +488,7 @@ https: //svelte.dev/e/js_parse_error -->
         <div>
           <h3 class="font-medium text-gray-900 mb-3">Documents ({documents.length})</h3>
           <div class="space-y-3 max-h-96 overflow-y-auto">
-            {#each documents as doc}
+            {#each Array.isArray(documents) ? documents : [] as doc}
               <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
                 <input
                   type="checkbox"
@@ -513,7 +513,7 @@ https: //svelte.dev/e/js_parse_error -->
         <div>
           <h3 class="font-medium text-gray-900 mb-3">Evidence Reports ({evidenceReports.length})</h3>
           <div class="space-y-3 max-h-96 overflow-y-auto">
-            {#each evidenceReports as report}
+            {#each Array.isArray(evidenceReports) ? evidenceReports : [] as report}
               <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
                 <input
                   type="checkbox"
@@ -653,7 +653,7 @@ https: //svelte.dev/e/js_parse_error -->
           </div>
         </div>
         <div class="space-y-4">
-          {#each $state.context.synthesisResult.strengthAssessment.areas as area}
+          {#each Array.isArray($state.context.synthesisResult.strengthAssessment.areas) ? $state.context.synthesisResult.strengthAssessment.areas : [] as area}
             <div class="border border-gray-200 rounded-lg p-4">
               <div class="flex items-center justify-between mb-2">
                 <h4 class="font-medium text-gray-900">{area.name}</h4>
@@ -676,7 +676,7 @@ https: //svelte.dev/e/js_parse_error -->
           <div>
             <h3 class="font-medium text-gray-900 mb-3">Primary Charges</h3>
             <ul class="space-y-2">
-              {#each $state.context.synthesisResult.legalStrategy.primaryCharges as charge}
+              {#each Array.isArray($state.context.synthesisResult.legalStrategy.primaryCharges) ? $state.context.synthesisResult.legalStrategy.primaryCharges : [] as charge}
                 <li class="flex items-start gap-2">
                   <span class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0">✅</span>
                   <span class="text-gray-700">{charge}</span>
@@ -685,7 +685,7 @@ https: //svelte.dev/e/js_parse_error -->
             </ul>
             <h3 class="font-medium text-gray-900 mb-3 mt-6">Supporting Evidence</h3>
             <ul class="space-y-2">
-              {#each $state.context.synthesisResult.legalStrategy.supportingEvidence as evidence}
+              {#each Array.isArray($state.context.synthesisResult.legalStrategy.supportingEvidence) ? $state.context.synthesisResult.legalStrategy.supportingEvidence : [] as evidence}
                 <li class="flex items-start gap-2">
                   <span class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0">📎</span>
                   <span class="text-gray-700">{evidence}</span>
@@ -698,7 +698,7 @@ https: //svelte.dev/e/js_parse_error -->
             <p class="text-gray-700 mb-6">{$state.context.synthesisResult.legalStrategy.prosecutionApproach}</p>
             <h3 class="font-medium text-gray-900 mb-3">Potential Defenses</h3>
             <ul class="space-y-2">
-              {#each $state.context.synthesisResult.legalStrategy.potentialDefenses as defense}
+              {#each Array.isArray($state.context.synthesisResult.legalStrategy.potentialDefenses) ? $state.context.synthesisResult.legalStrategy.potentialDefenses : [] as defense}
                 <li class="flex items-start gap-2">
                   <span class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0">⚠️</span>
                   <span class="text-gray-700">{defense}</span>
@@ -715,7 +715,7 @@ https: //svelte.dev/e/js_parse_error -->
           Case Timeline
         </h2>
         <div class="space-y-4">
-          {#each $state.context.synthesisResult.timeline as event}
+          {#each Array.isArray($state.context.synthesisResult.timeline) ? $state.context.synthesisResult.timeline : [] as event}
             <div class="flex gap-4">
               <div class="flex-shrink-0 w-24 text-sm text-gray-600">
                 {new Date(event.date).toLocaleDateString()}
@@ -746,7 +746,7 @@ https: //svelte.dev/e/js_parse_error -->
           Recommendations
         </h2>
         <div class="space-y-4">
-          {#each $state.context.synthesisResult.recommendations as rec}
+          {#each Array.isArray($state.context.synthesisResult.recommendations) ? $state.context.synthesisResult.recommendations : [] as rec}
             <div class="border border-gray-200 rounded-lg p-4">
               <div class="flex items-start justify-between mb-2">
                 <h4 class="font-medium text-gray-900">{rec.action}</h4>
@@ -795,6 +795,5 @@ https: //svelte.dev/e/js_parse_error -->
           Export Report
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>

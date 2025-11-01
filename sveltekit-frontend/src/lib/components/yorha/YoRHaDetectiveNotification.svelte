@@ -14,7 +14,7 @@
     type = $bindable(),
     show = $bindable(),
     duration = $bindable()
-  : unknown } = $props();
+  : any } = $props();
   function getTypeStyles(notificationType: string): string {
     switch (notificationType) {
       case 'success':
@@ -40,19 +40,16 @@
     }
   }
 </script>
-
 {#if show}
   <div class="notification-container {getTypeStyles(type)}">
     <div class="notification-content">
       <span class="notification-icon">{getTypeIcon(type)}</span>
       <span class="notification-message">{message}</span>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .notification-container {
-    position fixed;
+    position: fixed;
 d;
     bottom: 1.25rem;
     right: 1.25rem;
@@ -64,7 +61,7 @@ d;
     font-weight: bold;
     font-size: 0.875rem;
     z-index: 1050,
-    animation: slideInRight 0.3s ease-in-out;
+    animation: slideInRight: 0.3s ease-in-out;
     backdrop-filter: blur(8px);
   }
   .notification-content {
@@ -130,4 +127,3 @@ d;
     }
   }
 </style>
-

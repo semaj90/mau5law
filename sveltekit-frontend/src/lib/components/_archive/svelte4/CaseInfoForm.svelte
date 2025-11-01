@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
           class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.case_type ? 'border-red-500' : ''}`}
         >
           <option value="">Select case type</option>
-          {#each caseTypes as type}
+          {#each Array.isArray(caseTypes) ? caseTypes : [] as type}
             <option value={type}>{type}</option>
           {/each}
         </select>
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
         class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.jurisdiction ? 'border-red-500' : ''}`}
       >
         <option value="">Select jurisdiction</option>
-        {#each jurisdictions as jurisdiction}
+        {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
           <option value={jurisdiction}>{jurisdiction}</option>
         {/each}
       </select>

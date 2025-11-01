@@ -17,7 +17,7 @@ type DidYouMeanSuggestion = {
   text?: string;
   score?: number;
   confidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // New: typed shape for user learning insights returned by the optional AI method
@@ -25,7 +25,7 @@ type UserLearningInsights = {
   confidenceLevel?: number | string | null;
   learningPhase?: string | null;
   topIntents?: Array<{ intent: string; score?: number }> | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Use the imported instance (avoid referencing undefined class)

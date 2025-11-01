@@ -57,7 +57,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
       if (!field) return;
       const error = validateField(field);
       updatedFields[name] = { ...field, error: error || undefined };
-      if (error) isValid = false;
+      if (error) isValid = $state(false);
     });
     return { updatedFields, isValid };
   };
@@ -195,7 +195,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
     },
     // Validate all fields
     validate: () => {
-      let isValid = false; // Initialize to false, will be set by update
+      let isValid = $state(false); // Initialize to false, will be set by update
       update(state => {
         const { updatedFields, isValid: formIsValid } = validateForm(state.fields);
         isValid = formIsValid; // Capture for return value
@@ -220,7 +220,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
     },
     // Submit form
     submit: async () => {
-      let canSubmit = false;
+      let canSubmit = $state(false);
       update(state => {
         const newState = {
           ...state,
@@ -259,7 +259,7 @@ function createFormStore<T extends Record<string, unknown>>(_options: FormOption
       if (canSubmit && onSubmit) {
         try {
           await onSubmit(get(values) as T);
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.error('Form submission error:', error);
         }
       }

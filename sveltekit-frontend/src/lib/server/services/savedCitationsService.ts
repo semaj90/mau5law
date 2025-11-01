@@ -29,7 +29,7 @@ type SavedCitationRow = {
 
 // Minimal client shapes used by the compatibility shim
 type PgClient = {
-  query: (sql: string, params?: unknown[]) => Promise<{ rows: SavedCitationRow[] }>;
+  query: (sql: string, params?: any[]) => Promise<{ rows: SavedCitationRow[] }>;
   release?: () => void;
 };
 type PgPool = {
@@ -37,11 +37,11 @@ type PgPool = {
 };
 
 // Type guards
-const isPgPool = (p: unknown): p is PgPool =>
+const isPgPool = (p: any): p is PgPool =>
   typeof p === 'object' && p !== null && 'connect' in p && typeof (p as PgPool).connect === 'function';
 
-const hasQuery = (p: unknown): p is { query: (sql: string, params?: unknown[]) => Promise<unknown> } =>
-  typeof p === 'object' && p !== null && 'query' in p && typeof (p as { query?: unknown }).query === 'function';
+const hasQuery = (p: any): p is { query: (sql: string, params?: any[]) => Promise<unknown> } =>
+  typeof p === 'object' && p !== null && 'query' in p && typeof (p as { query?: any }).query === 'function';
 
 /**
  * Fetch saved citations for a given user from PostgreSQL.
@@ -71,11 +71,11 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
 			 LIMIT 200`;
 
     // helper: safely extract rows from pg / postgres-js / raw array responses
-    const extractRows = (res: unknown): SavedCitationRow[] => {
+    const extractRows = (res: any): SavedCitationRow[] => {
       if (!res) return [];
       if (Array.isArray(res)) return res as SavedCitationRow[];
       if (typeof res === 'object' && res !== null) {
-        const r = res as { rows?: unknown[]; result?: unknown[] };
+        const r = res as { rows?: any[]; result?: any[] };
         if (Array.isArray(r.rows)) return r.rows as SavedCitationRow[];
         if (Array.isArray(r.result)) return r.result as SavedCitationRow[];
       }
@@ -109,7 +109,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
           const inner = trimmed.slice(1, -1);
           const out: string[] = [];
           let cur = '';
-          let inQuotes = false;
+          let inQuotes = $state(false);
           for (let i = 0; i < inner.length; i++) {
             const ch = inner[i];
             if (ch === '"') {

@@ -59,7 +59,7 @@ export class WebGPUTextureStreamer {
   private webglTextures: Map<string, WebGLTexture> = new Map();
   // Memory management
   private gcThreshold = 0.85; // Trigger cleanup at 85% memory usage
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private workerUrl: string | null = null;
   constructor() {
     this.initializeMemoryRegions();
@@ -253,7 +253,7 @@ export class WebGPUTextureStreamer {
       }
       // Convert to ArrayBuffer and compress texture if enabled
       let finalData = toArrayBuffer(data);
-      let compressed = false;
+      let compressed = $state(false);
       if (compress && this.compressionWorker) {
         finalData = await this.compressTexture(finalData, width, height, legalContext);
         compressed = true;
@@ -481,7 +481,7 @@ export class WebGPUTextureStreamer {
       this.workerUrl = null;
     }
     this.gl = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
 // Export singleton instance

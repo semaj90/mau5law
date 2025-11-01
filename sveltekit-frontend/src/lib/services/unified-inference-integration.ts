@@ -50,7 +50,7 @@ interface QuicCacheEntry {
 }
 
 // Add typed contracts for the webasm service and result
-type WasmPayload = { model: string; input: Float32Array; batchSize?: number; [key: string]: unknown };
+type WasmPayload = { model: string; input: Float32Array; batchSize?: number; [key: string]: any };
 
 interface WebAsmResult {
   output?: Float32Array | number[];
@@ -59,7 +59,7 @@ interface WebAsmResult {
   time?: number;
   tensor_id?: string;
   confidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface WebAsmService {
@@ -115,7 +115,7 @@ export class UnifiedInferenceEngine {
           throw new Error('No inference engine available');
       }
       result.processingTime = performance.now() - startTime;
-      result.cacheHit = false;
+      result.cacheHit = $state(false);
       await this.cacheInferenceResult(cacheKey, result, request);
       return result;
     } catch (error) {
@@ -230,7 +230,7 @@ export class UnifiedInferenceEngine {
           'webASMInferenceService missing known methods (runInference|infer|execute). Falling back to empty result.'
         );
       }
-    } catch (_err: unknown) {
+    } catch (_err: any) {
       console.warn('WASM inference failed:', _err);
       wasmResult = { output: new Float32Array([]), inferenceTime: 0 };
     }

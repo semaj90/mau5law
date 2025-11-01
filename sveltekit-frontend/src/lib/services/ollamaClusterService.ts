@@ -216,7 +216,7 @@ export class OllamaClusterService {
               last_health_check: Date.now(),
             };
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           return {
             ...instance,
             status: 'unhealthy' as const,

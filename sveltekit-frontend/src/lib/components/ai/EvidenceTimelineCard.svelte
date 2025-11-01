@@ -7,10 +7,10 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Separator from '$lib/components/ui/separator/Separator.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   // Access props via Svelte runes $props()
   let _props = $props();
   const timelineEvents: Array = [];
@@ -158,8 +158,7 @@
                           {#if event.time}
                             <div class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
                               {formatTime(event.time)}
-                            </div>
-                          {/if}
+                            {/if}
                           <Badge class="text-xs {categoryInfo.color}">
                             {categoryInfo.icon} {categoryInfo.label}
                           </Badge>
@@ -175,8 +174,7 @@
                               ></div>
                             </div>
                             <div class="text-xs text-gray-500">{Math.round(event.confidence * 100)}%</div>
-                          </div>
-                        {/if}
+                          {/if}
                       </div>
                       <!-- Event description -->
                       <p class="text-gray-800 mb-3 leading-relaxed">{event.event}</p>
@@ -185,22 +183,19 @@
                         <div class="mb-3">
                           <h5 class="text-xs font-medium text-gray-600 mb-2">Persons Involved:</h5>
                           <div class="flex flex-wrap gap-1">
-                            {#each event.persons as person}
+                            {#each Array.isArray(event.persons) ? event.persons : [] as person}
                               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">👤 {person}</span>
                             {/each}
                           </div>
-                        </div>
-                      {/if}
+                        {/if}
                       <!-- Evidence source -->
                       {#if event.evidenceSource}
                         <div class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
                           📄 Source: {event.evidenceSource}
-                        </div>
-                      {/if}
+                        {/if}
                     </div>
                   {/each}
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
         </div>
@@ -222,14 +217,13 @@
 📝 Generate Report
 </Button>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>
   /* Timeline custom styles */
   .timeline-marker {
-    position absolute;
+    position: absolute;
     left: -6px;
     top: 12px;
     width: 12px;
@@ -240,7 +234,7 @@
     box-shadow: 0 0 0 1px #e5e7eb;
   }
   .timeline-connector {
-    position absolute;
+    position: absolute;
     left: -1px;
     top: 24px;
     bottom: -24px;

@@ -1,11 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // @ts-ignore - some components may not have perfect constructor typings
-  import ButtonBits from '$lib/components/ui/bits-ui.svelte';
+  import { ButtonBits } from '$lib/components/ui/bits-ui.svelte';
   // Cast the imported component to a constructor so TypeScript/Svelte recognizes it as a component constructor
   const ButtonCtor = ButtonBits as unknown as new (...args: any[]) => import('svelte').SvelteComponent;
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';
-
   // Use Svelte 5 runes $props() instead of export let
   type OnDispatch = (payload: { citation Citation; success?: boolean; error?: string }) => void;
   let {
@@ -21,15 +20,12 @@
     showText?: boolean;
     ondispatch?: OnDispatch;
   }>();
-
   // Optional callback prop for consumers; keep typed shape for consistent usage
-
   let isAuthenticated = $state(citationsManager.isAuthenticated());
   let isSaved = $state(false);
   let isSaving = $state(false);
   let collections = $state<CitationCollection[]>([]);
   let showCollectionSelector = $state(false);
-
   // Check if citation is already saved
   $effect(() => {
     if (isAuthenticated) {
@@ -38,7 +34,6 @@
       collections = citationsManager.getCollections();
     }
   });
-
   // Listen for authentication changes
   citationsManager.onAuthChange(user => {
     isAuthenticated = user?.isAuthenticated ?? false;
@@ -47,11 +42,10 @@
       isSaved = savedCitations.some(c => c.id === citation.id);
       collections = citationsManager.getCollections();
     } else {
-      isSaved = false;
+      isSaved = $state(false);
       collections = [];
     }
   });
-
   async function handleSave() {
     if (!isAuthenticated) {
       ondispatch?.({
@@ -78,17 +72,16 @@
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
-
   async function handleRemove() {
     if (!isAuthenticated) return;
     isSaving = true;
     try {
       const success = citationsManager.removeSavedCitation(citation.id);
       if (success) {
-        isSaved = false;
+        isSaved = $state(false);
         ondispatch?.({ citation, success: false });
       }
     } catch (error) {
@@ -97,10 +90,9 @@
         error: error instanceof Error ? error.message : 'Failed to remove citation',
       });
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
-
   async function handleSaveToCollection(collectionId: string) {
     if (!isAuthenticated) return;
     try {
@@ -112,7 +104,7 @@
         // Just add to collection
         await citationsManager.addCitationToCollection(collectionId, citation.id);
       }
-      showCollectionSelector = false;
+      showCollectionSelector = $state(false);
       ondispatch?.({ citation, success: true });
     } catch (error) {
       ondispatch?.({
@@ -122,7 +114,6 @@
     }
   }
 </script>
-
 {#if !isAuthenticated}
   <ButtonCtor {variant} {size} class="citation-save-btn disabled" disabled={true} title="Sign in to save citations">
     🔒 {showText ? 'Sign in to Save' : ''}
@@ -145,7 +136,6 @@
         💾 {showText ? 'Save' : ''}
       {/if}
     </ButtonCtor>
-
     <ButtonCtor
       variant="ghost"
       {size}
@@ -155,7 +145,6 @@
     >
       📁
     </ButtonCtor>
-
     {#if showCollectionSelector}
       <div class="collection-selector">
         <div class="collection-header">
@@ -163,7 +152,7 @@
           <button class="close-btn" onclick={() => (showCollectionSelector = false)}>✕</button>
         </div>
         <div class="collection-list">
-          {#each collections as collection}
+          {#each Array.isArray(collections) ? collections : [] as collection}
             <button class="collection-item" onclick={() => handleSaveToCollection(collection.id)}>
               <span class="collection-name">{collection.name}</span>
               <span class="collection-count">
@@ -172,14 +161,11 @@
             </button>
           {/each}
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <style>
   .citation-save-container {
-    position relative;
+    position: relative;
     display: flex;
     gap: 0.25rem;
     align-items: center;
@@ -194,7 +180,7 @@
     cursor: not-allowed;
   }
   .collection-selector {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0;
     z-index: 1000;
@@ -267,7 +253,7 @@
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .collection-selector {
-      position fixed;
+      position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -276,5 +262,3 @@
     }
   }
 </style>
-
-

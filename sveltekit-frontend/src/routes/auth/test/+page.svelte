@@ -9,10 +9,10 @@
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
-  import * as Card from '$lib/components/ui/card';
-  import * as Alert from '$lib/components/ui/alert';
-  import * as Tabs from '$lib/components/ui/tabs';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Alert from '$lib/components/ui/alert.svelte'';
+  import * as Tabs from '$lib/components/ui/tabs.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
   import {
@@ -75,7 +75,7 @@ await runInitialTests();
       ]);
       testResults.context7 = {
         success: docsTest.every.status === 'fulfilled'),
-        data: docsTest.map.status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value: null),
+        data: docsTest.map.status === 'fulfilled' ? (result as { status?: any; value?: any }).value: null),
         timestamp: new Date().toISOString();
       }
       context7Docs = testResults.context7.data;
@@ -144,7 +144,7 @@ await runInitialTests();
         timestamp: new Date().toISOString();
       }
     } finally {
-      testRunning = false;
+      testRunning = $state(false);
     }
   }
   function getTestStatusIcon(testKey: string) {

@@ -35,7 +35,6 @@
     magic: 'shadow-purple-500/30',
   }
 </script>
-
 <div
   class="ff-container relative bg-gradient-to-br {transparent
     ? 'from-transparent to-transparent border-opacity-40'
@@ -49,8 +48,7 @@
     <div class="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-white/40"></div>
     <div class="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-white/40"></div>
     <div class="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-white/40"></div>
-    <div class="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-white/40"></div>
-  {/if}
+    <div class="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-white/40">{/if}
   <!-- Title Bar -->
   {#if title}
     <div
@@ -69,11 +67,10 @@
                   bg-gradient-to-r from-yellow-400 to-orange-500
                   rounded-full animate-pulse"
       ></div>
-    </div>
-  {/if}
+    {/if}
   <!-- Content Area -->
   <div class="p-4">
-    {@render children?.()}
+    <slot />
   </div>
   <!-- FF-Style Animated Border Lines -->
   {#if animated}
@@ -86,10 +83,8 @@
       class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r
                 from-transparent via-white/30 to-transparent
                 animate-pulse delay-1000"
-    ></div>
-  {/if}
+    >{/if}
 </div>
-
 <style>
   .ff-container {
     backdrop-filter: blur(8px);
@@ -112,7 +107,7 @@ calc(100% - 8px) 100%, {}
 /* Subtle background pattern */ {}
   .ff-container::before {
     content: '';
-    position absolute;
+    position: absolute;
     inset: 0;
 background-image: {}
 radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%), {}

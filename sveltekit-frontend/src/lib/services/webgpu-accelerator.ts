@@ -41,7 +41,7 @@ class WebGPUAccelerator {
   private device: GPUDevice | null = null;
   private computeShaders: Map<string, GPUShaderModule> = new Map();
   private bufferPool: Map<string, GPUBuffer> = new Map();
-  private initialized = false;
+  private initialized = $state(false);
 
   // Clean WGSL shader sources (minimal and syntactically valid)
   private readonly shaderSources: Record<string, string> = {
@@ -299,7 +299,7 @@ class WebGPUAccelerator {
     return { centroids, assignments };
   }
 
-  getPerformanceMetrics(): unknown {
+  getPerformanceMetrics(): any {
     return {
       initialized: this.initialized,
       capabilities: this.capabilities,
@@ -320,7 +320,7 @@ class WebGPUAccelerator {
     this.computeShaders.clear();
     this.device = null;
     this.capabilities = null;
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 

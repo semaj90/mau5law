@@ -282,7 +282,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.UserPreferences
              * @instance
              */
-            UserPreferences.prototype.notificationsEnabled = false;
+            UserPreferences.prototype.notificationsEnabled = $state(false);
 
             /**
              * UserPreferences analyticsOptIn.
@@ -290,7 +290,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.UserPreferences
              * @instance
              */
-            UserPreferences.prototype.analyticsOptIn = false;
+            UserPreferences.prototype.analyticsOptIn = $state(false);
 
             /**
              * Creates a new UserPreferences instance using the specified properties.
@@ -467,7 +467,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthRequest
              * @instance
              */
-            AuthRequest.prototype.rememberMe = false;
+            AuthRequest.prototype.rememberMe = $state(false);
 
             /**
              * AuthRequest clientInfo.
@@ -637,7 +637,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthResponse
              * @instance
              */
-            AuthResponse.prototype.success = false;
+            AuthResponse.prototype.success = $state(false);
 
             /**
              * AuthResponse token.
@@ -2225,7 +2225,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.includeEmbeddings = false;
+            SearchRequest.prototype.includeEmbeddings = $state(false);
 
             /**
              * SearchRequest sort.
@@ -2584,7 +2584,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SortOptions
              * @instance
              */
-            SortOptions.prototype.descending = false;
+            SortOptions.prototype.descending = $state(false);
 
             /**
              * Creates a new SortOptions instance using the specified properties.
@@ -3371,7 +3371,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchMetadata
              * @instance
              */
-            SearchMetadata.prototype.hasMoreResults = false;
+            SearchMetadata.prototype.hasMoreResults = $state(false);
 
             /**
              * Creates a new SearchMetadata instance using the specified properties.
@@ -4705,7 +4705,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.stream = false;
+            ChatOptions.prototype.stream = $state(false);
 
             /**
              * ChatOptions includeSources.
@@ -4713,7 +4713,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.includeSources = false;
+            ChatOptions.prototype.includeSources = $state(false);
 
             /**
              * Creates a new ChatOptions instance using the specified properties.
@@ -5723,7 +5723,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisOptions
              * @instance
              */
-            AnalysisOptions.prototype.includeRecommendations = false;
+            AnalysisOptions.prototype.includeRecommendations = $state(false);
 
             /**
              * Creates a new AnalysisOptions instance using the specified properties.
@@ -6526,7 +6526,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.HealthCheckRequest
              * @instance
              */
-            HealthCheckRequest.prototype.includeDetails = false;
+            HealthCheckRequest.prototype.includeDetails = $state(false);
 
             /**
              * Creates a new HealthCheckRequest instance using the specified properties.
@@ -6688,7 +6688,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.HealthCheckResponse
              * @instance
              */
-            HealthCheckResponse.prototype.healthy = false;
+            HealthCheckResponse.prototype.healthy = $state(false);
 
             /**
              * HealthCheckResponse status.
@@ -6892,7 +6892,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.operational = false;
+            SystemStatus.prototype.operational = $state(false);
 
             /**
              * SystemStatus cpuUsage.
@@ -7454,7 +7454,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.parallelExecution = false;
+            BatchOptions.prototype.parallelExecution = $state(false);
 
             /**
              * BatchOptions maxConcurrency.
@@ -7478,7 +7478,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.continueOnError = false;
+            BatchOptions.prototype.continueOnError = $state(false);
 
             /**
              * Creates a new BatchOptions instance using the specified properties.
@@ -7871,7 +7871,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchResult
              * @instance
              */
-            BatchResult.prototype.success = false;
+            BatchResult.prototype.success = $state(false);
 
             /**
              * BatchResult resultData.

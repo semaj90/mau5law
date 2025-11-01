@@ -228,7 +228,6 @@
     }
   });
 </script>
-
 // lib/components/ai-synthesis-client.svelte // Frontend client for AI synthesis with real-time streaming
 <div class="ai-synthesis-client">
   <div class="config-panel">
@@ -272,20 +271,17 @@
         <div class="sources-preview">
           <h4>Sources Found ({$sources.length})</h4>
           <ul>
-            {#each $sources.slice(0, 5) as source}
+            {#each Array.isArray($sources.slice(0, 5)) ? $sources.slice(0, 5) : [] as source}
               <li>{source.title} (Score: {source.relevanceScore?.toFixed(2)})</li>
             {/each}
           </ul>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   {#if $error}
     <div class="error-panel">
       <h3>Error</h3>
       <p>{$error}</p>
-    </div>
-  {/if}
+    {/if}
   {#if $result}
     <div class="result-panel">
       <h3>Synthesis Result</h3>
@@ -418,8 +414,7 @@
                 {/each}
               </ul>
             {/if}
-          </div>
-        {/if}
+          {/if}
         <div class="sources-list">
           <h5>Top Sources</h5>
           {#each $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.sources.slice(0, 5) as source, i}
@@ -477,25 +472,23 @@
               <li>{rec}</li>
             {/each}
           </ul>
-        </div>
-      {/if}
+        {/if}
       <div class="feedback-section">
         <h4>Provide Feedback</h4>
         <div class="rating-buttons">
-          {#each [1, 2, 3, 4, 5] as rating}
+          {#each Array.isArray([1, 2, 3, 4, 5]) ? [1, 2, 3, 4, 5] : [] as rating}
             <button onclick={() => submitFeedback(rating)}>
               {rating} Star{rating > 1 ? 's' : ''}
             </button>
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   {#if $events.length > 0 && enableStreaming}
     <details class="event-log">
       <summary>Event Log ({$events.length})</summary>
       <div class="events-list">
-        {#each $events.slice.reverse() as event}
+        {#each Array.isArray($events.slice.reverse()) ? $events.slice.reverse() : [] as event}
           <div class="event-item">
             <span class="event-type">{event.type}</span>
             <span class="event-time">{new Date(event.timestamp).toLocaleTimeString()}</span>
@@ -506,7 +499,6 @@
     </details>
   {/if}
 </div>
-
 <style>
   .ai-synthesis-client {
     max-width: 1200px;
@@ -564,7 +556,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #4caf50, #8bc34a);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .stage-info {
     margin-top: 10px;
@@ -662,4 +654,3 @@
     color: #666;
   }
 </style>
-

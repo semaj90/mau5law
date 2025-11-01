@@ -6,7 +6,6 @@ import { createMachine, assign } from '$lib/shims/xstate';
 // Local minimal types to avoid hard dependency on external xstate type packages during edit/CI
 type DoneInvokeEvent<T> = { output: T };
 type AnyEventObject = Record<string, unknown>;
-
 export interface AISummaryContext {
   // Document/Evidence data
   documentId: string | null;
@@ -90,7 +89,6 @@ export interface SynthesisData {
   legalImplications: string[];
   nextSteps: string[];
 }
-
 // --- NEW: typed helper interfaces to replace `any` usages ---
 export interface RelevantDoc {
   id?: string;
@@ -103,7 +101,6 @@ export interface SearchMetrics {
   timeMs?: number;
   query?: string;
 }
-
 interface LoadDocumentResult {
   content: string;
   type: AISummaryContext['documentType'];
@@ -121,9 +118,7 @@ interface AnalyzeDocumentResult {
 interface SynthesizeResult {
   synthesis: SynthesisData;
 }
-
 // (Reading progress handled by the readingProgress service below)
-
 export type AISummaryEvent =
   | { type: 'LOAD_DOCUMENT'; documentId: string; caseId?: string }
   | {
@@ -178,7 +173,6 @@ const initialContext: AISummaryContext = {
   highlightMode: 'key_points',
   readingMode: 'sequential',
 };
-
 // Small helper to safely extract error messages without using `any`
 const extractErrorMessage = (event: AnyEventObject): string => {
   const obj = event as unknown as Record<string, unknown>;
@@ -188,7 +182,6 @@ const extractErrorMessage = (event: AnyEventObject): string => {
   if (typeof obj.error === 'string') return String(obj.error);
   return 'An error occurred';
 };
-
 export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
   {
     id: 'aiSummaryMachine',
@@ -442,7 +435,7 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
   {
     services: {
       // loadDocument -> use API endpoint GET /api/documents/:id (keeps previous behavior)
-      loadDocument: async (context: AISummaryContext, event: unknown): Promise<LoadDocumentResult> => {
+      loadDocument: async (context: AISummaryContext, event: any): Promise<LoadDocumentResult> => {
         // Basic API call; adapt path/headers to your backend auth/CORS as needed
         // Safely extract documentId from the incoming event without using `any`
         const evt = (event as Record<string, unknown> | null) ?? null;
@@ -452,7 +445,6 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
             : null;
         const id = eventId ?? context.documentId ?? null;
         if (!id) return { content: '', type: context.documentType };
-
         const res = await fetch(`/api/documents/${encodeURIComponent(String(id))}`);
         if (!res.ok) {
           const txt = await res.text().catch(() => 'failed to fetch');
@@ -464,7 +456,6 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           type: (payload?.type as AISummaryContext['documentType']) ?? context.documentType,
         };
       },
-
       generateSummary: async (context: AISummaryContext): Promise<GenerateSummaryResult> => {
         // Minimal placeholder summary generator — replace with actual LLM/endpoint call
         const text = context.originalContent ?? '';
@@ -488,7 +479,6 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           wordCount: words,
         };
       },
-
       // mark unused context param with a leading underscore to satisfy lint rules
       analyzeDocument: async (_context: AISummaryContext): Promise<AnalyzeDocumentResult> => {
         // Lightweight analysis stub
@@ -503,7 +493,6 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           ],
         };
       },
-
       // mark unused context param with a leading underscore to satisfy lint rules
       synthesizeInsights: async (_context: AISummaryContext): Promise<SynthesizeResult> => {
         // Minimal synthesis stub — replace with server-side LLM/RAG combination
@@ -518,7 +507,6 @@ export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
           },
         };
       },
-
       // readingProgress is an invoked callback-style service that periodically sends UPDATE_PROGRESS
       // type the `send` callback to accept AISummaryEvent instead of `any`
       readingProgress: (context: AISummaryContext) => (send: (evt: AISummaryEvent) => void) => {

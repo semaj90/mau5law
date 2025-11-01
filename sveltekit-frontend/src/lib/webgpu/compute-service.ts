@@ -21,7 +21,7 @@ export interface WebGPUComputeResult {
   };
 }
 class WebGPUComputeService {
-  private initialized = false;
+  private initialized = $state(false);
   async initialize() {
     if (this.initialized) return;
     // Initialize WebGPU if available

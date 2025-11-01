@@ -48,7 +48,7 @@ class LokiMemoryAdapter {
 
 interface LokiOptions {
   autoloadCallback?: () => void;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 class Loki {
@@ -81,7 +81,7 @@ class Loki {
   removeCollection(name: string) {
     this.collections.delete(name);
   }
-  saveDatabase(cb?: (err?: unknown) => void) {
+  saveDatabase(cb?: (err?: any) => void) {
     cb?.();
   }
   close(cb?: () => void) {

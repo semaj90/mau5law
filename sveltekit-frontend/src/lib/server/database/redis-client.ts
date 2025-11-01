@@ -6,7 +6,6 @@ import Redis from 'ioredis';
 import dotenv from 'dotenv';
 import createRedisConnection from '$lib/server/redis'; // Fix: createRedisConnection is the default export
 dotenv.config();
-
 export interface RedisConfig {
   host: string;
   port: number;
@@ -27,27 +26,23 @@ const defaultConfig: RedisConfig = {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
 };
-
 // Replace strict dependency on package types with a minimal local interface
 // that declares only the members we use. This prevents TS errors if installed
 // Redis lib's types differ from runtime.
 interface MinimalRedisClient {
-  on(event: string, listener: (...args: unknown[]) => void): this;
-  addListener?(event: string, listener: (...args: unknown[]) => void): this;
-  removeListener?(event: string, listener: (...args: unknown[]) => void): this;
+  on(event: string, listener: (...args: any[]) => void): this;
+  addListener?(event: string, listener: (...args: any[]) => void): this;
+  removeListener?(event: string, listener: (...args: any[]) => void): this;
   ping(): Promise<string>;
   quit(): Promise<void>;
   disconnect(): void;
   // allow additional members as optional to avoid tight coupling
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 // Use the minimal interface for runtime instances
 type IORedisClient = MinimalRedisClient;
-
 let redis: IORedisClient | null = null; // This is the module's managed shared instance
-let isConnected = false;
-
+let isConnected = $state(false);
 /**
  * Get Redis client instance
  */
@@ -62,14 +57,13 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
       console.log('🎮 Redis connected successfully');
     });
     instance.on('error', (error: Error) => {
-      isConnected = false;
+      isConnected = $state(false);
       console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));
     });
     instance.on('close', () => {
-      isConnected = false;
+      isConnected = $state(false);
       console.log('🔴 Redis connection closed');
     });
-
     // test ping - returns: 'PONG' on success
     await (instance as unknown as { ping?: () => Promise<string> }).ping?.();
     redis = instance as unknown as IORedisClient; // Assign to the module's shared instance
@@ -77,18 +71,16 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
   } catch (error) {
     console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
     redis = null;
-    isConnected = false;
+    isConnected = $state(false);
     return null;
   }
 }
-
 /**
  * Check Redis connection status
  */
 export function isRedisConnected(): boolean {
   return isConnected && redis !== null;
 }
-
 /**
  * Close Redis connection
  */
@@ -107,11 +99,10 @@ export async function closeRedisConnection(): Promise<void> {
       }
     }
     redis = null;
-    isConnected = false;
+    isConnected = $state(false);
     console.log('🎮 Redis connection closed gracefully');
   }
 }
-
 /**
  * Create Redis client for specific use case
  */
@@ -137,7 +128,6 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
   });
   return client;
 }
-
 /**
  * Redis health check
  */
@@ -165,7 +155,6 @@ export async function checkRedisHealth(): Promise<{
     };
   }
 }
-
 // Export a single redisClient reference and the helper functions
 // Provide a typed alias to the shared redis instance from the central module so callers can
 // continue importing `redisClient` from this helper while we still rely on the central factory.

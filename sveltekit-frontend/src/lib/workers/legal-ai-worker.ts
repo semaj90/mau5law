@@ -230,7 +230,7 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
   try {
     // if your db client uses a different execute signature, adjust accordingly
     // Some db client typings expose execute(sql: string) only; narrow with an intermediate cast
-    await (db as unknown as { execute: (sql: string, params?: unknown[]) => Promise<unknown> }).execute(sql, [
+    await (db as unknown as { execute: (sql: string, params?: any[]) => Promise<unknown> }).execute(sql, [
       documentId,
       aiSummary,
       aiEntities,

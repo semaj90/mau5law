@@ -2,8 +2,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
-  import { Card as CardOriginal } from '$lib/components/ui/card'; // named export
-  import { Button } from '$lib/components/ui/button'; // named export
+  import { Card as CardOriginal } from '$lib/components/ui/card.svelte''; // named export
+  import { Button } from '$lib/components/ui/button.svelte''; // named export
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import * as Lucide from 'lucide-svelte';
 

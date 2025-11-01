@@ -22,7 +22,7 @@
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 </script>
@@ -49,7 +49,7 @@
 
   {#if results.length > 0}
     <div class="space-y-4">
-      {#each results as result}
+      {#each Array.isArray(results) ? results : [] as result}
         <div class="p-4 border rounded-lg">
           <h3 class="font-semibold">{result.title || 'Document'}</h3>
           <p class="text-sm text-gray-600 mt-2">{result.content}</p>

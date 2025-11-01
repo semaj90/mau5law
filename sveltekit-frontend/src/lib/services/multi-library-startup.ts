@@ -6,17 +6,17 @@ import { concurrencyOrchestrator } from './concurrency-orchestrator.js';
 import { gemma3LegalService } from './ollama-gemma3-service.js';
 
 // New: minimal local types to avoid `any` everywhere
-type Constructor<T = unknown> = new (...args: unknown[]) => T;
+type Constructor<T = unknown> = new (...args: any[]) => T;
 
 interface FuseLike {
-  new (data: unknown[], opts?: unknown): { search(query: string): unknown[] };
+  new (data: any[], opts?: any): { search(query: string): any[] };
 }
 interface FabricLike {
   Canvas?: Constructor;
 }
 interface XStateModuleLike {
-  createMachine?: (config: unknown) => unknown;
-  createActor?: (...args: unknown[]) => unknown;
+  createMachine?: (config: any) => unknown;
+  createActor?: (...args: any[]) => unknown;
 }
 interface RedisClientLike {
   connect?: () => Promise<unknown>;
@@ -25,8 +25,8 @@ interface RedisClientLike {
   disconnect?: () => void;
 }
 interface AmqpModuleLike {
-  connect?: (...args: unknown[]) => unknown;
-  default?: { connect?: (...args: unknown[]) => unknown };
+  connect?: (...args: any[]) => unknown;
+  default?: { connect?: (...args: any[]) => unknown };
 }
 
 type HealthStatus = {
@@ -97,7 +97,7 @@ class MultiLibraryStartupService {
       this.status.initTime = Date.now() - this.status.startTime;
       console.log(`✅ Multi-Library Integration Complete (${this.status.initTime}ms)`);
       this.logServiceStatus();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(errorMsg);
       console.error('❌ Multi-Library Initialization Failed:', errorMsg);
@@ -113,7 +113,7 @@ class MultiLibraryStartupService {
         this.status.services.loki = true;
         console.log('✅ Loki.js - High-performance in-memory database ready');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(`Loki.js initialization failed: ${msg}`);
     }
@@ -133,7 +133,7 @@ class MultiLibraryStartupService {
         this.status.services.fuse = true;
         console.log('✅ Fuse.js - Advanced fuzzy search capabilities ready');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(`Fuse.js initialization failed: ${msg}`);
     }
@@ -153,7 +153,7 @@ class MultiLibraryStartupService {
         this.status.services.fabric = true;
         console.log('✅ Fabric.js - Interactive evidence canvas ready');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(`Fabric.js initialization failed: ${msg}`);
     }
@@ -183,7 +183,7 @@ class MultiLibraryStartupService {
         this.status.services.xstate = true;
         console.log('✅ XState - Multi-core worker patterns ready');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(`XState initialization failed: ${msg}`);
     }
@@ -198,7 +198,7 @@ class MultiLibraryStartupService {
       }
       // Server-side: attempt Redis connection
       const mod = await import('ioredis');
-      const Redis = (mod as { default?: unknown }).default ?? mod;
+      const Redis = (mod as { default?: any }).default ?? mod;
       const redis = (Redis as unknown as Constructor<RedisClientLike>);
       const client = new redis() as RedisClientLike;
       // many ioredis versions expose .connect/.ping/.quit — guard in case of variant
@@ -215,7 +215,7 @@ class MultiLibraryStartupService {
       }
       this.status.services.redis = true;
       console.log('✅ Redis - Native Windows performance optimization ready');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       // Fallback: mark as ready for development even if Redis isn't running
       this.status.services.redis = true;
@@ -236,7 +236,7 @@ class MultiLibraryStartupService {
         this.status.services.rabbitmq = true;
         console.log('✅ RabbitMQ - Native Windows queuing ready');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       // Fallback: mark as ready for development
       this.status.services.rabbitmq = true;
@@ -253,7 +253,7 @@ class MultiLibraryStartupService {
         this.status.services.ollama = true;
         console.log('⚠️ Ollama - Service available but models may be loading');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(`Ollama initialization failed: ${msg}`);
     }
@@ -269,7 +269,7 @@ class MultiLibraryStartupService {
       } else {
         throw new Error(`Orchestrator unhealthy: ${(health as { status?: string }).status}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.status.errors.push(`Orchestrator initialization failed: ${msg}`);
     }

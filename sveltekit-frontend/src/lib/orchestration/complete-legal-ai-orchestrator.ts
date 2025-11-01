@@ -174,8 +174,8 @@ type UnifiedVectorResult = Record<string, unknown>;
 // New: explicit process result type for processLegalDocument
 export interface ProcessResult {
   extractedData: Record<string, unknown> | null;
-  neuralSprite?: unknown | null;
-  upscaledVisualization?: unknown | null;
+  neuralSprite?: any | null;
+  upscaledVisualization?: any | null;
   vectorEmbedding: Float32Array;
   qloraJobId?: string;
   processingTime: number;
@@ -195,7 +195,7 @@ export class CompleteLegalAIOrchestrator {
   // add fields to actually use the previously imported classes
   private nesMemoryArch: NESMemoryArchitecture | null = null;
   private webgpuSOMCache: WebGPUSOMCache | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Use ReturnType<typeof setInterval> so TypeScript accepts both browser (number) and Node (Timeout) runtimes
   private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
   private performanceMonitoringInterval: ReturnType<typeof setInterval> | null = null;
@@ -690,7 +690,7 @@ export class CompleteLegalAIOrchestrator {
     interface EmbedResponse {
       embedding?: number[];
       error?: string;
-      [k: string]: unknown;
+      [k: string]: any;
     }
 
     const response = await fetch('/api/ai/embed', {

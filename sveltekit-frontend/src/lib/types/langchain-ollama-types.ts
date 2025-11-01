@@ -74,7 +74,7 @@ export interface EmbeddingMetadata {
   tokenCount: number;
   processingTime: number;
   tags: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface SimilarityResult {
   id: string;
@@ -202,7 +202,7 @@ export interface ParameterProperty {
   type: string;
   description: string;
   enum?: string[];
-  default?: unknown;
+  default?: any;
   minimum?: number;
   maximum?: number;
   pattern?: string;
@@ -827,7 +827,7 @@ export interface ErrorEvent {
   service: string;
   message: string;
   stack?: string;
-  context: { [key: string]: unknown };
+  context: { [key: string]: any };
   resolved: boolean;
 }
 export interface UsageMetrics {
@@ -1187,7 +1187,7 @@ export interface PolicyRule {
 export interface Condition {
   attribute: string;
   operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte';
-  value: unknown;
+  value: any;
 }
 export interface EncryptionConfig {
   atRest: EncryptionSettings;
@@ -1291,7 +1291,7 @@ export interface LogOutput {
 export interface LogFilter {
   field: string;
   operator: string;
-  value: unknown;
+  value: any;
   action: 'include' | 'exclude' | 'mask';
 }
 export interface SamplingConfig {
@@ -1361,12 +1361,12 @@ export interface DashboardVariable {
   name: string;
   type: 'query' | 'constant' | 'interval' | 'datasource';
   query?: string;
-  value?: unknown;
+  value?: any;
   options?: VariableOption[];
 }
 export interface VariableOption {
   text: string;
-  value: unknown;
+  value: any;
   selected: boolean;
 }
 export interface DeploymentConfiguration {
@@ -1551,7 +1551,7 @@ export interface WAFCondition {
   type: 'ip' | 'geo' | 'size' | 'sql_injection' | 'xss' | 'rate_limit';
   field: string;
   operator: string;
-  value: unknown;
+  value: any;
 }
 export interface DDoSProtectionConfig {
   enabled: boolean;
@@ -1682,7 +1682,7 @@ export interface ArchivalCriteria {
    * Consumers should narrow/cast this to the expected shape (e.g. number, string, object)
    * depending on `type`.
    */
-  value: unknown;
+  value: any;
   action: 'archive' | 'delete';
 }
 export interface StorageEncryptionConfig {
@@ -1764,7 +1764,7 @@ export interface SearchQuery {
 export interface SearchFilter {
   field: string;
   operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
-  value: unknown;
+  value: any;
   boost?: number;
 }
 export interface SortOption {
@@ -1893,7 +1893,7 @@ export interface SignatureConfig {
 export interface TriggerCondition {
   field: string;
   operator: string;
-  value: unknown;
+  value: any;
   required: boolean;
 }
 export interface WorkflowStep {
@@ -1954,7 +1954,7 @@ export interface TransformationRule {
 export interface StepCondition {
   field: string;
   operator: string;
-  value: unknown;
+  value: any;
   action: 'continue' | 'skip' | 'retry' | 'fail';
 }
 export interface RetryPolicy {

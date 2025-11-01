@@ -5,14 +5,14 @@ Compact AI recommendations component for sidebar/dashboard use
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Lightbulb,
     Target,
@@ -107,7 +107,7 @@ Compact AI recommendations component for sidebar/dashboard use
       console.error('Failed to load recommendations:', error);
       recommendations = [];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -217,7 +217,7 @@ Compact AI recommendations component for sidebar/dashboard use
   <div class="yorha-panel-content bits-nier-bits-yorha-panel-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
     {#if isLoading}
       <div class="space-y-3">
-        {#each Array(maxRecommendations) as _}
+        {#each Array.isArray(Array(maxRecommendations)) ? Array(maxRecommendations) : [] as _}
           <div class="animate-pulse">
             <div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
             <div class="h-3 bg-muted rounded w-full mb-1"></div>
@@ -233,7 +233,7 @@ Compact AI recommendations component for sidebar/dashboard use
       </div>
     {:else}
       <div class="space-y-3">
-        {#each recommendations as rec}
+        {#each Array.isArray(recommendations) ? recommendations : [] as rec}
           {@const SvelteComponent = getRecommendationIcon(rec.type)}
           <button
             type="button"
@@ -271,8 +271,7 @@ Compact AI recommendations component for sidebar/dashboard use
                 <span>Time: {rec.estimatedImpact.timeToComplete}min</span>
                 <span>•</span>
                 <span>Success: {rec.estimatedImpact.successProbability}%</span>
-              </div>
-            {/if}
+              {/if}
           </button>
         {/each}
       </div>
@@ -284,8 +283,7 @@ Compact AI recommendations component for sidebar/dashboard use
               <span>Auto-refresh: {refreshInterval}min</span>
             {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     {/if}
   </div>
 </div>

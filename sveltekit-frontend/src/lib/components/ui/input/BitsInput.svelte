@@ -13,8 +13,8 @@ https://svelte.dev/e/js_parse_error -->
     required?: boolean;
     variant?: 'default' | 'legal' | 'search' | 'ai';
     size?: 'sm' | 'md' | 'lg';
-    leftIcon?: unknown;
-    rightIcon?: unknown;
+    leftIcon?: any;
+    rightIcon?: any;
     class?: string;
   }
   let {
@@ -44,7 +44,6 @@ https://svelte.dev/e/js_parse_error -->
   let inputElement = $state<HTMLInputElement// Generate unique ID for accessibility
   const inputId  | null>(null); const data = `input-${Math.random.toString-substr(2, 9)}`);
 </script>
-
 <div class="legal-input-container w-full">
   <!-- Label -->
   {#if label}
@@ -61,8 +60,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if leftIcon}
       <div class="absolute left-3 top-1/2 -translate-y-1/2 text-yorha-text-secondary">
         {@render leftIcon()}
-      </div>
-    {/if}
+      {/if}
     <!-- Input Element -->
     <input
       bind:this={inputElement}
@@ -89,8 +87,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if rightIcon}
       <div class="absolute right-3 top-1/2 -translate-y-1/2 text-yorha-text-secondary">
         {@render rightIcon()}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Description -->
   {#if description}
@@ -105,7 +102,6 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   {/if}
 </div>
-
 <style>
   .legal-input-container input {
     transition: all 0.2s ease;
@@ -122,4 +118,3 @@ https://svelte.dev/e/js_parse_error -->
     content: '';
   }
 </style>
-

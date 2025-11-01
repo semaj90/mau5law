@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleClusterStatus();
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg =
       error instanceof Error
         ? error.message
@@ -144,15 +144,15 @@ type AutosolvePayload = {
   threshold?: number;
   forceRun?: boolean;
   includeClusterMetrics?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type GPUTaskPayload = {
   taskType?: string; // incoming may be any string; we'll validate below
-  taskData?: unknown;
+  taskData?: any;
   priority?: string; // incoming may be any string; we'll validate below
   context?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type GPUConfig = Record<string, unknown>;
@@ -160,31 +160,31 @@ type GPUConfig = Record<string, unknown>;
 // New types for the corrected handlers
 type LegalAnalysisPayload = {
   document?: string;
-  context?: { caseId?: string; userId?: string; [key: string]: unknown };
+  context?: { caseId?: string; userId?: string; [key: string]: any };
   options?: {
     includeRAG?: boolean;
     includeGraph?: boolean;
     generateSummary?: boolean;
     extractEntities?: boolean;
     riskAssessment?: boolean;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 };
 
 type DocumentProcessingPayload = {
   files?: Array<unknown>;
-  context?: { caseId?: string; userId?: string; documentId?: string; [key: string]: unknown };
-  options?: { enableRAG?: boolean; [key: string]: unknown };
+  context?: { caseId?: string; userId?: string; documentId?: string; [key: string]: any };
+  options?: { enableRAG?: boolean; [key: string]: any };
 };
 
 type OrchestratorResponse = {
   success?: boolean;
   taskId?: string;
-  result?: unknown;
-  metrics?: unknown;
-  recommendations?: unknown;
+  result?: any;
+  metrics?: any;
+  recommendations?: any;
   error?: string | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 // -------------------------------------------------------------------------------
 
@@ -302,7 +302,7 @@ function extractLegalEntities(doc: string) {
 }
 
 // Types for risk assessment
-type AnalysisResult = { text?: string; summary?: string; [key: string]: unknown };
+type AnalysisResult = { text?: string; summary?: string; [key: string]: any };
 type RiskScores = {
   financial: number;
   legal: number;
@@ -386,7 +386,7 @@ export const GET: RequestHandler = async () => {
       cluster: clusterStatus,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg =
       error instanceof Error
         ? error.message

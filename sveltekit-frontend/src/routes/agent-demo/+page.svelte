@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
 
   // Stores for reactive state
   const selectedTask = writable(null);
@@ -17,7 +17,7 @@
   let currentPatch = null;
 
   // Agent simulation state
-  let isAgentRunning = false;
+  let isAgentRunning = $state(false);
   let currentAgentTask = null;
   let agentProgress = 0;
 
@@ -149,7 +149,7 @@
     stats.pendingCount--;
     stats.completedCount++;
 
-    isAgentRunning = false;
+    isAgentRunning = $state(false);
     agentStatus.set('idle');
     addLog(`✅ Task: "${task.title}" completed successfully!`, 'success');
   }

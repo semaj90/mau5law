@@ -411,7 +411,7 @@ export class GemmaEmbeddingService {
           }
           // { changed code }
         } catch {
-          results[provider.name] = false;
+          results[provider.name] = $state(false);
         }
       })
     );

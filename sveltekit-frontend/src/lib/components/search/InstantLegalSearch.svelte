@@ -23,9 +23,9 @@ https://svelte.dev/e/expected_token -->
     type InstantSearchResult,
     type SearchFilters,
   } from '$lib/services/instant-search-engine.js';
-  import { Input } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/nes-button.svelte';
-  import * as Card from '$lib/components/ui/card';
+  import { Input } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/nes-button.svelte';
+  import * as Card from '$lib/components/ui/card.svelte'';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Search,
@@ -39,7 +39,6 @@ https://svelte.dev/e/expected_token -->
     Shield,
     Zap,
   } from 'lucide-svelte';
-
   // Props using Svelte 5 syntax
   let {
     placeholder = 'Search legal documents, cases, evidence...',
@@ -60,7 +59,6 @@ https://svelte.dev/e/expected_token -->
     onResultAction?: (r: InstantSearchResult, a: string) => void;
     class?: string;
   } = $props();
-
   // Search state
   let searchQuery = $state('');
   let searchResults = $state<InstantSearchResult[]>([]);
@@ -68,7 +66,6 @@ https://svelte.dev/e/expected_token -->
   let showFiltersPanel = $state(false);
   let searchStartTime = $state(0);
   let lastSearchTime = $state(0);
-
   // Filters
   let selectedFilters = $state<SearchFilters>({
     documentTypes: [],
@@ -77,7 +74,6 @@ https://svelte.dev/e/expected_token -->
     confidenceMin: 0.5,
     priorityMin: 50,
   });
-
   // Stats
   let searchStats = $state({
     totalSearches: 0,
@@ -86,7 +82,6 @@ https://svelte.dev/e/expected_token -->
     popularQueries: [] as string[],
     performanceMetrics: { p50: 0, p90: 0, p95: 0, p99: 0 },
   });
-
   // Search options
   const documentTypes = [
     { value: 'contract', label: 'Contracts', icon FileText },
@@ -107,13 +102,10 @@ https://svelte.dev/e/expected_token -->
     { value: 'local', label: 'Local' },
     { value: 'international', label: 'International' },
   ];
-
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
-
   // Initialize search engine and wire events
   onMount(() => {
     let mounted = true;
-
     (async () => {
       try {
         await instantSearchEngine.initialize();
@@ -138,27 +130,23 @@ https://svelte.dev/e/expected_token -->
         console.error('❌ Failed to initialize search engine:', error);
       }
     })();
-
     return () => {
-      mounted = false;
+      mounted = $state(false);
     };
   });
-
   onDestroy(() => {
     if (searchTimeout) clearTimeout(searchTimeout);
     // do not destroy singleton instantSearchEngine here
   });
-
   // Reactive debounce: watch searchQuery changes
   $effect(() => {
     if (searchTimeout) {
       clearTimeout(searchTimeout);
       searchTimeout = null;
     }
-
     if (!searchQuery || searchQuery.trim().length < 2) {
       searchResults = [];
-      isSearching = false;
+      isSearching = $state(false);
     } else {
       isSearching = true;
       searchStartTime = Date.now();
@@ -167,43 +155,37 @@ https://svelte.dev/e/expected_token -->
       }, 150);
     }
   });
-
   async function performSearch() {
     if (!searchQuery || !searchQuery.trim()) {
       searchResults = [];
-      isSearching = false;
+      isSearching = $state(false);
       return;
     }
     try {
       const results = await instantSearchEngine.search(searchQuery.trim(), selectedFilters, `search_${Date.now()}`);
       searchResults = Array.isArray(results) ? results.slice(0, maxResults) : [];
-      isSearching = false;
+      isSearching = $state(false);
     } catch (error) {
       console.error('❌ Search failed:', error);
       searchResults = [];
-      isSearching = false;
+      isSearching = $state(false);
     } finally {
       lastSearchTime = Date.now() - searchStartTime;
     }
   }
-
   function toggleFiltersPanel() {
     showFiltersPanel = !showFiltersPanel;
   }
-
   function handleResultClick(result: InstantSearchResult) {
     if (onResultClick) onResultClick(result);
   }
-
   function handleResultAction(result: InstantSearchResult, action string) {
     if (onResultAction) onResultAction(result, action);
   }
-
   function getRiskLevelColor(riskLevel: string | undefined) {
     const risk = riskLevels.find(r => r.value === riskLevel);
     return risk?.color || 'bg-gray-100 text-gray-800';
   }
-
   function getResultTypeIcon(resultType: string | undefined) {
     switch (resultType) {
       case 'cache':
@@ -217,7 +199,6 @@ https://svelte.dev/e/expected_token -->
       default: return FileText;
     }
   }
-
   function getResultTypeColor(resultType: string | undefined) {
     switch (resultType) {
       case 'cache':
@@ -231,22 +212,19 @@ https://svelte.dev/e/expected_token -->
       default: return 'text-gray-600';
     }
   }
-
   function formatScore(score: number | undefined) {
     if (typeof score !== 'number' || Number.isNaN(score)) return '0.0%';
     return (score * 100).toFixed(1) + '%';
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && searchResults.length > 0) {
       handleResultClick(searchResults[0]);
     } else if (event.key === 'Escape') {
       searchQuery = '';
-      showFiltersPanel = false;
+      showFiltersPanel = $state(false);
     }
   }
 </script>
-
 <div class="instant-legal-search {className}">
   <!-- Search Header -->
   <div class="space-y-4">
@@ -266,7 +244,6 @@ https://svelte.dev/e/expected_token -->
         {/if}
       </div>
     </div>
-
     <!-- Search Filters Panel -->
     {#if showFiltersPanel && showFilters}
       <div class="p-4">
@@ -275,7 +252,7 @@ https://svelte.dev/e/expected_token -->
           <div>
             <label class="text-sm font-medium mb-2 block">Document Types</label>
             <div class="space-y-2">
-              {#each documentTypes as docType}
+              {#each Array.isArray(documentTypes) ? documentTypes : [] as docType}
                 <label class="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -289,12 +266,11 @@ https://svelte.dev/e/expected_token -->
               {/each}
             </div>
           </div>
-
           <!-- Risk Levels -->
           <div>
             <label class="text-sm font-medium mb-2 block">Risk Levels</label>
             <div class="space-y-2">
-              {#each riskLevels as risk}
+              {#each Array.isArray(riskLevels) ? riskLevels : [] as risk}
                 <label class="flex items-center space-x-2">
                   <input type="checkbox" bind:group={selectedFilters.riskLevels} value={risk.value} class="rounded" />
                   <Badge class={risk.color}>{risk.label}</Badge>
@@ -302,12 +278,11 @@ https://svelte.dev/e/expected_token -->
               {/each}
             </div>
           </div>
-
           <!-- Jurisdictions -->
           <div>
             <label class="text-sm font-medium mb-2 block">Jurisdictions</label>
             <div class="space-y-2">
-              {#each jurisdictions as jurisdiction}
+              {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                 <label class="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -320,7 +295,6 @@ https://svelte.dev/e/expected_token -->
               {/each}
             </div>
           </div>
-
           <!-- Advanced Filters -->
           <div>
             <label class="text-sm font-medium mb-2 block">Minimum Scores</label>
@@ -356,9 +330,7 @@ https://svelte.dev/e/expected_token -->
             </div>
           </div>
         </div>
-      </div>
-    {/if}
-
+      {/if}
     <!-- Search Stats -->
     {#if showStats && (searchQuery || searchResults.length > 0)}
       <div class="flex items-center justify-between text-sm nes-text is-disabled">
@@ -377,12 +349,9 @@ https://svelte.dev/e/expected_token -->
             <span>Avg: {Math.round(searchStats.averageResponseTime)}ms</span>
             <span>Cache: {(searchStats.cacheHitRate * 100).toFixed(1)}%</span>
             <span>Total: {searchStats.totalSearches}</span>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
   </div>
-
   <!-- Search Results -->
   <div class="mt-6">
     {#if searchResults.length > 0}
@@ -405,7 +374,6 @@ https://svelte.dev/e/expected_token -->
                     {result.document?.metadata?.title || result.id}
                   {/if}
                 </Card.Title>
-
                 <div class="flex items-center gap-2 ml-2">
                   <Badge class="text-xs capitalize {getResultTypeColor(result.resultType)}">{result.resultType}</Badge>
                   <Badge variant="ghost" class="text-xs">{formatScore(result.combinedScore)}</Badge>
@@ -414,7 +382,6 @@ https://svelte.dev/e/expected_token -->
                   >
                 </div>
               </div>
-
               <Card.Description class="text-sm">
                 {#if result.highlights?.content}
                   {@html result.highlights.content}
@@ -422,46 +389,36 @@ https://svelte.dev/e/expected_token -->
                   {result.document?.metadata?.description || 'No description available'}
                 {/if}
               </Card.Description>
-
               <div class="flex flex-wrap gap-4 text-xs nes-text is-disabled">
                 <div class="flex items-center gap-1">
                   <FileText class="h-3 w-3" />
                   <span class="capitalize">{result.document?.type}</span>
                 </div>
-
                 {#if result.document?.metadata?.jurisdiction}
                   <div class="flex items-center gap-1">
                     <Scale class="h-3 w-3" />
                     <span>{result.document.metadata.jurisdiction}</span>
-                  </div>
-                {/if}
-
+                  {/if}
                 <div class="flex items-center gap-1">
                   <TrendingUp class="h-3 w-3" />
                   <span>Priority: {result.document?.priority}</span>
                 </div>
-
                 <div class="flex items-center gap-1">
                   <Shield class="h-3 w-3" />
                   <span>Confidence: {formatScore(result.document?.confidenceLevel)}</span>
                 </div>
-
                 {#if result.document?.accessCount > 0}
                   <div class="flex items-center gap-1">
                     <Clock class="h-3 w-3" />
                     <span>Accessed {result.document.accessCount} times</span>
-                  </div>
-                {/if}
-
+                  {/if}
                 {#if result.responseTime}
                   <div class="flex items-center gap-1">
                     <Zap class="h-3 w-3" />
                     <span>{result.responseTime}ms</span>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </Card.Header>
-
             <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
                 <button class="nes-btn" onclick|stopPropagation={() => handleResultAction(result, 'view')}
@@ -470,18 +427,15 @@ https://svelte.dev/e/expected_token -->
                 <button class="nes-btn" onclick|stopPropagation={() => handleResultAction(result, 'analyze')}
                   >AI Analysis</button
                 >
-
                 {#if result.document?.type === 'evidence'}
                   <button class="nes-btn" onclick|stopPropagation={() => handleResultAction(result, 'canvas')}
                     >Open in Canvas</button
                   >
                 {/if}
-
                 {#if typeof result.fuseScore === 'number' && typeof result.semanticScore === 'number'}
                   <div class="ml-auto text-xs nes-text is-disabled">
                     Fuzzy: {formatScore(1 - result.fuseScore)} | Semantic: {formatScore(result.semanticScore)}
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </Card.Content>
           </Card.Root>
@@ -519,7 +473,6 @@ https://svelte.dev/e/expected_token -->
     {/if}
   </div>
 </div>
-
 <style>
   :global(.instant-legal-search mark) {
     background-color: #f6e05e; /* fallback color */
@@ -532,4 +485,3 @@ https://svelte.dev/e/expected_token -->
     color: #fef3c7;
   }
 </style>
-

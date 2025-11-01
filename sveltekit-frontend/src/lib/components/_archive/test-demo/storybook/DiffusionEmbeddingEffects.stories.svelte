@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   let webgpuDevice: GPUDevice | null = null;
   let diffusionPipeline: GPUComputePipeline | null = null;
   let embeddingTexture: any = null;
-  let isWebGPUSupported = false;
+  let isWebGPUSupported = $state(false);
   let currentEffect = 'nomic-diffusion';
   let intensity = 0.7;
   let nomicEmbeddings: Array<{ id: number; vector: Float32Array; cluster: number; similarity: number }> = [];
@@ -84,7 +84,7 @@ https://svelte.dev/e/expected_token -->
       await createDiffusionPipeline();
     } catch (error) {
       console.warn('WebGPU initialization failed:', error);
-      isWebGPUSupported = false;
+      isWebGPUSupported = $state(false);
     }
   }
 
@@ -299,13 +299,13 @@ https://svelte.dev/e/expected_token -->
         featureFlags.ps1FX = true;
         featureFlags.subsampleAA = true;
         featureFlags.dynamicParallax = true;
-        featureFlags.anisotropicSim = false;
+        featureFlags.anisotropicSim = $state(false);
         break;
       case 'low':
         featureFlags.ps1FX = true;
-        featureFlags.subsampleAA = false;
-        featureFlags.dynamicParallax = false;
-        featureFlags.anisotropicSim = false;
+        featureFlags.subsampleAA = $state(false);
+        featureFlags.dynamicParallax = $state(false);
+        featureFlags.anisotropicSim = $state(false);
         break;
     }
     // Apply CSS classes based on flags

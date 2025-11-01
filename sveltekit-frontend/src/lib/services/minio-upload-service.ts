@@ -68,7 +68,7 @@ export class MinIOUploadService {
   private workers: Worker[] = [];
   private maxConcurrentUploads = 4;
   private chunkSize = 64 * 1024 * 1024; // 64MB chunks
-  private isProcessing = false;
+  private isProcessing = $state(false);
 
   constructor(config: MinIOConfig) {
     this.config = config;
@@ -216,7 +216,7 @@ export class MinIOUploadService {
             task => task.status === 'uploading' || task.status === 'processing'
           );
           if (activeTasks.length === 0) {
-            this.isProcessing = false;
+            this.isProcessing = $state(false);
             break;
           }
           continue;
@@ -235,7 +235,7 @@ export class MinIOUploadService {
       console.log('✅ Upload processing completed');
     } catch (err) {
       console.error('Processing loop error:', err);
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
     }
   }
 
@@ -288,11 +288,11 @@ export class MinIOUploadService {
   }
 
   // Handle messages from worker threads
-  private handleWorkerMessage(workerId: number, data: unknown): void {
+  private handleWorkerMessage(workerId: number, data: any): void {
     // Basic structural guard
     if (!data || typeof data !== 'object') return;
 
-    const msg = data as { type?: string; taskId?: unknown; payload?: unknown };
+    const msg = data as { type?: string; taskId?: any; payload?: any };
     const type = msg.type;
 
     switch (type) {
@@ -328,7 +328,7 @@ export class MinIOUploadService {
         const taskId = typeof msg.taskId === 'string' ? msg.taskId : undefined;
         const payload = msg.payload;
         if (!taskId || typeof payload !== 'object' || payload === null) return;
-        const maybe = payload as { chunkIndex?: unknown; etag?: string };
+        const maybe = payload as { chunkIndex?: any; etag?: string };
         if (typeof maybe.chunkIndex !== 'number') return;
         this.handleChunkCompleted(taskId, { chunkIndex: maybe.chunkIndex, etag: maybe.etag });
         break;
@@ -649,7 +649,7 @@ export class MinIOUploadService {
   }
 
   public destroy(): void {
-    this.isProcessing = false;
+    this.isProcessing = $state(false);
     for (const worker of this.workers) {
       worker.terminate();
     }

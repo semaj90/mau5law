@@ -23,7 +23,7 @@
   }
 </script>
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   interface Props {
     person?: Perso;
     relationships?: Relationship[];
@@ -72,7 +72,7 @@
   // Confidence level styling
   const confidenceColor = $derived(person.confidence > 0.8 ? 'text-green-600' : person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600');
   const barColor = $derived(person.confidence > 0.8 ? 'bg-green-500' : person.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500');
-  let showFullDetails = false;
+  let showFullDetails = $state(false);
 </script>
 <div class="w-full max-w-md hover:shadow-lg transition-shadow nes-container">
   <div class="yorha-panel-header pb-3">
@@ -113,39 +113,33 @@
             <div>
               <span class="text-gray-500">Age:</span>
               <span class="ml-1 font-medium">{pe(rson as CustomEvent).details.age}</span>
-            </div>
-          {/if}
+            {/if}
           {#if pe(rson as CustomEvent).details.occupation}
             <div class="col-span-2">
               <span class="text-gray-500">Occupation</span>
               <span class="ml-1 font-medium">{pe(rson as CustomEvent).details.occupation}</span>
-            </div>
-          {/if}
+            {/if}
           {#if pe(rson as CustomEvent).details.phone}
             <div class="col-span-2">
               <span class="text-gray-500">Phone:</span>
               <span class="ml-1 font-mono text-sm">{pe(rson as CustomEvent).details.phone}</span>
-            </div>
-          {/if}
+            {/if}
           {#if pe(rson as CustomEvent).details.address && showFullDetails}
             <div class="col-span-2">
               <span class="text-gray-500">Address:</span>
               <span class="ml-1">{pe(rson as CustomEvent).details.address}</span>
-            </div>
-          {/if}
+            {/if}
           {#if pe(rson as CustomEvent).details.aliases && pe(rson as CustomEvent).details.aliases.length > 0}
             <div class="col-span-2">
               <span class="text-gray-500">Aliases:</span>
               <div class="mt-1 flex flex-wrap gap-1">
-                {#each pe(rson as CustomEvent).details.aliases as alias}
+                {#each Array.isArray(pe(rson as CustomEvent).details.aliases) ? pe(rson as CustomEvent).details.aliases : [] as alias}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{alias}</span>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Source Context -->
     {#if person.sourceContext}
       <div>
@@ -153,8 +147,7 @@
         <p class="text-sm text-gray-600 bg-gray-50 p-2 rounded border-l-2 border-blue-300">
           {person.sourceContext}
         </p>
-      </div>
-    {/if}
+      {/if}
     <!-- Relationships -->
     {#if personRelationships.length > 0}
       <div>
@@ -162,7 +155,7 @@
           Relationships ({personRelationships.length})
         </h4>
         <div class="space-y-2 max-h-32 overflow-y-auto">
-          {#each personRelationships.slice(0, showFullDetails ? undefined : 2) as rel}
+          {#each Array.isArray(personRelationships.slice(0, showFullDetails ? undefined : 2)) ? personRelationships.slice(0, showFullDetails ? undefined : 2) : [] as rel}
             {@const otherPerson = rel.person1 === person.name ? rel.person2 : rel.person1}
             <div class="text-xs bg-blue-50 p-2 rounded border-l-2 border-blue-300">
               <div class="flex items-center justify-between">
@@ -182,11 +175,9 @@
           {#if !showFullDetails && personRelationships.length > 2}
             <div class="text-xs text-gray-500 text-center py-1">
               +{personRelationships.length - 2} more relationships
-            </div>
-          {/if}
+            {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Action Buttons -->
     <div class="flex gap-2 pt-3 border-t">
       <button

@@ -25,7 +25,7 @@
   let importResults: {
     success: boolean;
     message: string;
-    data?: unknown;
+    data?: any;
     results?: {
       imported: number;
       updated: number;
@@ -35,7 +35,7 @@
     error?: string; // Top-level import error (whole operation failed)
   } | null = $state(null);
   type CsvPreview = { type: 'csv', data: string[] };
-  type JsonPreview = { type: 'json', data: unknown };
+  type JsonPreview = { type: 'json', data: any };
   type XmlPreview = { type: 'xml', data: string };
   type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
   let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
@@ -103,12 +103,12 @@
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (!e.relatedTarget) {
-      dragActive = false;
+      dragActive = $state(false);
     }
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
@@ -235,7 +235,7 @@
         importResults = { success: false, message: unexpectedErrorMsg, error: unexpectedErrorMsg }; // Populate importResults for display
       }
     } finally {
-      isImporting = false;
+      isImporting = $state(false);
     }
   }
   function clearImport() {
@@ -372,7 +372,7 @@
             <div>
               <label for="import-type" class="block text-sm font-medium text-gray-700"> Import Type </label>
               <select id="import-type" bind:value={importType} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                {#each supportedTypes as type}
+                {#each Array.isArray(supportedTypes) ? supportedTypes : [] as type}
                   <option value={type.value}>{type.label}</option>
                 {/each}
               </select>
@@ -405,7 +405,7 @@
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                   <tr>
-                    {#each (filePreview.data[0]?.split(',') ?? []) as header}
+                    {#each Array.isArray((filePreview.data[0]?.split(',') ?? [])) ? (filePreview.data[0]?.split(',') ?? []) : [] as header}
                       <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {header.replace(/"/g, '')}
                       </th>
@@ -416,7 +416,7 @@
                   {#each (filePreview.data as string[]) as row, i}
                     {#if i > 0} <!-- Skip header row for data -->
                       <tr>
-                        {#each row.split(',') as cell}
+                        {#each Array.isArray(row.split(',')) ? row.split(',') : [] as cell}
                           <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">{cell.replace(/"/g, '')}</td>
                         {/each}
                       </tr>

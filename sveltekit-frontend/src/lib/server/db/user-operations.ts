@@ -125,7 +125,7 @@ export class UserAuthService {
         return { user: newUser, profile };
       });
       return { ...result, success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('User registration error:', error);
       return {
         user: null,
@@ -216,7 +216,7 @@ export class UserAuthService {
         session: session as Record<string, unknown>,
         success: true,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Authentication error:', error instanceof Error ? error.message : String(error));
       return {
         success: false,
@@ -258,7 +258,7 @@ export class UserAuthService {
         session: data.user_sessions,
         valid: true,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Session validation error:', error instanceof Error ? error.message : String(error));
       return { valid: false };
     }
@@ -273,7 +273,7 @@ export class UserAuthService {
         .set({ isActive: false, updatedAt: new Date() })
         .where(eq(userSessions.sessionId, sessionId));
       return { success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Logout error:', error instanceof Error ? error.message : String(error));
       return { success: false, error: error instanceof Error ? error.message : 'Logout failed' };
     }
@@ -320,7 +320,7 @@ export class UserProfileService {
         sessions,
         recentActivity,
       } as FullUserProfile;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Get full profile error:', error);
       return null;
     }
@@ -422,7 +422,7 @@ export class UserProfileService {
         return { user: updatedUser, profile: updatedProfile };
       });
       return { ...result, success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Update profile error:', error);
       return {
         success: false,
@@ -462,7 +462,7 @@ export class UserProfileService {
         });
       });
       return { success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Delete user error:', error);
       return {
         success: false,
@@ -501,7 +501,7 @@ export class UserProfileService {
         .orderBy(sql`${users.profileEmbedding} <=> ${embeddingPgVector} ASC`) // Order by distance ascending for similarity descending
         .limit(limit);
       return similarRows.map(r => (r as unknown as { user: User }).user);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Find similar users error:', error instanceof Error ? error.message : String(error));
       return [];
     }
@@ -520,7 +520,7 @@ export class UserActivityService {
         ...activity,
         timestamp: new Date(),
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Log activity error:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -536,7 +536,7 @@ export class UserActivityService {
         .orderBy(desc(userActivityLog.timestamp))
         .limit(limit)
         .offset(offset);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Get user activity error:', error instanceof Error ? error.message : String(error));
       return [];
     }
@@ -589,7 +589,7 @@ export class UserActivityService {
         successRate,
         topActions,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Get activity stats error:', error instanceof Error ? error.message : String(error));
       return {
         totalActions: 0,

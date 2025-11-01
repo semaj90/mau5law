@@ -21,7 +21,7 @@
     // Guard for SSR/build-time: only run in browser
     if (typeof window === 'undefined') return;
 
-    let cancelled = false;
+    let cancelled = $state(false);
     (async () => {
       if (!Chart) {
         // dynamic import so TS doesn't require: 'chart.js/auto' at build-time
@@ -309,7 +309,7 @@
   <div class="findings-section">
     <h3 class="section-title">Key Findings</h3>
     <div class="findings-grid">
-      {#each analysis.findings as finding}
+      {#each Array.isArray(analysis.findings) ? analysis.findings : [] as finding}
         <div class="finding-card {finding.type}">
           <div class="finding-header">
             <span class="finding-icon">{getFindingIcon(finding.type)}</span>
@@ -327,7 +327,7 @@
   <div class="correlations-section">
     <h3 class="section-title">Related Evidence</h3>
     <div class="correlations-list">
-      {#each analysis.correlations as correlation}
+      {#each Array.isArray(analysis.correlations) ? analysis.correlations : [] as correlation}
         <div class="correlation-item">
           <span class="correlation-icon">{getCorrelationIcon(correlation.correlationType)}</span>
           <div class="correlation-content">
@@ -338,11 +338,10 @@
             </div>
             {#if correlation.sharedEntities.length > 0}
               <div class="shared-entities">
-                {#each correlation.sharedEntities as entity}
+                {#each Array.isArray(correlation.sharedEntities) ? correlation.sharedEntities : [] as entity}
                   <span class="entity-tag">{entity}</span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       {/each}
@@ -351,7 +350,7 @@
   <div class="recommendations-section">
     <h3 class="section-title">Recommendations</h3>
     <ol class="recommendations-list">
-      {#each analysis.recommendations as recommendation}
+      {#each Array.isArray(analysis.recommendations) ? analysis.recommendations : [] as recommendation}
         <li class="recommendation-item">
           <span class="recommendation-number">{analysis.recommendations.indexOf(recommendation) + 1}</span>
           <p>{recommendation}</p>
@@ -362,7 +361,7 @@
   <div class="entities-section">
     <h3 class="section-title">Extracted Entities</h3>
     <div class="entities-grid">
-      {#each analysis.keyEntities as entity}
+      {#each Array.isArray(analysis.keyEntities) ? analysis.keyEntities : [] as entity}
         <div class="entity-card">
           <span class="entity-type">{entity.type}</span>
           <strong class="entity-value">{entity.value}</strong>

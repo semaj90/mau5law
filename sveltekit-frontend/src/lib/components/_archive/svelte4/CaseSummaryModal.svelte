@@ -1,9 +1,9 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   // Badge replaced with span - not available in enhanced-bits
-  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
@@ -91,7 +91,7 @@
     } catch (error) {
       console.error("Summary generation failed:", error);
     } finally {
-      isGeneratingSummary = false;
+      isGeneratingSummary = $state(false);
     }
   }
 
@@ -182,13 +182,13 @@
             <p class="nes-text is-disabled">{caseData.summary.overview}</p>
             <h3 class="text-lg font-semibold">Key Findings</h3>
             <ul class="list-disc list-inside nes-text is-disabled">
-              {#each caseData.summary.keyFindings as finding}
+              {#each Array.isArray(caseData.summary.keyFindings) ? caseData.summary.keyFindings : [] as finding}
                 <li>{finding}</li>
               {/each}
             </ul>
             <h3 class="text-lg font-semibold">Recommendations</h3>
             <ul class="list-disc list-inside nes-text is-disabled">
-              {#each caseData.summary.recommendations as rec}
+              {#each Array.isArray(caseData.summary.recommendations) ? caseData.summary.recommendations : [] as rec}
                 <li>{rec}</li>
               {/each}
             </ul>
@@ -199,7 +199,7 @@
             </div>
             <h3 class="text-lg font-semibold">Timeline</h3>
             <ol class="border-l border-gray-200 space-y-4 pl-4">
-              {#each caseData.summary.timeline as event}
+              {#each Array.isArray(caseData.summary.timeline) ? caseData.summary.timeline : [] as event}
                 <li>
                   <div class="flex items-center">
                     <div class="absolute w-3 h-3 bg-primary rounded-full mt-1.5 -left-1.5 border border-white"></div>
@@ -218,7 +218,7 @@
             </div>
             <h3 class="text-lg font-semibold">Next Steps</h3>
             <ul class="list-disc list-inside nes-text is-disabled">
-              {#each caseData.summary.nextSteps as step}
+              {#each Array.isArray(caseData.summary.nextSteps) ? caseData.summary.nextSteps : [] as step}
                 <li>{step}</li>
               {/each}
             </ul>

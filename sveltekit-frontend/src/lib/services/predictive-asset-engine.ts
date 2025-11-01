@@ -31,7 +31,7 @@ export interface PredictedAsset {
 // Minimal Redis JSON helper (lazy imported from server-only module)
 type RedisJSON =  ;{
   getJSON: <T = unknown>(_key: string) => Promise<T | null>;
-  setJSON: (_key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
+  setJSON: (_key: string, value: any, ttlSeconds?: number) => Promise<void>;
 }
 class HiddenMarkovSOM {
   private transitions = new Map<BitmapSig, Map<BitmapSig, number>();

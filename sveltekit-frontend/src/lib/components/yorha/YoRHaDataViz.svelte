@@ -28,7 +28,7 @@
     height = 300,
     showGrid = true,
     animated = true
-  : unknown } = $props();
+  : any } = $props();
   let chartRef: HTMLDivElement
   let isVisible = $state(false);
   let animationDelay = $state(0);
@@ -63,8 +63,8 @@
     return (value / maxValue) * 100;
   }
   function getStatusColor(item: DataPoint): string {
-    if ((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).color) return (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).color;
-    if ((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status) return statusColors[(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status];
+    if ((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).color) return (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).color;
+    if ((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status) return statusColors[(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status];
     return 'var(--yorha-secondary, #ffd700)';
   }
 </script>
@@ -78,8 +78,7 @@
           <span>LIVE DATA</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <div class="chart-container" style="height: {height}px">
     {#if showGrid && type === 'bar'}
       <div class="grid-overlay">
@@ -93,8 +92,7 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <div class="chart-content {type}">
       {#if type === 'bar'}
         <div class="bar-chart">
@@ -104,15 +102,15 @@
                 class="bar"
                 class:animated={animated && isVisible}
                 style=";
-                  height: {getBarHeight((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value)}%;
+                  height: {getBarHeight((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value)}%;
                   background: {getStatusColor(item)}
                   animation-delay: {index * 100}m;
                 "
               >
-                <div class="bar-value">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}</div>
+                <div class="bar-value">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}</div>
                 <div class="bar-glow" style="background: {getStatusColor(item)}"></div>
               </div>
-              <div class="bar-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</div>
+              <div class="bar-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</div>
             </div>
           {/each}
         </div>
@@ -121,8 +119,8 @@
           {#each data as item, index}
             <div class="progress-item">
               <div class="progress-header">
-                <span class="progress-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</span>
-                <span class="progress-value">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}%</span>
+                <span class="progress-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</span>
+                <span class="progress-value">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}%</span>
               </div>
               <div class="progress-bar">
                 <div class="progress-track"></div>
@@ -130,7 +128,7 @@
                   class="progress-fill"
                   class:animated={animated && isVisible}
                   style=";
-                    width: {(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}%;
+                    width: {(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}%;
                     background: {getStatusColor(item)}
                     animation-delay: {index * 200}m;
                   "
@@ -153,11 +151,10 @@
                 <div class="indicator-pulse"></div>
               </div>
               <div class="status-content">
-                <div class="status-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</div>
-                <div class="status-value">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}</div>
-                {#if (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status}
-                  <div class="status-badge {(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status}">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status.toUpperCase()}</div>
-                {/if}
+                <div class="status-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</div>
+                <div class="status-value">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}</div>
+                {#if (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status}
+                  <div class="status-badge {(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status}">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status.toUpperCase()}{/if}
               </div>
             </div>
           {/each}
@@ -170,18 +167,17 @@
               class="timeline-item"
               class:animated={animated && isVisible}
               style=";
-                left: {((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value / maxValue) * 100}%;
+                left: {((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value / maxValue) * 100}%;
                 animation-delay: {index * 100}m;
               "
             >
               <div class="timeline-node" style="background: {getStatusColor(item)}">
                 <div class="node-pulse"></div>
               </div>
-              <div class="timeline-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</div>
+              <div class="timeline-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Data Summary -->
@@ -189,11 +185,11 @@
     <div class="summary-stats">
       <div class="stat">
         <span class="stat-label">TOTAL</span>
-        <span class="stat-value">{(data as { map?: unknown; reduce?: unknown; length?: unknown }).reduce((sum, item) => sum + (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value, 0)}</span>
+        <span class="stat-value">{(data as { map?: any; reduce?: any; length?: any }).reduce((sum, item) => sum + (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value, 0)}</span>
       </div>
       <div class="stat">
         <span class="stat-label">AVG</span>
-        <span class="stat-value">{Math.round.reduce((sum, item) => sum + (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value, 0) / (data as { map?: unknown; reduce?: unknown; length?: unknown }).length)}</span>
+        <span class="stat-value">{Math.round.reduce((sum, item) => sum + (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value, 0) / (data as { map?: any; reduce?: any; length?: any }).length)}</span>
       </div>
       <div class="stat">
         <span class="stat-label">MAX</span>
@@ -249,20 +245,20 @@
     animation: pulse 2s infinite;
   }
   .chart-container {
-    position relative;
+    position: relative;
     padding: 16px;
     overflow: hidden;
   }
   /* Grid System */
   .grid-overlay {
-    position absolute;
+    position: absolute;
     top: 16px;
     left: 60px;
     right: 16px;
     bottom: 40px;
   }
   .grid-line {
-    position absolute;
+    position: absolute;
     left: 0,
     right: 0;
     height: 1px;
@@ -270,13 +266,13 @@
     opacity: 0.3;
   }
   .grid-labels {
-    position absolute;
+    position: absolute;
     left: -50px;
     top: 0,
     bottom: 0;
   }
   .grid-label {
-    position absolute;
+    position: absolute;
     font-size: 10px;
     color: var(--yorha-text-muted, #808080);
     text-transform: uppercase;
@@ -299,7 +295,7 @@
     justify-content: end;
   }
   .bar {
-    position relative;
+    position: relative;
     width: 100%;
     max-width: 40px;
     border: 2px solid currentColor;
@@ -315,7 +311,7 @@
     filter: brightness(1.2);
   }
   .bar-value {
-    position absolute;
+    position: absolute;
     top: -24px;
     left: 50%;
     transform: translateX(-50%);
@@ -324,7 +320,7 @@
     color: var(--yorha-text-primary, #e0e0e0);
   }
   .bar-glow {
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -376,7 +372,7 @@ s
     color: var(--yorha-secondary, #ffd700);
   }
   .progress-bar {
-    position relative;
+    position: relative;
     height: 12px;
     background: var(--yorha-bg-primary, #0a0a0a);
     border: 2px solid var(--yorha-text-muted, #808080);
@@ -384,14 +380,14 @@ s
   }
   .progress-fill {
     height: 100%;
-    position relative;
-    transition: width 0.3s ease;
+    position: relative;
+    transition: width: 0.3s ease;
   }
   .progress-fill.animated {
     animation: progressFill 1s ease-out;
   }
   .progress-glow {
-    position absolute;
+    position: absolute;
     top: 0,
     right: -10px;
     width: 20px;
@@ -422,13 +418,13 @@ s
     transform: translateX(4px);
   }
   .status-indicator {
-    position relative;
+    position: relative;
     width: 16px;
     height: 16px;
     flex-shrink: 0,
   }
   .indicator-pulse {
-    position absolute;
+    position: absolute;
     inset: -4px;
     background: currentColor;
     opacity: 0.3;
@@ -465,12 +461,12 @@ s
   .status-badge.failed { color: var(--yorha-danger, #ff0041), }
   /* Timeline Chart */
   .timeline-chart {
-    position relative;
+    position: relative;
     height: 100%;
     padding: 40px 16px;
   }
   .timeline-axis {
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 16px;
     right: 16px;
@@ -479,7 +475,7 @@ s
     transform: translateY(-50%);
   }
   .timeline-item {
-    position absolute;
+    position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
   }
@@ -489,11 +485,11 @@ s
   .timeline-node {
     width: 16px;
     height: 16px;
-    position relative;
+    position: relative;
     margin: 0 auto 8px;
   }
   .node-pulse {
-    position absolute;
+    position: absolute;
     inset: -4px;
     background: currentColor;
     opacity: 0.3;

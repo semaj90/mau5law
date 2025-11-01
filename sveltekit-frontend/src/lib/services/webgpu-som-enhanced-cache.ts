@@ -7,7 +7,7 @@ interface ProcessEnhancedOptions {
   batchSize?: number;
 }
 class WebGPUSOMEnhancedCacheStub {
-  private initialized = false;
+  private initialized = $state(false);
   async initialize(): Promise<void> {
     if (this.initialized) return;
     // Simulate async init

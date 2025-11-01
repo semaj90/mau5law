@@ -12,7 +12,7 @@ export interface IntegrationTestResult {
   service: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
-  details?: unknown;
+  details?: any;
   responseTime?: number;
   error?: string;
 }
@@ -106,7 +106,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
         error: health.error,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Database Connection',
       status: 'fail',
@@ -139,7 +139,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
         error: health.error,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'pgvector Integration',
       status: 'fail',
@@ -179,7 +179,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
         responseTime,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Embedding Generation',
       status: 'fail',
@@ -217,7 +217,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         error: (result as Partial<OllamaTestResult>)?.error,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Ollama AI Service',
       status: 'fail',
@@ -259,7 +259,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
         error: typedResult?.error,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Enhanced RAG Service',
       status: 'fail',
@@ -292,7 +292,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
         responseTime,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Protocol Buffers gRPC',
       status: 'warning',
@@ -341,7 +341,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         error: errorText,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Main Suggestions API',
       status: 'fail',
@@ -377,7 +377,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
         responseTime,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Streaming API',
       status: 'fail',
@@ -414,7 +414,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
         responseTime,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Rating API',
       status: 'fail',
@@ -446,7 +446,7 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
         responseTime,
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       service: 'Health Check API',
       status: 'fail',

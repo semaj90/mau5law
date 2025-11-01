@@ -20,7 +20,7 @@ type DatabaseSync = {
 }
 
 type VectorSearch = {
-  performSimilaritySearch: (embedding: unknown, limit?: number, threshold?: number) => Promise<unknown[]>
+  performSimilaritySearch: (embedding: any, limit?: number, threshold?: number) => Promise<unknown[]>
 }
 
 type MockDataGenerators = {
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // avoid `as any` casts; narrow error safely
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Sync API error:', message);
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'generate_mock_data': {
         const type = typeof paramsObj.type === 'string' ? paramsObj.type : undefined;
         const count = typeof paramsObj.count === 'number' ? paramsObj.count : 10;
-        let mockData: unknown[] | Promise<unknown[]> = [];
+        let mockData: any[] | Promise<unknown[]> = [];
 
         switch (type) {
           case 'legal_documents':
@@ -242,7 +242,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Sync POST API error:', message);
     return json(

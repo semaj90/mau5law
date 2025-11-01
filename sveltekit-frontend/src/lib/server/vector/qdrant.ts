@@ -78,7 +78,7 @@ export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: Qdra
       ],
     });
     return { ok: true };
-  } catch (err: unknown) {
+  } catch (err: any) {
     logger.error(`Failed to upsert item ${item.id} to Qdrant`, err instanceof Error ? err : undefined, {
       component: 'QdrantService',
       service: 'qdrant',
@@ -109,7 +109,7 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
     };
     const res = await wrapper.search(COLLECTIONS.DOCUMENTS, options);
     return (res as SearchResult[]) ?? [];
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Qdrant search failed', error instanceof Error ? error : undefined, {
       component: 'QdrantService',
       service: 'qdrant',
@@ -171,7 +171,7 @@ export async function searchQdrantFiltered(
 
     const res = await typedWrapper.search(COLLECTIONS.DOCUMENTS, payload);
     return (res as SearchResult[]) ?? [];
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Qdrant filtered search failed', error instanceof Error ? error : undefined, {
       component: 'QdrantService',
       service: 'qdrant',

@@ -9,51 +9,43 @@
     lazyLoadProfiler
     // removed: type imports from a .js module to avoid svelte-preprocess / TS issues
   } from '$lib/utils/intersection-observer.js';
-
   // Lightweight local types to avoid importing types from .js
   type LazyLoadOptions = Record<string, any>;
   type LazyLoadPreset = string;
   type LazyComponentState = Record<string, any>;
-
   // Props (Svelte 5)
-  export let preset: LazyLoadPreset = 'NORMAL';
-  export let customOptions: LazyLoadOptions = {};
-  export let showPlaceholder: boolean = true;
-  export let placeholderHeight: string = '200px';
-  export let placeholderClass: string = '';
-  export let loadingText: string = 'Loading...';
-  export let errorText: string = 'Failed to load content';
-  export let unloadWhenHidden: boolean = false;
-  export let enableProfiling: boolean = false;
-  export let onLoad: (() => void) | undefined;
-  export let onError: ((error: Error) => void) | undefined;
-
-  // Renamed prop: class -> className to avoid TS/reserved-word issues
-  export let className: string = '';
-  export let style: string = '';
-  export let ariaLabel: string = 'Lazy loaded content';
-  // optional bound state object (mutated if parent passed an object reference)
-  export let lazyState: LazyComponentState | undefined;
-
+  let { preset = 'NORMAL', customOptions = {}, showPlaceholder = true, placeholderHeight = '200px', placeholderClass = '', loadingText = 'Loading...', errorText = 'Failed to load content', unloadWhenHidden = false, enableProfiling = false, onLoad = undefined, onError = undefined, className = '', style = '', ariaLabel = 'Lazy loaded content', lazyState = undefined } = $props<{
+    preset?: LazyLoadPreset;
+    customOptions?: LazyLoadOptions;
+    showPlaceholder?: boolean;
+    placeholderHeight?: string;
+    placeholderClass?: string;
+    loadingText?: string;
+    errorText?: string;
+    unloadWhenHidden?: boolean;
+    enableProfiling?: boolean;
+    onLoad?: (() => void);
+    onError?: ((error: Error) => void);
+    className?: string;
+    style?: string;
+    ariaLabel?: string;
+    lazyState?: LazyComponentState;
+  }>();
   // Internal state
   let containerElement: HTMLElement | null = null;
   let loadError: Error | null = null;
   let isLoading = false;
-
   // Create lazy loading store (assume API: { isVisible, hasBeenVisible, intersectionRatio, setVisible, reset })
   const lazyStore = createLazyStore();
-
   // Local mirrors for slot props / template rendering
   let isVisible = false;
   let hasBeenVisible = false;
   let intersectionRatio = 0;
-
   // Reactive propagation from lazyStore to local mirrors and optional parent-provided object
   $: {
     isVisible = (lazyStore as any).isVisible ?? false;
     hasBeenVisible = (lazyStore as any).hasBeenVisible ?? false;
     intersectionRatio = (lazyStore as any).intersectionRatio ?? 0;
-
     // If parent passed an object reference as lazyState, mutate it so the parent sees updates.
     if (lazyState && typeof lazyState === 'object') {
       try {
@@ -63,10 +55,8 @@
       }
     }
   }
-
   // Compute options from preset/custom
-  $: options = { ...(LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL), ...(customOptions || {}) };
-
+  const options = $derived({ ...(LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL), ...(customOptions || {}) });
   function handleIntersection(entry: any) {
     // call store setter if present
     try { lazyStore.setVisible?.(entry.isIntersecting, entry.intersectionRatio); } catch {}
@@ -82,24 +72,20 @@
       lazyStore.reset?.();
     }
   }
-
   function handleError(error: Error) {
     loadError = error;
     if (onError) onError(error);
     console.error('LazyLoader error:', error);
   }
-
   onMount(() => {
     if (containerElement && enableProfiling) {
       lazyLoadProfiler?.startObserving?.(containerElement);
     }
   });
-
   onDestroy(() => {
     lazyStore.reset?.();
   });
 </script>
-
 <!-- Container element with intersection observer -->
 <div
   bind:this={containerElement}
@@ -137,8 +123,7 @@
         {#if enableProfiling && intersectionRatio > 0}
           <div class="debug-info">
             Intersection {Math.round(intersectionRatio * 100)}%
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   {:else if hasBeenVisible && !loadError}
@@ -146,10 +131,8 @@
     <div class="lazy-loader-content" data-lazy-loaded="true">
       <!-- expose useful props to parent via slot let:... -->
       <slot {isVisible} {hasBeenVisible} {intersectionRatio}></slot>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .lazy-loader-container {
     position: relative;

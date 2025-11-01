@@ -177,7 +177,7 @@
   </div>
 
   <div class="space-y-2">
-    {#each messages as msg}
+    {#each Array.isArray(messages) ? messages : [] as msg}
       <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
         <pre class="text-sm">{JSON.stringify(msg, null, 2)}</pre>
       </div>

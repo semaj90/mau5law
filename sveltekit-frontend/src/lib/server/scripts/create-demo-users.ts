@@ -4,15 +4,11 @@
  * - admin@example.com / Admin@123456
  * - user@example.com / User@123456
  */
-
 import { AuthService } from '../auth';
-
 export async function createDemoUsers() {
   const authService = new AuthService();
-
   try {
     console.log('🔐 Creating demo users...');
-
     // Demo admin user
     await authService.register({
       email: 'admin@example.com',
@@ -22,7 +18,6 @@ export async function createDemoUsers() {
       displayName: 'Admin User',
     });
     console.log('✅ Admin created: admin@example.com / Admin@123456');
-
     // Demo regular user
     await authService.register({
       email: 'user@example.com',
@@ -32,7 +27,6 @@ export async function createDemoUsers() {
       displayName: 'Regular User',
     });
     console.log('✅ User created: user@example.com / User@123456');
-
     console.log('✨ Demo users ready for testing!');
   } catch (error) {
     if (error instanceof Error && error.message.includes('duplicate')) {
@@ -43,7 +37,6 @@ export async function createDemoUsers() {
     }
   }
 }
-
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   createDemoUsers().catch(console.error);

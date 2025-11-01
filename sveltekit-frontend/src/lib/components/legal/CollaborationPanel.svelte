@@ -4,46 +4,40 @@ Real-time collaboration interface for multiple investigators working on evidence
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
-  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
-  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits/Card.svelte';
+  import { CardHeader } from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import { CardTitle } from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
+  import { CardContent } from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from 'lucide-svelte';
-
   // --- Type Definitions ---
   interface Position {
     x: number;
     y: number;
   }
-
   interface Annotation {
     userId: string;
     content: string;
-    position Position;
+    position: Position;
     timestamp: string;
   }
-
   interface ChatMessage {
     userId: string;
     message: string;
     timestamp: string;
   }
-
   interface Participant {
     userId: string;
     role: string;
     joinedAt: string;
   }
-
   interface CollaborationSession {
     sessionId: string;
     participants: Participant[];
     chatHistory: ChatMessage[];
     annotations: Annotation[];
   }
-
   // Props
   interface Props {
     collaborationSession?: CollaborationSession | null;
@@ -53,7 +47,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     wsConnection?: WebSocket | null;
     onAddAnnotation?: (content: string, position Position) => void;
   }
-
   const {
     collaborationSession initialCollaborationSession = null,
     activeCollaborators = [],
@@ -62,13 +55,11 @@ Real-time collaboration interface for multiple investigators working on evidence
     wsConnection = null,
     onAddAnnotation = () => {}
   } = $props<Props>();
-
   // Local state for mutable prop
   let collaborationSession = $state(initialCollaborationSession);
   $effect(() => {
     collaborationSession = initialCollaborationSession;
   });
-
   // Local state (Svelte 5 runes)
   let newMessage = $state('');
   let newAnnotation = $state('');
@@ -77,7 +68,6 @@ Real-time collaboration interface for multiple investigators working on evidence
   let chatContainer: HTMLDivElement;
   let isTyping = $state(false);
   let typingUsers = $state<string[]>([]);
-
   // Auto-scroll chat to bottom when new messages arrive
   $effect(() => {
     if (collaborationSession?.chatHistory && chatContainer) {
@@ -87,7 +77,6 @@ Real-time collaboration interface for multiple investigators working on evidence
       }, 0);
     }
   });
-
   // WebSocket message wiring with cleanup
   $effect(() => {
     if (!wsConnection) return;
@@ -106,7 +95,6 @@ Real-time collaboration interface for multiple investigators working on evidence
       wsConnection.onmessage = originalOnMessage ?? null;
     };
   });
-
   function handleWebSocketMessage(data: any) {
     switch (data?.type) {
       case 'chat-message':
@@ -136,7 +124,6 @@ Real-time collaboration interface for multiple investigators working on evidence
       default: break;
     }
   }
-
   function sendMessage() {
     if (!newMessage.trim() || !collaborationSession) return;
     const message: ChatMessage = {
@@ -144,7 +131,6 @@ Real-time collaboration interface for multiple investigators working on evidence
       message: newMessage.trim(),
       timestamp: new Date().toISOString()
     };
-
     if (wsConnection) {
       wsConnection.send(JSON.stringify({
         type: 'chat-message',
@@ -152,17 +138,14 @@ Real-time collaboration interface for multiple investigators working on evidence
         message
       }));
     }
-
     // Optimistically update local state
     collaborationSession = {
       ...collaborationSession,
       chatHistory: [...collaborationSession.chatHistory, message]
     };
-
     newMessage = '';
-    isTyping = false;
+    isTyping = $state(false);
   }
-
   function handleTyping() {
     if (!wsConnection || !collaborationSession) return;
     if (!isTyping) {
@@ -176,7 +159,6 @@ Real-time collaboration interface for multiple investigators working on evidence
       setTimeout(() => (isTyping = false), 2000);
     }
   }
-
   function addAnnotation() {
     if (!newAnnotation.trim() || !collaborationSession) return;
     const annotation Annotation = {
@@ -185,7 +167,6 @@ Real-time collaboration interface for multiple investigators working on evidence
       position annotationPosition,
       timestamp: new Date().toISOString()
     };
-
     if (wsConnection) {
       wsConnection.send(JSON.stringify({
         type: 'annotation-added',
@@ -193,17 +174,14 @@ Real-time collaboration interface for multiple investigators working on evidence
         annotation
       }));
     }
-
     collaborationSession = {
       ...collaborationSession,
       annotations: [...collaborationSession.annotations, annotation]
     };
-
     onAddAnnotation(newAnnotation.trim(), annotationPosition);
     newAnnotation = '';
-    showAnnotationInput = false;
+    showAnnotationInput = $state(false);
   }
-
   function formatTimestamp(timestamp: string) {
     const date = new Date(timestamp);
     const now = new Date();
@@ -214,7 +192,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
     return date.toLocaleDateString();
   }
-
   function getRoleColor(role: string) {
     switch (role) {
       case 'investigator': return 'bg-blue-100 text-blue-800';
@@ -224,11 +201,9 @@ Real-time collaboration interface for multiple investigators working on evidence
       default: return 'bg-gray-100 text-gray-800';
     }
   }
-
   function isCurrentUser(participantUserId: string) {
     return participantUserId === userId;
   }
-
   const handleKeydown = (e: KeyboardEvent) => {
     handleTyping();
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -255,7 +230,7 @@ Real-time collaboration interface for multiple investigators working on evidence
         </CardTitle>
       </CardHeader>
       <CardContent class="space-y-3">
-        {#each collaborationSession.participants as participant}
+        {#each Array.isArray(collaborationSession.participants) ? collaborationSession.participants : [] as participant}
           <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
             <div class="flex items-center space-x-3">
               <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
@@ -267,8 +242,7 @@ Real-time collaboration interface for multiple investigators working on evidence
                     {isCurrentUser(participant.userId) ? 'You' : participant.userId}
                   </span>
                   {#if activeCollaborators.includes(participant.userId)}
-                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  {/if}
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse">{/if}
                 </div>
                 <div class="text-xs text-gray-500">
                   Joined {formatTimestamp(participant.joinedAt)}
@@ -280,7 +254,6 @@ Real-time collaboration interface for multiple investigators working on evidence
         {/each}
       </CardContent>
     </Card>
-
     <!-- Real-time Chat -->
     <Card>
       <CardHeader>
@@ -298,7 +271,7 @@ Real-time collaboration interface for multiple investigators working on evidence
               <p class="text-sm">No messages yet. Start the conversation!</p>
             </div>
           {:else}
-            {#each collaborationSession.chatHistory as message}
+            {#each Array.isArray(collaborationSession.chatHistory) ? collaborationSession.chatHistory : [] as message}
               <div class={`flex ${isCurrentUser(message.userId) ? 'justify-end' : 'justify-start'}`}>
                 <div class={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
                   isCurrentUser(message.userId)
@@ -308,8 +281,7 @@ Real-time collaboration interface for multiple investigators working on evidence
                   {#if !isCurrentUser(message.userId)}
                     <div class="text-xs font-medium mb-1 opacity-75">
                       {message.userId}
-                    </div>
-                  {/if}
+                    {/if}
                   <div class="text-sm">{message.message}</div>
                   <div class={`text-xs mt-1 ${
                     isCurrentUser(message.userId) ? 'text-blue-200' : 'text-gray-500'
@@ -320,7 +292,6 @@ Real-time collaboration interface for multiple investigators working on evidence
               </div>
             {/each}
           {/if}
-
           <!-- Typing indicators -->
           {#if typingUsers.length > 0}
             <div class="flex justify-start">
@@ -336,10 +307,8 @@ Real-time collaboration interface for multiple investigators working on evidence
                   </span>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
-
         <!-- Message input -->
         <div class="p-4">
           <div class="flex space-x-2">
@@ -362,7 +331,6 @@ Real-time collaboration interface for multiple investigators working on evidence
         </div>
       </CardContent>
     </Card>
-
     <!-- Annotations -->
     <Card>
       <CardHeader>
@@ -397,8 +365,7 @@ Real-time collaboration interface for multiple investigators working on evidence
                 Cancel
               </Button>
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if collaborationSession.annotations.length === 0}
           <div class="text-center text-gray-500 py-4">
             <MapPin class="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -406,7 +373,7 @@ Real-time collaboration interface for multiple investigators working on evidence
           </div>
         {:else}
           <div class="max-h-48 overflow-y-auto space-y-2">
-            {#each collaborationSession.annotations as annotation}
+            {#each Array.isArray(collaborationSession.annotations) ? collaborationSession.annotations : [] as annotation}
               <div class="p-3 bg-gray-50 rounded border">
                 <div class="flex items-start justify-between mb-2">
                   <div class="flex items-center space-x-2">
@@ -423,15 +390,12 @@ Real-time collaboration interface for multiple investigators working on evidence
                 {#if annotation.position}
                   <div class="mt-2 text-xs text-gray-500">
                     Position ({annotation.position.x}, {annotation.position.y})
-                  </div>
-                {/if}
+                  {/if}
               </div>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </CardContent>
     </Card>
-
     <!-- Session Info -->
     <Card>
       <CardContent class="p-4">
@@ -449,7 +413,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     </Card>
   {/if}
 </div>
-
 <style>
   .collaboration-panel {
     max-height: 100vh;

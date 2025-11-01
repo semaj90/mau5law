@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { notifications  } from '$lib/stores/unified';
   import { getSecurityEvents, type SecurityEvent } from '$lib/utils/security';
   import {
@@ -75,7 +75,7 @@
         message: 'Unable to retrieve security monitoring data.',
       });
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function filterEvents() {
@@ -200,7 +200,6 @@
     }
   });
 </script>
-
 <div class="container mx-auto px-4">
   <!-- Header -->
   <div class="container mx-auto px-4">
@@ -418,22 +417,18 @@
                                 null,
                                 2
                               )}</pre>
-                          </div>
-                        {/if}
+                          {/if}
                         {#if event.ipAddress}
                           <div>
                             <strong>IP Address:</strong>
                             {event.ipAddress}
-                          </div>
-                        {/if}
+                          {/if}
                         {#if event.userAgent}
                           <div>
                             <strong>User Agent:</strong>
                             {event.userAgent}
-                          </div>
-                        {/if}
-                      </div>
-                    {/if}
+                          {/if}
+                      {/if}
                   </div>
                 </div>
                 <Button class="bits-btn" variant="ghost" size="sm" onclick={() => toggleEventDetails(index)}>
@@ -442,8 +437,7 @@
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>

@@ -48,11 +48,11 @@
     try {
       await clearCache(true);
       await refresh();
-      showClearConfirm = false;
+      showClearConfirm = $state(false);
     } catch (error) {
       console.error('Cache clear failed:', error);
     } finally {
-      clearingCache = false;
+      clearingCache = $state(false);
     }
   }
   const formatMemoryUsage = (memory: string | undefined): string => {
@@ -106,8 +106,7 @@
         <div class="error-message">⚠️ INITIALIZATION FAILED: {initError}</div>
         <button class="nes-button" onclick={initialize}>RETRY INITIALIZATION</button>
       {:else}
-        <div class="loading-message">🎮 INITIALIZING REDIS ORCHESTRATOR...</div>
-      {/if}
+        <div class="loading-message">🎮 INITIALIZING REDIS ORCHESTRATOR...{/if}
     </div>
   {:else}
     <!-- Main Stats Grid -->
@@ -231,14 +230,12 @@
               <div class="task-status">
                 <div class="status-badge {task.status}">{task.status.toUpperCase()}</div>
                 {#if task.status === 'queued'}
-                  <div class="estimated-time">{task.estimatedTime}</div>
-                {/if}
+                  <div class="estimated-time">{task.estimatedTime}{/if}
               </div>
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Recent Processing Times -->
     {#if recentProcessingTimes.length > 0}
       <div class="processing-times-panel">
@@ -247,7 +244,7 @@
           <span class="panel-title">RECENT OPERATIONS</span>
         </div>
         <div class="processing-list">
-          {#each recentProcessingTimes.slice.reverse() as time}
+          {#each Array.isArray(recentProcessingTimes.slice.reverse()) ? recentProcessingTimes.slice.reverse() : [] as time}
             <div class="processing-item">
               <span class="endpoint">{time.endpoint}</span>
               <span class="time" style="color: {time.time < 100 ? '#00d800' : time.time < 1000 ? '#fc9838' : '#f83800'}">
@@ -257,8 +254,7 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
 </div>
 <style>
   .redis-dashboard {
@@ -364,7 +360,7 @@
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .mini-chart {
     display: flex;
@@ -376,7 +372,7 @@
   .chart-bar {
     width: 4px;
     min-height: 4px;
-    transition: height 0.3s ease;
+    transition: height: 0.3s ease;
   }
   .task-queue-panel,
   .processing-times-panel {
@@ -505,4 +501,3 @@
     50% { opacity: 0.5; }
   }
 </style>
-

@@ -20,7 +20,7 @@
     showPercentage = true,
     size = 'md',
     retro = true,
-    sparkle = false;
+    sparkle = $state(false);
   }: Props = $props();
   let percentage = $derived(Math.min((value / max) * 100, 100));
   // N64 Controller inspired color themes
@@ -92,16 +92,14 @@
         >
           <!-- Animated shine effect -->
           {#if animated}
-            <div class="progress-shine"></div>
-          {/if}
+            <div class="progress-shine">{/if}
           <!-- Sparkle effects -->
           {#if sparkle && percentage > 10}
             <div class="sparkle-container">
               <div class="sparkle sparkle-1"></div>
               <div class="sparkle sparkle-2"></div>
               <div class="sparkle sparkle-3"></div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Progress segments (N64 style) -->
         <div class="progress-segments">
@@ -117,8 +115,7 @@
       {#if showPercentage}
         <div class="percentage-display">
           <span class="percentage-text">{Math.round(percentage)}%</span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Retro gaming UI elements -->
     {#if retro}
@@ -129,25 +126,24 @@
           <div class="corner corner-bl"></div>
           <div class="corner corner-br"></div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>
   .n64-progress-container {
-    position relative;
+    position: relative;
     width: 100%;
     font-family: 'Courier New', monospace;
   }
   .n64-progress-bar {
-    position relative;
+    position: relative;
     width: 100%;
     height: var(--bar-height);
     border-radius: 0; /* Sharp edges for retro look */,
     overflow: hidden;
   }
   .progress-frame {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
     background: var(--bg-color);
@@ -158,13 +154,13 @@
       0 0 0 1px rgba(255,255,255,0.05);
   }
   .progress-track {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
   .progress-fill {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     height: 100%;
@@ -174,7 +170,7 @@
       var(--shadow-color) 50%,
       var(--fill-color) 100%
     );
-    transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: width: 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
     min-width: 0,
   }
   .progress-fill.animated {
@@ -182,7 +178,7 @@
     animation: shimmer 2s linear infinite;
   }
   .progress-shine {
-    position absolute;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -196,7 +192,7 @@
     animation: shine 1.5s ease-in-out infinite;
   }
   .progress-segments {
-    position absolute;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -218,7 +214,7 @@
     opacity: 0.6;
   }
   .percentage-display {
-    position absolute;
+    position: absolute;
     top: 50%;
     right: 8px;
     transform: translateY(-50%);
@@ -236,7 +232,7 @@
   }
   /* Sparkle effects */
   .sparkle-container {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     width: 100%;
@@ -244,7 +240,7 @@
     overflow: hidden;
   }
   .sparkle {
-    position absolute;
+    position: absolute;
     width: 4px;
     height: 4px;
     background: #FFF;
@@ -268,7 +264,7 @@
   }
   /* Retro UI elements */
   .retro-ui {
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -276,12 +272,12 @@
     pointer-events: none;
   }
   .ui-corners {
-    position absolute;
+    position: absolute;
     width: 100%;
     height: 100%;
   }
   .corner {
-    position absolute;
+    position: absolute;
     width: 8px;
     height: 8px;
     background: var(--fill-color);
@@ -381,8 +377,7 @@
       animation: none;
     }
     .progress-fill {
-      transition: width 0.2s ease;
+      transition: width: 0.2s ease;
     }
   }
 </style>
-

@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
   });
 };
 export const POST: RequestHandler = async ({ request }) => {
-  let body: unknown = {};
+  let body: any = {};
   try {
     body = await request.json();
   } catch {

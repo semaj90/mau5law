@@ -14,7 +14,7 @@ type OCRData = {
   pages?: number;
   totalCharacters?: number;
   averageConfidence?: number;
-  processingStats?: unknown;
+  processingStats?: any;
   text?: string;
   pageResults?: OCRPage[];
   legalConcepts?: string[];

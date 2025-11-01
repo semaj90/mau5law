@@ -20,7 +20,7 @@ type SemanticSearchResultRow = {
   similarity?: number;
   score?: number;
   type?: string | RAGSource['type'];
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // Define SearchDoc interface
@@ -31,7 +31,7 @@ export interface SearchDoc {
   tags?: string[];
   summary?: string;
   type?: RAGSourceType;
-  [key: string]: unknown; // Allow additional properties
+  [key: string]: any; // Allow additional properties
 }
 
 type AiSearchResult = {
@@ -45,20 +45,20 @@ type AiSearchResult = {
   score?: number;
   type?: string | RAGSource['type'];
   // allow extra fields from various backends
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // Minimal Fuse.js result shape used by this code
 type SimpleFuseResult<T> = {
   item: T;
   score?: number | null;
-  matches?: unknown[];
+  matches?: any[];
 };
 
 // --- changed: add explicit source-type alias and update normalizer ---
 type RAGSourceType = 'document' | 'case' | 'evidence' | 'precedent';
 
-function normalizeSourceType(t: unknown): RAGSourceType {
+function normalizeSourceType(t: any): RAGSourceType {
   const s = String(t ?? '')
     .toLowerCase()
     .trim();
@@ -118,7 +118,7 @@ interface OllamaService {
     prompt: string;
     format: string;
     stream?: boolean;
-  }): Promise<{ response?: string; output?: string; [key: string]: unknown }>;
+  }): Promise<{ response?: string; output?: string; [key: string]: any }>;
   embed(options: { model: string; text: string }): Promise<number[]>;
 }
 
@@ -294,7 +294,7 @@ type Cluster = {
 // Define the EnhancedRAGPipeline class
 export class EnhancedRAGPipeline {
   private fuseIndex: Fuse<SearchDoc> | undefined;
-  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string; sourceIds: string[]; [key: string]: unknown }>();
+  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string; sourceIds: string[]; [key: string]: any }>();
   private TRITON_CHECK_TTL_MS = 30_000; // Time-to-live for Triton health check cache (default: 30 seconds).
 
   // Triton / TensorRT configuration constants.
@@ -360,7 +360,7 @@ export class EnhancedRAGPipeline {
         await this.updateMemoryGraph(query, answer, rankedSources);
       }
       return answer;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any to unknown
       console.error('RAG query failed:', error);
       throw new Error(`RAG pipeline error: ${(error as Error)?.message ?? String(error ?? 'unknown')}`);
@@ -564,7 +564,7 @@ export class EnhancedRAGPipeline {
         suggestedActions,
         embedding,
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Generation failed:', err);
       return {
         answer: 'Could not generate a response. Review sources manually.',
@@ -680,7 +680,7 @@ export class EnhancedRAGPipeline {
       this.tritonAvailable = r.ok;
       return this.tritonAvailable;
     } catch (err) {
-      this.tritonAvailable = false;
+      this.tritonAvailable = $state(false);
       return false;
     }
   }
@@ -725,14 +725,14 @@ export class EnhancedRAGPipeline {
       const json = await res.json().catch(() => ({}));
       // Triton responses vary; try common shapes: outputs[0].data (flat numeric), outputs[0].contents, or raw outputs
       const out = json.outputs?.[0];
-      const data: unknown = out?.data ?? out?.contents ?? json?.outputs ?? null; // Changed from any to unknown
+      const data: any = out?.data ?? out?.contents ?? json?.outputs ?? null; // Changed from any to unknown
       if (data == null) return [];
 
       // normalize to number array
       if (Array.isArray(data)) {
         // may be nested arrays or flat
         const flat = data.flat(Infinity); // Removed redundant check and type assertion
-        const nums = flat.map((n: unknown) => Number(n)).filter((n: number) => !Number.isNaN(n)); // Changed from any to unknown
+        const nums = flat.map((n: any) => Number(n)).filter((n: number) => !Number.isNaN(n)); // Changed from any to unknown
         return nums;
       }
 
@@ -793,7 +793,7 @@ export class EnhancedRAGPipeline {
 
       const json = await res.json().catch(() => ({}));
       // Expect cluster assignments as integers in outputs[0].data
-      const assignments: unknown = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? null; // Changed from any to unknown
+      const assignments: any = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? null; // Changed from any to unknown
       if (!assignments || !Array.isArray(assignments)) return [];
 
       const assignFlat = assignments.flat(); // Removed redundant check and type assertion
@@ -978,7 +978,7 @@ export class EnhancedRAGPipeline {
    * Normalize a similarity or relevance value to the [0, 1] range.
    * Converts input to a number, clamps to 0-1, and returns 0 for non-finite values.
    */
-  static parseSimilarity(value: unknown): number {
+  static parseSimilarity(value: any): number {
     const n = Number(value ?? 0);
     if (!Number.isFinite(n)) return 0;
     return Math.min(Math.max(n, 0), 1);

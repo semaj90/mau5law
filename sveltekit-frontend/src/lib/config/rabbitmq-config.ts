@@ -2,7 +2,6 @@
  * RabbitMQ Configuration for Background Job Processing
  * Handles embedding generation and document processing queues
  */
-
 export interface RabbitMQConfig {
   connection: {
     protocol: 'amqp' | 'amqps';

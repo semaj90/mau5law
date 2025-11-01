@@ -58,7 +58,7 @@ export async function upsertEmbedding(
   try {
     // support sync or async packEmbedding implementations
     packResult = await Promise.resolve(packEmbedding(embedding, packMethod));
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`packEmbedding failed for textHash=${textHash}: ${message}`);
   }
@@ -97,7 +97,7 @@ export async function upsertEmbedding(
       await db.insert(embeddingCache).values(insertPayload);
       return { created: true, method: method ?? 'unknown', scale: normalizedScale };
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`upsertEmbedding failed for textHash=${textHash}: ${message}`);
   }

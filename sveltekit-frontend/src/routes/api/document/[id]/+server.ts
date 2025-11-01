@@ -208,4 +208,4 @@ export const POST: RequestHandler = async ({ params, request }) => {
       throw error(400, `Unknown action: ${action}`)
   }
 }
-export const prerender = false;
+export const prerender = $state(false);

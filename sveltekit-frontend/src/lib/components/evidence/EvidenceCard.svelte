@@ -11,24 +11,20 @@
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
   import type { Evidence } from '$lib/types/evidence';
-
   // Props
   export let evidence: Evidence;
   export let draggable = true;
-  export let compact = false;
-  export let expandOnHover = false;
-  export let showCompare = false;
-  export let autoCompare = false;
-
+  export let compact = $state(false);
+  export let expandOnHover = $state(false);
+  export let showCompare = $state(false);
+  export let autoCompare = $state(false);
   // Svelte 5 event handling
   let { $$events } = $props<{
     compare: (evidence: Evidence) => void;
     compared: (data: { evidence: Evidence; result: any }) => void;
   }>();
-
   // small helper - use project-wide helper in the future
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434');
-
   const getIcon = (type: Evidence["type"]) => {
     switch (type) {
       case "document":
@@ -44,7 +40,6 @@
       default: return FileText;
     }
   };
-
   const formatFileSize = (bytes: number): string => {
     if (!bytes || bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -52,35 +47,28 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
-
   const fileSize = evidence?.metadata?.size ?? evidence?.fileSize ?? 0;
-
-  let isHovered = false;
-  let comparing = false;
+  let isHovered = $state(false);
+  let comparing = $state(false);
   let compareError: string | null = null;
-
   const IconComponent = getIcon(evidence?.evidenceType ?? evidence?.type ?? 'document');
-
   function handleMouseEnter() {
     if (expandOnHover) isHovered = true;
   }
   function handleMouseLeave() {
-    if (expandOnHover) isHovered = false;
+    if (expandOnHover) isHovered = $state(false);
   }
-
   async function handleCompareClick() {
     try {
       compareError = null;
       comparing = true;
       $$events.compare(evidence); // Use $$events
       if (!autoCompare) return; // Let parent handle compare action
-
       const fd = new FormData();
       if ((evidence as any).url) fd.append('fileUrl', String((evidence as any).url));
       if (evidence.description) fd.append('text', evidence.description);
       if (Array.isArray(evidence.tags) && evidence.tags.length) fd.append('tags', evidence.tags.join(','));
       fd.append('topK', '8');
-
       const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
       const data = await resp.json();
       if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed');
@@ -88,11 +76,10 @@
     } catch (e: any) {
       compareError = e?.message ?? String(e);
     } finally {
-      comparing = false;
+      comparing = $state(false);
     }
   }
 </script>
-
 <div
   role="article"
   class="bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 shadow relative"
@@ -130,7 +117,6 @@
       <svelte:component this={IconComponent} size={16} />
       <span>{evidence?.evidenceType ?? evidence?.type}</span>
     </div>
-
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
       <!-- Prefer a named slot for custom actions; fallback to built-in compare button -->
       <slot name="actions" {evidence}>
@@ -148,7 +134,6 @@
       </slot>
     </div>
   </div>
-
   <!-- Content -->
   <div class="px-3 py-3">
     <!-- Preview (for images/videos) -->
@@ -170,21 +155,17 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 rounded-full p-3 text-white">
           <Video size={24} />
         </div>
-      </div>
-    {/if}
-
+      {/if}
     <!-- Title and Description -->
     <div class="flex flex-col gap-2">
       <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2">
         {evidence?.title}
       </h3>
-
       {#if evidence?.description && !compact}
         <p class="text-sm text-gray-500 leading-snug line-clamp-3">
           {evidence.description}
         </p>
       {/if}
-
       <!-- Metadata -->
       <div class="flex flex-wrap gap-2 my-2">
         {#if evidence?.metadata?.createdAt || evidence?.createdAt}
@@ -192,24 +173,21 @@
             {new Date(evidence?.metadata?.createdAt ?? evidence?.createdAt ?? '').toLocaleDateString()}
           </span>
         {/if}
-
         {#if fileSize > 0}
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
             {formatFileSize(fileSize)}
           </span>
         {/if}
-
         {#if evidence?.metadata?.format}
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
             {evidence.metadata.format.toUpperCase()}
           </span>
         {/if}
       </div>
-
       <!-- Tags -->
       {#if evidence?.tags && evidence.tags.length > 0}
         <div class="flex flex-wrap gap-1 mt-2">
-          {#each evidence.tags.slice(0, 3) as tag}
+          {#each Array.isArray(evidence.tags.slice(0, 3)) ? evidence.tags.slice(0, 3) : [] as tag}
             <span class="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
               <Tag size={10} />
               {tag}
@@ -218,11 +196,9 @@
           {#if evidence.tags.length > 3}
             <span class="text-xs text-gray-500 font-medium">+{evidence.tags.length - 3}</span>
           {/if}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
-
   <!-- Footer (if has URL and is a link) -->
   {#if evidence?.url && (evidence?.evidenceType ?? evidence?.type) === 'link'}
     <div class="px-3 py-3 border-t border-gray-200 bg-gray-50">
@@ -235,8 +211,7 @@
         <Link size={14} />
         Open Link
       </a>
-    </div>
-  {/if}
+    {/if}
 </div>
 <!-- Tooltip section removed - replaced with native title attributes -->
 <!-- Tooltip section removed - replaced with native title attributes -->

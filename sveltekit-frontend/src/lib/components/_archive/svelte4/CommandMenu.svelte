@@ -181,7 +181,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
     onInsert(text);
   }
-  function insertCitation(citation?: unknown) {
+  function insertCitation(citation?: any) {
     if (citation) {
       // Format the citation properly
       const formattedCitation = `[${citation.title}${citation.source ? `, ${citation.source}` : ""}${citation.date ? ` (${citation.date})` : ""}]`;

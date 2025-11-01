@@ -5,15 +5,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { onMount } from 'svelte';
-  	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
+  	import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
+  	import { DetectiveBoard } from '$lib/components/detective/DetectiveBoard.svelte';
   	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  	import Button from '$lib/components/ui/Button.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  	import { Button } from '$lib/components/ui/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
   	// Svelte 5 state management
@@ -77,7 +77,7 @@ await initializeUnifiedSystems();
   		viewMode = mod;
   		console.log(`📋 Switched to ${mode} view mode`);
   	}
-  	async function handleEvidenceAnalysis(evidenceItem: unknown) {
+  	async function handleEvidenceAnalysis(evidenceItem: any) {
   		console.log('🔍 Starting evidence analysis:', evidenceItem.title);
   		// Add to processing queue
   		processingQueue = [...processingQueue, evidenceItem];
@@ -92,7 +92,7 @@ await initializeUnifiedSystems();
   					forceReanalyze: false,
   				})
   			});
-  			const analysisResult = await (response as { json?: unknown }).json();
+  			const analysisResult = await (response as { json?: any }).json();
   			if (analysisResult.success) {
   				activeAnalysis = [...activeAnalysis, {
   					evidenceId: evidenceItem.id,
@@ -108,11 +108,11 @@ await initializeUnifiedSystems();
   			processingQueue = processingQueue.filter(item => item.id) !== evidenceItem.id);
   		}
   	}
-  	function handleCanvasEvidenceUpdate(evidenceData: unknown[]) {
+  	function handleCanvasEvidenceUpdate(evidenceData: any[]) {
   		canvasEvidence = evidenceData;
   		console.log(`🎨 Canvas evidence updated: ${evidenceData.length} items`);
   	}
-  	function handleDetectiveAnalysis(analysisData: unknown) {
+  	function handleDetectiveAnalysis(analysisData: any) {
   		console.log('🕵️ Detective analysis received:', analysisData);
   		activeAnalysis = [...activeAnalysis, analysisData];
   	}
@@ -283,8 +283,7 @@ Analyze All Evidence
 						/>
 					</div>
 				</div>
-			</div>
-		{/if}
+			{/if}
 	</div>
 	<!-- Analysis Results Overlay -->
 	{#if activeAnalysis.length > 0}
@@ -297,7 +296,7 @@ Analyze All Evidence
 					</h3>
 				</div>
 				<div class="yorha-panel-content space-y-2 max-h-48 overflow-y-auto">
-					{#each activeAnalysis.slice(-3) as analysis}
+					{#each Array.isArray(activeAnalysis.slice(-3)) ? activeAnalysis.slice(-3) : [] as analysis}
 						<div class="p-2 bg-muted rounded text-xs">
 							<div class="font-medium mb-1">
 								Evidence {analysis.evidenceId.slice(-6)}
@@ -306,7 +305,7 @@ Analyze All Evidence
 								{analysis.summary?.slice(0, 80)}...
 							</div>
 							<div class="flex gap-1 mt-1">
-								{#each (analysis.tags || []).slice(0, 3) as tag}
+								{#each Array.isArray((analysis.tags || []).slice(0, 3)) ? (analysis.tags || []).slice(0, 3) : [] as tag}
 									<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
 								{/each}
 							</div>
@@ -314,8 +313,7 @@ Analyze All Evidence
 					{/each}
 				</div>
 			</div>
-		</div>
-	{/if}
+		{/if}
 </div>
 <style>
 	/* Enhanced integration styles */

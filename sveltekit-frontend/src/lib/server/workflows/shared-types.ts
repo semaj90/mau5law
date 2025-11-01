@@ -28,7 +28,7 @@ export interface DocumentMetadata {
   sourceFile?: string;
   caseId?: string;
   tags?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 /** Qdrant search result */
@@ -197,7 +197,7 @@ export interface ErrorResponse {
 export interface ValidationError {
   field: string;
   message: string;
-  value?: unknown;
+  value?: any;
 }
 
 // ============================================================================

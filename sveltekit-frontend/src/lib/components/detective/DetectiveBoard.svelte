@@ -3,8 +3,8 @@
 	import { onMount } from 'svelte';
 
 	// UI libraries
-	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
-	import Badge from '$lib/components/ui/Badge.svelte';
+	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte'';
+	import { Badge } from '$lib/components/ui/Badge.svelte';
 	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
@@ -17,9 +17,9 @@
 	// App stores & AI
 	import { evidenceStore  } from '$lib/stores/unified';
 	import { aiAssistant  } from '$lib/stores/unified';
-	import AIAssistantPanel from '../ai/AIAssistantPanel.svelte';
-	import EvidenceCard from './EvidenceCard.svelte';
-	import UploadZone from './UploadZone.svelte';
+	import { AIAssistantPanel } from '../ai/AIAssistantPanel.svelte';
+	import { EvidenceCard } from './EvidenceCard.svelte';
+	import { UploadZone } from './UploadZone.svelte';
 	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
 	import { rabbitMQService } from '$lib/services/rabbitmq-service';
 	import { VectorService } from '$lib/services/vector-service';
@@ -266,13 +266,13 @@
 		findModal.show = true;
 		findModal.query = item?.title || '';
 		findModal.results = [];
-		findModal.loading = false;
+		findModal.loading = $state(false);
 		findModal.error = '';
 		findModal.suggestions = [];
 	}
 
 	function closeFindModal() {
-		findModal.show = false;
+		findModal.show = $state(false);
 	}
 
 	function runFindSearch(item: any): Promise<void> {
@@ -305,7 +305,7 @@
 			} catch (e) {
 				findModal.error += ' Qdrant search failed.';
 			}
-			findModal.loading = false;
+			findModal.loading = $state(false);
 		})();
 	}
 
@@ -434,7 +434,7 @@
 					{#if activeUsers.length > 0}
 						<div class="flex items-center gap-2">
 							<div class="flex -space-x-2">
-								{#each activeUsers.slice(0, 3) as user}
+								{#each Array.isArray(activeUsers.slice(0, 3)) ? activeUsers.slice(0, 3) : [] as user}
 									<div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium border-2 border-background">
 										{user.name?.charAt(0) || user.email?.charAt(0) || '?'}
 									</div>
@@ -442,13 +442,11 @@
 								{#if activeUsers.length > 3}
 									<div class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm border-2 border-background">
 										+{activeUsers.length - 3}
-									</div>
-								{/if}
+									{/if}
 							</div>
 							<!-- Badge: remove variant prop (type mismatch). Use class for styling -->
 							<Badge class="nes-badge">{activeUsers.length} online</Badge>
-						</div>
-					{/if}
+						{/if}
 
 					<!-- Replace New Case with tooltip wrapper -->
 					<Tooltip.Root>
@@ -628,7 +626,7 @@
 							{/each}
 
 							<svg class="absolute inset-0 pointer-events-none" style="width: 100%; height: 100%;">
-								{#each getConnections() as connection}
+								{#each Array.isArray(getConnections()) ? getConnections() : [] as connection}
 									<line x1={connection.x1} y1={connection.y1} x2={connection.x2} y2={connection.y2} stroke="currentColor" stroke-width="2" stroke-dasharray="5,5" opacity="0.3" />
 								{/each}
 							</svg>
@@ -639,8 +637,7 @@
 										<p class="text-lg mb-2">No evidence on canvas</p>
 										<p class="text-sm">Drag evidence here or switch to column view to add items</p>
 									</div>
-								</div>
-							{/if}
+								{/if}
 						</div>
 					</div>
 				</Card>
@@ -657,8 +654,7 @@
 					on:evidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight(e.detail.evidenceIds)}
 					on:actionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger(e.detail)}
 				/>
-			</div>
-		{/if}
+			{/if}
 	</main>
 </div>
 
@@ -685,25 +681,22 @@
 				</div>
 
 				{#if findModal.error}
-					<div class="text-red-500">{findModal.error}</div>
-				{/if}
+					<div class="text-red-500">{findModal.error}{/if}
 
 				{#if findModal.results.length > 0}
 					<div class="border-t pt-4">
 						<h3 class="font-semibold mb-2">Results:</h3>
 						<ul class="space-y-2 max-h-60 overflow-y-auto">
-							{#each findModal.results as result}
+							{#each Array.isArray(findModal.results) ? findModal.results : [] as result}
 								<li class="p-2 rounded hover:bg-muted cursor-pointer border-b border-muted-foreground/10">
 									{result?.title ?? result?.text ?? JSON.stringify(result)}
 								</li>
 							{/each}
 						</ul>
-					</div>
-				{/if}
+					{/if}
 			</div>
 		</div>
-	</div>
-{/if}
+	{/if}
 
 {#if miniModal.show}
 	<div class="fixed z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">
@@ -713,8 +706,7 @@
 		<div class="bg-background border border-border rounded-md shadow px-3 py-2 text-sm">
 			{miniModal.type}
 		</div>
-	</div>
-{/if}ort url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
+	{/if}ort url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 
 <style>id-pattern {
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');

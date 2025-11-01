@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits.svelte'';
   import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js';
   // import { GpuVectorProcessor } from '$lib/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues
   let log = $state('');
@@ -67,7 +67,7 @@
     } catch (error) {
       append('💥 Test failed: ' + (error as Error).message);
     } finally {
-      isRunning = false;
+      isRunning = $state(false);
     }
   }
   $effect(() => {

@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { X } from 'lucide-svelte';
+  import X from 'lucide-svelte';
   import { quadOut } from 'svelte/easing';
   import { cn } from '$lib/utils';
   import type { Snippet } from 'svelte';
-
   type Size = 'sm' | 'md' | 'lg' | 'xl' | 'full';
-
   let {
     open = $bindable(false),
     title = '',
@@ -29,7 +27,6 @@
     footer?: Snippet<{ close: () => void }>;
     trigger?: Snippet;
   } = $props();
-
   const sizeClasses: Record<Size, string> = {
     sm: 'max-w-sm',
     md: 'max-w-md',
@@ -37,24 +34,20 @@
     xl: 'max-w-xl',
     full: 'max-w-[95vw] max-h-[95vh]',
   };
-
   function close() {
-    open = false;
+    open = $state(false);
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === 'Escape') {
       close();
     }
   }
-
   function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === event.currentTarget) {
       close();
     }
   }
 </script>
-
 <!-- keyboard handling on window for accessibility -->
 <svelte:window onkeydown={handleKeydown} />
 <!-- optional trigger -->
@@ -108,14 +101,12 @@
       </div>
       <!-- body slot -->
       <div class="mt-4">
-        {@render children?.()}
+        <slot />
       </div>
       <!-- footer slot receives close() -->
       {#if footer}
         <div class="mt-4">
           {@render footer({ close })}
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
+  {/if}

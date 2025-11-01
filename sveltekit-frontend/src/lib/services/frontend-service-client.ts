@@ -31,7 +31,7 @@ export interface ServiceResponse<T = unknown> {
 export interface ServiceInfo {
   status: 'healthy' | 'degraded' | 'unhealthy';
   responseTime?: number;
-  details?: unknown;
+  details?: any;
 }
 
 export interface HealthStatus {
@@ -132,7 +132,7 @@ class FrontendServiceClient {
       });
 
       const text = await response.text();
-      const data: unknown = text ? JSON.parse(text) : undefined;
+      const data: any = text ? JSON.parse(text) : undefined;
 
       if (!response.ok) {
         // Safely extract an: "error" string from the parsed payload if present
@@ -149,7 +149,7 @@ class FrontendServiceClient {
 
       lastError.set(null);
       return data as ServiceResponse<T>;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err ?? 'Unknown error');
       lastError.set(msg);
       throw err;
@@ -216,7 +216,7 @@ class FrontendServiceClient {
     return res.data!;
   }
 
-  async manageWorkflow(type: 'document' | 'case' | 'rag', workflowId: string, event?: unknown): Promise<unknown> {
+  async manageWorkflow(type: 'document' | 'case' | 'rag', workflowId: string, event?: any): Promise<unknown> {
     const res = await this.post<unknown>('/unified?action=workflow', { type, workflowId, event } as JsonObject);
     return res.data;
   }
@@ -224,7 +224,7 @@ class FrontendServiceClient {
   async cacheOperation(
     operation: 'get' | 'set' | 'delete',
     key: string,
-    value?: unknown,
+    value?: any,
     ttl?: number
   ): Promise<unknown> {
     const payload: JsonObject = { operation, key, ttl };
@@ -314,7 +314,7 @@ export function createSearchStore(initialQuery: string = '') {
     try {
       const res = await serviceClient.search(q);
       results.set(res);
-    } catch (err: unknown) {
+    } catch (err: any) {
       error.set(err instanceof Error ? err.message : 'Search failed');
       results.set([]);
     } finally {
@@ -346,7 +346,7 @@ export function createRAGStore() {
     try {
       const ragResponse = await serviceClient.performRAG(q, caseId);
       response.set(ragResponse);
-    } catch (err: unknown) {
+    } catch (err: any) {
       error.set(err instanceof Error ? err.message : 'RAG query failed');
       response.set(null);
     } finally {
@@ -396,7 +396,7 @@ export function createUploadStore() {
       });
 
       return result;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err ?? 'Upload failed');
       uploads.update(map => {
         const entry = map.get(uploadId);

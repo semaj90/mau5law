@@ -28,12 +28,12 @@
     (async () => {
 if (!caseId) {
       error = 'Case ID is required';
-      isLoading = false;
+      isLoading = $state(false);
       return;
     }
     await loadCaseData();
     await loadOrganizationHistory();
-    isLoading = false;
+    isLoading = $state(false);
     })();
   });
   /**
@@ -270,7 +270,7 @@ if (!caseId) {
         <div class="sidebar-panel">
           <h3>Selected Evidence ({selectedEvidence.length})</h3>
           <div class="selected-evidence-list">
-            {#each selectedEvidence as evidence}
+            {#each Array.isArray(selectedEvidence) ? selectedEvidence : [] as evidence}
               <div class="selected-evidence-item">
                 <div class="evidence-info">
                   <h4>{evidence.title}</h4>
@@ -301,7 +301,7 @@ if (!caseId) {
         <div class="sidebar-panel">
           <h3>Organization History</h3>
           <div class="history-list">
-            {#each organizationHistory as attempt}
+            {#each Array.isArray(organizationHistory) ? organizationHistory : [] as attempt}
               <div class="history-item">
                 <div class="history-info">
                   <span class="history-mode">{attempt.mode}</span>

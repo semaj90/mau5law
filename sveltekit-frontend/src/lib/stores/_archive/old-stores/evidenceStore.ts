@@ -60,7 +60,7 @@ type StoredEvidenceData = {
 };
 
 // Helper: safe parser + error message helper
-function parseStoredData(obj: unknown): StoredEvidenceData | null {
+function parseStoredData(obj: any): StoredEvidenceData | null {
   if (typeof obj !== 'object' || obj === null) return null;
   const anyObj = obj as Record<string, unknown>;
   const result: StoredEvidenceData = {};
@@ -70,7 +70,7 @@ function parseStoredData(obj: unknown): StoredEvidenceData | null {
   if (typeof anyObj.currentHistoryIndex === 'number') result.currentHistoryIndex = anyObj.currentHistoryIndex;
   return result;
 }
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err);
 }
 
@@ -91,10 +91,10 @@ type RealtimeMessage = {
 };
 
 // Simple runtime type-guards
-function isObject(x: unknown): x is Record<string, unknown> {
+function isObject(x: any): x is Record<string, unknown> {
   return typeof x === 'object' && x !== null;
 }
-function isRealtimeMessage(msg: unknown): msg is RealtimeMessage {
+function isRealtimeMessage(msg: any): msg is RealtimeMessage {
   if (!isObject(msg)) return false;
   const channel = (msg as Record<string, unknown>).channel;
   const data = (msg as Record<string, unknown>).data;
@@ -144,7 +144,7 @@ class RealTimeEvidenceStore {
     try {
       // Try WebSocket first
       await this.connectWebSocket();
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('WebSocket failed, falling back to SSE:', getErrorMessage(err));
       this.connectSSE();
     }
@@ -172,7 +172,7 @@ class RealTimeEvidenceStore {
           try {
             const message = JSON.parse(event.data);
             this.handleRealtimeUpdate(message);
-          } catch (err: unknown) {
+          } catch (err: any) {
             console.error('WebSocket message parse error:', getErrorMessage(err));
           }
         };
@@ -194,7 +194,7 @@ class RealTimeEvidenceStore {
           console.error('WebSocket error:', event);
           reject(new Error('WebSocket error'));
         };
-      } catch (err: unknown) {
+      } catch (err: any) {
         reject(err);
       }
     });
@@ -213,7 +213,7 @@ class RealTimeEvidenceStore {
         try {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.error('SSE message parse error:', getErrorMessage(err));
         }
       };
@@ -227,12 +227,12 @@ class RealTimeEvidenceStore {
           }, this.reconnectDelay * this.reconnectAttempts);
         }
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('SSE connection failed:', getErrorMessage(err));
     }
   }
   // Real-time update handling (accept unknown and validate)
-  private handleRealtimeUpdate(message: unknown) {
+  private handleRealtimeUpdate(message: any) {
     if (!isRealtimeMessage(message)) {
       console.warn('Ignored invalid realtime message:', message);
       return;
@@ -346,7 +346,7 @@ class RealTimeEvidenceStore {
       }
       const result = (await res.json()) as { id?: string };
       return result.id || evidenceId;
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Revert optimistic update on error
       this.handleEvidenceDeleted(evidenceId);
       throw new Error(getErrorMessage(err));
@@ -369,7 +369,7 @@ class RealTimeEvidenceStore {
       if (!res.ok) {
         throw new Error(`Failed to update evidence: ${res.statusText}`);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Revert optimistic update on error
       this.handleEvidenceUpdated(evidenceId, currentEvidence, this.getCurrentUserId());
       throw new Error(getErrorMessage(err));
@@ -390,7 +390,7 @@ class RealTimeEvidenceStore {
       if (!res.ok) {
         throw new Error(`Failed to delete evidence: ${res.statusText}`);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Revert optimistic update on error
       this.handleEvidenceCreated(currentEvidence, this.getCurrentUserId());
       throw new Error(getErrorMessage(err));
@@ -496,7 +496,7 @@ class RealTimeEvidenceStore {
         lastUpdated: new Date().toISOString(),
       };
       localStorage.setItem('evidenceStore', JSON.stringify(data));
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Failed to save to localStorage:', getErrorMessage(err));
     }
   }
@@ -523,7 +523,7 @@ class RealTimeEvidenceStore {
           this.localCache.set(item.id, item);
         });
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Failed to load from localStorage:', getErrorMessage(err));
     }
   }

@@ -37,12 +37,12 @@ if (!globalThis.__quic_push_cleanup_installed) {
 
 // Add a typed interface for the incoming push payload
 type QuicPushBody = {
-  latencySamples?: unknown;
-  total_connections?: unknown;
-  total_streams?: unknown;
-  total_errors?: unknown;
-  errorOccurred?: unknown;
-  [key: string]: unknown;
+  latencySamples?: any;
+  total_connections?: any;
+  total_streams?: any;
+  total_errors?: any;
+  errorOccurred?: any;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
       }),
       { status: 200, headers: { 'content-type': 'application/json' } }
     );
-  } catch (e: unknown) {
+  } catch (e: any) {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 400,

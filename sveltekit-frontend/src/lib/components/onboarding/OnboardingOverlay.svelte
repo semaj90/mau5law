@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // @ts-nocheck
   import { onMount } from 'svelte';
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
   ArrowLeft,
   ArrowRight,
@@ -41,8 +41,8 @@ https://svelte.dev/e/js_parse_error -->
   progressDelay?: number;
   showMinimap?: boolean;
   allowSkip?: boolean;
-    onclose?: (event?: unknown) => void;
-  oncomplete?: (event?: unknown) => void;
+    onclose?: (event?: any) => void;
+  oncomplete?: (event?: any) => void;
   }
   // Props interface
   interface Props {
@@ -53,8 +53,8 @@ https://svelte.dev/e/js_parse_error -->
   progressDelay?: number;
   showMinimap?: boolean;
   allowSkip?: boolean;
-  onclose?: ((event?: unknown) => void) | undefined;
-  oncomplete?: ((event?: unknown) => void) | undefined;
+  onclose?: ((event?: any) => void) | undefined;
+  oncomplete?: ((event?: any) => void) | undefined;
   }
   let {
   open = false,
@@ -187,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
     closeOnboarding();
   }
   function closeOnboarding() {
-    open = false;
+    open = $state(false);
     onclose?.();
   }
   function completeOnboarding() {
@@ -262,8 +262,7 @@ https://svelte.dev/e/js_parse_error -->
           width: {highlightBox.width}px;
           height: {highlightBox.height}px;
         "
-      ></div>
-    {/if}
+      >{/if}
     <!-- Tooltip/Content card -->
     <div
       class="w-4 h-4"
@@ -331,21 +330,18 @@ closeOnboarding()}
         {#if currentStepData.content}
           <div class="w-4 h-4">
             {@html currentStepData.content}
-          </div>
-        {/if}
+          {/if}
         {#if currentStepData.image}
           <div class="w-4 h-4">
             <img src={currentStepData.image} alt={currentStepData.title} />
-          </div>
-        {/if}
+          {/if}
         {#if currentStepData.video}
           <div class="w-4 h-4">
             <video controls src={currentStepData.video}>
               <track kind="captions" src="" srclang="en" label="English" />
               Your browser does not support the video tag.
             </video>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Progress bar -->
       <div class="w-4 h-4">
@@ -388,8 +384,7 @@ skipOnboarding()}>
                   {/if}
 </Button>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
         <div class="w-4 h-4">
           <Button class="bits-btn"
@@ -415,12 +410,11 @@ nextStep()} size="sm">
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   /* @unocss-include */
   .onboarding-overlay {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -430,7 +424,7 @@ d;
     pointer-events: auto;
 }
   .overlay-backdrop {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -439,7 +433,7 @@ d;
     backdrop-filter: blur(2px);
 }
   .highlight-box {
-    position absolute;
+    position: absolute;
     border: 3px solid #3b82f6;
     border-radius: 8px;
     box-shadow:
@@ -463,7 +457,7 @@ d;
         0 0 30px rgba(59, 130, 246, 0.5);
 }}
   .onboarding-tooltip {
-    position absolute;
+    position: absolute;
     background: white;
     border-radius: 12px;
     box-shadow:
@@ -571,7 +565,7 @@ d;
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
 }
   .progress-text {
     font-size: 0.75rem;
@@ -680,4 +674,3 @@ d;
       order: -1;
 }}
 </style>
-

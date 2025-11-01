@@ -173,7 +173,7 @@
         <a href="/cases" class="nier-link text-sm"> View all cases → </a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {#each sampleCases as caseData}
+        {#each Array.isArray(sampleCases) ? sampleCases : [] as caseData}
           {#if CaseCard}
             <CaseCard
               {caseData}

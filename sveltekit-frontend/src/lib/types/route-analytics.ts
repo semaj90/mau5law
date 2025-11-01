@@ -8,13 +8,13 @@ export interface RouteConfig {
   category: string;
   tags?: string[];
   // Allow for other properties that might exist but are not directly used in analytics generation
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface FileRoute {
   path?: string;
   // Allow for other properties
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface RouteDataInput {
@@ -29,7 +29,7 @@ export interface RouteDataInput {
     };
   };
   // Allow for other properties
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ComplexityMetrics {

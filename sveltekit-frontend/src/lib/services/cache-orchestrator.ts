@@ -12,7 +12,7 @@ interface RedisWebGPUIntegration {
   // this integration initialize() returns a boolean (ok/fail) in the implementation
   initialize(): Promise<boolean>;
   getCachedResult?(key: string): Promise<unknown | null>;
-  cacheResult?(key: string, value: unknown, opts?: { ttl?: number; priority?: number }): Promise<void>;
+  cacheResult?(key: string, value: any, opts?: { ttl?: number; priority?: number }): Promise<void>;
   computeVectorSimilarityOptimized?(query: number[], candidates: number[][], opts?: Record<string, unknown>): Promise<number[] | unknown>;
   syncWithSom?(): Promise<void>;
   getMetrics?(): Promise<{ efficiency?: number } | undefined>;
@@ -49,7 +49,7 @@ export class CacheOrchestrator {
   private somCache: MaybeSOMCache = null;
   private redisIntegration: Maybe<RedisWebGPUIntegration> = null;
   private serviceWorkerRegistration: Maybe<ServiceWorkerRegistration> = null;
-  private _isInitialized = false;
+  private _isInitialized = $state(false);
 
   // expose read-only state to avoid: "declared but never read" warning
   public get isInitialized(): boolean {
@@ -483,7 +483,7 @@ export class CacheOrchestrator {
     if (this.somCache?.dispose) {
       this.somCache.dispose();
     }
-    this._isInitialized = false;
+    this._isInitialized = $state(false);
     console.log('✅ Cache Orchestrator stopped');
   }
 
@@ -528,7 +528,7 @@ export class CacheOrchestrator {
     return errors[type] || 'Generic error message';
   }
 
-  private generateMockJSONForSchema(schema: string): unknown {
+  private generateMockJSONForSchema(schema: string): any {
     const schemas: Record<string, unknown> = {
       legal_document: {
         id: 'doc123',

@@ -1,12 +1,12 @@
 // Card Compound Component Exports - SSR-Safe
 // shadcn-style compatibility layer for enhanced-bits
 // Re-export enhanced-bits Card components for compound usage
-export { Card as Root } from '$lib/components/ui/enhanced-bits';
-export { CardHeader as Header } from '$lib/components/ui/enhanced-bits';
-export { CardTitle as Title } from '$lib/components/ui/enhanced-bits';
-export { CardDescription as Description } from '$lib/components/ui/enhanced-bits';
-export { CardContent as Content } from '$lib/components/ui/enhanced-bits';
-export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits';
+export { Card as Root } from '$lib/components/ui/enhanced-bits.svelte'';
+export { CardHeader as Header } from '$lib/components/ui/enhanced-bits.svelte'';
+export { CardTitle as Title } from '$lib/components/ui/enhanced-bits.svelte'';
+export { CardDescription as Description } from '$lib/components/ui/enhanced-bits.svelte'';
+export { CardContent as Content } from '$lib/components/ui/enhanced-bits.svelte'';
+export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits.svelte'';
 // Also export with standard names for flexibility
 export {
   Card,
@@ -15,5 +15,6 @@ export {
   CardDescription,
   CardContent,
   CardFooter,
-} from '$lib/components/ui/enhanced-bits';
+} from '$lib/components/ui/enhanced-bits.svelte'';
 // Note: CardCompound does not exist in enhanced-bits, so we don't re-export it here.
+export { default as Card } from './Card.svelte';

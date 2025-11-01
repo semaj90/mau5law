@@ -14,7 +14,6 @@
   let BitsButtonAny: any = BitsButton;
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -36,10 +35,9 @@
     enableSound?: boolean;
     soundVolume?: number;
     // Content
-    children?: unknown;
+    children?: any;
     class?: string;
   }
-
   let {
     variant = 'primary',
     size = 'md',
@@ -64,12 +62,10 @@
     onHover,
     onFocus,
   }: Props = $props();
-
   // Reactive state
   let isPressed = $state(false);
   let audioContext = $state<AudioContext | null>(null);
   let buttonElement = $state<HTMLButtonElement | null>(null);
-
   // Play simple NES-like button sound
   const playButtonSound = async () => {
     if (!enableSound) return;
@@ -95,33 +91,28 @@
       console.warn('playButtonSound error', err);
     }
   };
-
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
     await playButtonSound();
     // short press visual
     setTimeout(() => {
-      isPressed = false;
+      isPressed = $state(false);
     }, 100);
     onClick?.();
   };
-
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
   };
-
   const handleFocus = () => {
     if (disabled) return;
     onFocus?.();
   };
-
   // Normalize variant (accept "is-primary" or: "primary")
   function normalizeVariant(v: string) {
     return v?.startsWith('is-') ? v.replace(/^is-/, '') : v;
   }
-
   const getVariantColor = (v: string, nesV?: string) => {
     const key = normalizeVariant(v || nesV || 'primary');
     const colorMap = {
@@ -134,7 +125,6 @@
     } as const;
     return (colorMap as any)[key] ?? NES_COLOR_PALETTE.blue;
   };
-
   const getSizeStyles = (s: string) => {
     const normalized = (s || 'md').toLowerCase();
     const mapKey =
@@ -150,13 +140,11 @@
     } as const;
     return sizeMap[mapKey as keyof typeof sizeMap];
   };
-
   // Derived reactive values (Svelte 5 runes)
   let sizeStyles = $derived(() => getSizeStyles(size));
   let variantColor = $derived(() => getVariantColor(variant, nesVariant));
   let pressTransform = $derived(() => (isPressed ? `translateY(${pressDepth}px)` : 'translateY(0px)'));
 </script>
-
 <BitsButtonAny
   bind:this={buttonElement}
   {type}
@@ -183,12 +171,11 @@
     {children}
   {/if}
 </BitsButtonAny>
-
 <style>
   :global(.nes-8bit-button) {
     /* Base NES button styling */
     font-family: 'Press Start 2P', 'Courier New', monospace !important;
-    position relative;
+    position: relative;
     overflow: hidden;
     background-color: var(--button-color);
     color: white;
@@ -306,7 +293,7 @@
     /* Scanlines effect (optional) */
     :global(.nes-8bit-button.enable-scanlines)::before {
       content: '';
-      position absolute;
+      position: absolute;
       inset: 0,
       background: repeating-linear-gradient(
         0deg,
@@ -388,4 +375,3 @@
     }
   }
 </style>
-

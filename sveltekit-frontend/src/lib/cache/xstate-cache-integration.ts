@@ -11,12 +11,12 @@ import { headlessUICache } from './headless-ui-cache.js';
 // Define a base context type for machines that use caching
 export interface BaseMachineContext {
   cache: CacheContext;
-  computedData?: unknown; // Added for createCachedMachineStates example
+  computedData?: any; // Added for createCachedMachineStates example
 }
 
 export interface CacheContext {
   cacheKey: string | null;
-  cachedData: unknown; // Changed from any to unknown
+  cachedData: any; // Changed from any to unknown
   cacheHit: boolean;
   cacheMetadata: {
     timestamp: number;
@@ -30,9 +30,9 @@ export interface CacheContext {
 
 export type CacheEvent =
   | { type: 'CACHE_LOOKUP'; key: string; semanticQuery?: string }
-  | { type: 'CACHE_HIT'; data: unknown; metadata: CacheContext['cacheMetadata'] } // Changed from any to unknown
+  | { type: 'CACHE_HIT'; data: any; metadata: CacheContext['cacheMetadata'] } // Changed from any to unknown
   | { type: 'CACHE_MISS' }
-  | { type: 'CACHE_STORE'; key: string; data: unknown; semanticText?: string } // Changed from any to unknown
+  | { type: 'CACHE_STORE'; key: string; data: any; semanticText?: string } // Changed from any to unknown
   | { type: 'CACHE_INVALIDATE'; key?: string; pattern?: string }
   | { type: 'CACHE_SYNC' }
   | { type: 'COMPUTE_REQUIRED'; cost: number }
@@ -40,7 +40,7 @@ export type CacheEvent =
 
 // Define the return type of cacheActor for better type safety in onDone
 type CacheActorResult =
-  | { success: true; hit: true; data: unknown; metadata: CacheContext['cacheMetadata'] }
+  | { success: true; hit: true; data: any; metadata: CacheContext['cacheMetadata'] }
   | { success: false; hit: false; data: null; metadata: CacheContext['cacheMetadata'] }
   | { success: true; stored: true; key: string; responseTime: number }
   | { success: true; invalidated: true; responseTime: number }
@@ -57,7 +57,7 @@ export const cacheActor = fromPromise(
     input: {
       operation: 'get' | 'set' | 'invalidate' | 'sync';
       key?: string;
-      data?: unknown; // Changed from any to unknown
+      data?: any; // Changed from any to unknown
       semanticQuery?: string;
       semanticText?: string;
       pattern?: string;
@@ -144,7 +144,7 @@ export const cacheActor = fromPromise(
         default:
           throw new Error(`Unknown cache operation: ${input.operation}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any to unknown
       return {
         success: false,
@@ -159,7 +159,7 @@ export const cacheActor = fromPromise(
  * Cache-aware XState machine mixin
  * Adds caching capabilities to any XState machine
  */
-export function withCache<TContext extends { [key: string]: unknown }>( // Changed from any to unknown
+export function withCache<TContext extends { [key: string]: any }>( // Changed from any to unknown
   baseContext: TContext,
   _cacheKeyGenerator?: (context: TContext) => string // Prefixed with _ to mark as unused
 ) {
@@ -293,7 +293,7 @@ export const cacheGuards = {
 /**
  * Example cached machine state definition
  */
-type ComputationResult = { result: unknown };
+type ComputationResult = { result: any };
 
 export const createCachedMachineStates = () => ({
   initial: 'idle',
@@ -406,7 +406,7 @@ export function withNeuralSpriteCache(spriteConfig: Record<string, unknown>) {
       priority: 'high',
     },
     // Add cache-aware lifecycle methods
-    beforeCompute: async function (context: { spriteId: string; inputs: unknown }) {
+    beforeCompute: async function (context: { spriteId: string; inputs: any }) {
       const cacheKey = `neural-sprite:${context.spriteId}:${JSON.stringify(context.inputs)}`;
       const cached = await headlessUICache.get(cacheKey);
       if (cached) {
@@ -415,7 +415,7 @@ export function withNeuralSpriteCache(spriteConfig: Record<string, unknown>) {
       }
       return { cached: false };
     },
-    afterCompute: async function (context: { spriteId: string; inputs: unknown }, result: unknown) {
+    afterCompute: async function (context: { spriteId: string; inputs: any }, result: any) {
       const cacheKey = `neural-sprite:${context.spriteId}:${JSON.stringify(context.inputs)}`;
       await headlessUICache.set(
         cacheKey,

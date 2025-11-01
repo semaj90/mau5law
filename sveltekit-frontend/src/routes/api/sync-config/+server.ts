@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
     redis?: ServiceStatus;
     minio?: ServiceStatus;
     environment?: { variables?: EnvVariables };
-    [key: string]: unknown;
+    [key: string]: any;
   };
 
   const testResults: SyncTestResults = {};

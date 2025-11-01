@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   import { dndzone } from 'svelte-dnd-action';
   import Masonry from 'masonry-layout';
   interface Props {
-    items: unknown[];
+    items: any[];
     columnWidth?: number;
     gutter?: number;
     itemSelector?: string;
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
   finalize={handleDndFinalize}
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
-  {#each items as item, index ((item as { id?: unknown; drag?: unknown; newly?: unknown }).id)}
+  {#each items as item, index ((item as { id?: any; drag?: any; newly?: any }).id)}
 <div
   bind:this={container}
   class={`${containerClass} masonry-grid`}

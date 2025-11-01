@@ -58,8 +58,8 @@ export class HybridVectorSearchService {
         console.log('Hybrid vector search service initialized with Qdrant');
       } catch (error) {
         console.warn('Failed to initialize Qdrant, will use pgvector only:', error);
-        this.options.use_qdrant = false;
-        this.options.sync_to_qdrant = false;
+        this.options.use_qdrant = $state(false);
+        this.options.sync_to_qdrant = $state(false);
       }
     }
   }
@@ -295,7 +295,7 @@ export class HybridVectorSearchService {
 
       // Get Qdrant stats
       let qdrantVectorCount = 0;
-      let qdrantAvailable = false;
+      let qdrantAvailable = $state(false);
 
       try {
         const qdrantHealth = await qdrantClient.healthCheck();

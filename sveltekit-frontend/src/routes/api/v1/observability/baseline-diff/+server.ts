@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
       summary,
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // log safely when error is unknown
     console.error('[baseline-diff] Error:', error instanceof Error ? error.message : error);
     return json({ error: 'Failed to calculate baseline diff' }, { status: 500 });
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
       updated_baselines: updatedBaselines,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[baseline-diff] Update error:', error instanceof Error ? error.message : error);
     return json({ error: 'Failed to update baselines' }, { status: 500 });
   }

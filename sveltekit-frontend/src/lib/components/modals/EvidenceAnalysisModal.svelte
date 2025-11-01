@@ -8,7 +8,7 @@ https: //svelte.dev/e/js_parse_error -->
     content: string;
     type: string;
     caseId?: string;
-    metadata?: unknown;
+    metadata?: any;
     analysis?: {
       summary: string;
       keyPoints: string[];
@@ -23,8 +23,8 @@ https: //svelte.dev/e/js_parse_error -->
   interface Props {
     open?: boolean;
     evidence?: Evidence | null;
-    onEvidenceUpdated?: (event?: unknown) => void;
-    onSaveAnalysis?: (event?: unknown) => void;
+    onEvidenceUpdated?: (event?: any) => void;
+    onSaveAnalysis?: (event?: any) => void;
     similarEvidence?: Array<any> | null;
   }
   let {
@@ -34,18 +34,15 @@ https: //svelte.dev/e/js_parse_error -->
     onEvidenceUpdated = () => {},
     onSaveAnalysis = () => {},
   }: Props = $props();
-
   import { fade, fly } from 'svelte/transition';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
+  import { Button } from '$lib/components/ui/button.svelte'';
+  import { Input } from '$lib/components/ui/input.svelte'';
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Sparkles, Loader2 } from 'lucide-svelte';
-
   let isAnalyzing = $state(false);
   let newTags = $state<string>('');
   let analysisMode = $state<'quick' | 'detailed' | 'legal'>('detailed');
-
   async function analyzeEvidence() {
     if (!evidence) return;
     isAnalyzing = true;
@@ -69,10 +66,9 @@ https: //svelte.dev/e/js_parse_error -->
     } catch (err) {
       console.error('Analysis failed:', err);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
-
   async function updateTags() {
     if (!evidence || !newTags.trim()) return;
     const tags = newTags
@@ -99,7 +95,6 @@ https: //svelte.dev/e/js_parse_error -->
       console.error('Tag update failed:', err);
     }
   }
-
   function getAdmissibilityColor(admissibility: string): string {
     switch (admissibility) {
       case 'admissible':
@@ -118,7 +113,6 @@ https: //svelte.dev/e/js_parse_error -->
     return 'text-gray-600';
   }
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Content class="max-w-5xl">
     <Dialog.Header>
@@ -128,7 +122,6 @@ https: //svelte.dev/e/js_parse_error -->
       </Dialog.Title>
       <Dialog.Description>AI-powered legal evidence analysis and tagging.</Dialog.Description>
     </Dialog.Header>
-
     {#if evidence}
       <div class="p-1 md:p-4 space-y-6 max-h-[80vh] overflow-y-auto">
         <!-- Evidence Header -->
@@ -151,7 +144,6 @@ https: //svelte.dev/e/js_parse_error -->
               <Download class="w-4 h-4 mr-2" />
               Export
             </Button>
-
             <Button
               variant="default"
               size="sm"
@@ -168,7 +160,6 @@ https: //svelte.dev/e/js_parse_error -->
             </Button>
           </div>
         </div>
-
         <!-- Grid Layout -->
         <div class="grid grid-cols-12 gap-6">
           <!-- Left Column -->
@@ -182,7 +173,6 @@ https: //svelte.dev/e/js_parse_error -->
                 {evidence.content}
               </div>
             </div>
-
             <!-- AI Analysis Section -->
             {#if evidence.analysis}
               <div transition:fade>
@@ -198,7 +188,7 @@ https: //svelte.dev/e/js_parse_error -->
                   <div>
                     <h5 class="font-semibold text-sm mb-1">Key Points</h5>
                     <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      {#each evidence.analysis.keyPoints as point}
+                      {#each Array.isArray(evidence.analysis.keyPoints) ? evidence.analysis.keyPoints : [] as point}
                         <li>{point}</li>
                       {/each}
                     </ul>
@@ -208,9 +198,7 @@ https: //svelte.dev/e/js_parse_error -->
                     <p class="text-sm text-gray-700">{evidence.analysis.reasoning}</p>
                   </div>
                 </div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Tags Section -->
             <div>
               <h4 class="text-md font-semibold mb-2 flex items-center gap-2">
@@ -218,12 +206,12 @@ https: //svelte.dev/e/js_parse_error -->
                 Tags
               </h4>
               <div class="flex flex-wrap gap-2 mb-4 empty:mb-0">
-                {#each evidence.tags || [] as tag}
+                {#each Array.isArray(evidence.tags || []) ? evidence.tags || [] : [] as tag}
                   <span class="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800"
                     >{tag}</span
                   >
                 {/each}
-                {#each evidence.analysis?.suggestedTags || [] as tag}
+                {#each Array.isArray(evidence.analysis?.suggestedTags || []) ? evidence.analysis?.suggestedTags || [] : [] as tag}
                   <button
                     class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
                   >
@@ -242,7 +230,6 @@ https: //svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </div>
-
           <!-- Right Column -->
           <div class="col-span-12 lg:col-span-4 space-y-6">
             <!-- Quick Stats -->
@@ -257,8 +244,7 @@ https: //svelte.dev/e/js_parse_error -->
                   <div class="text-lg font-bold {getRelevanceColor(evidence.analysis.relevance)}">
                     {evidence.analysis.relevance}/10
                   </div>
-                </div>
-              {/if}
+                {/if}
               {#if evidence.analysis?.admissibility}
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -272,16 +258,14 @@ https: //svelte.dev/e/js_parse_error -->
                   >
                     {evidence.analysis.admissibility}
                   </span>
-                </div>
-              {/if}
+                {/if}
             </div>
-
             <!-- Similar Evidence -->
             <div>
               <h4 class="text-md font-semibold mb-2">Similar Evidence</h4>
               <div class="space-y-2 max-h-80 overflow-y-auto pr-2">
                 {#if (evidence.similarEvidence || []).length > 0}
-                  {#each evidence.similarEvidence as similar}
+                  {#each Array.isArray(evidence.similarEvidence) ? evidence.similarEvidence : [] as similar}
                     <div class="p-2 border rounded-md text-xs bg-white hover:border-primary transition-colors">
                       <div class="font-semibold text-gray-800 mb-1">
                         Similarity: {(similar.similarity * 100).toFixed(0)}%
@@ -294,8 +278,7 @@ https: //svelte.dev/e/js_parse_error -->
                     class="text-center py-4 border-2 border-dashed rounded-lg text-sm text-gray-500"
                   >
                     No similar evidence found.
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
           </div>
@@ -304,9 +287,7 @@ https: //svelte.dev/e/js_parse_error -->
     {:else}
       <div class="flex items-center justify-center h-64">
         <p class="text-gray-500">No evidence loaded.</p>
-      </div>
-    {/if}
-
+      {/if}
     <Dialog.Footer>
       <Button variant="outline" onclick={() => (open = false)}>Close</Button>
       <Button onclick={() => onSaveAnalysis?.()}>Save Analysis</Button>

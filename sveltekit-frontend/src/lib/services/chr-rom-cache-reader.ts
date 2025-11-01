@@ -167,7 +167,7 @@ export class CHRROMCacheReader {
   /**
    * Validate CHR-ROM pattern structure
    */
-  private isValidPattern(pattern: unknown): pattern is CHRROMPattern {
+  private isValidPattern(pattern: any): pattern is CHRROMPattern {
     return (
       typeof pattern === 'object' &&
       pattern !== null &&

@@ -90,7 +90,7 @@ export class UnifiedGPUCacheOrchestrator {
   private healthMetrics: SystemHealthMetrics = this.initializeHealthMetrics();
   private monitoringInterval: NodeJS.Timeout | null = null;
   private operationQueue: Array<any> = [];
-  private isProcessingQueue = false;
+  private isProcessingQueue = $state(false);
 
   constructor(config: Partial<UnifiedCacheConfig> = {}) {
     this.config = this.mergeWithDefaults(config);
@@ -164,7 +164,7 @@ export class UnifiedGPUCacheOrchestrator {
         useCache: options.useCache,
       })) ?? { results: [], metrics: {} };
 
-      let gpuAccelerated = false;
+      let gpuAccelerated = $state(false);
       if (options.enableGPUAcceleration && webASMGPUBridge.getCapabilities?.()?.webgpu) {
         try {
           const reranked = await this.gpuRerank(query, searchResult.results || []);

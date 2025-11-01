@@ -255,7 +255,7 @@ export class GRPCAIOrchestrator {
         score: this.calculateCaseScore(semantic),
         confidence: 0.87,
         criteria: scoringRequest.scoring_criteria!,
-        explanation: `Automated scoring based on ${semantic.legalEntities.length} entities and ${semantic.keyTopics.length} topics`,
+        explanation: `Automated scoring based on ${semantic.legalEntities.length} entities and ${semantic.keyTopics?.length ?? 0} topics`,
         recommendations: this.generateRecommendations(semantic),
         scoringDate: new Date(),
         model: 'gemma3-legal-scoring',
@@ -300,7 +300,7 @@ export class GRPCAIOrchestrator {
     score += semantic.legalEntities.filter(item => item.length) * 5;
     score += semantic.legalEntities.filter(item => item.length) * 4;
     // Topic bonuses
-    score += semantic.keyTopics.length * 2;
+    score += semantic.keyTopics?.length ?? 0 * 2;
     // Complexity adjustment
     score += semantic.complexity.score * 10;
     return Math.min(Math.max(score, 0), 100);

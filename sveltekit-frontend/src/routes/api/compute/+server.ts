@@ -14,7 +14,7 @@ import { eq } from 'drizzle-orm';
 const redis = createClient({
   url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
 });
-let redisConnected = false;
+let redisConnected = $state(false);
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       progress: 0,
       estimatedTime: getEstimatedTime(type, data),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Compute API error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
         : null,
       vector: vectorResult,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Job status error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(

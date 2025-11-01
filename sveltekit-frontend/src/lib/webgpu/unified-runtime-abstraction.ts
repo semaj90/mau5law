@@ -88,7 +88,7 @@ export interface InferenceResponse {
 }
 export class UnifiedRuntimeAbstraction {
   private capabilities: RuntimeCapabilities;
-  private initialized = false;
+  private initialized = $state(false);
   private webgpuDevice?: GPUDevice;
   private webgl2Context?: WebGL2RenderingContext;
   private wasmModule?: any;
@@ -610,7 +610,7 @@ export class UnifiedRuntimeAbstraction {
     if (this.webgpuDevice && typeof (this.webgpuDevice as any).destroy === 'function') {
       (this.webgpuDevice as any).destroy();
     }
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 // Export singleton instance

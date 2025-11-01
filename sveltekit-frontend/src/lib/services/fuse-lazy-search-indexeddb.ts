@@ -17,7 +17,7 @@ export interface SearchableItem {
   content: string;
   keywords: string[];
   embedding?: Float32Array;
-  metadata?: { [key: string]: unknown }; // Changed: 'any' to: 'unknown'
+  metadata?: { [key: string]: any }; // Changed: 'any' to: 'unknown'
   timestamp?: number;
 }
 
@@ -33,7 +33,7 @@ export interface SearchOptions {
 export interface SearchResult {
   item: SearchableItem;
   score?: number;
-  matches?: unknown[];
+  matches?: any[];
   similarity?: number;
   refIndex: number;
   combinedScore?: number; // Added to fix: 'combinedScore' does not exist on type: 'SearchResult'
@@ -45,7 +45,7 @@ export class FuseLazySearchService {
   private db: IDBDatabase | null = null;
   private fuse: Fuse<SearchableItem> | null = null; // Use the imported Fuse class type
   private items: SearchableItem[] = [];
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private dbName = 'legal-ai-search';
   private dbVersion = 2;
   private storeName = 'searchable-items';
@@ -64,7 +64,7 @@ export class FuseLazySearchService {
       this.initializeFuse();
       this.isInitialized = true;
       console.log(`✅ Fuse lazy search initialized with ${this.items.length} items`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Failed to initialize Fuse lazy search:', error);
       throw error;
@@ -237,7 +237,7 @@ export class FuseLazySearchService {
       });
       console.log(`📊 Search complete: ${results.length} results`);
       return results.slice(0, searchOptions.maxResults);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Search failed:', error);
       return [];
@@ -257,7 +257,7 @@ export class FuseLazySearchService {
         }
       }
       return textResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Vector enhancement failed:', error);
       return textResults;

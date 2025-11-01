@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ params }) => {
       evidence,
       count: evidence.length,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching evidence:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(

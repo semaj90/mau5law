@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
   let query = $state('contract liability terms'
-  let results: unknown[] = []
+  let results: any[] = []
   let wsMsg = ''
   async function runSearch() {
     const res = await fetch('/api/ai/vector-search', {
@@ -33,7 +33,7 @@ https://svelte.dev/e/script_duplicate -->
   <p>Log: {wsMsg}</p>
   {#if results?.length}
   <ul>
-    {#each results as r}
+    {#each Array.isArray(results) ? results : [] as r}
       <li>
         <pre>{JSON.stringify(r, null, 2)}</pre>
       </li>
@@ -60,7 +60,7 @@ https://svelte.dev/e/script_duplicate -->
   interface VectorSearchResponse {
     response: string;
     confidence: number;
-    sources: unknown[];
+    sources: any[];
     searchResults: SearchResult[];
     searchMetadata: {
       totalResults: number;
@@ -120,7 +120,7 @@ https://svelte.dev/e/script_duplicate -->
     } catch (err) {
       error = err instanceof Error ? err.message: 'Network error',
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   async function indexSampleDocument() {
@@ -298,7 +298,7 @@ https://svelte.dev/e/script_duplicate -->
               {#if doc.keywords && doc.keywords.length > 0}
                 <div class="doc-keywords">
                   <strong>Keywords:</strong>
-                  {#each doc.keywords as keyword}
+                  {#each Array.isArray(doc.keywords) ? doc.keywords : [] as keyword}
                     <span class="keyword-tag">{keyword}</span>
                   {/each}
                 </div>

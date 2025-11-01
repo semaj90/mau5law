@@ -18,7 +18,7 @@ export interface ComponentPropsBase {
   class?: string;
   id?: string;
   children?: import('svelte').Snippet;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface ButtonProps extends ComponentPropsBase {
   variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
@@ -80,7 +80,7 @@ export type CustomEventHandler<T = unknown> = (_event: CustomEvent<T>) => void;
 // FORM STATE FIXES
 // =====================================================
 export interface FormFieldState {
-  value: unknown;
+  value: any;
   error?: string;
   touched: boolean;
   dirty: boolean;

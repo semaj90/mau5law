@@ -218,7 +218,7 @@
       aria-label="Select practice area"
     >
       <option value="" disabled>Select practice area...</option>
-      {#each caseTypes as type}
+      {#each Array.isArray(caseTypes) ? caseTypes : [] as type}
         <option value={type.value}>{type.label}</option>
       {/each}
     </select>
@@ -275,7 +275,7 @@
             class="text-danger"
             onclick={() => {
               showErrorNotification();
-              alertOpen = false;
+              alertOpen = $state(false);
             }}
           >
             Delete Permanently

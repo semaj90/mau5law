@@ -7,10 +7,10 @@ import { eq } from 'drizzle-orm'
 /**
  * Safe helper to call toSQL() if present on the object without using `any`.
  */
-function getToSQL(q: unknown): string | null {
+function getToSQL(q: any): string | null {
   // Narrow to an object that may have a toSQL function
   if (q && typeof q === 'object' && 'toSQL' in q) {
-    const candidate = q as { toSQL?: unknown };
+    const candidate = q as { toSQL?: any };
     if (typeof candidate.toSQL === 'function') {
       try {
         // Cast to the narrower shape with a function, then call
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async _event => {
         luciaQuerySQL: getToSQL(luciaQuery),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('JOIN Test Error:', error);
     return json(
       {

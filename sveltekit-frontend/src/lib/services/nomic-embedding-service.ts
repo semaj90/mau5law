@@ -35,7 +35,7 @@ export interface DocumentChunk {
     totalChunks: number;
     startIndex: number;
     endIndex: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 
@@ -74,8 +74,8 @@ class NomicEmbeddingService {
   private vectorStore: any;
   private config: EmbeddingConfig;
   private cache: Map<string, { embedding: number[]; timestamp: number }> = new Map();
-  private initialized = false;
-  private processing = false;
+  private initialized = $state(false);
+  private processing = $state(false);
   private cacheHits = 0;
   private cacheMisses = 0;
 
@@ -266,7 +266,7 @@ class NomicEmbeddingService {
 
       const totalTime = Date.now() - startTime;
       const averageTime = results.length > 0 ? totalTime / results.length : 0;
-      this.processing = false;
+      this.processing = $state(false);
 
       return {
         results,
@@ -281,7 +281,7 @@ class NomicEmbeddingService {
         },
       };
     } catch (err) {
-      this.processing = false;
+      this.processing = $state(false);
       console.error('Failed to generate batch embeddings:', err);
       throw err;
     }
@@ -294,7 +294,7 @@ class NomicEmbeddingService {
       title?: string;
       entityType: string;
       entityId: string;
-      [key: string]: unknown;
+      [key: string]: any;
     }
   ): Promise<{ chunks: DocumentChunk[]; embeddings: EmbeddingResult[]; indexedCount: number; analysis?: any }> {
     try {
@@ -527,7 +527,7 @@ class NomicEmbeddingService {
     this.config = { ...this.config, ...newConfig };
     // reinitialize if model or GPU flag changed
     if (newConfig.model || typeof newConfig.enableGpuAcceleration === 'boolean') {
-      this.initialized = false;
+      this.initialized = $state(false);
       await this.initializeServices();
     }
     console.log('✅ Embedding service configuration updated');

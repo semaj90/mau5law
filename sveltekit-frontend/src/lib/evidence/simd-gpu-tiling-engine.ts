@@ -77,7 +77,7 @@ export class SIMDGPUTilingEngine {
   private device: GPUDevice | null = null;
   private computePipeline: GPUComputePipeline | null = null;
   private tileCache: Map<string, TiledEvidenceChunk> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Performance tracking
   private metrics = {
     tilesProcessed: 0,
@@ -595,7 +595,7 @@ export class SIMDGPUTilingEngine {
    */ async shutdown(): Promise<void> {
     console.log('🛑 Shutting down SIMD GPU Tiling Engine...');
     this.tileCache.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('✅ SIMD GPU Tiling Engine shutdown complete');
   }
 }

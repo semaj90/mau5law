@@ -99,7 +99,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       await db.select({ count: legalDocuments.id }).from(legalDocuments).limit(1);
     } catch (error) {
       console.error('PostgreSQL connectivity test failed:', error);
-      postgresqlAvailable = false;
+      postgresqlAvailable = $state(false);
     }
     // Test Redis connectivity (if available)
     let redisAvailable = true;
@@ -109,7 +109,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       redisAvailable = postgresqlAvailable;
     } catch (error) {
       console.error('Redis connectivity test failed:', error);
-      redisAvailable = false;
+      redisAvailable = $state(false);
     }
     const serverRenderTime = Date.now() - startTime;
     const pageData: LegalAIPageData = {

@@ -5,17 +5,15 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Props } from '$lib/types/global';
-
   // Replace the incorrect named import block with explicit default imports
   // (adjust paths if your project places these components elsewhere)
-  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
-  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
-  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits/Card.svelte';
+  import { CardHeader } from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import { CardTitle } from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
+  import { CardContent } from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
   import { Bot, User, Send, Brain, Eye, Zap, Search, FileText, Scale, AlertTriangle } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -35,7 +33,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     sources?: Array<{ id?: string; score?: number; content?: string; metadata?: any }>;
     error?: boolean;
   };
-
   // Chat state with explicit types
   let messages: ChatMessage[] = $state([] as ChatMessage[]);
   let currentMessage: string = $state('');
@@ -73,7 +70,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       },
     ];
   });
-
   // Self-prompting system
   const generateSelfPromptSuggestions = async () => {
     if (!caseId) return;
@@ -99,7 +95,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       console.error('Self-prompt generation failed:', error);
     }
   };
-
   // Elemental awareness (YOLO-style hover analysis)
   const handleElementHover = async (ev: MouseEvent) => {
     if (!enableElementalAwareness) return;
@@ -127,7 +122,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       console.error('Element analysis failed:', error);
     }
   };
-
   // Enhanced RAG chat with vector search
   const sendMessage = async () => {
     if (!currentMessage || !currentMessage.trim()) return;
@@ -160,7 +154,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         const ragResult = await ragResponse.json();
         ragSources = ragResult.sources || [];
       }
-
       // Send to AI with context
       const aiResponse = await fetch('/api/ai/chat', {
         method: 'POST',
@@ -210,16 +203,14 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       };
       messages = [...messages, errorMessage];
     } finally {
-      isTyping = false;
+      isTyping = $state(false);
     }
   };
-
   // Quick action for self-prompt suggestions
   const useSelfPrompt = (suggestion string) => {
     currentMessage = suggestion;
     sendMessage();
   };
-
   // Keyboard handler
   const handleKeyDown = (ev: KeyboardEvent) => {
     if (ev.key === 'Enter' && !ev.shiftKey) {
@@ -227,7 +218,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       sendMessage();
     }
   };
-
   // Initialize WebGPU processor on mount to both prime GPU and avoid: "declared but never read" lint
   onMount(() => {
     (async () => {
@@ -250,13 +240,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       }
     })();
   });
-
   // Create component aliases to avoid constructor/instance typing mismatch
   // Use `as any` intentionally to sidestep SvelteComponentTyped constructor typing issues
   const Btn = Button as unknown as any;
   const InputComp = Input as unknown as any;
 </script>
-
 <svelte:window onmouseover={handleElementHover as any} />
 <div class="flex flex-col h-full max-w-4xl mx-auto">
   <!-- Chat Header -->
@@ -307,7 +295,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           Suggested Questions
         </h4>
         <div class="flex flex-wrap gap-2">
-          {#each selfPromptSuggestions as suggestion}
+          {#each Array.isArray(selfPromptSuggestions) ? selfPromptSuggestions : [] as suggestion}
             <!-- use Btn alias instead of deprecated <svelte:component> -->
             <Btn
               class="bits-btn suggestion-button"
@@ -321,8 +309,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Elemental Analysis Tooltip -->
   {#if enableElementalAwareness && elementAnalysis}
     <div class="fixed top-4 right-4 z-50 p-3 bg-black text-white rounded-lg shadow-lg max-w-xs">
@@ -336,18 +323,16 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           >{elementAnalysis.legalContext}</span
         >
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Chat Messages -->
   <div class="flex-1 flex flex-col nes-container">
     <div class="yorha-panel-content flex-1 overflow-y-auto p-4 space-y-4">
-      {#each messages as message}
+      {#each Array.isArray(messages) ? messages : [] as message}
         <div class="flex items-start gap-3 {message.role === 'user' ? 'justify-end' : ''}">
           {#if message.role === 'assistant'}
             <div class="flex-shrink-0">
               <Bot class="w-8 h-8 p-1.5 bg-blue-100 text-blue-600 rounded-full" />
-            </div>
-          {/if}
+            {/if}
           <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-1' : ''}">
             <div class="p-3 rounded-lg {message.role === 'user' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-100'}">
               <p class="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -361,12 +346,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
                       >{message.metadata.ragSources} sources</span
                     >
                   {/if}
-                </div>
-              {/if}
+                {/if}
               {#if message.sources?.length > 0}
                 <div class="mt-3 space-y-2">
                   <h5 class="text-xs font-medium opacity-75">Sources:</h5>
-                  {#each message.sources as source}
+                  {#each Array.isArray(message.sources) ? message.sources : [] as source}
                     <div class="text-xs opacity-75 p-2 bg-black bg-opacity-10 rounded">
                       <div class="flex items-center gap-1">
                         <FileText class="w-3 h-3" />
@@ -378,8 +362,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
                       <p class="mt-1">{source.content.substring(0, 100)}...</p>
                     </div>
                   {/each}
-                </div>
-              {/if}
+                {/if}
             </div>
             <p class="text-xs text-gray-500 mt-1 {message.role === 'user' ? 'text-right' : ''}">
               {new Date(message.timestamp).toLocaleTimeString()}
@@ -388,8 +371,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           {#if message.role === 'user'}
             <div class="flex-shrink-0">
               <User class="w-8 h-8 p-1.5 bg-gray-100 text-gray-600 rounded-full" />
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
       {#if isTyping}
@@ -402,8 +384,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
               <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Chat Input -->
     <div class="border-t p-4">
@@ -451,12 +432,10 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">YOLO Aware</span>
             {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>
-
 <style>
   /* Enhanced chat styling */
   :global(.chat-message) {
@@ -474,7 +453,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   }
   /* Elemental awareness hover effects */
   :global(*:hover) {
-    position relative;
+    position: relative;
   }
   /* Self-prompting suggestion animations */
   :global(.suggestion-button) {
@@ -485,4 +464,3 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 </style>
-

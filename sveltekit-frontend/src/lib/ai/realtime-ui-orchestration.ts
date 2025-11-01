@@ -22,7 +22,7 @@ export class LegalCanvasManager {
   private progressIndicators: Map<string, ProgressIndicator> = new Map();
   private vectorVisualization: VectorVisualization | null = null;
   private animationFrameId: number = 0;
-  private isRendering = false;
+  private isRendering = $state(false);
   // Performance tracking
   private renderMetrics = {
     frameCount: 0,
@@ -132,7 +132,7 @@ export class LegalCanvasManager {
       // Render canvas (only if dirty)
       if (this.canvas.isDirty) {
         this.canvas.renderAll();
-        this.canvas.isDirty = false;
+        this.canvas.isDirty = $state(false);
       }
       const renderTime = performance.now() - startTime;
       // Performance warning for slow frames
@@ -209,7 +209,7 @@ export class LegalCanvasManager {
   /**
    * Stop rendering and cleanup
    */ cleanup(): void {
-    this.isRendering = false;
+    this.isRendering = $state(false);
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
@@ -396,7 +396,7 @@ class VectorVisualization {
 export class LokiCacheManager {
   private db: Loki | null = null;
   private collections: Map<string, Collection<any>> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     this.initializeLoki();
   }
@@ -615,7 +615,7 @@ export class LokiCacheManager {
       this.db.close();
     }
     this.collections.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 Loki.js cache cleanup completed');
   }
 }
@@ -625,7 +625,7 @@ export class LokiCacheManager {
 export class RabbitMQRealtimeMessenger {
   private connection: amqp.Connection | null = null;
   private channel: amqp.Channel | null = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   private messageHandlers: Map<string, MessageHandler[]> = new Map();
   private subscriptions: Set<string> = new Set();
   constructor(private rabbitmqUrl: string = 'amqp://localhost:5672') {}
@@ -780,14 +780,14 @@ export class RabbitMQRealtimeMessenger {
    * Handle connection errors
    */ private handleConnectionError(error: Error): void {
     console.error('❌ RabbitMQ connection error:', error);
-    this.isConnected = false;
+    this.isConnected = $state(false);
     // Would implement reconnection logic here
   }
   /**
    * Handle connection close
    */ private handleConnectionClose(): void {
     console.warn('⚠️ RabbitMQ connection closed');
-    this.isConnected = false;
+    this.isConnected = $state(false);
     // Would implement reconnection logic here
   }
   /**
@@ -810,7 +810,7 @@ export class RabbitMQRealtimeMessenger {
     if (this.connection) {
       await this.connection.close();
     }
-    this.isConnected = false;
+    this.isConnected = $state(false);
     console.log('🧹 RabbitMQ messenger cleanup completed');
   }
 }

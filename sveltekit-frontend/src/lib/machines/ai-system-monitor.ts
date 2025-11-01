@@ -1,16 +1,13 @@
 import { createMachine, assign } from 'xstate';
-
 export interface SystemContext {
   lastActivity: number;
   latency: number;
 }
-
 export type SystemEvent =
   | { type: 'USER_ACTIVITY' }
   | { type: 'NETWORK_PING'; latency?: number }
   | { type: 'NETWORK_TIMEOUT' }
   | { type: 'RESET' };
-
 export const systemMonitorMachine = createMachine<SystemContext, SystemEvent>(
   {
     id: 'systemMonitor',
@@ -18,9 +15,7 @@ export const systemMonitorMachine = createMachine<SystemContext, SystemEvent>(
       lastActivity: Date.now(),
       latency: 0,
     },
-
     initial: 'active',
-
     states: {
       active: {
         on: {
@@ -33,12 +28,10 @@ export const systemMonitorMachine = createMachine<SystemContext, SystemEvent>(
         },
         after: { 60000: 'idle' }, // 1 min idle timeout
       },
-
       idle: {
         entry: 'markIdle',
         on: { USER_ACTIVITY: { target: 'active', actions: 'updateActivity' } },
       },
-
       degraded: {
         entry: 'notifyLatencyHigh',
         on: {
@@ -49,7 +42,6 @@ export const systemMonitorMachine = createMachine<SystemContext, SystemEvent>(
         },
         after: { 120000: 'offline' },
       },
-
       offline: {
         entry: 'notifyOffline',
         on: { NETWORK_PING: { target: 'active', actions: 'updateLatency' } },

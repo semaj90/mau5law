@@ -2,7 +2,6 @@
 import { desc, asc, count } from 'drizzle-orm';
 // Use the project's wrapper for expressions so TypeScript doesn't need to resolve drizzle-orm/expressions here
 import { eq, and, or, like } from '$lib/server/db/utils';
-
 export interface QueryFilters {
   search?: string;
   status?: string;
@@ -24,22 +23,19 @@ export interface PaginationParams {
   limit: number;
   offset: number;
 }
-
 // Minimal typed aliases to avoid any/SQL usage and satisfy lint rules
 type Condition = unknown;
 type TableLike = Record<string, unknown>;
-
 type QueryLike = {
-  where?: (clause: unknown) => QueryLike;
-  orderBy?: (clause: unknown) => QueryLike;
+  where?: (clause: any) => QueryLike;
+  orderBy?: (clause: any) => QueryLike;
   limit?: (n: number) => QueryLike;
   offset?: (n: number) => QueryLike;
   // avoid `any` here — accept unknown selector payload and return a QueryLike
-  select?: (s: unknown) => QueryLike;
+  select?: (s: any) => QueryLike;
   // avoid any in execute result
   execute: () => Promise<unknown>;
 };
-
 export class QueryBuilder {
   static buildFilters(table: TableLike, filters: QueryFilters): Condition[] {
     const conditions: Condition[] = [];
@@ -94,14 +90,12 @@ export class QueryBuilder {
     }
     return conditions;
   }
-
   static applyFilters(conditions: Condition[]): Condition | undefined {
     if (conditions.length === 0) return undefined;
     const andArgs = conditions as unknown as Parameters<typeof and>;
     return and(...andArgs);
   }
-
-  static applySorting(table: TableLike, sortBy: string, order: 'asc' | 'desc' = 'desc'): unknown {
+  static applySorting(table: TableLike, sortBy: string, order: 'asc' | 'desc' = 'desc'): any {
     const column = (table as TableLike)[sortBy as string];
     if (!column) {
       // Default to updatedAt or createdAt
@@ -110,14 +104,12 @@ export class QueryBuilder {
     }
     return order === 'asc' ? asc(column) : desc(column);
   }
-
   static getPaginationParams(page?: number | string | null, limit?: number | string | null): PaginationParams {
     const pageNum = Math.max(1, parseInt(String(page ?? '1')));
     const limitNum = Math.min(100, Math.max(1, parseInt(String(limit ?? '20'))));
     const offset = (pageNum - 1) * limitNum;
     return { page: pageNum, limit: limitNum, offset };
   }
-
   static async executeQuery<T>(
     baseQuery: QueryLike,
     filters: QueryFilters,
@@ -150,7 +142,6 @@ export class QueryBuilder {
     if (query.offset) query = query.offset(pagination.offset);
     // Execute main query (narrow result to T)
     const data = (await query.execute()) as T;
-
     // Get total count — avoid casting baseQuery to any by checking for select
     let countQuery: QueryLike;
     if (typeof baseQuery.select === 'function') {
@@ -159,11 +150,9 @@ export class QueryBuilder {
     } else {
       countQuery = baseQuery;
     }
-
     if (whereClause && countQuery.where) {
       countQuery = countQuery.where(whereClause);
     }
-
     // Narrow the count query result shape
     const countResult = (await countQuery.execute()) as Array<{ count?: number } | Record<string, unknown> | undefined>;
     const total = Array.isArray(countResult) && countResult.length > 0 ? (countResult[0]?.count ?? 0) : 0;

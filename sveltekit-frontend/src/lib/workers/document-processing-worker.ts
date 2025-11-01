@@ -60,7 +60,7 @@ export interface DocumentProcessingRecord {
 }
 
 class DocumentProcessingWorker {
-  private isRunning = false;
+  private isRunning = $state(false);
   private processedCount = 0;
   private failedCount = 0;
   private intervalHandle: ReturnType<typeof setInterval> | null = null;
@@ -81,15 +81,15 @@ class DocumentProcessingWorker {
       await rabbitMQService.connect();
       // Start consuming jobs from the document processing queue (polling)
       this.startConsuming();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Failed to start document processing worker:', message);
-      this.isRunning = false;
+      this.isRunning = $state(false);
       throw error;
     }
   }
   async stop(): Promise<void> {
-    this.isRunning = false;
+    this.isRunning = $state(false);
     console.log('🛑 Stopping document processing worker...');
     if (this.intervalHandle) {
       clearInterval(this.intervalHandle);
@@ -98,7 +98,7 @@ class DocumentProcessingWorker {
     // Safely attempt to shut down the RabbitMQ service.
     // The RabbitMQService type may not declare: 'close', so check common method names at runtime.
     try {
-      const svc: unknown = rabbitMQService;
+      const svc: any = rabbitMQService;
       type RabbitMQShutdownable = {
         close?: () => Promise<void> | void;
         disconnect?: () => Promise<void> | void;
@@ -142,7 +142,7 @@ class DocumentProcessingWorker {
         for (const record of queuedRecords) {
           await this.processDocumentFromDB(record);
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Error checking for jobs:', message);
       }
@@ -204,7 +204,7 @@ class DocumentProcessingWorker {
       await this.updateProcessingStatus(job.documentId, 'completed', 'Document processing completed successfully');
       this.processedCount++;
       console.log(`✅ Successfully processed document: ${job.documentId}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`❌ Error processing document ${job.documentId}:`, message);
       await this.updateProcessingStatus(job.documentId, 'failed', `Processing failed: ${message}`);

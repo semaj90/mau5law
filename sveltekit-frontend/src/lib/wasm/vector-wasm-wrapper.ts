@@ -33,7 +33,7 @@ export interface VectorWasmModule {
 }
 export class VectorWasmWrapper {
   private module: VectorWasmModule | null = null;
-  private initialized = false;
+  private initialized = $state(false);
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
     try {

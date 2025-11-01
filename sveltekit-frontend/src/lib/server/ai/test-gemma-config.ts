@@ -2,37 +2,29 @@
  * Gemma Configuration Test Script
  * Run this to verify Gemma models are properly configured
  */
-
 import { validateGemmaModels, getGemmaConfigSummary, generateGemmaEmbedding, LEGAL_FUNCTIONS } from './gemma-config';
-
 export async function testGemmaConfiguration() {
   console.log('🧪 Testing Gemma Configuration...\n');
-
   // 1. Validate models are available
   console.log('1️⃣ Validating Gemma models...');
   const validation = await validateGemmaModels();
-
   if (validation.legal) {
     console.log('   ✅ gemma3-legal:latest available');
   } else {
     console.log('   ❌ gemma3-legal:latest NOT available');
   }
-
   if (validation.embedding) {
     console.log('   ✅ embeddinggemma:latest available');
   } else {
     console.log('   ❌ embeddinggemma:latest NOT available');
   }
-
   if (validation.errors.length > 0) {
     console.log('   ⚠️ Errors:', validation.errors);
   }
-
   // 2. Display configuration summary
   console.log('\n2️⃣ Configuration Summary:');
   const summary = getGemmaConfigSummary();
   console.log(JSON.stringify(summary, null, 2));
-
   // 3. Test embedding generation
   console.log('\n3️⃣ Testing embedding generation...');
   try {
@@ -43,22 +35,18 @@ export async function testGemmaConfiguration() {
   } catch (error) {
     console.log(`   ❌ Embedding generation failed: ${(error as Error).message}`);
   }
-
   // 4. Display available functions
   console.log('\n4️⃣ Available Legal Functions:');
   LEGAL_FUNCTIONS.forEach((func, i) => {
     console.log(`   ${i + 1}. ${func.name} - ${func.description}`);
   });
-
   console.log('\n✅ Gemma configuration test complete!\n');
-
   return {
     validation,
     summary,
     success: validation.legal && validation.embedding
   };
 }
-
 // Run test if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   testGemmaConfiguration().then(result => {

@@ -1,16 +1,14 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/bits/Button.svelte';
+  import { Button } from '$lib/components/ui/bits/Button.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
-
   interface User {
     id: string;
     name?: string;
     email?: string;
     role?: string;
   }
-
   interface Props {
     open?: boolean;
     user?: User;
@@ -117,7 +115,6 @@
       badge: 'ADMIN',
     },
   ]);
-
   let settings = $derived([
     {
       name: '⚙️ Settings',
@@ -127,10 +124,9 @@
     },
   ]);
   function closeSidebar() {
-    open = false;
+    open = $state(false);
   }
 </script>
-
 <!-- Mobile backdrop -->
 {#if open}
   <button class="fixed inset-0 z-40 bg-black/50 lg:hidden" onclick={closeSidebar} aria-label="Close sidebar"></button>
@@ -160,7 +156,6 @@
         </div>
       </div>
     </div>
-
     <!-- User Info Section -->
     {#if user}
       <div class="flex items-center gap-3 p-4 border-b border-nier-gray bg-nier-surface-light">
@@ -176,10 +171,8 @@
           </p>
         </div>
         {#if isAdmin}
-          <div class="text-xs bg-console-error text-white px-2 py-1 rounded">ADMIN</div>
-        {/if}
-      </div>
-    {/if}
+          <div class="text-xs bg-console-error text-white px-2 py-1 rounded">ADMIN{/if}
+      {/if}
     <!-- Quick actions -->
     <div class="p-4 border-b border-nier-gray">
       <div class="grid grid-cols-2 gap-2">
@@ -198,7 +191,7 @@
       <div class="px-3 space-y-1">
         <!-- Main navigation -->
         <div class="space-y-1">
-          {#each navigation as item}
+          {#each Array.isArray(navigation) ? navigation : [] as item}
             {@const IconComponent = item.icon}
             <a
               href={item.href}
@@ -238,7 +231,7 @@
         <div class="pt-4">
           <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">Analytics</h3>
           <div class="mt-2 space-y-1">
-            {#each analytics as item}
+            {#each Array.isArray(analytics) ? analytics : [] as item}
               {@const IconComponent = item.icon}
               <a
                 href={item.href}
@@ -267,7 +260,7 @@
           <div class="pt-4">
             <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">🛡️ Administration</h3>
             <div class="mt-2 space-y-1">
-              {#each adminFeatures as item}
+              {#each Array.isArray(adminFeatures) ? adminFeatures : [] as item}
                 {@const IconComponent = item.icon}
                 <a
                   href={item.href}
@@ -300,14 +293,12 @@
                 </a>
               {/each}
             </div>
-          </div>
-        {/if}
-
+          {/if}
         <!-- Settings section -->
         <div class="pt-4">
           <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">⚙️ System</h3>
           <div class="mt-2 space-y-1">
-            {#each settings as item}
+            {#each Array.isArray(settings) ? settings : [] as item}
               {@const IconComponent = item.icon}
               <a
                 href={item.href}
@@ -348,7 +339,6 @@
     </div>
   </div>
 </aside>
-
 <style>
   /* @unocss-include */
   /* Gaming console aesthetic with console variable support */
@@ -356,31 +346,24 @@
     background: var(--console-gradient-sidebar, linear-gradient(180deg, #0f0f23, #1a1a2e));
     border-right: 2px solid var(--console-primary, #00aa00);
   }
-
   .nier-glow {
     box-shadow: 0 0 10px var(--console-primary, rgba(0, 170, 0, 0.3));
   }
-
   .bg-crimson-gradient {
     background: var(--console-primary, #00aa00);
   }
-
   .bg-console-primary {
     background: var(--console-primary, #00aa00);
   }
-
   .text-console-bg {
     color: var(--console-bg, #0f0f23);
   }
-
   .text-console-error {
     color: var(--console-error, #ff5555);
   }
-
   .bg-console-error {
     background: var(--console-error, #ff5555);
   }
-
   /* Gaming-themed animations */
   @keyframes nier-pulse {
     0%,
@@ -393,11 +376,9 @@
       box-shadow: 0 0 10px var(--console-primary, #00aa00);
     }
   }
-
   .animate-nier-pulse {
     animation: nier-pulse 2s infinite;
   }
-
   /* Console-themed scrollbar */
   nav::-webkit-scrollbar {
     width: 4px;
@@ -409,19 +390,16 @@
     background: var(--console-primary, #00aa00);
     border-radius: 2px;
   }
-
   /* Gaming button styles */
   .nes-btn {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
     border: 2px solid var(--console-primary, #00aa00);
   }
-
   .nes-btn:hover {
     background: var(--console-bg, #0f0f23);
     color: var(--console-primary, #00aa00);
   }
-
   /* Console theme badges */
   .console-badge {
     background: var(--console-primary, #00aa00);
@@ -430,7 +408,6 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   /* Responsive adjustments for gaming theme */
   @media (max-width: 768px) {
     .sidebar {
@@ -438,23 +415,18 @@
       max-width: 320px;
     }
   }
-
   @media (min-width: 1024px) {
     aside {
       position: relative;
       transform: none;
-      transition: width 0.3s ease;
+      transition: width: 0.3s ease;
     }
-
     aside:not(.open) {
       width: 80px;
     }
-
     aside:not(.open) .truncate-on-collapse {
       opacity: 0;
       pointer-events: none;
     }
   }
 </style>
-
-

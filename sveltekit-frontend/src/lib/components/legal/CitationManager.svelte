@@ -1,7 +1,7 @@
 <!-- Citation Manager - Enhanced-Bits Legal Component -->
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import createLegalEvidenceAnalyzer from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
+  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte'';
   import {
     Card,
     CardHeader,
@@ -9,8 +9,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits';
-
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'constitutional' | 'secondary' | 'foreign';
@@ -31,7 +30,6 @@
     dateAdded: string;
     lastChecked?: string;
   }
-
   interface CitationDatabase {
     citations: Citation[];
     categories: string[];
@@ -44,16 +42,13 @@
       byJurisdiction: Record<string, number>;
     }
   }
-
   interface Props {
     citations?: Citation[];
     onVerify?: (citationId: string) => Promise<boolean>;
     onSearch?: (query: string) => Promise<Citation[]>;
     onExport?: (citations: Citation[], format: string) => void;
   }
-
   let { citations = [], onVerify, onSearch, onExport }: Props = $props();
-
   // Enhanced-Bits builder for citations
   // Use a type assertion and runtime fallback so TS doesn't complain if the import is a Svelte component constructor.
   const citationBuilder = (createLegalEvidenceAnalyzer as unknown as (...args: any[]) => any)?.({
@@ -68,7 +63,6 @@
     },
     animations: { enter: { duration: 200 } }
   };
-
   let citationData = $state<CitationDatabase>({
     citations: citations.length > 0 ? citations : [
       {
@@ -133,7 +127,6 @@
       byJurisdiction: {}
     }
   });
-
   let searchTerm = $state('');
   let filterType = $state<string>('all');
   let filterJurisdiction = $state<string>('all');
@@ -142,7 +135,6 @@
   let showAddForm = $state(false);
   let isVerifying = $state(false);
   let bulkOperations = $state(false);
-
   // Calculate statistics
   $effect(() => {
     const stats = {
@@ -158,7 +150,6 @@
     });
     citationData.stats = stats;
   });
-
   // Filtered and sorted citations
   let filteredCitations = $derived(() => {
     let filtered = citationData.citations;
@@ -202,7 +193,6 @@
     });
     return filtered;
   });
-
   async function verifyCitation(citationId: string) {
     if (!onVerify) return;
     isVerifying = true;
@@ -217,10 +207,9 @@
     } catch (error) {
       console.error('Citation verification failed:', error);
     } finally {
-      isVerifying = false;
+      isVerifying = $state(false);
     }
   }
-
   async function searchCitations() {
     if (!onSearch || !searchTerm) return;
     try {
@@ -239,7 +228,6 @@
       console.error('Citation search failed:', error);
     }
   }
-
   function toggleSelection(citationId: string) {
     const newSelection = new Set(selectedCitations);
     if (newSelection.has(citationId)) {
@@ -249,15 +237,12 @@
     }
     selectedCitations = newSelection;
   }
-
   function selectAll() {
     selectedCitations = new Set(filteredCitations.map(c => c.id));
   }
-
   function clearSelection() {
     selectedCitations = new Set();
   }
-
   function exportCitations(format: 'bluebook' | 'apa' | 'mla' | 'json' | 'csv') {
     if (onExport) {
       const citationsToExport = citationData.citations.filter(c =>
@@ -268,7 +253,6 @@
       console.log(`Exporting ${selectedCitations.size} citations as ${format.toUpperCase()}`);
     }
   }
-
   function addNewCitation() {
     const newCitation: Citation = {
       id: `new-${Date.now()}`,
@@ -285,14 +269,12 @@
       dateAdded: new Date().toISOString(),
     }
     citationData.citations.unshift(newCitation);
-    showAddForm = false;
+    showAddForm = $state(false);
   }
-
   function deleteCitation(citationId: string) {
     citationData.citations = citationData.citations.filter(c => c.id !== citationId);
     selectedCitations.delete(citationId);
   }
-
   function getCitationIcon(type: Citation['type']): string {
     const icons = {
       case '⚖️',
@@ -304,7 +286,6 @@
     }
     return icons[type] || '📄';
   }
-
   function getStatusColor(status: Citation['status']) {
     const colors = {
       active: '#10b981',
@@ -314,19 +295,16 @@
     }
     return colors[status] || colors.pending;
   }
-
   function getAccuracyColor(accuracy: number) {
     if (accuracy >= 0.9) return '#10b981';
     if (accuracy >= 0.7) return '#f59e0b';
     return '#ef4444';
   }
-
   // Allow using events on these UI components without TS complaining.
   // They are cast to `any` for the template usage only.
   const UIButton = Button as unknown as any;
   const UIInput = Input as unknown as any;
 </script>
-
 <div class="citation-manager">
   <!-- Citation Manager Header -->
   <Card>
@@ -390,8 +368,7 @@
 +                <svelte:component this={UIButton} onclick={() => exportCitations('json')} size="sm" variant="outline">
 +                  🔧 JSON
 +                </svelte:component>
-               </div>
-             {/if}
+               {/if}
 -          </CardTitle>
 +          </div>
 +        </CardTitle>
@@ -415,9 +392,7 @@
 +              <svelte:component this={UIButton} onclick={addNewCitation}>📝 Create New Citation</svelte:component>
 +              <svelte:component this={UIButton} onclick={searchCitations} disabled={!searchTerm}>🔍 Search Legal Databases</svelte:component>
             </div>
-          </div>
-        {/if}
-
+          {/if}
         <!-- Bulk Operations Panel -->
         {#if bulkOperations}
           <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
@@ -438,9 +413,7 @@
 +                Export Selected ({selectedCitations.size})
 +              </svelte:component>
             </div>
-          </div>
-        {/if}
-
+          {/if}
         <!-- Search and Filters -->
         <div class="controls-section">
           <div class="search-controls">
@@ -475,7 +448,7 @@
             </select>
             <select bind:value={filterJurisdiction} class="filter-select">
               <option value="all">All Jurisdictions</option>
-              {#each citationData.jurisdictions as jurisdiction}
+              {#each Array.isArray(citationData.jurisdictions) ? citationData.jurisdictions : [] as jurisdiction}
                 <option value={jurisdiction}>{jurisdiction}</option>
               {/each}
             </select>
@@ -583,13 +556,11 @@
                   {#if citation.shortForm}
                     <div class="citation-short">
                       Short form: <em>{citation.shortForm}</em>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if citation.pinpoint}
                     <div class="citation-pinpoint">
                       Pinpoint: {citation.pinpoint}
-                    </div>
-                  {/if}
+                    {/if}
                   <div class="citation-details">
                     <div class="detail-item">
                       <span class="detail-label">Jurisdiction</span>
@@ -599,14 +570,12 @@
                       <div class="detail-item">
                         <span class="detail-label">Court:</span>
                         <span class="detail-value">{citation.court}</span>
-                      </div>
-                    {/if}
+                      {/if}
                     {#if citation.year}
                       <div class="detail-item">
                         <span class="detail-label">Year:</span>
                         <span class="detail-value">{citation.year}</span>
-                      </div>
-                    {/if}
+                      {/if}
                     <div class="detail-item">
                       <span class="detail-label">Usage:</span>
                       <span class="detail-value">{citation.usageCount} times</span>
@@ -615,20 +584,18 @@
                   {#if citation.notes}
                     <div class="citation-notes">
                       <strong>Notes:</strong> {citation.notes}
-                    </div>
-                  {/if}
+                    {/if}
                   {#if citation.parentheticals && citation.parentheticals.length > 0}
                     <div class="citation-parentheticals">
                       <strong>Parentheticals:</strong>
                       <ul>
-                        {#each citation.parentheticals as parenthetical}
+                        {#each Array.isArray(citation.parentheticals) ? citation.parentheticals : [] as parenthetical}
                           <li>({parenthetical})</li>
                         {/each}
                       </ul>
-                    </div>
-                  {/if}
+                    {/if}
                   <div class="citation-tags">
-                    {#each citation.tags as tag}
+                    {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
                       <span class="citation-tag">#{tag}</span>
                     {/each}
                   </div>
@@ -677,8 +644,7 @@
                         <span class="date-value">
                           {new Date(citation.lastChecked).toLocaleDateString()}
                         </span>
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
                 </div>
               </div>
@@ -695,15 +661,12 @@
 +              <svelte:component this={UIButton} onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
 +                Clear Filters
 +              </svelte:component>
-            </div>
-
-          {/if}
+            {/if}
         </div>
       </CardContent>
     </div>
   </Card>
 </div>
-
 <style>
   .citation-manager {
     max-width: 1400px;
@@ -1016,7 +979,7 @@
   }
   .metric-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition: width: 300ms ease;
     border-radius: 4px;
   }
   .metric-value {
@@ -1090,4 +1053,3 @@
     }
   }
 </style>
-

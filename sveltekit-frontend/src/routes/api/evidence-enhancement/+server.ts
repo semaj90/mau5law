@@ -144,9 +144,9 @@ type ProsecutionInsights = {
 // Add a minimal Redis-like client type to avoid `any` while remaining flexible
 type RedisLike = {
   setex?: (key: string, seconds: number, value: string) => Promise<unknown> | unknown;
-  set?: (...args: unknown[]) => Promise<unknown> | unknown;
+  set?: (...args: any[]) => Promise<unknown> | unknown;
   // allow index signature for other methods used elsewhere if needed
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Initialize connections
@@ -161,7 +161,7 @@ function getDB() {
   // Return a lightweight wrapper that provides .query(sqlText, params)
   // so existing code that expects db.query(...) continues to work.
   return {
-    query: async (sqlText: string, params?: unknown[]) => {
+    query: async (sqlText: string, params?: any[]) => {
       // Call unsafe in a typed way to avoid casting to `any`
       const driver = sqlInstance as unknown as PostgresUnsafe;
       const raw = (await driver.unsafe(sqlText, params)) as unknown;
@@ -169,7 +169,7 @@ function getDB() {
 
       // If the driver returned an object with rows, narrow it safely.
       if (typeof raw === 'object' && raw !== null && 'rows' in (raw as Record<string, unknown>)) {
-        const possibleRows = (raw as { rows?: unknown }).rows;
+        const possibleRows = (raw as { rows?: any }).rows;
         return { rows: Array.isArray(possibleRows) ? (possibleRows as unknown[]) : ([] as unknown[]) };
       }
 
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Cache results for future reference
     await cacheEnhancementResults(validatedRequest.evidence_text, validatedResponse);
     return json(validatedResponse);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Evidence enhancement error:', err);
     if (err instanceof z.ZodError) {
       return json(
@@ -326,7 +326,7 @@ Consider:
         return JSON.parse(jsonMatch[0]) as AnalysisResult;
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('LLM analysis failed, using fallback:', error);
   }
   // Fallback analysis
@@ -368,7 +368,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
       frequency?: number | string | null;
       correlation_strength?: number | string | null;
       // allow other fields if present
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     const rows = (relevantPhrases.rows ?? []) as SemanticPhraseRow[];
@@ -408,7 +408,7 @@ async function suggestLabels(evidenceText: string, caseContext?: CaseContext): P
       }
     }
     return labels.slice(0, CONFIG.enhancement.maxSuggestions);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Label suggestion failed:', error);
     return [];
   }
@@ -448,7 +448,7 @@ ${evidenceText}`;
         return entities.filter(e => (e.confidence ?? 0) >= 0.5);
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Entity extraction failed:', error);
   }
   // Fallback entity extraction using regex patterns
@@ -527,7 +527,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
       prosecution_strength_score?: number | string | null;
       judgement_outcome?: string | null;
       jurisdiction?: string | null;
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     const rows = (similarDocs.rows ?? []) as SimilarDocRow[];
@@ -540,7 +540,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
       const similarity = calculateTextSimilarity(evidenceText, textChunk);
       if (similarity >= CONFIG.enhancement.similarityThreshold) {
         // defensive parse of semantic_phrases which may be JSON or already an array
-        let phrases: unknown = [];
+        let phrases: any = [];
         const rawPhrases = doc.semantic_phrases ?? '[]';
         if (Array.isArray(rawPhrases)) {
           phrases = rawPhrases;
@@ -566,7 +566,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: CaseConte
       }
     }
     return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Similar evidence search failed:', error);
     return [];
   }
@@ -610,7 +610,7 @@ Focus on:
         return JSON.parse(jsonMatch[0]) as ProsecutionInsights;
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Prosecution analysis failed:', error);
   }
   // Fallback analysis
@@ -635,7 +635,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       const data = await response.json();
       return data.embedding;
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Embedding generation failed:', error);
   }
   // Return random embedding as fallback
@@ -666,7 +666,7 @@ function categorizeLegalPhrase(phrase: string): string {
     return 'general_legal';
   }
 }
-async function cacheEnhancementResults(evidenceText: string, results: unknown): Promise<void> {
+async function cacheEnhancementResults(evidenceText: string, results: any): Promise<void> {
   try {
     // Await the Redis instance (previous code returned a Promise)
     const client = await getRedis();
@@ -699,7 +699,7 @@ async function cacheEnhancementResults(evidenceText: string, results: unknown): 
         console.warn('Redis client does not support setex or set; skipping cache');
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Failed to cache enhancement results:', error);
   }
 }
@@ -729,13 +729,13 @@ export const GET: RequestHandler = async () => {
       avg_prosecution_score?: number | string | null;
       jurisdictions_covered?: number | string | null;
       case_types_covered?: number | string | null;
-      [key: string]: unknown;
+      [key: string]: any;
     };
     type PhraseStatsRow = {
       total_phrases?: number | string | null;
       high_value_phrases?: number | string | null;
       avg_phrase_frequency?: number | string | null;
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     const statsRow = ((stats.rows ?? []) as unknown[])[0] as StatsRow | undefined;
@@ -772,7 +772,7 @@ export const GET: RequestHandler = async () => {
         'fact_checking',
       ],
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Enhancement stats error:', err);
     throw error(500, 'Unable to fetch enhancement statistics');
   }
@@ -780,5 +780,5 @@ export const GET: RequestHandler = async () => {
 // Add this local type so the code can cast the postgres instance safely.
 // It models the minimal unsafe() contract we rely on.
 type PostgresUnsafe = {
-  unsafe<T = unknown>(sqlText: string, params?: unknown[]): Promise<T | T[] | { rows: T[] } | null>;
+  unsafe<T = unknown>(sqlText: string, params?: any[]): Promise<T | T[] | { rows: T[] } | null>;
 };

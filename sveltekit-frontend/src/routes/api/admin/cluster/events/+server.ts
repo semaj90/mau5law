@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ request }) => {
                 uptime: process.uptime(),
               },
             ]);
-          } catch (error: unknown) {
+          } catch (error: any) {
             const err = error instanceof Error ? error : new Error(String(error));
             console.error('SSE fallback error:', err);
           }
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ request }) => {
         const workers = clusterManager.getWorkerMetrics();
         sendSSEEvent(controller, 'health', health);
         sendSSEEvent(controller, 'workers', workers);
-      } catch (error: unknown) {
+      } catch (error: any) {
         const err = error instanceof Error ? error : new Error(String(error));
         console.error('SSE initial data error:', err);
         sendSSEEvent(controller, 'error', {
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ request }) => {
             timestamp: Date.now(),
             uptime: process.uptime(),
           });
-        } catch (error: unknown) {
+        } catch (error: any) {
           const err = error instanceof Error ? error : new Error(String(error));
           console.error('SSE update error:', err);
           sendSSEEvent(controller, 'error', {
@@ -166,12 +166,12 @@ export const GET: RequestHandler = async ({ request }) => {
 /*
  * Send Server-Sent Event
  */
-function sendSSEEvent(controller: ReadableStreamDefaultController, type: string, data: unknown): void {
+function sendSSEEvent(controller: ReadableStreamDefaultController, type: string, data: any): void {
   try {
     const payload = JSON.stringify(data);
     const event = `event: ${type}\ndata: ${payload}\n\n`;
     controller.enqueue(new TextEncoder().encode(event));
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
     console.error('Failed to send SSE event:', err);
   }
@@ -181,7 +181,7 @@ function sendSSEEvent(controller: ReadableStreamDefaultController, type: string,
  */
 function setupClusterEventListeners(controller: ReadableStreamDefaultController) {
   type MinimalWorker = { id?: number; process?: { pid?: number } };
-  const handlers: Record<string, (...args: unknown[]) => void> = {};
+  const handlers: Record<string, (...args: any[]) => void> = {};
   // Worker online event
   handlers.online = (worker: MinimalWorker) => {
     sendSSEEvent(controller, 'worker_online', {
@@ -242,25 +242,25 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
   }, 10000); // Every 10 seconds
   // Custom cluster events (if cluster manager supports them)
   type ClusterManagerLike = {
-    on?: (event: string, handler: (...args: unknown[]) => void) => void;
-    removeAllListeners?: (...args: unknown[]) => void;
+    on?: (event: string, handler: (...args: any[]) => void) => void;
+    removeAllListeners?: (...args: any[]) => void;
   };
   const clusterManager = globalThis.clusterManager as ClusterManagerLike | undefined;
   if (clusterManager && typeof clusterManager.on === 'function') {
-    const customHandlers: Record<string, (data: unknown) => void> = {
-      'worker-health-critical': (data: unknown) => {
+    const customHandlers: Record<string, (data: any) => void> = {
+      'worker-health-critical': (data: any) => {
         sendSSEEvent(controller, 'worker_health_critical', data);
       },
-      'scaling-started': (data: unknown) => {
+      'scaling-started': (data: any) => {
         sendSSEEvent(controller, 'scaling_started', data);
       },
-      'scaling-completed': (data: unknown) => {
+      'scaling-completed': (data: any) => {
         sendSSEEvent(controller, 'scaling_completed', data);
       },
-      'restart-started': (data: unknown) => {
+      'restart-started': (data: any) => {
         sendSSEEvent(controller, 'restart_started', data);
       },
-      'restart-completed': (data: unknown) => {
+      'restart-completed': (data: any) => {
         sendSSEEvent(controller, 'restart_completed', data);
       },
     };

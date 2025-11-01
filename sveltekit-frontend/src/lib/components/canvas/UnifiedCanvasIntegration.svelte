@@ -6,9 +6,9 @@
   // Svelte 5 runes are auto-imported
   import { onMount  } from "svelte";
   import { writable } from 'svelte/store';
-  import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
+  import { CanvasBoard } from '$lib/components/yorha/CanvasBoard.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   interface Props {
     caseId?: string;
     enableYoRHaBoard?: boolean;
@@ -69,7 +69,7 @@
     } catch (error) {
       console.error('❌ Canvas sync failed:', error);
     } finally {
-      syncInProgress = false;
+      syncInProgress = $state(false);
     }
   }
   // Mode switching
@@ -78,7 +78,7 @@
     if (newMode === 'drawing' || newMode === 'both') {
       showYoRHaBoard = true;
     } else {
-      showYoRHaBoard = false;
+      showYoRHaBoard = $state(false);
     }
     canvasState.update(state => ({
       ...state,
@@ -225,8 +225,7 @@
           onanalysisComplete={handleAnalysisComplete}
           oncanvasUpdated={syncCanvasBoards}
         />
-      </div>
-    {/if}
+      {/if}
     <!-- YoRHa Canvas Board -->
     {#if enableYoRHaBoard && showYoRHaBoard}
       <div class="yorha-canvas-section" class:full-width={!splitView || currentMode === 'drawing'}>
@@ -241,8 +240,7 @@
           onclear={syncCanvasBoards}
           onneuralEngineReady={handleNeuralEngineReady}
         />
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Canvas Status Bar -->
   <div class="canvas-status-bar">
@@ -390,4 +388,3 @@
     }
   }
 </style>
-

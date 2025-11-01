@@ -16,7 +16,7 @@ export async function logStructuredError(payload: {
   level: 'error' | 'warn' | 'info';
   event: string;
   message: string;
-  error?: unknown;
+  error?: any;
   context?: Record<string, unknown>;
 }) {
   const record = {
@@ -61,7 +61,7 @@ export async function logStructuredError(payload: {
   else console.info('[logger]', record);
 }
 
-export async function captureAndFormat(error: unknown) {
+export async function captureAndFormat(error: any) {
   try {
     return formatErrorResponse(error);
   } catch {
@@ -91,16 +91,16 @@ export class Logger {
     if (!Logger.instance) Logger.instance = new Logger();
     return Logger.instance;
   }
-  info(message: string, meta?: unknown) {
+  info(message: string, meta?: any) {
     console.log(`[INFO] ${new Date().toISOString()} - ${message}`, meta || '');
   }
-  error(message: string, error?: unknown) {
+  error(message: string, error?: any) {
     console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error || '');
   }
-  warn(message: string, meta?: unknown) {
+  warn(message: string, meta?: any) {
     console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, meta || '');
   }
-  debug(message: string, meta?: unknown) {
+  debug(message: string, meta?: any) {
     try {
       if (process.env.NODE_ENV === 'development') {
         console.debug(`[DEBUG] ${new Date().toISOString()} - ${message}`, meta || '');

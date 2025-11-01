@@ -84,11 +84,11 @@ export const POST: RequestHandler = async ({ request }) => {
     restartPromise
       .then(() => {
         console.log('✅ Rolling restart completed successfully');
-        globalThis.clusterRestarting = false;
+        globalThis.clusterRestarting = $state(false);
       })
       .catch(error => {
         console.error('❌ Rolling restart failed:', error);
-        globalThis.clusterRestarting = false;
+        globalThis.clusterRestarting = $state(false);
       });
     // Log restart action for audit
     const auditLog = {
@@ -110,10 +110,10 @@ export const POST: RequestHandler = async ({ request }) => {
       timeout,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Cluster restart error:', error);
-    globalThis.clusterRestarting = false;
+    globalThis.clusterRestarting = $state(false);
     return json(
       {
         error: 'Failed to initiate rolling restart',
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async () => {
       restartHistory: globalThis.restartHistory || [],
       canRestart: !isRestarting && health.healthyWorkers > 0,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed to unknown
     console.error('Cluster restart status error:', error);
     return json(
@@ -187,7 +187,7 @@ async function performRollingRestart(
         waitForWorkerExit(clusterWorker),
         new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), options.timeout)),
       ]);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed to unknown
       if (options.force) {
         console.log(`💀 Force killing worker ${worker.workerId}`);

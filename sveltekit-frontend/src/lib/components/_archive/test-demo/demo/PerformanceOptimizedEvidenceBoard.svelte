@@ -94,7 +94,7 @@
     } catch (error) {
       console.error('❌ Failed to load components:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Optimized evidence analysis with caching

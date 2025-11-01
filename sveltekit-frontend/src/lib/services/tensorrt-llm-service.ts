@@ -48,8 +48,8 @@ export interface ModelInfo {
   memory_usage?: number;
 }
 class TensorRTLLMService {
-  private tensorrtAvailable = false;
-  private ollamaAvailable = false;
+  private tensorrtAvailable = $state(false);
+  private ollamaAvailable = $state(false);
   private modelCache = new Map<string, ModelInfo>();
   constructor() {
     this.checkBackendAvailability();
@@ -66,7 +66,7 @@ class TensorRTLLMService {
       this.tensorrtAvailable = tensorrtResponse.ok;
     } catch (error) {
       console.log('TensorRT-LLM not available, falling back to Ollama');
-      this.tensorrtAvailable = false;
+      this.tensorrtAvailable = $state(false);
     }
     try {
       // Check Ollama availability
@@ -76,7 +76,7 @@ class TensorRTLLMService {
       this.ollamaAvailable = ollamaResponse.ok;
     } catch (error) {
       console.error('Ollama not available');
-      this.ollamaAvailable = false;
+      this.ollamaAvailable = $state(false);
     }
     // Cache availability status
     await tensorrtRedis.setex('backend:tensorrt:available', 60, this.tensorrtAvailable ? '1' : '0');
@@ -110,7 +110,7 @@ class TensorRTLLMService {
           }
         } catch (error) {
           console.warn('TensorRT-LLM failed, falling back to Ollama:', error);
-          this.tensorrtAvailable = false;
+          this.tensorrtAvailable = $state(false);
         }
       }
       // Fallback to Ollama
@@ -302,7 +302,7 @@ class TensorRTLLMService {
         await fetch(`${TENSORRT_ENDPOINT}/health`, { timeout: 5000 });
         status.tensorrt.latency = Date.now() - start;
       } catch (error) {
-        status.tensorrt.available = false;
+        status.tensorrt.available = $state(false);
       }
     }
     // Test Ollama latency
@@ -312,7 +312,7 @@ class TensorRTLLMService {
         await fetch(`${OLLAMA_ENDPOINT}/api/tags`, { timeout: 5000 });
         status.ollama.latency = Date.now() - start;
       } catch (error) {
-        status.ollama.available = false;
+        status.ollama.available = $state(false);
       }
     }
     // Determine overall status

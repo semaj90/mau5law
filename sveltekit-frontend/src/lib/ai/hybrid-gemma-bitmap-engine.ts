@@ -24,7 +24,6 @@ import type { Redis } from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis.js';
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
 import xstateIntegration from '$lib/services/xstate-integration.js';
-
 export interface SemanticSearchResult {
   contentId: string;
   content: string;
@@ -32,7 +31,6 @@ export interface SemanticSearchResult {
   legalDomain: string;
   embeddingVector: number[];
 }
-
 interface SemanticContextRow {
   id: string;
   content_text: string;
@@ -42,7 +40,6 @@ interface SemanticContextRow {
   similarity: number | string;
   gemma_embedding: number[] | string;
 }
-
 interface PredictedState {
   state?: {
     id: string | number;
@@ -52,13 +49,11 @@ interface PredictedState {
   probability: number;
   timeEstimate: number;
 }
-
 interface PredictedAsset {
   type: string;
   priority: number;
   cacheKey: string;
 }
-
 interface SystemCapabilities {
   architecture: string;
   capabilities: Record<string, string>;
@@ -71,7 +66,6 @@ interface SystemCapabilities {
   };
   revolutionaryAdvantages: string[];
 }
-
 // Enhanced prediction result combining semantic + behavioral intelligence
 export interface HybridPredictionResult {
   // Semantic Analysis (Gemma)
@@ -139,14 +133,12 @@ export interface LegalContext {
     gpuUtilization?: number;
   };
 }
-
 export interface RecommendedAsset {
   type: string;
   priority: number;
   cacheKey: string;
   preloadStrategy: 'immediate' | 'background' | 'ondemand';
 }
-
 export interface BehavioralNextState {
   stateId: string;
   action: string;
@@ -154,43 +146,37 @@ export interface BehavioralNextState {
   timeEstimate: number;
   confidence: number;
 }
-
 export interface CHRROMPattern {
   cacheKey: string;
   svgPattern: string;
   qualityTier: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
   renderPriority: number;
 }
-
 export interface SystemMetrics {
   fps: number;
   memoryUsage: number;
   gpuUtilization?: number;
 }
-
 export interface WasmPredictionResult {
   predictedState: number;
   confidence: number;
 }
-
 type WasmExports = {
   getInputBufferOffset: () => number;
   getOutputBufferOffset: () => number;
   runPrediction: () => void;
 } & WebAssembly.Exports;
-
 export class HybridGemmaBitmapEngine {
   private db: Pool;
   private redis: Redis;
   private bitmapPredictor: BitmapHMMSOMPredictor;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // WebAssembly engine for client-side computation
   private wasmEngine: {
     instance?: WebAssembly.Instance;
     // store underlying buffer when SharedArrayBuffer is used, otherwise undefined
     memory?: SharedArrayBuffer | ArrayBuffer;
   } | null = null;
-
   // Performance tracking
   private performanceMetrics = {
     totalPredictions: 0,
@@ -219,7 +205,6 @@ export class HybridGemmaBitmapEngine {
     this.isInitialized = true;
     console.log('✅ Hybrid Engine initialized with revolutionary cognitive capabilities');
   }
-
   /**
    * Initializes the WebAssembly (Wasm) module for high-performance client-side inference.
    * This powerful browser technology allows compiling prediction logic (potentially written
@@ -238,7 +223,6 @@ export class HybridGemmaBitmapEngine {
           typeof SharedArrayBuffer !== 'undefined'
             ? new WebAssembly.Memory({ initial: 256, maximum: 1024, shared: true })
             : new WebAssembly.Memory({ initial: 256, maximum: 1024 });
-
         const importObject = {
           env: {
             memory,
@@ -256,20 +240,17 @@ export class HybridGemmaBitmapEngine {
       this.wasmEngine = null;
     }
   }
-
   /**
    * Main prediction method combining semantic + behavioral intelligence
    */
   async predictWithContext(query: string, context: LegalContext): Promise<HybridPredictionResult> {
     const startTime = Date.now();
     await this.bitmapPredictor.recordInteraction(context.userAction, context);
-
     const [semanticResults, behavioralResults] = await Promise.all([
       this.performSemanticSearch(query, context),
       this.performBehavioralPrediction(context),
       this.wasmEngine ? this.performClientSidePredictionWasm(context) : Promise.resolve(null),
     ]);
-
     let inferenceResult: { action: number[] | null; confidence: number[] | null } | null = null;
     try {
       const embedding = semanticResults.matches?.[0]?.embeddingVector ?? [];
@@ -282,20 +263,17 @@ export class HybridGemmaBitmapEngine {
     } catch (e) {
       console.warn('Inference augmentation failed:', e);
     }
-
     const fusionStartTime = Date.now();
     const fusedInsights = await this.fusionIntelligence(semanticResults, behavioralResults, context);
     const fusionTime = Date.now() - fusionStartTime;
     const totalTime = Date.now() - startTime;
     const chrRomPatterns = this.generateCHRROMPatterns(behavioralResults.recommendedAssets, context.systemMetrics);
-
     this.updatePerformanceMetrics({
       semanticTime: semanticResults.queryTime,
       behavioralTime: behavioralResults.predictionTime,
       fusionTime,
       totalTime,
     });
-
     const result: HybridPredictionResult = {
       semanticSimilarity: semanticResults.matches,
       behavioralPrediction: {
@@ -312,12 +290,10 @@ export class HybridGemmaBitmapEngine {
       },
       chrRomPatterns,
     };
-
     await this.cacheHybridResult(query, context, result);
     this.dispatchPredictionToXState(result);
     return result;
   }
-
   /**
    * Semantic search using Gemma embeddings
    */
@@ -332,7 +308,6 @@ export class HybridGemmaBitmapEngine {
     if (cached) {
       return { matches: JSON.parse(cached), queryTime: Date.now() - startTime };
     }
-
     // Generate Gemma embedding for query
     const queryEmbedding = await this.generateGemmaEmbedding(query);
     // Search semantic contexts with vector similarity
@@ -396,7 +371,6 @@ export class HybridGemmaBitmapEngine {
   ): Promise<{ nextStates: BehavioralNextState[]; recommendedAssets: RecommendedAsset[]; predictionTime: number }> {
     const startTime = Date.now();
     const prediction = await this.bitmapPredictor.predictNextStates();
-
     const nextStates = (prediction.nextStates || []).map((state: PredictedState) => ({
       stateId: String(state?.state?.id ?? 'unknown'),
       action: String(state?.state?.userAction ?? 'unknown'),
@@ -404,7 +378,6 @@ export class HybridGemmaBitmapEngine {
       timeEstimate: Number(state?.timeEstimate ?? 0),
       confidence: Number(state?.state?.confidence ?? 0),
     })) as BehavioralNextState[];
-
     const recommendedAssets = (prediction.recommendedAssets || []).map((asset: PredictedAsset) => ({
       type: String(asset?.type ?? 'unknown'),
       priority: Number(asset?.priority ?? 0),
@@ -414,7 +387,6 @@ export class HybridGemmaBitmapEngine {
         context
       ) as RecommendedAsset['preloadStrategy'],
     })) as RecommendedAsset[];
-
     return { nextStates, recommendedAssets, predictionTime: Date.now() - startTime };
   }
   /**
@@ -471,7 +443,6 @@ export class HybridGemmaBitmapEngine {
         const mod = await import('node-fetch');
         fetchFn = (mod && (mod.default || mod)) as unknown as FetchFn;
       }
-
       // Use embeddinggemma model (primary) with nomic-embed-text fallback
       const models = ['embeddinggemma:latest', 'nomic-embed-text:latest'];
       for (const model of models) {
@@ -503,7 +474,6 @@ export class HybridGemmaBitmapEngine {
       return new Array(768).fill(0);
     }
   }
-
   /**
    * Runs model inference directly inside Redis using the RedisAI module.
    */
@@ -512,16 +482,15 @@ export class HybridGemmaBitmapEngine {
   ): Promise<{ action: number[] | null; confidence: number[] | null } | null> {
     try {
       const tensorBlob = Buffer.from(new Float32Array(embedding).buffer);
-      type SendCommandFn = (cmd: string, args: unknown[], cb: (err: unknown, res: unknown) => void) => void;
-      type CallFn = (...args: unknown[]) => Promise<unknown>;
-      type SendCommandObjFn = (cmdObj: { name: string; args: unknown[] }) => Promise<unknown>;
-
+      type SendCommandFn = (cmd: string, args: any[], cb: (err: any, res: any) => void) => void;
+      type CallFn = (...args: any[]) => Promise<unknown>;
+      type SendCommandObjFn = (cmdObj: { name: string; args: any[] }) => Promise<unknown>;
       const sendRaw = async (cmd: string, args: Array<string | Buffer>): Promise<unknown> => {
         const client = this.redis as unknown;
         const maybeSendCommand = (client as { send_command?: SendCommandFn }).send_command;
         if (typeof maybeSendCommand === 'function') {
           return await new Promise<unknown>((resolve, reject) => {
-            (maybeSendCommand as SendCommandFn)(cmd, args, (err: unknown, res: unknown) =>
+            (maybeSendCommand as SendCommandFn)(cmd, args, (err: any, res: any) =>
               err ? reject(err) : resolve(res)
             );
           });
@@ -540,19 +509,16 @@ export class HybridGemmaBitmapEngine {
         }
         throw new Error('Redis client does not support raw command execution required for RedisAI');
       };
-
       const now = Date.now();
       const uid = Math.random().toString(36).slice(2, 8);
       const tensorKey = `tmp:embedding:${now}:${uid}`;
       const outKeyA = `tmp:pred_a:${now}:${uid}`;
       const outKeyB = `tmp:pred_b:${now}:${uid}`;
-
       await sendRaw('AI.TENSORSET', [tensorKey, 'FLOAT32', '1', String(embedding.length), 'BLOB', tensorBlob]);
       await sendRaw('AI.MODELRUN', ['legal_prediction_model', 'INPUTS', tensorKey, 'OUTPUTS', outKeyA, outKeyB]);
       const rawA = await sendRaw('AI.TENSORGET', [outKeyA, 'BLOB']);
       const rawB = await sendRaw('AI.TENSORGET', [outKeyB, 'BLOB']);
-
-      const parseTensorBlob = (resp: unknown): Float32Array | null => {
+      const parseTensorBlob = (resp: any): Float32Array | null => {
         if (Buffer.isBuffer(resp)) {
           return new Float32Array((resp as Buffer).buffer, (resp as Buffer).byteOffset, (resp as Buffer).length / 4);
         }
@@ -562,18 +528,15 @@ export class HybridGemmaBitmapEngine {
         }
         return null;
       };
-
       const parsedA = parseTensorBlob(rawA);
       const parsedB = parseTensorBlob(rawB);
-
       try {
         await this.redis.del([tensorKey, outKeyA, outKeyB]);
       } catch {
         // ignore
       }
-
       return { action: parsedA ? Array.from(parsedA) : null, confidence: parsedB ? Array.from(parsedB) : null };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       if (message.includes('unknown command') || message.includes('Redis client does not support')) {
         console.warn(
@@ -585,7 +548,6 @@ export class HybridGemmaBitmapEngine {
       return null;
     }
   }
-
   /**
    * Perform inference against an NVIDIA Triton Inference Server (HTTP/REST).
    * Expects a model that accepts a single FP32 input vector and returns numeric outputs.
@@ -648,7 +610,6 @@ export class HybridGemmaBitmapEngine {
       return null;
     }
   }
-
   /**
    * Try RedisAI first; if unavailable and TRITON_URL is configured, call Triton HTTP inference.
    */
@@ -657,7 +618,6 @@ export class HybridGemmaBitmapEngine {
   ): Promise<{ action: number[] | null; confidence: number[] | null } | null> {
     // Short-circuit when embedding is empty
     if (!Array.isArray(embedding) || embedding.length === 0) return null;
-
     // Try RedisAI
     try {
       const r = await this.performRedisAIInference(embedding);
@@ -665,7 +625,6 @@ export class HybridGemmaBitmapEngine {
     } catch {
       // swallow - will try other providers
     }
-
     // Only attempt Triton from a server-side (Node) runtime.
     // Use a robust detection that is safe to evaluate in browser bundles.
     const isNode =
@@ -673,25 +632,21 @@ export class HybridGemmaBitmapEngine {
       (typeof process !== 'undefined' &&
         typeof (process as { versions?: { node?: string } }).versions === 'object' &&
         typeof (process as { versions?: { node?: string } }).versions.node === 'string');
-
     // Read configuration only from process.env when running in Node.
     const rawTritonUrl = isNode ? process.env.TRITON_URL || undefined : undefined;
     const tritonModel = isNode
       ? process.env.TRITON_MODEL_NAME || 'tensorrt_model'
       : (globalThis as { TRITON_MODEL_NAME?: string })?.TRITON_MODEL_NAME || 'tensorrt_model';
-
     // If not running on Node or no Triton URL configured on the server, skip Triton.
     if (!rawTritonUrl || !isNode) {
       return null;
     }
-
     // Normalize URL: ensure scheme and remove trailing slash
     let tritonUrl = String(rawTritonUrl).trim();
     if (!/^https?:\/\//i.test(tritonUrl)) {
       tritonUrl = `http://${tritonUrl}`;
     }
     tritonUrl = tritonUrl.replace(/\/+$/, '');
-
     // Timeout wrapper for Triton call to avoid long hanging network calls
     const timeoutMs = Number(process.env.TRITON_TIMEOUT_MS || 5000);
     const withTimeout = <T>(p: Promise<T>, ms: number) =>
@@ -708,7 +663,6 @@ export class HybridGemmaBitmapEngine {
           }
         );
       });
-
     try {
       const t = await withTimeout(this.performTritonInference(tritonUrl, tritonModel, embedding), timeoutMs);
       if (t) return t;
@@ -716,10 +670,8 @@ export class HybridGemmaBitmapEngine {
       const message = err instanceof Error ? err.message : String(err);
       console.warn('Triton inference unavailable or failed:', message);
     }
-
     return null;
   }
-
   /**
    * Client-side prediction using WebAssembly (Wasm)
    */
@@ -742,7 +694,6 @@ export class HybridGemmaBitmapEngine {
     }
     return null;
   }
-
   /**
    * Generate CHR-ROM visual patterns
    */
@@ -761,7 +712,6 @@ export class HybridGemmaBitmapEngine {
       };
     });
   }
-
   /**
    * Generate SVG pattern for CHR-ROM
    */
@@ -785,7 +735,6 @@ export class HybridGemmaBitmapEngine {
       <rect x="1" y="1" width="${size - 2}" height="2" fill="white" opacity="0.3"/>
     </svg>`;
   }
-
   /**
    * Dispatch prediction result to XState for UI updates
    */
@@ -812,7 +761,6 @@ export class HybridGemmaBitmapEngine {
       );
     }
   }
-
   /**
    * Utility methods
    */
@@ -971,7 +919,6 @@ export class HybridGemmaBitmapEngine {
       ],
     };
   }
-
   async trainWithFeedback(
     actualOutcome: string,
     prediction: HybridPredictionResult,
@@ -995,6 +942,5 @@ export class HybridGemmaBitmapEngine {
     return Math.min(1.0, matches / Math.max(1, words.length));
   }
 }
-
 // Export default for convenience
 export default HybridGemmaBitmapEngine;

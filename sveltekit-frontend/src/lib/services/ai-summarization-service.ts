@@ -180,7 +180,7 @@ class AISummarizationService {
         this.cache.set(cacheKey, result);
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Document summarization failed:', error);
       throw new Error(`Summarization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -210,7 +210,7 @@ class AISummarizationService {
         totalSuccess++;
         // Brief pause to prevent overwhelming the AI service
         await new Promise(resolve => setTimeout(resolve, 100));
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({
           documentId: doc.id,
           success: false,
@@ -279,7 +279,7 @@ class AISummarizationService {
         })
         .where(eq(evidence.id, evidenceId));
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Failed to summarize evidence ${evidenceId}:`, error);
       throw error;
     }
@@ -333,7 +333,7 @@ class AISummarizationService {
         })
         .where(eq(cases.id, caseId));
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Failed to summarize case ${caseId}:`, error);
       throw error;
     }
@@ -398,7 +398,7 @@ class AISummarizationService {
           summary: doc.aiSummary || undefined,
         })
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to find similar documents:', error);
       throw error;
     }
@@ -451,7 +451,7 @@ class AISummarizationService {
         totalWordCount,
         avgReadingTime,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get case summary stats:', error);
       throw error;
     }
@@ -505,7 +505,7 @@ class AISummarizationService {
           ...chunk,
           embedding,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Failed to generate embedding for chunk ${chunk.id}:`, error);
         chunksWithEmbeddings.push(chunk);
       }
@@ -517,7 +517,7 @@ class AISummarizationService {
       // Use first 4000 characters for document-level embedding
       const truncatedContent = content.substring(0, 4000);
       return await ollamaCudaService.generateEmbedding(truncatedContent);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to generate document embedding:', error);
       throw error;
     }
@@ -578,7 +578,7 @@ class AISummarizationService {
         categories: [],
         confidence: 0.5,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to parse AI response:', error);
       return {
         summary: response.substring(0, 500),

@@ -15,8 +15,8 @@ type SyncResult = {
   success?: boolean;
   synced?: number;
   failed?: number;
-  errors?: unknown[] | null;
-  [key: string]: unknown;
+  errors?: any[] | null;
+  [key: string]: any;
 };
 
 // Add a small Recommendation type so callers and TS agree on shape
@@ -24,27 +24,27 @@ type Recommendation = {
   id: string;
   // Fields required by the unified-search-service shape (previously missing)
   type: string;
-  documents: Array<{ id?: string; [key: string]: unknown }>;
+  documents: Array<{ id?: string; [key: string]: any }>;
   confidence: number;
   // Optional user-friendly fields
   title?: string;
   score?: number;
   reason?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Typed shape of the Neo4j service surface used by this file.
 type Neo4jServiceType = {
   initialize?: () => Promise<void> | void;
   // now strongly-typed to return Recommendation[] or null
-  getRecommendations?: (documents: unknown[]) => Promise<Recommendation[] | null>;
+  getRecommendations?: (documents: any[]) => Promise<Recommendation[] | null>;
   // bulkSyncDocuments now returns a typed SyncResult or null
   bulkSyncDocuments?: (documents: { id: string }[], opts?: { force?: boolean }) => Promise<SyncResult | null>;
   getCachedRecommendations?: (key: string) => Promise<Recommendation[] | null>;
   setCachedRecommendations?: (key: string, value: Recommendation[] | null) => Promise<void>;
-  getDocumentNetworkAnalysis?: (ids: unknown[]) => Promise<unknown>;
+  getDocumentNetworkAnalysis?: (ids: any[]) => Promise<unknown>;
   getHealthStatus?: () => Promise<{ connected?: boolean }>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Normalize module exports without using `any`. Cast via `unknown` to avoid implicit any.
@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
               // normalize any returned recommendation(s) into the expected shape:
               // - documents: string[] (prefer doc.id)
               // helper: ensure each document entry is an object matching Recommendation.documents item
-              const toDocObj = (d: unknown): { id?: string; [key: string]: unknown } => {
+              const toDocObj = (d: any): { id?: string; [key: string]: any } => {
                 if (typeof d === 'string') return { id: d };
                 if (d && typeof d === 'object') {
                   const o = d as Record<string, unknown>;
@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
               };
 
               // new helper to extract an id string from various possible document shapes without using `any`
-              const getDocId = (d: unknown): string => {
+              const getDocId = (d: any): string => {
                 if (typeof d === 'string') return d;
                 if (d && typeof d === 'object') {
                   const o = d as Record<string, unknown>;
@@ -277,7 +277,7 @@ export const POST: RequestHandler = async ({ request }) => {
               };
 
               // Use the actual `recs` variable and explicitly type the map parameter to avoid implicit any
-              const normalized = (recs as unknown[]).map((r: unknown) => {
+              const normalized = (recs as unknown[]).map((r: any) => {
                 const rr = r as Record<string, unknown>;
                 const docs = Array.isArray(rr.documents) ? rr.documents.map(toDocObj) : [];
                 return {
@@ -297,7 +297,7 @@ export const POST: RequestHandler = async ({ request }) => {
               const normalizedForService = normalized.map(n => ({
                 id: n.id,
                 type: n.type,
-                documents: Array.isArray(n.documents) ? n.documents.map((d: unknown) => getDocId(d)) : [],
+                documents: Array.isArray(n.documents) ? n.documents.map((d: any) => getDocId(d)) : [],
                 confidence: n.confidence,
                 title: n.title,
                 score: n.score,
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         // Minimal typed document used for sync; in production fetch full documents by ID
         type Neo4jDocument = { id: string; title?: string; content?: string; metadata?: Record<string, unknown> };
-        const documents: Neo4jDocument[] = documentIds.map((id: unknown) => ({ id: String(id) }));
+        const documents: Neo4jDocument[] = documentIds.map((id: any) => ({ id: String(id) }));
 
         // Guard the Neo4j bulk sync call
         if (!isFunction(neo4jService.bulkSyncDocuments)) {
@@ -383,7 +383,7 @@ export const POST: RequestHandler = async ({ request }) => {
           );
         }
 
-        let syncResultRaw: unknown = null;
+        let syncResultRaw: any = null;
         try {
           syncResultRaw = await neo4jService.bulkSyncDocuments(documents, { force: !!force });
         } catch (err) {
@@ -444,7 +444,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!recommendations) {
           // Minimal typed document used for recommendations; in production fetch full documents by ID
           type Neo4jDocument = { id: string; title?: string; content?: string; metadata?: Record<string, unknown> };
-          const documents: Neo4jDocument[] = documentIds.map((id: unknown) => ({ id: String(id) }));
+          const documents: Neo4jDocument[] = documentIds.map((id: any) => ({ id: String(id) }));
 
           if (!isFunction(neo4jService.getRecommendations)) {
             // Service not available — return a stable empty response instead of throwing
@@ -500,7 +500,7 @@ export const POST: RequestHandler = async ({ request }) => {
           );
         }
 
-        let networkAnalysis: unknown = null;
+        let networkAnalysis: any = null;
         try {
           networkAnalysis = await neo4jService.getDocumentNetworkAnalysis(documentIds);
         } catch (err) {
@@ -557,7 +557,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success?: boolean;
           error?: string;
           jobId?: string;
-          [key: string]: unknown;
+          [key: string]: any;
         };
 
         const results: BatchJobResult[] = [];
@@ -764,7 +764,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // small helper to test for callable functions on the service
-function isFunction<T extends (...args: unknown[]) => unknown>(v: unknown): v is T {
+function isFunction<T extends (...args: any[]) => unknown>(v: any): v is T {
   return typeof v === 'function';
 }
 
@@ -781,7 +781,7 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
     const raw = await Promise.resolve().then(() => fn.call(neo4jService));
 
     // small parser: returns boolean | null for unknown inputs
-    const parseBool = (v: unknown): boolean | null => {
+    const parseBool = (v: any): boolean | null => {
       if (v === null || v === undefined) return null;
       if (typeof v === 'boolean') return v;
       if (typeof v === 'number') return v !== 0;

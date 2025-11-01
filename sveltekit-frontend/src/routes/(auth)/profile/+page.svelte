@@ -18,7 +18,7 @@
 
   // Svelte 5 runes usage: $state and $derived are used for reactive state and derived values.
   // Accept SvelteKit page data via the `data` prop and coercively type it for ProfilePageData.
-  const { data } = $props<{ data: unknown }>();
+  const { data } = $props<{ data: any }>();
   let propsData = data as ProfilePageData | undefined;
 
   type ProfilePageData = PageData & {
@@ -164,7 +164,7 @@
       } catch (error) {
         console.error('Profile hydration failed', error);
       } finally {
-        isHydrating = false;
+        isHydrating = $state(false);
       }
     })();
 
@@ -173,7 +173,7 @@
     };
   });
 
-  function normalizeUser(raw: unknown): ProfileUser | null {
+  function normalizeUser(raw: any): ProfileUser | null {
     if (!raw || typeof raw !== 'object') return null;
     const source = raw as Record<string, unknown>;
     const email = typeof source.email === 'string' ? source.email : '';
@@ -210,7 +210,7 @@
     };
   }
 
-  function toNumber(value: unknown): number | undefined {
+  function toNumber(value: any): number | undefined {
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string' && value.trim()) {
       const parsed = Number(value);
@@ -339,7 +339,7 @@
         'error'
       );
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
 

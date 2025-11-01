@@ -24,7 +24,7 @@ export interface RouterDecision {
 const DEFAULT_URL = process.env.ROUTER_INFERENCE_URL ?? 'http://localhost:5001/predict';
 const DEFAULT_TIMEOUT = Number(process.env.ROUTER_INFERENCE_TIMEOUT ?? '2500'); // ms
 
-function validateDecision(obj: unknown): obj is RouterDecision {
+function validateDecision(obj: any): obj is RouterDecision {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return (
@@ -50,7 +50,7 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
     clearTimeout(timeout);
 
     if (res.ok) {
-      const json: unknown = await res.json();
+      const json: any = await res.json();
       if (validateDecision(json)) return json;
 
       // Normalize common keys if the model used a different shape

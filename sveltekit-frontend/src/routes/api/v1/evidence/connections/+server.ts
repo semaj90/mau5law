@@ -14,10 +14,10 @@ import { z } from 'zod';
 type LocalsWithUser = {
   user?: { id?: string } | undefined;
   session?: { user?: { id?: string } } | undefined;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
-function getUserId(locals: unknown): string {
+function getUserId(locals: any): string {
   // try common shapes: locals.user.id or locals.session.user.id
   const l = locals as LocalsWithUser;
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
@@ -27,7 +27,7 @@ function getUserId(locals: unknown): string {
 }
 
 // Helper: convert unknown error to string message
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error creating evidence connection:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error fetching evidence connections:', err);
     if (err instanceof z.ZodError) {
       return error(

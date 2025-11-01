@@ -4,7 +4,7 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Component props
-  let { ...props }: unknown = $props();
+  let { ...props }: any = $props();
 </script>
   import { onMount } from 'svelte';
   let demoResults = $state(null);
@@ -33,11 +33,11 @@ await loadSystemCapabilities();
   async function loadSystemCapabilities() {
     try {
       // removed unused response assignment
-      const data = await (response as { json?: unknown }).json();
-      if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
-        systemCapabilities = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).capabilitie;
+      const data = await (response as { json?: any }).json();
+      if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) {
+        systemCapabilities = (data as { success?: any; capabilities?: any; error?: any; result?: any }).capabilitie;
       } else {
-        errorMessage = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).error || 'Failed to load system capabilities';
+        errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Failed to load system capabilities';
       }
     } catch (error) {
       errorMessage = `System check failed: ${error.message}`;
@@ -71,16 +71,16 @@ await loadSystemCapabilities();
         },
         body: JSON.stringify(requestData);
       });
-      const data = await (response as { json?: unknown }).json();
-      if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
-        demoResults = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).result;
+      const data = await (response as { json?: any }).json();
+      if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) {
+        demoResults = (data as { success?: any; capabilities?: any; error?: any; result?: any }).result;
       } else {
-        errorMessage = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).error || 'Demo execution failed';
+        errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Demo execution failed';
       }
     } catch (error) {
       errorMessage = `Demo failed: ${error.message}`;
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function formatDuration(ms) {
@@ -126,8 +126,7 @@ await loadSystemCapabilities();
           <span>Response: {systemCapabilities.avgResponseTime.toFixed(1)}ms</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <div class="demo-controls">
     <h3>🎮 Demo Controls</h3>
     <div class="control-group">
@@ -152,8 +151,7 @@ await loadSystemCapabilities();
           <span>Iterations:</span>
           <input type="number" bind:value={config.iterations} min="1" max="100" />
         </label>
-      </div>
-    {/if}
+      {/if}
     {#if selectedOperation === 'stress-test'}
       <div class="config-row">
         <label>
@@ -164,8 +162,7 @@ await loadSystemCapabilities();
           <span>Tensor Size:</span>
           <input type="number" bind:value={config.tensorSize} min="128" max="2048" step="128" />
         </label>
-      </div>
-    {/if}
+      {/if}
     {#if selectedOperation === 'tensor'}
       <div class="text-samples">
         <label>Text Samples for Embedding:</label>
@@ -176,8 +173,7 @@ await loadSystemCapabilities();
             placeholder="Enter legal text sample..."
           />
         {/each}
-      </div>
-    {/if}
+      {/if}
     <button
       class="run-demo-btn"
       onclick={runDemo}
@@ -190,15 +186,14 @@ await loadSystemCapabilities();
     <div class="error-message">
       <h3>❌ Error</h3>
       <p>{errorMessage}</p>
-    </div>
-  {/if}
+    {/if}
   {#if demoResults}
     <div class="demo-results">
       <h3>📊 Demo Results</h3>
       {#if selectedOperation === 'benchmark'}
         <div class="benchmark-results">
           <h4>Performance Benchmarks</h4>
-          {#each demoResults.benchmarks as benchmark}
+          {#each Array.isArray(demoResults.benchmarks) ? demoResults.benchmarks : [] as benchmark}
             <div class="benchmark-item">
               <h5>{benchmark.operation.replace.toUpperCase()}</h5>
               <div class="benchmark-stats">
@@ -227,8 +222,7 @@ await loadSystemCapabilities();
             <p><strong>Performance Gain:</strong> {demoResults.summary.performanceGain}</p>
             <p><strong>Recommended:</strong> {demoResults.summary.recommendedConfiguration}</p>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if selectedOperation === 'tensor'}
         <div class="tensor-results">
           <h4>Tensor Processing Results</h4>
@@ -252,15 +246,14 @@ await loadSystemCapabilities();
           </div>
           <div class="similarities">
             <h5>Top Similarities</h5>
-            {#each demoResults.similarities.slice(0, 3) as sim}
+            {#each Array.isArray(demoResults.similarities.slice(0, 3)) ? demoResults.similarities.slice(0, 3) : [] as sim}
               <div class="similarity-item">
                 <span class="similarity-score">{(sim.similarity * 100).toFixed(1)}%</span>
                 <span class="similarity-texts">Text {sim.text1 + 1} ↔ Text {sim.text2 + 1}</span>
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if selectedOperation === 'batch'}
         <div class="batch-results">
           <h4>Batch Processing Results</h4>
@@ -282,8 +275,7 @@ await loadSystemCapabilities();
               <span class="value">{formatDuration(demoResults.summary.totalTime)}</span>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if selectedOperation === 'stress-test'}
         <div class="stress-results">
           <h4>Stress Test Results</h4>
@@ -305,16 +297,13 @@ await loadSystemCapabilities();
               <span class="value">{demoResults.recommendations.systemStability}</span>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if selectedOperation === 'stats'}
         <div class="stats-results">
           <h4>System Statistics</h4>
           <pre>{JSON.stringify(demoResults, null, 2)}</pre>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
 <style>
   .webgpu-cache-demo {
@@ -535,4 +524,3 @@ await loadSystemCapabilities();
     }
   }
 </style>
-

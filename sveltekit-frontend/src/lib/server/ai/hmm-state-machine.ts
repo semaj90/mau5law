@@ -4,20 +4,17 @@
  * Detects temporal patterns in user conversations and predicts next actions
  * Integrates with Redis for state persistence
  */
-
 import type {
   HMMState,
   ConversationTurn,
   NextStepPrediction
 } from '$lib/types/sharedTypes';
-
 interface HMMStateTransition {
   fromState: number;
   toState: number;
   probability: number;
   observedPattern: number[];
 }
-
 /**
  * HMM States for Legal AI Conversations
  */
@@ -31,7 +28,6 @@ export enum LegalConversationState {
   FOLLOW_UP = 6,
   CONCLUSION = 7
 }
-
 /**
  * HMM State Machine for Contextual Understanding
  */
@@ -39,14 +35,12 @@ export class HMMStateMachine {
   private states: Map<number, HMMState>;
   private transitions: Map<string, HMMStateTransition>;
   private numStates: number = 8;
-
   constructor() {
     this.states = new Map();
     this.transitions = new Map();
     this.initializeStates();
     this.initializeTransitions();
   }
-
   /**
    * Initialize HMM states with default probabilities
    */
@@ -61,7 +55,6 @@ export class HMMStateMachine {
       });
     }
   }
-
   /**
    * Initialize state transition probabilities
    * Based on typical legal conversation flows
@@ -72,33 +65,25 @@ export class HMMStateMachine {
       // [fromState, toState, probability]
       [LegalConversationState.GREETING, LegalConversationState.CASE_INQUIRY, 0.7],
       [LegalConversationState.GREETING, LegalConversationState.DOCUMENT_ANALYSIS, 0.3],
-
       [LegalConversationState.CASE_INQUIRY, LegalConversationState.DOCUMENT_ANALYSIS, 0.5],
       [LegalConversationState.CASE_INQUIRY, LegalConversationState.LEGAL_RESEARCH, 0.4],
       [LegalConversationState.CASE_INQUIRY, LegalConversationState.RISK_ASSESSMENT, 0.1],
-
       [LegalConversationState.DOCUMENT_ANALYSIS, LegalConversationState.LEGAL_RESEARCH, 0.6],
       [LegalConversationState.DOCUMENT_ANALYSIS, LegalConversationState.RISK_ASSESSMENT, 0.3],
       [LegalConversationState.DOCUMENT_ANALYSIS, LegalConversationState.RECOMMENDATION, 0.1],
-
       [LegalConversationState.LEGAL_RESEARCH, LegalConversationState.RISK_ASSESSMENT, 0.5],
       [LegalConversationState.LEGAL_RESEARCH, LegalConversationState.RECOMMENDATION, 0.4],
       [LegalConversationState.LEGAL_RESEARCH, LegalConversationState.FOLLOW_UP, 0.1],
-
       [LegalConversationState.RISK_ASSESSMENT, LegalConversationState.RECOMMENDATION, 0.8],
       [LegalConversationState.RISK_ASSESSMENT, LegalConversationState.FOLLOW_UP, 0.2],
-
       [LegalConversationState.RECOMMENDATION, LegalConversationState.FOLLOW_UP, 0.6],
       [LegalConversationState.RECOMMENDATION, LegalConversationState.CONCLUSION, 0.4],
-
       [LegalConversationState.FOLLOW_UP, LegalConversationState.CASE_INQUIRY, 0.3],
       [LegalConversationState.FOLLOW_UP, LegalConversationState.DOCUMENT_ANALYSIS, 0.3],
       [LegalConversationState.FOLLOW_UP, LegalConversationState.CONCLUSION, 0.4],
-
       [LegalConversationState.CONCLUSION, LegalConversationState.GREETING, 0.1],
       [LegalConversationState.CONCLUSION, LegalConversationState.CONCLUSION, 0.9]
     ];
-
     for (const [from, to, prob] of transitions) {
       const key = `${from}->${to}`;
       this.transitions.set(key, {
@@ -109,7 +94,6 @@ export class HMMStateMachine {
       });
     }
   }
-
   /**
    * Predict next state using Viterbi algorithm
    */
@@ -120,7 +104,6 @@ export class HMMStateMachine {
   } {
     // Get possible transitions from current state
     const possibleTransitions: Array<{ state: number; prob: number }> = [];
-
     for (const [key, transition] of this.transitions.entries()) {
       if (transition.fromState === currentState) {
         possibleTransitions.push({
@@ -129,26 +112,21 @@ export class HMMStateMachine {
         });
       }
     }
-
     // Sort by probability
     possibleTransitions.sort((a, b) => b.prob - a.prob);
-
     // Get most likely next state
     const nextState = possibleTransitions[0]?.state ?? currentState;
     const probability = possibleTransitions[0]?.prob ?? 0.5;
-
     // Generate predictions for each possible next state
     const predictions = possibleTransitions.slice(0, 3).map(trans =>
       this.generatePrediction(trans.state, trans.prob, conversationHistory)
     );
-
     return {
       nextState,
       probability,
       predictions
     };
   }
-
   /**
    * Generate next-step prediction based on state
    */
@@ -212,14 +190,12 @@ export class HMMStateMachine {
         estimatedDuration: 10000
       }
     };
-
     const actionInfo = stateActions[state] || {
       action: 'unknown',
       reasoning: 'Unknown state',
       requiredContext: [],
       estimatedDuration: 30000
     };
-
     return {
       action: actionInfo.action,
       confidence,
@@ -228,7 +204,6 @@ export class HMMStateMachine {
       estimatedDuration: actionInfo.estimatedDuration
     };
   }
-
   /**
    * Update HMM state based on new conversation turn
    */
@@ -238,18 +213,14 @@ export class HMMStateMachine {
   ): HMMState {
     // Classify conversation turn intent to determine next state
     const nextState = this.classifyIntent(newTurn.intent);
-
     // Update state history
     const updatedHistory = [...currentHMMState.stateHistory, nextState];
-
     // Update pattern (keep last 10 states)
     const updatedPattern = [...currentHMMState.pattern, nextState].slice(-10);
-
     // Get transition probability
     const transitionKey = `${currentHMMState.currentState}->${nextState}`;
     const transition = this.transitions.get(transitionKey);
     const transitionProb = transition?.probability ?? 0.1;
-
     return {
       currentState: nextState,
       transitionProb,
@@ -258,13 +229,11 @@ export class HMMStateMachine {
       stateHistory: updatedHistory
     };
   }
-
   /**
    * Classify user intent to determine conversation state
    */
   private classifyIntent(intent: string): number {
     const intentLower = intent.toLowerCase();
-
     if (intentLower.includes('hello') || intentLower.includes('hi') || intentLower.includes('greet')) {
       return LegalConversationState.GREETING;
     }
@@ -289,11 +258,9 @@ export class HMMStateMachine {
     if (intentLower.includes('thank') || intentLower.includes('bye') || intentLower.includes('done')) {
       return LegalConversationState.CONCLUSION;
     }
-
     // Default to case inquiry if unclear
     return LegalConversationState.CASE_INQUIRY;
   }
-
   /**
    * Get state name for display
    */
@@ -308,10 +275,8 @@ export class HMMStateMachine {
       [LegalConversationState.FOLLOW_UP]: 'Follow-up',
       [LegalConversationState.CONCLUSION]: 'Conclusion'
     };
-
     return names[state] || 'Unknown';
   }
-
   /**
    * Detect patterns in state history using frequency analysis
    */
@@ -322,16 +287,13 @@ export class HMMStateMachine {
     if (stateHistory.length < 3) {
       return [];
     }
-
     const patternMap = new Map<string, number>();
-
     // Look for 3-state patterns
     for (let i = 0; i <= stateHistory.length - 3; i++) {
       const pattern = stateHistory.slice(i, i + 3);
       const key = pattern.join('-');
       patternMap.set(key, (patternMap.get(key) || 0) + 1);
     }
-
     // Convert to array and sort by frequency
     const patterns = Array.from(patternMap.entries())
       .map(([key, freq]) => ({
@@ -340,10 +302,8 @@ export class HMMStateMachine {
       }))
       .sort((a, b) => b.frequency - a.frequency)
       .slice(0, 5);
-
     return patterns;
   }
 }
-
 // Export singleton instance
 export const hmmStateMachine = new HMMStateMachine();

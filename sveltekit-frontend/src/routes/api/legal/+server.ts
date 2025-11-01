@@ -13,7 +13,7 @@ const redisClient: RedisClientType = createClient!({
   url: REDIS_URL || 'redis://localhost:6379',
 });
 // connect asynchronously (non-blocking)
-redisClient.connect().catch((err: unknown) => console.error('Redis connect error:', err));
+redisClient.connect().catch((err: any) => console.error('Redis connect error:', err));
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000';
 interface LegalJobRequest {
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
       result_url: `/api/legal/result/${mcpResult.job_id}`,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Legal API error:', err);
     // If the error is already a SvelteKit `error` object (has status and message properties),
     // re-throw it directly to ensure SvelteKit handles it correctly.
@@ -146,9 +146,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       typeof err === 'object' &&
       err !== null &&
       'status' in err &&
-      typeof (err as { status: unknown }).status === 'number' &&
+      typeof (err as { status: any }).status === 'number' &&
       'message' in err &&
-      typeof (err as { message: unknown }).message === 'string'
+      typeof (err as { message: any }).message === 'string'
     ) {
       const svelteKitError = err as { status: number; message: string };
       throw error(svelteKitError.status, svelteKitError.message); // Re-throw the SvelteKit error object directly

@@ -5,7 +5,7 @@
   */
 export interface MCPRequest {
   method: string;
-  params?: unknown;
+  params?: any;
 }
 export interface MCPToolRequest {
   method?: string; // optional when inferring default
@@ -38,7 +38,7 @@ export async function copilotOrchestrator(
     selfPrompt: typeof request === 'string' ? request : undefined,
   };
 }
-export async function semanticSearch(query: string, options?: unknown): Promise<any[]> {
+export async function semanticSearch(query: string, options?: any): Promise<any[]> {
   // Implementation placeholder
   return [];
 }

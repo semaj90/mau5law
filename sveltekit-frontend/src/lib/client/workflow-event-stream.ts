@@ -6,7 +6,7 @@
  *
  * Usage:
  * ```svelte
- * <script>
+ * <script lang="ts">
  *   import { WorkflowEventStream } from '$lib/client/workflow-event-stream';
  *
  *   const stream = new WorkflowEventStream(sessionId);
@@ -26,7 +26,6 @@
  * </script>
  * ```
  */
-
 export type WorkflowEventType =
   | 'SSE_CONNECTED'
   | 'SSE_ERROR'
@@ -40,19 +39,16 @@ export type WorkflowEventType =
   | 'SUMMARY_ERROR'
   | 'WORKFLOW_COMPLETE'
   | 'WORKFLOW_ERROR';
-
 export interface WorkflowEvent {
   type: WorkflowEventType;
   evidenceId?: string;
   sessionId?: string;
   timestamp: string;
   // Use: 'unknown' instead of: 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
-  result?: unknown;
+  result?: any;
   error?: string;
 }
-
 type EventCallback = (event: WorkflowEvent) => void;
-
 /**
  * Workflow Event Stream Manager
  */
@@ -62,12 +58,10 @@ export class WorkflowEventStream {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-
   constructor(
     private sessionId: string,
     private baseUrl: string = '/api/workflow-events'
   ) {}
-
   /**
    * Connect to the SSE endpoint
    */
@@ -76,12 +70,9 @@ export class WorkflowEventStream {
       console.warn('[WorkflowEventStream] Already connected');
       return;
     }
-
     const url = `${this.baseUrl}/${this.sessionId}`;
     console.log(`[WorkflowEventStream] Connecting to ${url}`);
-
     this.eventSource = new EventSource(url);
-
     // Handle incoming messages
     this.eventSource.onmessage = event => {
       try {
@@ -98,7 +89,6 @@ export class WorkflowEventStream {
         });
       }
     };
-
     // Handle connection open
     this.eventSource.onopen = () => {
       console.log('[WorkflowEventStream] Connected');
@@ -111,11 +101,9 @@ export class WorkflowEventStream {
         result: { url },
       });
     };
-
     // Handle errors
     this.eventSource.onerror = error => {
       console.error('[WorkflowEventStream] Connection error:', error);
-
       // Notify listeners about the connection error
       this.emit('SSE_ERROR', {
         type: 'SSE_ERROR',
@@ -123,11 +111,9 @@ export class WorkflowEventStream {
         timestamp: new Date().toISOString(),
         error: typeof error === 'string' ? error : ((error as any)?.message ?? 'Unknown EventSource error'),
       });
-
       // Attempt reconnection
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
-
         setTimeout(() => {
           console.log(
             `[WorkflowEventStream] Reconnecting (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
@@ -148,7 +134,6 @@ export class WorkflowEventStream {
       }
     };
   }
-
   /**
    * Disconnect from the SSE endpoint
    */
@@ -159,7 +144,6 @@ export class WorkflowEventStream {
       this.eventSource = null;
     }
   }
-
   /**
    * Register an event listener
    */
@@ -167,15 +151,12 @@ export class WorkflowEventStream {
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, new Set());
     }
-
     this.listeners.get(eventType)!.add(callback);
-
     // Return unsubscribe function
     return () => {
       this.off(eventType, callback);
     };
   }
-
   /**
    * Unregister an event listener
    */
@@ -185,13 +166,11 @@ export class WorkflowEventStream {
       callbacks.delete(callback);
     }
   }
-
   /**
    * Emit an event to all registered listeners
    */
   private emit(eventType: WorkflowEventType, event: WorkflowEvent): void {
     const callbacks = this.listeners.get(eventType);
-
     if (callbacks) {
       callbacks.forEach(callback => {
         try {
@@ -202,21 +181,18 @@ export class WorkflowEventStream {
       });
     }
   }
-
   /**
    * Check if currently connected
    */
   isConnected(): boolean {
     return this.eventSource !== null && this.eventSource.readyState === EventSource.OPEN;
   }
-
   /**
    * Get the current connection state
    */
   getState(): number {
     return this.eventSource?.readyState ?? EventSource.CLOSED;
   }
-
   /**
    * Clear all event listeners
    */
@@ -224,19 +200,16 @@ export class WorkflowEventStream {
     this.listeners.clear();
   }
 }
-
 /**
  * Svelte store-based wrapper for reactive workflow events
  */
 import { writable, type Writable } from 'svelte/store';
-
 export interface WorkflowState {
   connected: boolean;
   events: WorkflowEvent[];
   lastEvent: WorkflowEvent | null;
   errors: string[];
 }
-
 export function createWorkflowStore(sessionId: string): {
   subscribe: Writable<WorkflowState>['subscribe'];
   connect: () => void;
@@ -249,10 +222,8 @@ export function createWorkflowStore(sessionId: string): {
     lastEvent: null,
     errors: [],
   };
-
   const { subscribe, set, update } = writable<WorkflowState>(initialState);
   const stream = new WorkflowEventStream(sessionId);
-
   // Register listeners for all event types
   stream.on('SSE_CONNECTED', event => {
     update(state => ({
@@ -261,7 +232,6 @@ export function createWorkflowStore(sessionId: string): {
       lastEvent: event,
     }));
   });
-
   stream.on('SSE_ERROR', event => {
     update(state => ({
       ...state,
@@ -270,7 +240,6 @@ export function createWorkflowStore(sessionId: string): {
       lastEvent: event,
     }));
   });
-
   // Register workflow event listeners
   const workflowEventTypes: WorkflowEventType[] = [
     'OCR_COMPLETE',
@@ -284,7 +253,6 @@ export function createWorkflowStore(sessionId: string): {
     'WORKFLOW_COMPLETE',
     'WORKFLOW_ERROR',
   ];
-
   workflowEventTypes.forEach(eventType => {
     stream.on(eventType, event => {
       update(state => ({
@@ -294,7 +262,6 @@ export function createWorkflowStore(sessionId: string): {
       }));
     });
   });
-
   return {
     subscribe,
     connect: () => stream.connect(),

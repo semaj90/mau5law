@@ -51,7 +51,7 @@ export interface WASMGPUTask {
   id: string;
   type: 'document_processing' | 'neural_inference' | 'gpu_compute' | 'canvas_optimization' | 'legal_analysis';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  data: unknown;
+  data: any;
   targetService: 'nes_bridge' | 'ollama_llama' | 'yorha_neural' | 'gpu_compute' | 'quic_gateway' | 'auto';
   fallbackServices: string[];
   metadata: {
@@ -69,7 +69,7 @@ export interface WASMGPUResult {
   taskId: string;
   success: boolean;
   serviceUsed: string;
-  result?: unknown;
+  result?: any;
   error?: string;
   processingTime: number;
   memoryUsed: number;
@@ -146,7 +146,7 @@ type GPUComputeModule = { GPUCompute: new () => GPUComputeInstance };
 
 /* NEW: typed shape for NES-style bridge to avoid `any` */
 interface NESBridgeLike {
-  getStats?: () => { totalConversions?: number; [k: string]: unknown };
+  getStats?: () => { totalConversions?: number; [k: string]: any };
   getCacheStats?: () => number | { size?: number; length?: number } | unknown;
   cache?: { size?: number; length?: number } | unknown;
   processCanvasStateWithGPU?: (state: CanvasState) => Promise<unknown>;
@@ -160,7 +160,7 @@ interface YoRHaWASMModule {
     shutdown?: () => Promise<void>;
   };
 }
-function isYoRHaModule(m: unknown): m is YoRHaWASMModule {
+function isYoRHaModule(m: any): m is YoRHaWASMModule {
   return (
     typeof m === 'object' &&
     m !== null &&
@@ -183,7 +183,7 @@ export class UnifiedWASMGPUOrchestrator {
   private taskResults = new Map<string, WASMGPUResult>();
   // removed unused serviceHealthCache
   private wasmModules = new Map<string, unknown>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Monitoring interval handles
   private healthIntervalId?: ReturnType<typeof setInterval>;
   private perfIntervalId?: ReturnType<typeof setInterval>;
@@ -263,7 +263,7 @@ export class UnifiedWASMGPUOrchestrator {
       console.log(
         `📊 Services enabled: NES(${this.config.enableNESBridge}), Ollama(${this.config.enableOllamaIntegration}), YoRHa(${this.config.enableYoRHaProcessor}), QUIC(${this.config.enableQUICGateway})`
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ WASM-GPU Orchestrator initialization failed:', this.getErrorMessage(error));
       this.status.set('error');
       throw error;
@@ -277,7 +277,7 @@ export class UnifiedWASMGPUOrchestrator {
       // instantiate concrete bridge but store it as NESBridgeLike to use the interface
       this.nesGPUBridge = new NESStyleGPUBridge() as unknown as NESBridgeLike;
       console.log('✅ NES GPU Bridge initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ NES GPU Bridge initialization failed:', this.getErrorMessage(error));
       throw error;
     }
@@ -381,7 +381,7 @@ export class UnifiedWASMGPUOrchestrator {
     // Ollama / LLM wrapper status (best-effort HTTP health check)
     try {
       const endpoint = this.getOllamaEndpoint();
-      let healthy = false;
+      let healthy = $state(false);
       let responseTime = 0;
       try {
         const t0 = Date.now();
@@ -499,7 +499,7 @@ export class UnifiedWASMGPUOrchestrator {
       try {
         const result = await this.executeTask(task);
         this.taskResults.set(task.id, result);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error(`❌ Task ${task.id} execution failed:`, this.getErrorMessage(error));
         this.taskResults.set(task.id, {
           taskId: task.id,
@@ -524,8 +524,8 @@ export class UnifiedWASMGPUOrchestrator {
   private async executeTask(task: WASMGPUTask): Promise<WASMGPUResult> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let serviceUsed = task.targetService;
-    let result: unknown = null;
-    let success = false;
+    let result: any = null;
+    let success = $state(false);
     // Auto-select best service if needed
     if (task.targetService === 'auto') {
       serviceUsed = this.selectOptimalService(task);
@@ -637,15 +637,15 @@ export class UnifiedWASMGPUOrchestrator {
             try {
               task.targetService = fallbackService as WASMGPUTask['targetService'];
               return await this.executeTask(task);
-            } catch (fallbackError: unknown) {
+            } catch (fallbackError: any) {
               console.warn(`Fallback service ${fallbackService} also failed:`, this.getErrorMessage(fallbackError));
             }
           }
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Service ${serviceUsed} failed:`, this.getErrorMessage(error));
-      success = false;
+      success = $state(false);
       result = null;
     }
     const endTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
@@ -707,10 +707,10 @@ export class UnifiedWASMGPUOrchestrator {
   /**
    * Estimate memory usage for result (heuristic)
    */
-  private estimateMemoryUsage(result: unknown): number {
+  private estimateMemoryUsage(result: any): number {
     if (!result) return 0;
     // Typed, safe recursive key-count without using `any` or hasOwnProperty
-    const countKeys = (obj: unknown): number => {
+    const countKeys = (obj: any): number => {
       if (obj == null) return 0;
       if (typeof obj !== 'object') return 1;
       if (Array.isArray(obj)) {
@@ -896,7 +896,7 @@ export class UnifiedWASMGPUOrchestrator {
    */
   private async initializeYoRHaProcessor(): Promise<void> {
     try {
-      let module: unknown;
+      let module: any;
       try {
         // try dynamic import if a module exists at runtime (non-blocking)
         module = await import('./yorha-wasm.js');
@@ -1003,7 +1003,7 @@ export class UnifiedWASMGPUOrchestrator {
   /**
    * Small helper to normalize unknown errors to string messages
    */
-  private getErrorMessage(err: unknown): string {
+  private getErrorMessage(err: any): string {
     if (err instanceof Error) return err.message;
     try {
       return String(err);
@@ -1046,11 +1046,11 @@ type GPUComputePayload = MatMulPayload | Conv2DPayload | AttentionPayload | FFTP
 type HasLength = { length: number };
 
 /** Type-guard: true when value is an object with a numeric length property */
-function isHasLength(v: unknown): v is HasLength {
-  return typeof v === 'object' && v !== null && 'length' in v && typeof (v as { length?: unknown }).length === 'number';
+function isHasLength(v: any): v is HasLength {
+  return typeof v === 'object' && v !== null && 'length' in v && typeof (v as { length?: any }).length === 'number';
 }
 
-function getLength(x: unknown): number {
+function getLength(x: any): number {
   if (x == null) return 0;
   if (Array.isArray(x)) return x.length;
   if (isHasLength(x)) return x.length;

@@ -11,7 +11,7 @@ interface PredictorStats {
   pendingUpdates?: number;
   cacheEnabled?: boolean;
   redisConnected?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // New: typed shape for CUDA/SIMD service response (avoid `any`)
@@ -20,9 +20,9 @@ type CudaStats = {
   gpu_capabilities?: Record<string, unknown>;
   performance_metrics?: {
     estimated_ops_per_second?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 } | null;
 
 // Reset stats and clear cache (admin endpoint)
@@ -65,7 +65,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Check CUDA/SIMD service availability with timeout
-    let cudaAvailable = false;
+    let cudaAvailable = $state(false);
     let cudaStats: CudaStats = null;
     try {
       const controller = new AbortController();

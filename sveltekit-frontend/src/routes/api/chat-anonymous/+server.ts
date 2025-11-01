@@ -24,7 +24,7 @@ import { generateChatResponse } from '$lib/server/services';
 
 type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 
-function isChatMessageArray(x: unknown): x is ChatMessage[] {
+function isChatMessageArray(x: any): x is ChatMessage[] {
   return (
     Array.isArray(x) &&
     x.every(

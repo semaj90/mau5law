@@ -15,7 +15,7 @@
   interface Props {
     data: PageData;
     caseId?: string;
-    onUploadComplete?: (result: unknown) => void;
+    onUploadComplete?: (result: any) => void;
     onUploadError?: (error: string) => void;
     preserveExistingFlow?: boolean; // New prop to maintain existing RAG flow
   }
@@ -27,7 +27,7 @@
     preserveExistingFlow = true // Default to preserve existing enhanced flow
   }: Props = $props();
   // Enhanced form leveraging Superforms' built-in validation
-  const { form, errors, enhance, submitting, message, delayed } = superForm((data as { form?: unknown; som_cluster?: unknown }).form, {
+  const { form, errors, enhance, submitting, message, delayed } = superForm((data as { form?: any; som_cluster?: any }).form, {
     validators: zod(fileUploadSchema),
     dataType: 'form', // Use FormData for file uploads
     multipleSubmits: 'prevent',
@@ -50,21 +50,21 @@
       }
     },
     onResult: async ({ result, formData }) => {
-      if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
-        const uploadResult = (result as { type?: unknown; data?: unknown; error?: unknown }).data?.uploadResult;
+      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
+        const uploadResult = (result as { type?: any; data?: any; error?: any }).data?.uploadResult;
         // Enhanced RAG webhook integration
         if (uploadResult?.success && preserveExistingFlow) {
           await triggerWebhookProcessing(uploadResult, formData);
         }
         onUploadComplete?.(uploadResult);
-      } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'failure') {
-        onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).data?.message || 'Upload validation failed');
-      } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'error') {
-        onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Upload failed');
+      } else if ((result as { type?: any; data?: any; error?: any }).type === 'failure') {
+        onUploadError?.((result as { type?: any; data?: any; error?: any }).data?.message || 'Upload validation failed');
+      } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
+        onUploadError?.((result as { type?: any; data?: any; error?: any }).error?.message || 'Upload failed');
       }
     },
     onError: ({ result }) => {
-      onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Unexpected error occurred');
+      onUploadError?.((result as { type?: any; data?: any; error?: any }).error?.message || 'Unexpected error occurred');
     }
   });
   // State management
@@ -194,7 +194,7 @@
     }
   }
   // Enhanced webhook processing preserving your existing RAG flow
-  async function triggerWebhookProcessing(uploadResult: unknown, formData: FormData) {
+  async function triggerWebhookProcessing(uploadResult: any, formData: FormData) {
     try {
       // Prepare webhook payload with enhanced analysis data
       const webhookPayload = {
@@ -281,7 +281,7 @@
   }
   function onDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);
@@ -292,7 +292,7 @@
     dragOver = true;
   }
   function onDragLeave() {
-    dragOver = false;
+    dragOver = $state(false);
   }
   function removeFile() {
     selectedFile = null;
@@ -310,7 +310,6 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 <!-- bits-ui Dialog provides functionality, nes.css provides retro styling -->
 <Dialog.Root bind:open={showProcessingDetails}>
   <div class="nes-container with-title enhanced-legal-upload">
@@ -347,8 +346,7 @@
           class:is-error={$errors.caseId}
         />
         {#if $errors.caseId}
-          <div class="nes-text is-error">{$errors.caseId}</div>
-        {/if}
+          <div class="nes-text is-error">{$errors.caseId}{/if}
       </div>
       <!-- Enhanced File Upload Area - NES.css styled -->
       <div class="nes-field">
@@ -380,8 +378,7 @@
                 {#if filePreview}
                   <img src={filePreview} alt="Preview" class="image-preview" />
                 {:else}
-                  <div class="file-icon">📄</div>
-                {/if}
+                  <div class="file-icon">📄{/if}
                 <div class="file-details">
                   <div class="file-name">{selectedFile.name}</div>
                   <div class="file-size">{formatFileSize(selectedFile.size)}</div>
@@ -401,8 +398,7 @@
                           • {ocrResults.legalConcepts.length} legal concepts
                         {/if}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if legalAnalysis}
                     <div class="analysis-section">
                       <strong>LegalBERT Analysis:</strong>
@@ -413,13 +409,11 @@
                       </div>
                       {#if legalAnalysis.concepts?.slice(0, 3)}
                         <div class="concept-tags">
-                          {#each legalAnalysis.concepts.slice(0, 3) as concept}
+                          {#each Array.isArray(legalAnalysis.concepts.slice(0, 3)) ? legalAnalysis.concepts.slice(0, 3) : [] as concept}
                             <span class="concept-tag">{concept.concept}</span>
                           {/each}
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
+                        {/if}
+                    {/if}
                   {#if semanticEmbeddings}
                     <div class="analysis-section">
                       <strong>Semantic Analysis:</strong>
@@ -428,10 +422,8 @@
                           ? `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]`
                           : 'Vector embeddings generated'}
                       </div>
-                    </div>
-                  {/if}
-                </div>
-              {/if}
+                    {/if}
+                {/if}
             </div>
           {:else}
             <div class="upload-prompt">
@@ -447,12 +439,10 @@
                   {/if}
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
         {#if $errors.file}
-          <div class="nes-text is-error">{$errors.file}</div>
-        {/if}
+          <div class="nes-text is-error">{$errors.file}{/if}
       </div>
       <!-- Processing Status - NES.css styled -->
       {#if processingStage}
@@ -461,8 +451,7 @@
             <div class="spinner nes-pointer"></div>
             <span class="nes-text is-warning">⚡ {processingStage}</span>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Document Metadata - NES.css styled -->
       <div class="form-row">
         <div class="nes-field">
@@ -564,15 +553,13 @@
         {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
           <div class="nes-container is-rounded is-success enhanced-status">
             <span class="nes-text">✨ Enhanced analysis ready - your existing RAG flow will be preserved</span>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Messages - NES.css styled -->
       {#if $message}
         <div class="nes-container is-rounded is-success form-message">
           <p class="nes-text">{$message}</p>
-        </div>
-      {/if}
+        {/if}
     </form>
   </div>
   <!-- Processing Details Modal - bits-ui Dialog with nes.css styling -->
@@ -618,16 +605,14 @@
                 {#if ocrResults.legalConcepts?.length > 0}
                   <div class="concept-list">
                     <p class="nes-text is-success">Legal Concepts:</p>
-                    {#each ocrResults.legalConcepts as concept}
+                    {#each Array.isArray(ocrResults.legalConcepts) ? ocrResults.legalConcepts : [] as concept}
                       <span class="nes-badge is-splited">
                         <span class="is-success">{concept}</span>
                       </span>
                     {/each}
-                  </div>
-                {/if}
+                  {/if}
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if legalAnalysis}
             <div class="nes-container is-rounded">
               <p class="nes-text">🧠 LegalBERT Analysis</p>
@@ -664,8 +649,7 @@
                   </table>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if semanticEmbeddings}
             <div class="nes-container is-rounded">
               <p class="nes-text">🎯 Semantic Analysis</p>
@@ -681,19 +665,16 @@
                   {/if}
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if !ocrResults && !legalAnalysis && !semanticEmbeddings}
             <div class="nes-container is-rounded is-dark">
               <p class="nes-text">No processing data available yet. Upload a document to see detailed analysis.</p>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   /* bits-ui + nes.css integration styles */
   .enhanced-legal-upload {
@@ -887,4 +868,3 @@
     }
   }
 </style>
-

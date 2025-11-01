@@ -28,7 +28,7 @@ import { eq, sql } from "drizzle-orm";
 }
 export interface ChatStreamOptions {
   message: string;
-  context?: unknown[];
+  context?: any[];
   conversationId?: string;
   model?: string;
   temperature?: number;
@@ -45,7 +45,7 @@ export interface StreamChunk {
   text: string;
   metadata?: {
     type: "text" | "thinking" | "sources" | "recommendations" | "final";
-  sources?: unknown[];
+  sources?: any[];
   recommendations?: ThinkingRecommendation[];
   confidence?: number;
   thinkingChain?: string;
@@ -224,7 +224,7 @@ export class OllamaChatStreamService {
   private buildContextPrompt()
     message: string
     vectorContext: any[]
-    chatContext?: unknown[]
+    chatContext?: any[]
     systemPrompt?: string
     grpoRecommendations?: ThinkingRecommendation[];
   ): ChatPromptTemplate {
@@ -259,7 +259,7 @@ Please provide a detailed, professional response based on the context and your l
   }
   private formatContextForPrompt()
     vectorContext: VectorSearchResult[]
-    chatContext?: unknown[]
+    chatContext?: any[]
     grpoRecommendations?: ThinkingRecommendation[];
   ): string {
     let contextText = "";

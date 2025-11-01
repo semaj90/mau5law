@@ -1,5 +1,4 @@
 import type { Driver } from 'neo4j-driver-core';
-
 // Self-Organizing Map (SOM) Enhanced RAG System
 // Implements dimensionality reduction, k-means clustering, and boolean storage for legal AI
 export interface SOMNode {
@@ -146,7 +145,6 @@ export class SelfOrganizingMapRAG {
     bestNode.activation = 1 / (1 + minDistance); // Activation based on distance
     return bestNode;
   }
-
   /**
    * Update SOM node weights in neighborhood
    */
@@ -218,7 +216,7 @@ export class SelfOrganizingMapRAG {
       const randomNode = nodes[Math.floor(Math.random() * nodes.length)];
       centroids.push([...randomNode.weights]);
     }
-    let hasConverged = false;
+    let hasConverged = $state(false);
     let iteration = 0;
     const maxIterations = 100;
     while (!hasConverged && iteration < maxIterations) {
@@ -236,7 +234,7 @@ export class SelfOrganizingMapRAG {
         }
         if (node.cluster !== bestCluster) {
           node.cluster = bestCluster;
-          hasConverged = false;
+          hasConverged = $state(false);
         }
       }
       // Update centroids
@@ -368,7 +366,6 @@ export class SelfOrganizingMapRAG {
     scoredDocuments.sort((a, b) => b.score - a.score);
     return scoredDocuments.slice(0, limit).map(item => item.doc);
   }
-
   /**
    * Store cluster data in Neo4j for graph-based retrieval
    */

@@ -92,7 +92,7 @@ function isDemoCase(caseId: string): boolean {
 }
 
 // Helper to convert unknown errors to a string message
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   // Prefer Error message when available
   if (err instanceof Error) return err.message;
   try {
@@ -164,7 +164,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       filters: { caseId, citationType, search, verified },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Citations fetch error:', msg);
     return json(
@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 201 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Citation creation error:', msg);
     return json(
@@ -304,7 +304,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       citation: updatedCitation,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Citation update error:', msg);
     return json(
@@ -345,7 +345,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Citation deleted successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Citation deletion error:', msg);
     return json(

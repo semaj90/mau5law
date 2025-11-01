@@ -51,7 +51,6 @@ https://svelte.dev/e/js_parse_error -->
   let selectedEvidence: string[] = [];
   let detectiveInsights: any = null;
   let connectionMap: any[] = [];
-
   // UI state - Svelte 5 runes
   let searchQuery = $state('');
   let filterType = $state('all');
@@ -81,14 +80,12 @@ https://svelte.dev/e/js_parse_error -->
   });
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null = null;
-
   // new: auth/session + search/upload state
   let userSession any = null;
-  let authChecked = false;
+  let authChecked = $state(false);
   let searchProvider: 'pgvector' | 'qdrant' = 'pgvector';
   let tagSearchResults: any[] = [];
   let lastSearchQuery = '';
-
   // Evidence loading and initialization - Svelte 5 runes
   // ensure we know auth status before loading data
   $effect(() => {
@@ -101,14 +98,13 @@ https://svelte.dev/e/js_parse_error -->
       initializeCanvas();
     })();
   });
-
   // Check session via backend (Lucia v3 / SvelteKit server endpoint)
   async function checkSession() {
     try {
       const res = await apiFetch('/api/auth/session'); // expects { user: { id, username, ... } } or null
       if (res?.user) {
         userSession = res.user;
-        readOnly = false;
+        readOnly = $state(false);
       } else {
         userSession = null;
         readOnly = true;
@@ -121,7 +117,6 @@ https://svelte.dev/e/js_parse_error -->
       authChecked = true;
     }
   }
-
   // Semantic search wrapper (select pgvector or qdrant on server)
   async function performSemanticSearch(query: string) {
     try {
@@ -137,7 +132,6 @@ https://svelte.dev/e/js_parse_error -->
       tagSearchResults = [];
     }
   }
-
   // Upload helper using MinIO presigned URL endpoint
   async function uploadToMinio(file: File) {
     try {
@@ -158,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
       return null;
     }
   }
-
   // Load evidence for the case with fallbacks
   async function loadEvidence() {
     try {
@@ -175,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Evidence service unavailable, using mock data';
       notice.style.cssText =
-        'position fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       // Provide mock evidence data
@@ -211,7 +204,6 @@ https://svelte.dev/e/js_parse_error -->
       ];
     }
   }
-
   // Load detective insights if in detective mode with fallbacks
   async function loadDetectiveInsights() {
     try {
@@ -264,10 +256,9 @@ https://svelte.dev/e/js_parse_error -->
       // Build connection map for mock data
       buildConnectionMap(detectiveInsights);
     } finally {
-      loadingAnalysis = false;
+      loadingAnalysis = $state(false);
     }
   }
-
   // Build connection map for network visualization
   function buildConnectionMap(insights: any) {
     const connections: any[] = [];
@@ -323,7 +314,6 @@ https://svelte.dev/e/js_parse_error -->
       return matchesSearch && matchesType;
     });
   });
-
   // Toggle detective mode
   async function toggleDetectiveMode() {
     detectiveMode = !detectiveMode;
@@ -332,7 +322,6 @@ https://svelte.dev/e/js_parse_error -->
       await loadDetectiveInsights();
     }
   }
-
   // Analyze selected evidence
   async function analyzeSelectedEvidence() {
     if (selectedEvidence.length === 0) return;
@@ -349,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      loadingAnalysis = false;
+      loadingAnalysis = $state(false);
     }
   }
   // Handle evidence selection
@@ -476,7 +465,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <!-- Evidence Board UI -->
 <div class="evidence-board" class:detective-mode={detectiveMode}>
   <!-- Header Controls -->
@@ -507,8 +495,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if userSession}
           <div class="user-badge">Signed in as {userSession.username}</div>
         {:else}
-          <div class="user-badge read-only">Read-only (no session)</div>
-        {/if}
+          <div class="user-badge read-only">Read-only (no session){/if}
       {/if}
       <!-- View Mode Toggle -->
       <div class="view-toggle">
@@ -596,7 +583,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="filter-group">
         <label for="type-filter">Evidence Type:</label>
         <select id="type-filter" bind:value={filterType} class="type-select">
-          {#each evidenceTypes as type}
+          {#each Array.isArray(evidenceTypes) ? evidenceTypes : [] as type}
             <option value={type.value}>{type.label}</option>
           {/each}
         </select>
@@ -618,10 +605,8 @@ https://svelte.dev/e/js_parse_error -->
               Entity Mapping
             </label>
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Detective Insights Panel -->
   {#if detectiveMode && detectiveInsights?.suspiciousPatterns?.length > 0}
     <div class="insights-panel">
@@ -633,7 +618,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       {#if showInsights}
         <div class="insights-content">
-          {#each detectiveInsights?.suspiciousPatterns || [] as pattern}
+          {#each Array.isArray(detectiveInsights?.suspiciousPatterns || []) ? detectiveInsights?.suspiciousPatterns || [] : [] as pattern}
             <div class="insight-item" class:high-confidence={pattern.confidence > 0.8}>
               <div class="insight-header">
                 <AlertTriangle class="w-4 h-4 text-yellow-500" />
@@ -643,10 +628,8 @@ https://svelte.dev/e/js_parse_error -->
               <p class="insight-description">{pattern.description}</p>
             </div>
           {/each}
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Evidence Display -->
   <div class="evidence-display">
     {#if viewMode === 'grid'}
@@ -702,14 +685,12 @@ https://svelte.dev/e/js_parse_error -->
               {#if evidence.evidenceType === 'photo' && evidence.filePath}
                 <div class="evidence-preview">
                   <img src={evidence.filePath} alt={evidence.title} class="preview-image" />
-                </div>
-              {/if}
+                {/if}
               {#if evidence.ocrText}
                 <div class="ocr-text">
                   <strong>Extracted Text:</strong>
                   <p>{evidence.ocrText.substring(0, 150)}...</p>
-                </div>
-              {/if}
+                {/if}
             </div>
             <!-- Detective Mode Indicators -->
             {#if detectiveMode}
@@ -718,16 +699,13 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="suspicious-badge">
                     <AlertTriangle class="w-3 h-3" />
                     {evidence.suspiciousIndicators.length} Flags
-                  </div>
-                {/if}
+                  {/if}
                 {#if evidence.crossReferences?.length > 0}
                   <div class="references-badge">
                     <Link class="w-3 h-3" />
                     {evidence.crossReferences.length} Links
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
             <!-- Card Footer -->
             <div class="nier-bits-yorha-panel-content">
               <span class="date-created">
@@ -812,11 +790,9 @@ https://svelte.dev/e/js_parse_error -->
             <span>Manual Links</span>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
-
 <style>
   .evidence-board {
     display: flex;
@@ -1066,7 +1042,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    position relative;
+    position: relative;
   }
   .evidence-card:hover {
     border-color: #3b82f6;
@@ -1165,12 +1141,12 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    position relative;
+    position: relative;
     padding-left: 2rem;
   }
   .evidence-timeline::before {
     content: '';
-    position absolute;
+    position: absolute;
     left: 0.875rem;
     top: 0,
     bottom: 0;
@@ -1178,14 +1154,14 @@ https://svelte.dev/e/js_parse_error -->
     background: #e2e8f0;
   }
   .timeline-item {
-    position relative;
+    position: relative;
     background: white;
     border-radius: 0.5rem;
     padding: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .timeline-marker {
-    position absolute;
+    position: absolute;
     left: -2.125rem;
     top: 1rem;
     width: 1.75rem;
@@ -1199,11 +1175,11 @@ https://svelte.dev/e/js_parse_error -->
     color: #3b82f6;
   }
   .network-view {
-    position relative;
+    position: relative;
     height: 600px;
   }
   .network-legend {
-    position absolute;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     background: white;
@@ -1273,5 +1249,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-

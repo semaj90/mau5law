@@ -10,7 +10,7 @@ import { masterServiceCoordinator } from './master-service-coordinator.js';
 export interface RecoveryAction {
   type: 'restart' | 'reconnect' | 'scale' | 'fallback' | 'cleanup' | 'configure' | 'wait';
   target: string;
-  parameters: { [key: string]: unknown };
+  parameters: { [key: string]: any };
   timeout: number;
   retries: number;
   description: string;
@@ -70,7 +70,7 @@ type $HybridGPUContext = {
   queue?: GPUQueue | null;
   contextType?: GPUBackendType;
   // allow additional runtime fields
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 interface $ShaderResources {
@@ -80,7 +80,7 @@ interface $ShaderResources {
   bindGroup?: GPUBindGroup | null;
   buffers?: Map<string, GPUBuffer>;
   // additional misc resources
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // New: typed hooks for masterServiceCoordinator to avoid `any`
@@ -95,7 +95,7 @@ type CoordinatorHooks = Partial<{
 }>;
 
 export class ErrorResolutionEngine {
-  private isActive = false;
+  private isActive = $state(false);
   private analysisInterval: number | null = null;
   private metricsInterval: number | null = null;
   private recoveryQueue: ErrorAnalysis[] = [];
@@ -310,7 +310,7 @@ export class ErrorResolutionEngine {
       this.processRecoveryQueue();
       this.isActive = true;
       console.log('✅ Error Resolution Engine active');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize Error Resolution Engine:', this.formatError(error));
     }
   }
@@ -442,7 +442,7 @@ export class ErrorResolutionEngine {
         }
       }
       this.processedErrors.set(analysis.id, analysis);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Error during recovery for ${analysis.id}:`, this.formatError(error));
       analysis.autoFixAttempted = true;
       this.processedErrors.set(analysis.id, analysis);
@@ -456,7 +456,7 @@ export class ErrorResolutionEngine {
   /**
    * Helper: format errors safely
    */
-  private formatError(err: unknown): string {
+  private formatError(err: any): string {
     if (err instanceof Error) return err.stack ?? err.message;
     try {
       return JSON.stringify(err);
@@ -558,7 +558,7 @@ export class ErrorResolutionEngine {
         }
         default: return false;
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error(`Error executing recovery action ${action.type} for ${analysis.id}:`, this.formatError(err));
       return false;
     }
@@ -575,7 +575,7 @@ export class ErrorResolutionEngine {
       try {
         const maxRetries = Math.max(1, action.retries ?? 1);
         let attempt = 0;
-        let actionSuccess = false;
+        let actionSuccess = $state(false);
 
         while (attempt < maxRetries && !actionSuccess) {
           attempt++;

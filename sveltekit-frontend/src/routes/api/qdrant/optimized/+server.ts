@@ -82,7 +82,7 @@ interface ExtendedLogContext {
 type QdrantPostBody =
   | ({ action: 'batch_upsert' } & BatchUpsertRequest)
   | ({ action: 'clear_cache' | 'get_stats' | 'optimize_memory' } & CacheManagementRequest)
-  | { action: string; [key: string]: unknown }; // Fallback for unknown actions or extra properties, enforcing safer type handling
+  | { action: string; [key: string]: any }; // Fallback for unknown actions or extra properties, enforcing safer type handling
 
 // Helper to get user ID from locals
 function getUserId(locals: App.Locals): string | undefined {
@@ -314,7 +314,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any to unknown
     logger.error('Optimized Qdrant GET operation failed', error instanceof Error ? error : undefined, {
       action,
@@ -573,7 +573,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any to unknown
     logger.error('Optimized Qdrant POST operation failed', error instanceof Error ? error : undefined, {
       clientIP,

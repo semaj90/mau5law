@@ -157,7 +157,7 @@ class EvidenceProcessingService {
     };
     this.processingJobs.set(jobId, processingResult);
     // Background processing (non-blocking)
-    this.processEvidence(sessionId, jobId, request).catch((err: unknown) => {
+    this.processEvidence(sessionId, jobId, request).catch((err: any) => {
       console.error('Processing background error:', err);
       const r = this.processingJobs.get(jobId);
       if (r) {
@@ -182,7 +182,7 @@ class EvidenceProcessingService {
         if (rows && rows.length > 0) {
           evidenceData = rows[0] as EvidenceData;
         }
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.warn('Failed to load evidence from DB, continuing with provided id.', e);
       }
       if (!evidenceData) {
@@ -215,7 +215,7 @@ class EvidenceProcessingService {
         if (handler) {
           try {
             stepResult = await handler(evidenceData, request.options);
-          } catch (e: unknown) {
+          } catch (e: any) {
             stepResult = { error: e instanceof Error ? e.message : String(e) };
           }
         } else {
@@ -234,10 +234,10 @@ class EvidenceProcessingService {
       this.processingJobs.set(jobId, result);
 
       // Best-effort persist results
-      await this.updateEvidenceWithResults(request.evidenceId, results).catch((e: unknown) => {
+      await this.updateEvidenceWithResults(request.evidenceId, results).catch((e: any) => {
         console.warn('Failed to persist results:', e);
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       result.status = 'error';
       result.error = err instanceof Error ? err.message : String(err);
       result.endTime = new Date();
@@ -333,14 +333,14 @@ class EvidenceProcessingService {
     const updateData: Record<string, unknown> = { updatedAt: new Date() };
     // analysis
     if (results.analysis && typeof results.analysis === 'object' && results.analysis !== null) {
-      const analysis = results.analysis as { summary?: string; keywords?: unknown };
+      const analysis = results.analysis as { summary?: string; keywords?: any };
       if (analysis.summary) updateData.aiSummary = analysis.summary;
       if (Array.isArray(analysis.keywords)) updateData.aiTags = analysis.keywords as string[];
       updateData.aiAnalysis = analysis;
     }
     // embedding
     if (results.embedding && typeof results.embedding === 'object' && results.embedding !== null) {
-      const emb = results.embedding as { embedding?: unknown };
+      const emb = results.embedding as { embedding?: any };
       if (Array.isArray(emb.embedding)) {
         try {
           updateData.embedding = JSON.stringify(emb.embedding);
@@ -351,7 +351,7 @@ class EvidenceProcessingService {
     }
     try {
       await db.update(evidence).set(updateData).where(eq(evidence.id, evidenceId));
-    } catch (e: unknown) {
+    } catch (e: any) {
       // ignore persistence errors (best-effort)
       console.warn('DB update failed:', e);
     }
@@ -400,7 +400,7 @@ export const POST: RequestHandler = async ({ request }) => {
       steps: processingRequest.steps,
       options: processingRequest.options,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('POST processing error:', err);
     const message = err instanceof Error ? err.message : 'Processing request failed';
     return json({ error: message }, { status: 500 });
@@ -418,7 +418,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ error: 'Job not found' }, { status: 404 });
     }
     return json(status);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('GET status error:', err);
     return json({ error: 'Failed to get status' }, { status: 500 });
   }
@@ -436,7 +436,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       jobId,
       message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('DELETE error:', err);
     return json({ error: 'Failed to cancel processing' }, { status: 500 });
   }

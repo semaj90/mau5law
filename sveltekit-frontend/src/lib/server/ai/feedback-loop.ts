@@ -194,7 +194,7 @@ class FeedbackLoop {
   /**
    * Get feedback statistics
    */
-  getStats(): unknown {
+  getStats(): any {
     const totalFeedback = this.feedbackQueue.length;
     const averageRating = this.calculateAverageRating();
     const satisfactionByUser = Array.from(this.learningMetrics.userSatisfaction.entries();
@@ -407,7 +407,7 @@ class FeedbackLoop {
       logger.warn('[FeedbackLoop] Failed to save model weights:', error);
     }
   }
-  private extractQueryFeatures(query: string): unknown {
+  private extractQueryFeatures(query: string): any {
     const features = {
       isComplexLegal: false,
       isResearch: false,

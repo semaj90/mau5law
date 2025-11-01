@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         details: { error: `HTTP ${response.status}` },
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     healthChecks.push({
       name: 'cuda-service',
       url: 'http://localhost:8096',
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         lastCheck: Date.now(),
         details,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       healthChecks.push({
         name: service.name,
         url: service.url,

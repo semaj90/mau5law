@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { pgTable, text, uuid, integer, timestamp, jsonb, serial, real } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle';
-
 // Enhanced documents table: metadata + basic text for embeddings
 export const enhanced_documents = pgTable('enhanced_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -15,7 +14,6 @@ export const enhanced_documents = pgTable('enhanced_documents', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
   metadata: jsonb('metadata').$type<Record<string, unknown> | null>(),
 });
-
 // Embeddings table: store pgvector embeddings plus metadata and reference to documents
 export const enhanced_embeddings = pgTable('enhanced_embeddings', {
   id: serial('id').primaryKey(),
@@ -30,7 +28,6 @@ export const enhanced_embeddings = pgTable('enhanced_embeddings', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   additional: jsonb('additional').$type<Record<string, unknown> | null>(),
 });
-
 // Simple materialized-like search table (regular table used for recommendations/search caching)
 export const enhanced_search_cache = pgTable('enhanced_search_cache', {
   id: serial('id').primaryKey(),
@@ -40,13 +37,11 @@ export const enhanced_search_cache = pgTable('enhanced_search_cache', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   expiresAt: timestamp('expires_at', { withTimezone: true }),
 });
-
 // Runtime validator for status-like fields
 export type EnhancedDocumentStatus = 'active' | 'archived' | 'processing' | 'failed';
 export function isValidEnhancedDocumentStatus(status: string): status is EnhancedDocumentStatus {
   return ['active', 'archived', 'processing', 'failed'].includes(status);
 }
-
 // Export inferred types for TypeScript usage across the codebase
 export type EnhancedDocument = typeof enhanced_documents.$inferSelect;
 export type InsertEnhancedDocument = typeof enhanced_documents.$inferInsert;

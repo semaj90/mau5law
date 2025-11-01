@@ -8,7 +8,6 @@
  * - Type-safe schema with TypeScript
  * - Proper foreign key relationships
  */
-
 import {
   pgTable,
   uuid,
@@ -24,11 +23,9 @@ import {
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { vector } from 'drizzle-orm/pg-core';
-
 // ==================================================
 // Type Definitions for JSONB Fields
 // ==================================================
-
 export interface LegalMetadata {
   case {
     id: string;
@@ -71,7 +68,6 @@ export interface LegalMetadata {
     timestamp: string;
   };
 }
-
 export interface ChainOfCustody {
   entries: Array<{
     timestamp: string;
@@ -83,59 +79,46 @@ export interface ChainOfCustody {
     hash: string; // SHA-256 hash for integrity
   }>;
 }
-
 // ==================================================
 // Legal Documents Table
 // ==================================================
-
 export const legalDocuments = pgTable(
   'legal_documents',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id').notNull(),
-
     // Document info
     title: varchar('title', { length: 500 }).notNull(),
     content: text('content').notNull(),
     documentType: varchar('document_type', { length: 100 }).notNull(),
     subType: varchar('sub_type', { length: 100 }),
-
     // Vector embedding for semantic search (Gemma embeddings: 768 dimensions)
     embedding: vector('embedding', { dimensions: 768 }),
-
     // AI-generated content
     aiSummary: text('ai_summary'),
     aiAnalysis: jsonb('ai_analysis'),
-
     // Legal metadata (JSONB for flexibility)
     metadata: jsonb('metadata').$type<LegalMetadata>().notNull(),
-
     // Tags and categorization
     tags: jsonb('tags').$type<string[]>().default(sql`'[]'::jsonb`),
-
     // Chain of custody for evidence integrity
     chainOfCustody: jsonb('chain_of_custody').$type<ChainOfCustody>().notNull(),
-
     // Security and access control
     isAdmissible: boolean('is_admissible').default(true),
     isConfidential: boolean('is_confidential').default(false),
     confidentialityLevel: varchar('confidentiality_level', { length: 50 }).default('public'),
-
     // File information
     fileUrl: text('file_url'),
     fileSize: integer('file_size'), // bytes
     fileHash: varchar('file_hash', { length: 64 }), // SHA-256
     mimeType: varchar('mime_type', { length: 100 }),
-
     // Timestamps
     uploadedBy: uuid('uploaded_by').notNull(),
     collectedAt: timestamp('collected_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-
     // Search optimization
     searchVector: text('search_vector'), // PostgreSQL full-text search
-
     // Analytics
     viewCount: integer('view_count').default(0),
     lastAccessedAt: timestamp('last_accessed_at'),
@@ -146,62 +129,49 @@ export const legalDocuments = pgTable(
       'gin',
       sql`${table.metadata} jsonb_path_ops`
     ),
-
     // HNSW index for vector similarity search (pgvector)
     embeddingIdx: index('legal_documents_embedding_idx').using(
       'hnsw',
       sql`${table.embedding} vector_cosine_ops`
     ),
-
     // B-tree indexes for common queries
     caseIdIdx: index('legal_documents_case_id_idx').on(table.caseId),
     documentTypeIdx: index('legal_documents_type_idx').on(table.documentType),
     uploadedByIdx: index('legal_documents_uploaded_by_idx').on(table.uploadedBy),
     createdAtIdx: index('legal_documents_created_at_idx').on(table.createdAt),
-
     // Composite index for case + type queries
     caseTypeIdx: index('legal_documents_case_type_idx').on(table.caseId, table.documentType),
   })
 );
-
 // ==================================================
 // Legal Cases Table
 // ==================================================
-
 export const legalCases = pgTable(
   'legal_cases',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-
     caseNumber: varchar('case_number', { length: 100 }).notNull().unique(),
     title: varchar('title', { length: 500 }).notNull(),
     description: text('description'),
-
     // Case metadata
     jurisdiction: varchar('jurisdiction', { length: 200 }),
     courtLevel: varchar('court_level', { length: 50 }),
     practiceArea: jsonb('practice_area').$type<string[]>(),
-
     // Status and priority
     status: varchar('status', { length: 50 }).default('active'),
     priority: integer('priority').default(5), // 1-10
-
     // Parties involved
     parties: jsonb('parties').$type<LegalMetadata['case']['parties']>(),
-
     // Important dates
     filingDate: timestamp('filing_date'),
     closingDate: timestamp('closing_date'),
     nextCourtDate: timestamp('next_court_date'),
-
     // Ownership
     createdBy: uuid('created_by').notNull(),
     assignedTo: uuid('assigned_to'),
-
     // Timestamps
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-
     // Analytics
     documentCount: integer('document_count').default(0),
     evidenceCount: integer('evidence_count').default(0),
@@ -213,21 +183,17 @@ export const legalCases = pgTable(
     jurisdictionIdx: index('legal_cases_jurisdiction_idx').on(table.jurisdiction),
   })
 );
-
 // ==================================================
 // Vector Search Cache Table
 // ==================================================
-
 export const vectorSearchCache = pgTable(
   'vector_search_cache',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-
     // Query information
     queryText: text('query_text').notNull(),
     queryEmbedding: vector('query_embedding', { dimensions: 768 }).notNull(),
     queryHash: varchar('query_hash', { length: 64 }).notNull(), // SHA-256 of query
-
     // Search results (cached)
     results: jsonb('results').$type<Array<{
       documentId: string;
@@ -235,11 +201,9 @@ export const vectorSearchCache = pgTable(
       title: string;
       snippet: string;
     }>>().notNull(),
-
     // Metadata
     resultCount: integer('result_count').notNull(),
     searchDuration: integer('search_duration'), // milliseconds
-
     // Cache management
     hitCount: integer('hit_count').default(0),
     lastUsedAt: timestamp('last_used_at').defaultNow().notNull(),
@@ -255,37 +219,29 @@ export const vectorSearchCache = pgTable(
     ),
   })
 );
-
 // ==================================================
 // AI Processing Queue Table
 // ==================================================
-
 export const aiProcessingQueue = pgTable(
   'ai_processing_queue',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-
     documentId: uuid('document_id').notNull(),
     taskType: varchar('task_type', { length: 100 }).notNull(), // 'embedding', 'summary', 'analysis', etc.
-
     status: varchar('status', { length: 50 }).default('pending'),
     priority: integer('priority').default(5),
-
     // Processing details
     modelName: varchar('model_name', { length: 100 }),
     parameters: jsonb('parameters'),
     result: jsonb('result'),
-
     // Error handling
     errorMessage: text('error_message'),
     retryCount: integer('retry_count').default(0),
     maxRetries: integer('max_retries').default(3),
-
     // Timestamps
     createdAt: timestamp('created_at').defaultNow().notNull(),
     startedAt: timestamp('started_at'),
     completedAt: timestamp('completed_at'),
-
     // Performance metrics
     processingTime: integer('processing_time'), // milliseconds
     tokensUsed: integer('tokens_used'),
@@ -297,28 +253,22 @@ export const aiProcessingQueue = pgTable(
     createdAtIdx: index('ai_processing_queue_created_at_idx').on(table.createdAt),
   })
 );
-
 // ==================================================
 // Audit Log Table
 // ==================================================
-
 export const auditLog = pgTable(
   'audit_log',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-
     userId: uuid('user_id').notNull(),
     action: varchar('action', { length: 100 }).notNull(),
     resourceType: varchar('resource_type', { length: 100 }).notNull(),
     resourceId: uuid('resource_id').notNull(),
-
     // Change tracking
     changes: jsonb('changes'),
-
     // Context
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
-
     timestamp: timestamp('timestamp').defaultNow().notNull(),
   },
   (table) => ({
@@ -328,22 +278,16 @@ export const auditLog = pgTable(
     timestampIdx: index('audit_log_timestamp_idx').on(table.timestamp),
   })
 );
-
 // ==================================================
 // Export types for use in application
 // ==================================================
-
 export type LegalDocument = typeof legalDocuments.$inferSelect;
 export type NewLegalDocument = typeof legalDocuments.$inferInsert;
-
 export type LegalCase = typeof legalCases.$inferSelect;
 export type NewLegalCase = typeof legalCases.$inferInsert;
-
 export type VectorSearchCache = typeof vectorSearchCache.$inferSelect;
 export type NewVectorSearchCache = typeof vectorSearchCache.$inferInsert;
-
 export type AIProcessingQueue = typeof aiProcessingQueue.$inferSelect;
 export type NewAIProcessingQueue = typeof aiProcessingQueue.$inferInsert;
-
 export type AuditLog = typeof auditLog.$inferSelect;
 export type NewAuditLog = typeof auditLog.$inferInsert;

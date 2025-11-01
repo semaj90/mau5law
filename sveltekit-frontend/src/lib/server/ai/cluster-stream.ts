@@ -1,7 +1,5 @@
 import type { TransitionPrediction } from './hmm-transition-predictor';
-
-type RawClusterEvent = { type: string; timestamp: number; payload: unknown };
-
+type RawClusterEvent = { type: string; timestamp: number; payload: any };
 export type ClusterEvent =
   | {
       type: 'som_bitmap';
@@ -26,13 +24,11 @@ export type ClusterEvent =
       metadata?: Record<string, unknown>;
       timestamp: number;
     };
-
 // Listener and internal state
 type Listener = (event: ClusterEvent) => void;
 const listeners = new Set<Listener>();
 const history: ClusterEvent[] = [];
 const HISTORY_LIMIT = 200;
-
 export function emitClusterEvent(event: ClusterEvent): void {
   history.push(event);
   if (history.length > HISTORY_LIMIT) history.shift();
@@ -45,7 +41,6 @@ export function emitClusterEvent(event: ClusterEvent): void {
     }
   });
 }
-
 export function subscribeClusterEvents(listener: Listener, { replay = true } = {}): () => void {
   listeners.add(listener);
   if (replay) {
@@ -63,7 +58,6 @@ export function subscribeClusterEvents(listener: Listener, { replay = true } = {
     listeners.delete(listener);
   };
 }
-
 /**
  * Deprecated subscription wrapper that accepts RawClusterEvent callbacks.
  * Keeps backward compatibility by adapting ClusterEvent -> RawClusterEvent when invoking the callback.
@@ -92,7 +86,6 @@ export function subscribe(fn: (ev: RawClusterEvent) => void, replay = true) {
     listeners.delete(wrapper);
   };
 }
-
 /**
  * Return a shallow copy of recent typed ClusterEvent history.
  */

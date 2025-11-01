@@ -7,9 +7,8 @@
   }
   let { children, class: className = '' }: Props = $props();
 </script>
-
 <div class={cn('relative w-full overflow-auto', className)}>
   <table class="w-full caption-bottom text-sm">
-    {@render children?.()}
+    <slot />
   </table>
 </div>

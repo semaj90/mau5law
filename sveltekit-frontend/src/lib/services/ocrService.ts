@@ -118,7 +118,7 @@ const fieldValidationSchemas: Partial<Record<FieldType, z.ZodSchema>> = {
 export class OCRService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private worker: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   // Svelte stores
   public processing$: Writable<boolean> = writable(false);
@@ -154,7 +154,7 @@ export class OCRService {
       console.log('✅ OCR worker initialized');
     } catch (error) {
       console.error('❌ OCR worker initialization failed:', error);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
     }
   }
 
@@ -263,7 +263,7 @@ export class OCRService {
     });
   }
 
-  private extractBoundingBoxes(data: unknown): BoundingBox[] {
+  private extractBoundingBoxes(data: any): BoundingBox[] {
     const boxes: BoundingBox[] = [];
     if (data && typeof data === 'object' && 'words' in data && Array.isArray(data.words)) {
       for (const word of data.words) {
@@ -415,7 +415,7 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
       const raw = String(body?.response || body?.text || '[]');
 
       // Parse into unknown and validate each item at runtime to avoid `any`
-      let parsed: unknown;
+      let parsed: any;
       try {
         parsed = JSON.parse(raw);
       } catch {
@@ -440,7 +440,7 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
       ] as const;
       type AllowedFieldType = (typeof ALLOWED_FIELD_TYPES)[number];
 
-      const toExtractedField = (item: unknown): ExtractedField | null => {
+      const toExtractedField = (item: any): ExtractedField | null => {
         if (typeof item !== 'object' || item === null) return null;
         const obj = item as Record<string, unknown>;
 
@@ -528,7 +528,7 @@ Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", 
       }
       this.worker = null;
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🔧 OCR service destroyed');
   }
 }

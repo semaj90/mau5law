@@ -1,6 +1,6 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -8,11 +8,11 @@
   interface Props {
     caseId: string | undefined ;
     evidenceIds: string[] ;
-    placeholder?: unknown;
-    maxHeight?: unknown;
-    showReferences?: unknown;
-    enableVoiceInput?: unknown;
-    enableVoiceOutput?: unknown;
+    placeholder?: any;
+    maxHeight?: any;
+    showReferences?: any;
+    enableVoiceInput?: any;
+    enableVoiceOutput?: any;
   }
   let {
     caseId = undefined,
@@ -112,8 +112,8 @@
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
       recognition = new (window as any).webkitSpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = $state(false);
+      recognition.interimResults = $state(false);
       recognition.lang = "en-US";
       recognition.onresult = (_event: any) => {
         const transcript = event.results[0][0].transcript;
@@ -121,10 +121,10 @@
         textareaRef?.focus();
       }
       recognition.onerror = () => {
-        isListening = false;
+        isListening = $state(false);
       }
       recognition.onend = () => {
-        isListening = false;
+        isListening = $state(false);
       }
   }
     // Load conversation history from IndexedDB
@@ -306,7 +306,7 @@
       console.error("AI request failed:", err);
       ondispatch?.(error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
   }}
   function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -322,20 +322,20 @@
     if (!recognition) {
       const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognitio;
       recognition = new SpeechRecognitionClass();
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = $state(false);
+      recognition.interimResults = $state(false);
       recognition.lang = "en-US";
       recognition.onresult = (_event: any) => {
         const transcript = event.results[0][0].transcript;
         query = transcript;
         textareaRef?.focus();
-        isListening = false;
+        isListening = $state(false);
       }
       recognition.onerror = () => {
-        isListening = false;
+        isListening = $state(false);
       }
       recognition.onend = () => {
-        isListening = false;
+        isListening = $state(false);
       }
     }
     if (!isListening) {
@@ -346,7 +346,7 @@
   function stopVoiceInput() {
     if (recognition && isListening) {
       recognition.stop();
-      isListening = false;
+      isListening = $state(false);
     }
   }
   // Voice output (text-to-speech)
@@ -384,7 +384,7 @@
         window.speechSynthesis.speak(utter);
       }
     } finally {
-      ttsLoading = false;
+      ttsLoading = $state(false);
     }
   }
   function handleReferenceClick(
@@ -523,8 +523,7 @@
             <span>{temperature}</span>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Conversation -->
   <div;
@@ -550,8 +549,7 @@
           {:else}
             <div>
               <Brain />
-            </div>
-          {/if}
+            {/if}
           <div>
             <span>
               {message.type === "user" ? "You" : "AI Assistant"}
@@ -562,8 +560,7 @@
                 <div class={getConfidenceColor(message.confidence)}>
                   <SvelteComponent />
                   <span>{Math.round(message.confidence * 100)}%</span>
-                </div>
-              {/if}
+                {/if}
             </span>
           </div>
           <div>
@@ -593,7 +590,7 @@
             <div>
               <h4>References:</h4>
               <div>
-                {#each message.references as reference}
+                {#each Array.isArray(message.references) ? message.references : [] as reference}
                   <button aria-label="Action button"
                     type="button"
                     onclick={(_event: MouseEvent) => ) => handleReferenceClick(reference}
@@ -604,8 +601,7 @@
                   </button>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Metadata -->
           {#if message.metadata}
             <div>
@@ -618,8 +614,7 @@
               {#if message.metadata.searchResults}
                 • {message.metadata.searchResults} results
               {/if}
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
     {/if}
@@ -632,8 +627,7 @@
           <AlertCircle />
           <span>{error}</span>
         </div>
-      </div>
-    {/if}
+      {/if}
     <div>
       <div>
         <textarea
@@ -694,7 +688,7 @@
       sans-serif;
 }
   .message {
-    animation: slideInFromBottom 0.3s ease-in-out;
+    animation: slideInFromBottom: 0.3s ease-in-out;
     transform: translateY(0);
 }
   @keyframes slideInFromBottom {

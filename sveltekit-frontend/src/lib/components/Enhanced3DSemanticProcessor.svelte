@@ -5,14 +5,14 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount, onDestroy } from 'svelte';
-  import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
+  import { WebGPUWebAssemblyBridge } from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // Props
   interface Props {
     maxConcurrent?: number;
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Semantic processing failed:', error);
       results = { error: 'Processing failed - check console for details' }
     } finally {
-      processing = false;
+      processing = $state(false);
     }
   }
   async function simulateSemanticAnalysis() {
@@ -274,8 +274,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-4 text-sm text-gray-600">
             <p><strong>Interaction</strong> Automatic rotation • 3D projection • LOD optimization</p>
             <p><strong>Nodes:</strong> {spatialPoints.length} semantic clusters in 3D space</p>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- Results Panel -->
@@ -325,15 +324,13 @@ https://svelte.dev/e/js_parse_error -->
                   <div>Mappings: <span class="font-mono">{processingStats.spatialMappings}</span></div>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         {:else}
           <div class="text-gray-500 text-center py-8">
             <div class="text-4xl mb-2">🎯</div>
             <p>Click "Analyze 3D Semantics" to process text</p>
             <p class="text-sm mt-1">Using WebGPU + WebAssembly pipeline</p>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>

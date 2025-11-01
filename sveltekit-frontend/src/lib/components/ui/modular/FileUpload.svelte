@@ -6,8 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-  import Progress from './Progress.svelte';
-  import Badge from './Badge.svelte';
+  import { Progress } from './Progress.svelte';
+  import { Badge } from './Badge.svelte';
   // File upload types
   interface UploadFile {
     id: string;
@@ -171,11 +171,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = $state(false);
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = $state(false);
     if (disabled || !event.dataTransfer?.files) return;
     handleFiles(event.dataTransfer.files);
   }
@@ -198,7 +198,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="file-upload-container space-y-4">
   <!-- Upload Drop Zone -->
   <div
@@ -259,8 +258,7 @@ https://svelte.dev/e/js_parse_error -->
               {#if file.preview}
                 <img src={file.preview} alt={file.name} class="w-10 h-10 object-cover rounded" />
               {:else}
-                <div class="i-lucide-file w-10 h-10 text-gray-400" aria-hidden="true"></div>
-              {/if}
+                <div class="i-lucide-file w-10 h-10 text-gray-400" aria-hidden="true">{/if}
             </div>
             <!-- File Info -->
             <div class="flex-1 min-w-0">
@@ -274,8 +272,7 @@ https://svelte.dev/e/js_parse_error -->
               {#if file.status === 'uploading' && file.progress !== undefined}
                 <div class="mt-2">
                   <Progress value={file.progress} variant="info" size="sm" />
-                </div>
-              {/if}
+                {/if}
               <!-- Error Message -->
               {#if file.error}
                 <p class="text-xs text-red-600 mt-1">{file.error}</p>
@@ -299,10 +296,8 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* YoRHa-specific styling */
   :global(.yorha-upload) {
@@ -325,4 +320,3 @@ https://svelte.dev/e/js_parse_error -->
     transform: scale(1.05);
   }
 </style>
-

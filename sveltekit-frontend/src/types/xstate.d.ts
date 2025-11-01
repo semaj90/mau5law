@@ -45,17 +45,17 @@ export {
 } from 'xstate';
 // Common state machine types
 export interface MachineContext {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface MachineEvent {
   type: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Promise snapshot types for XState v5
 export interface PromiseSnapshot<TOutput, TInput = unknown> {
   status: 'pending' | 'fulfilled' | 'rejected';
   output?: TOutput;
-  error?: unknown;
+  error?: any;
   input?: TInput;
 }
 // Actor wrapper compatibility
@@ -69,7 +69,7 @@ export interface ActorWrapper<T = unknown> {
 // Observer pattern for XState v5
 export interface StateObserver<T = unknown> {
   next?: (_value: T) => void;
-  error?: (error: unknown) => void;
+  error?: (error: any) => void;
   complete?: () => void;
 }
 // Common machine services
@@ -106,7 +106,7 @@ export interface JobStatus {
   id: string;
   status: 'pending' | 'active' | 'completed' | 'failed' | 'delayed';
   progress: number;
-  result?: unknown;
+  result?: any;
   error?: string;
   createdAt: Date;
   processedAt?: Date;

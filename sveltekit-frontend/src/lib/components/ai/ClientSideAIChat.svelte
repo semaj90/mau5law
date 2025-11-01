@@ -7,8 +7,8 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   import { MessageSquare, Brain, Zap, Cpu } from 'lucide-svelte';
   // Props
   interface Props {
@@ -108,7 +108,7 @@
       error = err instanceof Error ? err.message : 'Failed to process message';
       console.error('❌ Message processing failed:', err);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function clearChat() {
@@ -144,8 +144,7 @@
             <Badge class={systemStatus.model ? 'bg-green-600' : 'bg-red-600'} variant="secondary">
               {systemStatus.model ? 'Gemma 270MB' : 'Loading...'}
             </Badge>
-          </div>
-        {/if}
+          {/if}
       </h3>
       {#if showStatus && !collapsed}
         <div class="flex items-center gap-2 text-xs">
@@ -161,8 +160,7 @@
           <span class="text-gray-400">
             {isInitialized ? 'Ready' : 'Initializing...'}
           </span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <main>
       {#if !collapsed}
@@ -207,15 +205,14 @@
                   </div>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Quick Prompts -->
         {#if messages.length <= 1}
           <div class="quick-prompts">
             <div class="text-xs text-gray-400 mb-2 font-mono">Quick prompts:</div>
             <div class="flex flex-wrap gap-1">
-              {#each quickPrompts.slice(0, 2) as prompt}
+              {#each Array.isArray(quickPrompts.slice(0, 2)) ? quickPrompts.slice(0, 2) : [] as prompt}
                 <button aria-label="Action button"
                   onclick={() => sendMessage(prompt)}
                   disabled={isProcessing || !isInitialized}
@@ -225,14 +222,12 @@
                 </button>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Error Display -->
         {#if error}
           <div class="error-message bg-red-900/30 border border-red-500/50 rounded p-2" aria-live="polite" role="alert">
             <div class="text-xs text-red-400 font-mono">⚠️ {error}</div>
-          </div>
-        {/if}
+          {/if}
         <!-- Input -->
         <div class="input-container">
           <div class="flex gap-2">
@@ -274,8 +269,7 @@
           {#if isInitialized && systemStatus.model}
             <Badge class="bg-green-600 mt-2" variant="secondary">Gemma 270MB Ready</Badge>
           {/if}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>

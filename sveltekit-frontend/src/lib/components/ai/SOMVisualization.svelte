@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('❌ Training failed:', error);
     } finally {
-      isTraining = false;
+      isTraining = $state(false);
     }
   }
   function startVisualizationLoop(): void {
@@ -306,7 +306,6 @@ https://svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
 </script>
-
 <div class="som-visualization {className}">
   <!-- Header -->
   <div class="header yorha-panel p-4 mb-4">
@@ -420,8 +419,7 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-white">{count}</span>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Actions -->
     <div class="actions-panel yorha-panel p-4">
@@ -475,16 +473,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="loading-spinner mx-auto mb-2"></div>
             <p class="text-gray-400 text-sm">Initializing SOM System...</p>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if isTraining}
         <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
           <div class="text-center">
             <div class="loading-spinner mx-auto mb-2"></div>
             <p class="text-yellow-400 text-sm">Training SOM with legal documents...</p>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="info-panel mt-4 text-xs text-gray-400">
       <p>
@@ -494,7 +490,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .som-visualization {
@@ -520,4 +515,3 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0;
   }
 </style>
-

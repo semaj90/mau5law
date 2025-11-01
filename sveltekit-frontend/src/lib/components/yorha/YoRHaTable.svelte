@@ -11,7 +11,7 @@
   }
   interface TableRow {
     id: string;
-    [key: string]: unknown;
+    [key: string]: any;
   }
   interface TableProps {
     columns: TableColumn[];
@@ -109,7 +109,7 @@
       selectedRows = new Set(paginatedData.map(row => row.id));
     }
   }
-  function formatCellValue(value: unknown, column: TableColumn) {
+  function formatCellValue(value: any, column: TableColumn) {
     switch (column.type) {
       case 'date':
         return new Date(String(value)).toLocaleDateString();
@@ -142,7 +142,6 @@
     return statusClasses[String(value).toLowerCase()] || 'yorha-status-default';
   }
 </script>
-
 <div
   class="yorha-table-container {className}"
   class:yorha-table-loading={loading}
@@ -160,8 +159,7 @@
           {selectedRows.size} SELECTED
         </span>
         <button class="yorha-action-btn" onclick={() => selectedRows.clear()}> CLEAR SELECTION </button>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Main Table -->
   <div class="yorha-table-wrapper" class:yorha-table-dense={dense}>
@@ -184,7 +182,7 @@
               />
             </th>
           {/if}
-          {#each columns as column}
+          {#each Array.isArray(columns) ? columns : [] as column}
             <th
               class="yorha-table-cell yorha-table-header-cell {getCellClass(column)}"
               class:yorha-sortable={column.sortable && sortable}
@@ -202,8 +200,7 @@
                     {:else}
                       ⋮
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </th>
           {/each}
@@ -246,7 +243,7 @@
                   />
                 </td>
               {/if}
-              {#each columns as column}
+              {#each Array.isArray(columns) ? columns : [] as column}
                 <td class="yorha-table-cell {getCellClass(column)}">
                   {#if column.type === 'status'}
                     <span class="yorha-status {getStatusClass(row[column.key])}">
@@ -300,10 +297,8 @@
           ⟩⟩
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .yorha-table-container {
     /* @apply bg-black border border-amber-400 relative overflow-hidden; */
@@ -514,4 +509,3 @@
     }
   }
 </style>
-

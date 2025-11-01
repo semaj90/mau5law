@@ -160,7 +160,7 @@ Provide your analysis in this exact JSON format:
       } else {
         throw new Error('No JSON found in AI response');
       }
-    } catch (parseError: unknown) {
+    } catch (parseError: any) {
       // Type parseError as unknown
       console.warn('Failed to parse AI response JSON, falling back:', parseError);
       // Fallback timeline generation
@@ -168,7 +168,7 @@ Provide your analysis in this exact JSON format:
     }
 
     return timelineData;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Type error as unknown
     console.error('AI timeline extraction failed:', error);
     return generateFallbackTimeline(content, documentType);
@@ -218,7 +218,7 @@ async function detectGPU(): Promise<boolean> {
       signal: AbortSignal.timeout(5000), // Short timeout for health check
     });
     return response.ok;
-  } catch (e: unknown) {
+  } catch (e: any) {
     // Type e as unknown
     console.warn('GPU orchestrator health check failed:', e);
     return false;
@@ -277,7 +277,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Type error as unknown
     console.error('Timeline extraction failed:', error);
 
@@ -398,7 +398,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         requested_format: format, // explicitly include the requested format to avoid unused variable
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Type error as unknown
     console.error('Timeline query failed:', error);
 

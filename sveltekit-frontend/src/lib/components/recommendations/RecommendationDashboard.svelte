@@ -4,20 +4,20 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import DiamondModal from '$lib/components/ui/DiamondModal.svelte';
-  import LastSearchedModal from './LastSearchedModal.svelte';
-  import LastWorkedModal from './LastWorkedModal.svelte';
-  import AIRecommendationAssistant from './AIRecommendationAssistant.svelte';
+  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
+  import { LastSearchedModal } from './LastSearchedModal.svelte';
+  import { LastWorkedModal } from './LastWorkedModal.svelte';
+  import { AIRecommendationAssistant } from './AIRecommendationAssistant.svelte';
   // Button replaced by native <button> where click handlers are needed
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   // Dashboard state (use standard reactive variables)
-  let isOpen: boolean = false;
+  let isOpen: boolean = $state(false);
   let activeTab: 'overview' | 'search' | 'work' | 'ai' = 'overview';
   // Modal states
-  let showSearchModal: boolean = false;
-  let showWorkModal: boolean = false;
-  let showAIModal: boolean = false;
+  let showSearchModal: boolean = $state(false);
+  let showWorkModal: boolean = $state(false);
+  let showAIModal: boolean = $state(false);
   // Quick stats
   let stats: {
     recentCases: number;
@@ -46,11 +46,11 @@
     loadDashboardData();
   }
   export function close() {
-    isOpen = false;
+    isOpen = $state(false);
   }
   async function loadDashboardData() {
     stats.loading = true;
-    let usingMockData = false;
+    let usingMockData = $state(false);
     try {
       // Load parallel stats from all APIs
       const [casesRes, searchRes, workRes] = await Promise.all([
@@ -144,12 +144,12 @@
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
     } finally {
-      stats.loading = false;
+      stats.loading = $state(false);
     }
   }
   function getActivityIcon(type: string) {
@@ -201,13 +201,12 @@
     }
   });
 </script>
-
 <DiamondModal
   open={isOpen}
   title="🎯 Recommendation Engine"
   size="large"
   onclose={() => {
-    isOpen = false;
+    isOpen = $state(false);
   }}
 >
   <div class="space-y-6">
@@ -295,7 +294,7 @@
               <div class="text-center py-8 text-slate-400">No recent activity found</div>
             {:else}
               <div class="space-y-3">
-                {#each recentActivity as activity}
+                {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
                   <div class="flex items-center justify-between p-3 bg-slate-700/40 rounded-lg">
                     <div class="flex items-center gap-3">
                       <span class="text-xl">{getActivityIcon(activity.type)}</span>
@@ -316,12 +315,10 @@
                     </div>
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </CardContent>
         </Card>
-      </div>
-    {/if}
+      {/if}
     <!-- Individual Tab Content -->
     {#if activeTab === 'search'}
       <Card class="bg-slate-800/60 border-slate-600">
@@ -393,7 +390,6 @@
     </button>
   </div>
 </DiamondModal>
-
 <!-- Individual Modals -->
 <LastSearchedModal bind:isOpen={showSearchModal} />
 <LastWorkedModal bind:isOpen={showWorkModal} />

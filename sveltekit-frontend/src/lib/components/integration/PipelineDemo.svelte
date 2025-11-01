@@ -6,13 +6,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
   // Svelte 5 runes are auto-imported
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   // Reactive state using Svelte 5 runes
   let isProcessing = $state(false);
   let results = $state<PipelineResult[]>([]);
@@ -46,7 +46,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     } catch (error) {
       console.error('Pipeline execution failed:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Auto-select optimal pipeline
@@ -66,7 +66,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     } catch (error) {
       console.error('Auto pipeline execution failed:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Batch processing demo
@@ -86,7 +86,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     } catch (error) {
       console.error('Batch processing failed:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Search across all pipelines
@@ -256,23 +256,22 @@ https://svelte.dev/e/unexpected_reserved_word -->
         <div class="mt-4">
           <h4 class="font-semibold mb-2">Search Results ({searchResults.combinedResults.length})</h4>
           <div class="space-y-2">
-            {#each searchResults.combinedResults.slice(0, 5) as result}
+            {#each Array.isArray(searchResults.combinedResults.slice(0, 5)) ? searchResults.combinedResults.slice(0, 5) : [] as result}
               <div class="p-2 bg-gray-50 rounded border-l-4 border-blue-500">
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
-                    <p class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).id}</p>
-                    <p class="text-sm text-gray-600">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).content?.substring(0, 100)}...</p>
+                    <p class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).id}</p>
+                    <p class="text-sm text-gray-600">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).content?.substring(0, 100)}...</p>
                   </div>
                   <div class="text-right text-sm">
-                    <div class="font-semibold">Score: {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).score?.toFixed(3)}</div>
-                    <div class="text-gray-500">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).source}</div>
+                    <div class="font-semibold">Score: {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).score?.toFixed(3)}</div>
+                    <div class="text-gray-500">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).source}</div>
                   </div>
                 </div>
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Metrics Dashboard -->
@@ -340,8 +339,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Recent Results -->
   {#if results.length > 0}
     <div class="nes-container">
@@ -350,48 +348,46 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-3">
-          {#each results.slice(0, 5) as result}
+          {#each Array.isArray(results.slice(0, 5)) ? results.slice(0, 5) : [] as result}
             <div class="p-3 border rounded-lg">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).type}</span>
-                  <span class={getStatusColor((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).success)}>
-                    {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).success ? '✅' : '❌'}
+                  <span class="font-semibold">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).type}</span>
+                  <span class={getStatusColor((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).success)}>
+                    {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).success ? '✅' : '❌'}
                   </span>
                 </div>
                 <div class="text-sm text-gray-500">
-                  {formatTime((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.totalProcessingTime)}
+                  {formatTime((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.totalProcessingTime)}
                 </div>
               </div>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Cache Hit:</span>
-                  <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.cacheHitRate.toFixed(1)}%</span>
+                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.cacheHitRate.toFixed(1)}%</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Memory:</span>
-                  <span class="font-medium">{formatMemory((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.memoryUsageMB)}</span>
+                  <span class="font-medium">{formatMemory((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.memoryUsageMB)}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">GPU:</span>
-                  <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.gpuUtilization.toFixed(0)}%</span>
+                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.gpuUtilization.toFixed(0)}%</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Throughput:</span>
-                  <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.throughputPerSecond.toFixed(1)}/s</span>
+                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.throughputPerSecond.toFixed(1)}/s</span>
                 </div>
               </div>
-              {#if (result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).error}
+              {#if (result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).error}
                 <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-                  Error: {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).error}
-                </div>
-              {/if}
+                  Error: {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).error}
+                {/if}
             </div>
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Performance Report -->
   {#if performanceReport}
     <div class="nes-container">
@@ -421,7 +417,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           <div>
             <h4 class="font-semibold mb-2">Recommendations</h4>
             <ul class="space-y-1 text-sm">
-              {#each performanceReport.recommendations as recommendation}
+              {#each Array.isArray(performanceReport.recommendations) ? performanceReport.recommendations : [] as recommendation}
                 <li class="flex items-start gap-2">
                   <span class="text-blue-500">•</span>
                   <span>{recommendation}</span>
@@ -431,8 +427,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Architecture Diagram -->
   <div class="nes-container">
     <div class="yorha-panel-header">

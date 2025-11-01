@@ -143,7 +143,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       taskSuggestions = [];
       userProfile = null;
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function handleSelection(suggestion Suggestion) {
@@ -229,8 +229,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       <p class="text-sm text-red-800 dark:text-red-200">
         <span class="font-medium">Error:</span> {error}
       </p>
-    </div>
-  {/if}
+    {/if}
   <!-- Metadata Display -->
   {#if metadata.took_ms}
     <div class="mt-1 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
@@ -241,8 +240,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           AI Enhanced
         </span>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- AI-Enhanced Suggestions Dropdown -->
   {#if $open && (suggestions.length > 0 || taskSuggestions.length > 0)}
     <div
@@ -307,19 +305,17 @@ https://svelte.dev/e/attribute_invalid_name -->
                   <!-- Legacy Tags Support -->
                   {#if suggestion.tags && suggestion.tags.length > 0}
                     <div class="flex gap-1 mt-1">
-                      {#each suggestion.tags.slice(0, 3) as tag}
+                      {#each Array.isArray(suggestion.tags.slice(0, 3)) ? suggestion.tags.slice(0, 3) : [] as tag}
                         <span class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
                           {tag}
                         </span>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </button>
           {/each}
-        </div>
-      {/if}
+        {/if}
       <!-- Task Suggestions -->
       {#if taskSuggestions.length > 0}
         <div class="p-2 border-t border-gray-200 dark:border-gray-600">
@@ -359,8 +355,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               </div>
             </button>
           {/each}
-        </div>
-      {/if}
+        {/if}
       <!-- User Profile -->
       {#if showUserProfile && userProfile}
         <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
@@ -380,18 +375,15 @@ https://svelte.dev/e/attribute_invalid_name -->
             </div>
             {#if userProfile.preferredIntents.length > 0}
               <div class="flex flex-wrap gap-1 mt-1">
-                {#each userProfile.preferredIntents as intent}
+                {#each Array.isArray(userProfile.preferredIntents) ? userProfile.preferredIntents : [] as intent}
                   <span class="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 rounded-full">
                     {intent}
                   </span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- No Results -->
   {#if $open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
     <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4">
@@ -405,8 +397,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           </p>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* Ensure proper z-index stacking */

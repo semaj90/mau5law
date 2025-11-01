@@ -6,7 +6,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits';
+  import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits.svelte'';
   interface SummarizationRequest {
     document_id: string;
     title: string;
@@ -167,7 +167,7 @@ await checkServiceHealth();
       errorMessage = error instanceof Error ? error.message: 'Summarization failed';
       currentSummary = null;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Handle focus area toggle
@@ -256,7 +256,7 @@ await checkServiceHealth();
             bind:value={documentType}
             class="w-full px-3 py-2 border border-input bg-background rounded-md"
           >
-            {#each documentTypes as type}
+            {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
               <option value={type.value}>{type.label}</option>
             {/each}
           </select>
@@ -273,7 +273,7 @@ await checkServiceHealth();
               bind:value={summaryType}
               class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
             >
-              {#each summaryTypes as type}
+              {#each Array.isArray(summaryTypes) ? summaryTypes : [] as type}
                 <option value={type.value}>{type.label}</option>
               {/each}
             </select>
@@ -295,7 +295,7 @@ await checkServiceHealth();
         <div class="space-y-2">
           <Label>Focus Areas</Label>
           <div class="grid grid-cols-2 gap-2">
-            {#each availableFocusAreas as area}
+            {#each Array.isArray(availableFocusAreas) ? availableFocusAreas : [] as area}
               <label class="flex items-center space-x-2 text-sm">
                 <input
                   type="checkbox"
@@ -347,8 +347,7 @@ await checkServiceHealth();
                 style="width: {processingProgress}%"
               ></div>
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Error Message -->
         {#if errorMessage}
           <Alert variant="error">
@@ -443,36 +442,33 @@ await checkServiceHealth();
                   {currentSummary.summary.executive_summary}
                 </p>
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Key Points -->
           {#if currentSummary.summary.key_points?.length}
             <div class="space-y-2">
               <h4 class="font-medium">📌 Key Points</h4>
               <ul class="space-y-2">
-                {#each currentSummary.summary.key_points as point}
+                {#each Array.isArray(currentSummary.summary.key_points) ? currentSummary.summary.key_points : [] as point}
                   <li class="flex items-start space-x-2 text-sm">
                     <span class="text-primary mt-1">•</span>
                     <span>{point}</span>
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           <!-- Legal Implications -->
           {#if currentSummary.summary.legal_implications?.length}
             <div class="space-y-2">
               <h4 class="font-medium">⚖️ Legal Implications</h4>
               <ul class="space-y-2">
-                {#each currentSummary.summary.legal_implications as implication}
+                {#each Array.isArray(currentSummary.summary.legal_implications) ? currentSummary.summary.legal_implications : [] as implication}
                   <li class="flex items-start space-x-2 text-sm">
                     <span class="text-yellow-600 mt-1">⚠️</span>
                     <span>{implication}</span>
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           <!-- Full Summary -->
           <div class="space-y-2">
             <h4 class="font-medium">📋 Full Summary</h4>
@@ -493,8 +489,7 @@ await checkServiceHealth();
             <p class="text-xs mt-2">
               Powered by Gemma3 Legal AI • Optimized for legal document analysis
             </p>
-          </div>
-        {/if}
+          {/if}
       </CardContent>
     </Card>
   </div>

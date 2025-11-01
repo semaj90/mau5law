@@ -22,12 +22,12 @@ type CacheInfo = {
   cacheMisses?: number;
   quicStreamsUsed?: number;
   graphTraversalTime?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type GraphContext = {
   nodesTraversed?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // More strongly-typed query shape (compatible with existing uses)
@@ -39,7 +39,7 @@ type DidYouMeanQuery = {
     jurisdiction?: string;
     practiceArea?: string;
     documentType?: string;
-    [k: string]: unknown;
+    [k: string]: any;
   };
   options?: {
     maxSuggestions?: number;
@@ -47,16 +47,16 @@ type DidYouMeanQuery = {
     includeTypos?: boolean;
     includeSemanticSuggestions?: boolean;
     graphDepth?: number;
-    [k: string]: unknown;
+    [k: string]: any;
   };
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type DidYouMeanResult = {
   suggestions?: SuggestionItem[];
   cacheInfo?: CacheInfo;
   graphContext?: GraphContext;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type DidYouMeanServiceType = {
@@ -68,7 +68,7 @@ type DidYouMeanServiceType = {
 // Replace the loose any with a resolver that supports both export shapes:
 // 1) default export is the service object
 // 2) default export is { didYouMeanService: service }
-function resolveDidYouMeanService(mod: unknown): DidYouMeanServiceType | null {
+function resolveDidYouMeanService(mod: any): DidYouMeanServiceType | null {
   // quick shape checks without using `any`
   if (!mod || typeof mod !== 'object') return null;
   const m = mod as Record<string, unknown>;
@@ -192,7 +192,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
         Vary: 'Accept-Encoding',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     if (isSvelteKitHttpError(err)) {
       throw err; // re-throw known SvelteKit/http error object
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'public, max-age=300',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     // Zod errors carry .name === 'ZodError'
     if (isZodError(err)) {
@@ -332,7 +332,7 @@ export const DELETE: RequestHandler = async () => {
       processingTimeMs: processingTime,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Cache clear failed:', err);
     // If it's a SvelteKit/http error object, rethrow it
@@ -351,11 +351,11 @@ export const DELETE: RequestHandler = async () => {
 };
 
 // Add these helpers (place near top-level, after imports / schema)
-function isZodError(err: unknown): err is ZodError {
+function isZodError(err: any): err is ZodError {
   // safe check for ZodError without using `any`
-  return typeof err === 'object' && err !== null && (err as { name?: unknown }).name === 'ZodError';
+  return typeof err === 'object' && err !== null && (err as { name?: any }).name === 'ZodError';
 }
-function isSvelteKitHttpError(err: unknown): err is { status: number } {
+function isSvelteKitHttpError(err: any): err is { status: number } {
   // detect SvelteKit/http-style error objects that carry a numeric status
-  return typeof err === 'object' && err !== null && typeof (err as { status?: unknown }).status === 'number';
+  return typeof err === 'object' && err !== null && typeof (err as { status?: any }).status === 'number';
 }

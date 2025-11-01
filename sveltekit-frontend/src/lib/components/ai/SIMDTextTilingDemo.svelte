@@ -4,13 +4,13 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   let isProcessing = $state(false);
   let results = $state([]);
   let selectedMode = $state('langchain-simd');
@@ -129,7 +129,7 @@ https://svelte.dev/e/expected_token -->
       addLog(`❌ Error: ${error.message}`);
       alert(`Processing failed: ${error.message}`);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function processBatchTexts() {
@@ -145,8 +145,8 @@ https://svelte.dev/e/expected_token -->
       }
       addLog(`✅ Batch processing complete: ${results.length} texts processed`);
     } finally {
-      batchMode = false;
-      isProcessing = false;
+      batchMode = $state(false);
+      isProcessing = $state(false);
     }
   }
   async function benchmarkCompressionLevels() {
@@ -166,7 +166,7 @@ https://svelte.dev/e/expected_token -->
       compressionTarget = originalTarget;
       addLog('✅ Compression benchmark complete');
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function updateSystemStats(result) {
@@ -362,8 +362,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             </div>
             <div class="text-xs text-gray-600">Memory Eff</div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Live Rendered Components -->
@@ -384,8 +383,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Processing Results -->
   {#if results.length > 0}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -462,15 +460,13 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
                     </div>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
             <!-- Performance Metrics -->
             <div class="bg-gray-50 p-3 rounded text-xs space-y-1">
               <div><strong>Memory Efficiency:</strong> {((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).memoryEfficiency * 100).toFixed(1)}%</div>
               <div><strong>Cache Hits:</strong> {(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cacheHits}</div>
               {#if (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).instantComponents}
-                <div><strong>Instant UI:</strong> <span class="text-green-600">✓ Enabled</span></div>
-              {/if}
+                <div><strong>Instant UI:</strong> <span class="text-green-600">✓ Enabled</span>{/if}
             </div>
           </div>
         </div>
@@ -489,8 +485,7 @@ processSingleText(0)}
         >
           🚀 Process Sample Text
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
     <div class="nes-container">
@@ -504,13 +499,12 @@ processingLogs = []} variant="ghost" size="sm">
       </div>
       <div class="yorha-panel-content">
         <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-xs max-h-64 overflow-y-auto">
-          {#each processingLogs as log}
+          {#each Array.isArray(processingLogs) ? processingLogs : [] as log}
             <div class="mb-1">{log}</div>
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .simd-text-demo {

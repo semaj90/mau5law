@@ -390,7 +390,7 @@ export class SIMDTextTilingEngine {
     if (tile.tileMetadata.tokenCount < 5) return 'micro-text';
     return 'standard-text';
   }
-  private generateRenderingInstructions(tiles: CompressedTextTile[], _metadata: unknown): string {
+  private generateRenderingInstructions(tiles: CompressedTextTile[], _metadata: any): string {
     const instructions = tiles
       .map((tile, index) => {
         return `tile[${index}]: render(${tile.id}, pattern=${tile.tileMetadata.patternId}, density=${tile.tileMetadata.semanticDensity.toFixed(2)})`;

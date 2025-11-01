@@ -6,11 +6,9 @@
   }
   let { class: className = '', children }: CardTitleProps = $props();
 </script>
-
 <h3 class={cn('shadcn-card-title', className)}>
-  {@render children?.()}
+  <slot />
 </h3>
-
 <style>
   :global(.shadcn-card-title) {
     font-size: 1.25rem;

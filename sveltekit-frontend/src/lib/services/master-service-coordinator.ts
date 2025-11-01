@@ -63,9 +63,9 @@ export interface PerformanceMetrics {
 }
 
 export class MasterServiceCoordinator {
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private healthCheckInterval: number | null = null;
-  private errorRecoveryActive = false;
+  private errorRecoveryActive = $state(false);
 
   // Reactive stores
   public serviceStatuses = writable<Map<string, ServiceStatus>>(new Map());
@@ -660,7 +660,7 @@ export class MasterServiceCoordinator {
         this.activeErrors.update(errors => errors.filter(e => e !== resolution));
       }, 30000);
     } finally {
-      this.errorRecoveryActive = false;
+      this.errorRecoveryActive = $state(false);
     }
   }
 
@@ -742,7 +742,7 @@ export class MasterServiceCoordinator {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
 

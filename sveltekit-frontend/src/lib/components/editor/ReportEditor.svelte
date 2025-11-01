@@ -6,12 +6,12 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Removed unused imports: onDestroy, quintOut, Modal, Component
   import { onMount } from 'svelte';
-  import AdvancedSearch from "../search/AdvancedSearch.svelte";
-  import ReportToolbar from "./ReportToolbar.svelte";
-  import RichTextEditor from "./RichTextEditor.svelte";
-  import EvidenceForm from "./EvidenceForm.svelte";
-  import MasonryGrid from "$lib/components/ui/MasonryGrid.svelte";
-  import EvidenceCardComponent from "$lib/components/evidence/EvidenceCard.svelte";
+  import { AdvancedSearch } from "../search/AdvancedSearch.svelte";
+  import { ReportToolbar } from "./ReportToolbar.svelte";
+  import { RichTextEditor } from "./RichTextEditor.svelte";
+  import { EvidenceForm } from "./EvidenceForm.svelte";
+  import { MasonryGrid } from "$lib/components/ui/MasonryGrid.svelte";
+  import { EvidenceCardComponent } from "$lib/components/evidence/EvidenceCard.svelte";
   import { Button as BitsButton } from 'bits-ui';
   // Icons
   import { invalidateAll } from "$app/navigation";
@@ -34,7 +34,6 @@ https://svelte.dev/e/js_parse_error -->
   import type { ReportStoreState, ReportUIState, EditorState } from '$lib/types/report';
   import * as unified from '$lib/stores/unified';
   import { legalAnalysisCache } from '$lib/services/legal-analysis-cache';
-
   // lightweight Evidence type used in this component (prevents "Cannot find name: 'Evidence'")
   type Evidence = {
     id: string;
@@ -44,11 +43,9 @@ https://svelte.dev/e/js_parse_error -->
     url?: string;
     file?: any;
   };
-
   // Create runtime aliases / fallbacks for external stores and actions
   import { writable } from 'svelte/store';
   import type { Writable } from 'svelte/store';
-
   // helper: ensure we always have a Writable<T> (wrap readable stores if necessary)
   function ensureWritable<T>(maybeStore: any, fallback: T): Writable<T> {
     if (maybeStore && typeof maybeStore.subscribe === 'function' && typeof maybeStore.set === 'function' && typeof maybeStore.update === 'function') {
@@ -62,10 +59,8 @@ https://svelte.dev/e/js_parse_error -->
     }
     return w;
   }
-
   // editorState store fallback (safe)
   const editorState = ensureWritable<EditorState>((unified as any).editorState, { wordCount: 0 } as EditorState);
-
   // report store fallback (minimal shape) — widen type to include properties used in this component
   type ReportExt = ReportStoreState & {
     settings: { layout: 'single' | 'dual' | 'masonry'; autoSave?: boolean };
@@ -80,7 +75,6 @@ https://svelte.dev/e/js_parse_error -->
     metadata: { status: 'draft', updatedAt: new Date() },
   };
   const report = ensureWritable<ReportExt>((unified as any).report, defaultReport);
-
   // reportActions fallback (use any access to avoid missing-property TS errors)
   const reportActions = (unified as any).reportActions ?? {
     updateTitle: (t: string) => report.update(r => ({ ...r, title: t })),
@@ -93,79 +87,64 @@ https://svelte.dev/e/js_parse_error -->
   const reportUI = ensureWritable<ReportUIState>((unified as any).reportUI, { sidebarOpen: true, fullscreen: false, sidebarWidth: 320 } as ReportUIState);
   // setupAutoSave fallback
   const setupAutoSave = (unified as any).setupAutoSave ?? (() => () => { /* noop cleanup */ });
-
   // Create permissive aliases for UI components to avoid strict SvelteComponentTyped event/slot typing errors
   const Button: any = BitsButton as unknown as any;
   const EvidenceCard: any = EvidenceCardComponent as unknown as any;
   // MasonryGrid alias as any to avoid strict slot typing issues in templates
   const MasonryGridComponent: any = MasonryGrid as any;
-
   // Legal document comparison state
   let comparingId: string | null = null;
   let compareError: string | null = null;
   let comparisonResults: Record<string, any> = {};
   let cacheStats = { totalEntries: 0, oldestEntry: null as number | null, newestEntry: null as number | null, totalSize: 0 };
-
   // Modal & form state (added to fix missing identifiers)
-  let showEvidenceModal: boolean = false;
-  let showSettingsModal: boolean = false;
+  let showEvidenceModal: boolean = $state(false);
+  let showSettingsModal: boolean = $state(false);
   let evidenceFormData: any = {}; // form model used by EvidenceForm
   let selectedEvidence: Evidence | null = null;
   let evidenceSearchResults: Evidence[] = []; // populated on mount from report attachedEvidence
-
   // Editor ref & autosave cleanup placeholder
   let editorComponent: any = null;
   let cleanupAutoSave: (() => void) | undefined = undefined;
-
   // Reactive editor height
   let editorHeight = 500;
   function updateEditorHeight() {
     // reference the store value via $reportUI in function (Svelte auto-subscription in module)
     editorHeight = $reportUI?.fullscreen ? window.innerHeight - 200 : 500;
   }
-
   // NEW: derive layout class in script to avoid complex expressions in markup
   $: layoutClass = $report?.settings
     ? ({ single: 'layout-single', dual: 'layout-dual', masonry: 'layout-masonry' }[$report.settings.layout] ?? 'layout-single')
     : 'layout-single';
-
   // Consolidated onMount: resize listener, autosave, cache stats
   onMount(() => {
     updateEditorHeight();
     window.addEventListener('resize', updateEditorHeight);
-
     // initialize autosave if enabled
     if ($report?.settings?.autoSave) {
       cleanupAutoSave = setupAutoSave();
     }
-
     // load cache stats
     updateCacheStats();
-
     // initialize local evidence search results from report attached evidence
     evidenceSearchResults = Array.isArray($report?.attachedEvidence) ? ($report.attachedEvidence as Evidence[]) : [];
-
     return () => {
       window.removeEventListener('resize', updateEditorHeight);
       if (cleanupAutoSave) cleanupAutoSave();
     };
   });
-
   // Update cache statistics
   function updateCacheStats() {
     cacheStats = legalAnalysisCache.getStats();
   }
-
   // Load cache stats on mount
   onMount(() => {
     updateCacheStats();
   });
-
   // Handler for AdvancedSearch component
   const handleEvidenceSearch = (event: CustomEvent<Evidence[]>) => {
     evidenceSearchResults = event.detail;
   };
-
   // Handle evidence actions
   const handleViewEvidence = (evidence: Evidence) => {
     selectedEvidence = evidence;
@@ -201,11 +180,9 @@ https://svelte.dev/e/js_parse_error -->
       window.open(evidence.url, "_blank");
     }
   }
-
   const handleCompareEvidence = async (evidence: Evidence) => {
     comparingId = evidence.id;
     compareError = null;
-
     try {
       // 1. Check cache first for instant results
       const cached = await legalAnalysisCache.get(
@@ -214,7 +191,6 @@ https://svelte.dev/e/js_parse_error -->
         evidence.description,
         evidence.tags
       );
-
       if (cached) {
         console.log('⚡ Using cached analysis for:', evidence.title);
         comparisonResults[evidence.id] = {
@@ -227,36 +203,28 @@ https://svelte.dev/e/js_parse_error -->
         updateCacheStats();
         return;
       }
-
       // 2. No cache hit - analyze with API
       const formData = new FormData();
-
       // Create a text file from evidence content for analysis
       const textContent = `${evidence.title}\n\n${evidence.description || ''}`;
       const blob = new Blob([textContent], { type: 'text/plain' });
       const file = new File([blob], `${evidence.title}.txt`, { type: 'text/plain' });
-
       formData.append('file', file);
       formData.append('title', evidence.title);
       formData.append('documentType', 'evidence');
       formData.append('tags', (evidence.tags || []).join(','));
       formData.append('enableComparison', 'true');
-
       const response = await fetch('/api/legal-report/analyze', {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
       }
-
       const result = await response.json();
-
       if (result.success) {
         comparisonResults[evidence.id] = result.data;
         console.log('✅ Legal analysis complete:', result.data);
-
         // 3. Store in cache for future use
         await legalAnalysisCache.set(
           evidence.id,
@@ -267,7 +235,6 @@ https://svelte.dev/e/js_parse_error -->
           result.data.comparison,
           result.data.processingTime
         );
-
         updateCacheStats();
       } else {
         throw new Error(result.error || 'Analysis failed');
@@ -279,7 +246,6 @@ https://svelte.dev/e/js_parse_error -->
       comparingId = null;
     }
   }
-
   // UI helpers
   const handleAddNewEvidence = () => {
     selectedEvidence = null;
@@ -325,26 +291,21 @@ https://svelte.dev/e/js_parse_error -->
       toggleFullscreen();
     }
   }
-
   // Added imports for focus management
   import { tick } from 'svelte';
-
   // Modal refs for focus management
   let evidenceModalRef: HTMLDivElement | null = null;
   let evidenceModalContentRef: HTMLDivElement | null = null;
   let settingsModalRef: HTMLDivElement | null = null;
   let settingsModalContentRef: HTMLDivElement | null = null;
-
   // Unified close helpers
   function closeEvidenceModal() {
-    showEvidenceModal = false;
+    showEvidenceModal = $state(false);
     selectedEvidence = null;
   }
-
   function closeSettingsModal() {
-    showSettingsModal = false;
+    showSettingsModal = $state(false);
   }
-
   // Keyboard handlers for overlay and content
   function handleOverlayKeydown(e: KeyboardEvent, closeFn: () => void) {
     const key = e.key;
@@ -358,7 +319,6 @@ https://svelte.dev/e/js_parse_error -->
       closeFn();
     }
   }
-
   function handleContentKeydown(e: KeyboardEvent) {
     // Allow Escape to bubble/close the dialog and prevent accidental activation
     if (e.key === 'Escape') {
@@ -367,7 +327,6 @@ https://svelte.dev/e/js_parse_error -->
       closeSettingsModal();
     }
   }
-
   // Focus management when modals open
   $: if (showEvidenceModal) {
     // wait for DOM, then move focus into the modal content (best for screen readers)
@@ -381,7 +340,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
   }
-
   $: if (showSettingsModal) {
     (async () => {
       await tick();
@@ -393,9 +351,7 @@ https://svelte.dev/e/js_parse_error -->
     })();
   }
 </script>
-
 <svelte:window onkeydown={handleKeydown} />
-
 <div
   class={"report-editor " + layoutClass}
   class:fullscreen={$reportUI.fullscreen}
@@ -544,16 +500,13 @@ https://svelte.dev/e/js_parse_error -->
                   </Button>
                 </EvidenceCard>
               {/each}
-            </div>
-          {/if}
+            {/if}
           {#if evidenceSearchResults.length === 0}
             <div>
               <p>No evidence found</p>
               <small>Add evidence to enhance your report</small>
-            </div>
-          {/if}
+            {/if}
         </section>
-
         <!-- Legal Analysis Results Panel -->
         {#if Object.keys(comparisonResults).length > 0}
           <section class="sidebar-section">
@@ -573,51 +526,44 @@ https://svelte.dev/e/js_parse_error -->
                     </span>
                   {/if}
                 </div>
-
                 {#if result.analysis}
                   <!-- WHO Section -->
                   {#if result.analysis.who?.personsOfInterest?.length > 0}
                     <div class="mb-2">
                       <span class="text-xs font-medium text-blue-700">WHO:</span>
                       <div class="flex flex-wrap gap-1 mt-1">
-                        {#each result.analysis.who.personsOfInterest.slice(0, 3) as person}
+                        {#each Array.isArray(result.analysis.who.personsOfInterest.slice(0, 3)) ? result.analysis.who.personsOfInterest.slice(0, 3) : [] as person}
                           <span class="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
                             {person.name}
                           </span>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
-
+                    {/if}
                   <!-- WHAT Section -->
                   {#if result.analysis.what?.legalIssues?.length > 0}
                     <div class="mb-2">
                       <span class="text-xs font-medium text-green-700">WHAT:</span>
                       <div class="flex flex-wrap gap-1 mt-1">
-                        {#each result.analysis.what.legalIssues.slice(0, 2) as issue}
+                        {#each Array.isArray(result.analysis.what.legalIssues.slice(0, 2)) ? result.analysis.what.legalIssues.slice(0, 2) : [] as issue}
                           <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded">
                             {issue}
                           </span>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
-
+                    {/if}
                   <!-- Similar Cases -->
                   {#if result.comparison?.similarCases?.length > 0}
                     <div class="mb-2">
                       <span class="text-xs font-medium text-purple-700">Similar Cases:</span>
                       <div class="space-y-1 mt-1">
-                        {#each result.comparison.similarCases.slice(0, 2) as similarCase}
+                        {#each Array.isArray(result.comparison.similarCases.slice(0, 2)) ? result.comparison.similarCases.slice(0, 2) : [] as similarCase}
                           <div class="text-xs text-gray-600 truncate">
                             • {similarCase.title} ({(similarCase.score * 100).toFixed(0)}%)
                           </div>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                 {/if}
-
                 <div class="text-xs text-gray-400 mt-2">
                   Processed in {(result.processingTime / 1000).toFixed(1)}s
                 </div>
@@ -625,7 +571,6 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </section>
         {/if}
-
         {#if compareError}
           <section class="sidebar-section">
             <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -633,7 +578,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </section>
         {/if}
-
         <section class="stats-section sidebar-section">
           <div class="stats-grid">
             <section class="space-y-4">
@@ -654,7 +598,6 @@ https://svelte.dev/e/js_parse_error -->
                   <span>Modified</span>
                   <span>{$report.metadata.updatedAt.toLocaleDateString()}</span>
                 </div>
-
                 {#if cacheStats.totalEntries > 0}
                   <div class="border-t border-gray-200 pt-2 mt-2">
                     <div class="text-xs text-gray-500 font-semibold mb-1">Analysis Cache</div>
@@ -666,8 +609,7 @@ https://svelte.dev/e/js_parse_error -->
                       <span>Size</span>
                       <span class="text-xs">{(cacheStats.totalSize / 1024).toFixed(1)}KB</span>
                     </div>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </section>
           </div>
@@ -797,7 +739,6 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <!-- Modals: replaced bits-ui Dialog usage with simple local modal markup -->
 {#if showEvidenceModal}
   <!-- Overlay: presentation-only; keep it tabbable for programmatic focus but not as the dialog itself -->
@@ -838,9 +779,7 @@ https://svelte.dev/e/js_parse_error -->
         }}
       />
     </div>
-  </div>
-{/if}
-
+  {/if}
 {#if showSettingsModal}
   <!-- Overlay: presentation-only -->
   <div
@@ -870,9 +809,7 @@ https://svelte.dev/e/js_parse_error -->
         <p>Settings panel - TODO: Implement settings form</p>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .report-editor {
     display: flex;
@@ -881,11 +818,9 @@ https://svelte.dev/e/js_parse_error -->
     background: #ffffff;
     transition: all 0.3s ease;
   }
-
   .editor-toolbar {
     align-items: center;
   }
-
   .editor-toolbar {
     align-items: center;
     justify-content: space-betweennn;
@@ -893,14 +828,12 @@ https://svelte.dev/e/js_parse_error -->
     border-bottom: 1px solid #e2e8f0;
     background: #ffffff;
   }
-
   .editor-title-section {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     flex: 1;
   }
-
   .sidebar-toggle {
     display: flex;
     align-items: center;
@@ -914,12 +847,10 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.15s ease;
   }
-
   .sidebar-toggle:hover {
     background: #f3f4f6;
     color: #3b82f6;
   }
-
   .report-title-input {
     flex: 1;
     max-width: 30rem;
@@ -930,14 +861,10 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent;
     color: inherit;
   }
-
   /* basic editor layout finishing rules */
   .editor-content { display: flex; height: 100%; }
   .editor-main { flex: 1; display: flex; flex-direction: column; }
   .editor-header { display: flex; align-items: center; justify-content: space-betweennn; padding: 0.5rem 1rem; }
   .evidence-panel { width: 320px; border-left: 1px solid #e6e6e6; padding: 0.75rem; overflow: auto; }
-
 </style>
-
 <!-- Ensure file ends with a newline -->
-

@@ -20,7 +20,7 @@ interface LODProcessingContext {
   session_id?: string;
   query_context?: string;
   user_preferences?: Record<string, unknown>;
-  search_metadata?: unknown[];
+  search_metadata?: any[];
 }
 interface EnhancedRAGRetrievalOptions {
   lod_preference?: LODLevel;
@@ -165,7 +165,7 @@ class LODCacheEngine {
     // Check environment configuration
     if (!CLIENT_ENV.GPU_ACCELERATION) {
       console.log('🎮 GPU acceleration disabled via environment for LOD Cache Engine');
-      this.useGPUAcceleration = false;
+      this.useGPUAcceleration = $state(false);
       this.activeBackend = 'cpu';
       return;
     }
@@ -180,7 +180,7 @@ class LODCacheEngine {
       });
       if (!success) {
         console.warn('⚠️ GPU Context Provider initialization failed for LOD Cache, using CPU fallback');
-        this.useGPUAcceleration = false;
+        this.useGPUAcceleration = $state(false);
         this.activeBackend = 'cpu';
         return;
       }
@@ -196,7 +196,7 @@ class LODCacheEngine {
       await this.loadVectorProcessingShaders();
     } catch (error) {
       console.warn('⚠️ Hybrid GPU initialization failed for LOD Cache, using CPU fallback:', error);
-      this.useGPUAcceleration = false;
+      this.useGPUAcceleration = $state(false);
       this.activeBackend = 'cpu';
     }
   }
@@ -283,7 +283,6 @@ class LODCacheEngine {
    */ getHybridGPU(): HybridGPUContext | null {
     return this.hybridGPU;
   }
-
   // ===== Added: method signatures for shader creators to avoid unsafe declaration merging =====
   // These are only signatures so TypeScript knows these methods exist on the class.
   // Implementations are attached to the prototype later in the file (keeps file organization).
@@ -300,7 +299,6 @@ class LODCacheEngine {
   createWebGL1ClusteringFragmentShader!: () => string;
   createWebGL1SimilarityFragmentShader!: () => string;
   // =========================================================================================
-
   /**
    * Main entry point: Process LLM output into LOD-cached, SVG-summarized, vector-enhanced format
    */

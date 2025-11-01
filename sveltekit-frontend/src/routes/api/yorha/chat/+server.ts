@@ -43,7 +43,7 @@ type OllamaConfig = {
   url?: string;
   chatModel?: string;
   model?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           );
 
           // replaced constant-condition loop with a controlled loop
-          let readerDone = false;
+          let readerDone = $state(false);
           while (!readerDone) {
             const result = await reader.read();
             readerDone = !!result.done;

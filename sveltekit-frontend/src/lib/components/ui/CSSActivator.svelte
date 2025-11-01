@@ -1,12 +1,11 @@
 <script lang="ts">
   // Hidden component that activates all NES.css selectors to prevent unused warnings
   // This component is invisible but contains all HTML elements that NES.css styles
-  import NESElementsShowcase from './NESElementsShowcase.svelte';
+  import { NESElementsShowcase } from './NESElementsShowcase.svelte';
 </script>
-
 <!-- Hidden showcase that activates all CSS selectors -->
 <div
-  style="position absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;"
+  style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;"
   aria-hidden="true"
 >
   <NESElementsShowcase visible={true} />
@@ -153,7 +152,6 @@
     <abbr data-original-title="Abbreviation">Abbr</abbr>
   </section>
 </div>
-
 <style>
   /* Ensure this component doesn't affect layout */
   :global(.css-activator-hidden) {

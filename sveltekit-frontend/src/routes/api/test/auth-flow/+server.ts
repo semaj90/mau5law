@@ -5,7 +5,7 @@ export interface AuthFlowTestResult {
   step: string;
   success: boolean;
   duration: number;
-  data?: unknown;
+  data?: any;
   error?: string;
 }
 export interface TestSuite {
@@ -25,7 +25,7 @@ export interface TestSuite {
 // New: explicit authenticated user + auth payload types to avoid `any`
 type AuthenticatedUser = {
   id: string | number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type AuthData = {
@@ -34,7 +34,7 @@ type AuthData = {
 };
 
 // Runtime guard for safety
-function isAuthData(obj: unknown): obj is AuthData {
+function isAuthData(obj: any): obj is AuthData {
   // stricter checks without using `any`
   if (typeof obj !== 'object' || obj === null) return false;
   const rec = obj as Record<string, unknown>;
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: msg,
         };
         testSuite.results.push(sessionFailure);
-        testSuite.systemHealth.sessionManagement = false;
+        testSuite.systemHealth.sessionManagement = $state(false);
       } else {
         const sessionResult = await testSessionManagement(authResult.data);
         testSuite.results.push(sessionResult);
@@ -125,11 +125,11 @@ export const POST: RequestHandler = async ({ request }) => {
         duration: testSuite.totalDuration,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Authentication flow test failed:', message);
     testSuite.totalDuration = Date.now() - startTime;
-    testSuite.overallSuccess = false;
+    testSuite.overallSuccess = $state(false);
     testSuite.results.push({
       step: 'test_execution',
       success: false,
@@ -177,7 +177,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
         sessionCookie: loginResponse.headers.get('set-cookie'),
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Authentication system test failed:', message);
     return {
@@ -219,7 +219,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
         health: sessionHealth,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Session management test failed:', message);
     return {
@@ -232,7 +232,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
 }
 // Add type guards to avoid `any` casts
 function hasCheckAllServicesHealth(
-  obj: unknown
+  obj: any
 ): obj is { checkAllServicesHealth: () => Promise<Record<string, unknown>> } {
   return (
     typeof obj === 'object' &&
@@ -243,7 +243,7 @@ function hasCheckAllServicesHealth(
 }
 
 function hasGetAllServicesHealth(
-  obj: unknown
+  obj: any
 ): obj is { getAllServicesHealth: () => Promise<Record<string, unknown>> } {
   return (
     typeof obj === 'object' &&
@@ -258,7 +258,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
   try {
     console.log('🚀 Testing production services...');
     // Test service health (defensive: support multiple client shapes)
-    const client: unknown = productionServiceClient;
+    const client: any = productionServiceClient;
     const serviceHealth: Record<string, unknown> = hasCheckAllServicesHealth(client)
       ? await client.checkAllServicesHealth()
       : hasGetAllServicesHealth(client)
@@ -287,7 +287,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
         totalCount: totalServices,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Production services test failed:', message);
     return {
@@ -343,7 +343,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
         healthyInstances: healthyOllama,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ AI assistant test failed:', message);
     return {
@@ -383,7 +383,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
         accelerationEnabled: true,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ GPU acceleration test failed:', message);
     return {
@@ -426,7 +426,7 @@ async function testEndToEndIntegration(_testUser: string): Promise<AuthFlowTestR
         integrationScore: '100%',
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ End-to-end integration test failed:', message);
     return {

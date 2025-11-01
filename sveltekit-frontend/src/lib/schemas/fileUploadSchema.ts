@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 export const fileUploadSchema = z.object({
   caseId: z.string().optional(), // Case ID can be optional, assigned later
   type: z.string().min(1, 'Document type is required.'),
@@ -10,6 +9,5 @@ export const fileUploadSchema = z.object({
   aiAnalysis: z.boolean().default(true), // Default to true for AI platform
   file: z.instanceof(File, { message: 'A file is required for upload.' }),
 });
-
 export type FileUploadSchema = typeof fileUploadSchema;
 export type FileUploadFormData = z.infer<typeof fileUploadSchema>;

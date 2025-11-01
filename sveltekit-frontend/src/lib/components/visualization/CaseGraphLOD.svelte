@@ -16,8 +16,8 @@
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import * as Card from '$lib/components/ui/card';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import * as Card from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     Network,
     Eye,
@@ -32,7 +32,6 @@
     Search,
     Filter,
   } from 'lucide-svelte';
-
   interface GraphNode {
     id: string;
     type: 'person' | 'entity' | 'document' | 'event' | 'location';
@@ -72,7 +71,6 @@
     onEdgeClick?: (edge: GraphEdge) => void;
     onLODChange?: (level: number) => void;
   }
-
   // Props
   export let caseId: string;
   export let graphData: { nodes: GraphNode[]; edges: GraphEdge[] } | undefined = { nodes: [], edges: [] };
@@ -82,11 +80,10 @@
   export let onNodeClick: ((node: GraphNode) => void) | undefined;
   export let onEdgeClick: ((edge: GraphEdge) => void) | undefined;
   export let onLODChange: ((level: number) => void) | undefined;
-
   // State
   let canvasElement: HTMLCanvasElement | null = null;
   let gpuDevice: GPUDevice | null = null;
-  let isWebGPUReady = false;
+  let isWebGPUReady = $state(false);
   let allNodes: GraphNode[] = [];
   let allEdges: GraphEdge[] = [];
   let visibleNodes: GraphNode[] = [];
@@ -96,15 +93,13 @@
   let cameraPosition = { x: 0, y: 0, z: cameraDistance };
   let zoomLevel = 1.0;
   let rotation = 0;
-  let isLoading = false;
+  let isLoading = $state(false);
   let selectedNode: GraphNode | null = null;
   let hoveredNode: GraphNode | null = null;
-
   // Physics simulation state
   let physicsEnabled = true;
   let simulationStep = 0;
   let forceStrength = 0.1;
-
   // Filter controls
   let nodeTypeFilters = {
     person true,
@@ -114,7 +109,6 @@
     location true,
   };
   let importanceThreshold = 0.1;
-
   // LOD configuration inspired by N64 polygon reduction
   const lodConfig = {
     0: {
@@ -150,7 +144,6 @@
       renderComplexity: 0.2,
     },
   } as const;
-
   // Derived values
   $: recommendedLOD = (() => {
     const distance = Math.sqrt(cameraPosition.x ** 2 + cameraPosition.y ** 2 + cameraPosition.z ** 2);
@@ -160,7 +153,6 @@
     if (distance < 200 && nodeCount < 1000) return 2;
     return 3;
   })();
-
   $: lodStats = (() => {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     return {
@@ -173,7 +165,6 @@
       frameTime: estimateFrameTime(),
     };
   })();
-
   // Lifecycle init
   onMount(() => {
     (async () => {
@@ -190,14 +181,12 @@
       }
     })();
   });
-
   onDestroy(() => {
     // Cleanup WebGPU resources and physics simulation
-    physicsEnabled = false;
+    physicsEnabled = $state(false);
     // release GPU resources if needed
     gpuDevice = null;
   });
-
   async function initializeWebGPU(): Promise<void> {
     if (!('gpu' in navigator)) {
       throw new Error('WebGPU not supported');
@@ -217,13 +206,11 @@
     isWebGPUReady = true;
     console.log('[CaseGraphLOD] WebGPU initialized for graph rendering');
   }
-
   async function initializeCanvas2DFallback(): Promise<void> {
     // Mark as ready to use 2D rendering path
-    isWebGPUReady = false;
+    isWebGPUReady = $state(false);
     console.warn('[CaseGraphLOD] Falling back to 2D canvas rendering');
   }
-
   async function loadGraphData(): Promise<void> {
     isLoading = true;
     try {
@@ -251,10 +238,9 @@
       console.error('[CaseGraphLOD] Failed to load graph data:', error);
       await loadDemoGraphData();
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   function calculateNodeImportance(): void {
     allNodes = allNodes.map(node => {
       const connectionWeight = (node.connections?.length || 0) / Math.max(1, allNodes.length * 0.1);
@@ -264,7 +250,6 @@
       return { ...node, importance };
     });
   }
-
   function getNodeTypeImportance(type: string): number {
     const typeWeights: Record<string, number> = {
       person 0.9,
@@ -275,7 +260,6 @@
     };
     return typeWeights[type] ?? 0.5;
   }
-
   function generateGraphClusters(): void {
     const clusters = new Map<string, GraphNode[]>();
     allNodes.forEach(node => {
@@ -297,7 +281,6 @@
       };
     });
   }
-
   function calculateClusterCenter(nodes: GraphNode[]): { x: number; y: number } {
     if (nodes.length === 0) return { x: 0, y: 0 };
     const sum = nodes.reduce(
@@ -306,7 +289,6 @@
     );
     return { x: sum.x / nodes.length, y: sum.y / nodes.length };
   }
-
   function calculateClusterRadius(nodes: GraphNode[], center: { x: number; y: number }): number {
     if (nodes.length === 0) return 0;
     return Math.max(
@@ -315,7 +297,6 @@
       )
     );
   }
-
   function applyLODFiltering(): void {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     if (!config) return;
@@ -326,14 +307,12 @@
     });
     filtered.sort((a, b) => (b.importance || 0) - (a.importance || 0));
     visibleNodes = filtered.slice(0, config.maxNodes);
-
     const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
     let filteredEdges = allEdges.filter(edge => visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target));
     filteredEdges.sort((a, b) => b.strength - a.strength);
     visibleEdges = filteredEdges.slice(0, config.maxEdges);
     console.log(`[CaseGraphLOD] LOD ${currentLOD}: ${visibleNodes.length} nodes, ${visibleEdges.length} edges`);
   }
-
   function initializePhysicsPositions(): void {
     visibleNodes.forEach((node, index) => {
       if (!node.position || typeof node.position.x !== 'number' || typeof node.position.y !== 'number') {
@@ -347,7 +326,6 @@
       }
     });
   }
-
   function startPhysicsSimulation(): void {
     physicsEnabled = true;
     simulationStep = 0;
@@ -362,7 +340,6 @@
     };
     simulate();
   }
-
   function applyForces(): void {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     const dampening = 0.9;
@@ -410,7 +387,6 @@
       nodeA.position!.y += forceY * dampening;
     }
   }
-
   async function renderGraph(): Promise<void> {
     if (isWebGPUReady && gpuDevice) {
       await renderWebGPU();
@@ -418,12 +394,10 @@
       await renderCanvas2D();
     }
   }
-
   async function renderWebGPU(): Promise<void> {
     // Placeholder for future high-performance rendering
     // ...existing code...
   }
-
   async function renderCanvas2D(): Promise<void> {
     const ctx = canvasElement?.getContext('2d');
     if (!ctx || !canvasElement) return;
@@ -432,13 +406,11 @@
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#0a0a0f';
     ctx.fillRect(0, 0, width, height);
-
     ctx.save();
     ctx.translate(width / 2, height / 2);
     ctx.scale(zoomLevel, zoomLevel);
     ctx.rotate((rotation * Math.PI) / 180);
     ctx.translate(-cameraPosition.x, -cameraPosition.y);
-
     // Edges
     visibleEdges.forEach(edge => {
       const source = visibleNodes.find(n => n.id === edge.source);
@@ -455,7 +427,6 @@
         ctx.globalAlpha = 1.0;
       }
     });
-
     // Nodes
     visibleNodes.forEach(node => {
       const size = Math.max(2, node.size * Math.max(0.5, 1 - currentLOD * 0.2));
@@ -479,7 +450,6 @@
           ctx.arc(node.position!.x, node.position!.y, size, 0, Math.PI * 2);
       }
       ctx.fill();
-
       if (node === selectedNode) {
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
@@ -489,7 +459,6 @@
         ctx.lineWidth = 1.5;
         ctx.stroke();
       }
-
       if (currentLOD <= 1 && (node.importance || 0) > 0.7) {
         ctx.fillStyle = '#fff';
         ctx.font = `${Math.max(10, 12 - currentLOD * 2)}px monospace`;
@@ -497,10 +466,8 @@
         ctx.fillText(node.label, node.position!.x, node.position!.y + size + 12);
       }
     });
-
     ctx.restore();
   }
-
   // User interaction handlers
   function handleCanvasClick(e: MouseEvent): void {
     if (!canvasElement) return;
@@ -519,7 +486,6 @@
     }
     renderGraph();
   }
-
   function handleCanvasHover(e: MouseEvent): void {
     if (!canvasElement) return;
     const rect = canvasElement.getBoundingClientRect();
@@ -534,7 +500,6 @@
       renderGraph();
     }
   }
-
   function handleZoomIn(): void {
     zoomLevel = Math.min(3.0, zoomLevel * 1.2);
     renderGraph();
@@ -558,7 +523,6 @@
     applyLODFiltering();
     renderGraph();
   }
-
   function calculateMemoryUsage(): number {
     const nodeSize = 128;
     const edgeSize = 64;
@@ -570,7 +534,6 @@
     const nodeCount = visibleNodes.length;
     return baseTime * (1 + (nodeCount / 1000) * (2 - complexity));
   }
-
   async function loadDemoGraphData(): Promise<void> {
     const demoNodes: GraphNode[] = [
       {
@@ -615,7 +578,6 @@
     initializePhysicsPositions();
   }
 </script>
-
 <div class="case-graph-lod nes-container with-title">
   <p class="title">🕸️ Case Relationship Graph</p>
   <!-- Graph Controls -->
@@ -656,7 +618,7 @@
         <div class="filter-content">
           <div class="node-type-filters">
             <h5>Node Types:</h5>
-            {#each Object.keys(nodeTypeFilters) as nodeType}
+            {#each Array.isArray(Object.keys(nodeTypeFilters)) ? Object.keys(nodeTypeFilters) : [] as nodeType}
               <label class="nes-checkbox">
                 <input
                   type="checkbox"
@@ -702,8 +664,7 @@
           <div class="nes-progress-bar indeterminate"></div>
         </div>
         <p>Loading graph data...</p>
-      </div>
-    {/if}
+      {/if}
     <!-- Node info panel -->
     {#if selectedNode}
       <div class="node-info-panel nes-container">
@@ -716,8 +677,7 @@
             {#snippet children()}View Details{/snippet}
           </LoadingButton>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Graph Statistics -->
   <div class="graph-stats nes-container">
@@ -752,7 +712,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .case-graph-lod {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
@@ -792,11 +751,11 @@
     justify-self: end;
   }
   .filter-dropdown {
-    position relative;
+    position: relative;
     background: rgba(0, 0, 0, 0.5);
   }
   .filter-content {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0;
     z-index: 10,
@@ -818,7 +777,7 @@
     margin-top: 1rem;
   }
   .graph-canvas-container {
-    position relative;
+    position: relative;
     background: #1a1a2e;
     border: 2px solid #444;
     border-radius: 4px;
@@ -826,7 +785,7 @@
     overflow: hidden;
   }
   .graph-canvas-container .loading-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -839,7 +798,7 @@
     gap: 1rem;
   }
   .node-info-panel {
-    position absolute;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.9);
@@ -905,7 +864,7 @@
       justify-self: center;
     }
     .graph-canvas-container {
-      position static;
+      position: static;
       margin-top: 1rem;
     }
     .stats-grid {
@@ -913,4 +872,3 @@
     }
   }
 </style>
-

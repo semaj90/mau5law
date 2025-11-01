@@ -7,7 +7,6 @@
  *   const ollama = new OllamaClient();
  *   const response = await ollama.generate('Summarize this contract...');
  */
-
 export interface GenerateOptions {
   model?: string;
   temperature?: number;
@@ -16,7 +15,6 @@ export interface GenerateOptions {
   maxTokens?: number;
   stream?: boolean;
 }
-
 export interface GenerateResponse {
   response: string;
   model: string;
@@ -26,11 +24,9 @@ export interface GenerateResponse {
   prompt_eval_count?: number;
   eval_count?: number;
 }
-
 export class OllamaClient {
   private baseUrl: string;
   private defaultModel: string;
-
   constructor(
     baseUrl: string = '/api/ollama',
     defaultModel: string = 'gemma3:270m'
@@ -38,7 +34,6 @@ export class OllamaClient {
     this.baseUrl = baseUrl;
     this.defaultModel = defaultModel;
   }
-
   /**
    * Generate text using Ollama gemma3:270m
    */
@@ -54,7 +49,6 @@ export class OllamaClient {
       maxTokens = 512,
       stream = false
     } = options;
-
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
@@ -71,19 +65,16 @@ export class OllamaClient {
           }
         })
       });
-
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Ollama API error: ${response.status} - ${error}`);
       }
-
       return await response.json();
     } catch (error) {
       console.error('❌ [Ollama Client] Generation failed:', error);
       throw error;
     }
   }
-
   /**
    * Chat with conversation history
    */
@@ -93,7 +84,6 @@ export class OllamaClient {
   ): Promise<string> {
     // Build prompt from messages
     let prompt = '';
-
     for (const msg of messages) {
       if (msg.role === 'system') {
         prompt += `System: ${msg.content}\n\n`;
@@ -103,13 +93,10 @@ export class OllamaClient {
         prompt += `Assistant: ${msg.content}\n\n`;
       }
     }
-
     prompt += 'Assistant: ';
-
     const result = await this.generate(prompt, options);
     return result.response;
   }
-
   /**
    * Check if Ollama is available
    */
@@ -122,7 +109,6 @@ export class OllamaClient {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'GET'
       });
-
       if (!response.ok) {
         return {
           status: 'offline',
@@ -130,7 +116,6 @@ export class OllamaClient {
           available_models: []
         };
       }
-
       return await response.json();
     } catch {
       return {
@@ -140,7 +125,6 @@ export class OllamaClient {
       };
     }
   }
-
   /**
    * Legal-specific helpers
    */
@@ -152,10 +136,8 @@ export class OllamaClient {
         maxTokens: 300
       }
     );
-
     return result.response;
   }
-
   async answerLegalQuestion(question: string, context: string): Promise<string> {
     const result = await this.generate(
       `Context: ${context}\n\nQuestion: ${question}\n\nAnswer the question based only on the provided context. Be accurate and concise.`,
@@ -164,10 +146,8 @@ export class OllamaClient {
         maxTokens: 400
       }
     );
-
     return result.response;
   }
-
   async extractLegalEntities(text: string): Promise<string> {
     const result = await this.generate(
       `Extract legal entities (parties, dates, locations) from this text. Return as JSON:\n\n${text}`,
@@ -176,16 +156,13 @@ export class OllamaClient {
         maxTokens: 200
       }
     );
-
     return result.response;
   }
 }
-
 /**
  * Singleton instance for global use
  */
 export const ollamaClient = new OllamaClient();
-
 /**
  * USAGE EXAMPLES:
  *

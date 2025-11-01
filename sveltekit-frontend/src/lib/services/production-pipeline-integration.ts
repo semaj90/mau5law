@@ -52,7 +52,7 @@ type ActionArgs<C = PipelineContext, E = PipelineEvent> = {
   context: C;
   event: E;
   // allow extra runtime properties XState may pass (like meta, src, _event)
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // allow using assign without the strict xstate generics (workaround for v5 typing mismatch)
@@ -122,19 +122,19 @@ type WSJobUpdate = { type: 'job_update'; job: ProcessingJob };
 type WSDocumentProcessed = { type: 'document_processed'; document: Document };
 type WSPipelineStats = { type: 'pipeline_stats'; stats: PipelineStats };
 type WSCacheInvalidated = { type: 'cache_invalidated'; pattern?: string };
-type WSUnknown = { type: string; [key: string]: unknown };
+type WSUnknown = { type: string; [key: string]: any };
 
 type WebSocketMessage = WSJobUpdate | WSDocumentProcessed | WSPipelineStats | WSCacheInvalidated | WSUnknown;
 
 // Helper to safely extract error message from unknown
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   // Common runtime error shapes
   if (!err) return 'Unknown error';
   if (typeof err === 'string') return err;
   if (err instanceof Error) return err.message;
   try {
     // attempt to read message property on objects
-    const asAny = err as { message?: unknown };
+    const asAny = err as { message?: any };
     if (typeof asAny.message === 'string') return asAny.message;
   } catch {
     /* ignore */
@@ -144,7 +144,7 @@ function getErrorMessage(err: unknown): string {
 
 // Named interface for cache entries
 interface PipelineCacheEntry {
-  data: unknown;
+  data: any;
   timestamp: number;
 }
 // Configuration
@@ -242,7 +242,7 @@ const pipelineMachine = createMachine(
         console.log('📤 Starting document upload...');
       },
 
-      handleUploadSuccess: (args: unknown) => {
+      handleUploadSuccess: (args: any) => {
         const { context, event } = (args as ActionArgs);
         let jobs = (context && context.jobs) || [];
         if (event?.type === 'UPLOAD_SUCCESS') {
@@ -259,7 +259,7 @@ const pipelineMachine = createMachine(
         console.log('🕷️ Starting URL processing...');
       },
 
-      handleProcessingSuccess: (args: unknown) => {
+      handleProcessingSuccess: (args: any) => {
         const { context, event } = (args as ActionArgs);
         let jobs = (context && context.jobs) || [];
         if (event?.type === 'PROCESSING_SUCCESS') {
@@ -276,7 +276,7 @@ const pipelineMachine = createMachine(
         console.log('🔍 Starting search...');
       },
 
-      handleSearchSuccess: (args: unknown) => {
+      handleSearchSuccess: (args: any) => {
         const { event } = (args as ActionArgs);
         let results: SearchResult[] = [];
         if (event?.type === 'SEARCH_SUCCESS') {
@@ -291,7 +291,7 @@ const pipelineMachine = createMachine(
         console.log('📋 Fetching jobs...');
       },
 
-      updateJobs: (args: unknown) => {
+      updateJobs: (args: any) => {
         const { context, event } = (args as ActionArgs);
         let jobs = (context && context.jobs) || [];
         if (event?.type === 'JOBS_FETCHED') {
@@ -302,7 +302,7 @@ const pipelineMachine = createMachine(
         return { jobs };
       },
 
-      handleError: (args: unknown) => {
+      handleError: (args: any) => {
         const { event } = (args as ActionArgs);
         let errMsg = 'Unknown';
         if (
@@ -319,7 +319,7 @@ const pipelineMachine = createMachine(
       },
 
       // setError adapted to XState v5 action signature: single `args` parameter
-      setError: (args: unknown) => {
+      setError: (args: any) => {
         const ev = (args as ActionArgs)?.event as PipelineEvent | undefined;
         if (
           ev &&
@@ -354,10 +354,10 @@ export class ProductionPipelineService {
 
   private setupMachineSubscriptions() {
     // `onTransition` may be optional on the interpreter API - use optional chaining
-    this.machine.onTransition?.((state: unknown) => {
+    this.machine.onTransition?.((state: any) => {
       // narrow to a minimal typed shape for properties used here (avoid `any`)
       type PipelineStateLike = {
-        value?: unknown;
+        value?: any;
         matches?: (s: string | string[]) => boolean;
       };
       const s = state as PipelineStateLike;
@@ -486,7 +486,7 @@ export class ProductionPipelineService {
       // Fetch jobs immediately after upload
       await this.refreshJobs();
       return jobs;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Document upload failed:', msg);
       this.machine.send({ type: 'UPLOAD_ERROR', error: msg } as UploadErrorEvent);
@@ -517,7 +517,7 @@ export class ProductionPipelineService {
       const result = await response.json();
       this.machine.send({ type: 'PROCESSING_SUCCESS', job: result } as ProcessingSuccessEvent);
       return (result.job_id as string) || (result.id as number) || result;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ URL processing failed:', msg);
       this.machine.send({ type: 'PROCESSING_ERROR', error: msg } as ProcessingErrorEvent);
@@ -553,7 +553,7 @@ export class ProductionPipelineService {
       this.machine.send({ type: 'SEARCH_SUCCESS', results } as SearchSuccessEvent);
       searchResults.set(results);
       return results;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Search failed:', msg);
       this.machine.send({ type: 'SEARCH_ERROR', error: msg } as SearchErrorEvent);
@@ -564,7 +564,7 @@ export class ProductionPipelineService {
   // Vector/Semantic Search
   async vectorSearch(embedding: Float32Array, threshold = 0.7, limit = 10): Promise<SearchResult[]> {
     // runtime type guard moved to function body root to satisfy linter
-    function isDocument(obj: unknown): obj is Document {
+    function isDocument(obj: any): obj is Document {
       return (
         !!obj &&
         typeof obj === 'object' &&
@@ -588,7 +588,7 @@ export class ProductionPipelineService {
       // safe parsing: ensure an array and map to SearchResult shape if needed
       const raw = Array.isArray(result?.results) ? result.results : [];
 
-      const results: SearchResult[] = (raw as unknown[]).map((r: unknown) => {
+      const results: SearchResult[] = (raw as unknown[]).map((r: any) => {
         const rr = r as Record<string, unknown>;
         const docCandidate = rr.document ?? rr.doc ?? rr;
 
@@ -618,7 +618,7 @@ export class ProductionPipelineService {
       // this.setCache<SearchResult[]>(cacheKey, results);
 
       return results;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Vector search failed:', msg);
       this.machine.send({ type: 'SEARCH_ERROR', error: msg } as SearchErrorEvent);
@@ -629,7 +629,7 @@ export class ProductionPipelineService {
   // --- Added helpers: apiCall with retry + cache helpers + invalidate ---
   private async apiCall(path: string, init: RequestInit = {}, attempts = CONFIG.retryAttempts): Promise<Response> {
     const url = `${CONFIG.gatewayUrl.replace(/\/$/, '')}${path.startsWith('/') ? path : `/${path}`}`;
-    let lastErr: unknown = null;
+    let lastErr: any = null;
     for (let i = 0; i < Math.max(1, attempts); i++) {
       try {
         const resp = await fetch(url, init);
@@ -702,7 +702,7 @@ export class ProductionPipelineService {
       this.machine.send({ type: 'JOBS_FETCHED', jobs } as JobsFetchedEvent);
 
       return jobs;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = getErrorMessage(err);
       console.error('❌ Fetch jobs failed:', msg);
       this.machine.send({ type: 'FETCH_ERROR', error: msg } as FetchErrorEvent);

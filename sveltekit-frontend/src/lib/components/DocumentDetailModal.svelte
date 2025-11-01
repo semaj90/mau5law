@@ -16,7 +16,6 @@ https://svelte.dev/e/js_parse_error -->
   import { fade } from 'svelte/transition';
   import { db } from '$lib/db/dexie-integration.js';
   import { logger } from '$lib/logging/structured-logger.js';
-
   // Resolve unifiedStore robustly to support named export, default export, or alternative shapes.
   import * as _unifiedStoreModule from '$lib/storage/unified-dimensional-store.js';
   const unifiedStore: any =
@@ -27,14 +26,13 @@ https://svelte.dev/e/js_parse_error -->
     {
       updateDocumentCache: async (_docId: string, _payload: any) => Promise.resolve(),
     };
-
   // Component props (Svelte standard)
-  export let documentId: string | null = null;
-  export let isOpen: boolean = false;
-  export let onClose: (() => void) | null = null;
-
+  let { documentId = null, isOpen = false, onClose = null } = $props<{
+    documentId?: string | null;
+    isOpen?: boolean;
+    onClose?: (() => void) | null;
+  }>();
   const dispatch = createEventDispatcher();
-
   // --- New: safe logger wrapper for user actions ---
   async function logUserAction(payload: Record<string, any>): Promise<void> {
     try {
@@ -56,7 +54,6 @@ https://svelte.dev/e/js_parse_error -->
       // swallow logging errors to avoid breaking UI
     }
   }
-
   // --- New: general safe logging helpers to replace direct logger.* calls ---
   async function logPerformance(payload: Record<string, any>): Promise<void> {
     try {
@@ -72,7 +69,6 @@ https://svelte.dev/e/js_parse_error -->
       // silent
     }
   }
-
   async function logErrorSafe(payload: Record<string, any>): Promise<void> {
     try {
       const anyLogger = logger as any;
@@ -87,7 +83,6 @@ https://svelte.dev/e/js_parse_error -->
       // silent
     }
   }
-
   async function logAPIRequestSafe(payload: Record<string, any>): Promise<void> {
     try {
       const anyLogger = logger as any;
@@ -102,7 +97,6 @@ https://svelte.dev/e/js_parse_error -->
       // silent
     }
   }
-
   async function logAPIResponseSafe(payload: Record<string, any>): Promise<void> {
     try {
       const anyLogger = logger as any;
@@ -117,7 +111,6 @@ https://svelte.dev/e/js_parse_error -->
       // silent
     }
   }
-
   // ========================================================================
   // STATE MANAGEMENT - use plain let variables
   // ========================================================================
@@ -147,7 +140,6 @@ https://svelte.dev/e/js_parse_error -->
     relationship_strength: number;
     connection_type: string;
   }
-
   let document: DocumentDetail | null = null;
   let relatedDocuments: RelatedDocument[] = [];
   let graphConnections: GraphConnection[] = [];
@@ -160,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
   let serverResponseTime = 0;
   let activeTab: string = 'document';
   let enableGPUAnalysis = false;
-
   // ========================================================================
   // CACHE-FIRST DATA LOADING STRATEGY
   // ========================================================================
@@ -228,7 +219,6 @@ https://svelte.dev/e/js_parse_error -->
       ipAddress: 'client',
       headers: { 'Cache-Control': forceRefresh ? 'no-cache' : 'max-age=300' }
     }).catch(() => {});
-
     const url = `/api/document/${docId}${enableGPUAnalysis ? '?gpu=true' : ''}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -238,7 +228,6 @@ https://svelte.dev/e/js_parse_error -->
     if (!data.success) {
       throw new Error(data.error || 'Server returned error');
     }
-
     // Populate UI
     document = data.document;
     relatedDocuments = data.related_documents || [];
@@ -246,14 +235,12 @@ https://svelte.dev/e/js_parse_error -->
     caseAssociations = data.case_associations || [];
     gpuAnalysis = data.gpu_analysis || null;
     metadata = data.enhanced_metadata || null;
-
     await unifiedStore.updateDocumentCache(docId, {
       document,
       relatedDocuments,
       graphConnections,
       timestamp: Date.now(),
     }).catch(() => {});
-
     const cacheData = {
       document,
       relatedDocuments,
@@ -264,10 +251,8 @@ https://svelte.dev/e/js_parse_error -->
       cached_at: Date.now(),
       cache_source: 'server'
     };
-
     const ttl = data.cache_instructions?.cache_duration || 5 * 60 * 1000;
     await db.setCache(`document_detail_${docId}`, cacheData, ttl).catch(() => {});
-
     const serverTime = performance.now() - serverStartTime;
     await logAPIResponseSafe({
       requestId: crypto.randomUUID(),
@@ -276,7 +261,6 @@ https://svelte.dev/e/js_parse_error -->
       processingTime: serverTime,
       success: true,
     }).catch(() => {});
-
     // Emit events for graph updates
     dispatch('document_update', { documentId: docId, data: cacheData });
     if (graphConnections.length > 0) {
@@ -375,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
    * Close modal and cleanup
    */
   function handleClose(): void {
-    isOpen = false;
+    isOpen = $state(false);
     if (onClose) onClose();
     document = null;
     relatedDocuments = [];
@@ -394,12 +378,10 @@ https://svelte.dev/e/js_parse_error -->
       loadDocumentData(documentId).catch(() => {});
     }
   });
-
   $: if (isOpen && documentId) {
     // reactive: reload when modal opens or documentId changes
     loadDocumentData(documentId).catch(() => {});
   }
-
   // Helper functions
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -424,7 +406,6 @@ https://svelte.dev/e/js_parse_error -->
     return 'border-gray-500 bg-gray-50';
   }
 </script>
-
 <!-- Modal Overlay -->
 {#if isOpen}
   <div
@@ -506,8 +487,7 @@ https://svelte.dev/e/js_parse_error -->
               {cacheHit ? 'Refreshing in background...' : 'Loading document details...'}
             </span>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Error State -->
       {#if error}
         <div class="p-6">
@@ -527,8 +507,7 @@ https://svelte.dev/e/js_parse_error -->
               Try again
             </button>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Content -->
       {#if document && !loading}
         <div class="flex-1 overflow-hidden">
@@ -613,10 +592,8 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
                       <pre class="text-sm text-gray-600 font-mono">{JSON.stringify(document.metadata, null, 2)}</pre>
                     </div>
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
             <!-- Related Documents Tab -->
             {#if activeTab === 'related'}
               <div class="space-y-4">
@@ -657,10 +634,8 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       </button>
                     {/each}
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
             <!-- Graph Connections Tab -->
             {#if activeTab === 'connections'}
               <div class="space-y-4">
@@ -702,10 +677,8 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       </button>
                     {/each}
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
             <!-- Case Associations Tab -->
             {#if activeTab === 'cases'}
               <div class="space-y-4">
@@ -751,10 +724,8 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       </div>
                     {/each}
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
             <!-- GPU Analysis Tab -->
             {#if activeTab === 'analysis'}
               <div class="space-y-4">
@@ -807,19 +778,13 @@ https://svelte.dev/e/js_parse_error -->
                       <div class="p-4 bg-white border border-gray-200 rounded-lg">
                         <h4 class="font-semibold text-gray-900 mb-2">Legal Analysis</h4>
                         <pre class="text-sm text-gray-700 whitespace-pre-wrap">{JSON.stringify(gpuAnalysis.legalAnalysis, null, 2)}</pre>
-                      </div>
-                    {/if}
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                      {/if}
+                  {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .line-clamp-2 {
     display: -webkit-box;

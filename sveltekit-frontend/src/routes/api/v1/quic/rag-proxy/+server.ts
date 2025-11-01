@@ -40,7 +40,7 @@ export interface SourceMetadata {
   confidence?: number;
   tags?: string[];
   // Allow for additional, dynamic properties
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface Source {
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
       healthCheck: responseData,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('RAG QUIC Proxy health check failed:', err);
     return json({
       service: 'rag-quic-proxy',
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         model: ragResponse?.model || 'unknown',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('RAG QUIC Proxy error:', err);
     error(500, err instanceof Error ? err.message : 'RAG operation failed');
   }
@@ -302,7 +302,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('RAG document update error:', err);
     error(
       500,
@@ -343,7 +343,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('RAG document deletion error:', err);
     error(
       500,

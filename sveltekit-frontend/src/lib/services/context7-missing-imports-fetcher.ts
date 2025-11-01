@@ -96,7 +96,7 @@ export class Context7MissingImportsFetcher {
         bestPractices: this.extractSvelteBestPractices(response),
         apiReference: this.parseApiReference(response, 'svelte'),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Failed to fetch Svelte docs:', msg);
       return this.createFallbackSvelteDoc(analysis);
@@ -125,7 +125,7 @@ export class Context7MissingImportsFetcher {
         bestPractices: this.extractDrizzleBestPractices(response),
         apiReference: this.parseApiReference(response, 'drizzle'),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Failed to fetch Drizzle ORM docs:', msg);
       return this.createFallbackDrizzleDoc(analysis);
@@ -154,7 +154,7 @@ export class Context7MissingImportsFetcher {
         bestPractices: this.extractXStateBestPractices(response),
         apiReference: this.parseApiReference(response, 'xstate'),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Failed to fetch XState docs:', msg);
       return this.createFallbackXStateDoc(analysis);
@@ -189,7 +189,7 @@ export class Context7MissingImportsFetcher {
       const data: Context7McpResponse = await response.json();
       this.cache.set(cacheKey, data);
       return data;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Fallback to structured response
       const topicsMeta = topics;
       return {

@@ -61,7 +61,7 @@ export class DocumentApiService {
   }
 
   // Helper to convert unknown errors to a string safely
-  private formatError(error: unknown): string {
+  private formatError(error: any): string {
     return error instanceof Error ? error.message : String(error ?? 'Unknown error');
   }
 
@@ -94,7 +94,7 @@ export class DocumentApiService {
 
       // cast to expected return shape
       return (await response.json()) as { success: boolean; documentId?: string; error?: string };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Document upload failed:', message);
       return {
@@ -128,7 +128,7 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as ProcessingResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Document processing failed:', message);
       return {
@@ -151,7 +151,7 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as UploadProgress;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Status check failed:', message);
       return null;
@@ -170,7 +170,7 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as DocumentMetadata & { id?: string; content?: string };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Get document failed:', message);
       return null;
@@ -199,7 +199,7 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as ListDocumentsResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('List documents failed:', message);
       return {
@@ -225,7 +225,7 @@ export class DocumentApiService {
       }
 
       return { success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Document deletion failed:', message);
       return {
@@ -254,7 +254,7 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as SearchDocumentsResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Document search failed:', message);
       return { results: [], total: 0 };
@@ -276,7 +276,7 @@ export class DocumentApiService {
       }
 
       return (await response.json()) as ProcessingAnalytics;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Analytics failed:', message);
       return {
@@ -331,7 +331,7 @@ export class DocumentApiService {
             error?: string;
           }
         | { success: false; error: string };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = this.formatError(error);
       console.error('Legal document processing failed:', message);
       return {

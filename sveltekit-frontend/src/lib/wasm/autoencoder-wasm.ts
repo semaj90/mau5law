@@ -1,4 +1,4 @@
-const wasmModule: unknown = {};
+const wasmModule: any = {};
 export default wasmModule;
 // WASM Autoencoder Loader
 

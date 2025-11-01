@@ -3,8 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import CommandMenu from "./CommandMenu.svelte";
-
+  import { CommandMenu } from "./CommandMenu.svelte";
   interface Props {
     value?: string;
     placeholder?: string;
@@ -20,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
     onBlur?: (e: FocusEvent) => void;
     onFocus?: (e: FocusEvent) => void;
   }
-
   // use $props() and give sensible defaults
   let {
     value = $bindable(""),
@@ -36,29 +34,24 @@ https://svelte.dev/e/js_parse_error -->
     onBlur,
     onFocus
   }: Props = $props();
-
   // make DOM refs reactive using Svelte 5 $state to avoid non-reactive update errors
   let textarea = $state<HTMLTextAreaElement | null>(null);
   let commandMenu = $state<any>(null);
   let showCommandMenu = $state(false);
   let commandMenuPosition = $state({ x: 0, y: 0 });
   let lastCursorPosition = $state(0);
-
   function handleInput(e: Event) {
     const target = e.target as HTMLTextAreaElement;
     if (!target) return;
     value = target.value;
-
     // Check if user typed trigger character
     const cursorPosition = target.selectionStart ?? target.value.length;
     const textBeforeCursor = target.value.substring(0, cursorPosition);
     if (textBeforeCursor.endsWith(triggerChar)) {
       openCommandMenu();
     }
-
     onInput?.({ value, target });
   }
-
   function handleKeydown(e: KeyboardEvent) {
     // Don't interfere with command menu navigation
     if (
@@ -68,41 +61,33 @@ https://svelte.dev/e/js_parse_error -->
       // allow CommandMenu consumer to handle navigation if it needs to
       return;
     }
-
     // Ctrl/Cmd + K to open command menu
     if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
       e.preventDefault();
       openCommandMenu();
       return;
     }
-
     onKeydown?.(e);
   }
-
   function openCommandMenu() {
     if (!textarea || typeof window === "undefined") return;
     // Get cursor position
     const cursorPosition = textarea.selectionStart ?? textarea.value.length;
     lastCursorPosition = cursorPosition;
-
     // Calculate menu position relative to cursor (simple approximation)
     const textBeforeCursor = textarea.value.substring(0, cursorPosition);
     const lines = textBeforeCursor.split("\n");
     const currentLineIndex = Math.max(0, lines.length - 1);
     const currentColumn = lines[currentLineIndex]?.length ?? 0;
-
     const rect = textarea.getBoundingClientRect();
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight || "20", 10) || 20;
-
     // approximate x using character width (monospace assumption fallback)
     const approxCharWidth = parseFloat(getComputedStyle(textarea).fontSize || "14") * 0.55;
     const x = Math.round(rect.left + currentColumn * approxCharWidth + window.scrollX);
     const y = Math.round(rect.top + (currentLineIndex + 1) * lineHeight + window.scrollY);
-
     commandMenuPosition = { x, y };
     showCommandMenu = true;
   }
-
   function insertCommandText(text: string) {
     if (!textarea) return;
     const before = textarea.value.slice(0, lastCursorPosition);
@@ -117,28 +102,24 @@ https://svelte.dev/e/js_parse_error -->
       const pos = trimmedBefore.length + text.length;
       textarea.setSelectionRange(pos, pos);
     });
-    showCommandMenu = false;
+    showCommandMenu = $state(false);
     onCommandInsert?.({ text });
   }
-
   function closeCommandMenu() {
-    showCommandMenu = false;
+    showCommandMenu = $state(false);
   }
-
   function handleBlur(e: FocusEvent) {
     // Don't close command menu immediately to allow clicking on it
     setTimeout(() => {
       if (!document.activeElement?.closest(".command-menu")) {
-        showCommandMenu = false;
+        showCommandMenu = $state(false);
       }
     }, 150);
     onBlur?.(e);
   }
-
   function handleFocus(e: FocusEvent) {
     onFocus?.(e);
   }
-
   // Auto-resize textarea
   function autoResize() {
     if (textarea) {
@@ -146,7 +127,6 @@ https://svelte.dev/e/js_parse_error -->
       textarea.style.height = textarea.scrollHeight + "px";
     }
   }
-
   // Watch for value changes to auto-resize
   $effect(() => {
     if (value !== undefined) {
@@ -154,7 +134,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class={className}>
   <textarea
     bind:this={textarea}
@@ -178,10 +157,8 @@ https://svelte.dev/e/js_parse_error -->
     >
       <!-- CommandMenu API may vary; provide a callback prop that CommandMenu can call -->
       <CommandMenu {triggerChar} on:select={(e) => insertCommandText(e.detail?.text ?? e.detail ?? '')} onclose={closeCommandMenu} />
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .smart-textarea-container {
@@ -236,4 +213,3 @@ https://svelte.dev/e/js_parse_error -->
   }
   .command-menu { background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px; }
 </style>
-

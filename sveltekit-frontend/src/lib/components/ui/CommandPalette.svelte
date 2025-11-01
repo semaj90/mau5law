@@ -16,7 +16,7 @@
     id: string;
     title: string;
     description: string; // Fixed syntax
-    icon: unknown; // Fixed syntax
+    icon: any; // Fixed syntax
     category: string;
     href?: string;
     shortcut?: string[];
@@ -141,7 +141,7 @@
     close();
   }
   function close() {
-    open = false;
+    open = $state(false);
     // ondispatch removed;
   }
   $effect(() => {
@@ -241,7 +241,7 @@
                     </div>
                     {#if item.shortcut}
                       <div class="flex items-center gap-1">
-                        {#each item.shortcut as key}
+                        {#each Array.isArray(item.shortcut) ? item.shortcut : [] as key}
                           <kbd
                             class={cn(
                               'px-1.5 py-0.5 text-xs rounded border',
@@ -253,8 +253,7 @@
                             {key}
                           </kbd>
                         {/each}
-                      </div>
-                    {/if}
+                      {/if}
                   </button>
                 {/each}
               </div>
@@ -264,8 +263,7 @@
               <Search class="h-8 w-8 mx-auto mb-3 opacity-50" />
               <p class="text-sm">No results found for: "{searchQuery}"</p>
               <p class="text-xs mt-1">Try searching for cases, evidence, or commands</p>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Footer -->
         <div class="border-t border-nier-gray px-4 py-3">
@@ -289,8 +287,7 @@
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   /* @unocss-include */

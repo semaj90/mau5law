@@ -18,12 +18,12 @@ https://svelte.dev/e/illegal_element_attribute -->
   // Search and data management
   function handleCaseSelect(item: Case, type: string) {
     if (type === 'cases') {
-      selectedCaseId = (item as { id?: unknown }).id;
+      selectedCaseId = (item as { id?: any }).id;
       selectedCase = item;
       showCaseDialog = true;
     }
   }
-  function handleCommandSearch(item: unknown, type: string) {
+  function handleCommandSearch(item: any, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
       case 'cases':
@@ -219,8 +219,7 @@ https://svelte.dev/e/illegal_element_attribute -->
             <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md font-mono text-sm">
               {caseData.description}
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Quick Actions -->
         <div class="flex flex-wrap gap-2">
           <button
@@ -240,8 +239,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     {:else}
       <div class="text-center py-8">
         <p class="font-mono text-yorha-text-secondary">No case data available</p>
-      </div>
-    {/if}
+      {/if}
   {/snippet}
   {#snippet footer({ close })}
     <div class="flex justify-end gap-2">

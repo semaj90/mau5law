@@ -143,7 +143,7 @@ https://svelte.dev/e/expected_token -->
         <!-- Days of Week Header -->
         <DatePicker.GridHead>
           <DatePicker.GridRow class="flex">
-            {#each ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as day}
+            {#each Array.isArray(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']) ? ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] : [] as day}
               <DatePicker.HeadCell
                 class="nes-text is-disabled w-9 rounded-md text-[0.8rem] font-normal font-mono text-center text-yorha-text-secondary"
               >
@@ -189,8 +189,7 @@ https://svelte.dev/e/expected_token -->
               />
             </DatePicker.TimeField>
           </div>
-        </div>
-      {/if}
+        {/if}
     </DatePicker.Content>
   </DatePicker.Root>
   <!-- Description -->
@@ -209,8 +208,7 @@ https://svelte.dev/e/expected_token -->
   {#if variant === 'deadline' && value && isUpcomingDeadline}
     <div class="mt-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-xs font-mono text-red-400">
       ⚠️ Deadline approaching: {Math.ceil((value.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days remaining
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   :global(.legal-datepicker-container) {

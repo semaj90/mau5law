@@ -9,7 +9,7 @@ type Condition = {
   action: string;
   isActive?: boolean;
   metadata?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 declare const databaseOrchestrator: {
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
       orchestrator_running: status.isRunning,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
       condition,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -127,7 +127,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       conditionId: id,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {

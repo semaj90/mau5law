@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
       filePath,
       size: file.size,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error('Upload error:', error.message);
     } else {

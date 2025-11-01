@@ -2,7 +2,7 @@
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
   // the module exports a default builder (adjusted per compile hint)
-  import createLegalEvidenceAnalyzer from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
+  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte'';
   import {
     Card,
     CardHeader,
@@ -10,8 +10,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits';
-
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   interface EvidenceItem {
     id: string;
     type: 'email' | 'transcript' | 'financial' | 'document' | 'audio' | 'video';
@@ -28,7 +27,6 @@
     redacted: boolean;
     metadata?: { [key: string]: any };
   }
-
   interface Props {
     evidence?: EvidenceItem[];
     onAnalyze?: (evidenceId: string) => Promise<void>;
@@ -36,14 +34,12 @@
     onExport?: (evidenceIds: string[], format: string) => void;
   }
   let { evidence = [], onAnalyze, onUpload, onExport }: Props = $props();
-
   // Enhanced-Bits builder for evidence
   const evidenceBuilder = createLegalEvidenceAnalyzer({
     caseType: 'criminal',
     urgency: 'high',
     aiModel: 'gemma3',
   });
-
   // Svelte 5 runes / reactive primitives (keep existing project pattern)
   let selectedEvidence = $state<Set<string>>(new Set());
   let searchTerm = $state('');
@@ -51,7 +47,6 @@
   let sortBy = $state<'date' | 'relevance' | 'type' | 'authenticity'>('relevance');
   let isAnalyzing = $state(false);
   let showUpload = $state(false);
-
   // Sample evidence data if none provided
   let evidenceData = $state<EvidenceItem[]>(evidence.length > 0 ? evidence : [
     {
@@ -115,7 +110,6 @@
       }
     }
   ]);
-
   // Filtered and sorted evidence
   let filteredEvidence = $derived(() => {
     let filtered = evidenceData;
@@ -147,7 +141,6 @@
     });
     return filtered;
   });
-
   // Evidence type statistics
   let evidenceStats = $derived(() => {
     const stats = evidenceData.reduce((acc, item) => {
@@ -162,7 +155,6 @@
       byType: stats
     }
   });
-
   function toggleSelection(evidenceId: string) {
     const newSelection = new Set(selectedEvidence);
     if (newSelection.has(evidenceId)) {
@@ -172,7 +164,6 @@
     }
     selectedEvidence = newSelection;
   }
-
   function selectAll() {
     selectedEvidence = new Set(filteredEvidence.map(e => e.id));
   }
@@ -192,7 +183,7 @@
     } catch (error) {
       console.error('Evidence analysis failed:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   function exportSelected(format: 'pdf' | 'json' | 'csv') {
@@ -222,7 +213,6 @@
     }
     return (styles as any)[authenticity] || styles.pending;
   }
-
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement | null;
     if (!input) return;
@@ -230,14 +220,13 @@
     if (files && onUpload) {
       try {
         await onUpload(files);
-        showUpload = false;
+        showUpload = $state(false);
       } catch (error) {
         console.error('Upload failed:', error);
       }
     }
   }
 </script>
-
 <div class="evidence-manager">
   <!-- Evidence Manager Header -->
   <Card
@@ -272,8 +261,7 @@
                 📄 Export PDF ({selectedEvidence.size})
               </Button>
               <Button onclick={() => exportSelected('json')} variant="outline">🔧 Export JSON</Button>
-            </div>
-          {/if}
+            {/if}
         </div>
       </CardTitle>
     </CardHeader>
@@ -297,8 +285,7 @@
               </div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Search and Filters -->
       <div class="controls-section">
         <div class="search-controls">
@@ -405,7 +392,7 @@
                   </div>
                 </div>
                 <div class="evidence-tags">
-                  {#each evidence.tags as tag}
+                  {#each Array.isArray(evidence.tags) ? evidence.tags : [] as tag}
                     <span class="evidence-tag">#{tag}</span>
                   {/each}
                 </div>
@@ -449,8 +436,7 @@
                     {/each}
                   </div>
                 </details>
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
         {#if filteredEvidence.length === 0}
@@ -466,13 +452,11 @@
             >
               Clear Filters
             </Button>
-          </div>
-        {/if}
+          {/if}
       </div>
     </CardContent>
   </Card>
 </div>
-
 <style>
   .evidence-manager {
     max-width: 1400px;
@@ -771,7 +755,7 @@
   }
   .relevance-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition: width: 300ms ease;
     border-radius: 4px;
   }
   .relevance-value {
@@ -861,5 +845,3 @@
     }
   }
 </style>
-
-

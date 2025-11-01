@@ -21,8 +21,8 @@ export interface TensorOperation {
 export interface StreamingResponse {
   id: string;
   type: 'analysis_start' | 'chunk_analysis' | 'analysis_complete' | 'search_batch' | 'tensor_result';
-  data?: unknown;
-  delta?: unknown;
+  data?: any;
+  delta?: any;
   status: 'processing' | 'progress' | 'completed' | 'error';
   timestamp: number;
   finished: boolean;
@@ -31,7 +31,7 @@ export interface StreamingResponse {
     total_chunks?: number;
     chunk_index?: number;
     confidence?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface QUICMetrics {
@@ -325,7 +325,7 @@ export interface VectorSearchResponse {
 export interface WebSocketEvent {
   type: 'tensor_update' | 'som_update' | 'analysis_complete' | 'search_result' | 'error' | 'metrics';
   // Use `unknown` instead of `any` so callers must validate/cast payloads explicitly.
-  data: unknown;
+  data: any;
   timestamp: number;
   source: 'gpu' | 'cpu' | 'quic' | 'redis' | 'postgres';
   priority: 'low' | 'medium' | 'high' | 'critical';

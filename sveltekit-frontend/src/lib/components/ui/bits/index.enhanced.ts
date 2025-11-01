@@ -3,7 +3,6 @@
  * App-wide font integration with NES.css compatibility
  * Replaces shadcn-ui for consistent gaming aesthetic
  */
-
 // Core Enhanced-Bits Components
 export { default as Button } from './Button.svelte';
 export { default as Card } from './Card.svelte';
@@ -17,12 +16,10 @@ export { default as DialogWrapper } from './DialogWrapper.svelte';
 export { default as Input } from './Input.svelte';
 export { default as Label } from './Label.svelte';
 export { default as Select } from './Select.svelte';
-
 // NES.css Enhanced Components
 export { default as NESButton } from './NESButton.svelte';
 export { default as NESCard } from './NESCard.svelte';
 export { default as NESModal } from './NESModal.svelte';
-
 // AI & Legal Components
 export { default as AIDialog } from './AIDialog.svelte';
 export { default as AIChatMessage } from './AIChatMessage.svelte';
@@ -30,24 +27,19 @@ export { default as AISearchBar } from './AISearchBar.svelte';
 export { default as DocumentCard } from './DocumentCard.svelte';
 export { default as EvidenceBoard } from './EvidenceBoard.svelte';
 export { default as LegalAIDashboard } from './LegalAIDashboard.svelte';
-
 // Theme & Layout Components
 export { default as ThemeProvider } from './ThemeProvider.svelte';
 export { default as ThemeToggle } from './ThemeToggle.svelte';
 export { default as Sidebar } from './Sidebar.svelte';
 export { default as Toolbar } from './Toolbar.svelte';
-
 // Gaming Components
 export { default as NESGamingShowcase } from './NESGamingShowcase.svelte';
-
 // YoRHa Harvard Gaming Components
 export { default as YoRHaHarvardButton } from './YoRHaHarvardButton.svelte';
 export { default as YoRHaHarvardCard } from './YoRHaHarvardCard.svelte';
-
 // Utility Components
 export { default as Tooltip } from './Tooltip.svelte';
 export { default as Tabs } from './Tabs.svelte';
-
 // Enhanced-Bits CSS Classes and Utilities
 export const EnhancedBitsClasses = {
   // Fonts
@@ -56,40 +48,33 @@ export const EnhancedBitsClasses = {
   fontLegal: 'font-enhanced-legal',
   fontPixel: 'font-enhanced-pixel',
   fontJapanese: 'font-enhanced-japanese',
-
   // Backgrounds
   bgPrimary: 'bg-enhanced-primary',
   bgSecondary: 'bg-enhanced-secondary',
   bgTertiary: 'bg-enhanced-tertiary',
-
   // Text Colors
   textPrimary: 'text-enhanced-primary',
   textSecondary: 'text-enhanced-secondary',
   textMuted: 'text-enhanced-muted',
   textAccent: 'text-enhanced-accent',
-
   // Borders
   border: 'border-enhanced',
   borderAccent: 'border-enhanced-accent',
-
   // Buttons
   btn: 'enhanced-btn',
   btnPrimary: 'enhanced-btn enhanced-btn-primary',
   btnSecondary: 'enhanced-btn',
   btnNES: 'nes-enhanced-btn',
-
   // YoRHa Harvard Gaming Components
   yorhaHarvardBtn: 'yorha-harvard-btn',
   yorhaHarvardBtnPrimary: 'yorha-harvard-btn yorha-harvard-btn-primary',
   yorhaHarvardBtnGaming: 'yorha-harvard-btn yorha-gaming-btn',
   yorhaHarvardBtnTerminal: 'yorha-harvard-btn yorha-terminal-btn',
   harvardGamingBadge: 'harvard-gaming-badge',
-
   // Cards
   card: 'enhanced-card',
   yorhaHarvardCard: 'yorha-harvard-card',
   yorhaTerminal: 'yorha-terminal',
-
   // Gaming Utilities
   harvardCrimson: 'text-harvard-crimson',
   harvardGold: 'text-harvard-gold',
@@ -99,13 +84,10 @@ export const EnhancedBitsClasses = {
   harvardGlow: 'harvard-glow',
   pixelated: 'pixelated',
   gamingScanLines: 'gaming-scan-lines',
-
   // Inputs
   input: 'enhanced-input',
 } as const;
-
 export type EnhancedBitsClassName = keyof typeof EnhancedBitsClasses;
-
 /**
  * Enhanced-Bits Font System
  * Ensures consistent app-wide font loading
@@ -117,7 +99,6 @@ export const EnhancedBitsFonts = {
   pixel: 'Press Start 2P',
   japanese: 'Noto Sans JP',
 } as const;
-
 /**
  * YoRHa Harvard Gaming Color System
  * Academic prestige meets technological aesthetic

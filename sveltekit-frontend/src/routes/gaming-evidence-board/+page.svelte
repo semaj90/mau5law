@@ -5,7 +5,7 @@
   let isLoading = $state(true);
   // Simulate loading
   setTimeout(() => {
-    isLoading = false;
+    isLoading = $state(false);
   }, 1500);
 </script>
 

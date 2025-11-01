@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 /**
  * Normalised OCR result shared by browser and server callers.
  */
@@ -9,9 +8,8 @@ export interface OCRResult {
   engine: 'tesseract' | 'service' | 'none';
   pages: number;
   durationMs: number;
-  raw?: unknown;
+  raw?: any;
 }
-
 export type ImageSource =
   | HTMLImageElement
   | HTMLCanvasElement
@@ -21,7 +19,6 @@ export type ImageSource =
   | Buffer
   | ArrayBuffer
   | string;
-
 export interface OcrOptions {
   lang?: string;
   timeoutMs?: number;
@@ -32,15 +29,11 @@ export interface OcrOptions {
    */
   serviceUrl?: string;
 }
-
 const DEFAULT_LANG = 'eng';
 const DEFAULT_TIMEOUT = 30_000;
 const DEFAULT_RETRIES = 2;
-
 const memoryCache = new Map<string, OCRResult>();
-
 const isServer = typeof window === 'undefined';
-
 async function resolveRedis() {
   if (!isServer) return null;
   try {
@@ -48,14 +41,13 @@ async function resolveRedis() {
     const mod = require('$lib/server/cache/redis');
     const client = mod?.redis;
     if (client && typeof client.get === 'function' && typeof client.set === 'function') {
-      return client as { get(key: string): Promise<string | null>; set(key: string, value: string, opts?: unknown): Promise<void> };
+      return client as { get(key: string): Promise<string | null>; set(key: string, value: string, opts?: any): Promise<void> };
     }
   } catch {
     /* ignore */
   }
   return null;
 }
-
 function hashKey(data: Buffer | string, extra = ''): string {
   const hash = crypto.createHash('sha256');
   if (typeof data === 'string') hash.update(data);
@@ -63,7 +55,6 @@ function hashKey(data: Buffer | string, extra = ''): string {
   if (extra) hash.update(extra);
   return hash.digest('hex');
 }
-
 async function bufferFromSource(source: ImageSource): Promise<Buffer> {
   if (Buffer.isBuffer(source)) return source;
   if (typeof source === 'string') {
@@ -72,7 +63,6 @@ async function bufferFromSource(source: ImageSource): Promise<Buffer> {
       const arr = await res.arrayBuffer();
       return Buffer.from(arr);
     }
-
     if (!isServer) throw new Error('Reading local files is only supported on the server');
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = require('fs') as typeof import('fs');
@@ -117,7 +107,6 @@ async function bufferFromSource(source: ImageSource): Promise<Buffer> {
   }
   throw new Error('Unsupported image source');
 }
-
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
   let timeout: NodeJS.Timeout | undefined;
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -129,7 +118,6 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
     if (timeout) clearTimeout(timeout);
   }
 }
-
 async function loadTesseract() {
   if (isServer) {
     try {
@@ -146,11 +134,9 @@ async function loadTesseract() {
     return null;
   }
 }
-
 async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Promise<OCRResult | null> {
   const tesseract = await loadTesseract();
   if (!tesseract) return null;
-
   const started = Date.now();
   try {
     if (isServer) {
@@ -186,8 +172,7 @@ async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Pr
     return null;
   }
 }
-
-function computeConfidence(data: unknown): number | null {
+function computeConfidence(data: any): number | null {
   if (!data || typeof data !== 'object') return null;
   const obj = data as { confidence?: number; words?: Array<{ confidence?: number }> };
   if (Array.isArray(obj.words) && obj.words.length) {
@@ -197,12 +182,10 @@ function computeConfidence(data: unknown): number | null {
   if (typeof obj.confidence === 'number') return obj.confidence;
   return null;
 }
-
 async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, serviceUrl?: string): Promise<OCRResult | null> {
   const url =
     serviceUrl ??
     (isServer ? process.env.OCR_SERVICE_URL ?? 'http://localhost:8097/api/ocr' : '/api/ocr');
-
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const started = Date.now();
@@ -210,7 +193,6 @@ async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, s
     const body = new FormData();
     body.append('lang', lang);
     body.append('image', new Blob([buffer], { type: 'image/png' }), 'image.png');
-
     const response = await fetch(url, {
       method: 'POST',
       body,
@@ -232,7 +214,6 @@ async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, s
     clearTimeout(timer);
   }
 }
-
 async function getCachedResult(cacheKey: string): Promise<OCRResult | null> {
   const redis = await resolveRedis();
   if (redis) {
@@ -247,7 +228,6 @@ async function getCachedResult(cacheKey: string): Promise<OCRResult | null> {
   }
   return memoryCache.get(cacheKey) ?? null;
 }
-
 async function setCachedResult(cacheKey: string, result: OCRResult): Promise<void> {
   memoryCache.set(cacheKey, result);
   const redis = await resolveRedis();
@@ -258,21 +238,16 @@ async function setCachedResult(cacheKey: string, result: OCRResult): Promise<voi
     /* ignore write failures */
   }
 }
-
 export async function performOCR(source: ImageSource, options: OcrOptions = {}): Promise<OCRResult> {
   const lang = options.lang ?? DEFAULT_LANG;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT;
   const retries = options.retries ?? DEFAULT_RETRIES;
-
   const buffer = await bufferFromSource(source);
   const cacheKey = hashKey(buffer, lang);
-
   const cached = await getCachedResult(cacheKey);
   if (cached) return { ...cached, durationMs: 0 };
-
   let attempt = 0;
-  let lastError: unknown = null;
-
+  let lastError: any = null;
   while (attempt <= retries) {
     attempt += 1;
     const start = Date.now();
@@ -282,18 +257,15 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
         await setCachedResult(cacheKey, tesseractResult);
         return tesseractResult;
       }
-
       const serviceResult = await callOcrService(buffer, lang, timeoutMs, options.serviceUrl);
       if (serviceResult && serviceResult.text.trim()) {
         await setCachedResult(cacheKey, serviceResult);
         return serviceResult;
       }
-
       lastError = new Error('No OCR engine returned text');
     } catch (error) {
       lastError = error;
     }
-
     if (attempt <= retries) {
       const delay = Math.min(500 * attempt, 2000);
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -308,7 +280,6 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
       };
     }
   }
-
   return {
     text: '',
     confidence: null,
@@ -318,4 +289,3 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
     raw: lastError ?? null
   };
 }
-

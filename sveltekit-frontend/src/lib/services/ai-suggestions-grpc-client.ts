@@ -7,7 +7,7 @@ export interface ServiceError extends Error {
   metadata?: Record<string, unknown>;
 }
 export interface ClientOptions {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Server-side gRPC variable (lazy-loaded in connect())
@@ -184,7 +184,7 @@ export interface RatingResponse {
  */
 export class AISuggestionsGRPCClient {
   private client: GrpcClientLike | null = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   private readonly serviceUrl: string;
   private readonly clientOptions: ClientOptions;
 
@@ -226,7 +226,7 @@ export class AISuggestionsGRPCClient {
       // mark connected
       this.isConnected = true;
       console.log('AI Suggestions gRPC client connected successfully (placeholder)');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to connect to AI Suggestions gRPC service:', error);
       throw new Error(`gRPC connection failed: ${String(error)}`);
     }
@@ -236,7 +236,7 @@ export class AISuggestionsGRPCClient {
     if (!this.isConnected) await this.connect();
     try {
       return await this.httpFallback<SuggestionResponse>('/api/ai/suggestions', request);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('gRPC generateSuggestions failed:', error);
       throw error;
     }
@@ -246,7 +246,7 @@ export class AISuggestionsGRPCClient {
     if (!this.isConnected) await this.connect();
     try {
       return await this.httpFallback<SuggestionResponse>('/api/ai/suggestions/contextual', request);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('gRPC generateContextualSuggestions failed:', error);
       throw error;
     }
@@ -256,7 +256,7 @@ export class AISuggestionsGRPCClient {
     if (!this.isConnected) await this.connect();
     try {
       return await this.httpFallback<RatingResponse>('/api/ai/suggestions/rate', rating);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('gRPC rateSuggestion failed:', error);
       throw error;
     }
@@ -273,13 +273,13 @@ export class AISuggestionsGRPCClient {
       });
       const eventSource = new EventSource(`/api/ai/suggestions/stream?${params.toString()}`);
       yield* this.handleStreamingResponse(eventSource);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('gRPC streamSuggestions failed:', error);
       throw error;
     }
   }
 
-  private async httpFallback<T = unknown>(endpoint: string, data: unknown): Promise<T> {
+  private async httpFallback<T = unknown>(endpoint: string, data: any): Promise<T> {
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -292,7 +292,7 @@ export class AISuggestionsGRPCClient {
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const parsed = await res.json();
       return parsed as T;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('HTTP fallback failed:', error);
       throw error;
     }
@@ -300,7 +300,7 @@ export class AISuggestionsGRPCClient {
 
   private async *handleStreamingResponse(eventSource: EventSource): AsyncGenerator<SuggestionResponse> {
     const queue: SuggestionResponse[] = [];
-    let closed = false;
+    let closed = $state(false);
 
     eventSource.onmessage = (e: MessageEvent) => {
       try {
@@ -311,12 +311,12 @@ export class AISuggestionsGRPCClient {
       }
     };
 
-    eventSource.onerror = (err: unknown) => {
+    eventSource.onerror = (err: any) => {
       console.error('EventSource error', err);
       closed = true;
       try {
         eventSource.close();
-      } catch (closeErr: unknown) {
+      } catch (closeErr: any) {
         console.warn(
           'Failed to close EventSource on error:',
           closeErr instanceof Error ? closeErr.message : String(closeErr)
@@ -328,7 +328,7 @@ export class AISuggestionsGRPCClient {
       closed = true;
       try {
         eventSource.close();
-      } catch (closeErr: unknown) {
+      } catch (closeErr: any) {
         console.warn(
           'Failed to close EventSource on complete:',
           closeErr instanceof Error ? closeErr.message : String(closeErr)
@@ -354,7 +354,7 @@ export class AISuggestionsGRPCClient {
       // Use HTTP health endpoint as a fallback for now
       const res = await fetch('/api/ai/suggestions/health');
       return res.ok;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Health check failed:', err instanceof Error ? err.message : String(err));
       return false;
     }
@@ -366,7 +366,7 @@ export class AISuggestionsGRPCClient {
       if (this.client && typeof this.client.close === 'function') {
         try {
           this.client.close();
-        } catch (closeErr: unknown) {
+        } catch (closeErr: any) {
           console.warn(
             'Error while closing grpc client:',
             closeErr instanceof Error ? closeErr.message : String(closeErr)
@@ -374,9 +374,9 @@ export class AISuggestionsGRPCClient {
         }
       }
       this.client = null;
-      this.isConnected = false;
+      this.isConnected = $state(false);
       console.log('AI Suggestions gRPC client disconnected');
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Error disconnecting gRPC client:', err instanceof Error ? err.message : String(err));
     }
   }

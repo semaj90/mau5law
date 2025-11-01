@@ -51,11 +51,11 @@ export class RTXTensorUpscaler {
   private config: RTXTensorConfig;
   private gpuDevice: GPUDevice | null = null;
   private pipeline: GPURenderPipeline | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private benchmarkResults: RTXBenchmarkResults | null = null;
   private memoryPool: Map<string, GPUBuffer> = new Map();
   private processingQueue: Array<ProcessingTask> = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   constructor(config: Partial<RTXTensorConfig> = {}) {
     this.config = {
       tensorCores: true,
@@ -297,7 +297,7 @@ export class RTXTensorUpscaler {
       this.gpuDevice.destroy();
       this.gpuDevice = null;
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 RTX Tensor Upscaler resources cleaned up');
   }
 }

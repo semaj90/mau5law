@@ -4,16 +4,14 @@
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade } from "svelte/transition";
-
   // Bits-UI components
-  import * as Dialog from "$lib/components/ui/dialog";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import * as Tooltip from "$lib/components/ui/tooltip";
-  import { Button } from "$lib/components/ui/button";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
-  import { Textarea } from "$lib/components/ui/textarea";
-
+  import * as Dialog from '$lib/components/ui/dialog.svelte'";
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu.svelte'";
+  import * as Tooltip from '$lib/components/ui/tooltip.svelte'";
+  import { Button } from '$lib/components/ui/button.svelte'";
+  import { Input } from '$lib/components/ui/input.svelte'";
+  import { Label } from '$lib/components/ui/label.svelte'";
+  import { Textarea } from '$lib/components/ui/textarea.svelte'";
   import {
     AlertCircle,
     BookOpen,
@@ -29,14 +27,12 @@
     Share2, // Corrected import for Share icon
     X,
   } from "lucide-svelte";
-
   // Props
   let { caseId = undefined }: { caseId?: string } = $props();
   let { documentId = undefined }: { documentId?: string } = $props();
   let { documentType = "brief" }: { documentType?: "brief" | "contract" | "motion" | "evidence" } = $props();
   let { title = "Legal Document" }: { title?: string } = $props();
   let { readonly = false }: { readonly?: boolean } = $props();
-
   // Component state
   let content = $state("");
   let query = $state("");
@@ -45,7 +41,6 @@
   let error = $state("");
   let loadingDocument = $state(false);
   let documentLoadError = $state("");
-
   interface Citation {
     id: string;
     text: string;
@@ -53,14 +48,12 @@
     type: string;
   }
   let citations = $state<Citation[]>([]);
-
   // Auto-save state
   let autoSaveTimer = $state<ReturnType<typeof setTimeout> | null>(null);
   let lastSaved = $state("");
   let isSaving = $state(false);
   let saveError = $state("");
   let hasUnsavedChanges = $state(false);
-
   // Document type definitions
   interface DocumentData {
     id: string;
@@ -72,7 +65,6 @@
     updatedAt: string;
     citations?: Citation[];
   }
-
   async function handleAIRequest() {
     if (!query.trim()) return;
     isProcessingAI = true;
@@ -95,21 +87,19 @@
       query = "";
       // Close AI dialog - assuming a state variable controls it
       // For bits-ui, the Dialog component manages its own open state or takes an `open` prop.
-      // If `aiOpen` is a prop, it would be `aiOpen = false;`
+      // If `aiOpen` is a prop, it would be `aiOpen = $state(false);`
       // If it's internal state, it's handled by the DialogTrigger/Close.
     } catch (err) {
       error = err instanceof Error ? err.message : "AI request failed";
     } finally {
-      isProcessingAI = false;
+      isProcessingAI = $state(false);
     }
   }
-
   function insertCitation(citation: Citation) {
     const citationText = `[${citation.source}]`;
     content += citationText;
     citations = [...citations, citation];
   }
-
   // Enhanced auto-save function with debouncing
   function scheduleAutoSave() {
     if (!documentId || readonly) return;
@@ -123,7 +113,6 @@
       autoSaveDocument();
     }, 2000);
   }
-
   // Function to auto-save document
   async function autoSaveDocument() {
     if (!documentId || readonly || isSaving) return;
@@ -146,7 +135,7 @@
       const result = await response.json();
       if (result.success) {
         lastSaved = new Date().toLocaleTimeString();
-        hasUnsavedChanges = false;
+        hasUnsavedChanges = $state(false);
         console.log("Document auto-saved successfully");
       } else {
         throw new Error(result.error || "Auto-save failed");
@@ -155,10 +144,9 @@
       saveError = err instanceof Error ? err.message : "Auto-save failed";
       console.error("Auto-save failed:", err);
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
-
   // Function to manually save document
   async function manualSaveDocument() {
     if (!documentId || readonly || isSaving) return;
@@ -181,7 +169,7 @@
       const result = await response.json();
       if (result.success) {
         lastSaved = new Date().toLocaleTimeString();
-        hasUnsavedChanges = false;
+        hasUnsavedChanges = $state(false);
         console.log("Document saved successfully");
       } else {
         throw new Error(result.error || "Save failed");
@@ -190,10 +178,9 @@
       saveError = err instanceof Error ? err.message : "Save failed";
       console.error("Save failed:", err);
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
-
   // Function to get save status
   function getSaveStatus() {
     if (isSaving) return "Saving...";
@@ -202,7 +189,6 @@
     if (lastSaved) return `Last saved ${lastSaved}`;
     return "All changes saved";
   }
-
   function getDocumentTypeIcon() {
     switch (documentType) {
       case "brief":
@@ -216,7 +202,6 @@
       default: return FileText;
     }
   }
-
   $effect(() => {
     // Load document content if documentId is provided
     if (documentId) {
@@ -229,17 +214,14 @@
       }
     };
   });
-
   // Reactive statement to trigger auto-save when content changes
   $effect(() => {
     if (content && documentId && !loadingDocument) {
       scheduleAutoSave();
     }
   });
-
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());
-
   // Function to load document from API
   async function loadDocument() {
     if (!documentId) return;
@@ -266,17 +248,16 @@
       }
       // Set initial save status
       lastSaved = new Date(documentData.updatedAt).toLocaleTimeString();
-      hasUnsavedChanges = false;
+      hasUnsavedChanges = $state(false);
       console.log("Document loaded successfully:", documentData.title);
     } catch (err) {
       documentLoadError =
         err instanceof Error ? err.message : "Failed to load document";
       console.error("Error loading document:", err);
     } finally {
-      loadingDocument = false;
+      loadingDocument = $state(false);
     }
   }
-
   // Custom animation: function for dialog
   function flyAndScale(
     node: Element,
@@ -319,7 +300,6 @@
     };
   }
 </script>
-
 <!-- Main Document Editor Container -->
 <div class="mx-auto px-4 py-6 max-w-7xl">
   <!-- Header with semantic styling -->
@@ -351,7 +331,6 @@
           Use the AI assistant for legal research and drafting help. Click the citation button to add references.
         </Tooltip.Content>
       </Tooltip.Root>
-
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
           <Button builders={[builder]} variant="outline" class="flex items-center gap-2">
@@ -376,7 +355,6 @@
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
-
       <Button
         onclick={() => manualSaveDocument()}
         disabled={readonly || loadingDocument || isSaving}
@@ -392,7 +370,6 @@
       </Button>
     </div>
   </header>
-
   <!-- Main Content Area with Grid -->
   <main class="grid grid-cols-3 gap-6">
     <!-- Document Editor (2/3 width) -->
@@ -437,8 +414,7 @@
                   <div class="flex items-center gap-2 rounded-md bg-red-100 p-3 text-red-700">
                     <AlertCircle class="h-5 w-5" />
                     <span>{error}</span>
-                  </div>
-                {/if}
+                  {/if}
                 <div class="grid gap-4 py-4">
                   <div class="grid gap-2">
                     <Label for="ai-query"> What would you like help with? </Label>
@@ -487,8 +463,7 @@
               <p class="mt-2 text-lg">Failed to load document</p>
               <p class="text-sm text-nier-gray-light">{documentLoadError}</p>
               <Button onclick={() => loadDocument()} class="mt-4"> Try Again </Button>
-            </div>
-          {/if}
+            {/if}
           <Textarea
             bind:value={content}
             disabled={readonly}
@@ -512,14 +487,13 @@
             <p class="text-nier-gray-light">No citations added yet.</p>
           {:else}
             <div class="space-y-2">
-              {#each citations as citation}
+              {#each Array.isArray(citations) ? citations : [] as citation}
                 <div class="rounded-md bg-nier-bg p-3 text-sm">
                   <div class="font-medium text-nier-text">{citation.type.toUpperCase()}</div>
                   <div class="text-nier-gray-light">{citation.source}</div>
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
           <Button
             variant="outline"
             class="w-full"
@@ -563,14 +537,12 @@
           {#if saveError}
             <div class="text-sm text-red-500">
               {saveError}
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </div>
   </main>
 </div>
-
 <style>
   /* @unocss-include */
   .toolbar-separator {
@@ -584,4 +556,3 @@
     background-color: #dbeaf;
   }
 </style>
-

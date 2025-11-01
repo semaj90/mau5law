@@ -57,15 +57,15 @@ await loadCopilotContent();
     try {
       isLoading = true;
       // removed unused response assignment
-      if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
-        throw new Error(`Failed to load: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Failed to load: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
-      const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
-      copilotContent = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).content;
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      copilotContent = (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).content;
     } catch (error) {
       errorMessage = `Failed to load copilot content: ${error.message}`;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -85,10 +85,10 @@ await loadCopilotContent();
           options: optimizationConfig;
         }),
       });
-      if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
-        throw new Error(`Optimization failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Optimization failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
-      const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
       optimizationResults = data;
       optimizationStatus = 'completed';
       // Update metrics
@@ -97,7 +97,7 @@ await loadCopilotContent();
       optimizationStatus = 'error';
       errorMessage = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -120,15 +120,15 @@ await loadCopilotContent();
           },
         }),
       });
-      if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
-        throw new Error(`Search failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
-      const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
-      searchResults = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).result;
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      searchResults = (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).result;
     } catch (error) {
       errorMessage = `Search failed: ${error.message}`;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -137,7 +137,7 @@ await loadCopilotContent();
   async function loadSystemStatus() {
     try {
       // removed unused response assignment
-      const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
       realTimeMetrics.lastUpdated = new Date().toLocaleTimeString();
     } catch (error) {
       console.error('Failed to load status:', error);
@@ -149,12 +149,12 @@ await loadCopilotContent();
   async function loadMetrics() {
     try {
       // removed unused response assignment
-      const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
       performanceMetrics = data;
       realTimeMetrics = {
-        totalOptimizations: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).optimizer.totalOptimizations || 0,
-        avgOptimizationTime: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).optimizer.avgOptimizationTime || 0,
-        cacheHitRate: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).cache.hitRate || 0,
+        totalOptimizations: (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).optimizer.totalOptimizations || 0,
+        avgOptimizationTime: (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).optimizer.avgOptimizationTime || 0,
+        cacheHitRate: (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).cache.hitRate || 0,
         lastUpdated: new Date().toLocaleTimeString(),
       }
     } catch (error) {
@@ -167,7 +167,7 @@ await loadCopilotContent();
   async function generateSuggestions() {
     const testCode = `// Test Svelte 5 component
   <script lang="ts">
-  let { data = []  }: { data = [] : unknown } = $props();
+  let { data = []  }: { data = [] : any } = $props();
   let count = $state(0);
   // Need suggestions here
   <\/script>`.trim();
@@ -185,11 +185,11 @@ await loadCopilotContent();
           },
         }),
       });
-      if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
-        throw new Error(`Suggestion generation failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Suggestion generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
-      const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
-      searchResults = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).suggestions.map((suggestion, index) => ({
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      searchResults = (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).suggestions.map((suggestion, index) => ({
         id: `suggestion_${index}`,
         document: {
           title: `Suggestion ${suggestion.category}`,
@@ -202,7 +202,7 @@ await loadCopilotContent();
     } catch (error) {
       errorMessage = `Suggestion generation failed: ${error.message}`;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -472,12 +472,17 @@ await loadCopilotContent();
             </div>
             <!-- Quick search examples -->
             <div class="grid grid-cols-2 gap-2">
-              {#each [
+              {#each Array.isArray([
                 'Svelte 5 runes patterns',
                 'SvelteKit load functions',
                 'Drizzle ORM schemas',
                 'Vector embeddings'
-              ] as example}
+              ]) ? [
+                'Svelte 5 runes patterns',
+                'SvelteKit load functions',
+                'Drizzle ORM schemas',
+                'Vector embeddings'
+              ] : [] as example}
                 <button
                   onclick={() => { searchQuery = example; performSearch(), }}
                   class="p-2 text-left text-sm bg-black/20 hover:bg-purple-700/20
@@ -505,22 +510,22 @@ await loadCopilotContent();
                 <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
                   <div class="flex items-start justify-between mb-2">
                     <h3 class="font-semibold text-purple-100 text-sm">
-                      {(result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).document?.title || `Result ${index + 1}`}
+                      {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).document?.title || `Result ${index + 1}`}
                     </h3>
                     <div class="text-xs px-2 py-1 bg-purple-600 text-white rounded">
-                      {((result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).score * 100).toFixed(1)}%
+                      {((result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).score * 100).toFixed(1)}%
                     </div>
                   </div>
                   <p class="text-purple-300 text-sm mb-2 line-clamp-3">
-                    {(result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).document?.content || (result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).text || 'No content'}
+                    {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).document?.content || (result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).text || 'No content'}
                   </p>
                   <div class="flex items-center justify-between text-xs">
                     <span class="text-purple-400">
-                      {(result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).explanation || 'Semantic match'}
+                      {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).explanation || 'Semantic match'}
                     </span>
-                    {#if (result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).context7Pattern}
+                    {#if (result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).context7Pattern}
                       <span class="px-2 py-1 bg-blue-600/20 text-blue-300 rounded">
-                        Context7: {(result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).context7Pattern}
+                        Context7: {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).context7Pattern}
                       </span>
                     {/if}
                   </div>

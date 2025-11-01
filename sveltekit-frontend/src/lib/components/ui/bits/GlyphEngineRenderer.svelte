@@ -40,7 +40,7 @@
     type: 'text' | 'background' | 'interaction-zone';
     bounds: { x: number; y: number; width: number; height: number }
     content?: string;
-    style?: unknown;
+    style?: any;
   }
   // N64 + NES color palette for glyph rendering
   const colorPalette = {
@@ -102,7 +102,7 @@ if (!canvas) return;
     processRenderQueue();
   }
   function renderEvidenceCard() {
-    if (!(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence || !ctx) return;
+    if (!(data as { evidence?: any; documents?: any; textContent?: any }).evidence || !ctx) return;
     // NES-style border
     ctx.strokeStyle = colorPalette.priorityColors[priority];
     ctx.lineWidth = 2;
@@ -113,30 +113,30 @@ if (!canvas) return;
     ctx.fillText(title.toUpperCase(), 10, 25);
     // Evidence items with glyph optimization
     let y = 50;
-    (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.forEach((item, index) => {
+    (data as { evidence?: any; documents?: any; textContent?: any }).evidence.forEach((item, index) => {
       if (y > canvas.height - 30) return; // Viewport culling
       // Evidence item background
       ctx.fillStyle = colorPalette.yorhaBlack;
       ctx.fillRect(10, y - 15, canvas.width - 20, 25);
       // Evidence text (cached glyphs for performance)
-      const cacheKey = `evidence-${(item as { id?: unknown; title?: unknown; confidence?: unknown }).id}`;
+      const cacheKey = `evidence-${(item as { id?: any; title?: any; confidence?: any }).id}`;
       if (!glyphCache.has(cacheKey)) {
         // Cache this glyph for future frames
-        cacheGlyph(cacheKey, (item as { id?: unknown; title?: unknown; confidence?: unknown }).title, 10, y);
+        cacheGlyph(cacheKey, (item as { id?: any; title?: any; confidence?: any }).title, 10, y);
       }
       ctx.fillStyle = colorPalette.yorhaWhit;
       ctx.fillText.title, 15, y);
       // Confidence indicator
-      const confWidth = ((item as { id?: unknown; title?: unknown; confidence?: unknown }).confidence / 100) * 50;
+      const confWidth = ((item as { id?: any; title?: any; confidence?: any }).confidence / 100) * 50;
       ctx.fillStyle = colorPalette.n64Gree;
       ctx.fillRect(canvas.width - 70, y - 10, confWidth, 8);
       y += 30;
     });
   }
   function renderDocumentViewer() {
-    if (!(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents || !ctx) return;
+    if (!(data as { evidence?: any; documents?: any; textContent?: any }).documents || !ctx) return;
     // Large document rendering with LOD
-    const doc = (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents[0];
+    const doc = (data as { evidence?: any; documents?: any; textContent?: any }).documents[0];
     if (!doc) return;
     // Title
     ctx.fillStyle = colorPalette.yorhaGold;
@@ -169,11 +169,11 @@ if (!canvas) return;
     ctx.fillStyle = colorPalette.yorhaGold;
     ctx.font = '12px "Courier New", monospace';
     ctx.fillText('🤖 LEGAL AI ASSISTANT', 10, 25);
-    if ((data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).textContent) {
+    if ((data as { evidence?: any; documents?: any; textContent?: any }).textContent) {
       ctx.fillStyle = colorPalette.yorhaWhit;
       ctx.font = '10px "Courier New", monospace';
       // Word wrap with glyph optimization
-      const words = (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).textContent.split(' ');
+      const words = (data as { evidence?: any; documents?: any; textContent?: any }).textContent.split(' ');
       let line = '';
       let y = 50;
       const maxWidth = canvas.width - 20;
@@ -248,7 +248,6 @@ if (!canvas) return;
     }
   });
 </script>
-
 <!-- Canvas container with accessibility -->
 <div class="glyph-engine-container" role="application" aria-label="{title} - High performance renderer" tabindex="0">
   <canvas
@@ -261,26 +260,25 @@ if (!canvas) return;
   />
   <!-- Accessibility text for screen readers -->
   <div class="sr-only">
-    {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
-      Evidence items: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.map.join(
+    {#if (data as { evidence?: any; documents?: any; textContent?: any }).evidence}
+      Evidence items: {(data as { evidence?: any; documents?: any; textContent?: any }).evidence.map.join(
         ', '
       )}
     {/if}
-    {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents}
-      Documents: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents.map.join(', ')}
+    {#if (data as { evidence?: any; documents?: any; textContent?: any }).documents}
+      Documents: {(data as { evidence?: any; documents?: any; textContent?: any }).documents.map.join(', ')}
     {/if}
   </div>
 </div>
-
 <style>
   .glyph-engine-container {
     background: var(--yorha-black);
     border: 2px solid var(--n64-blue);
     border-radius: 0,
-    position relative;
+    position: relative;
   }
   .glyph-engine-canv.sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,

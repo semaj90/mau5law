@@ -7,17 +7,17 @@ import type { RequestHandler } from './$types.js';
 
 // Add a module-level alias with a narrow shape so TypeScript knows users.id exists
 const usersTable = users as unknown as {
-  id: unknown;
-  email?: unknown;
-  username?: unknown;
-  first_name?: unknown;
-  last_name?: unknown;
-  role?: unknown;
-  avatar_url?: unknown;
-  created_at?: unknown;
-  updated_at?: unknown;
-  is_active?: unknown;
-  email_verified?: unknown;
+  id: any;
+  email?: any;
+  username?: any;
+  first_name?: any;
+  last_name?: any;
+  role?: any;
+  avatar_url?: any;
+  created_at?: any;
+  updated_at?: any;
+  is_active?: any;
+  email_verified?: any;
 };
 
 export const GET: RequestHandler = async ({ locals }) => {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // normalize error logging without using `any`
     if (error instanceof Error) {
       console.error('Profile fetch error:', error.message);
@@ -123,7 +123,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       },
       message: 'Profile updated successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error('Profile update error:', error.message);
     } else {

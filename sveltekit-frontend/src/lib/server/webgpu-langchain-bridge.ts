@@ -123,11 +123,11 @@ export class WebGPULangChainBridge {
     data: {
       summary: string;
       keyTerms: string[];
-      entities: unknown[];
-      contractTerms: unknown[];
-      caseCitations: unknown[];
-      legalDates: unknown[];
-      risks: unknown[];
+      entities: any[];
+      contractTerms: any[];
+      caseCitations: any[];
+      legalDates: any[];
+      risks: any[];
     }
     processingTime: number;
   }> {
@@ -212,7 +212,7 @@ export class WebGPULangChainBridge {
     webgpuUtilized: boolean;
   }> {
     const startTime = Date.now();
-    let cacheHit = false;
+    let cacheHit = $state(false);
     let webgpuUtilized = config.useWebGPUCache;
     try {
       // Split document into sections for hierarchical embeddings
@@ -333,8 +333,8 @@ export class WebGPULangChainBridge {
    * Get comprehensive processing statistics
    */
   async getProcessingStats(): Promise<{
-    webgpuOptimizer: unknown;
-    embeddingCache: unknown;
+    webgpuOptimizer: any;
+    embeddingCache: any;
     langchainService: {
       available: boolean;
       models: string[];

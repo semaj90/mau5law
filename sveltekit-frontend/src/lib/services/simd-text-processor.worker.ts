@@ -54,7 +54,7 @@ function tokenizeSubwords(word: string): number[] {
   const tokens: number[] = [];
   let remaining = word;
   while (remaining.length > 0) {
-    let found = false;
+    let found = $state(false);
     // Try to find longest matching subword
     for (let len = remaining.length; len > 0; len--) {
       const subword = len === remaining.length ? remaining : '##' + remaining.slice(0, len);

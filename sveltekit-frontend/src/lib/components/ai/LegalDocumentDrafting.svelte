@@ -5,7 +5,6 @@
 <script lang="ts">
   // Note: removed unused onMount and Button imports and replaced external dialog usage
   // with a lightweight inline modal to avoid dependency/import errors.
-
   // Document drafting state
   let documentTypes = $state<DocumentType[]>([]);
   let currentDocument = $state<DocumentDraft | null>(null);
@@ -78,7 +77,7 @@
   interface AISuggestion {
     id: string;
     type: 'content' | 'structure' | 'legal_point' | 'citation' | 'language';
-    position number;
+    position: number;
     suggestion string;
     reasoning: string;
     confidence: number;
@@ -204,7 +203,7 @@
     } catch (error) {
       console.error('Error starting document:', error);
     } finally {
-      isDrafting = false;
+      isDrafting = $state(false);
     }
   }
   async function generateContent(prompt: string) {
@@ -239,7 +238,7 @@
     } catch (error) {
       console.error('Error generating content:', error);
     } finally {
-      isGenerating = false;
+      isGenerating = $state(false);
     }
   }
   function handlePromptKeydown(e: KeyboardEvent) {
@@ -362,10 +361,8 @@
   let selectedDocType = $derived(() => {
     return documentTypes.find(type => type.id === selectedDocumentType);
   });
-
   // New: derived object for the currently selected template (avoid in-template {@const})
   let selectedTemplateObj = $derived(() => templates.find(t => t.id === selectedTemplate) || null);
-
   let wordCount = $derived(() => {
     return documentContent ? documentContent.split(/\s+/).filter(Boolean).length : 0;
   });
@@ -374,7 +371,6 @@
     return currentDocument.aiSuggestions.filter(s => !s.applied);
   });
 </script>
-
 <svelte:head>
   <title>Legal Document Drafting - Legal AI Platform</title>
 </svelte:head>
@@ -403,7 +399,7 @@
         <section class="sidebar-section">
           <h3>Document Type</h3>
           <div class="document-types-list">
-            {#each documentTypes as docType}
+            {#each Array.isArray(documentTypes) ? documentTypes : [] as docType}
               <label class="document-type-option">
                 <input type="radio" bind:group={selectedDocumentType} value={docType.id} class="sr-only" />
                 <!-- Fixed class name to match CSS (.document-type-card) -->
@@ -431,18 +427,16 @@
             {/each}
           </div>
         </section>
-
         <!-- Template Selection -->
         {#if selectedDocumentType && filteredTemplates.length > 0}
           <section class="sidebar-section">
             <h3>Templates</h3>
             <select bind:value={selectedTemplate} class="template-select">
               <option value="">Start from scratch</option>
-              {#each filteredTemplates as template}
+              {#each Array.isArray(filteredTemplates) ? filteredTemplates : [] as template}
                 <option value={template.id}>{template.name}</option>
               {/each}
             </select>
-
             <!-- Use derived selectedTemplateObj instead of in-template {@const} -->
             {#if selectedTemplate && selectedTemplateObj}
               <div class="template-preview">
@@ -451,11 +445,9 @@
                   <span>Used {selectedTemplateObj.usage_count} times</span>
                   <span>Updated {new Date(selectedTemplateObj.lastUpdated).toLocaleDateString()}</span>
                 </div>
-              </div>
-            {/if}
+              {/if}
           </section>
         {/if}
-
         <!-- Document Configuration -->
         <section class="sidebar-section">
           <h3>Configuration</h3>
@@ -528,7 +520,7 @@
           <section class="sidebar-section">
             <h3>AI Suggestions ({pendingSuggestions.length})</h3>
             <div class="suggestions-list">
-              {#each pendingSuggestions as suggestion}
+              {#each Array.isArray(pendingSuggestions) ? pendingSuggestions : [] as suggestion}
                 <div class="suggestion-item">
                   <div class="suggestion-header">
                     <span class="suggestion-icon">{getSuggestionTypeIcon(suggestion.type)}</span>
@@ -614,14 +606,13 @@
                   <div class="required-fields">
                     <h4>Required Information</h4>
                     <ul>
-                      {#each selectedDocType.requiredFields as field}
+                      {#each Array.isArray(selectedDocType.requiredFields) ? selectedDocType.requiredFields : [] as field}
                         <li>{field.label} {field.required ? '(Required)' : '(Optional)'}</li>
                       {/each}
                     </ul>
                   </div>
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       {:else}
@@ -670,8 +661,7 @@
               </button>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </main>
   </div>
   <!-- Recent Drafts -->
@@ -679,7 +669,7 @@
     <section class="recent-drafts">
       <h2>Recent Drafts</h2>
       <div class="drafts-grid">
-        {#each draftHistory.slice(0, 6) as draft}
+        {#each Array.isArray(draftHistory.slice(0, 6)) ? draftHistory.slice(0, 6) : [] as draft}
           <div class="draft-nier-bits-card">
             <div class="card-header">
               <h3 class="draft-title font-semibold">{draft.title}</h3>
@@ -711,7 +701,6 @@
     </section>
   {/if}
 </div>
-
 {#if showPreview}
   <div class="modal-overlay" onclick={() => (showPreview = false)}>
     <div class="modal-content document-preview-dialog" onclick|stopPropagation>
@@ -726,7 +715,7 @@
             </div>
           </div>
           <div class="preview-body">
-            {#each documentContent.split('\n') as paragraph}
+            {#each Array.isArray(documentContent.split('\n')) ? documentContent.split('\n') : [] as paragraph}
               {#if paragraph.trim()}
                 <p>{paragraph}</p>
               {/if}
@@ -736,12 +725,9 @@
         <div class="dialog-actions">
           <button class="nes-btn btn-ghost" onclick={() => (showPreview = false)}> Close Preview </button>
           <button class="nes-btn"> Export PDF </button>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .document-drafting {
     max-width: 1600px;
@@ -1215,7 +1201,7 @@
   }
   /* Modal overlay used in place of external Dialog component */
   .modal-overlay {
-    position fixed;
+    position: fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.45);
     display: flex;
@@ -1261,5 +1247,3 @@
     }
   }
 </style>
-
-

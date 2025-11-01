@@ -63,7 +63,6 @@
     fast: '1s',
   }
 </script>
-
 <div
   class="n64-loading-ring"
   style="
@@ -96,8 +95,7 @@
           <circle class="percentage-fill" cx="50" cy="50" r="45" style="--percentage: {percentage}" />
         </svg>
         <div class="percentage-text">{Math.round(percentage)}%</div>
-      </div>
-    {/if}
+      {/if}
     <!-- Sparkle effects -->
     <div class="sparkle-layer">
       {#each Array(6) as _, i}
@@ -106,10 +104,9 @@
     </div>
   </div>
 </div>
-
 <style>
   .n64-loading-ring {
-    position relative;
+    position: relative;
     width: var(--size);
     height: var(--size);
     display: flex;
@@ -117,12 +114,12 @@
     justify-content: center;
   }
   .ring-container {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
   }
   .ring-outer {
-    position absolute;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -131,7 +128,7 @@
     animation: rotate var(--speed) linear infinite;
   }
   .ring-segment {
-    position absolute;
+    position: absolute;
     top: 10%;
     left: 50%;
     width: 8%;
@@ -146,7 +143,7 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .ring-core {
-    position absolute;
+    position: absolute;
     top: 25%;
     left: 25%;
     width: 50%;
@@ -159,7 +156,7 @@
       inset 0 0 4px rgba(0, 0, 0, 0.3);
   }
   .core-inner {
-    position absolute;
+    position: absolute;
     top: 20%;
     left: 20%;
     width: 60%;
@@ -169,7 +166,7 @@
     animation: pulse-core calc(var(--speed) * 0.8) ease-in-out infinite;
   }
   .core-crystal {
-    position absolute;
+    position: absolute;
     top: 30%;
     left: 30%;
     width: 40%;
@@ -179,7 +176,7 @@
     animation: crystal-shine calc(var(--speed) * 1.2) ease-in-out infinite;
   }
   .percentage-ring {
-    position absolute;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -189,7 +186,7 @@
     justify-content: center;
   }
   .percentage-svg {
-    position absolute;
+    position: absolute;
     width: 100%;
     height: 100%;
     transform: rotate(-90deg);
@@ -210,7 +207,7 @@
     filter: drop-shadow(0 0 2px var(--glow));
   }
   .percentage-text {
-    position relative;
+    position: relative;
     color: var(--primary);
     font-family: 'Courier New', monospace;
     font-weight: bold;
@@ -223,7 +220,7 @@
     z-index: 10,
   }
   .sparkle-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     width: 100%;
@@ -231,7 +228,7 @@
     pointer-events: none;
   }
   .sparkle {
-    position absolute;
+    position: absolute;
     top: 15%;
     left: 50%;
     width: 4px;
@@ -319,4 +316,3 @@
     }
   }
 </style>
-

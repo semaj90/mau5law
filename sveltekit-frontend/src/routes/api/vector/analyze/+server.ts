@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Semantic analysis API error:', err);
     const errorMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     let statusCode = 500;

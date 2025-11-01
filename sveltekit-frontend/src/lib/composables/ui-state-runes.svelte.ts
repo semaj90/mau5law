@@ -13,7 +13,7 @@ export function useModal(initialOpen = false) {
     isOpen = true;
   }
   function close(): void {
-    isOpen = false;
+    isOpen = $state(false);
     data = null;
     onConfirm = null;
     onCancel = null;
@@ -135,11 +135,11 @@ export function useForm<T extends Record<string, any>>(initialValues: T) {
     values = { ...initialValues, ...newValues } as T;
     errors = {} as Partial<Record<keyof T, string>>;
     touched = {} as Partial<Record<keyof T, boolean>>;
-    isSubmitting = false;
+    isSubmitting = $state(false);
   }
   function validate(validators: Partial<Record<keyof T, (_value: any) => string | null>>): boolean {
     const newErrors: Partial<Record<keyof T, string>> = {};
-    let hasErrors = false;
+    let hasErrors = $state(false);
     Object.keys(validators).forEach(field => {
       const key = field as keyof T;
       const validator = validators[key];

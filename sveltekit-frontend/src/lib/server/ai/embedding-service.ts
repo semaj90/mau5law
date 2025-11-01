@@ -1,5 +1,4 @@
 import { createEmbedding } from './ollama-client';
-
 export async function extractText(buffer: ArrayBuffer, mimeType: string): Promise<string> {
   // Basic extractor: prefer plain text, JSON, CSV; else return placeholder
   const fileType = (mimeType || '').toLowerCase();
@@ -16,7 +15,6 @@ export async function extractText(buffer: ArrayBuffer, mimeType: string): Promis
     return '';
   }
 }
-
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const cleaned = (text || '').slice(0, 2000);

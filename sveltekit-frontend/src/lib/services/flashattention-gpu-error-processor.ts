@@ -52,9 +52,9 @@ export interface ErrorFix {
 }
 export class FlashAttentionGPUErrorProcessor {
   private config: FlashAttentionConfig;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private processingQueue: GPUErrorBatch[] = [];
-  private activeProcessing = false;
+  private activeProcessing = $state(false);
   constructor() {
     this.config = {
       gpu_device: 0,
@@ -526,8 +526,8 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
   }
   destroy(): void {
     this.processingQueue = [];
-    this.activeProcessing = false;
-    this.isInitialized = false;
+    this.activeProcessing = $state(false);
+    this.isInitialized = $state(false);
     console.log('🛑 FlashAttention2 GPU Error Processor destroyed');
   }
 }

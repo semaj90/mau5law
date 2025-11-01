@@ -173,7 +173,7 @@
       </p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-      {#each features as feature}
+      {#each Array.isArray(features) ? features : [] as feature}
         <div
           class="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:scale-105"
         >
@@ -216,7 +216,7 @@
       <div class="bg-white rounded-xl shadow-lg p-8">
         <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">🕒 Recent Activity</h3>
         <div class="space-y-4">
-          {#each recentActivity as activity}
+          {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div class="flex-1">
                 <p class="font-medium text-gray-900">{activity.action}</p>

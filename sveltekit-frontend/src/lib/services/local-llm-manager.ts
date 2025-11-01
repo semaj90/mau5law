@@ -92,7 +92,7 @@ export const localLLMConfig: LocalLLMConfig = {
   }
 }
 class LocalLLMManager {
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private modelsPath = "";
   private cachePath = "";
   async initialize(): Promise<void> {

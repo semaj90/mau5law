@@ -18,7 +18,6 @@
   );
   let svg = $state<string>('');
   let container = $state<HTMLElement | null>(null);
-
   // Render the mermaid diagram when the container is mounted / diagram changes
   $effect(async () => {
     if (!container) return; // wait until element is mounted
@@ -35,11 +34,9 @@
     }
   });
 </script>
-
 <div class="space-y-4" bind:this={container}>
   {@html svg}
 </div>
-
 <style>
   /* @unocss-include */
   .mermaid-diagram-container {

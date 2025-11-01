@@ -8,16 +8,16 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
   import {
     Download,
     Eye,
@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err: any) {
       error = err.message || 'Failed to load artifact';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   const extractMetadata = async () => {
@@ -155,8 +155,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <div class="flex items-center justify-center h-48 bg-gray-100 rounded-lg">
               <p class="text-gray-500">No preview available</p>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <!-- Artifact Information -->
@@ -193,15 +192,13 @@ https://svelte.dev/e/js_parse_error -->
               <code class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
                 {artifact.content_hash}
               </code>
-            </div>
-          {/if}
+            {/if}
           {#if artifact.confidence !== undefined}
             <div class="flex items-center gap-2">
               <Zap class="w-4 h-4 text-yellow-500" />
               <span class="font-medium text-gray-700">Confidence:</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatConfidence(artifact.confidence)}</span>
-            </div>
-          {/if}
+            {/if}
           {#if artifact.risk_assessment}
             <div class="flex items-center gap-2">
               <Shield class="w-4 h-4 text-gray-500" />
@@ -209,8 +206,7 @@ https://svelte.dev/e/js_parse_error -->
               <Badge variant={getRiskBadgeVariant(artifact.risk_assessment)}>
                 {artifact.risk_assessment.toUpperCase()}
               </Badge>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </div>
@@ -242,18 +238,16 @@ https://svelte.dev/e/js_parse_error -->
                       <div>
                         <h4 class="font-medium text-gray-900 mb-2">Summary</h4>
                         <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded">{analysis.summary}</p>
-                      </div>
-                    {/if}
+                      {/if}
                     {#if analysis.entities && analysis.entities.length > 0}
                       <div>
                         <h4 class="font-medium text-gray-900 mb-2">Entities</h4>
                         <div class="flex flex-wrap gap-2">
-                          {#each analysis.entities as entity}
+                          {#each Array.isArray(analysis.entities) ? analysis.entities : [] as entity}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{entity.name} ({entity.type})</span>
                           {/each}
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                     {#if analysis.classifications}
                       <div>
                         <h4 class="font-medium text-gray-900 mb-2">Classifications</h4>
@@ -265,8 +259,7 @@ https://svelte.dev/e/js_parse_error -->
                             </div>
                           {/each}
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                   {:catch}
                     <p class="text-sm text-gray-500">Unable to parse AI analysis data</p>
                   {/try}
@@ -304,21 +297,19 @@ https://svelte.dev/e/js_parse_error -->
                       <code class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
                         {extractedMetadata.semanticHash}
                       </code>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if extractedMetadata.processingChain}
                     <div>
                       <h4 class="font-medium text-gray-900 mb-2">Processing Steps</h4>
                       <div class="space-y-1">
-                        {#each extractedMetadata.processingChain as step}
+                        {#each Array.isArray(extractedMetadata.processingChain) ? extractedMetadata.processingChain : [] as step}
                           <div class="flex items-center gap-2 text-xs text-gray-600">
                             <CheckCircle class="w-3 h-3 text-green-500" />
                             {step.step} ({step.durationMs}ms)
                           </div>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               {:else}
                 <div class="text-center py-8">
@@ -327,8 +318,7 @@ https://svelte.dev/e/js_parse_error -->
                   <p class="text-xs text-gray-400 mt-1">
                     This file may not contain Legal AI metadata
                   </p>
-                </div>
-              {/if}
+                {/if}
             </TabsContent>
             <!-- Processing Chain Tab -->
             <TabsContent value="processing" class="mt-4">
@@ -359,10 +349,8 @@ https://svelte.dev/e/js_parse_error -->
             </TabsContent>
           </Tabs>
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
+      {/if}
+  {/if}
 <style>
   .artifact-viewer {
     max-width: 1200px;

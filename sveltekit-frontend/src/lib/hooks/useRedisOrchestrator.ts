@@ -13,23 +13,19 @@ import {
   type RedisOptimizationResult,
   type QueuedTask,
 } from '$lib/stores/unified';
-
 type QueryContext = {
   endpoint?: string;
   caseId?: string;
   userId?: string;
   useOrchestrator?: boolean;
 };
-
 type ComponentCacheConfig = {
   autoCache?: boolean;
 };
-
 export function useRedisAI() {
-  let isProcessing = false;
+  let isProcessing = $state(false);
   let lastResult: RedisOptimizationResult | null = null;
   let error: string | null = null;
-
   async function query(queryText: string, context: QueryContext = {}): Promise<RedisOptimizationResult> {
     isProcessing = true;
     error = null;
@@ -41,10 +37,9 @@ export function useRedisAI() {
       error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
-
   async function queueTask(
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
     queryText: string,
@@ -59,14 +54,12 @@ export function useRedisAI() {
       error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
-
   function getTaskResult(taskId: string) {
     return redisOrchestratorClient.getTaskResult(taskId);
   }
-
   return {
     get isProcessing() {
       return isProcessing;
@@ -85,11 +78,9 @@ export function useRedisAI() {
     },
   };
 }
-
 export function useRedisMonitoring() {
-  let healthData: unknown = null;
-  let isLoading = false;
-
+  let healthData: any = null;
+  let isLoading = $state(false);
   async function refresh(): Promise<void> {
     isLoading = true;
     try {
@@ -97,21 +88,18 @@ export function useRedisMonitoring() {
     } catch (err) {
       console.error('Failed to refresh Redis health:', err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   async function clearCache(confirm = false) {
     if (!confirm) {
       throw new Error('Cache clear requires confirmation');
     }
     return redisOrchestratorClient.clearCache(true);
   }
-
   onMount(() => {
     void refresh();
   });
-
   return {
     get healthData() {
       return healthData;
@@ -129,19 +117,16 @@ export function useRedisMonitoring() {
     clearCache,
   };
 }
-
 export function useRedisTaskQueue(defaultPollInterval = 5000) {
   let tasks: Map<string, QueuedTask> = new Map();
-  let isPolling = false;
+  let isPolling = $state(false);
   let pollHandle: ReturnType<typeof setInterval> | null = null;
   let unsubscribe: (() => void) | undefined;
-
   function subscribeToTasks() {
     unsubscribe = queuedTasks.subscribe((value) => {
       tasks = value;
     });
   }
-
   async function pollOnce() {
     try {
       if (typeof redisOrchestratorClient.refreshQueuedTasks === 'function') {
@@ -151,7 +136,6 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
       console.warn('Failed to refresh queued tasks:', err);
     }
   }
-
   function startPolling(intervalMs = defaultPollInterval) {
     if (isPolling) return;
     isPolling = true;
@@ -159,42 +143,34 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
       void pollOnce();
     }, Math.max(intervalMs, 1000));
   }
-
   function stopPolling() {
     if (pollHandle) {
       clearInterval(pollHandle);
       pollHandle = null;
     }
-    isPolling = false;
+    isPolling = $state(false);
   }
-
   onMount(() => {
     subscribeToTasks();
   });
-
   onDestroy(() => {
     stopPolling();
     unsubscribe?.();
   });
-
   function getTask(taskId: string): QueuedTask | undefined {
     return tasks.get(taskId);
   }
-
   function getAllTasks(): QueuedTask[] {
     return Array.from(tasks.values()).sort(
       (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
     );
   }
-
   function getTasksByStatus(status: QueuedTask['status']): QueuedTask[] {
     return getAllTasks().filter((task) => task.status === status);
   }
-
   function getTasksForUser(userId: string): QueuedTask[] {
     return getAllTasks().filter((task) => task.userId === userId);
   }
-
   return {
     get tasks() {
       return tasks;
@@ -211,26 +187,22 @@ export function useRedisTaskQueue(defaultPollInterval = 5000) {
     getTasksForUser,
   };
 }
-
 export function useRedisComponentCache(componentName: string, config: ComponentCacheConfig = {}) {
   const componentCache = new Map<string, unknown>();
   let lastQuery: string | null = null;
   let cacheHits = 0;
   let cacheMisses = 0;
-
   async function queryWithCache(queryText: string, context: Record<string, unknown> = {}) {
     const cacheKey = `${componentName}:${JSON.stringify({ queryText, ...context })}`;
     if (config.autoCache !== false && componentCache.has(cacheKey)) {
       cacheHits += 1;
       return componentCache.get(cacheKey);
     }
-
     const result = await redisOrchestratorClient.processQuery(queryText, {
       endpoint: componentName,
       ...context,
     });
-
-    const resultWithCacheFlag = result as { cached?: unknown };
+    const resultWithCacheFlag = result as { cached?: any };
     if (config.autoCache !== false && resultWithCacheFlag.cached) {
       componentCache.set(cacheKey, result);
       if (componentCache.size > 50) {
@@ -238,23 +210,19 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
         componentCache.delete(firstKey);
       }
     }
-
     if (resultWithCacheFlag.cached) {
       cacheHits += 1;
     } else {
       cacheMisses += 1;
     }
-
     lastQuery = queryText;
     return result;
   }
-
   function clearComponentCache() {
     componentCache.clear();
     cacheHits = 0;
     cacheMisses = 0;
   }
-
   function getCacheStats() {
     const total = cacheHits + cacheMisses;
     return {
@@ -264,7 +232,6 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
       hitRate: total > 0 ? (cacheHits / total) * 100 : 0,
     };
   }
-
   return {
     get lastQuery() {
       return lastQuery;
@@ -276,12 +243,10 @@ export function useRedisComponentCache(componentName: string, config: ComponentC
     clearComponentCache,
   };
 }
-
 export function useRedisForm() {
-  let isSubmitting = false;
+  let isSubmitting = $state(false);
   let submitError: string | null = null;
-  let lastSubmission: unknown = null;
-
+  let lastSubmission: any = null;
   async function submitForm(
     formData: Record<string, unknown>,
     endpoint: string,
@@ -289,7 +254,6 @@ export function useRedisForm() {
   ) {
     isSubmitting = true;
     submitError = null;
-
     try {
       const queryText = extractQueryFromForm(formData);
       if (options.queueIfComplex && isComplexQuery(queryText)) {
@@ -319,10 +283,9 @@ export function useRedisForm() {
       submitError = err instanceof Error ? err.message : 'Submission failed';
       throw err;
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
-
   return {
     get isSubmitting() {
       return isSubmitting;
@@ -339,7 +302,6 @@ export function useRedisForm() {
     },
   };
 }
-
 function extractQueryFromForm(formData: Record<string, unknown>): string {
   const candidateFields = ['query', 'message', 'content', 'text', 'description', 'analysis'];
   for (const field of candidateFields) {
@@ -350,7 +312,6 @@ function extractQueryFromForm(formData: Record<string, unknown>): string {
   }
   return JSON.stringify(formData).slice(0, 500);
 }
-
 function isComplexQuery(query: string): boolean {
   const lowered = query.toLowerCase();
   return (

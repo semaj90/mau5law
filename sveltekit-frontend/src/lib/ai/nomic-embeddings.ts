@@ -13,7 +13,7 @@ export interface EmbeddingResult {
   model: string;
   metadata?: {
     timestamp: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export class NomicEmbeddingsService {

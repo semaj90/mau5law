@@ -1,14 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     class?: string;
     children?: Snippet;
   }
-
   let { class: className = '', children }: Props = $props();
 </script>
-
 <div class="{className} flex flex-col gap-4">
   {#if children}
     {@render children()}

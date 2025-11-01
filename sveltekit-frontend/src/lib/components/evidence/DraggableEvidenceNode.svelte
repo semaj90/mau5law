@@ -4,7 +4,7 @@
   import { draggable } from '$lib/actions/draggable';
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   import { showSuccess, showError  } from '$lib/stores/unified';
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
   interface EvidenceNode {
@@ -90,7 +90,7 @@
     isDragging = true;
   }
   function handleDragEnd(x: number, y: number) {
-    isDragging = false;
+    isDragging = $state(false);
     handlePositionUpdate(x, y);
     showSuccess(`Evidence moved to (${Math.round(x)}, ${Math.round(y)})`);
   }
@@ -142,7 +142,7 @@
       console.error('❌ Evidence analysis failed:', error);
       showError(`Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
       analysisProgress = 0;
     }
   }
@@ -211,8 +211,7 @@
           {#if evidence.metadata?.confidence}
             <div class={`w-2 h-2 rounded-full ${confidenceColor}`} // Fixed: confidenceColor() -> confidenceColor
                  title="Confidence: {Math.round((evidence.metadata.confidence || 0) * 100)}%">
-            </div>
-          {/if}
+            {/if}
           <!-- Analysis button -->
           <Button
             size="sm"
@@ -266,15 +265,13 @@
           {/if}
           {#if evidence.analysis.keyTerms?.length}
             <div class="flex flex-wrap gap-1">
-              {#each evidence.analysis.keyTerms.slice(0, 3) as term}
+              {#each Array.isArray(evidence.analysis.keyTerms.slice(0, 3)) ? evidence.analysis.keyTerms.slice(0, 3) : [] as term}
                 <span class="px-1 py-0.5 text-xs bg-primary/20 rounded">
                   {term}
                 </span>
               {/each}
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
       <!-- Connections indicator -->
       {#if evidence.connections?.length}
         <div class="mt-2 flex items-center gap-1">
@@ -282,12 +279,11 @@
           <span class="text-xs text-muted-foreground">
             {evidence.connections.length} connections
           </span>
-        </div>
-      {/if}
+        {/if}
       <!-- Tags -->
       {#if evidence.tags?.length}
         <div class="mt-2 flex flex-wrap gap-1">
-          {#each evidence.tags.slice(0, 2) as tag}
+          {#each Array.isArray(evidence.tags.slice(0, 2)) ? evidence.tags.slice(0, 2) : [] as tag}
             <span class="px-1 py-0.5 text-xs bg-secondary/50 rounded">
               #{tag}
             </span>
@@ -297,8 +293,7 @@
               +{evidence.tags.length - 2} more
             </span>
           {/if}
-        </div>
-      {/if}
+        {/if}
     </CardContent>
   </Card>
 </div>

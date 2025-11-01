@@ -28,7 +28,7 @@ class ViteErrorLogger {
   private serverUrl: string;
   private ws: WebSocket | null = null;
   private errorQueue: ViteErrorLog[] = [];
-  private isConnected = false;
+  private isConnected = $state(false);
   constructor(serverUrl = 'http://localhost:8080') {
     this.serverUrl = serverUrl;
     this.initializeWebSocket();
@@ -44,7 +44,7 @@ class ViteErrorLogger {
       this.flushErrorQueue();
     };
     this.ws.onclose = () => {
-      this.isConnected = false;
+      this.isConnected = $state(false);
       // Reconnect after 5 seconds
       setTimeout(() => this.initializeWebSocket(), 5000);
     };
@@ -274,7 +274,7 @@ Stack: ${errorLog.stack || 'No stack trace'}`;
       this.ws.close();
       this.ws = null;
     }
-    this.isConnected = false;
+    this.isConnected = $state(false);
   }
 }
 // Global instance

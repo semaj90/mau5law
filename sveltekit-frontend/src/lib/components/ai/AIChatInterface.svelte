@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
@@ -8,7 +8,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 	import { onMount, tick } from 'svelte';
 	import { fade, fly, scale } from 'svelte/transition';
 	import { quintOut, elasticOut } from 'svelte/easing';
-
 	// Types
 	interface Message {
 		id: string;
@@ -18,7 +17,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 		streaming?: boolean;
 		error?: boolean;
 	}
-
 	interface ChatSettings {
 		model: string;
 		temperature: number;
@@ -26,24 +24,24 @@ https://svelte.dev/e/attribute_invalid_name -->
 		topP: number;
 		systemPrompt: string;
 	}
-
 	// Props (exported)
-	export let visible: boolean = false;
-	export let minimized: boolean = false;
-	export let draggable: boolean = true;
-	export let width: number = 400;
-	export let height: number = 600;
-	export let apiEndpoint: string = 'http://localhost:11434/api/generate';
-	export let fallbackEndpoint: string = 'http://localhost:8000/v1/chat/completions';
-	export let modelName: string = 'gemma3-legal:latest';
-	export let title: string = 'YoRHa Legal AI';
-	export let subtitle: string = 'Powered by Gemma3';
-	export let onclose: (() => void) | undefined;
-	export let onminimize: (() => void) | undefined;
-	export let onmaximize: (() => void) | undefined;
-	export let onmessage: ((_event: { message: Message }) => void) | undefined;
-	export let onsettingschange: ((_event: { settings: ChatSettings }) => void) | undefined;
-
+	let { visible = false, minimized = false, draggable = true, width = 400, height = 600, apiEndpoint = 'http://localhost:11434/api/generate', fallbackEndpoint = 'http://localhost:8000/v1/chat/completions', modelName = 'gemma3-legal:latest', title = 'YoRHa Legal AI', subtitle = 'Powered by Gemma3', onclose = undefined, onminimize = undefined, onmaximize = undefined, onmessage = undefined, onsettingschange = undefined } = $props<{
+		visible?: boolean;
+		minimized?: boolean;
+		draggable?: boolean;
+		width?: number;
+		height?: number;
+		apiEndpoint?: string;
+		fallbackEndpoint?: string;
+		modelName?: string;
+		title?: string;
+		subtitle?: string;
+		onclose?: (() => void);
+		onminimize?: (() => void);
+		onmaximize?: (() => void);
+		onmessage?: ((event: { message: Message }) => void);
+		onsettingschange?: ((event: { settings: ChatSettings }) => void);
+	}>();
 	// State
 	let messages: Message[] = [];
 	let inputValue = '';
@@ -58,7 +56,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 	let dragOffset = { x: 0, y: 0 };
 	let position = { x: 0, y: 0 };
 	let settingsOpen = false;
-
 	// Settings
 	let settings: ChatSettings = {
 		model: modelName,
@@ -68,10 +65,8 @@ https://svelte.dev/e/attribute_invalid_name -->
 		systemPrompt:
 			'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.',
 	};
-
 	// Debounced helpers
 	const debouncedAutoResize = _debounce(autoResize, 300);
-
 	// Initialize welcome message & initial position
 	onMount(() => {
 		addMessage('system', `Hello! I'm your YoRHa Legal AI Assistant powered by ${modelName}. How can I assist you today?`);
@@ -80,14 +75,12 @@ https://svelte.dev/e/attribute_invalid_name -->
 			y: Math.max(20, window.innerHeight - height - 20),
 		};
 	});
-
 	// Auto-scroll when messages change
 	$: if (messages.length > 0) {
 		tick().then(() => {
 			if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
 		});
 	}
-
 	// Add message helper
 	function addMessage(role: Message['role'], content: string, options: Partial<Message> = {}): Message {
 		const message: Message = {
@@ -101,7 +94,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 		onmessage?.({ message });
 		return message;
 	}
-
 	// Send flow
 	async function sendMessage() {
 		if (!inputValue.trim() || isTyping) return;
@@ -110,7 +102,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 		addMessage('user', userText);
 		isTyping = true;
 		const typingMsg = addMessage('assistant', '', { streaming: true });
-
 		try {
 			let response = await callGemma3API(userText);
 			if (!response) response = await callFallbackAPI(userText);
@@ -131,7 +122,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 			isTyping = false;
 		}
 	}
-
 	// Primary API call
 	async function callGemma3API(message: string): Promise<string | null> {
 		if (typeof fetch === 'undefined') return null;
@@ -164,12 +154,11 @@ https://svelte.dev/e/attribute_invalid_name -->
 			return (data.response?.trim() || data.text?.trim() || data.output?.trim()) ?? null;
 		} catch (err) {
 			console.warn('Primary API failed:', err);
-			isConnected = false;
+			isConnected = $state(false);
 			errorMessage = err instanceof Error ? err.message : String(err);
 			return null;
 		}
 	}
-
 	// Fallback API call (generic chat completions)
 	async function callFallbackAPI(message: string): Promise<string | null> {
 		try {
@@ -198,7 +187,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 			return null;
 		}
 	}
-
 	// Build prompt for Gemma3-style API
 	function formatPromptForGemma3(message: string): string {
 		const conversation = messages
@@ -207,7 +195,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 			.join('\n');
 		return `${settings.systemPrompt}\n\n${conversation}\n<start_of_turn>user\n${message}<end_of_turn>\n<start_of_turn>model\n`;
 	}
-
 	// Input handlers
 	function handleKeyDown(e: KeyboardEvent) {
 		if (e.key === 'Enter' && !e.shiftKey) {
@@ -215,13 +202,11 @@ https://svelte.dev/e/attribute_invalid_name -->
 			sendMessage();
 		}
 	}
-
 	function autoResize() {
 		if (!inputElement) return;
 		inputElement.style.height = 'auto';
 		inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + 'px';
 	}
-
 	// Dragging
 	function startDrag(e: MouseEvent) {
 		if (!draggable) return;
@@ -233,7 +218,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 		document.addEventListener('mousemove', handleDrag);
 		document.addEventListener('mouseup', stopDrag);
 	}
-
 	function handleDrag(e: MouseEvent) {
 		if (!isDragging) return;
 		const newX = e.clientX - dragOffset.x;
@@ -242,16 +226,14 @@ https://svelte.dev/e/attribute_invalid_name -->
 		const maxY = window.innerHeight - height;
 		position = { x: Math.max(0, Math.min(newX, maxX)), y: Math.max(0, Math.min(newY, maxY)) };
 	}
-
 	function stopDrag() {
-		isDragging = false;
+		isDragging = $state(false);
 		document.removeEventListener('mousemove', handleDrag);
 		document.removeEventListener('mouseup', stopDrag);
 	}
-
 	// Controls
 	function closeWindow() {
-		visible = false;
+		visible = $state(false);
 		onclose?.();
 	}
 	function minimizeWindow() {
@@ -268,13 +250,12 @@ https://svelte.dev/e/attribute_invalid_name -->
 	}
 	function updateSettings() {
 		onsettingschange?.({ settings });
-		settingsOpen = false;
+		settingsOpen = $state(false);
 	}
 	function formatTime(d: Date) {
 		return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	}
 </script>
-
 {#if visible}
 	<aside
 		bind:this={windowElement}
@@ -331,8 +312,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 							<div class="flex items-center space-x-1" role="status" aria-live="polite">
 								<div class="w-2 h-2 bg-yorha-success rounded-full animate-pulse" aria-hidden="true"></div>
 								<span class="text-xs text-yorha-success">READY</span>
-							</div>
-						{/if}
+							{/if}
 					</div>
 				</div>
 			</div>
@@ -360,7 +340,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 				</button>
 			</nav>
 		</header>
-
 		{#if !minimized}
 			{#if settingsOpen}
 				<div class="border-b border-yorha-border bg-yorha-bg-primary p-4">
@@ -385,16 +364,13 @@ https://svelte.dev/e/attribute_invalid_name -->
 							<button type="button" onclick={clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">Clear</button>
 						</div>
 					</div>
-				</div>
-			{/if}
-
+				{/if}
 			<main bind:this={messagesContainer} class="flex-1 overflow-y-auto p-4 bg-yorha-bg-primary space-y-4" role="log" aria-live="polite" aria-label="Chat conversation">
 				{#each messages as message (message.id)}
 					<article class="flex" class:justify-end={message.role === 'user'} in:fly={{ y: 20, duration: 300 }}>
 						<div class="max-w-[85%] border p-3 relative shadow-sm" class:bg-yorha-bg-tertiary={message.role === 'user'}>
 							{#if message.role === 'assistant'}
-								<div class="absolute left-0 top-0 bottom-0 w-1 bg-yorha-accent"></div>
-							{/if}
+								<div class="absolute left-0 top-0 bottom-0 w-1 bg-yorha-accent">{/if}
 							<div class="text-sm text-yorha-text-primary whitespace-pre-wrap leading-relaxed">
 								<span class="sr-only">{message.role === 'user' ? 'You said:' : 'AI responded:'}</span>
 								{message.content}
@@ -402,13 +378,11 @@ https://svelte.dev/e/attribute_invalid_name -->
 							{#if message.error}
 								<div class="mt-2 text-xs text-red-400" role="alert">
 									Failed to get response. <button type="button" onclick={sendMessage} class="underline">Retry</button>
-								</div>
-							{/if}
+								{/if}
 							<time class="mt-2 text-xs text-yorha-text-muted" datetime={message.timestamp.toISOString()}>{formatTime(message.timestamp)}</time>
 						</div>
 					</article>
 				{/each}
-
 				{#if isTyping}
 					<div class="flex justify-start" in:fade role="status" aria-live="polite">
 						<div class="bg-yorha-bg-secondary border p-3 relative shadow-sm">
@@ -422,10 +396,8 @@ https://svelte.dev/e/attribute_invalid_name -->
 								<span class="text-xs text-yorha-text-muted">AI is thinking...</span>
 							</div>
 						</div>
-					</div>
-				{/if}
+					{/if}
 			</main>
-
 			<footer class="border-t border-yorha-border bg-yorha-bg-secondary p-4">
 				<form class="flex space-x-3" on:submit|preventDefault={sendMessage} role="search" aria-label="Send message to AI">
 					<textarea
@@ -445,7 +417,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 						<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
 					</button>
 				</form>
-
 				<div class="flex justify-between items-center mt-2 text-xs text-yorha-text-muted" role="status">
 					<span>Powered by {settings.model}</span>
 					<div class="flex items-center space-x-1">
@@ -458,7 +429,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 		{/if}
 	</aside>
 {/if}
-
 <style>
 	@keyframes float {
 		0%, 100% {
@@ -496,8 +466,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 							role={message.role === 'system' ? 'status' : 'article'}
 						>
 							{#if message.role === 'assistant'}
-								<div class="absolute left-0 top-0 bottom-0 w-1 bg-yorha-accent"></div>
-							{/if}
+								<div class="absolute left-0 top-0 bottom-0 w-1 bg-yorha-accent">{/if}
 							<div class="text-sm text-yorha-text-primary whitespace-pre-wrap leading-relaxed">
 								<span class="sr-only">{message.role === 'user' ? 'You said:' : 'AI responded:'}</span>
 								{message.content}
@@ -505,8 +474,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 							{#if message.error}
 								<div class="mt-2 text-xs text-red-400" role="alert">
 									Failed to get response. <button type="button" onclick={(_event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
-								</div>
-							{/if}
+								{/if}
 							<time class="mt-2 text-xs text-yorha-text-muted" datetime={message.timestamp.toISOString()}>
 								{formatTime(message.timestamp)}
 							</time>
@@ -526,8 +494,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 								<span class="text-xs text-yorha-text-muted">AI is thinking...</span>
 							</div>
 						</div>
-					</div>
-				{/if}
+					{/if}
 			</main>
 			<footer class="border-t border-yorha-border bg-yorha-bg-secondary p-4">
 				<form class="flex space-x-3" onsubmit={(_event: SubmitEvent) => {

@@ -78,7 +78,7 @@
       if (mounted) startRenderLoop();
     })();
     return () => {
-      mounted = false;
+      mounted = $state(false);
       // Cleanup
     };
   });
@@ -117,7 +117,7 @@
       console.log('WebGPU initialized successfully');
     } catch (error) {
       console.error('WebGPU initialization failed:', error);
-      isWebGPUSupported = false;
+      isWebGPUSupported = $state(false);
       onWebGPUStatus?.(false);
     }
   }
@@ -284,7 +284,6 @@
     }
   });
 </script>
-
 <div class="webgpu-canvas-container nes-container with-title">
   <p class="title">WebGPU Legal Visualization</p>
   <div class="canvas-info">
@@ -326,10 +325,8 @@
   {#if children}
     <div class="additional-content">
       {@render children()}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .webgpu-canvas-container {
     margin: 1rem;
@@ -380,7 +377,7 @@
     text-align: right;
   }
   .canvas-wrapper {
-    position relative;
+    position: relative;
     display: inline-block;
     border: 2px solid var(--yorha-secondary);
     background: var(--yorha-bg-primary);
@@ -432,7 +429,7 @@
   }
   .canvas-wrapper::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -452,4 +449,3 @@
     }
   }
 </style>
-

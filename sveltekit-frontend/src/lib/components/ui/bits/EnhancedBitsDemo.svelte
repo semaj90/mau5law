@@ -77,7 +77,7 @@
     aiAnalysisLoading = true;
     // Simulate AI processing
     await new Promise(resolve => setTimeout(resolve, 2000));
-    aiAnalysisLoading = false;
+    aiAnalysisLoading = $state(false);
   }
   async function uploadEvidence() {
     evidenceUploadProgress = 0;
@@ -85,7 +85,7 @@
       evidenceUploadProgress += 10;
       if (evidenceUploadProgress >= 100) {
         clearInterval(interval);
-        evidenceDialogOpen = false;
+        evidenceDialogOpen = $state(false);
         evidenceUploadProgress = 0;
       }
     }, 200);
@@ -108,7 +108,6 @@
     { id: 'cards', label: 'Evidence Cards', icon Brain },
   ]);
 </script>
-
 <div class="yorha-panel p-6 max-w-6xl mx-auto">
   <!-- Header -->
   <div class="yorha-panel-header mb-6">
@@ -292,7 +291,7 @@
                     class="w-full rounded border px-3 py-2 bg-transparent text-nier-text-primary"
                   >
                     <option value="" disabled>Select case type...</option>
-                    {#each caseTypes as opt}
+                    {#each Array.isArray(caseTypes) ? caseTypes : [] as opt}
                       <option value={opt.value} title={opt.description}>{opt.label}</option>
                     {/each}
                   </select>
@@ -325,7 +324,6 @@
             </div>
           </div>
         </Dialog>
-
         <!-- Evidence Upload Dialog -->
         <Dialog bind:open={evidenceDialogOpen} size="md">
           <div data-legal data-evidence-analysis>
@@ -345,7 +343,7 @@
                   class="w-full rounded border px-3 py-2 bg-transparent text-nier-text-primary"
                 >
                   <option value="" disabled>Select evidence category...</option>
-                  {#each evidenceCategories as opt}
+                  {#each Array.isArray(evidenceCategories) ? evidenceCategories : [] as opt}
                     <option value={opt.value} title={opt.description}>{opt.label}</option>
                   {/each}
                 </select>
@@ -361,8 +359,7 @@
                 <div class="yorha-drop-zone p-8 text-center">
                   <FileText class="w-12 h-12 mx-auto mb-4 text-nier-text-muted" />
                   <p class="text-nier-text-secondary">Drop files here or click to browse</p>
-                </div>
-              {/if}
+                {/if}
             </div>
             <div class="bits-dialog-footer">
               <Button class="bits-btn" variant="ghost" onclick={() => (evidenceDialogOpen = false)}>Cancel</Button>
@@ -416,8 +413,7 @@
                       <Button size="sm" variant="ghost" class="flex-1 bits-btn bits-btn">Review</Button>
                       <Button size="sm" variant="primary" class="flex-1 bits-btn bits-btn">Analyze</Button>
                     </div>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </button>
           {/each}
@@ -448,8 +444,7 @@
             </div>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Footer -->
   <div class="mt-8 pt-6 border-t border-nier-border-secondary">
@@ -458,7 +453,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .demo-content {
@@ -518,7 +512,6 @@
   :global(.processing-indicator) {
     height: 100%;
     background: linear-gradient(90deg, var(--color-ai-status-online), var(--color-ai-status-processing));
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
 </style>
-

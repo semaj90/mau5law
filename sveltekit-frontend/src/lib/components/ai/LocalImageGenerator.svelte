@@ -11,7 +11,6 @@ Production-ready with native Windows support
     imageGenerationStore,
     // removed problematic `type` imports to avoid TS namespace errors when importing from .js
   } from '$lib/services/local-image-generation-service.js';
-
   // minimal local types to avoid external namespace errors
   interface ImageGenerationRequest {
     prompt: string;
@@ -34,21 +33,18 @@ Production-ready with native Windows support
     timestamp?: number | string | Date;
     processingTime?: number;
   }
-
   interface Props {
     caseId?: string;
     onImageGenerated?: (result: ImageGenerationResult) => void;
     initialPrompt?: string;
     compact?: boolean;
   }
-
   let {
     caseId = '',
     onImageGenerated = (result: ImageGenerationResult) => {}, // fixed default
     initialPrompt = '',
     compact = false,
   }: Props = $props();
-
   // Component state
   let prompt = $state(initialPrompt);
   let negativePrompt = $state('blurry, low quality, distorted, text, watermark, signature');
@@ -69,14 +65,12 @@ Production-ready with native Windows support
   let generationHistory = $state<ImageGenerationResult[]>([]);
   // Provider status
   let providerStatus = $state<Map<string, string>>(new Map()); // fixed generic and initialization
-
   $effect(() => {
     // Load provider status
     providerStatus = imageGenerationService.getProviderStatus();
     // Load generation history
     loadHistory();
   });
-
   async function loadHistory() {
     try {
       generationHistory = await imageGenerationService.getGenerationHistory();
@@ -84,7 +78,6 @@ Production-ready with native Windows support
       console.error('Failed to load generation history:', error);
     }
   }
-
   async function generateImage() {
     if (!prompt.trim()) {
       alert('Please enter a prompt');
@@ -113,7 +106,6 @@ Production-ready with native Windows support
       alert(`Image generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
-
   function useImageAsEvidence(result: ImageGenerationResult) {
     if (caseId && onImageGenerated) {
       const evidence = {
@@ -134,7 +126,6 @@ Production-ready with native Windows support
       onImageGenerated(result);
     }
   }
-
   async function regenerateWithSeed(result: ImageGenerationResult) {
     prompt = result.prompt;
     if (result.metadata?.seed !== undefined && result.metadata.seed !== -1) {
@@ -147,7 +138,6 @@ Production-ready with native Windows support
     height = result.metadata?.size?.height ?? height;
     await generateImage();
   }
-
   async function copyPrompt(text: string) {
     try {
       await navigator.clipboard.writeText(text);
@@ -186,7 +176,6 @@ Production-ready with native Windows support
     },
   ];
 </script>
-
 <div class="image-generator nes-container is-rounded {compact ? 'compact' : 'full'}">
   <div class="generator-header">
     <h3>🎨 AI Image Generation</h3>
@@ -213,7 +202,7 @@ Production-ready with native Windows support
     <div class="template-section">
       <label class="nes-text">Legal Templates:</label>
       <div class="template-buttons">
-        {#each legalPromptTemplates as template}
+        {#each Array.isArray(legalPromptTemplates) ? legalPromptTemplates : [] as template}
           <button class="template-btn nes-btn is-primary" onclick={() => (prompt = template.prompt)}>
             {template.name}
           </button>
@@ -239,7 +228,7 @@ Production-ready with native Windows support
         <label class="nes-text">Provider:</label>
         <div class="nes-select">
           <select bind:value={selectedProvider}>
-            {#each Array.from(providerStatus.keys()) as provider}
+            {#each Array.isArray(Array.from(providerStatus.keys())) ? Array.from(providerStatus.keys()) : [] as provider}
               <option value={provider}>
                 {provider}
                 {providerStatus.get(provider) !== 'internal' ? ' (Available)' : ' (Fallback)'}
@@ -290,8 +279,7 @@ Production-ready with native Windows support
             <input id="seed-1-for-random" class="nes-input" type="number" bind:value={seed} min="-1" max="999999999" />
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Generation Button and Status -->
     <div class="generate-section">
       <button
@@ -314,13 +302,11 @@ Production-ready with native Windows support
             </progress>
           </div>
           <p>{$imageGenerationStore.status.currentStep}</p>
-        </div>
-      {/if}
+        {/if}
       {#if $imageGenerationStore.status.error}
         <div class="error-message nes-container is-error">
           <p>❌ {$imageGenerationStore.status.error}</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Generated Image Display -->
@@ -368,8 +354,7 @@ Production-ready with native Windows support
           {/if}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- History Section -->
   <div class="history-section">
     <div class="history-header">
@@ -390,7 +375,7 @@ Production-ready with native Windows support
     </div>
     {#if showHistory}
       <div class="history-grid">
-        {#each generationHistory as result}
+        {#each Array.isArray(generationHistory) ? generationHistory : [] as result}
           <div class="history-item nes-container is-rounded">
             <img
               src={(
@@ -460,8 +445,7 @@ Production-ready with native Windows support
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Selected Image Modal -->
   {#if selectedImage}
@@ -504,10 +488,8 @@ Production-ready with native Windows support
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .image-generator {
     max-width: 100%;
@@ -683,7 +665,7 @@ Production-ready with native Windows support
     margin: 0;
   }
   .modal-overlay {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     width: 100%;
@@ -740,5 +722,3 @@ Production-ready with native Windows support
     }
   }
 </style>
-
-

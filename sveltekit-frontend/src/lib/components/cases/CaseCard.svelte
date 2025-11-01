@@ -15,9 +15,9 @@
     Clock,
     CheckCircle
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import * as Card from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import * as Card from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   interface CaseData {
     id: string
     title: string
@@ -136,18 +136,16 @@
             style="width: {caseData.progress}%"
           ></div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Tags -->
     {#if caseData.tags && caseData.tags.length > 0}
       <div class="flex flex-wrap gap-2 mb-4">
-        {#each caseData.tags as tag}
+        {#each Array.isArray(caseData.tags) ? caseData.tags : [] as tag}
           <Badge variant="secondary" class="text-xs">
             #{tag}
           </Badge>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Footer -->
     <div class="flex items-center justify-between pt-4 border-t border-nier-light-gray dark:border-nier-gray/30">
       <div class="flex items-center gap-3">
@@ -164,13 +162,11 @@
                 <span class="text-xs font-bold text-nier-white">
                   {caseData.assignee.name.charAt.toUpperCase()}
                 </span>
-              </div>
-            {/if}
+              {/if}
             <span class="text-sm text-nier-gray dark:text-nier-silver">
               {caseData.assignee.name}
             </span>
-          </div>
-        {/if}
+          {/if}
       </div>
       <div class="flex items-center gap-2 text-xs text-nier-gray dark:text-nier-silver">
         <Calendar class="w-3 h-3" />
@@ -245,8 +241,7 @@
       <Trash2 class="w-4 h-4 mr-3" />
       Delete
     </Button>
-  </div>
-{/if}
+  {/if}
 <style lang="css">
   /* @unocss-include */
   /* Add smooth line clamp transitions */

@@ -8,10 +8,10 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
-  import { NesCard } from '$lib/components/ui/nes-ui';
+  import { NesCard } from '$lib/components/ui/nes-ui.svelte'';
   // Editor state
   let editorValue = $state('');
   let documentTitle = $state('Untitled Document');
@@ -35,7 +35,7 @@ https://svelte.dev/e/expected_token -->
     // In a real app, this would save to backend
     console.log('Saving document:', { title: documentTitle, content: editorValue });
     lastSaved = new Date();
-    isModified = false;
+    isModified = $state(false);
   }
   function handleDownload() {
     const blob = new Blob([editorValue], { type: 'text/plain' });

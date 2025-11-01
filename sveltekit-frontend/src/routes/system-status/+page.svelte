@@ -7,7 +7,7 @@
   type TestResult = {
     success?: boolean;
     error?: string;
-    data?: unknown;
+    data?: any;
     status?: number;
     timestamp?: string | number | Date | undefined;
     endpoint?: string;
@@ -17,7 +17,7 @@
   let isRunning = $state(false);
 
   // helper to safely format unknown timestamps (prevents TS Date overload issues)
-  function formatTimestamp(ts: unknown): string {
+  function formatTimestamp(ts: any): string {
     try {
       if (!ts) return '';
       // Accept ISO string, number, or Date
@@ -32,7 +32,7 @@
     name: string;
     endpoint: string;
     method?: 'GET' | 'POST';
-    body?: unknown;
+    body?: any;
     description: string;
   };
   const tests: TestConfig[] = [
@@ -79,7 +79,7 @@
         options.body = JSON.stringify(test.body);
       }
       const response = await fetch(test.endpoint, options);
-      let data: unknown;
+      let data: any;
       try {
         data = await response.json();
       } catch {
@@ -110,7 +110,7 @@
       await runTest(test);
       await new Promise(resolve => setTimeout(resolve, 300));
     }
-    isRunning = false;
+    isRunning = $state(false);
   }
   async function checkAuthStatus() {
     try {
@@ -124,7 +124,7 @@
     try {
       const response = await fetch('/api/dev-auth?seed=true');
       const result = await response.json();
-      if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
+      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
         await checkAuthStatus();
       }
       return result;
@@ -136,7 +136,7 @@
     try {
       const response = await fetch('/api/dev-auth', { method: 'DELETE' });
       const result = await response.json();
-      if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
+      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
         await checkAuthStatus();
       }
       return result;
@@ -197,7 +197,7 @@
   <main class="space-y-6">
     <!-- System Tests Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {#each tests as test}
+      {#each Array.isArray(tests) ? tests : [] as test}
         {@const result = testResults[test.name]}
         <EvidenceCard
           title={test.name}

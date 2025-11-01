@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Check Ollama service availability
     const ollamaBase = getOllamaBaseUrl();
-    let ollamaAvailable = false;
+    let ollamaAvailable = $state(false);
     let availableModels: string[] = [];
 
     try {

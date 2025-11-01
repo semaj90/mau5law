@@ -8,11 +8,9 @@
  *
  * Run: npx tsx src/lib/server/optimize/benchmark.ts
  */
-
 import { VectorQuantizer, BatchVectorQuantizer } from './vector-quantization';
 import { defaultQueryCache, vectorSearchCache, ragQueryCache } from './query-cache';
 import { performance } from 'perf_hooks';
-
 interface BenchmarkResult {
   name: string;
   before: number;
@@ -21,18 +19,14 @@ interface BenchmarkResult {
   improvementPercent: string;
   details?: Record<string, any>;
 }
-
 class BenchmarkSuite {
   private results: BenchmarkResult[] = [];
-
   /**
    * Benchmark 1: Vector Quantization Performance
    */
   async benchmarkVectorQuantization(): Promise<BenchmarkResult> {
     console.log('\n🔬 Benchmarking Vector Quantization...\n');
-
     const quantizer = new VectorQuantizer({ dimensions: 768, method: 'minmax' });
-
     // Generate test vectors
     const testVectors: Float32Array[] = [];
     for (let i = 0; i < 100; i++) {
@@ -42,7 +36,6 @@ class BenchmarkSuite {
       }
       testVectors.push(vec);
     }
-
     // Benchmark BEFORE (float32 storage + search)
     const startBefore = performance.now();
     for (const vec of testVectors) {
@@ -53,10 +46,8 @@ class BenchmarkSuite {
       }
     }
     const timeBefore = performance.now() - startBefore;
-
     // Benchmark AFTER (int8 storage + search)
     const quantizedVectors = testVectors.map(vec => quantizer.quantize(vec));
-
     const startAfter = performance.now();
     for (const qvec of quantizedVectors) {
       // Simulate similarity calculation (dot product on int8)
@@ -66,10 +57,8 @@ class BenchmarkSuite {
       }
     }
     const timeAfter = performance.now() - startAfter;
-
     const improvement = timeBefore / timeAfter;
     const metrics = quantizer.getMetrics();
-
     const result: BenchmarkResult = {
       name: 'Vector Quantization',
       before: timeBefore,
@@ -85,23 +74,19 @@ class BenchmarkSuite {
         quantizedSize: `${(metrics.quantizedSize / 1024).toFixed(1)}KB`,
       },
     };
-
     this.results.push(result);
     return result;
   }
-
   /**
    * Benchmark 2: Query Cache Performance
    */
   async benchmarkQueryCache(): Promise<BenchmarkResult> {
     console.log('\n🔬 Benchmarking Query Cache...\n');
-
     // Simulate expensive database query
     const expensiveQuery = async () => {
       await new Promise(resolve => setTimeout(resolve, 100)); // 100ms latency
       return { result: 'data', items: Array.from({ length: 100 }, (_, i) => ({ id: i })) };
     };
-
     // Benchmark BEFORE (no cache, every query hits database)
     const startBefore = performance.now();
     const iterationsBefore = 10;
@@ -109,25 +94,19 @@ class BenchmarkSuite {
       await expensiveQuery();
     }
     const timeBefore = performance.now() - startBefore;
-
     // Benchmark AFTER (with cache)
     const cache = defaultQueryCache;
     const query = { type: 'benchmark', id: 'test-query' };
-
     const startAfter = performance.now();
     const iterationsAfter = 10;
-
     // First call: cache miss
     await cache.getOrQuery(query, expensiveQuery, { ttl: 3600 });
-
     // Subsequent calls: cache hits
     for (let i = 1; i < iterationsAfter; i++) {
       await cache.getOrQuery(query, expensiveQuery, { ttl: 3600 });
     }
     const timeAfter = performance.now() - startAfter;
-
     const improvement = timeBefore / timeAfter;
-
     const result: BenchmarkResult = {
       name: 'Query Cache',
       before: timeBefore,
@@ -142,20 +121,16 @@ class BenchmarkSuite {
         avgLatencyAfter: `${(timeAfter / iterationsAfter).toFixed(1)}ms`,
       },
     };
-
     this.results.push(result);
     return result;
   }
-
   /**
    * Benchmark 3: Vector Search with Cache
    */
   async benchmarkVectorSearchCache(): Promise<BenchmarkResult> {
     console.log('\n🔬 Benchmarking Vector Search Cache...\n');
-
     // Generate test embedding
     const queryEmbedding = Array.from({ length: 768 }, () => Math.random() - 0.5);
-
     // Simulate expensive vector search
     const expensiveVectorSearch = async () => {
       await new Promise(resolve => setTimeout(resolve, 150)); // 150ms latency
@@ -167,7 +142,6 @@ class BenchmarkSuite {
         })),
       };
     };
-
     // Benchmark BEFORE (no cache)
     const startBefore = performance.now();
     const iterationsBefore = 5;
@@ -175,24 +149,18 @@ class BenchmarkSuite {
       await expensiveVectorSearch();
     }
     const timeBefore = performance.now() - startBefore;
-
     // Benchmark AFTER (with cache)
     const cache = vectorSearchCache;
-
     const startAfter = performance.now();
     const iterationsAfter = 5;
-
     // First call: cache miss
     await cache.cacheVectorSearch(queryEmbedding, expensiveVectorSearch, { ttl: 1800 });
-
     // Subsequent calls: cache hits
     for (let i = 1; i < iterationsAfter; i++) {
       await cache.cacheVectorSearch(queryEmbedding, expensiveVectorSearch, { ttl: 1800 });
     }
     const timeAfter = performance.now() - startAfter;
-
     const improvement = timeBefore / timeAfter;
-
     const result: BenchmarkResult = {
       name: 'Vector Search Cache',
       before: timeBefore,
@@ -206,19 +174,15 @@ class BenchmarkSuite {
         embeddingDimensions: 768,
       },
     };
-
     this.results.push(result);
     return result;
   }
-
   /**
    * Benchmark 4: Combined Optimization (Quantization + Cache)
    */
   async benchmarkCombined(): Promise<BenchmarkResult> {
     console.log('\n🔬 Benchmarking Combined Optimization...\n');
-
     const quantizer = new VectorQuantizer({ dimensions: 768 });
-
     // Simulate full pipeline: embedding → quantization → search → cache
     const fullPipelineBefore = async () => {
       const embedding = new Float32Array(768).map(() => Math.random() - 0.5);
@@ -226,7 +190,6 @@ class BenchmarkSuite {
       await new Promise(resolve => setTimeout(resolve, 150)); // Vector search
       return { results: ['doc1', 'doc2', 'doc3'] };
     };
-
     const fullPipelineAfter = async () => {
       const embedding = new Float32Array(768).map(() => Math.random() - 0.5);
       const quantized = quantizer.quantize(embedding); // Quantization
@@ -234,17 +197,14 @@ class BenchmarkSuite {
       await new Promise(resolve => setTimeout(resolve, 50)); // Faster vector search (quantized)
       return { results: ['doc1', 'doc2', 'doc3'] };
     };
-
     // Benchmark BEFORE
     const startBefore = performance.now();
     for (let i = 0; i < 10; i++) {
       await fullPipelineBefore();
     }
     const timeBefore = performance.now() - startBefore;
-
     // Benchmark AFTER
     const cache = vectorSearchCache;
-
     const startAfter = performance.now();
     // First call: cache miss
     await cache.cacheVectorSearch(
@@ -252,7 +212,6 @@ class BenchmarkSuite {
       fullPipelineAfter,
       { ttl: 1800 }
     );
-
     // Subsequent calls: cache hits
     for (let i = 1; i < 10; i++) {
       await cache.cacheVectorSearch(
@@ -262,9 +221,7 @@ class BenchmarkSuite {
       );
     }
     const timeAfter = performance.now() - startAfter;
-
     const improvement = timeBefore / timeAfter;
-
     const result: BenchmarkResult = {
       name: 'Combined (Quantization + Cache)',
       before: timeBefore,
@@ -276,11 +233,9 @@ class BenchmarkSuite {
         iterations: 10,
       },
     };
-
     this.results.push(result);
     return result;
   }
-
   /**
    * Run all benchmarks
    */
@@ -288,15 +243,12 @@ class BenchmarkSuite {
     console.log('═══════════════════════════════════════════════════');
     console.log('🚀 TIER 1 OPTIMIZATION BENCHMARK SUITE');
     console.log('═══════════════════════════════════════════════════');
-
     await this.benchmarkVectorQuantization();
     await this.benchmarkQueryCache();
     await this.benchmarkVectorSearchCache();
     await this.benchmarkCombined();
-
     this.printResults();
   }
-
   /**
    * Print formatted results
    */
@@ -304,14 +256,12 @@ class BenchmarkSuite {
     console.log('\n═══════════════════════════════════════════════════');
     console.log('📊 BENCHMARK RESULTS');
     console.log('═══════════════════════════════════════════════════\n');
-
     for (const result of this.results) {
       console.log(`\n🎯 ${result.name}`);
       console.log('─'.repeat(50));
       console.log(`  Before:      ${result.before.toFixed(2)}ms`);
       console.log(`  After:       ${result.after.toFixed(2)}ms`);
       console.log(`  Improvement: ${result.improvement.toFixed(2)}x faster (${result.improvementPercent} faster)`);
-
       if (result.details) {
         console.log('\n  Details:');
         for (const [key, value] of Object.entries(result.details)) {
@@ -320,21 +270,17 @@ class BenchmarkSuite {
         }
       }
     }
-
     // Calculate overall improvement
     const avgImprovement =
       this.results.reduce((sum, r) => sum + r.improvement, 0) / this.results.length;
-
     console.log('\n═══════════════════════════════════════════════════');
     console.log('🎉 OVERALL RESULTS');
     console.log('═══════════════════════════════════════════════════');
     console.log(`\n  Average Improvement: ${avgImprovement.toFixed(2)}x faster`);
     console.log(`  Expected Latency Reduction: ${((avgImprovement - 1) * 100).toFixed(1)}%`);
     console.log(`  Target Achievement: ${avgImprovement >= 2.5 ? '✅ EXCEEDED' : avgImprovement >= 2.0 ? '✅ MET' : '⚠️  BELOW TARGET'}`);
-
     console.log('\n═══════════════════════════════════════════════════\n');
   }
-
   /**
    * Get results as JSON
    */
@@ -342,7 +288,6 @@ class BenchmarkSuite {
     return this.results;
   }
 }
-
 /**
  * Main execution
  */
@@ -351,7 +296,6 @@ export async function runBenchmarks(): Promise<BenchmarkResult[]> {
   await suite.runAll();
   return suite.getResults();
 }
-
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   runBenchmarks()

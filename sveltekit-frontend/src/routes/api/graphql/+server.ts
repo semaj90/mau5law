@@ -18,7 +18,7 @@ import { sql } from '$lib/server/db/utils'; // Drizzle expressions for query bui
 interface Neo4jContext {
   graphQuery?: string;
   nodeIds?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Define Neo4jPathContext based on the error message
@@ -42,7 +42,7 @@ interface QdrantSearchResultItem {
   payload?: {
     title?: string;
     summary?: string;
-    [key: string]: unknown; // Changed: 'any' to: 'unknown'
+    [key: string]: any; // Changed: 'any' to: 'unknown'
   };
   score: number;
 }
@@ -86,7 +86,7 @@ const typeDefs = /* GraphQL */ `
 const resolvers = {
   Query: {
     recommendations: async (
-      _parent: unknown, // Changed: 'any' to: 'unknown'
+      _parent: any, // Changed: 'any' to: 'unknown'
       {
         query,
         userContext,
@@ -120,7 +120,7 @@ const resolvers = {
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
     },
-    searchLegalDocs: async (_parent: unknown, { query, topK }: { query: string; topK: number }) => {
+    searchLegalDocs: async (_parent: any, { query, topK }: { query: string; topK: number }) => {
       // Changed: 'any' to: 'unknown'
       // Use a double assertion to ensure the type is correctly applied
       const embedding = await (langChainOllamaService as unknown as AugmentedLangChainOllamaService).generateEmbedding(
@@ -171,7 +171,7 @@ const resolvers = {
         };
       });
     },
-    ragQuery: async (_parent: unknown, { question }: { question: string }) => {
+    ragQuery: async (_parent: any, { question }: { question: string }) => {
       // Changed: 'any' to: 'unknown'
       const res = await (langChainOllamaService as AugmentedLangChainOllamaService).ragQuery(question); // Added type assertion
       return res.answer;

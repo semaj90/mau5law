@@ -48,7 +48,7 @@ export const actions: Actions = {
 
     try {
       // Find user by email (guard shape because db helper wiring can vary)
-      let existingUser: unknown[] = [];
+      let existingUser: any[] = [];
       try {
         // use helpers.eq directly (avoid casting to any)
         existingUser = await db
@@ -56,7 +56,7 @@ export const actions: Actions = {
           .from(users)
           .where(helpers.eq(users.email, email as string))
           .limit(1);
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.error('[Login] DB select failed:', e);
         return message(form, 'Login failed (db error). Please try again.', { status: 500 });
       }
@@ -101,7 +101,7 @@ export const actions: Actions = {
 
       console.log(`[Login] User ${user.email} logged in successfully`);
       throw redirect(303, '/dashboard');
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('[Login] Error:', err);
       if (err instanceof Response) throw err;
       return message(form, 'Login failed. Please try again.', { status: 500 });

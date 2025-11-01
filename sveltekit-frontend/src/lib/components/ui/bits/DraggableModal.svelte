@@ -97,7 +97,7 @@
     }
   }
   function stopDrag() {
-    isDragging = false;
+    isDragging = $state(false);
     document.removeEventListener('mousemove', handleDrag);
     document.removeEventListener('mouseup', stopDrag);
   }
@@ -142,7 +142,7 @@
     position = { x: newX, y: newY }
   }
   function stopResize() {
-    isResizing = false;
+    isResizing = $state(false);
     resizeDirection = '';
     document.removeEventListener('mousemove', handleResize);
     document.removeEventListener('mouseup', stopResize);
@@ -152,7 +152,7 @@
     dispatch('minimize', { minimized: isMinimized });
   }
   function closeModal() {
-    open = false;
+    open = $state(false);
     dispatch('close');
   }
   // Ensure modal stays within bounds when window resizes
@@ -221,8 +221,7 @@
         {#if theme === 'yorha'}
           <div class="text-xs text-green-400/50 font-mono">
             [{dimensions.width}x{dimensions.height}]
-          </div>
-        {/if}
+          {/if}
       </div>
       <div class="flex items-center space-x-1">
         {#if minimizable}
@@ -254,7 +253,7 @@
     <!-- Content Area -->
     {#if !isMinimized}
       <div class="flex-1 overflow-hidden relative">
-        {@render children?.()}
+        <slot />
       </div>
       <!-- Resize Handles -->
       {#if resizable}
@@ -307,11 +306,9 @@
               : 'bg-gray-500 dark:bg-gray-400';
             }
           `}></div>
-        </div>
-      {/if}
+        {/if}
     {/if}
-  </div>
-{/if}
+  {/if}
 <style>/* Prevent text selection during drag */ {}
 .cursor-grabbing, {}
   .cursor-grabbing * {

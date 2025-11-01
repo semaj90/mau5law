@@ -67,7 +67,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     reducedMotion = false,
     // Performance defaults
     gpuAcceleration = true,
-    webgpuMode = false;
+    webgpuMode = $state(false);
   }: Props = $props();
   // Events now handled via props in Svelte 5
   //
@@ -173,7 +173,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     onFocus?.(event);
   }
   function handleBlur(_event: FocusEvent) {
-    isFocused = false;
+    isFocused = $state(false);
     playSpatialSound('blur', 330, 0.1);
     onBlur?.(event);
   }
@@ -191,7 +191,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     playSpatialSound('hover', 880, 0.03);
   }
   function handleMouseLeave() {
-    isHovered = false;
+    isHovered = $state(false);
   }
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;
@@ -212,7 +212,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
-
 <div
   bind:this={container}
   class="n64-input-container {className}"
@@ -253,24 +252,20 @@ if (spatialAudio && typeof window !== 'undefined') {
     <div class="texture-filter-layer filter-{textureFiltering}"></div>
     <!-- Anti-aliasing layer -->
     {#if antiAliasing !== 'none'}
-      <div class="aa-layer aa-{antiAliasing}"></div>
-    {/if}
+      <div class="aa-layer aa-{antiAliasing}">{/if}
     <!-- Fog effect layer -->
     {#if fogEffect}
-      <div class="fog-layer"></div>
-    {/if}
+      <div class="fog-layer">{/if}
     <!-- Depth of field blur -->
     {#if depthOfField}
-      <div class="dof-layer"></div>
-    {/if}
+      <div class="dof-layer">{/if}
   </div>
   <!-- Focus indicator with N64 styling -->
   <div class="n64-focus-indicator" class:visible={isFocused} aria-hidden="true"></div>
 </div>
-
 <style>
   .n64-input-container {
-    position relative;
+    position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
     /* 3D perspective for N64 depth */
@@ -279,7 +274,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Base input styling */
   .n64-input {
-    position relative;
+    position: relative;
     width: 100%;
     padding: 12px 16px;
     font-family: 'Press Start 2P', monospace;
@@ -348,7 +343,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Texture filtering effects */
   .texture-filter-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -396,7 +391,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Anti-aliasing layers */
   .aa-layer {
-    position absolute;
+    position: absolute;
     top: -1px;
     left: -1px;
     right: -1px;
@@ -437,7 +432,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Fog effect */
   .fog-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -455,7 +450,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Depth of field */
   .dof-layer {
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -468,7 +463,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Focus indicator */
   .n64-focus-indicator {
-    position absolute;
+    position: absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -565,4 +560,3 @@ if (spatialAudio && typeof window !== 'undefined') {
     color: #ffffff;
   }
 </style>
-

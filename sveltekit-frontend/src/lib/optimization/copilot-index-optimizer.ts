@@ -156,7 +156,7 @@ export class CopilotIndexOptimizer {
       this.performanceMetrics.optimizationTime = performance.now() - startTime;
       this.performanceMetrics.totalOptimizations++;
       return this.optimizedIndex;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Copilot index optimization failed:', error);
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Optimization failed: ${message}`);
@@ -211,7 +211,7 @@ export class CopilotIndexOptimizer {
       }
       this.performanceMetrics.searchTime += performance.now() - startTime;
       return finalResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Enhanced semantic search failed:', error);
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Search failed: ${message}`);
@@ -234,7 +234,7 @@ export class CopilotIndexOptimizer {
       return suggestions
         .sort((a: CopilotSuggestion, b: CopilotSuggestion) => b.priority * b.confidence - a.priority * a.confidence)
         .slice(0, 10);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Suggestion generation failed:', error);
       return [];
     }

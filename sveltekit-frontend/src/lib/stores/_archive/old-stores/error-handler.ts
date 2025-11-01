@@ -196,7 +196,7 @@ class EnhancedErrorHandler {
   }
   // ===== CORE ERROR HANDLING =====
   handle(
-    error: unknown,
+    error: any,
     context?: Record<string, unknown>,
     retryFn?: () => Promise<void>,
     legalContext?: LegalErrorContext
@@ -218,7 +218,7 @@ class EnhancedErrorHandler {
   }
   // ===== SPECIALIZED ERROR HANDLERS =====
   handleLegalDocumentError(
-    error: unknown,
+    error: any,
     documentId: string,
     documentType: string,
     confidentialityLevel: string,
@@ -243,7 +243,7 @@ class EnhancedErrorHandler {
     return this.handle(error, enhancedContext, retryFn, legalContext);
   }
   handleChainOfCustodyError(
-    error: unknown,
+    error: any,
     evidenceId: string,
     caseId: string,
     custodyAction: string,
@@ -287,7 +287,7 @@ class EnhancedErrorHandler {
     return userError;
   }
   handlePrivilegeViolation(
-    error: unknown,
+    error: any,
     documentId: string,
     caseId: string,
     exposedContent: string,
@@ -334,7 +334,7 @@ class EnhancedErrorHandler {
     return userError;
   }
   handleCourtFilingError(
-    error: unknown,
+    error: any,
     filingType: string,
     docketNumber: string,
     deadline: Date,
@@ -385,7 +385,7 @@ class EnhancedErrorHandler {
     return userError;
   }
   handleNetworkError(
-    error: unknown,
+    error: any,
     context?: Record<string, unknown>,
     retryFn?: () => Promise<void>
   ): UserFriendlyError {
@@ -524,7 +524,7 @@ class EnhancedErrorHandler {
   }
   // ===== PRIVATE METHODS =====
   private parseError(
-    error: unknown,
+    error: any,
     context?: Record<string, unknown>,
     legalContext?: LegalErrorContext
   ): ErrorDetails {
@@ -1009,7 +1009,7 @@ class EnhancedErrorHandler {
           console.warn('Failed to parse persisted history:', err);
         }
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to load persisted error data:', err);
     }
   }
@@ -1024,7 +1024,7 @@ class EnhancedErrorHandler {
       // convert timestamps to ISO strings for storage
       const toStore = filteredHistory.map(e => ({ ...e, timestamp: e.timestamp.toISOString() }));
       localStorage.setItem('legal-ai-error-history', JSON.stringify(toStore));
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('Failed to persist error data:', err);
     }
   }
@@ -1070,7 +1070,7 @@ export const enhancedErrorHandler = new EnhancedErrorHandler();
 
 // ===== CONVENIENCE FUNCTIONS =====
 export function handleError(
-  error: unknown,
+  error: any,
   context?: Record<string, unknown>,
   retryFn?: () => Promise<void>,
   legalContext?: LegalErrorContext
@@ -1085,7 +1085,7 @@ export function handleApiError(
   return enhancedErrorHandler.handleApiError(response, context, retryFn);
 }
 export function handleNetworkError(
-  error: unknown,
+  error: any,
   context?: Record<string, unknown>,
   retryFn?: () => Promise<void>
 ): UserFriendlyError {
@@ -1101,7 +1101,7 @@ export function handleAuthError(context?: Record<string, unknown>): UserFriendly
   return enhancedErrorHandler.handleAuthError(context);
 }
 export function handleLegalDocumentError(
-  error: unknown,
+  error: any,
   documentId: string,
   documentType: string,
   confidentialityLevel: string,
@@ -1118,7 +1118,7 @@ export function handleLegalDocumentError(
   );
 }
 export function handleChainOfCustodyError(
-  error: unknown,
+  error: any,
   evidenceId: string,
   caseId: string,
   custodyAction: string,
@@ -1127,7 +1127,7 @@ export function handleChainOfCustodyError(
   return enhancedErrorHandler.handleChainOfCustodyError(error, evidenceId, caseId, custodyAction, context);
 }
 export function handlePrivilegeViolation(
-  error: unknown,
+  error: any,
   documentId: string,
   caseId: string,
   exposedContent: string,
@@ -1136,7 +1136,7 @@ export function handlePrivilegeViolation(
   return enhancedErrorHandler.handlePrivilegeViolation(error, documentId, caseId, exposedContent, context);
 }
 export function handleCourtFilingError(
-  error: unknown,
+  error: any,
   filingType: string,
   docketNumber: string,
   deadline: Date,

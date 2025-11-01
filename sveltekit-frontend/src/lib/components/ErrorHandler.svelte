@@ -1,9 +1,7 @@
 <script lang="ts">
   import { toasts, removeToast } from '$lib/stores/errorStore';
-
   // Using store directly in template via $toasts
 </script>
-
 <style>
   .toast-container {
     position: fixed;
@@ -14,29 +12,25 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .toast {
     padding: 0.75rem 1rem;
     border-radius: 6px;
     color: white;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   }
-
   .info { background: #3b82f6; }
   .warn { background: #f59e0b; }
   .error { background: #ef4444; }
   .success { background: #10b981; }
-
   .title { font-weight: 600; }
   .msg { font-size: 0.95rem; margin-top: 0.25rem; }
 </style>
-
 <div class="toast-container">
   {#each $toasts as t (t.id)}
     <div class="toast {t.level}">
       <div style="display:flex;justify-content: space-between;align-items:center;">
         <div>
-          {#if t.title}<div class="title">{t.title}</div>{/if}
+          {#if t.title}<div class="title">{t.title}{/if}
           <div class="msg">{t.message}</div>
         </div>
         <div style="margin-left:1rem;">
@@ -46,5 +40,3 @@
     </div>
   {/each}
 </div>
-
-

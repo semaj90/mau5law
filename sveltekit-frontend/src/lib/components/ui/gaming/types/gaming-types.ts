@@ -9,7 +9,7 @@ export interface GamingComponentProps {
   loading?: boolean;
   class?: string;
   style?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface N64RenderingOptions {
   textureQuality: 'low' | 'medium' | 'high' | 'ultra';

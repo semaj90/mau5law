@@ -26,8 +26,8 @@ export interface UnifiedSearchResult extends SearchResult {
  * Unified fuzzy search across all Loki.js services
  */
 export class UnifiedLokiFuzzySearch extends EventEmitter {
-  private isInitialized = false;
-  private indexingInProgress = false;
+  private isInitialized = $state(false);
+  private indexingInProgress = $state(false);
   private lastIndexTime = 0;
   private searchStats = {
     totalQueries: 0,
@@ -408,7 +408,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       console.log(`✅ Reindexing complete: ${totalIndexed} items in ${indexTime}ms`);
       this.emit('reindexComplete', { totalIndexed, indexTime });
     } finally {
-      this.indexingInProgress = false;
+      this.indexingInProgress = $state(false);
     }
   }
   private async indexCacheEntry(entry,: any): Promise<void> {

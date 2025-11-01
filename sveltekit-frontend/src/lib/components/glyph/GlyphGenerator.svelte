@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button'; // Adjusted import
-  import * as Card from '$lib/components/ui/card'; // Adjusted import
+  import { Button } from '$lib/components/ui/button.svelte''; // Adjusted import
+  import * as Card from '$lib/components/ui/card.svelte''; // Adjusted import
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
   import type { SimilarityResult } from '$lib/server/db/vector-operations';
   interface Props {
     evidenceId?: number;
-    onGlyphGenerated?: (result: unknown) => void;
+    onGlyphGenerated?: (result: any) => void;
   }
   let { evidenceId = 0, onGlyphGenerated } = $props<Props>();
   // Generation state
@@ -55,7 +55,7 @@
     thinkingStages = [];
     currentStage = null;
     try {
-      let finalResult: unknown;
+      let finalResult: any;
       if (extendedThinkingEnabled) {
         // GRPMO Extended Thinking Mode
         const mockEmbedding = generateMockEmbedding(prompt);
@@ -97,7 +97,7 @@
       console.error('Glyph generation error:', err);
       error = 'Network error occurred';
     } finally {
-      generating = false;
+      generating = $state(false);
       currentStage = null;
     }
   }
@@ -112,7 +112,7 @@
       return (Math.sin(seed) * 10000 - Math.floor(Math.sin(seed) * 10000)) * 2 - 1;
     });
   }
-  async function generateWithGRPMOContext(grpmoResult: unknown): Promise<any> {
+  async function generateWithGRPMOContext(grpmoResult: any): Promise<any> {
     // Enhanced generation request with GRPMO context
     const response = await fetch('/api/glyph/generate', {
       method: 'POST',
@@ -132,12 +132,12 @@
         grpmo_context: {
           thinking_stages: grpmoResult.thinkingStages,
           cache_performance: grpmoResult.cachePerformance,
-          similar_results: grpmoResult.result.slice(0, 3), // Top 3 similar items
+          similar_results: grpmoResult.result.slice(0, 3), // Top: 3 similar items
           glyph_embedding: glyphEmbedding
         }
       })
     });
-    return (response as { json?: unknown }).json();
+    return (response as { json?: any }).json();
   }
   async function generateStandard(): Promise<any> {
     // Standard generation without GRPMO
@@ -158,7 +158,7 @@
         } : undefined
       })
     });
-    return (response as { json?: unknown }).json();
+    return (response as { json?: any }).json();
   }
   function setDimensionPreset(preset: [number, number]) {
     dimensions = [...preset];
@@ -204,7 +204,7 @@
     <div>
       <label class="block text-sm font-medium mb-2">Visual Style</label>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {#each styles as styleOption}
+        {#each Array.isArray(styles) ? styles : [] as styleOption}
           <button
             onclick={() => style = styleOption.value}
             class="p-3 border rounded-lg text-left transition-colors {style === styleOption.value ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}"
@@ -220,7 +220,7 @@
     <div>
       <label class="block text-sm font-medium mb-2">Output Dimensions</label>
       <div class="flex flex-wrap gap-2 mb-3">
-        {#each dimensionPresets as preset}
+        {#each Array.isArray(dimensionPresets) ? dimensionPresets : [] as preset}
           <button
             onclick={() => setDimensionPreset(preset.value)}
             class="px-3 py-2 text-sm border rounded-lg transition-colors {dimensions[0] === preset.value[0] && dimensions[1] === preset.value[1] ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}"
@@ -277,8 +277,7 @@
               </button>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
       <Button
         variant="ghost"
         onclick={addConditioningTensor}
@@ -319,7 +318,7 @@
             {/if}
           </h4>
           <div class="space-y-1">
-            {#each thinkingStages as stage}
+            {#each Array.isArray(thinkingStages) ? thinkingStages : [] as stage}
               <div class="flex items-center gap-2 text-xs">
                 <div class="w-2 h-2 rounded-full {stage === currentStage ? 'bg-teal-500 animate-pulse' : stage.confidence > 0.8 ? 'bg-green-500' : 'bg-yellow-500'}"></div>
                 <span class="flex-1">{stage.name}</span>
@@ -343,10 +342,8 @@
                   <span class="text-blue-600">❄️ Cold: {cachePerformance.cold}</span>
                 {/if}
               </div>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
     <!-- Neural Sprite Configuration (Advanced) -->
     <div class="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-blue-50">
@@ -392,8 +389,7 @@
                   class="flex-1"
                 />
                 <span class="text-sm font-mono w-12 text-center">{targetCompressionRatio}:1</span>
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Predictive Frames -->
           <div>
@@ -434,8 +430,7 @@
         </div>
         <div class="mt-3 p-2 bg-blue-50 rounded text-xs text-blue-700">
           💡 Neural Sprite uses AI-powered compression to optimize tensor storage and generate predictive animation: frames.
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Generate Button -->
     <div class="flex justify-end">
@@ -460,8 +455,7 @@
           <span class="text-red-600">⚠️</span>
           <span class="text-red-800 text-sm">{error}</span>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Result Display -->
     {#if result}
       <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -472,23 +466,22 @@
             <h4 class="font-medium mb-2">Generated Glyph</h4>
             <div class="border rounded-lg overflow-hidden bg-white">
               <img
-                src={(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).glyph_url}
+                src={(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).glyph_url}
                 alt="Generated glyph"
                 class="w-full h-auto"
                 style="max-height: 300px; object-fit: contain;"
               />
             </div>
-            {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).preview_with_tensors}
+            {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).preview_with_tensors}
               <div class="mt-2">
                 <a
-                  href={(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).preview_with_tensors}
+                  href={(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).preview_with_tensors}
                   target="_blank"
                   class="text-sm text-blue-600 hover:text-blue-800"
                 >
                   📦 Download with embedded tensors
                 </a>
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Generation Stats -->
           <div>
@@ -496,39 +489,38 @@
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <span>Generation Time:</span>
-                <span class="font-mono">{(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).generation_time_ms}ms</span>
+                <span class="font-mono">{(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).generation_time_ms}ms</span>
               </div>
               <div class="flex justify-between">
                 <span>Cache Hits:</span>
-                <span class="font-mono text-green-600">{(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).cache_hits}</span>
+                <span class="font-mono text-green-600">{(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).cache_hits}</span>
               </div>
               <div class="flex justify-between">
                 <span>Tensor Artifacts:</span>
-                <span class="font-mono">{(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).tensor_ids?.length || 0}</span>
+                <span class="font-mono">{(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).tensor_ids?.length || 0}</span>
               </div>
               <div class="flex justify-between">
                 <span>Style:</span>
-                <span class="capitalize">{(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).metadata?.style}</span>
+                <span class="capitalize">{(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).metadata?.style}</span>
               </div>
               <div class="flex justify-between">
                 <span>Dimensions:</span>
-                <span class="font-mono">{(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).metadata?.dimensions?.join('×')}</span>
+                <span class="font-mono">{(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).metadata?.dimensions?.join('×')}</span>
               </div>
             </div>
-            {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).tensor_ids?.length > 0}
+            {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).tensor_ids?.length > 0}
               <div class="mt-3">
                 <h5 class="font-medium text-sm mb-1">Cached Tensors:</h5>
                 <div class="space-y-1">
-                  {#each (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).tensor_ids as tensorId}
+                  {#each (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).tensor_ids as tensorId}
                     <div class="text-xs font-mono bg-gray-100 p-1 rounded">
                       {tensorId}
                     </div>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
             <!-- GRPMO Extended Thinking Results -->
-            {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata}
+            {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata}
               <div class="mt-4 p-3 border rounded-lg bg-green-50">
                 <h5 class="font-medium text-sm mb-2 flex items-center gap-2">
                   🧠 GRPMO Extended Thinking Results
@@ -540,14 +532,14 @@
                   <div class="flex justify-between">
                     <span>Thinking Stages:</span>
                     <span class="font-mono text-green-600">
-                      {(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.thinking_stages?.length || 0}
+                      {(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata.thinking_stages?.length || 0}
                     </span>
                   </div>
                   <div class="flex justify-between">
                     <span>Cache Efficiency:</span>
                     <span class="font-mono text-green-600">
                       {(() => {
-                        const perf = (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.cache_performance || ;
+                        const perf = (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata.cache_performance || ;
                         const total = (perf.hot || 0) + (perf.warm || 0) + (perf.cold || 0);
                         if (total === 0) return 'N/A';
                         const efficiency = ((perf.hot || 0) * 100 + (perf.warm || 0) * 50) / total;
@@ -555,19 +547,18 @@
                       })()}
                     </span>
                   </div>
-                  {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.glyph_embedding}
+                  {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata.glyph_embedding}
                     <div class="flex justify-between">
                       <span>Glyph Embedding:</span>
                       <span class="font-mono text-green-600">
-                        {(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.glyph_embedding.length}D vector
+                        {(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata.glyph_embedding.length}D vector
                       </span>
-                    </div>
-                  {/if}
-                  {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.thinking_stages?.length > 0}
+                    {/if}
+                  {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata.thinking_stages?.length > 0}
                     <div class="mt-2 pt-2 border-t border-green-200">
                       <h6 class="text-xs font-medium mb-1">Processing Timeline:</h6>
                       <div class="space-y-1">
-                        {#each (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.thinking_stages as stage}
+                        {#each (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).grpmo_metadata.thinking_stages as stage}
                           <div class="flex items-center justify-between text-xs">
                             <span class="flex items-center gap-1">
                               <div class="w-2 h-2 rounded-full {stage.confidence > 0.8 ? 'bg-green-500' : 'bg-yellow-500'}"></div>
@@ -580,13 +571,11 @@
                           </div>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
-              </div>
-            {/if}
+              {/if}
             <!-- Neural Sprite Results -->
-            {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results}
+            {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results}
               <div class="mt-4 p-3 border rounded-lg bg-purple-50">
                 <h5 class="font-medium text-sm mb-2 flex items-center gap-2">
                   🧬 Neural Sprite Results
@@ -595,23 +584,22 @@
                   </span>
                 </h5>
                 <div class="space-y-2 text-sm">
-                  {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.compression_ratio}
+                  {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.compression_ratio}
                     <div class="flex justify-between">
                       <span>Compression Ratio:</span>
                       <span class="font-mono text-purple-600">
-                        {(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.compression_ratio}:1
+                        {(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.compression_ratio}:1
                       </span>
-                    </div>
-                  {/if}
-                  {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.predictive_frames?.length > 0}
+                    {/if}
+                  {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.predictive_frames?.length > 0}
                     <div class="flex justify-between">
                       <span>Predictive Frames:</span>
-                      <span class="font-mono">{(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.predictive_frames.length}</span>
+                      <span class="font-mono">{(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.predictive_frames.length}</span>
                     </div>
                     <div class="mt-2">
                       <h6 class="text-xs font-medium mb-1">Generated Frames:</h6>
                       <div class="flex gap-2 overflow-x-auto">
-                        {#each (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.predictive_frames as frameUrl, index}
+                        {#each (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.predictive_frames as frameUrl, index}
                           <div class="flex-shrink-0">
                             <img
                               src={frameUrl}
@@ -622,57 +610,52 @@
                           </div>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
-                  {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.ui_layout_metrics}
+                    {/if}
+                  {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.ui_layout_metrics}
                     <div class="mt-2 pt-2 border-t border-purple-200">
                       <h6 class="text-xs font-medium mb-1">UI Layout Compression</h6>
                       <div class="space-y-1 text-xs">
                         <div class="flex justify-between">
                           <span>Original Size:</span>
                           <span class="font-mono">
-                            {((result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.ui_layout_metrics.originalSize / 1024).toFixed(1)}KB
+                            {((result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.ui_layout_metrics.originalSize / 1024).toFixed(1)}KB
                           </span>
                         </div>
                         <div class="flex justify-between">
                           <span>Compressed Size:</span>
                           <span class="font-mono text-green-600">
-                            {((result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.ui_layout_metrics.compressedSize / 1024).toFixed(1)}KB
+                            {((result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.ui_layout_metrics.compressedSize / 1024).toFixed(1)}KB
                           </span>
                         </div>
                         <div class="flex justify-between">
                           <span>Ratio:</span>
                           <span class="font-mono text-purple-600">
-                            {(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.ui_layout_metrics.compressionRatio.toFixed(1)}:1
+                            {(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.ui_layout_metrics.compressionRatio.toFixed(1)}:1
                           </span>
                         </div>
                         <div class="flex justify-between">
                           <span>Accuracy:</span>
                           <span class="font-mono">
-                            {((result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.ui_layout_metrics.accuracy * 100).toFixed(1)}%
+                            {((result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.ui_layout_metrics.accuracy * 100).toFixed(1)}%
                           </span>
                         </div>
                       </div>
-                    </div>
-                  {/if}
-                  {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.compressed_tensor_url}
+                    {/if}
+                  {#if (result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.compressed_tensor_url}
                     <div class="mt-2 pt-2 border-t border-purple-200">
                       <a
-                        href={(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.compressed_tensor_url}
+                        href={(result as { slice?: any; glyph_url?: any; preview_with_tensors?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; metadata?: any; grpmo_metadata?: any; neural_sprite_results?: any }).neural_sprite_results.compressed_tensor_url}
                         target="_blank"
                         class="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
                       >
                         📦 Download compressed tensor data
                       </a>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>

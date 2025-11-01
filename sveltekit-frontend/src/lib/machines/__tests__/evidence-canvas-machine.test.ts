@@ -11,8 +11,8 @@ type EvidenceCanvasContext = {
 	evidenceItems: Array<unknown>;
 	connections: Array<unknown>;
 	lastUpdate?: number;
-	fabricState?: unknown;
-	performanceMetrics?: unknown;
+	fabricState?: any;
+	performanceMetrics?: any;
 	error?: string | undefined;
 };
 
@@ -21,15 +21,15 @@ type EvidenceCanvasEvent = {
 	// optional fields used by tests
 	sessionId?: string;
 	caseId?: string;
-	collaborator?: unknown;
-	evidence?: unknown;
+	collaborator?: any;
+	evidence?: any;
 	itemId?: string;
-	position?: unknown;
-	connection?: unknown;
-	fabricState?: unknown;
+	position?: any;
+	connection?: any;
+	fabricState?: any;
 	// done/error events from xstate will have `output`/`error`
-	output?: unknown;
-	error?: unknown;
+	output?: any;
+	error?: any;
 };
 
 type EvidenceCanvasSnapshot = {
@@ -38,9 +38,9 @@ type EvidenceCanvasSnapshot = {
 };
 
 // Helper to safely extract the `output` object from done events without using `any`.
-function extractOutput<T>(event: unknown): T | undefined {
+function extractOutput<T>(event: any): T | undefined {
 	if (!event || typeof event !== 'object') return undefined;
-	const e = event as { output?: unknown };
+	const e = event as { output?: any };
 	return e.output as T | undefined;
 }
 // --- end added ---
@@ -91,25 +91,25 @@ const evidenceCanvasMachine = createMachine({
           target: 'active',
           actions: assign({
             // use typed event and extractOutput to avoid `any`
-            canvasId: ({ event }: { event: unknown }) => extractOutput<{ canvasId?: string }>(event)?.canvasId,
-            sessionId: ({ event }: { event: unknown }) => extractOutput<{ sessionId?: string }>(event)?.sessionId,
-            evidenceItems: ({ event }: { event: unknown }) =>
+            canvasId: ({ event }: { event: any }) => extractOutput<{ canvasId?: string }>(event)?.canvasId,
+            sessionId: ({ event }: { event: any }) => extractOutput<{ sessionId?: string }>(event)?.sessionId,
+            evidenceItems: ({ event }: { event: any }) =>
               extractOutput<{ evidenceItems?: Array<unknown> }>(event)?.evidenceItems ?? [],
-            connections: ({ event }: { event: unknown }) =>
+            connections: ({ event }: { event: any }) =>
               extractOutput<{ connections?: Array<unknown> }>(event)?.connections ?? [],
-            fabricState: ({ event }: { event: unknown }) =>
-              extractOutput<{ fabricState?: unknown }>(event)?.fabricState,
+            fabricState: ({ event }: { event: any }) =>
+              extractOutput<{ fabricState?: any }>(event)?.fabricState,
             lastUpdate: () => Date.now(),
-            performanceMetrics: ({ event }: { event: unknown }) =>
-              extractOutput<{ performanceMetrics?: unknown }>(event)?.performanceMetrics,
+            performanceMetrics: ({ event }: { event: any }) =>
+              extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             error: () => undefined,
           }),
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }: { event: unknown }) => {
-              const err = (event as { error?: unknown })?.error;
+            error: ({ event }: { event: any }) => {
+              const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
@@ -198,20 +198,20 @@ const evidenceCanvasMachine = createMachine({
         onDone: {
           target: 'active',
           actions: assign({
-            evidenceItems: ({ event, context }: { event: unknown; context: EvidenceCanvasContext }) =>
+            evidenceItems: ({ event, context }: { event: any; context: EvidenceCanvasContext }) =>
               extractOutput<{ evidenceItems?: Array<unknown> }>(event)?.evidenceItems ?? context.evidenceItems,
-            connections: ({ event, context }: { event: unknown; context: EvidenceCanvasContext }) =>
+            connections: ({ event, context }: { event: any; context: EvidenceCanvasContext }) =>
               extractOutput<{ connections?: Array<unknown> }>(event)?.connections ?? context.connections,
-            performanceMetrics: ({ event }: { event: unknown }) =>
-              extractOutput<{ performanceMetrics?: unknown }>(event)?.performanceMetrics,
+            performanceMetrics: ({ event }: { event: any }) =>
+              extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now(),
           }),
         },
         onError: {
           target: 'active',
           actions: assign({
-            error: ({ event }: { event: unknown }) => {
-              const err = (event as { error?: unknown })?.error;
+            error: ({ event }: { event: any }) => {
+              const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
@@ -245,18 +245,18 @@ const evidenceCanvasMachine = createMachine({
         onDone: {
           target: 'active',
           actions: assign({
-            fabricState: ({ event }: { event: unknown }) =>
-              extractOutput<{ fabricState?: unknown }>(event)?.fabricState,
-            performanceMetrics: ({ event }: { event: unknown }) =>
-              extractOutput<{ performanceMetrics?: unknown }>(event)?.performanceMetrics,
+            fabricState: ({ event }: { event: any }) =>
+              extractOutput<{ fabricState?: any }>(event)?.fabricState,
+            performanceMetrics: ({ event }: { event: any }) =>
+              extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now(),
           }),
         },
         onError: {
           target: 'active',
           actions: assign({
-            error: ({ event }: { event: unknown }) => {
-              const err = (event as { error?: unknown })?.error;
+            error: ({ event }: { event: any }) => {
+              const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;
@@ -287,16 +287,16 @@ const evidenceCanvasMachine = createMachine({
         onDone: {
           target: 'active',
           actions: assign({
-            performanceMetrics: ({ event }: { event: unknown }) =>
-              extractOutput<{ performanceMetrics?: unknown }>(event)?.performanceMetrics,
+            performanceMetrics: ({ event }: { event: any }) =>
+              extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now(),
           }),
         },
         onError: {
           target: 'active',
           actions: assign({
-            error: ({ event }: { event: unknown }) => {
-              const err = (event as { error?: unknown })?.error;
+            error: ({ event }: { event: any }) => {
+              const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
                 const eObj = err as Record<string, unknown>;

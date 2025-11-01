@@ -220,7 +220,7 @@
               </button>
             </div>
             <div class="space-y-4">
-              {#each activeCases as caseItem}
+              {#each Array.isArray(activeCases) ? activeCases : [] as caseItem}
                 <div
                   class="border border-gray-700 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer yorha-fade-in"
                 >
@@ -256,7 +256,7 @@
               <h2 class="yorha-nier-bits-nes-text is-primary">SYSTEM STATUS</h2>
             </div>
             <div class="space-y-4">
-              {#each systemStatus as status}
+              {#each Array.isArray(systemStatus) ? systemStatus : [] as status}
                 <div class="flex items-start space-x-3 yorha-fade-in">
                   {#if status.type === 'success'}
                     <CheckCircle2 class="w-5 h-5 text-green-400 mt-0.5" />

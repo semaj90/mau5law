@@ -27,9 +27,9 @@ export interface NodePolyfills {
   events: any;
 }
 class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private polyfillsApplied = new Set<string>();
-  private serviceWorkerReady = false;
+  private serviceWorkerReady = $state(false);
   // Feature detection
   private capabilities = {
     webassembly: false,
@@ -491,8 +491,8 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       if (llvmWasmBridge) await llvmWasmBridge.dispose();
       if (lokiRedisCache) await lokiRedisCache.destroy();
       this.polyfillsApplied.clear();
-      this.isInitialized = false;
-      this.serviceWorkerReady = false;
+      this.isInitialized = $state(false);
+      this.serviceWorkerReady = $state(false);
       console.log('🧹 SvelteKit 2 Universal Polyfill disposed');
     } catch (error: any) {
       console.error('❌ Disposal failed:', error);

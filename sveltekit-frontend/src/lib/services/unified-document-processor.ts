@@ -234,7 +234,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
   private processingQueue: Map<string, ProcessingResult> = new Map();
   private activeProcessors: Set<string> = new Set();
   private maxConcurrentProcessing = 5;
-  private initialized = false;
+  private initialized = $state(false);
 
   private constructor() {
     super();
@@ -517,10 +517,10 @@ class UnifiedDocumentProcessor extends EventEmitter {
         errors: errors.length,
       });
       return baseResult;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       this.addError(errors, 'Pipeline', msg, 'critical');
-      baseResult.success = false;
+      baseResult.success = $state(false);
       baseResult.metadata.processingTime = Date.now() - startTime;
       this.emit('document_processing_failed', { documentId, error: msg });
       return baseResult;
@@ -569,7 +569,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         processingTime: Date.now() - startTime,
         totalMatches: results.length,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Semantic search failed:', msg);
       throw error;
@@ -598,7 +598,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
 
         // --- Safe JSON parsing and response-shape fallbacks ---
         const contentType = res.headers.get?.('content-type') || '';
-        let jsonBody: unknown = null;
+        let jsonBody: any = null;
 
         if (res.status === 204) {
           jsonBody = null;
@@ -830,13 +830,13 @@ export interface LegalNLPService {
 
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): T;
-  stringify(input: unknown): string;
+  stringify(input: any): string;
   tryParse<T = unknown>(input: string): T | null;
 }
 
 export const ultraJSONParser: UltraJSONParser = {
   parse: <T = unknown>(input: string) => JSON.parse(input) as T,
-  stringify: (input: unknown) => JSON.stringify(input),
+  stringify: (input: any) => JSON.stringify(input),
   tryParse: <T = unknown>(input: string) => {
     try {
       return JSON.parse(input) as T;
@@ -926,12 +926,12 @@ export const ollamaClient: OllamaClient = {
 // Redis cache helper with in-memory fallback (typed)
 export interface RedisCacheService {
   get<T = unknown>(key: string): Promise<T | null>;
-  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>;
+  set(key: string, value: any, ttlSeconds?: number): Promise<void>;
   del(key: string): Promise<void>;
   ping(): Promise<boolean>;
 }
 
-const inMemoryCache = new Map<string, { value: unknown; expiresAt?: number }>();
+const inMemoryCache = new Map<string, { value: any; expiresAt?: number }>();
 
 export const redisCacheService: RedisCacheService = {
   async get<T = unknown>(key: string) {
@@ -944,7 +944,7 @@ export const redisCacheService: RedisCacheService = {
     return item.value as T;
   },
 
-  async set(key: string, value: unknown, ttlSeconds?: number) {
+  async set(key: string, value: any, ttlSeconds?: number) {
     const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : undefined;
     inMemoryCache.set(key, { value, expiresAt });
   },

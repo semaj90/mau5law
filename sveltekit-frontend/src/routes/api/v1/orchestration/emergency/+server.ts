@@ -14,17 +14,17 @@ type ServiceEntry = {
   status?: string;
 } & Record<string, unknown>;
 
-const isPlainObject = (v: unknown): v is Record<string, unknown> =>
+const isPlainObject = (v: any): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
 
-function nameFromEntry(e: unknown): string | null {
+function nameFromEntry(e: any): string | null {
   // returns name/id/service or null if not found
   if (typeof e === 'string') return e;
   if (isPlainObject(e)) return (e.name as string) ?? (e.id as string) ?? (e.service as string) ?? null;
   return null;
 }
 
-function extractServiceNamesFromArray(arr: unknown[], predicate?: (entry: ServiceEntry) => boolean): string[] {
+function extractServiceNamesFromArray(arr: any[], predicate?: (entry: ServiceEntry) => boolean): string[] {
   const out: string[] = [];
   for (const el of arr) {
     if (typeof el === 'string') {
@@ -47,7 +47,7 @@ function extractServiceNamesFromArray(arr: unknown[], predicate?: (entry: Servic
   return out;
 }
 
-function allServiceNames(managed: unknown): string[] {
+function allServiceNames(managed: any): string[] {
   if (!managed) return [];
   if (Array.isArray(managed)) return extractServiceNamesFromArray(managed);
   if (typeof managed === 'string') return [managed];
@@ -67,7 +67,7 @@ function allServiceNames(managed: unknown): string[] {
   return [];
 }
 
-function servicesByTier(managed: unknown, tier: string): string[] {
+function servicesByTier(managed: any, tier: string): string[] {
   if (!managed) return [];
   // If managed is mapping and contains the tier key, prefer that
   if (isPlainObject(managed) && Object.prototype.hasOwnProperty.call(managed, tier)) {
@@ -98,7 +98,7 @@ function servicesByTier(managed: unknown, tier: string): string[] {
   return [];
 }
 
-function failingServices(managed: unknown): string[] {
+function failingServices(managed: any): string[] {
   if (!managed) return [];
   if (Array.isArray(managed)) {
     return extractServiceNamesFromArray(managed, e => typeof e.status === 'string' && e.status !== 'healthy');
@@ -127,7 +127,7 @@ export const POST = async (event: RequestEvent) => {
   try {
     const body = await event.request.json();
     console.log(`🚨 Emergency Orchestration: ${body.emergency_action}`);
-    let result: unknown;
+    let result: any;
 
     switch (body.emergency_action) {
       case 'shutdown_all':
@@ -191,7 +191,7 @@ export const POST = async (event: RequestEvent) => {
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Emergency Orchestration Error:', error);
     return json(
       {
@@ -206,9 +206,9 @@ export const POST = async (event: RequestEvent) => {
 };
 
 // lightweight shape to avoid `any` when inspecting health reports
-type HealthLike = { services?: unknown };
+type HealthLike = { services?: any };
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {

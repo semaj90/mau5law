@@ -45,7 +45,7 @@
     type = "default",
     children,
     footer,
-  : unknown } = $props();
+  : any } = $props();
   let modalElement = $state<HTMLDivElement | null>(null);
   let focusedElementBeforeModal: HTMLElement | null = null;
   const sizeClasses = {
@@ -138,8 +138,7 @@
                 <div class="status-pulse"></div>
               </div>
               <span class="status-text">SYSTEM</span>
-            </div>
-          {/if}
+            {/if}
           <!-- Close Button -->
           {#if closable && !persistent}
             <button
@@ -150,8 +149,7 @@
               <span class="close-icon">✕</span>
             </button>
           {/if}
-        </div>
-      {/if}
+        {/if}
       <!-- Content -->
       <div class="modal-content">
         {#if children}
@@ -180,10 +178,8 @@
                 <span class="button-icon">■</span>
                 Acknowledge
               </button>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
       <!-- Terminal Border Effect -->
       <div class="terminal-borders">
         <div class="border-top"></div>
@@ -192,11 +188,10 @@
         <div class="border-left"></div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .yorha-modal-backdrop {
-position fixed;
+position: fixed;
 top: 0,
     left: 0;
     right: 0,
@@ -206,7 +201,7 @@ display: flex; align-items: center; justify-content: center; background: rgba(0,
     backdrop-filter: blur(2px);
   }
   .yorha-modal {
-position relative;
+position: relative;
 e; background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid var(--yorha-text-muted, #808080);
     font-family: var(--yorha-font-primary, "JetBrains Mono", monospace);
@@ -233,7 +228,7 @@ box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700), 0 0 30px rgba(255, 215, 0
 display: flex;
 align-items: flex-start;
     justify-content: space-between;
-position relative;
+position: relative;
 }
   .header-content {
     flex: 1;
@@ -259,7 +254,7 @@ align-items: center gap: 8px;
     margin-right: 16px;
   }
   .status-indicator {
-position relative;
+position: relative;
 width: 12px;
     height: 12px;
   }
@@ -362,13 +357,13 @@ cursor: pointer; transition: all 0.2s ease;
     font-size: 14px;
   }
 /* Terminal Border Effect */ .terminal-borders {
-position absolute;
+position: absolute;
 inset: 0;
 pointer-events: none overflow: hidden;
 }
   .terminal-borders::before {
     content: "";
-position absolute;
+position: absolute;
 inset: 0,
 background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%, transparent 51% );
     animation: scanlines 2s linear infinite;
@@ -408,7 +403,7 @@ flex-direction: column align-items: flex-start;
       margin-bottom: 8px;
     }
     .modal-close {
-      position absolute;
+      position: absolute;
       top: 8px;
       right: 8px;
     }

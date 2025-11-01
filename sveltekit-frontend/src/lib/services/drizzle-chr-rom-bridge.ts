@@ -53,7 +53,7 @@ export interface DrizzleDocumentEmbedding {
 }
 // CHR-ROM data transformation pipeline
 export class DrizzleCHRROMBridge {
-  private initialized = false;
+  private initialized = $state(false);
   private documentCache = new Map<string, DrizzleLegalDocument>();
   private analysisCache = new Map<string, DrizzleDocumentAnalysis[]>();
   /**

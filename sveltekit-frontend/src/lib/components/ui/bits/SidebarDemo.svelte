@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ThemeProvider from './ThemeProvider.svelte';
-  import ThemeToggle from './ThemeToggle.svelte';
+  import { ThemeProvider } from './ThemeProvider.svelte';
+  import { ThemeToggle } from './ThemeToggle.svelte';
   import { Sidebar } from './Sidebar.svelte'; // Changed to named import
   import { DocumentCard } from './DocumentCard.svelte'; // Changed to named import
   import { Button } from './Button.svelte'; // Changed to named import
@@ -25,7 +25,7 @@
       label: 'Documents',
       icon: '📄', // Fixed syntax
       badge: '12',
-      children: [
+       [
         { id: 'contracts', label: 'Contracts', icon: '📋', badge: '5' }, // Fixed syntax
         { id: 'evidence', label: 'Evidence', icon: '🔍', badge: '7' }, // Fixed syntax
         { id: 'briefs', label: 'Legal Briefs', icon: '⚖️' } // Fixed syntax
@@ -178,7 +178,6 @@
   }
   const pageContent = $derived(getPageContent(currentPage));
 </script>
-
 <ThemeProvider defaultTheme="light" enableSystem={true}>
   <div
     class={`
@@ -357,8 +356,7 @@
                 </div>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if currentPage === 'documents' || currentPage === 'contracts' || currentPage === 'evidence' || currentPage === 'briefs'}
           <!-- Documents Grid -->
           <div class="mb-6">
@@ -371,7 +369,7 @@
               Recent Documents
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {#each sampleDocuments as doc}
+              {#each Array.isArray(sampleDocuments) ? sampleDocuments : [] as doc}
                 <DocumentCard
                   title={doc.title}
                   fileType={doc.fileType}
@@ -425,8 +423,7 @@
               {pageContent.description}
             </p>
             <Button variant="primary">Get Started</Button> <!-- Removed {theme} prop -->
-          </div>
-        {/if}
+          {/if}
         <!-- Sidebar Demo Instructions -->
         <div
           class={`
@@ -476,11 +473,10 @@
     </div>
   </div>
 </ThemeProvider>
-
 <style>
   /* Ensure content shifts smoothly when sidebar expands */
   main {
-    transition: margin-left 0.3s ease-out;
+    transition: margin-left: 0.3s ease-out;
   }
   /* Smooth theme transitions */
   * {
@@ -489,4 +485,3 @@
       border-color 0.2s ease;
   }
 </style>
-

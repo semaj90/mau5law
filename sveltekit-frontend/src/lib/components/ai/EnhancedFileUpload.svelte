@@ -8,7 +8,6 @@
   import { FileText, Search, Upload } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
-
   // Props interface
   interface Props {
     onUploadComplete?: (doc: any) => void;
@@ -19,7 +18,6 @@
     enableRAG?: boolean;
     class?: string;
   }
-
   // Svelte 5 props with defaults
   let {
     onUploadComplete = () => {},
@@ -30,7 +28,6 @@
     enableRAG = true,
     class: className = '',
   }: Props = $props();
-
   // State variables (correct $state usage)
   let files = $state<File[]>([]);
   let fileStates = $state<Map<string, any>>(new Map());
@@ -38,16 +35,13 @@
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
   let systemStatus = $state<any>(null);
-
   // === MCP INTEGRATION LAYER ===
   const MCP_ENDPOINTS = {
     process: '/api/rag/process',
     status: '/api/rag/status',
     search: '/api/rag/search',
   } as const;
-
   let statusSocket = $state<WebSocket | null>(null);
-
   function connectStatusSocket() {
     try {
       const wsUrl = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/rag/ws/uploads`;
@@ -83,7 +77,6 @@
       console.warn('[UploadWS] init failed', e);
     }
   }
-
   async function checkSystemStatus() {
     const status = { ocr: false, embeddings: false, search: false, storage: false };
     try {
@@ -117,7 +110,6 @@
     }
     systemStatus = status;
   }
-
   // Initialize basic pipeline config (fixed commas / keys)
   const basePipeline: ProcessingPipeline = {
     gpu: {
@@ -136,9 +128,7 @@
     ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },
     yolo: { enabled: false },
   } as any;
-
   const uploadMachineActor = createActor(createUploadMachine(basePipeline));
-
   // File upload handler with real RAG processing
   async function handleFileUpload(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -221,7 +211,6 @@
     // Clear input
     if (input) input.value = '';
   }
-
   // Update file state
   function updateFileState(fileId: string, updates: any) {
     const current = fileStates.get(fileId);
@@ -230,7 +219,6 @@
       fileStates = new Map(fileStates);
     }
   }
-
   // Semantic search with real API
   async function handleSearch() {
     if (!searchQuery.trim()) return;
@@ -261,10 +249,9 @@
       console.error('Search failed:', err);
       toast.error(`Search failed: ${err?.message ?? 'Unknown error'}`);
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
-
   // Helper functions
   function formatFileSize(bytes: number): string {
     const units = ['B', 'KB', 'MB', 'GB'];
@@ -276,19 +263,16 @@
     }
     return `${size.toFixed(1)} ${units[unitIndex]}`;
   }
-
   function getStatusColor(progress: number): string {
     if (progress === -1) return 'text-red-500';
     if (progress === 100) return 'text-green-500';
     return 'text-blue-500';
   }
-
   function getProgressColor(progress: number): string {
     if (progress === -1) return 'bg-red-500';
     if (progress === 100) return 'bg-green-500';
     return 'bg-blue-500';
   }
-
   // Auto-search effect
   $effect(() => {
     if (searchQuery.length > 2) {
@@ -296,7 +280,6 @@
       return () => clearTimeout(timer);
     }
   });
-
   // Mount lifecycle: connect WebSocket + initial status
   $effect(() => {
     (async () => {
@@ -304,17 +287,14 @@
       await checkSystemStatus();
     })();
   });
-
   const machineState = $state<any>(uploadMachineActor.getSnapshot());
   uploadMachineActor.subscribe((sn) => {
     machineState.value = sn;
   });
-
   function getEntries() {
     return machineState.value?.context?.files || [];
   }
 </script>
-
 <div class="enhanced-file-upload {className}">
   <!-- System Status -->
   <div class="system-status mb-4 grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -339,7 +319,6 @@
       </span>
     </div>
   </div>
-
   <!-- Upload Area -->
   <div class="upload-area">
     <input type="file" accept={accept} multiple onchange={handleFileUpload} class="hidden" id="file-input" />
@@ -352,7 +331,6 @@
       </p>
     </label>
   </div>
-
   <!-- File Processing Status -->
   {#if getEntries().length > 0}
     <div class="file-list mt-6">
@@ -389,9 +367,7 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
-
+    {/if}
   <!-- Semantic Search -->
   {#if enableEmbedding && systemStatus?.search}
     <div class="search-section mt-8">
@@ -416,13 +392,12 @@
           Search
         </button>
       </div>
-
       <!-- Search Results -->
       {#if searchResults.length > 0}
         <div class="search-results mt-4">
           <h4 class="font-medium mb-2">Results ({searchResults.length})</h4>
           <div class="space-y-3">
-            {#each searchResults as result}
+            {#each Array.isArray(searchResults) ? searchResults : [] as result}
               <div class="result-item p-4 border rounded-lg hover:bg-gray-50">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
@@ -441,12 +416,9 @@
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   .enhanced-file-upload {
     padding: 1.5rem;
@@ -454,14 +426,12 @@
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
-
   .system-status .status-item {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     border: 1px solid #e5e7eb;
     text-align: center;
   }
-
   .upload-area {
     border: 2px dashed #d1d5db;
     border-radius: 0.5rem;
@@ -473,7 +443,6 @@
   .upload-area:hover {
     border-color: #60a5fa;
   }
-
   .upload-label {
     display: flex;
     flex-direction: column;
@@ -481,7 +450,6 @@
     justify-content: center;
     cursor: pointer;
   }
-
   .file-item {
     padding: 1rem;
     border: 1px solid #e5e7eb;
@@ -489,12 +457,10 @@
     margin-bottom: 0.75rem;
     background: #f9fafb;
   }
-
   .search-section {
     border-top: 1px solid #e5e7eb;
     padding-top: 1.5rem;
   }
-
   .result-item {
     cursor: pointer;
     transition: background-color 0.15s;
@@ -502,14 +468,12 @@
   .result-item:hover {
     background: #f9fafb;
   }
-
   /* spinner animation (tailwind-like used above relies on this) */
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
   .animate-spin { animation: spin 1s linear infinite; }
-
   .hidden {
     display: none;
   }

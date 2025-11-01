@@ -17,7 +17,7 @@ interface RedisConfig {
 
 class RedisCacheService implements IRedisCacheService {
   private client: RedisClientType;
-  private connected: boolean = false;
+  private connected: boolean = $state(false);
   private connecting: Promise<void> | null = null;
   private config: Required<RedisConfig>;
 
@@ -45,7 +45,7 @@ class RedisCacheService implements IRedisCacheService {
 
     this.client.on('error', (err) => {
       console.error('Redis Client Error:', err);
-      this.connected = false;
+      this.connected = $state(false);
     });
 
     this.client.on('connect', () => {
@@ -55,7 +55,7 @@ class RedisCacheService implements IRedisCacheService {
 
     this.client.on('disconnect', () => {
       console.log('Redis disconnected');
-      this.connected = false;
+      this.connected = $state(false);
     });
   }
 
@@ -171,7 +171,7 @@ class RedisCacheService implements IRedisCacheService {
   /**
    * Set if not exists (atomic operation for locking)
    */
-  async setIfNotExists(key: string, value: unknown, ttlSeconds?: number): Promise<boolean> {
+  async setIfNotExists(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     await this.ensureConnected();
 
     const serialized = typeof value === 'string' ? value : JSON.stringify(value);
@@ -249,7 +249,7 @@ class RedisCacheService implements IRedisCacheService {
   async disconnect(): Promise<void> {
     if (this.connected) {
       await this.client.disconnect();
-      this.connected = false;
+      this.connected = $state(false);
     }
   }
 

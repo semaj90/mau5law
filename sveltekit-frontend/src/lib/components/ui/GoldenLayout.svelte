@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.3s ease;
 }
   .sidebar {
-    position relative;
+    position: relative;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
     border: 1px solid var(--pico-border-color, #e2e8f0);
     border-radius: 0.5rem;
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
     pointer-events: none;
 }
   .sidebar-toggle {
-    position absolute;
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
     background: var(--pico-primary, #3b82f6);

@@ -59,7 +59,7 @@ interface LogEntry {
   plugin?: string | undefined;
   buildPhase?: string | undefined;
   // allow extra fields if needed
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface ErrorLog {
@@ -98,7 +98,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
           errors: Array.isArray(parsed?.errors) ? (parsed!.errors as LogEntry[]) : [],
         };
       }
-    } catch (_e: unknown) {
+    } catch (_e: any) {
       // ignore parsing/IO errors
     }
   }
@@ -110,7 +110,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
       errorLog.metadata.lastUpdated = new Date().toISOString();
       errorLog.errors = Array.isArray(errorLog.errors) ? errorLog.errors : [];
       writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2));
-    } catch (_e: unknown) {
+    } catch (_e: any) {
       // ignore
     }
   }
@@ -170,7 +170,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
             pushEntry(e);
           });
         }
-      } catch (_e: unknown) {
+      } catch (_e: any) {
         // ignore websocket attach errors
       }
     },
@@ -182,7 +182,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
         buildPhase: 'build',
       });
     },
-    buildEnd(error: unknown) {
+    buildEnd(error: any) {
       if (error) {
         // try to coerce to Error-like shape
         const errObj = error as { message?: string; stack?: string } | string;

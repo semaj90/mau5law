@@ -292,7 +292,7 @@ export interface CollaborationState {
 export interface AIResponse {
   response: string;
   confidence?: number;
-  contextUsed?: unknown[];
+  contextUsed?: any[];
   suggestions?: string[];
   actions?: Array<any>;
   metadata?: {
@@ -323,7 +323,7 @@ export interface LocalModel {
 // API Response types
 export interface ApiResponse {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   message?: string;
 }

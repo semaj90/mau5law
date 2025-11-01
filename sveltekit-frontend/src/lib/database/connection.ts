@@ -62,7 +62,7 @@ async function unsafeQuery<T = DBRow>(query: string, params?: ParamList): Promis
   return raw as unknown as T[];
 }
 
-function getErrorMessage(e: unknown): string {
+function getErrorMessage(e: any): string {
   if (e instanceof Error) return e.message;
   try {
     return String(e);
@@ -93,7 +93,7 @@ export async function testDatabaseConnection(): Promise<DBResult> {
         timestamp: new Date().toISOString(),
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       message: `Database connection failed: ${getErrorMessage(error)}`,
@@ -133,7 +133,7 @@ export async function vectorSimilaritySearch(
       results: result,
       count,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: getErrorMessage(error),
@@ -214,7 +214,7 @@ export async function hybridSemanticSearch(
       query, // original input search string
       queryEmbedding: queryEmbedding.slice(0, 5),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: getErrorMessage(error),
@@ -243,7 +243,7 @@ export async function initializeDatabase(): Promise<DBResult> {
       console.error('❌ Database initialization failed:', health.message);
     }
     return health;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Database initialization error:', error);
     return {
       success: false,
@@ -258,20 +258,20 @@ export async function closeDatabaseConnection(): Promise<void> {
   try {
     await pool.end();
     console.log('✅ Database connection pool closed');
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Error closing database connection:', getErrorMessage(error));
   }
 }
 
 // Note: pool exported once at declaration to avoid duplicate export errors
 // Direct SQL for complex vector operations
-export async function executeSQL(query: string, params: unknown[] = []): Promise<DBResult> {
+export async function executeSQL(query: string, params: any[] = []): Promise<DBResult> {
   try {
     const p: ParamList = params as ParamList;
     const result = await unsafeQuery<DBRow>(query, p);
     const rowCount = Array.isArray(result) ? result.length : 0;
     return { success: true, data: result, rowCount, count: rowCount };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return { success: false, error: getErrorMessage(error), count: 0 };
   }
 }

@@ -13,9 +13,9 @@ type OrchestratorQueryResult = {
   confidence?: number;
   sources?: Array<Record<string, unknown>>;
   source?: string;
-  response?: unknown;
+  response?: any;
   // allow extra fields but keep typed shape
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Lightweight local interfaces for used surface area (keeps file typed and avoids `any`)
@@ -72,7 +72,7 @@ type OrchestratorContext = {
   useRAG?: boolean;
   requiresFresh?: boolean;
   // Allow additional fields without strict typing
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export class AppRedisOrchestrator {
@@ -93,12 +93,12 @@ export class AppRedisOrchestrator {
     sessionId: string,
     context: OrchestratorContext
   ): Promise<{
-    response?: unknown;
+    response?: any;
     source?: 'cache' | 'fresh' | 'queued' | string;
     processing_time?: number;
     cached?: boolean;
-    redis_stats?: unknown;
-    nes_memory_usage?: unknown;
+    redis_stats?: any;
+    nes_memory_usage?: any;
     task_id?: string;
     confidence?: number;
     sources?: Array<Record<string, unknown>>;
@@ -163,12 +163,12 @@ export class AppRedisOrchestrator {
     context: OrchestratorContext,
     startTime: number
   ): Promise<{
-    response?: unknown;
+    response?: any;
     source?: 'cache' | 'fresh' | 'queued' | string;
     processing_time?: number;
     cached?: boolean;
-    redis_stats?: unknown;
-    nes_memory_usage?: unknown;
+    redis_stats?: any;
+    nes_memory_usage?: any;
     task_id?: string;
   }> {
     const endpointStr = String(context.endpoint ?? '');
@@ -328,12 +328,12 @@ export class AppRedisOrchestrator {
       query: string,
       context: Record<string, unknown>
     ) => Promise<{
-      response?: unknown;
+      response?: any;
       source?: 'cache' | 'fresh' | 'queued' | string;
       processing_time?: number;
       cached?: boolean;
-      redis_stats?: unknown;
-      nes_memory_usage?: unknown;
+      redis_stats?: any;
+      nes_memory_usage?: any;
       task_id?: string;
     }>;
     getStats: () => Promise<Record<string, unknown>>;
@@ -407,7 +407,7 @@ export class AppRedisOrchestrator {
       type RedisStatsShape = {
         llm_cache?: { hit_rate_estimate?: number };
         task_queue?: { queued_tasks?: number };
-        [k: string]: unknown;
+        [k: string]: any;
       };
       const rs = redisStats && typeof redisStats === 'object' ? (redisStats as RedisStatsShape) : null;
 
@@ -428,7 +428,7 @@ export class AppRedisOrchestrator {
 
     try {
       // Local shapes for memory stats/banks (avoid any)
-      type MemoryBankShape = { used?: number; capacity?: number; [k: string]: unknown };
+      type MemoryBankShape = { used?: number; capacity?: number; [k: string]: any };
       type MemoryStatsShape = { banks?: Record<string, MemoryBankShape> } & Record<string, unknown>;
       const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {} };
 

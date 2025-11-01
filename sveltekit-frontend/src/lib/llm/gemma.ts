@@ -13,13 +13,13 @@ export interface GemmaResponse {
   model?: string;
   done?: boolean;
   // raw payload for debugging
-  raw?: unknown; // was: any -> safer unknown
+  raw?: any; // was: any -> safer unknown
 }
 
 // --- NEW: typed interfaces for external services ---
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): T; // was: any -> unknown
-  stringify(input: unknown): string; // was: any -> unknown
+  stringify(input: any): string; // was: any -> unknown
 }
 
 export interface WASMClusteringService {
@@ -51,7 +51,7 @@ const ENV =
 /**
  * Type guard to check if an unknown value is an error object with a string: 'message' property.
  */
-function isErrorWithMessage(err: unknown): err is { message: string } {
+function isErrorWithMessage(err: any): err is { message: string } {
   return (
     typeof err === 'object' &&
     err !== null &&
@@ -93,7 +93,7 @@ export function getOllamaEndpoint(): string {
   return 'http://localhost:11434';
 }
 
-function extractErrorMessage(err: unknown): string {
+function extractErrorMessage(err: any): string {
   if (isErrorWithMessage(err)) {
     return err.message;
   }
@@ -109,7 +109,7 @@ function extractErrorMessage(err: unknown): string {
  * @param value - The value to check.
  * @returns True if value is an array of numbers, false otherwise.
  */
-function isNumberArray(value: unknown): value is number[] {
+function isNumberArray(value: any): value is number[] {
   return Array.isArray(value) && value.every(v => typeof v === 'number');
 }
 
@@ -119,7 +119,7 @@ function isNumberArray(value: unknown): value is number[] {
  * @param x - The unknown input to check and convert.
  * @returns {number[] | undefined} - The number array or undefined if conversion fails.
  */
-function getNumberArrayFromUnknown(x: unknown): number[] | undefined {
+function getNumberArrayFromUnknown(x: any): number[] | undefined {
   if (isNumberArray(x)) return x;
   return undefined;
 }
@@ -146,7 +146,7 @@ type OllamaTextResponse = {
  * @param data - The response object from Ollama/Gemma.
  * @returns The generated text string, or null if not found.
  */
-function normalizeGeneratedText(data: unknown): string | null {
+function normalizeGeneratedText(data: any): string | null {
   if (!data || typeof data !== 'object') return null;
   const d = data as OllamaTextResponse;
   const response = typeof d.response === 'string' ? d.response : undefined;
@@ -156,7 +156,7 @@ function normalizeGeneratedText(data: unknown): string | null {
   return response ?? text ?? output ?? generated ?? null;
 }
 
-function extractStreamChunk(data: unknown): { text?: string; done?: boolean } | null {
+function extractStreamChunk(data: any): { text?: string; done?: boolean } | null {
   if (!data || typeof data !== 'object') return null;
   const d = data as OllamaTextResponse;
   if (typeof d.response === 'string') return { text: d.response, done: !!d.done };
@@ -192,7 +192,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     if (!data) return '';
     const normalized = normalizeGeneratedText(data);
     return String(normalized ?? JSON.stringify(data));
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Gemma3 query failed:', extractErrorMessage(error));
     throw new Error(`Gemma3 connection failed: ${extractErrorMessage(error)}`);
   }
@@ -376,7 +376,7 @@ export async function indexToQdrant(
 /** Persist JSON to Postgres jsonb via a configured server endpoint.
  *  This is a thin helper — actual DB access should live in server routes or services.
  */
-export async function persistToPostgresJsonb(table: string, payload: unknown): Promise<boolean> {
+export async function persistToPostgresJsonb(table: string, payload: any): Promise<boolean> {
   if (!isServer) return false;
   try {
     const PG_PERSIST_API = typeof ENV.PG_PERSIST_API === 'string' && ENV.PG_PERSIST_API ? ENV.PG_PERSIST_API : null;

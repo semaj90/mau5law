@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/core';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/core.svelte'';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -350,7 +350,7 @@
     </header>
 
     <div class="services-grid">
-      {#each aiServices as service}
+      {#each Array.isArray(aiServices) ? aiServices : [] as service}
         <Card class="service-card">
           <CardHeader>
             <CardTitle>
@@ -379,7 +379,7 @@
       <p>Latest interactions tracked across AI systems.</p>
     </header>
     <div class="activity-list">
-      {#each recentActivities as activity}
+      {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
         <div class="activity-item">
           <div class="activity-icon">{activityIcon(activity.type)}</div>
           <div class="activity-content">

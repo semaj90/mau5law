@@ -2,9 +2,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
-  interface ServiceStatus { healthy: boolean; [key: string]: unknown }
-  interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: unknown }
-  interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: unknown }
+  interface ServiceStatus { healthy: boolean; [key: string]: any }
+  interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: any }
+  interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: any }
 
   // make these Svelte 5 reactive state variables so assignments trigger updates
   let uploadResults = $state<UploadResult[]>([]);
@@ -78,14 +78,14 @@
     })();
 
     const onBeforeUnload = () => {
-      pollActive = false;
+      pollActive = $state(false);
       currentController?.abort();
     };
     addEventListener('beforeunload', onBeforeUnload);
 
     // cleanup when effect re-runs / component unmounts
     return () => {
-      pollActive = false;
+      pollActive = $state(false);
       currentController?.abort();
       removeEventListener('beforeunload', onBeforeUnload);
     };
@@ -123,71 +123,71 @@
     <div class="mt-8">
       <h2 class="text-xl font-semibold mb-4">Upload Results</h2>
       <div class="space-y-4">
-        {#each uploadResults as result}
+        {#each Array.isArray(uploadResults) ? uploadResults : [] as result}
           <div class="p-4 border rounded-lg bg-white shadow-sm">
             <div class="flex justify-between items-start mb-2">
               <h3 class="font-medium">
                 {(
                   result as {
-                    filename?: unknown;
-                    status?: unknown;
-                    documentId?: unknown;
-                    size?: unknown;
-                    embeddingGenerated?: unknown;
-                    error?: unknown;
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
                   }
                 ).filename || 'Unknown file'}
               </h3>
               <span
-                class={`px-2 py-1 text-xs rounded ${(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                class={`px-2 py-1 text-xs rounded ${(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
               >
                 {(
                   result as {
-                    filename?: unknown;
-                    status?: unknown;
-                    documentId?: unknown;
-                    size?: unknown;
-                    embeddingGenerated?: unknown;
-                    error?: unknown;
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
                   }
                 ).status}
               </span>
             </div>
-            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).documentId}
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).documentId}
               <p class="text-sm text-gray-600 mb-1">
                 Document ID: {(
                   result as {
-                    filename?: unknown;
-                    status?: unknown;
-                    documentId?: unknown;
-                    size?: unknown;
-                    embeddingGenerated?: unknown;
-                    error?: unknown;
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
                   }
                 ).documentId}
               </p>
             {/if}
-            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size}
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size}
               <p class="text-sm text-gray-600 mb-1">
                 Size: {(
                   // ensure: 'size' is numeric for the division to satisfy TypeScript
-                  (Number((result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size) / 1024)
+                  (Number((result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size) / 1024)
                 ).toFixed(1)} KB
               </p>
             {/if}
-            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).embeddingGenerated}
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).embeddingGenerated}
               <p class="text-sm text-green-600">✓ Embeddings generated</p>
             {/if}
-            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).error}
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}
               <p class="text-sm text-red-600">
                 Error: {(
                   result as {
-                    filename?: unknown;
-                    status?: unknown;
-                    documentId?: unknown;
-                    size?: unknown;
-                    embeddingGenerated?: unknown;
-                    error?: unknown;
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
                   }
                 ).error}
               </p>

@@ -27,7 +27,7 @@ export interface BackgroundJob {
   id: string;
   type: 'document_analysis' | 'case_clustering' | 'legal_research' | 'citation_validation' | 'self_prompting';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  payload: unknown; // Changed from any
+  payload: any; // Changed from any
   createdAt: number;
   startedAt?: number;
   completedAt?: number;
@@ -55,7 +55,7 @@ export type IdleDetectionEvent =
   | { type: 'STOP_IDLE_DETECTION' }
   | { type: 'IDLE_TIMEOUT' }
   | { type: 'QUEUE_BACKGROUND_JOB'; job: Omit<BackgroundJob, 'id' | 'createdAt' | 'status'> }
-  | { type: 'JOB_COMPLETED'; jobId: string; result: unknown } // Changed from any
+  | { type: 'JOB_COMPLETED'; jobId: string; result: any } // Changed from any
   | { type: 'JOB_FAILED'; jobId: string; error: string }
   | { type: 'ENABLE_SELF_PROMPTING' }
   | { type: 'DISABLE_SELF_PROMPTING' }
@@ -64,7 +64,6 @@ export type IdleDetectionEvent =
   | { type: 'RABBITMQ_CONNECTED'; connected: boolean }
   | { type: 'GENERATE_SELF_PROMPT'; context: SystemContext } // Changed from any
   | { type: 'SELF_PROMPT_COMPLETED'; promptId: string; response: string; artifacts: string[] };
-
 // Interface for system context used in self-prompting
 export interface SystemContext {
   lastActivity: number;
@@ -77,7 +76,6 @@ export interface SystemContext {
     rabbitmq: boolean;
   };
 }
-
 // Services for background operations
 const idleDetectionServices = {
   // Monitor user activity patterns

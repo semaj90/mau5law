@@ -9,7 +9,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   // Expose simple props that the component previously assumed
   export let caseId: string | undefined;
-  export let readOnly = false;
+  export let readOnly = $state(false);
   export let ondispatch: ((payload: any) => void) | undefined;
 
   const { snapshot, send } = useMachine(autoTaggingMachine);
@@ -30,8 +30,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let nodeConnections: any[] = [];
   let selectedNodeId: string | null = null;
   let hoveredNodeId: string | null = null;
-  let isDragging = false;
-  let isConnecting = false;
+  let isDragging = $state(false);
+  let isConnecting = $state(false);
   let connectingFromId: string | null = null;
   let dragOffset = { x: 0, y: 0 };
 
@@ -42,12 +42,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let minZoom = 0.1;
   let maxZoom = 3;
   let panOffset = { x: 0, y: 0 };
-  let isPanning = false;
+  let isPanning = $state(false);
   let lastPanPoint = { x: 0, y: 0 };
 
   // Auto-save
   let autoSaveTimer: ReturnType<typeof setInterval> | undefined;
-  let isAutoSaving = false;
+  let isAutoSaving = $state(false);
 
   onMount(() => {
     if (!browser) return;
@@ -560,8 +560,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   function handleMouseUp() {
     const wasDragging = isDragging;
-    isPanning = false;
-    isDragging = false;
+    isPanning = $state(false);
+    isDragging = $state(false);
     if (canvas) canvas.style.cursor = 'default';
     if (wasDragging) {
       autoSave();
@@ -633,7 +633,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     } catch (error) {
       console.error('Auto-save failed:', error);
     } finally {
-      isAutoSaving = false;
+      isAutoSaving = $state(false);
     }
   }
 

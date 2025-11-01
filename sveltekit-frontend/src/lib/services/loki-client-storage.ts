@@ -20,7 +20,7 @@ export interface LokiDocument {
   description?: string; // Common fields for global search
   _id?: string | number; // Explicitly define _id as string | number
   primaryKey?: string | number; // Explicitly define primaryKey as string | number
-  [key: string]: unknown; // Allow arbitrary properties for flexibility
+  [key: string]: any; // Allow arbitrary properties for flexibility
 }
 
 // Corrected imports for LokiJS types
@@ -53,7 +53,7 @@ export class LokiClientStorage {
   private db: Loki | null = null;
   private config: LokiStorageConfig; // Added missing declaration
   private collections: Map<string, Loki.Collection<LokiDocument>> = new Map(); // Use Loki.Collection
-  private isInitialized: boolean = false; // Added missing declaration
+  private isInitialized: boolean = $state(false); // Added missing declaration
   private syncQueue: SyncOperation[] = []; // Added missing declaration
 
   constructor(config: LokiStorageConfig) {
@@ -165,7 +165,7 @@ export class LokiClientStorage {
       throw new Error(`Collection ${collectionName} not found`);
     }
     document._updated = Date.now();
-    document._synced = false;
+    document._synced = $state(false);
     const result = collection.update(document);
     // Queue for server sync
     this.queueForSync('update', collectionName, result);
@@ -485,7 +485,7 @@ export class LokiClientStorage {
     }
     this.db = null;
     this.collections.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
 

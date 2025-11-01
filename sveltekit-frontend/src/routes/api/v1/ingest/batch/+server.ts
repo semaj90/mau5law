@@ -27,7 +27,7 @@ export type IngestResult = {
   process_time_ms?: number;
   error?: string;
   // Any additional fields returned by the Go service can be preserved here
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export interface BatchIngestRequest {
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               : '0%',
         },
       });
-    } catch (fetchError: unknown) {
+    } catch (fetchError: any) {
       clearTimeout(timeoutId);
 
       // Safely detect an AbortError (fetch may throw an object with a `name` property)
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       if (fetchError instanceof Error) throw fetchError;
       throw new Error(typeof fetchError === 'string' ? fetchError : 'Unknown fetch error');
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const processingTime = Date.now() - startTime;
     // Log a safe, readable message
     console.error('Batch ingest API error:', error instanceof Error ? error.message : String(error));

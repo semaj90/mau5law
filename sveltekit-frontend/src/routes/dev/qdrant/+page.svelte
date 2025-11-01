@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
-  let loading = false;
+  let loading = $state(false);
   let result: any = null;
   let error: string | null = null;
   let limit = 6;
@@ -10,7 +10,7 @@
   let tag = '';
 
   // Modal preview state
-  let previewOpen = false;
+  let previewOpen = $state(false);
   let previewTitle = '';
   let previewSnippet = '';
   // Copy feedback
@@ -38,7 +38,7 @@
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 
@@ -91,7 +91,7 @@
   }
 
   // Modal markdown rendering toggle + tiny sanitizer
-  let previewRenderMarkdown = false;
+  let previewRenderMarkdown = $state(false);
   let purified: ((html: string) => string) | null = null;
   let markdownToHtml: ((md: string) => string) | null = null;
   async function ensureMarkdownLibs() {
@@ -135,7 +135,7 @@
   }
 
   function escHandler(e: KeyboardEvent) {
-    if (e.key === 'Escape' && previewOpen) previewOpen = false;
+    if (e.key === 'Escape' && previewOpen) previewOpen = $state(false);
   }
 
   onMount(() => {
@@ -185,7 +185,7 @@
         <h2 class="font-semibold">Qdrant Neighbors</h2>
         {#if result.qdrant?.result?.length}
           <ul class="divide-y">
-            {#each result.qdrant.result as item}
+            {#each Array.isArray(result.qdrant.result) ? result.qdrant.result : [] as item}
               <li class="py-2 flex justify-between items-start">
                 <div class="min-w-0">
                   <div class="font-medium truncate">{extractTitle(item.payload) || 'Untitled'}</div>
@@ -229,7 +229,7 @@
         <h2 class="font-semibold">pgvector Neighbors</h2>
         {#if result.pgvector?.rows?.length}
           <ul class="divide-y">
-            {#each result.pgvector.rows as row}
+            {#each Array.isArray(result.pgvector.rows) ? result.pgvector.rows : [] as row}
               <li class="py-2 flex justify-between items-start">
                 <div class="min-w-0">
                   <div class="font-medium truncate">
@@ -299,13 +299,13 @@
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="0"
           onclick={() => {
-            previewOpen = false;
+            previewOpen = $state(false);
             restoreFocus();
           }}
           onkeydown={(e: KeyboardEvent) => {
             // make overlay keyboard-operable (Enter / Space)
             if (e.key === 'Enter' || e.key === ' ') {
-              previewOpen = false;
+              previewOpen = $state(false);
               restoreFocus();
             }
           }}
@@ -326,7 +326,7 @@
             <button
               class="absolute top-2 right-2 text-gray-500 hover:text-black"
               onclick={() => {
-                previewOpen = false;
+                previewOpen = $state(false);
                 restoreFocus();
               }}
               aria-label="Close">✕</button

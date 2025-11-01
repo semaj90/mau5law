@@ -34,7 +34,6 @@ export const authUsers = pgTable(
     isActiveIdx: index('auth_users_active_idx').on(table.isActive),
   })
 );
-
 export const authKeys = pgTable(
   'auth_keys',
   {
@@ -46,7 +45,6 @@ export const authKeys = pgTable(
     userIdIdx: index('auth_keys_user_id_idx').on(table.userId),
   })
 );
-
 export const authSessions = pgTable(
   'auth_sessions',
   {
@@ -66,7 +64,6 @@ export const authSessions = pgTable(
     activeExpiresIdx: index('auth_sessions_active_expires_idx').on(table.activeExpires),
   })
 );
-
 export const authPasswordResets = pgTable(
   'auth_password_resets',
   {
@@ -82,7 +79,6 @@ export const authPasswordResets = pgTable(
     tokenIdx: index('auth_password_resets_token_idx').on(table.token),
   })
 );
-
 export const authAuditLog = pgTable(
   'auth_audit_log',
   {
@@ -101,7 +97,6 @@ export const authAuditLog = pgTable(
     createdAtIdx: index('auth_audit_log_created_at_idx').on(table.createdAt),
   })
 );
-
 // Relations
 export const authUsersRelations = relations(authUsers, ({ many }) => ({
   keys: many(authKeys),
@@ -109,21 +104,18 @@ export const authUsersRelations = relations(authUsers, ({ many }) => ({
   passwordResets: many(authPasswordResets),
   auditLogs: many(authAuditLog),
 }));
-
 export const authKeysRelations = relations(authKeys, ({ one }) => ({
   user: one(authUsers, {
     fields: [authKeys.userId],
     references: [authUsers.id],
   }),
 }));
-
 export const authSessionsRelations = relations(authSessions, ({ one }) => ({
   user: one(authUsers, {
     fields: [authSessions.userId],
     references: [authUsers.id],
   }),
 }));
-
 // TypeScript types
 export type AuthUser = typeof authUsers.$inferSelect;
 export type AuthKey = typeof authKeys.$inferSelect;

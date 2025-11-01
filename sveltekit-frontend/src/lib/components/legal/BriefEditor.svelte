@@ -1,7 +1,7 @@
 <!-- Brief Editor - Enhanced-Bits Legal Component -->
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
+  import { createLegalEvidenceAnalyzer } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components.svelte'';
   import {
     Card,
     CardHeader,
@@ -9,8 +9,7 @@
     CardContent,
     Button,
     Input
-  } from '$lib/components/ui/enhanced-bits';
-
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   interface BriefSection {
     id: string;
     type: 'header' | 'introduction' | 'facts' | 'argument' | 'conclusion' | 'signature';
@@ -21,7 +20,6 @@
     aiSuggestions?: string[];
     status: 'draft' | 'review' | 'approved';
   }
-
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'secondary';
@@ -31,7 +29,6 @@
     verified: boolean;
     relevanceScore: number;
   }
-
   interface Brief {
     id: string;
     title: string;
@@ -45,23 +42,19 @@
     collaborators: string[];
     version: number;
   }
-
   interface Props {
     brief?: Brief;
     onSave?: (brief: Brief) => Promise<void>;
     onCitationCheck?: (citations: Citation[]) => Promise<Citation[]>;
     onAISuggestion?: (section: BriefSection) => Promise<string[]>;
   }
-
   let { brief, onSave, onCitationCheck, onAISuggestion }: Props = $props();
-
   // Enhanced-Bits builder for briefs
   const briefBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
     aiModel: 'gemma3',
   });
-
   let briefData = $state<Brief>(brief || {
     id: 'brief-001',
     title: 'Motion for Summary Judgment',
@@ -107,26 +100,21 @@
       }
     ]
   });
-
   let selectedSection = $state<string>('intro');
   let isAutoSaving = $state(false);
   let citationPanel = $state(false);
-
   let wordCount = $derived(() =>
     briefData.sections.reduce((total, section) => total + section.wordCount, 0)
   );
-
   let wordCountStatus = $derived(() => {
     const percentage = (wordCount / briefData.wordLimit) * 100;
     if (percentage > 100) return 'over';
     if (percentage > 90) return 'warning';
     return 'normal';
   });
-
   let currentSection = $derived(() =>
     briefData.sections.find(s => s.id === selectedSection)
   );
-
   async function saveBrief() {
     if (!onSave) return;
     isAutoSaving = true;
@@ -136,10 +124,9 @@
     } catch (error) {
       console.error('Save failed:', error);
     } finally {
-      isAutoSaving = false;
+      isAutoSaving = $state(false);
     }
   }
-
   async function checkCitations() {
     if (!onCitationCheck || !currentSection) return;
     try {
@@ -152,7 +139,6 @@
       console.error('Citation check failed:', error);
     }
   }
-
   async function getAISuggestions(sectionId: string) {
     if (!onAISuggestion) return;
     const section = briefData.sections.find(s => s.id === sectionId);
@@ -167,7 +153,6 @@
       console.error('AI suggestion failed:', error);
     }
   }
-
   function addSection() {
     const newSection: BriefSection = {
       id: `section-${Date.now()}`,
@@ -181,7 +166,6 @@
     briefData.sections.push(newSection);
     selectedSection = newSection.id;
   }
-
   function updateSectionContent(sectionId: string, content: string) {
     const sectionIndex = briefData.sections.findIndex(s => s.id === sectionId);
     if (sectionIndex >= 0) {
@@ -189,7 +173,6 @@
       briefData.sections[sectionIndex].wordCount = content.split(/\s+/).filter(word => word.length > 0).length;
     }
   }
-
   function addCitation() {
     if (!currentSection) return;
     const newCitation: Citation = {
@@ -205,7 +188,6 @@
       briefData.sections[sectionIndex].citations.push(newCitation);
     }
   }
-
   function getSectionIcon(type: BriefSection['type']): string {
     const icons: Record<string, string> = {
       header: '📋',
@@ -217,7 +199,6 @@
     };
     return icons[type] || '📄';
   }
-
   function getCitationIcon(type: Citation['type']): string {
     const icons: Record<string, string> = {
       case '⚖️',
@@ -227,7 +208,6 @@
     };
     return icons[type] || '📄';
   }
-
   function getStatusColor(status: string) {
     const colors = {
       draft: '#6b7280',
@@ -237,7 +217,6 @@
     };
     return colors[status as keyof typeof colors] || colors.draft;
   }
-
   // Auto-save effect
   let saveTimeout: NodeJS.Timeout;
   $effect(() => {
@@ -249,7 +228,6 @@
     }, 2000);
   });
 </script>
-
 <div class="brief-editor">
   <!-- Brief Header -->
   <div
@@ -375,12 +353,11 @@
             <div class="suggestions-panel" transition:fly={{ x: 20, duration: 300 }}>
               <h4>🤖 AI Suggestions</h4>
               <ul class="suggestions-list">
-                {#each currentSection.aiSuggestions as suggestion}
+                {#each Array.isArray(currentSection.aiSuggestions) ? currentSection.aiSuggestions : [] as suggestion}
                   <li class="suggestion-item">{suggestion}</li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Citations for Current Section -->
         <div class="section-citations">
@@ -419,8 +396,7 @@
           <span class="empty-icon">📝</span>
           <h3>Select a Section</h3>
           <p>Choose a section from the navigation to start editing.</p>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Citation Panel -->
     {#if citationPanel}
@@ -430,11 +406,11 @@
           <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>
         </div>
         <div class="panel-content">
-          {#each briefData.sections as section}
+          {#each Array.isArray(briefData.sections) ? briefData.sections : [] as section}
             {#if section.citations.length > 0}
               <div class="section-citations-group">
                 <h4>{section.title}</h4>
-                {#each section.citations as citation}
+                {#each Array.isArray(section.citations) ? section.citations : [] as citation}
                   <div class="citation-summary">
                     <span class="citation-icon">{getCitationIcon(citation.type)}</span>
                     <div class="citation-text">
@@ -445,15 +421,12 @@
                     </div>
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
-
 <style>
   .brief-editor {
     max-width: 1600px;
@@ -526,7 +499,7 @@
   }
   .word-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition: width: 300ms ease;
     border-radius: 2px;
   }
   .word-fill.normal { background: var(--enhanced-bits-success); }
@@ -871,5 +844,3 @@
     }
   }
 </style>
-
-

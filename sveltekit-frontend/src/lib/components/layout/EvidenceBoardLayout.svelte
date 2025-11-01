@@ -14,7 +14,7 @@
     caseInfo?: string;
     demoMode?: boolean;
     showGrid?: boolean;
-    children: any;
+     any;
     rightPanel?: any;
   } = $props();
   // Connection status (matching Evidence Board)
@@ -22,17 +22,15 @@
   $effect(() => {
     // Simulate connection status
     setTimeout(() => {
-      isConnected = false; // Keep as: "Demo Mode - Server Not Connected" to match screenshot
+      isConnected = $state(false); // Keep as: "Demo Mode - Server Not Connected" to match screenshot
     }, 1000);
   });
 </script>
-
 <!-- Full Evidence Board Layout -->
 <div class="min-h-screen bg-gray-100 relative overflow-hidden">
   <!-- Background Grid Pattern (matching Evidence Board) -->
   {#if showGrid}
-    <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
-  {/if}
+    <div class="absolute inset-0 bg-grid-pattern opacity-10">{/if}
   <!-- Header Bar (matching Evidence Board header) -->
   <div class="relative z-10 p-4 border-b-2 border-gray-300 bg-white">
     <div class="flex items-center justify-between">
@@ -43,8 +41,7 @@
           <div class="nes-badge is-splited">
             <span class="is-dark">Case:</span>
             <span class="is-primary">{caseInfo}</span>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Status Section (matching Evidence Board) -->
       <div class="flex items-center gap-4">
@@ -55,8 +52,7 @@
         {:else}
           <div class="nes-badge is-success">
             <span>✅ Connected</span>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -73,14 +69,13 @@
       {#if rightPanel}
         <div class="w-80 flex-shrink-0">
           {@render rightPanel()}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Hidden NES.css Elements Showcase - Prevents unused CSS selector warnings -->
   <div
     class="nes-elements-showcase"
-    style="position absolute;
+    style="position: absolute;
 e; left: -9999px; top: -9999px; visibility: hidden;"
   >
     <!-- Containers -->
@@ -224,7 +219,6 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
     <div class="nes-pokeball"></div>
   </div>
 </div>
-
 <style>
   .bg-grid-pattern {
     background-image:
@@ -238,11 +232,11 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
     border: 4px solid #212529;
     border-radius: 8px;
     padding: 1rem;
-    position relative;
+    position: relative;
   }
   .nes-container.evidence-panel::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -281,4 +275,3 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
     background: #fffbf0;
   }
 </style>
-

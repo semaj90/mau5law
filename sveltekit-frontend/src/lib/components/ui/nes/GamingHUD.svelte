@@ -26,7 +26,7 @@
   		documentsAnalyzed = 47,
   		accuracyScore = 94.2,
   		isOnline = true
-  	: unknown } = $props();
+  	: any } = $props();
   	let currentTime = $state('00:00:00');
   	let glowEffect = $state(false);
   	// Experience bar percentage
@@ -46,7 +46,6 @@
   		}
   	});
 </script>
-
 <!-- Gaming HUD Container -->
 <div class="gaming-hud">
   <!-- Top Bar -->
@@ -103,10 +102,9 @@
     </div>
   </div>
 </div>
-
 <style>
 	.gaming-hud {
-		position fixed;
+		position: fixed;
 d;
 		top: 0,
 		left: 0;
@@ -165,7 +163,7 @@ d;
 		color: var(--yorha-bg-primary, #0a0a0a);
 	}
 	.experience-bar {
-		position relative;
+		position: relative;
 		width: 200px;
 	}
 	.exp-background {
@@ -180,13 +178,13 @@ d;
 		height: 100%;
 		background: linear-gradient(90deg, var(--yorha-accent, #00ff41), var(--yorha-secondary, #ffd700));
 		border-radius: 0,
-		transition: width 0.5s ease;
+		transition: width: 0.5s ease;
 		box-shadow:
 			inset 0 0 10px rgba(0, 255, 65, 0.3),
 			0 0 5px rgba(255, 215, 0, 0.5);
 	}
 	.exp-text {
-		position absolute;
+		position: absolute;
 		top: -22px;
 		left: 0;
 		font-size: 11px;
@@ -334,5 +332,3 @@ d;
 		}
 	}
 </style>
-
-

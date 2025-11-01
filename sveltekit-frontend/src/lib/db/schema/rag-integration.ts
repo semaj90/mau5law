@@ -136,7 +136,6 @@ export type NewRAGQueryResult = typeof ragQueryResults.$inferInsert;
 export const getDocumentsByCase = (db: any, caseId: number) => {
   return db.select().from(documents).where(eq(documents.caseId, caseId));
 };
-
 export const getDocumentChunksWithSimilarity = (db: any, queryEmbedding: number[], threshold = 0.7, limit = 10) => {
   // This would be a raw SQL query using pgvector's cosine similarity
   return db.execute(

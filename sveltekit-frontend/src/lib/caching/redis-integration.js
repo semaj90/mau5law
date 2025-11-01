@@ -5,12 +5,10 @@ import { redis } from '$lib/server/redis-client';
  * Supports embeddings, search results, shader caching, and general key-value operations
  */
 import { gzipSync, gunzipSync } from 'zlib';
-
 // Configuration constants
 const DEFAULT_TTL = 3600; // 1 hour in seconds
 const COMPRESSION_THRESHOLD = 1024; // Compress data larger than 1KB
 const MAX_MEMORY_CACHE_SIZE = 1000;
-
 // In-memory fallback cache
 const memoryCache = new Map();
 let memoryCacheSize = 0;
@@ -29,7 +27,7 @@ export class RedisIntegration {
       ...options,
     };
     this.client = null;
-    this.isConnected = false;
+    this.isConnected = $state(false);
     this.connectionAttempts = 0;
     this.maxConnectionAttempts = 3;
     this.init();
@@ -45,7 +43,7 @@ export class RedisIntegration {
       console.log('Redis connected successfully');
     } catch (error) {
       console.warn('Redis connection failed, using memory cache fallback:', error.message);
-      this.isConnected = false;
+      this.isConnected = $state(false);
       if (this.connectionAttempts < this.maxConnectionAttempts) {
         this.connectionAttempts++;
         setTimeout(() => this.init(), 5000); // Retry after 5 seconds
@@ -108,7 +106,7 @@ export class RedisIntegration {
         return true;
       } catch (error) {
         console.warn('Redis set failed, falling back to memory:', error.message);
-        this.isConnected = false;
+        this.isConnected = $state(false);
       }
     }
     // Fallback to memory cache
@@ -132,7 +130,7 @@ export class RedisIntegration {
         }
       } catch (error) {
         console.warn('Redis get failed, checking memory cache:', error.message);
-        this.isConnected = false;
+        this.isConnected = $state(false);
       }
     }
     // Fallback to memory cache
@@ -317,8 +315,8 @@ export class RedisIntegration {
         status.redis = result === '1';
         await this.client.del('health:check');
       } catch (error) {
-        status.redis = false;
-        this.isConnected = false;
+        status.redis = $state(false);
+        this.isConnected = $state(false);
       }
     }
     return status;

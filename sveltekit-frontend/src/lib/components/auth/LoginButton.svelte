@@ -8,7 +8,7 @@
     (unified as any);
 
   import { goto } from '$app/navigation';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
 
   // Svelte 5 runes - Props
   interface Props {
@@ -61,8 +61,7 @@
         <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">
           {authStore.user.role}
         </span>
-      </div>
-    {/if}
+      {/if}
     <Button
       class={className}
       {variant}

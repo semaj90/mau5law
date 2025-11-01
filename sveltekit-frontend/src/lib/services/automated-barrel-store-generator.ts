@@ -42,8 +42,8 @@ export interface Context7Docs {
   library: string;
   topics: string;
   documentation: string;
-  examples: unknown[];
-  bestPractices: unknown[];
+  examples: any[];
+  bestPractices: any[];
 }
 
 // Add missing Context7Integration type (was referenced but not defined)
@@ -56,12 +56,12 @@ export interface Context7Integration {
 
 /* External service interfaces (typed) */
 export interface UltraJSONParser {
-  parse(input: string): unknown;
-  stringify(input: unknown): string;
+  parse(input: string): any;
+  stringify(input: any): string;
 }
 export interface WasmClusteringService {
   cluster(embeddings: Float32Array[] | number[][]): Promise<number[]>;
-  train(payload: unknown): Promise<void>;
+  train(payload: any): Promise<void>;
 }
 export interface NESGPUBridge {
   computeSimilarity(a: Float32Array, b: Float32Array): Promise<number>;
@@ -88,7 +88,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
         body: JSON.stringify({ model, input: texts }),
       });
       if (resp.ok) {
-        const json: unknown = await resp.json();
+        const json: any = await resp.json();
         // If the service returns an array-of-arrays, accept it
         if (Array.isArray(json) && json.every(it => Array.isArray(it))) {
           return json as unknown as number[][];
@@ -127,12 +127,12 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
 /* Stronger runtime client / pool types to avoid `any` */
 interface RedisLikeClient {
   get(key: string): Promise<string | null> | string | null;
-  set(key: string, value: string, ...args: unknown[]): Promise<'OK' | null> | 'OK' | null;
+  set(key: string, value: string, ...args: any[]): Promise<'OK' | null> | 'OK' | null;
   del(key: string): Promise<number> | number;
 }
 
 interface PostgresPool {
-  query(sql: string, params?: unknown[]): Promise<{ rows?: unknown[]; rowCount?: number }>;
+  query(sql: string, params?: any[]): Promise<{ rows?: any[]; rowCount?: number }>;
 }
 
 /* Redis cache — typed to avoid `any` */
@@ -203,7 +203,7 @@ export class QdrantIndexer {
 /* Postgres JSON store — typed pool and unknown json */
 export class PostgresJSONStore {
   constructor(private pool?: PostgresPool) {}
-  async upsertJson(table: string, id: string | number, json: unknown) {
+  async upsertJson(table: string, id: string | number, json: any) {
     if (this.pool && typeof this.pool.query === 'function') {
       const sql = `INSERT INTO ${table} (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`;
       await this.pool.query(sql, [id, json]);
@@ -277,7 +277,7 @@ export class AutomatedBarrelStoreGenerator {
         const implementation = await this.fetchItemImplementation(item);
         resolution.implementations.set(item, implementation);
         this.resolutionCache.set(item, implementation);
-      } catch (error: unknown) {
+      } catch (error: any) {
         const fallback = this.createFallbackImplementation(item);
         resolution.fallbacks.set(item, fallback);
         console.warn(`fetchMissingImplementations fallback for ${item}:`, String(error));
@@ -298,7 +298,7 @@ export class AutomatedBarrelStoreGenerator {
       integration.drizzleOrmDocs = await this.fetchContext7Docs('drizzle-orm', 'postgresql|queries|types');
       integration.xStateDocs = await this.fetchContext7Docs('xstate', 'machines|actors|guards');
       await this.extractBestPractices(integration);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Context7 integration failed, using fallbacks:', String(error));
     }
     return integration;
@@ -502,18 +502,18 @@ export const svelteKitUtils = {
  * AUTO-GENERATED DATABASE BARREL STORE
  */
 export const drizzleColumns = {
-  ${drizzleFunctions.map(fn => `${fn}: (...args: unknown[]) => ({ name: args[0], type: '${fn}' })`).join(',\n  ')}
+  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: '${fn}' })`).join(',\n  ')}
 };
 
 export const drizzleOperators = {
-  eq: (c: unknown, v: unknown) => ({ op: 'eq', column: c, value: v }),
-  ne: (c: unknown, v: unknown) => ({ op: 'ne', column: c, value: v }),
-  gt: (c: unknown, v: unknown) => ({ op: 'gt', column: c, value: v })
+  eq: (c: any, v: any) => ({ op: 'eq', column: c, value: v }),
+  ne: (c: any, v: any) => ({ op: 'ne', column: c, value: v }),
+  gt: (c: any, v: any) => ({ op: 'gt', column: c, value: v })
   // add more as needed
 };
 
 export const postgres = (options?: Record<string, unknown>) => ({
-  query: async (_sql: string, _params?: unknown[]) => ({ rows: [], rowCount: 0 }),
+  query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }),
   end: async () => {}
 });
 `;

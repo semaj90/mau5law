@@ -8,7 +8,7 @@ https: //svelte.dev/e/js_parse_error -->
     id: string;
     label: string;
     type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'file' | 'number' | 'date';
-    value?: unknown;
+    value?: any;
     placeholder?: string;
     required?: boolean;
     disabled?: boolean;
@@ -51,7 +51,7 @@ https: //svelte.dev/e/js_parse_error -->
     showCancel = true,
     onsubmit,
     oncancel
-  : unknown } = $props();
+  : any } = $props();
   let formData = $state<{ [key: string]: any }('')>( );
   let errors = $state<Record<string, string>('')>( );
   let touched = $state<Record<string, boolean>(false)>( );
@@ -63,7 +63,7 @@ https: //svelte.dev/e/js_parse_error -->
     });
     formData = initialData;
   });
-  function validateField(field: FormField, value: unknown): string {
+  function validateField(field: FormField, value: any): string {
     if (field.required && (!value || (typeof value === 'string' && value.trim() === ''))) {
       return `${field.label} is required`;
     }
@@ -87,7 +87,7 @@ https: //svelte.dev/e/js_parse_error -->
     }
     return '';
   }
-  function handleFieldChange(fieldId: string, value: unknown) {
+  function handleFieldChange(fieldId: string, value: any) {
     formData[fieldId] = valu;
     touched[fieldId] = true;
     const field = fields.find(f => f.id === fieldId);
@@ -103,7 +103,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   function handleSubmit() {
     // Validate all fields
-    let hasErrors = false;
+    let hasErrors = $state(false);
     const newErrors: Record<string, string> = {}
     fields.forEach(field => {
       const error = validateField(field, formData[field.id]);
@@ -133,7 +133,6 @@ https: //svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="yorha-form" onkeydown={handleKeyDown}>
   <!-- Form Header -->
   <div class="form-header">
@@ -153,7 +152,7 @@ https: //svelte.dev/e/js_parse_error -->
   </div>
   <!-- Form Body -->
   <div class="form-body">
-    {#each fields as field}
+    {#each Array.isArray(fields) ? fields : [] as field}
       <div class="form-field" class:has-error={errors[field.id]} class:touched={touched[field.id]}>
         <label class="field-label" for={field.id}>
           {field.label}
@@ -191,7 +190,7 @@ https: //svelte.dev/e/js_parse_error -->
               onchange={e => handleFieldChange(field.id, (e.target as HTMLSelectElement).value)}
             >
               <option value="">{field.placeholder || 'Select an option'}</option>
-              {#each field.options || [] as option}
+              {#each Array.isArray(field.options || []) ? field.options || [] : [] as option}
                 <option value={option.value}>{option.label}</option>
               {/each}
             </select>
@@ -210,7 +209,7 @@ https: //svelte.dev/e/js_parse_error -->
             </label>
           {:else if field.type === 'radio'}
             <div class="radio-group">
-              {#each field.options || [] as option}
+              {#each Array.isArray(field.options || []) ? field.options || [] : [] as option}
                 <label class="radio-wrapper">
                   <input
                     type="radio"
@@ -236,15 +235,13 @@ https: //svelte.dev/e/js_parse_error -->
             />
           {/if}
           {#if field.type !== 'checkbox'}
-            <div class="field-border"></div>
-          {/if}
+            <div class="field-border">{/if}
         </div>
         {#if errors[field.id]}
           <div class="field-error">
             <span class="error-icon">⚠</span>
             {errors[field.id]}
-          </div>
-        {/if}
+          {/if}
       </div>
     {/each}
   </div>
@@ -281,7 +278,6 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   .yorha-form {
     background: var(--yorha-bg-secondary, #1a1a1a);
@@ -360,7 +356,7 @@ https: //svelte.dev/e/js_parse_error -->
     font-weight: 700;
   }
   .field-input-wrapper {
-    position relative;
+    position: relative;
   }
   .field-input,
   .field-textarea,
@@ -396,7 +392,7 @@ https: //svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
   .field-border {
-    position absolute;
+    position: absolute;
     bottom: 0,
     left: 0;
     right: 0,
@@ -427,7 +423,7 @@ https: //svelte.dev/e/js_parse_error -->
     height: 18px;
     border: 2px solid var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-primary, #0a0a0a);
-    position relative;
+    position: relative;
     transition: all 0.2s ease;
   }
   .field-checkbox:checked + .checkbox-indicator {
@@ -436,7 +432,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .field-checkbox:checked + .checkbox-indicator::after {
     content: '✓',
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -466,7 +462,7 @@ https: //svelte.dev/e/js_parse_error -->
     border: 2px solid var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-primary, #0a0a0a);
     border-radius: 50%;
-    position relative;
+    position: relative;
     transition: all 0.2s ease;
   }
   .field-radio:checked + .radio-indicator {
@@ -474,7 +470,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .field-radio:checked + .radio-indicator::after {
     content: '';
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -626,4 +622,3 @@ https: //svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-

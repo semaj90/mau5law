@@ -113,7 +113,7 @@ export const MockDataGenerators = {
 // ============================================================================
 
 interface MockDatabase {
-  query(sql: string, params?: unknown[]): Promise<{ rows: unknown[]; rowCount: number }>;
+  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
   transaction<T>(fn: (trx: MockDatabase) => Promise<T>): Promise<T>;
 }
 
@@ -125,7 +125,7 @@ interface MockApiClientOptions extends Omit<RequestInit, 'body'> {
 
 interface MockApiResponse {
   status: number;
-  data: unknown;
+  data: any;
 }
 
 /**
@@ -147,7 +147,7 @@ export const MockServices = {
    */
   createMockDatabase(config?: MockServiceConfig): MockDatabase {
     return {
-      async query(sql: string, params?: unknown[]): Promise<{ rows: unknown[]; rowCount: number }> {
+      async query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }> {
         console.log(`Mock DB Query (Configured URL: ${config?.databaseUrl || 'N/A'}): ${sql}`, params);
         return { rows: [], rowCount: 0 };
       },
@@ -218,7 +218,7 @@ export const MockServices = {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       // Simulate message reception
-      simulateMessage: (data: unknown) => {
+      simulateMessage: (data: any) => {
         const event = { data: JSON.stringify(data) };
         mockWs.onmessage?.(event as MessageEvent);
       },
@@ -302,7 +302,7 @@ export const TestUtilities = {
 // VITEST HELPERS
 // ============================================================================
 
-interface CallDetails<T extends (...args: unknown[]) => unknown> {
+interface CallDetails<T extends (...args: any[]) => unknown> {
   args: Parameters<T>;
   result: ReturnType<T> | undefined;
   timestamp: number;
@@ -335,7 +335,7 @@ export const VitestHelpers = {
   /**
    * Create a spy that tracks all calls with detailed info
    */
-  createDetailedSpy<T extends (...args: unknown[]) => unknown>(fn?: T) {
+  createDetailedSpy<T extends (...args: any[]) => unknown>(fn?: T) {
     const spy = vi.fn(fn);
     const calls: Array<CallDetails<T>> = [];
     spy.mockImplementation((...args: Parameters<T>): ReturnType<T> => {

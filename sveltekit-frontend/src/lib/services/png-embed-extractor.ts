@@ -116,7 +116,7 @@ export class PNGEmbedExtractor {
       view.set(new Uint8Array(new Uint32Array([metadataSize]).buffer), metadataOffset + 4);
       view.set(compressedMetadata, metadataOffset + 8);
       return newPNG;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('PNG metadata embedding failed:', error);
       const msg =
         typeof error === 'object' && error && 'message' in error ? String((error as any).message) : String(error);
@@ -375,7 +375,7 @@ export class PNGEmbedExtractor {
       writer.write(new TextEncoder().encode(data));
       writer.close();
       const chunks: Uint8Array[] = [];
-      let done = false;
+      let done = $state(false);
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
@@ -406,7 +406,7 @@ export class PNGEmbedExtractor {
       writer.write(ab as BufferSource);
       writer.close();
       const chunks: Uint8Array[] = [];
-      let done = false;
+      let done = $state(false);
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;

@@ -83,7 +83,6 @@ https://svelte.dev/e/js_parse_error -->
       : `width: ${percentage}%;`
   );
 </script>
-
 <div class="progress-wrapper space-y-2">
   <!-- Label and Percentage -->
   {#if label || showPercentage}
@@ -94,8 +93,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if showPercentage && !indeterminate}
         <span class="text-gray-500 dark:text-gray-400">{displayPercentage}%</span>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Progress Bar -->
   <div
     class={progressClass}
@@ -107,7 +105,6 @@ https://svelte.dev/e/js_parse_error -->
     <div class={fillClass} style={indeterminateStyle}></div>
   </div>
 </div>
-
 <style>
   @keyframes indeterminate {
     0% {
@@ -125,11 +122,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* YoRHa specific animations */
   :global(.yorha-progress) {
-    position relative;
+    position: relative;
   }
   :global($1) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,

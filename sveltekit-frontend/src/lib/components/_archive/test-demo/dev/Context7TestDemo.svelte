@@ -54,7 +54,7 @@
         }
       ];
     } finally {
-      $isRunning = false;
+      $isRunning = $state(false);
       $currentTest = '';
     }
   }
@@ -97,7 +97,7 @@
         }
       ];
     } finally {
-      $isRunning = false;
+      $isRunning = $state(false);
       $currentTest = '';
     }
   }
@@ -138,7 +138,7 @@
         }
       ];
     } finally {
-      $isRunning = false;
+      $isRunning = $state(false);
       $currentTest = '';
     }
   }
@@ -171,7 +171,7 @@
           bind:value={selectedComponent}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {#each components as component}
+          {#each Array.isArray(components) ? components : [] as component}
             <option value={component}>{component}</option>
           {/each}
         </select>
@@ -256,7 +256,7 @@
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Test Results</h3>
       <div class="space-y-4">
-        {#each $testResults as result}
+        {#each Array.isArray($testResults) ? $testResults : [] as result}
           <div class="border border-gray-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
               <h4 class="font-medium text-gray-900">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).test}</h4>

@@ -5,7 +5,6 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 // Auto-generated default export
-
 </script>
    // e.g. "OK", "WARN", "ERROR"
    // optional Date or ISO string
@@ -91,8 +90,6 @@ https://svelte.dev/e/js_parse_error -->
 	</div>
   </div>
   {#if formattedUpdatedAt}
-	<div class="meta">Updated: {formattedUpdatedAt}</div>
-  {/if}
-  {@render children?.()}
+	<div class="meta">Updated: {formattedUpdatedAt}{/if}
+  <slot />
 </div>
-

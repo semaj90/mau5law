@@ -7,14 +7,14 @@ https://svelte.dev/e/attribute_duplicate -->
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // Import QLorA training service
   import {
     qloraTrainingService,
@@ -92,7 +92,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     const files = Array.from(event.dataTransfer?.files || []);
     const caseFiles = files.filter(file =>
       file.name.endsWith('.case') ||
@@ -238,8 +238,7 @@ Select Files
             {currentJob?.status === 'running' ? 'Training in Progress...' : 'Start Training'}
           </button>
         {/if}
-      </div>
-    {/if}
+      {/if}
     <!-- Training Progress -->
     {#if currentJob}
       <div class="space-y-4" transitionfade={{ duration 300 }}>
@@ -275,8 +274,7 @@ Select Files
                   style="width: {uploadProgress}%"
                 ></div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Training Metrics -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -315,8 +313,7 @@ Select Files
                 <p class="text-purple-300 font-semibold">{currentJob.reinforcementLearning.bestReward.toFixed(3)}</p>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
@@ -344,8 +341,7 @@ showAdvancedConfig = !showAdvancedConfig}
             ⚙️ Advanced Config
 </Button>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Advanced Configuration -->
     {#if showAdvancedConfig}
       <div class="space-y-4 border-t border-gray-700 pt-6" transitionfly={{ y: -20, duration 300 }}>
@@ -422,8 +418,7 @@ showAdvancedConfig = !showAdvancedConfig}
             <span class="text-gray-300">Enable User Analytics</span>
           </label>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- User Analytics Summary -->
     {#if analytics && config?.enableUserAnalytics}
       <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4" transitionfade={{ duration 300 }}>
@@ -446,8 +441,7 @@ showAdvancedConfig = !showAdvancedConfig}
             <p class="text-blue-300 font-semibold">{(analytics.performance.productivityScore * 100).toFixed(0)}</p>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>

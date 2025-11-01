@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         { status: 202 }
       );
-    } catch (uploadError: unknown) {
+    } catch (uploadError: any) {
       const errorMessage = uploadError instanceof Error ? uploadError.message : String(uploadError);
       console.error('Upload service error:', errorMessage);
       // Update document status to failed
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 500 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Document upload error:', error);
     return json(
       {
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ documents: userDocuments });
     }
     return json({ error: 'Missing required parameters' }, { status: 400 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Document retrieval error:', error);
     return json(
       {

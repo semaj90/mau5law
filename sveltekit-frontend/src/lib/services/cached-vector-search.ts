@@ -146,7 +146,7 @@ export class CachedVectorSearchService {
   private async checkChrRomCache(cacheKey: string, _query: string): Promise<CachedSearchResult[] | null> {
     try {
       // Use a narrow local type instead of `any`
-      type ChrRomResponse = { data?: unknown } | null | undefined;
+      type ChrRomResponse = { data?: any } | null | undefined;
       const chrRomResult = (await chrRomCacheReader.getPattern(
         `vector_search:${cacheKey}`,
         'search_results'

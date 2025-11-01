@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   function closeDialog() {
-    open = false;
+    open = $state(false);
     onClose?.();
     onOpenChange?.(false);
   }
@@ -173,14 +173,12 @@ https://svelte.dev/e/js_parse_error -->
                 {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </div>
             {/each}
-          </div>
-        {/if}
+          {/if}
 
         <!-- Legal AI Risk Indicator -->
         {#if legalContext?.aiAnalysis?.riskLevel === 'high'}
           <!-- do not self-close non-void elements -->
-          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white"></div>
-        {/if}
+          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white">{/if}
 
         <!-- Header -->
         {#if title}
@@ -205,8 +203,7 @@ https://svelte.dev/e/js_parse_error -->
                 </span>
               {/if}
             </h2>
-          </div>
-        {/if}
+          {/if}
 
         <!-- Content -->
         <div class="px-6 py-4 overflow-y-auto max-h-[60vh]">
@@ -220,15 +217,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
               <h4 class="text-sm font-medium text-blue-900 mb-2">AI Suggestions:</h4>
               <ul class="text-sm text-blue-800 space-y-1">
-                {#each legalContext.aiAnalysis.suggestions as suggestion}
+                {#each Array.isArray(legalContext.aiAnalysis.suggestions) ? legalContext.aiAnalysis.suggestions : [] as suggestion}
                   <li class="flex items-start gap-2">
                     <span class="text-blue-600">•</span>
                     {suggestion}
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
         </div>
 
         <!-- Footer -->
@@ -250,8 +246,7 @@ https://svelte.dev/e/js_parse_error -->
             >
               Close
             </button>
-          </div>
-        {/if}
+          {/if}
 
         <!-- Close button -->
         <button
@@ -284,8 +279,7 @@ https://svelte.dev/e/js_parse_error -->
         {/each}
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   .image-rendering-pixelated {

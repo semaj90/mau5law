@@ -101,4 +101,4 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 export const PUT: RequestHandler = async () => json({ success: true, similar: [] });
-export const prerender = false;
+export const prerender = $state(false);

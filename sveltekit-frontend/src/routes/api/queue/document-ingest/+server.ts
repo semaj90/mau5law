@@ -3,8 +3,8 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 const logger = {
-  info: (msg: string, data?: unknown) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data ?? ''),
-  error: (msg: string, err?: unknown) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? ''),
+  info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data ?? ''),
+  error: (msg: string, err?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? ''),
 };
 
 type DocumentIngestPayload = {
@@ -13,7 +13,7 @@ type DocumentIngestPayload = {
   task?: string;
 };
 
-function isDocumentIngestPayload(obj: unknown): obj is DocumentIngestPayload {
+function isDocumentIngestPayload(obj: any): obj is DocumentIngestPayload {
   if (obj && typeof obj === 'object') {
     const o = obj as Record<string, unknown>;
     return (
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const start = Date.now();
   try {
     // Parse payload safely
-    let payload: unknown = null;
+    let payload: any = null;
     try {
       payload = await request.json();
     } catch {

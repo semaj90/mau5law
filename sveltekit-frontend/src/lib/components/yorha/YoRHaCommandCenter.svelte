@@ -7,11 +7,10 @@
   // Button is not used
   // Badge is not used
   // Card, CardHeader, CardTitle, CardContent are not used and reported as not exported from enhanced-bits
-  import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
-  import YoRHaCaseForm from './YoRHaCaseForm.svelte'; // Changed to default import
+  import { RealTimeLegalSearch } from '$lib/components/search/RealTimeLegalSearch.svelte';
+  import { YoRHaCaseForm } from './YoRHaCaseForm.svelte'; // Changed to default import
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   import type { SearchResultEventDetail } from '$lib/components/search/RealTimeLegalSearch.svelte'; // Import the interface
-
   // Interface for Quick Actions
   interface QuickAction {
     id: string;
@@ -21,7 +20,6 @@
     route?: string;
     color: string;
   }
-
   // Interface for Case Created Event
   interface CaseCreatedEventDetail {
     ca: {
@@ -30,7 +28,6 @@
     };
   }
   type CaseCreatedEvent = CustomEvent<CaseCreatedEventDetail>;
-
   // Props interface
   interface SystemData {
     activeCases?: number;
@@ -88,7 +85,6 @@
   function safeNumber(n: number | undefined | null) {
     return typeof n === 'number' && !isNaN(n) ? n : 0;
   }
-
   // make $derived robust (use safeNumber to avoid NaN)
   let systemHealth = $derived(() => {
     const load = safeNumber(systemData.systemLoad);
@@ -99,7 +95,6 @@
     if (avgLoad > 70) return { status: 'warning', color: 'yellow', message: 'Elevated resource usage' };
     return { status: 'optimal', color: 'green', message: 'All systems operational' };
   });
-
   // computed classes for status display (avoid invalid: "bg-{...}" usage)
   function statusDotClass() {
     switch (systemHealth?.color) {
@@ -123,7 +118,6 @@
       default: return 'text-gray-400 font-bold uppercase';
     }
   }
-
   // progress bar background class helper
   function progressBarClass(value: number | undefined) {
     const v = safeNumber(value);
@@ -131,7 +125,6 @@
     if (v > 60) return 'h-full rounded-full transition-all duration-300 bg-yellow-500';
     return 'h-full rounded-full transition-all duration-300 bg-green-500';
   }
-
   // Animation cycle with error handling
   $effect(() => {
     try {
@@ -144,7 +137,6 @@
       console.error('YoRHaCommandCenter animation: error:', error);
     }
   });
-
   function handleQuickAction(action QuickAction) {
     selectedCard = action.id ?? null;
     if (action.action === 'modal' && action.id === 'new-case') {
@@ -155,10 +147,9 @@
       }, 300);
     }
   }
-
   function handleCaseCreated(event: CaseCreatedEvent) {
     const newCase = e(vent as CustomEvent).detail.ca;
-    showCaseModal = false;
+    showCaseModal = $state(false);
     // Update recent activity
     recentActivity = [
       {
@@ -177,7 +168,6 @@
     console.error('Case creation error:', e(vent as CustomEvent).detail.message);
     // You could add a notification system here
   }
-
   // Modal event handlers for superforms integration
   function handleCaseCreationSuccess(event: CaseCreatedEvent) {
     return handleCaseCreated(event);
@@ -188,7 +178,7 @@
   function handleModalBackdropClick(event: MouseEvent) {
     // Changed type from unknown to MouseEvent
     if (event.target === event.currentTarget) {
-      showCaseModal = false;
+      showCaseModal = $state(false);
     }
   }
   // ensure activity helpers always return a string
@@ -237,10 +227,8 @@
       default: return '';
     }
   }
-
   // add a component ref to attach runtime event listeners (typed as any to avoid TS component-event coupling)
   let searchComponent = $state<any>(null);
-
   // attach the: 'select' listener at runtime to avoid compile-time on event type checks
   $effect(() => {
     if (!searchComponent) return;
@@ -262,7 +250,6 @@
     };
   });
 </script>
-
 <!-- Command Center Dashboard -->
 {#if componentError}
   <div class="error-boundary bg-red-900 border border-red-500 rounded-lg p-6 m-4">
@@ -420,7 +407,7 @@
     <div class="quick-actions mb-8">
       <h2 class="text-xl font-bold text-yorha-accent-warm mb-4">Quick Actions</h2>
       <div class="actions-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {#each quickActions as action}
+        {#each Array.isArray(quickActions) ? quickActions : [] as action}
           <button
             class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(
               action.color
@@ -478,7 +465,7 @@
     <div class="recent-activity">
       <h2 class="text-xl font-bold text-yorha-accent-warm mb-4">Recent Activity</h2>
       <div class="activity-list space-y-3">
-        {#each recentActivity as activity}
+        {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
           <div
             class="activity-item border rounded-lg p-4 flex items-center justify-between {getActivityColor(
               activity.type
@@ -505,15 +492,14 @@
     enableMCPIntegration={true}
     initialOpen={false}
   /> -->
-  </div>
-{/if}
+  {/if}
 <!-- YoRHa Case Creation Modal -->
 {#if showCaseModal}
   <div
     class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
     onclick={handleModalBackdropClick}
     onkeydown={e => {
-      if (e.key === 'Escape') showCaseModal = false;
+      if (e.key === 'Escape') showCaseModal = $state(false);
     }}
     role="dialog"
     aria-modal="true"
@@ -527,9 +513,7 @@
         onclose={() => (showCaseModal = false)}
       />
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .yorha-command-center {
     --yorha-primary: #c4b49a;
@@ -624,4 +608,3 @@
     }
   }
 </style>
-

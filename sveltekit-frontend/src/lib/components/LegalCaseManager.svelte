@@ -5,14 +5,12 @@
   import { writable, derived, get } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import { ocrProcessor } from '$lib/services/ocr-processor';
-  import CaseInfoForm from './CaseInfoForm.svelte';
-  import AIAnalysisForm from './AIAnalysisForm.svelte';
-  import ReviewSubmitForm from './ReviewSubmitForm.svelte';
-  import ProgressIndicator from './ProgressIndicator.svelte';
-  import LoadingSpinner from './LoadingSpinner.svelte';
-
+  import { CaseInfoForm } from './CaseInfoForm.svelte';
+  import { AIAnalysisForm } from './AIAnalysisForm.svelte';
+  import { ReviewSubmitForm } from './ReviewSubmitForm.svelte';
+  import { ProgressIndicator } from './ProgressIndicator.svelte';
+  import { LoadingSpinner } from './LoadingSpinner.svelte';
   export let caseId: string | null = null;
-
   // renamed to avoid collision with browser FormData
   interface CaseFormData {
     caseInfo: {
@@ -49,7 +47,6 @@
       ready_for_submission: boolean;
     };
   }
-
   const formData = writable<CaseFormData>({
     caseInfo: {
       title: '',
@@ -85,13 +82,11 @@
       ready_for_submission: false,
     },
   });
-
   // Form step management
   const currentStep = writable<number>(1);
   const totalSteps = 5;
   const isLoading = writable<boolean>(false);
   const processingMessage = writable<string>('');
-
   const stepValidation = derived([formData, currentStep], ([$formData, $currentStep]) => {
     const validations: Record<number, boolean> = {
       1: Boolean($formData.caseInfo.title && $formData.caseInfo.client_name && $formData.caseInfo.case_type),
@@ -102,7 +97,6 @@
     };
     return validations[$currentStep] || false;
   });
-
   // Auto-save (debounced)
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   const unsubscribeAutoSave = formData.subscribe(value => {
@@ -115,7 +109,6 @@
       }
     }, 2000);
   });
-
   async function loadFormData() {
     try {
       const saved = localStorage.getItem(`legal-case-form-${caseId || 'new'}`);
@@ -127,7 +120,6 @@
       console.error('Failed to load saved form', err);
     }
   }
-
   // Document processing
   async function processDocuments(files: File[]) {
     isLoading.set(true);
@@ -137,12 +129,10 @@
         ...d,
         documents: { ...d.documents, uploaded_files: files, processing_status: 'processing' },
       }));
-
       const ocrResults: OCRResult[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         processingMessage.set(`Processing document ${i + 1}/${files.length}: ${file.name}`);
-
         const uploadForm = new FormData();
         uploadForm.append('file', file);
         const uploadResponse = await fetch('/api/upload-temp', {
@@ -151,22 +141,18 @@
         });
         if (!uploadResponse.ok) throw new Error(`Failed to upload ${file.name}`);
         const { filePath } = await uploadResponse.json();
-
         const ocrResult = await ocrProcessor.processDocument(filePath);
         ocrResults.push(ocrResult);
-
         await fetch('/api/cleanup-temp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ filePath }),
         });
       }
-
       formData.update(d => ({
         ...d,
         documents: { ...d.documents, ocr_results: ocrResults, processing_status: 'completed' },
       }));
-
       // auto-advance
       setTimeout(() => nextStep(), 800);
     } catch (err) {
@@ -177,7 +163,6 @@
       processingMessage.set('');
     }
   }
-
   // Evidence extraction
   async function extractEvidence() {
     isLoading.set(true);
@@ -202,7 +187,6 @@
       processingMessage.set('');
     }
   }
-
   // AI analysis
   async function performAIAnalysis() {
     isLoading.set(true);
@@ -228,7 +212,6 @@
       processingMessage.set('');
     }
   }
-
   // Navigation functions (use get() in script)
   function nextStep() {
     if (get(currentStep) < totalSteps) currentStep.update(n => n + 1);
@@ -239,7 +222,6 @@
   function goToStep(step: number) {
     if (step >= 1 && step <= totalSteps) currentStep.set(step);
   }
-
   // Form submission
   async function submitForm() {
     isLoading.set(true);
@@ -261,10 +243,8 @@
       processingMessage.set('');
     }
   }
-
   onMount(() => {
     loadFormData();
-
     (async () => {
       try {
         const m1 = (await import('./DocumentUploadForm.svelte')) as any;
@@ -280,17 +260,14 @@
       }
     })();
   });
-
   onDestroy(() => {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
     unsubscribeAutoSave();
   });
-
   const AIAnalysisFormAny: any = AIAnalysisForm;
   let DocumentUploadComp: any = null;
   let EvidenceAnalysisComp: any = null;
 </script>
-
 <div class="legal-case-manager">
   <!-- Progress Header -->
   <div class="progress-header">
@@ -304,15 +281,12 @@
       on:stepclick={(e) => goToStep((e as CustomEvent<number>).detail)}
     />
   </div>
-
   <!-- Loading Overlay -->
   {#if $isLoading}
     <div class="loading-overlay" transition:fade={{ duration: 300 }}>
       <LoadingSpinner />
       <p class="loading-message">{$processingMessage}</p>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Form Steps -->
   <div class="form-container" class:loading={$isLoading}>
     {#if $currentStep === 1}
@@ -336,8 +310,7 @@
             isValid={$stepValidation}
           />
         {:else}
-          <div>Loading upload form…</div>
-        {/if}
+          <div>Loading upload form…{/if}
       </div>
     {:else if $currentStep === 3}
       <div transition:slide={{ duration: 300, easing: cubicOut }}>
@@ -351,9 +324,7 @@
             prev={prevStep}
           />
         {:else}
-          <div>Loading evidence analysis…</div>
-        {/if}
-
+          <div>Loading evidence analysis…{/if}
         <svelte:component
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
@@ -385,10 +356,8 @@
           prev={prevStep}
           isValid={$stepValidation}
         />
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Debug Panel (Development only) -->
   {#if import.meta.env.DEV}
     <div class="debug-panel">
@@ -396,10 +365,8 @@
         <summary>Debug Info</summary>
         <pre>{JSON.stringify($formData, null, 2)}</pre>
       </details>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .legal-case-manager {
     max-width: 1200px;
@@ -459,4 +426,3 @@
     }
   }
 </style>
-

@@ -4,7 +4,7 @@
   // Svelte 5 runes are auto-imported
   import { afterNavigate, goto } from '$app/navigation';
   import { onMount } from 'svelte';
-    import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+    import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
   // If you have centralized API clients, prefer:
   // import yorhaAPI from '$lib/api/YoRHaAPIClient';
 
@@ -23,7 +23,7 @@
   // System status and navigation
   // Replace rune $state usage with plain local variables to avoid runtime: 'undefined' errors
   let systemStatus = { connected: false, services: 0, errors: 0 };
-  let sidebarOpen = false;
+  let sidebarOpen = $state(false);
   let currentPath = '';
 
   // Navigation structure
@@ -130,14 +130,14 @@
         };
       } catch (error) {
         console.warn('YoRHa API not available:', error);
-        systemStatus.connected = false;
+        systemStatus.connected = $state(false);
       }
     })();
   }); // close onMount properly
 
   // Navigation helpers (moved/ensured inside <script>)
   function navigateTo(path: string) {
-    sidebarOpen = false;
+    sidebarOpen = $state(false);
     goto(path);
   }
 
@@ -149,7 +149,7 @@
   }
 
   function closeSidebar() {
-    sidebarOpen = false;
+    sidebarOpen = $state(false);
   }
 
   function handleSidebarKeydown(e: KeyboardEvent) {
@@ -227,7 +227,7 @@
         </div>
 
         <ul class="yorha-nav-list">
-          {#each navItems as item}
+          {#each Array.isArray(navItems) ? navItems : [] as item}
             <li class="yorha-nav-item">
               <button
                 class="yorha-nav-link"

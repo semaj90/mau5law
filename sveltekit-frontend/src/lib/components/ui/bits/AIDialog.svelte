@@ -15,7 +15,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   import { fade, scale } from 'svelte/transition';
   let { open = $bindable(), title = $bindable(), onClose = $bindable() }: Props = $props();
 </script>
-
 {#if open}
   <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" transitionfade>
     <div
@@ -27,13 +26,12 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       aria-labelledby="dialog-title"
     >
       <h2 id="dialog-title" class="font-bold text-lg mb-4">{title}</h2>
-      {@render children?.()}
+      <slot />
       <button
         class="absolute top-2 right-2 text-gray-400 hover: text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         ;
         use:accessibleClick={{ handler: onClose, label: 'Close dialog' }}>✕</button
       >
     </div>
-  </div>
-{/if}
+  {/if}
 ;

@@ -5,16 +5,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte'';
   import {
     Bot,
     Brain,
@@ -163,7 +163,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       console.error('Copilot self-prompt failed:', error);
       processingStage = `Error: ${(error as Error).message}`;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function executeExample(example: typeof demoExamples[0]) {
@@ -213,7 +213,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       console.error('API call failed:', error);
       processingStage = `API Error: ${(error as Error).message}`;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function downloadResult() {
@@ -261,7 +261,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     }
   }
 </script>
-
 <div class="w-full space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -294,7 +293,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     </div>
     <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each demoExamples as example}
+        {#each Array.isArray(demoExamples) ? demoExamples : [] as example}
           <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-2">
               <h3 class="font-semibold text-sm">{example.title}</h3>
@@ -403,8 +402,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               </SelectContent>
             </Select>
           </div>
-        </div>
-      {/if}
+        {/if}
       <div class="flex gap-2">
         <Button onclick={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
           {#if isProcessing}
@@ -456,8 +454,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Results Display -->
   {#if currentResult}
     <div class="space-y-6">
@@ -475,8 +472,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               <!-- Render markdown content -->
               <div class="whitespace-pre-wrap">{currentResult.synthesizedOutput}</div>
             {:else}
-              <div class="whitespace-pre-wrap">{currentResult.synthesizedOutput}</div>
-            {/if}
+              <div class="whitespace-pre-wrap">{currentResult.synthesizedOutput}{/if}
           </div>
           <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -511,7 +507,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-3">
-              {#each currentResult.nextActions as action}
+              {#each Array.isArray(currentResult.nextActions) ? currentResult.nextActions : [] as action}
                 {@const SvelteComponent = getActionIcon(action.type)}
                 <div class="flex items-start gap-3 p-3 border rounded-lg">
                   <SvelteComponent class="h-5 w-5 text-blue-500 mt-0.5" />
@@ -531,8 +527,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                         <div class="bg-gray-100 dark:bg-gray-800 rounded p-2 text-xs font-mono">
                           {action.commands.join('\n')}
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                     <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
                       <span>Est. {action.estimatedTime}min</span>
                       {#if action.targetFiles?.length > 0}
@@ -544,8 +539,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               {/each}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Strategic Recommendations -->
       {#if currentResult.recommendations?.length > 0}
         <div class="nes-container">
@@ -557,7 +551,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-3">
-              {#each currentResult.recommendations as rec}
+              {#each Array.isArray(currentResult.recommendations) ? currentResult.recommendations : [] as rec}
                 <div class="p-3 border rounded-lg">
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="font-semibold text-sm">{rec.title}</h3>
@@ -581,8 +575,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               {/each}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Execution Plan -->
       {#if currentResult.executionPlan}
         <div class="nes-container">
@@ -608,7 +601,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               </div>
             </div>
             <div class="space-y-3">
-              {#each currentResult.executionPlan.phases as phase}
+              {#each Array.isArray(currentResult.executionPlan.phases) ? currentResult.executionPlan.phases : [] as phase}
                 <div class="border rounded-lg p-3">
                   <div class="flex items-center justify-between mb-2">
                     <h4 class="font-medium">{phase.name}</h4>
@@ -630,8 +623,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               {/each}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Self-Prompt Output -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -646,11 +638,9 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 ;
-
 <style>
   /* @unocss-include */
 </style>

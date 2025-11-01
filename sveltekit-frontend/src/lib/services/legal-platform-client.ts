@@ -73,7 +73,7 @@ export interface SearchQuery {
 
 export interface AIRequest {
   operation: 'chat' | 'analyze' | 'summarize' | 'train_som' | 'xstate_event';
-  data: unknown;
+  data: any;
 }
 
 export interface UploadData {
@@ -90,7 +90,7 @@ class LegalPlatformClient {
   private async apiCall<T>(
     endpoint: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'POST',
-    data?: unknown,
+    data?: any,
     context: Partial<ErrorContext> = {}
   ): Promise<ApiResponse<T>> {
     const buildRequestId = () => {
@@ -171,7 +171,7 @@ class LegalPlatformClient {
         return result;
       }
       return { success: true, data: result as T };
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       if (err instanceof Error && msg.includes('fetch')) {
         await handleNetworkError?.(err, {
@@ -236,7 +236,7 @@ class LegalPlatformClient {
     return this.apiCall<EvidenceData[]>(`/evidence`, 'GET', { caseId });
   }
 
-  async analyzeEvidence(id: string, analysisData?: unknown): Promise<ApiResponse<unknown>> {
+  async analyzeEvidence(id: string, analysisData?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>(`/evidence/${encodeURIComponent(id)}/analyze`, 'POST', analysisData);
   }
 
@@ -291,7 +291,7 @@ class LegalPlatformClient {
       });
       const json = await response.json();
       return json as ApiResponse<unknown>;
-    } catch (error: unknown) {
+    } catch (error: any) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Upload failed'
@@ -300,7 +300,7 @@ class LegalPlatformClient {
   }
 
   // AI Operations
-  async chatWithAI(message: string, context?: unknown): Promise<ApiResponse<unknown>> {
+  async chatWithAI(message: string, context?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/chat', 'POST', { message, context });
   }
 
@@ -308,15 +308,15 @@ class LegalPlatformClient {
     return this.apiCall<unknown>('/ai/analyze', 'POST', { content, analysisType });
   }
 
-  async summarizeWithAI(content: string, options?: unknown): Promise<ApiResponse<unknown>> {
+  async summarizeWithAI(content: string, options?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/summarize', 'POST', { content, ...options as object });
   }
 
-  async trainSOM(inputVectors: number[][], options?: unknown): Promise<ApiResponse<unknown>> {
+  async trainSOM(inputVectors: number[][], options?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/train_som', 'POST', { input_vectors: inputVectors, ...options as object });
   }
 
-  async sendXStateEvent(machineId: string, eventType: string, eventData?: unknown): Promise<ApiResponse<unknown>> {
+  async sendXStateEvent(machineId: string, eventType: string, eventData?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/xstate', 'POST', {
       machine_id: machineId,
       type: eventType,
@@ -332,7 +332,7 @@ class LegalPlatformClient {
       });
       const json = await response.json();
       return json as ApiResponse<unknown>;
-    } catch (error: unknown) {
+    } catch (error: any) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Health check failed'

@@ -95,7 +95,7 @@ export async function login(credentials: LoginCredentials): Promise<AuthResponse
     // TODO: Add audit logging for successful login
     console.log('User logged in:', authData.user.email);
     return authData;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     console.error('Login error:', errorMessage);
     throw new Error(`Authentication failed: ${errorMessage}`);
@@ -119,7 +119,7 @@ export async function logout(): Promise<void> {
     console.log('User logged out');
     // Redirect to login page
     goto('/login');
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     console.error('Logout error:', errorMessage);
     // Still clear tokens on error
@@ -150,7 +150,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
     // TODO: Add audit logging for registration
     console.log('New user registered:', authData.user.email);
     return authData;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     console.error('Registration error:', errorMessage);
     throw new Error(`Registration failed: ${errorMessage}`);

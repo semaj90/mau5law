@@ -1,11 +1,9 @@
 <!--
   LegalAnalysisDialog.svelte
-
   Dialog component for AI-powered legal case analysis.
   Props:
     - open: boolean (controls dialog visibility)
     - onOpenChange: (open: boolean) => void
-
   Integrates with legalCaseStore for case selection and analysis.
 -->
 // Svelte 5 runes are auto-imported
@@ -15,12 +13,10 @@
     open = false,
     onOpenChange = (v: boolean) => {}
   } = $props();
-
   // Replace named import that caused TS error with a safe namespace import,
   // and provide a minimal runtime fallback if the module shape differs.
   import * as unified from '$lib/stores/unified';
-  import { Badge } from '$lib/components/ui/badge';
-
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // Minimal local type for the parts we use (keeps TS happy)
   type MinimalLegalCaseStore = {
     filteredCases: () => Array<{ id: string; title: string; caseNumber?: string; status?: string }>;
@@ -29,7 +25,6 @@
     analyzeCase: (id: string) => Promise<any>;
     loadCases: () => Promise<any>;
   };
-
   // Prefer exported store if present, otherwise provide a safe no-op stub.
   const legalCaseStore: MinimalLegalCaseStore =
     (unified as any).legalCaseStore ??
@@ -40,7 +35,6 @@
       analyzeCase: async () => { /* stub */ },
       loadCases: async () => { /* stub */ }
     };
-
   // Store access (unchanged usage)
   const {
     filteredCases,
@@ -95,7 +89,6 @@
     }
   }
 </script>
-
 <!-- Trigger button (was Dialog.Trigger) -->
 <button
   type="button"
@@ -108,7 +101,6 @@
   </svg>
   Analyze Case Documents
 </button>
-
 <!-- Modal (only rendered when open) -->
 {#if open}
   <div
@@ -133,14 +125,13 @@
           disabled={loading.analysis}
         >
           <option value="" disabled>Choose a case to analyze...</option>
-          {#each filteredCases() as legalCase}
+          {#each Array.isArray(filteredCases()) ? filteredCases() : [] as legalCase}
             <option value={legalCase.id}>
               {legalCase.title} — {legalCase.caseNumber} ({legalCase.status})
             </option>
           {/each}
         </select>
       </div>
-
       <!-- Analysis Progress -->
       {#if analysisStatus === 'analyzing'}
         <div class="space-y-3">
@@ -162,9 +153,7 @@
               Finalizing results...
             {/if}
           </div>
-        </div>
-      {/if}
-
+        {/if}
       <!-- Analysis Results -->
       {#if selectedCaseForAnalysis && aiInsights[selectedCaseForAnalysis] && analysisStatus === 'complete'}
         {@const insights = aiInsights[selectedCaseForAnalysis]}
@@ -174,8 +163,7 @@
           {#if insights.summary}
             <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-md">
               <p class="text-sm text-blue-800">{insights.summary}</p>
-            </div>
-          {/if}
+            {/if}
           <!-- Risk Assessment -->
           {#if insights.riskLevel}
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
@@ -183,8 +171,7 @@
               <Badge variant={getRiskBadgeVariant(insights.riskLevel.toUpperCase())}>
                 {insights.riskLevel.toUpperCase()}
               </Badge>
-            </div>
-          {/if}
+            {/if}
           <!-- Compliance Status -->
           {#if insights.complianceStatus}
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
@@ -192,14 +179,13 @@
               <Badge variant={insights.complianceStatus === 'compliant' ? 'default' : 'destructive'}>
                 {insights.complianceStatus.toUpperCase()}
               </Badge>
-            </div>
-          {/if}
+            {/if}
           <!-- Similar Cases -->
           {#if insights.similarCases && insights.similarCases.length > 0}
             <div class="space-y-2">
               <span class="text-sm font-medium text-gray-700">Similar Cases Found</span>
               <div class="space-y-1 max-h-24 overflow-y-auto">
-                {#each insights.similarCases.slice(0, 3) as similarCase}
+                {#each Array.isArray(insights.similarCases.slice(0, 3)) ? insights.similarCases.slice(0, 3) : [] as similarCase}
                   <div class="text-xs text-gray-600 p-2 bg-gray-50 rounded flex items-center justify-between">
                     <span class="truncate">{similarCase.title}</span>
                     <Badge variant="outline" class="text-xs">
@@ -208,42 +194,39 @@
                   </div>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Key Findings -->
           {#if insights.keyFindings && insights.keyFindings.length > 0}
             <div class="space-y-2">
               <span class="text-sm font-medium text-gray-700">Key Findings</span>
               <ul class="space-y-1 max-h-32 overflow-y-auto">
-                {#each insights.keyFindings.slice(0, 5) as finding}
+                {#each Array.isArray(insights.keyFindings.slice(0, 5)) ? insights.keyFindings.slice(0, 5) : [] as finding}
                   <li class="text-sm text-gray-600 flex items-start space-x-2">
                     <span class="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
                     <span>{finding}</span>
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           <!-- Recommendations -->
           {#if insights.recommendations && insights.recommendations.length > 0}
             <div class="space-y-2">
               <span class="text-sm font-medium text-gray-700">Recommendations</span>
               <ul class="space-y-1 max-h-32 overflow-y-auto">
-                {#each insights.recommendations.slice(0, 4) as recommendation}
+                {#each Array.isArray(insights.recommendations.slice(0, 4)) ? insights.recommendations.slice(0, 4) : [] as recommendation}
                   <li class="text-sm text-gray-600 flex items-start space-x-2">
                     <span class="w-1 h-1 bg-green-400 rounded-full mt-2 flex-shrink-0"></span>
                     <span>{recommendation}</span>
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           <!-- Timeline -->
           {#if insights.timeline && insights.timeline.length > 0}
             <div class="space-y-2">
               <span class="text-sm font-medium text-gray-700">Analysis Timeline</span>
               <div class="space-y-1 max-h-24 overflow-y-auto">
-                {#each insights.timeline as event}
+                {#each Array.isArray(insights.timeline) ? insights.timeline : [] as event}
                   <div class="text-xs text-gray-600 p-2 bg-gray-50 rounded flex items-center justify-between">
                     <span class="truncate">{event.event}</span>
                     <Badge variant={event.importance === 'high' ? 'destructive' : 'outline'} class="text-xs">
@@ -252,10 +235,8 @@
                   </div>
                 {/each}
               </div>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
       <!-- Error State -->
       {#if analysisStatus === 'error'}
         <div class="p-4 bg-red-50 border border-red-200 rounded-md">
@@ -268,10 +249,8 @@
           <p class="text-sm text-red-600 mt-1">
             Unable to complete the analysis. Please check the logs and try again.
           </p>
-        </div>
-      {/if}
+        {/if}
     </div>
-
     <div class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <button
         type="button"
@@ -303,9 +282,7 @@
         {/if}
       </button>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .legal-dialog {
     animation: dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);

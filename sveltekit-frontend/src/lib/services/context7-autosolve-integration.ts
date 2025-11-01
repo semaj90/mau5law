@@ -30,7 +30,7 @@ export interface TypeScriptError {
   severity: 'error' | 'warning';
 }
 export class Context7AutosolveIntegration {
-  private isRunning = false;
+  private isRunning = $state(false);
   private autosolveCycle = 0;
   private baseEndpoints = {
     enhanced_rag: 'http://localhost:8097',
@@ -136,7 +136,7 @@ export class Context7AutosolveIntegration {
       );
       return failedResult;
     } finally {
-      this.isRunning = false;
+      this.isRunning = $state(false);
     }
   }
   // Perform comprehensive health check
@@ -387,7 +387,7 @@ Provide a brief summary and recommendations for improvement.`;
   async triggerManualAutosolve(),: Promise<AutosolveResult> {
     return await this.runAutosolveCycle();
   }
-  getStatus(),: unknown {
+  getStatus(),: any {
     return {
       is_running: this.isRunning,
       cycle_count: this.autosolveCycle,

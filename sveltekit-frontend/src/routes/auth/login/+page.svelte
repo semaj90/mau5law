@@ -7,13 +7,13 @@
   import { enhance } from '$app/forms';
   import DemoLoginButton from '$lib/components/auth/DemoLoginButton.svelte';
   interface Props {
-    data?: unknown;
-    form?: unknown;
+    data?: any;
+    form?: any;
   }
   let { data, form }: Props = $props();
 
   // --- new: runtime type guard + reactive typed error value ---
-  function isFormWithError(obj: unknown): obj is { error?: string } {
+  function isFormWithError(obj: any): obj is { error?: string } {
     return typeof obj === 'object' && obj !== null && 'error' in obj;
   }
   // Make formError reactive so assignments inside $effect trigger updates
@@ -57,8 +57,8 @@
         use:enhance={({ formData, cancel }) => {
           isLoading = true;
           return async ({ result }) => {
-            isLoading = false;
-            if ((result as { type?: unknown }).type === 'redirect') {
+            isLoading = $state(false);
+            if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
           };

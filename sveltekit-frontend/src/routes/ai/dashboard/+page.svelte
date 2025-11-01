@@ -40,7 +40,7 @@
 				neo4j: data?.services?.neo4j === 'active'
 			};
 			pushToast('Cluster health updated', 'success');
-		} catch (e: unknown) {
+		} catch (e: any) {
 			console.error('Health check error', e);
 			error = String(e ?? 'Unknown error');
 			systemStatus = {
@@ -52,7 +52,7 @@
 			};
 			pushToast('Health check failed', 'error');
 		} finally {
-			loading = false;
+			loading = $state(false);
 		}
 	}
 

@@ -391,7 +391,6 @@
     }
   }
 </script>
-
 <div bind:this={_containerElement} class="legal-texture-canvas" style="width: {width}px; height: {height}px;">
   <!-- fixed: attributes must be on the element; bind and event attributes follow Svelte 5 style -->
   <canvas
@@ -406,7 +405,6 @@
     class:gpu-enabled={hasWebGLEnabled()}
     class:error={!!error}
   ></canvas>
-
   {#if error}
     <div class="error-overlay">
       <p>Error: {error}</p>
@@ -414,16 +412,12 @@
         onclick={() => {
           error = null;
         }}>Dismiss</button>
-    </div>
-  {/if}
-
+    {/if}
   {#if !isReady}
     <div class="loading-overlay">
       <p>Initializing N64 texture streaming...</p>
       <div class="loading-spinner"></div>
-    </div>
-  {/if}
-
+    {/if}
   {#if mode !== 'courtroom' && isReady}
     <div class="controls-overlay">
       <button
@@ -449,10 +443,8 @@
       </button>
       <button onclick={fitToContent}>Fit to Content</button>
       <button onclick={clearCanvas}>Clear</button>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .legal-texture-canvas .texture-canvas {
     display: block;

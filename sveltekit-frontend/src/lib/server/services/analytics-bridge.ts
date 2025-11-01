@@ -1,7 +1,5 @@
 import { json } from '@sveltejs/kit';
-
 const BASE = process.env.PUBLIC_ANALYTICS_API || 'http://localhost:8001';
-
 export async function postAnalytics(event: any) {
   const res = await fetch(`${BASE}/analytics`, {
     method: 'POST',
@@ -10,16 +8,13 @@ export async function postAnalytics(event: any) {
   });
   return res.json();
 }
-
 export async function fetchIntent(userId: string) {
   const res = await fetch(`${BASE}/intent/${encodeURIComponent(userId)}`);
   if (!res.ok) return null;
   return res.json();
 }
 import type { IntentPrediction, UserAnalyticsEvent } from "$types/ai-bridge";
-
 const ANALYTICS_API = process.env.PUBLIC_ANALYTICS_API ?? "http://localhost:8001";
-
 export async function recordAnalytics(ev: UserAnalyticsEvent): Promise<void> {
   const payload = {
     ...ev,
@@ -33,7 +28,6 @@ export async function recordAnalytics(ev: UserAnalyticsEvent): Promise<void> {
     body: JSON.stringify(payload),
   });
 }
-
 export async function fetchIntent(userId: string): Promise<IntentPrediction | null> {
   const res = await fetch(`${ANALYTICS_API}/intent/${encodeURIComponent(userId)}`);
   if (res.status === 404) return null;

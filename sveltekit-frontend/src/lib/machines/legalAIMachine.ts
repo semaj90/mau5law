@@ -7,7 +7,7 @@ export interface Case {
   status: string;
   priority: string;
   category: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface Evidence {
   id: string;
@@ -16,7 +16,7 @@ export interface Evidence {
   description?: string;
   fileUrl?: string;
   metadata?: { [key: string]: any };
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface LegalAIContext {
   user: {

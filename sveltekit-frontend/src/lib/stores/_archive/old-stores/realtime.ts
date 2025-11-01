@@ -20,12 +20,12 @@ export interface StageStatus {
 	completedAt?: number;
 	stageTimestamps?: Partial<Record<PipelineStage, number>; // per-stage arrival timestamps
 	// Allow additional dynamic stage flags without TS complaints
-	[key: string]: unknown; // eslint-disable-line @typescript-eslint/no-explicit-any
+	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 export interface FinalResultEntry {
 	id: string;
-	llmResult?: unknown; // Domain-specific shape not enforced here
-	context?: unknown;
+	llmResult?: any; // Domain-specific shape not enforced here
+	context?: any;
 	ts: number;
 }
 export const connectionStatus = writable<string>('disconnected');

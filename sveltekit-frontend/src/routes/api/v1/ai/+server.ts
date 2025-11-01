@@ -12,7 +12,7 @@ type ProductionServiceClientShape = {
   call?: (operation: string, payload?: ServiceRequestPayload) => Promise<unknown>;
   send?: (operation: string, payload?: ServiceRequestPayload) => Promise<unknown>;
   // allow other runtime properties without using `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Helper to call the production client while avoiding TS error when method is not declared.
@@ -51,7 +51,7 @@ async function performServiceRequest<T = unknown>(operation: string, payload?: S
 export interface AIRequest {
   type: 'summary' | 'legal' | 'live' | 'analysis';
   content?: string;
-  document?: unknown;
+  document?: any;
   sessionId?: string;
   userId: string;
   options?: {
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
         userId: data.userId,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = ensureError(err);
     console.error('AI API Error:', e);
     return json({ error: `AI service unavailable: ${e.message}` }, { status: 500 });
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Use helper to avoid TS error if makeRequest is not declared on the client type
       const result = await performServiceRequest('ai.session.status', { sessionId });
       return json({ success: true, data: result });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Session status error:', ensureError(err));
       return json({ error: ensureError({ message: 'Session not found' }) }, { status: 404 });
     }
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url }) => {
       supportedModels: ['gemma3-legal:latest', 'embeddinggemma:latest', 'deeds-web'],
       version: '1.0.0',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('AI Health check error:', ensureError(err));
     return json({ error: ensureError({ message: 'AI service health check failed' }) }, { status: 503 });
   }

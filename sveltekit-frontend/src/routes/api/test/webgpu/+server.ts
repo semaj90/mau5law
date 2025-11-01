@@ -8,7 +8,7 @@ import { json } from '@sveltejs/kit';
 export interface TestResult {
   test: string;
   status: 'success' | 'error' | 'warning';
-  data?: unknown; // changed from `any` to `unknown`
+  data?: any; // changed from `any` to `unknown`
   error?: string;
 }
 /**
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async () => {
         status: 'success',
         data: { imported: true, type: typeof webgpuPolyfill },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.push({
         test: 'webgpu_polyfill_import',
         status: 'error',
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async () => {
           note: 'Type imports are compile-time checks; runtime availability is separate.',
         },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       // This catch block would only be hit if the static import itself caused a runtime error,
       // which is highly unlikely for a: 'import type' statement.
       results.push({
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async () => {
         status: 'success',
         data: { imported: true, shaderCount, cacheCreated: typeof createWebGLShaderCache === 'function' },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'error',
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async () => {
         status: 'success',
         data: { imported: true, memoryStats },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.push({
         test: 'nes_memory_import',
         status: 'error',
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
       },
       note: 'WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture. GPU memory test is simulated for transparency.',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Normalize unknown error to an Error instance for safe message extraction
     const err = error instanceof Error ? error : new Error(String(error));
     return json(

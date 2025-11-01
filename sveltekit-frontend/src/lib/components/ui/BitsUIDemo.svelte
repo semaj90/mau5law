@@ -1,10 +1,10 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import BitsDialog from './dialog/BitsDialog.svelte';
-  import BitsSelect from './select/BitsSelect.svelte';
-  import BitsInput from './input/BitsInput.svelte';
-  import Button from './button/Button.svelte';
+  import { BitsDialog } from './dialog/BitsDialog.svelte';
+  import { BitsSelect } from './select/BitsSelect.svelte';
+  import { BitsInput } from './input/BitsInput.svelte';
+  import { Button } from './button/Button.svelte';
   import { Search, FileText, Users, Scale, Plus, Edit, Eye } from 'lucide-svelte';
   // Demo state
   let showDialog = $state(false);
@@ -28,7 +28,7 @@
   ];
   function handleCreateCase() {
     console.log('Creating caseItem:', { caseName, clientName, selectedCaseType });
-    showDialog = false;
+    showDialog = $state(false);
     // Reset form
     caseName = '';
     clientName = '';
@@ -173,7 +173,7 @@ showDialog = true}
       📊 Case Management
     </h2>
     <div class="grid gap-4">
-      {#each sampleCases as sampleCase}
+      {#each Array.isArray(sampleCases) ? sampleCases : [] as sampleCase}
         <div class="border border-yorha-border bg-yorha-bg-secondary rounded-lg p-4">
           <div class="flex items-center justify-between">
             <div class="space-y-1">

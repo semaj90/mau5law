@@ -19,7 +19,7 @@
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Canvas unavailable, fabric.js loading failed';
-      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       // Return mock fabric for fallback
@@ -244,7 +244,7 @@
     e.preventDefault();
     dragCounter--;
     if (dragCounter === 0) {
-      dragActive = false;
+      dragActive = $state(false);
       hideDropOverlay();
     }
   }
@@ -256,7 +256,7 @@
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     dragCounter = 0;
     hideDropOverlay();
     const files = Array.from(e.dataTransfer?.files || []);
@@ -976,8 +976,7 @@
     }
   });
 </script>
-
-<div class="fabric-evidence-canvas-container" style="position relative;">
+<div class="fabric-evidence-canvas-container" style="position: relative;">
   <!-- Canvas Element -->
   <canvas
     bind:this={canvasElement}
@@ -1007,17 +1006,15 @@
     <div class="canvas-loading">
       <div class="loading-spinner"></div>
       <p>Loading Evidence Canvas...</p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .fabric-evidence-canvas-container {
-    position relative;
+    position: relative;
     display: inline-block;
   }
   .canvas-controls {
-    position absolute;
+    position: absolute;
     top: 10px;
     left: 10px;
     display: flex;
@@ -1066,7 +1063,7 @@
     font-weight: bold;
   }
   .canvas-loading {
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -1101,4 +1098,3 @@
     font-size: 14px;
   }
 </style>
-

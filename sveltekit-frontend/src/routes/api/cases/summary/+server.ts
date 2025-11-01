@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       summary,
       analytics,
     } as CaseSummaryResponse);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // MODIFIED: Changed: 'any' to: 'unknown'
     // Corrected try-catch syntax
     console.error('Case summary generation error:', error);
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       summary,
       analytics,
     } as CaseSummaryResponse);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // MODIFIED: Changed: 'any' to: 'unknown'
     // Corrected try-catch syntax
     console.error('Case summary retrieval error:', error);
@@ -249,7 +249,7 @@ Generate a ${depth} analysis with a structured summary.
       }
     }
     return generateFallbackSummary(caseData);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // MODIFIED: Changed: 'any' to: 'unknown'
     console.error('AI summary generation error:', error);
     return generateFallbackSummary(caseData);

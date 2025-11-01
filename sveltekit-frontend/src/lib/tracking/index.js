@@ -8,7 +8,7 @@ export class ProductionController {
   constructor() {
     this.tracker = tracker;
     this.context7 = Context7Helper;
-    this.mcpReady = false;
+    this.mcpReady = $state(false);
   }
   // Initialize with MCP memory
   async initializeMCP() {

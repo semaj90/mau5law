@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
       initialLoad: true,
       timestamp: new Date().toISOString(),
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error loading dashboard data:', err);
     return {
       systemStatus: generateMockSystemStatus(),

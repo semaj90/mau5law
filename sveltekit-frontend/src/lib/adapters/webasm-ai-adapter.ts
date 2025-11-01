@@ -138,12 +138,12 @@ export interface WebAssemblyAIResponse {
   conversationId?: string;
 }
 export class WebAssemblyAIAdapter {
-  private initialized = false;
+  private initialized = $state(false);
   private config: WebAssemblyAIConfig;
   private currentModel = 'gemma3:270m';
   private activeInferenceMethod: 'ollama' | 'python' | 'webasm' | 'unknown' = 'unknown';
   private llamacppInstance: any = null; // WebAssembly llama.cpp instance
-  private gpuAvailable = false;
+  private gpuAvailable = $state(false);
   constructor(config: Partial<WebAssemblyAIConfig> = {}) {
     this.config = {
       // Server-side endpoints
@@ -577,8 +577,8 @@ export class WebAssemblyAIAdapter {
       return response;
     } catch (error: any) {
       console.warn('[WebAssembly AI] GPU acceleration failed, continuing without:', error);
-      response.metadata.gpuAccelerated = false;
-      response.metadata.tensorAccelerationUsed = false;
+      response.metadata.gpuAccelerated = $state(false);
+      response.metadata.tensorAccelerationUsed = $state(false);
       return response;
     }
   }
@@ -937,7 +937,7 @@ export class WebAssemblyAIAdapter {
     }
     // Clean up unified runtime
     unifiedRuntime.dispose();
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 // Export singleton instance

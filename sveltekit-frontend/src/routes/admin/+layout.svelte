@@ -55,7 +55,7 @@
     </div>
 
     <nav class="nav-list">
-      {#each navItems as item}
+      {#each Array.isArray(navItems) ? navItems : [] as item}
         <a href={item.href} class:active={isActive($page.url.pathname, item.href)}>
           <span class="nav-icon">{item.icon}</span>
           <span class="nav-label">{item.label}</span>

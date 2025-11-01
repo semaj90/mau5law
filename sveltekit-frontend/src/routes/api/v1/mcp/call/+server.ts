@@ -27,7 +27,7 @@ export interface MCPCallRequest {
 }
 export interface MCPCallResponse {
   success: boolean;
-  result?: unknown;
+  result?: any;
   error?: string;
   metadata?: {
     requestId?: string;
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     const executionTime = Date.now() - startTime;
     const errorMessage = error instanceof Error ? error.message : String(error);
 
@@ -164,7 +164,7 @@ export const GET: RequestHandler = async ({ url }) => {
       endpoint: url.pathname,
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return json(
       {

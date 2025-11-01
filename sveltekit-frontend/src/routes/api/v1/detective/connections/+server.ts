@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
       meta: { action: 'connection_map_stub', timestamp: new Date().toISOString() },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Detective connections POST error:', err);
     return json({ success: false, error: 'Failed to generate connection map' }, { status: 500 });
   }

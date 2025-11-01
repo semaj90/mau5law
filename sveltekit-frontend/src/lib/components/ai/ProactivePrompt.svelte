@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Export prop callbacks for Svelte consumers (provide safe defaults)
-  let { onaccept = (_?: unknown) => {}, ondismiss = (_?: unknown) => {}, onquickResponse = (_?: unknown) => {} } = $props();
+  let { onaccept = (_?: any) => {}, ondismiss = (_?: any) => {}, onquickResponse = (_?: any) => {} } = $props();
   // Use native buttons here to avoid strict typed component event typings
   import { aiPersonality } from '$lib/stores/unified";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
@@ -85,7 +85,6 @@
     <div class="space-y-4"></div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   @keyframes slide-in-from-bottom {
@@ -108,4 +107,3 @@
     animation-duration 300m;
   }
 </style>
-

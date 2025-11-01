@@ -5,7 +5,7 @@ type MemoryStats = {
   heapTotal?: number;
   heapUsed?: number;
   external?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type WorkerToMain =
@@ -19,7 +19,7 @@ type WorkerToMain =
  * Uses WebAssembly for efficient client-side vector generation
  */
 export class ClientEmbeddingGenerator {
-  private initialized = false;
+  private initialized = $state(false);
   private worker: Worker | null = null;
   private embedModel: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding';
   private ollamaUrl: string;
@@ -31,10 +31,10 @@ export class ClientEmbeddingGenerator {
   }
 
   // Helper: Post a message and wait for a matching response (one-time listener)
-  private postWorkerRequest(match: (msg: any) => boolean, message: unknown, timeoutMs = 60000): Promise<any> {
+  private postWorkerRequest(match: (msg: any) => boolean, message: any, timeoutMs = 60000): Promise<any> {
     if (!this.worker) return Promise.reject(new Error('Worker not initialized'));
     return new Promise((resolve, reject) => {
-      let settled = false;
+      let settled = $state(false);
       // capture worker locally to avoid TS nullability complaints
       const worker = this.worker as Worker;
 
@@ -139,7 +139,7 @@ export class ClientEmbeddingGenerator {
         return false;
       }
       // pick GPU-enabled worker when WebGPU is available
-      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: unknown }).gpu;
+      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: any }).gpu;
       const workerPath = hasWebGPU ? '/workers/embedding-worker-webgpu.js' : '/workers/embedding-worker.js';
 
       // Create worker via helper so bundler-friendly URLs are attempted first
@@ -159,7 +159,7 @@ export class ClientEmbeddingGenerator {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Failed to initialize embedding generator:', error);
-      this.initialized = false;
+      this.initialized = $state(false);
       // ensure worker cleaned up on failure
       if (this.worker) {
         try {
@@ -460,7 +460,7 @@ export class ClientEmbeddingGenerator {
       this.worker.terminate();
       this.worker = null;
     }
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 // Singleton instance for application use (default wired to Ollama embeddinggemma:latest)

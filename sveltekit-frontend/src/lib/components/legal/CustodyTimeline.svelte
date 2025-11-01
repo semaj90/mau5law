@@ -8,10 +8,8 @@ Displays the chronological chain of custody events with detailed audit trail
     signature?: string;
     currentStage?: string;
   }
-
   // read props (Svelte 5 runtime helper)
   let { events = [], signature, currentStage } = $props<Props>();
-
   // use simple emoji/icon fallbacks to avoid external icon import issues
   function getEventIcon(eventType: string) {
     switch (eventType) {
@@ -30,7 +28,6 @@ Displays the chronological chain of custody events with detailed audit trail
       default: return '⏱️';
     }
   }
-
   function getEventColor(eventType: string) {
     switch (eventType) {
       case 'intake':
@@ -48,7 +45,6 @@ Displays the chronological chain of custody events with detailed audit trail
       default: return 'bg-gray-100 text-gray-800';
     }
   }
-
   function formatEventTitle(eventType: string) {
     // support snake_case, kebab-case and space separated
     return eventType
@@ -57,13 +53,11 @@ Displays the chronological chain of custody events with detailed audit trail
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
-
   function formatTimestamp(timestamp?: string | number | Date) {
     if (!timestamp) return '-';
     const d = timestamp instanceof Date ? timestamp : new Date(timestamp);
     return isNaN(d.getTime()) ? '-' : d.toLocaleString();
   }
-
   function getEventDetails(evt: any) {
     const details = evt?.details ?? {};
     switch (evt?.eventType) {
@@ -115,7 +109,6 @@ Displays the chronological chain of custody events with detailed audit trail
     }
   }
 </script>
-
 <div class="custody-timeline space-y-4">
   {#if events.length === 0}
     <div class="text-center py-8 text-gray-500">
@@ -126,11 +119,9 @@ Displays the chronological chain of custody events with detailed audit trail
     <div class="relative">
       <!-- Timeline line -->
       <div class="absolute left-6 top-0 bottom-0 w-px bg-gray-200"></div>
-
       {#each events as event, index}
         {@const details = getEventDetails(event)}
         {@const isLast = index === events.length - 1}
-
         <div class="relative flex items-start space-x-4 pb-6">
           <!-- Timeline dot -->
           <div
@@ -138,7 +129,6 @@ Displays the chronological chain of custody events with detailed audit trail
           >
             <span class="text-xl">{getEventIcon(event.eventType)}</span>
           </div>
-
           <!-- Event content -->
           <div class="flex-1 min-w-0 bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div class="flex items-start justify-between mb-2">
@@ -155,19 +145,16 @@ Displays the chronological chain of custody events with detailed audit trail
                   </p>
                 {/if}
               </div>
-
               <!-- Event badge -->
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
                 {formatEventTitle(event.eventType)}
               </span>
             </div>
-
             <!-- Event metadata -->
             <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
               <span>User: {event.userId ?? 'system'}</span>
               <span>{formatTimestamp(event.timestamp)}</span>
             </div>
-
             <!-- Digital signature indicator -->
             {#if event.signature}
               <div class="mt-2 pt-2 border-t border-gray-100">
@@ -175,9 +162,7 @@ Displays the chronological chain of custody events with detailed audit trail
                   <span class="mr-1">🔒</span>
                   Digitally signed: {String(event.signature).substring(0, 16)}...
                 </div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Detailed information (expandable) -->
             {#if event.details && Object.keys(event.details).length > 0}
               <details class="mt-2 pt-2 border-t border-gray-100">
@@ -194,7 +179,6 @@ Displays the chronological chain of custody events with detailed audit trail
           </div>
         </div>
       {/each}
-
       <!-- Current stage indicator (if workflow is active) -->
       {#if currentStage && !['completed', 'failed', 'cancelled'].includes(currentStage)}
         <div class="relative flex items-start space-x-4">
@@ -202,7 +186,6 @@ Displays the chronological chain of custody events with detailed audit trail
           <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-4 border-white shadow-lg bg-blue-100 text-blue-800 animate-pulse">
             <div class="text-xl">⏱️</div>
           </div>
-
           <!-- Active stage content -->
           <div class="flex-1 min-w-0 bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
@@ -211,19 +194,15 @@ Displays the chronological chain of custody events with detailed audit trail
             </div>
             <p class="text-sm text-blue-700">This stage is currently being processed...</p>
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   .custody-timeline {
     max-height: 600px;
     overflow-y: auto;
     scroll-behavior: smooth;
   }
-
   .custody-timeline::-webkit-scrollbar {
     width: 6px;
   }

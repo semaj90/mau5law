@@ -6,7 +6,7 @@ import { cases, evidence, reports } from '$lib/server/db/schema-postgres'; // ad
 import { getUserId } from '$lib/server/auth/utils'; // adjust path (or import from lucia helper) if needed
 
 /** Small helper to safely format unknown errors for logging */
-function formatError(e: unknown): string {
+function formatError(e: any): string {
   // Prefer Error message when available, otherwise stringify
   if (e instanceof Error) return e.stack ?? e.message;
   try {
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       .returning();
 
     return json({ success: true, report: newReport[0] });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Report generation failed:', formatError(error));
     return json({ error: 'Report generation failed' }, { status: 500 });
   }
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ params: _params, locals }) => {
       .where(eq(reports.createdBy, getUserId(locals)));
 
     return json({ reports: userReports });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to fetch reports:', formatError(error));
     return json({ error: 'Failed to fetch reports' }, { status: 500 });
   }

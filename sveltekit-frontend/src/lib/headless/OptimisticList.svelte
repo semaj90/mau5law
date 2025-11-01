@@ -33,11 +33,10 @@
     merged.map((item, index) => ({
       item,
       index,
-      isOptimistic: !!(item as { __optimistic?: unknownn }).__optimistic || optimistic.includes(item),
+      isOptimistic: !!(item as { __optimistic?: anyn }).__optimistic || optimistic.includes(item),
     }))
   );
 </script>
-
 <div class="optimistic-list">
   {#if error}
     <div class="optimistic-list__error" role="alert">
@@ -53,8 +52,7 @@
         <div class="loading-placeholder">
           <div class="loading-spinner"></div>
           <span>Loading...</span>
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if merged.length === 0}
     <!-- Empty state -->
@@ -65,8 +63,7 @@
         <div class="empty-placeholder">
           <span class="empty-icon">📝</span>
           <span class="empty-message">No items to display</span>
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else}
     <!-- Items list -->
@@ -90,14 +87,10 @@
             <div class="loading-more-placeholder">
               <div class="loading-spinner loading-spinner--small"></div>
               <span>Loading more...</span>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/if}
+            {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   .optimistic-list {
     display: flex;

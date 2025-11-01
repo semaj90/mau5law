@@ -131,7 +131,7 @@ export class GemmaEmbeddingService {
 
       this.updateStats(this.perfNow() - startTime, model);
       return newEmbedding;
-    } catch (err: unknown) {
+    } catch (err: any) {
       // prefer a stable string extractor to avoid parser/type issues in catch blocks
       console.error('Gemma embedding generation failed:', getErrorMessage(err));
       throw err;
@@ -215,7 +215,7 @@ export class GemmaEmbeddingService {
         return pattern.metadata.embedding as number[];
       }
       return null;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('CHR-ROM embedding pattern check failed:', getErrorMessage(err));
       return null;
     }
@@ -230,7 +230,7 @@ export class GemmaEmbeddingService {
         return JSON.parse(cached) as number[];
       }
       return null;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Redis embedding cache check failed:', getErrorMessage(err));
       return null;
     }
@@ -261,7 +261,7 @@ export class GemmaEmbeddingService {
         });
 
         // safe normalization and validation of embedding shape
-        const maybe = response as unknown as { embedding?: unknown };
+        const maybe = response as unknown as { embedding?: any };
         if (Array.isArray(maybe.embedding) && maybe.embedding.every(v => typeof v === 'number')) {
           this.updateModelUsage(model);
           return maybe.embedding as number[];
@@ -282,7 +282,7 @@ export class GemmaEmbeddingService {
     try {
       const typedRedis = redis as unknown as Redis;
       await typedRedis.set(cacheKey, JSON.stringify(embedding), 'EX', ttl);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Redis embedding cache SET failed:', getErrorMessage(err));
     }
   }

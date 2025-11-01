@@ -188,7 +188,6 @@ class GRPCGemmaEmbeddingClient {
         }
         // Make gRPC call
         const response = await this.grpcGenerateEmbedding(request);
-
         // Cache result if requested
         if (request.options.cache_result && response.status.code === 0) {
           await this.redis.set(cacheKey, JSON.stringify(response), 'EX', 3600); // 1 hour TTL
@@ -240,21 +239,17 @@ class GRPCGemmaEmbeddingClient {
       } else {
         result = await this.regularBatchEmbeddings(batchRequest);
       }
-
       // Use startTime to compute total elapsed and update returned statistics & metrics
       const elapsed = performance.now() - startTime;
-
       if (result && result.batch_statistics) {
         // override total_batch_time with measured elapsed and recalc throughput
         result.batch_statistics.total_batch_time = elapsed;
         const totalRequests = result.batch_statistics.total_requests || batchRequest.requests.length || 1;
         result.batch_statistics.throughput_per_second = totalRequests / (elapsed / 1000);
       }
-
       // Update client metrics using average per-request latency (guard divide-by-zero)
       const avgLatencyPerRequest = elapsed / Math.max(1, batchRequest.requests.length);
       this.updateMetrics(true, avgLatencyPerRequest);
-
       return result;
     } catch (error) {
       const elapsed = performance.now() - startTime;
@@ -520,7 +515,7 @@ class GRPCGemmaEmbeddingClient {
   /**
    * Get client performance metrics
    */
-  getMetrics(): { [key: string]: unknown } {
+  getMetrics(): { [key: string]: any } {
     return {
       ...this.metrics,
       successRate: this.metrics.successfulRequests / Math.max(1, this.metrics.totalRequests),
@@ -610,7 +605,6 @@ class CircuitBreaker {
     return this.state;
   }
 }
-
 export {
   GRPCGemmaEmbeddingClient,
   type EmbeddingRequest,

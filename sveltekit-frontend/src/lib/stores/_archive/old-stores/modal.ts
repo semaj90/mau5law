@@ -10,8 +10,8 @@ export interface ModalConfig {
   title?: string;
   closable?: boolean;
   persistent?: boolean; // Don't close on outside click
-  onClose?: (...args: unknown[]) => void;
-  onConfirm?: (...args: unknown[]) => void;
+  onClose?: (...args: any[]) => void;
+  onConfirm?: (...args: any[]) => void;
   size?: 'sm' | 'md' | 'lg' | string; // added optional size
 }
 export interface ModalState {

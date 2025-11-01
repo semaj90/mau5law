@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let pollInterval: ReturnType<typeof setInterval> | null = null;
-  let isConnected = false;
+  let isConnected = $state(false);
   let errorMessage = '';
   let autoRefresh = true;
   let refreshRate = 5000; // ms
@@ -40,11 +40,11 @@ https://svelte.dev/e/js_parse_error -->
         isConnected = true;
         errorMessage = '';
       } else {
-        isConnected = false;
+        isConnected = $state(false);
         errorMessage = result?.error || 'Failed to fetch dashboard data';
       }
     } catch (err: any) {
-      isConnected = false;
+      isConnected = $state(false);
       errorMessage = `Connection error: ${err?.message ?? String(err)}`;
     }
   }

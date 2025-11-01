@@ -12,14 +12,14 @@ type SearchQuery = {
   vector?: Vector;
   limit?: number;
   score_threshold?: number;
-  filter?: unknown;
+  filter?: any;
   with_payload?: boolean;
   with_vector?: boolean;
 };
 type RetrieveQuery = { ids?: string[]; with_payload?: boolean; with_vector?: boolean };
-type ScrollQuery = { limit?: number; filter?: unknown; with_payload?: boolean; with_vector?: boolean };
+type ScrollQuery = { limit?: number; filter?: any; with_payload?: boolean; with_vector?: boolean };
 // Add optional wait to DeleteOpts (fix: 'wait' does not exist error)
-type DeleteOpts = { wait?: boolean; points?: string[]; filter?: unknown };
+type DeleteOpts = { wait?: boolean; points?: string[]; filter?: any };
 
 // New typed search result item to avoid: 'any' usage
 type SearchResultItem = { id: string; payload?: Payload; score?: number; vector?: Vector };
@@ -28,7 +28,7 @@ type SearchResult = SearchResultItem[];
 // Add typed shapes for Qdrant responses (replace any)
 type QdrantCollectionMeta = {
   name: string;
-  config?: unknown;
+  config?: any;
   points?: Point[];
 };
 
@@ -45,19 +45,19 @@ type CountResponse = { count: number };
 
 type GetCollectionInfo = {
   points_count?: number;
-  config?: unknown;
+  config?: any;
   status?: string;
 };
 
 // Helper to extract message from unknown error
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err);
 }
 
 // Mock Qdrant client for development - return typed shapes
 class MockQdrantClient {
-  private collections = new Map<string, { name: string; config: unknown; points: Point[] }>();
-  async createCollection(name: string, config: unknown) {
+  private collections = new Map<string, { name: string; config: any; points: Point[] }>();
+  async createCollection(name: string, config: any) {
     this.collections.set(name, { name, config, points: [] });
     return { status: 'ok' } as const;
   }
@@ -108,7 +108,7 @@ class MockQdrantClient {
     if (!coll) return { points: [] };
     return { points: coll.points.slice(0, query.limit || 100) };
   }
-  async count(collection: string, _filter?: unknown): Promise<CountResponse> {
+  async count(collection: string, _filter?: any): Promise<CountResponse> {
     const coll = this.collections.get(collection);
     return { count: coll?.points?.length || 0 };
   }
@@ -120,7 +120,7 @@ class MockQdrantClient {
       status: 'green',
     };
   }
-  async createPayloadIndex(_collection: string, _config?: unknown) {
+  async createPayloadIndex(_collection: string, _config?: any) {
     return { status: 'ok' };
   }
 }
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return await getCollectionStats(String(sessionId));
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Qdrant API error:', getErrorMessage(error));
     return json(
       {
@@ -203,7 +203,7 @@ async function initializeCollections(): Promise<void> {
       });
     }
     await createSearchIndices();
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Collection initialization failed:', getErrorMessage(error));
   }
 }
@@ -223,13 +223,13 @@ async function createSearchIndices(): Promise<void> {
         }
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Index creation failed:', getErrorMessage(error));
   }
 }
 
 // Helper to safely extract vector size from possibly unknown config objects
-function extractVectorSize(cfg: unknown): number {
+function extractVectorSize(cfg: any): number {
   try {
     if (!cfg || typeof cfg !== 'object') return 0;
     const c = cfg as Record<string, unknown>;
@@ -285,7 +285,7 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
       status: response.status,
       message: 'Document tagged successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('tagDocument error:', getErrorMessage(error));
     return json({ error: 'Failed to tag document', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -313,7 +313,7 @@ async function createTagEmbeddings(tags: string[], documentId: string, userId: s
               payload: { tag, documentId, userId, timestamp: new Date().toISOString() },
             } as Point;
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn(`Tag embedding failed for: ${tag}`, getErrorMessage(error));
         }
         return null;
@@ -323,7 +323,7 @@ async function createTagEmbeddings(tags: string[], documentId: string, userId: s
     if (validEmbeddings.length > 0) {
       await qdrantClient.upsert(COLLECTIONS.TAGS, { wait: false, points: validEmbeddings });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Tag embedding creation failed:', getErrorMessage(error));
   }
 }
@@ -345,7 +345,7 @@ async function searchDocuments(data: Record<string, unknown>, userId: string): P
       return json({ error: 'No query vector or text provided' }, { status: 400 });
     }
 
-    const mustConditions: unknown[] = [{ key: 'userId', match: { value: userId } }];
+    const mustConditions: any[] = [{ key: 'userId', match: { value: userId } }];
     if (Array.isArray(filters.evidenceType))
       mustConditions.push({ key: 'evidenceType', match: { value: filters.evidenceType } });
     if (Array.isArray(filters.legalRelevance))
@@ -389,7 +389,7 @@ async function searchDocuments(data: Record<string, unknown>, userId: string): P
         threshold,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('searchDocuments error:', getErrorMessage(error));
     return json({ error: 'Search failed', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -426,7 +426,7 @@ async function batchTagDocuments(data: Record<string, unknown>, userId: string):
           operation_id: response.operation_id,
           status: response.status,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         errors.push({
           batchIndex: Math.floor(i / batchSize),
           error: getErrorMessage(error),
@@ -441,7 +441,7 @@ async function batchTagDocuments(data: Record<string, unknown>, userId: string):
       results,
       errors,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('batchTagDocuments error:', getErrorMessage(error));
     return json({ error: 'Batch tagging failed', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -487,7 +487,7 @@ async function updateDocumentTags(data: Record<string, unknown>, userId: string)
       await createTagEmbeddings(tags, documentId, userId);
     }
     return json({ success: true, message: 'Document tags updated successfully' });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('updateDocumentTags error:', getErrorMessage(error));
     return json({ error: 'Failed to update tags', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -513,7 +513,7 @@ async function deleteDocument(data: Record<string, unknown>, userId: string): Pr
       },
     });
     return json({ success: true, message: 'Document deleted successfully' });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('deleteDocument error:', getErrorMessage(error));
     return json({ error: 'Failed to delete document', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -548,7 +548,7 @@ async function getSimilarDocuments(data: Record<string, unknown>, userId: string
       sourceDocument: { id: sourceDoc[0].id, payload: sourceDoc[0].payload },
       similarDocuments: similarDocs.map((doc) => ({ id: doc.id, score: doc.score, payload: doc.payload })),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('getSimilarDocuments error:', getErrorMessage(error));
     return json({ error: 'Failed to get similar documents', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -571,12 +571,12 @@ async function getCollectionStats(userId: string): Promise<Response> {
           vectorSize: extractVectorSize(cfg),
           status: info.status || 'unknown',
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         stats[collectionKey] = { error: 'Failed to get stats' };
       }
     }
     return json({ success: true, collections: stats, timestamp: new Date().toISOString() });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('getCollectionStats error:', getErrorMessage(error));
     return json({ error: 'Failed to get stats', details: getErrorMessage(error) }, { status: 500 });
   }
@@ -593,7 +593,7 @@ async function generateTextEmbedding(text: string): Promise<number[]> {
     if (!response.ok) throw new Error('Embedding generation failed');
     const data = await response.json();
     return data.embedding || [];
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Text embedding generation failed:', getErrorMessage(error));
     throw new Error('Failed to generate text embedding');
   }
@@ -623,7 +623,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return await getHealthStatus();
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Qdrant GET error:', getErrorMessage(error));
     return json(
       { error: 'Failed to retrieve data', details: getErrorMessage(error) },
@@ -645,7 +645,7 @@ async function getDocument(documentId: string, userId: string): Promise<Response
 }
 
 async function listDocuments(userId: string, options: { caseId?: string; limit: number }): Promise<Response> {
-	const filter: { must: unknown[] } = { must: [{ key: 'userId', match: { value: userId } }] };
+	const filter: { must: any[] } = { must: [{ key: 'userId', match: { value: userId } }] };
 	if (options.caseId) filter.must.push({ key: 'caseId', match: { value: options.caseId } });
 	const documents = await qdrantClient.scroll(COLLECTIONS.EVIDENCE, {
 		filter,
@@ -686,7 +686,7 @@ async function getHealthStatus(): Promise<Response> {
 			collections: health.collections?.length || 0,
 			timestamp: new Date().toISOString(),
 		});
-	} catch (error: unknown) {
+	} catch (error: any) {
 		return json({
 			success: false,
 			status: 'unhealthy',

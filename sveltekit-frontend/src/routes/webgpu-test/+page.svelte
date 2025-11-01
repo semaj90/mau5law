@@ -8,7 +8,7 @@
   };
 
   let statusMessage = 'Not checked yet';
-  let isSuccess = false;
+  let isSuccess = $state(false);
   let errors: string[] = [];
   let recommendations: string[] = [];
   let performanceStats: PerformanceStats = {
@@ -16,7 +16,7 @@
     webglAvailable: false,
     userAgent: navigator.userAgent
   };
-  let checking = false;
+  let checking = $state(false);
 
   function checkWebGL(): boolean {
     try {
@@ -47,7 +47,7 @@
     errors = [];
     recommendations = [];
     statusMessage = 'Checking...';
-    isSuccess = false;
+    isSuccess = $state(false);
 
     const webgl = checkWebGL();
     const webgpu = await checkWebGPU();
@@ -69,13 +69,13 @@
       recommendations.push('Update browser or enable experimental features for WebGPU.');
     } else {
       statusMessage = 'No GPU graphics API detected';
-      isSuccess = false;
+      isSuccess = $state(false);
       errors.push('No WebGL or WebGPU support found.');
       recommendations.push('Ensure hardware acceleration is enabled in your browser.');
       recommendations.push('Try a recent Chrome/Edge/Firefox build that supports WebGPU.');
     }
 
-    checking = false;
+    checking = $state(false);
   }
 
   onMount(() => {
@@ -111,7 +111,7 @@
           {#if errors.length}
             <h3>Errors</h3>
             <ul class="error-list">
-              {#each errors as err}
+              {#each Array.isArray(errors) ? errors : [] as err}
                 <li>{err}</li>
               {/each}
             </ul>
@@ -120,7 +120,7 @@
           {#if recommendations.length}
             <h3>Recommendations</h3>
             <ul class="recommendation-list">
-              {#each recommendations as rec}
+              {#each Array.isArray(recommendations) ? recommendations : [] as rec}
                 <li>{rec}</li>
               {/each}
             </ul>

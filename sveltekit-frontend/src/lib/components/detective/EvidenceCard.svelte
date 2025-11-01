@@ -1,7 +1,7 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/bits/Card.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Card } from '$lib/components/ui/bits/Card.svelte';
   // Define Evidence interface locally
   interface Evidence {
     id: string;
@@ -77,7 +77,6 @@
     });
   }
 </script>
-
 <Card
   class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
@@ -146,8 +145,7 @@
             {item.evidenceType || item.type || 'document'}
           </p>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- AI Summary Preview -->
     {#if item.aiSummary || item.analysis?.aiSummary}
       <div class="bg-muted/50 rounded-md p-3 space-y-2">
@@ -158,14 +156,13 @@
         <p class="text-xs nes-text is-disabled line-clamp-2">
           {item.aiSummary || item.analysis?.aiSummary}
         </p>
-      </div>
-    {/if}
+      {/if}
     <!-- Metadata -->
     <div class="space-y-3">
       <!-- Tags -->
       {#if item.tags && item.tags.length > 0}
         <div class="flex flex-wrap gap-1">
-          {#each item.tags.slice(0, 3) as tag}
+          {#each Array.isArray(item.tags.slice(0, 3)) ? item.tags.slice(0, 3) : [] as tag}
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
           {/each}
           {#if item.tags.length > 3}
@@ -173,8 +170,7 @@
               >+{item.tags.length - 3}</span
             >
           {/if}
-        </div>
-      {/if}
+        {/if}
       <!-- File Info -->
       <div class="flex items-center justify-between text-xs nes-text is-disabled">
         <span>{formatFileSize(item.fileSize || 0)}</span>
@@ -185,12 +181,10 @@
         <div class="flex items-center gap-2">
           <i class="i-lucide-shield-check w-4 h-4 text-green-600" aria-hidden="true"></i>
           <span class="text-xs text-green-600 font-medium">Verified</span>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </Card>
-
 <style>
   /* Modern CSS line clamping with fallback */
   .line-clamp-2 {

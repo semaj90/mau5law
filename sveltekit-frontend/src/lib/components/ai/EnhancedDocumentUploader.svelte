@@ -1,23 +1,20 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
-  import Button from '$lib/components/ui/bitsbutton.svelte';
-  import * as RawDialog from '$lib/components/ui/dialog';
-  import * as RawSelect from '$lib/components/ui/Select';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import Progress from '$lib/components/ui/Progress.svelte';
+  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import * as RawDialog from '$lib/components/ui/dialog.svelte'';
+  import * as RawSelect from '$lib/components/ui/Select.svelte'';
+  import { Badge } from '$lib/components/ui/Badge.svelte';
+  import { Progress } from '$lib/components/ui/Progress.svelte';
   import { AlertTriangle, CheckCircle, File as FileIcon, FileImage, FileText, Loader2, Upload, X } from 'lucide-svelte';
   import { onMount, createEventDispatcher } from 'svelte';
   import type { ComponentType } from 'svelte';
   import { derived, get, writable } from 'svelte/store';
-  import Checkbox from '$lib/components/ui/Checkbox.svelte';
-
-  import Label from '$lib/components/ui/Label.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
-  import Textarea from '$lib/components/ui/Textarea.svelte';
-
+  import { Checkbox } from '$lib/components/ui/Checkbox.svelte';
+  import { Label } from '$lib/components/ui/Label.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
+  import { Textarea } from '$lib/components/ui/Textarea.svelte';
   // Helper to normalize ESM default vs direct export to a constructor usable by <svelte:component>
   const getCtor = (mod: any) => (mod && (mod as any).default ? (mod as any).default : mod);
-
   // Constructor-safe aliases for direct components used with <svelte:component>
   const ButtonComponent: any = getCtor(Button);
   const BadgeComponent: any = getCtor(Badge);
@@ -26,7 +23,6 @@
   const LabelComponent: any = getCtor(Label);
   const InputComponent: any = getCtor(Input);
   const TextareaComponent: any = getCtor(Textarea);
-
   // Wrap Select and Dialog module namespaces into objects whose properties are constructors.
   const Select: any = {
     Root: getCtor((RawSelect as any).Root ?? (RawSelect as any).default?.Root),
@@ -35,14 +31,12 @@
     Content: getCtor((RawSelect as any).Content ?? (RawSelect as any).default?.Content),
     Item: getCtor((RawSelect as any).Item ?? (RawSelect as any).default?.Item),
   };
-
   const Dialog: any = {
     Root: getCtor((RawDialog as any).Root ?? (RawDialog as any).default?.Root),
     Content: getCtor((RawDialog as any).Content ?? (RawDialog as any).default?.Content),
     Header: getCtor((RawDialog as any).Header ?? (RawDialog as any).default?.Header),
     Title: getCtor((RawDialog as any).Title ?? (RawDialog as any).default?.Title),
   };
-
   // Public props
   export let acceptedTypes: string = '.pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp';
   export let maxFileSize: number = 50 * 1024 * 1024; // 50MB
@@ -52,14 +46,12 @@
   export let autoProcess: boolean = true;
   export let showMetadataForm: boolean = true;
   export let className = '';
-
   const dispatch = createEventDispatcher<{
     'file-processed': { fileId: string; result: ProcessingResult };
     'files-updated': { files: ProcessedFile[] };
     'upload-error': { fileId: string; error: string };
     'file-progress': { fileId: string; progress: number };
   }>();
-
   // Types
   interface UploadFile {
     id: string;
@@ -78,7 +70,6 @@
       extractEntities?: boolean;
     };
   }
-
   interface ProcessedFile {
     id: string;
     documentId: string;
@@ -88,36 +79,30 @@
     url?: string;
     thumbnail?: string;
   }
-
   interface ProcessingResult {
     summary?: string;
     entities?: any[];
     chunks?: number;
     embeddings?: number[];
   }
-
   // State
   const files = writable<UploadFile[]>([]);
   const isDragging = writable(false);
   const isProcessing = writable(false);
   // use plain variables for dialog bindings and nested two-way binds
-  let showMetadata = false;
+  let showMetadata = $state(false);
   let selectedFile: UploadFile | null = null;
-
   // Add: local draft used for dialog binds to avoid binding into nullable selectedFile
   let metadataDraft: UploadFile['metadata'] | null = null;
-
   const totalProgress = derived(files, $files => {
     if ($files.length === 0) return 0;
     return $files.reduce((acc, file) => acc + file.progress, 0) / $files.length;
   });
   const completedFiles = derived(files, $files => $files.filter(f => f.status === 'completed'));
   const hasErrors = derived(files, $files => $files.some(f => f.status === 'error'));
-
   // DOM refs
   let fileInput: HTMLInputElement | null = null;
   let dropZone: HTMLDivElement | null = null;
-
   const documentTypes = [
     { value: 'contract', label: 'Contract' },
     { value: 'motion', label: 'Motion' },
@@ -129,40 +114,34 @@
     { value: 'case_law', label: 'Case Law' },
     { value: 'other', label: 'Other' },
   ];
-
   const jurisdictions = [
     { value: 'federal', label: 'Federal' },
     { value: 'state', label: 'State' },
     { value: 'local', label: 'Local' },
     { value: 'international', label: 'International' },
   ];
-
   // Drag & drop handlers
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     isDragging.set(true);
   }
-
   function handleDragLeave(e: DragEvent) {
     if (!e.relatedTarget || !dropZone?.contains(e.relatedTarget as Node)) {
       isDragging.set(false);
     }
   }
-
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     isDragging.set(false);
     const droppedFiles = Array.from(e.dataTransfer?.files || []);
     processSelectedFiles(droppedFiles as File[]);
   }
-
   function handleFileSelect(e: Event) {
     const target = e.target as HTMLInputElement;
     const selectedFiles = Array.from(target.files || []);
     processSelectedFiles(selectedFiles as File[]);
     target.value = '';
   }
-
   // Add: safe id generator fallback for environments without crypto.randomUUID
   function genId(): string {
     try {
@@ -174,7 +153,6 @@
     } catch {}
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   }
-
   function processSelectedFiles(selectedFiles: File[]) {
     const validFiles = selectedFiles.filter(file => {
       const ext = '.' + (file.name.split('.')?.pop() || '').toLowerCase();
@@ -188,7 +166,6 @@
       }
       return true;
     });
-
     files.update(currentFiles => {
       if (currentFiles.length + validFiles.length > maxFiles) {
         console.warn(`Maximum ${maxFiles} files allowed`);
@@ -207,7 +184,6 @@
           tags: [],
         },
       }));
-
       // Generate previews for images
       newFiles.forEach(uploadFile => {
         if (uploadFile.file.type.startsWith('image/')) {
@@ -220,15 +196,12 @@
           reader.readAsDataURL(uploadFile.file);
         }
       });
-
       return [...currentFiles, ...newFiles];
     });
-
     if (autoProcess) {
       uploadFiles();
     }
   }
-
   // Upload & processing
   async function uploadFiles() {
     isProcessing.set(true);
@@ -243,7 +216,6 @@
     }
     isProcessing.set(false);
   }
-
   async function uploadSingleFile(uploadFile: UploadFile) {
     updateFileStatus(uploadFile.id, 'uploading', 10);
     const formData = new FormData();
@@ -251,7 +223,6 @@
     formData.append('caseId', caseId);
     formData.append('userId', userId);
     formData.append('metadata', JSON.stringify(uploadFile.metadata));
-
     try {
       const uploadResponse = await fetch('/api/documents/upload', {
         method: 'POST',
@@ -261,7 +232,6 @@
       // Type the response to expected shape
       const uploadResult = (await uploadResponse.json()) as { documentId: string; url?: string };
       updateFileStatus(uploadFile.id, 'processing', 50);
-
       if (uploadFile.metadata.autoSummarize || uploadFile.metadata.extractEntities) {
         const processingResponse = await fetch('/api/ai/process-document', {
           method: 'POST',
@@ -276,7 +246,6 @@
         if (!processingResponse.ok) throw new Error(`AI processing failed: ${processingResponse.statusText}`);
         const processingResult = (await processingResponse.json()) as ProcessingResult;
         updateFileStatus(uploadFile.id, 'completed', 100);
-
         dispatch('file-processed', { fileId: uploadFile.id, result: processingResult });
         dispatch('files-updated', {
           files: [
@@ -294,31 +263,27 @@
       } else {
         updateFileStatus(uploadFile.id, 'completed', 100);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const errMsg = err instanceof Error ? err.message : String(err);
       updateFileStatus(uploadFile.id, 'error', 0, errMsg);
       dispatch('upload-error', { fileId: uploadFile.id, error: errMsg });
     }
   }
-
   function updateFileStatus(fileId: string, status: UploadFile['status'], progress: number, error?: string) {
     files.update(currentFiles =>
       currentFiles.map(file => (file.id === fileId ? { ...file, status, progress, ...(error ? { error } : {}) } : file))
     );
     if (status === 'processing') dispatch('file-progress', { fileId, progress });
   }
-
   function removeFile(fileId: string) {
     files.update(currentFiles => currentFiles.filter(f => f.id !== fileId));
   }
-
   function openMetadataDialog(file: UploadFile) {
     selectedFile = file;
     // Use a shallow clone so bindings target metadataDraft and don't mutate selectedFile directly
     metadataDraft = { ...file.metadata };
     showMetadata = true;
   }
-
   // When saving metadata from dialog, apply draft back into files
   function saveMetadataFromDialog() {
     if (selectedFile && metadataDraft) {
@@ -326,28 +291,24 @@
     }
     selectedFile = null;
     metadataDraft = null;
-    showMetadata = false;
+    showMetadata = $state(false);
   }
-
   // When canceling, clear selection and draft
   function cancelMetadataDialog() {
     selectedFile = null;
     metadataDraft = null;
-    showMetadata = false;
+    showMetadata = $state(false);
   }
-
   function updateFileMetadata(fileId: string, metadata: Partial<UploadFile['metadata']>) {
     files.update(currentFiles =>
       currentFiles.map(file => (file.id === fileId ? { ...file, metadata: { ...file.metadata, ...metadata } } : file))
     );
   }
-
   function getFileIcon(file: File): ComponentType {
     if (file.type.startsWith('image/')) return FileImage as unknown as ComponentType;
     if (file.type.includes('pdf')) return FileText as unknown as ComponentType;
     return FileIcon as unknown as ComponentType;
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -355,7 +316,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   // CHANGED: return semantic badge variant names expected by Badge component
   function getStatusColor(status: UploadFile['status']): string {
     switch (status) {
@@ -370,7 +330,6 @@
       default: return 'neutral';
     }
   }
-
   onMount(() => {
     const preventDefaults = (e: Event) => {
       e.preventDefault();
@@ -386,7 +345,6 @@
     };
   });
 </script>
-
 <!-- Main Upload Interface -->
 <div class="enhanced-document-uploader {className}">
   <!-- Drop Zone -->
@@ -412,7 +370,6 @@
       <p class="drop-zone-specs">
         Accepted: {acceptedTypes} • Max file: {formatFileSize(maxFileSize)} • Up to {maxFiles} files
       </p>
-
       <!-- Hidden real file input to support click / keyboard -->
       <input
         type="file"
@@ -530,9 +487,7 @@
       >
         Clear All
       </svelte:component>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Metadata Dialog -->
   <Dialog.Root bind:open={showMetadata}>
     <Dialog.Content class="max-w-md">
@@ -567,7 +522,7 @@
                 <Select.Value placeholder="Select type" />
               </Select.Trigger>
               <Select.Content>
-                {#each documentTypes as type}
+                {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
                   <Select.Item value={type.value}>{type.label}</Select.Item>
                 {/each}
               </Select.Content>
@@ -580,7 +535,7 @@
                 <Select.Value placeholder="Select jurisdiction" />
               </Select.Trigger>
               <Select.Content>
-                {#each jurisdictions as jurisdiction}
+                {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                   <Select.Item value={jurisdiction.value}>{jurisdiction.label}</Select.Item>
                 {/each}
               </Select.Content>
@@ -605,12 +560,10 @@
               Save
             </svelte:component>
           </div>
-        </div>
-      {/if}
+        {/if}
     </Dialog.Content>
   </Dialog.Root>
 </div>
-
 <style>
   .enhanced-document-uploader {
     width: 100%;
@@ -738,4 +691,3 @@
     margin-top: 1.5rem;
   }
 </style>
-

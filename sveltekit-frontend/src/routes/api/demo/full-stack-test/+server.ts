@@ -8,14 +8,14 @@ import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector
 
 // ---- ADDED: typed result model to avoid repeated `any` casts ----
 type ParsedDocument = {
-  entities?: unknown[]; // unknown is safer than any
-  suggestions?: unknown[];
+  entities?: any[]; // unknown is safer than any
+  suggestions?: any[];
   confidence?: number;
 };
 type ProcessResult = {
   parsedDocument?: ParsedDocument;
   documentId?: string;
-  processingStats?: unknown;
+  processingStats?: any;
   vectorized?: boolean;
 };
 // ---- end added type ----

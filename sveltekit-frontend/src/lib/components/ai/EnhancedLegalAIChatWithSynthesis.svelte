@@ -25,21 +25,21 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     Settings,
     Zap,
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Switch from '$lib/components/ui/switch/Switch.svelte';
-  import * as Collapsible from '$lib/components/ui/collapsible';
-  import * as Tooltip from '$lib/components/ui/tooltip';
-  import TypewriterResponse from './TypewriterResponse.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
+  import * as Collapsible from '$lib/components/ui/collapsible.svelte'';
+  import * as Tooltip from '$lib/components/ui/tooltip.svelte'';
+  import { TypewriterResponse } from './TypewriterResponse.svelte';
   // Props
   interface Props {
     caseId?: string;
@@ -67,12 +67,12 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     role: 'user' | 'assistant' | 'system';
     content: string;
     timestamp: number;
-    synthesizedInput?: unknown;
-    legalAnalysis?: unknown;
-    ragResults?: unknown;
+    synthesizedInput?: any;
+    legalAnalysis?: any;
+    ragResults?: any;
     confidence?: number;
     processingTime?: number;
-    metadata?: unknown;
+    metadata?: any;
   }
   // State management
   let messages = writable<EnhancedMessage[]>([]);
@@ -268,7 +268,7 @@ if (browser) {
     } catch (error) {
       console.warn('Failed to save message to database:', error);
     } finally {
-      isSavingToDatabase = false;
+      isSavingToDatabase = $state(false);
     }
   }
   /**
@@ -280,7 +280,7 @@ if (browser) {
       // removed unused response assignment
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         const reports = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
-        relatedReports = reports.slice(0, 5); // Limit to top 5 related reports
+        relatedReports = reports.slice(0, 5); // Limit to top: 5 related reports
       }
     } catch (error) {
       console.warn('Failed to load related reports:', error);
@@ -365,7 +365,7 @@ if (browser) {
   async function streamNextChunk() {
     if (currentChunkIndex >= streamingChunks.length) {
       // Streaming complete
-      isStreaming = false;
+      isStreaming = $state(false);
       streamingMessageId = null;
       streamingContent = '';
       streamingChunks = [];
@@ -518,7 +518,7 @@ if (browser) {
     // Check for commands
     if (query.startsWith('/')) {
       await handleCommand(query);
-      isProcessing = false;
+      isProcessing = $state(false);
       return;
     }
     try {
@@ -585,7 +585,7 @@ if (browser) {
       }
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
       await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
       scrollToBottom();
     }
@@ -741,7 +741,7 @@ if (browser) {
     } catch (error) {
       await addSystemMessage(`❌ Analysis failed: ${error.message}`);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Legal research command using direct Ollama knowledge
@@ -793,7 +793,7 @@ if (browser) {
     } catch (error) {
       await addSystemMessage(`❌ Research failed: ${error.message}`);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Show related reports command using PostgreSQL vector search
@@ -823,7 +823,7 @@ if (browser) {
     } catch (error) {
       await addSystemMessage(`❌ Failed to load related reports: ${error.message}`);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   // Add system message
@@ -1129,8 +1129,7 @@ if (browser) {
                 <div class="text-xs text-gray-600 text-center">
                   {settings.typewriterSpeed}ms per character
                 </div>
-              </div>
-            {/if}
+              {/if}
             <!-- Database Status -->
             <div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs">
               <div class="flex items-center justify-between mb-2">
@@ -1145,18 +1144,15 @@ if (browser) {
               </div>
               <div class="space-y-1 text-gray-600">
                 {#if currentSessionId}
-                  <div>Session {currentSessionId.slice(0, 8)}...</div>
-                {/if}
+                  <div>Session {currentSessionId.slice(0, 8)}...{/if}
                 {#if lastSyncTime}
-                  <div>Last Sync: {lastSyncTime.toLocaleTimeString()}</div>
-                {/if}
+                  <div>Last Sync: {lastSyncTime.toLocaleTimeString()}{/if}
                 <div>PostgreSQL + pg_vector + Drizzle ORM</div>
               </div>
             </div>
           </Collapsible.Content>
         </Collapsible.Root>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Messages Container -->
   <div;
@@ -1212,7 +1208,7 @@ if (browser) {
                   autoStart={true}
                   oncomplete={() => {
                     // Handle streaming completion
-                    isStreaming = false;
+                    isStreaming = $state(false);
                     streamingMessageId = null;
                     // Final update of message content
                     messages.update(msgs =>
@@ -1289,8 +1285,7 @@ if (browser) {
                     </div>
                   </details>
                 {/if}
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
@@ -1308,8 +1303,7 @@ copyToClipboard(message.content)}>
           <Loader2 class="w-4 h-4 animate-spin" />
           <span>Processing with advanced AI pipeline...</span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Input Area -->
   <div class="mt-4 flex gap-2">
@@ -1345,8 +1339,7 @@ copyToClipboard(message.content)}>
 {JSON.stringify(currentAnalysis, null, 2)}
         </pre>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .message-bubble.user .prose {
@@ -1391,7 +1384,7 @@ copyToClipboard(message.content)}>
   }
   /* Streaming message container */
   .streaming-message {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   /* Character reveal animation: */

@@ -5,7 +5,7 @@ https://svelte.dev/e/attribute_duplicate -->
   // Svelte 5 runes are auto-imported
   // Replace problematic imports with safe module imports + fallbacks
   import type { Evidence } from '$lib/data/types';
-  import { Button } from '$lib/components/ui/enhanced-bits'; // prefer named import pattern
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // prefer named import pattern
   import * as unified from '$lib/stores/unified';
   import * as Icons from 'lucide-svelte';
   import {
@@ -309,8 +309,7 @@ https://svelte.dev/e/attribute_duplicate -->
             Archive
           </Button>
         </div>
-      </div>
-    {/if}
+      {/if}
   {/if}
   <!-- Loading state -->
   {#if isLoading}
@@ -413,7 +412,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   </div>
                   {#if (item as any).tags && (item as any).tags.length > 0}
                     <div class="mt-2 flex flex-wrap gap-1">
-                      {#each (item as any).tags.slice(0, 3) as tag}
+                      {#each Array.isArray((item as any).tags.slice(0, 3)) ? (item as any).tags.slice(0, 3) : [] as tag}
                         <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs">
                           {tag}
                         </span>
@@ -423,8 +422,7 @@ https://svelte.dev/e/attribute_duplicate -->
                           +{(item as any).tags.length - 3}
                         </span>
                       {/if}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </div>
@@ -490,7 +488,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 <!-- Tags -->
                 {#if item.tags && item.tags.length > 0}
                   <div class="mt-2 flex flex-wrap gap-1">
-                    {#each item.tags.slice(0, 5) as tag}
+                    {#each Array.isArray(item.tags.slice(0, 5)) ? item.tags.slice(0, 5) : [] as tag}
                       <span
                         class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs"
                       >
@@ -504,8 +502,7 @@ https://svelte.dev/e/attribute_duplicate -->
                         +{item.tags.length - 5}
                       </span>
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
               </div>
               <!-- Actions -->
               <div class="flex-shrink-0">
@@ -515,10 +512,8 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
 
 <style>

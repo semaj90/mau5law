@@ -23,22 +23,22 @@ export type EvidenceItem = {
   description?: string;
   type?: string;
   tags?: string[];
-  metadata?: unknown;
+  metadata?: any;
   timeline?: { createdAt?: string; updatedAt?: string };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export type LokiEvidence = EvidenceItem & {
   // Use EvidenceItem
   $loki?: number;
-  meta?: unknown;
+  meta?: any;
 };
 export interface SyncOperation {
   id: string;
   type: 'CREATE' | 'UPDATE' | 'DELETE';
   collectionName: string;
   recordId: string;
-  data?: unknown;
+  data?: any;
   timestamp: string;
   synced: boolean;
   retryCount: number;
@@ -47,8 +47,8 @@ export class LokiEvidenceService {
   private db: Loki | null = null;
   private evidenceCollection: Collection<LokiEvidence> | null = null;
   private syncQueue: Collection<SyncOperation> | null = null;
-  private isInitialized = false;
-  private syncInProgress = false;
+  private isInitialized = $state(false);
+  private syncInProgress = $state(false);
   constructor() {
     if (browser) {
       this.initializeDatabase();
@@ -69,7 +69,7 @@ export class LokiEvidenceService {
           autosave: true,
           autosaveInterval: 4000,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('❌ Loki database initialization failed:', error);
         reject(error);
       }
@@ -123,7 +123,7 @@ export class LokiEvidenceService {
       if (navigator.onLine) {
         this.processSyncQueue();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to create evidence locally:', error);
       throw error;
     }
@@ -165,7 +165,7 @@ export class LokiEvidenceService {
       if (navigator.onLine) {
         this.processSyncQueue();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to update evidence locally:', error);
       throw error;
     }
@@ -197,7 +197,7 @@ export class LokiEvidenceService {
       if (navigator.onLine) {
         this.processSyncQueue();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to delete evidence locally:', error);
       throw error;
     }
@@ -290,7 +290,7 @@ export class LokiEvidenceService {
           // Mark as synced
           operation.synced = true;
           this.syncQueue.update(operation);
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.error(`Sync failed for operation ${operation.id}:`, error);
           // Increment retry count
           operation.retryCount++;
@@ -304,7 +304,7 @@ export class LokiEvidenceService {
         }
       }
     } finally {
-      this.syncInProgress = false;
+      this.syncInProgress = $state(false);
     }
   }
   private async syncOperation(operation: SyncOperation): Promise<void> {

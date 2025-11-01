@@ -6,7 +6,7 @@ import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
 import { OLLAMA_CONFIG, getOllamaEndpoint } from './config';
 
 // Helper to safely format unknown errors
-const getErrorMessage = (err: unknown): string => {
+const getErrorMessage = (err: any): string => {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -53,11 +53,11 @@ type ProcessingState = {
 type SynthesizerResult = {
   metadata?: { confidence?: number; qualityScore?: number };
   retrievedContext?: { sources?: Source[] };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Runtime type guard for synthesizer output
-function isSynthesizerResult(obj: unknown): obj is SynthesizerResult {
+function isSynthesizerResult(obj: any): obj is SynthesizerResult {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   if (o.metadata && typeof o.metadata === 'object') return true;
@@ -68,7 +68,7 @@ function isSynthesizerResult(obj: unknown): obj is SynthesizerResult {
 
 export interface StreamEvent {
   type: 'status' | 'progress' | 'stage' | 'source' | 'complete' | 'error' | 'heartbeat';
-  data: unknown;
+  data: any;
 }
 export interface StreamSubscriber {
   callback: (_event: StreamEvent) => void;
@@ -76,8 +76,8 @@ export interface StreamSubscriber {
 }
 export interface StreamingOptions {
   input: StreamInput;
-  onProgress?: (stage: string, progress: number, data?: unknown) => void;
-  onStage?: (stage: string, data: unknown) => void;
+  onProgress?: (stage: string, progress: number, data?: any) => void;
+  onStage?: (stage: string, data: any) => void;
   onSource?: (source: Source) => void;
   onComplete?: (result: SynthesizerResult) => void;
   onError?: (error: Error) => void;
@@ -316,7 +316,7 @@ class StreamingService extends EventEmitter {
       }
       logger.info(`[StreamingService] Completed progressive synthesis for stream ${streamId}`);
       return finalResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[StreamingService] Progressive synthesis failed for stream ${streamId}: ${getErrorMessage(error)}`);
       // Mark processing as failed
       const processing = this.activeProcessing.get(streamId);
@@ -345,7 +345,7 @@ class StreamingService extends EventEmitter {
       for (const subscriber of subscribers) {
         try {
           subscriber.callback(event);
-        } catch (error: unknown) {
+        } catch (error: any) {
           logger.error(`[StreamingService] Failed to send event to subscriber: ${getErrorMessage(error)}`);
         }
       }
@@ -396,7 +396,7 @@ class StreamingService extends EventEmitter {
         processing.progress = endProgress;
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[StreamingService] Stage ${stageName} failed: ${getErrorMessage(error)}`);
       if (tracking) {
         tracking.stages[stageName].error = getErrorMessage(error);
@@ -412,7 +412,7 @@ class StreamingService extends EventEmitter {
     original: string;
     enhanced: string;
     intent: string;
-    entities: unknown[];
+    entities: any[];
     complexity: number;
   }> {
     // Simulate processing time
@@ -496,7 +496,7 @@ class StreamingService extends EventEmitter {
   /**
    * Get stream status
    */
-  getStreamStatus(streamId: string): unknown {
+  getStreamStatus(streamId: string): any {
     const processing = this.activeProcessing.get(streamId);
     const tracking = this.progressTracking.get(streamId);
     const subscribers = this.streams.get(streamId);
@@ -516,8 +516,8 @@ class StreamingService extends EventEmitter {
   /**
    * Get all active streams
    */
-  getActiveStreams(): unknown[] {
-    const streams: unknown[] = [];
+  getActiveStreams(): any[] {
+    const streams: any[] = [];
     for (const [streamId, processing] of Array.from(this.activeProcessing.entries())) {
       streams.push({
         streamId,
@@ -577,7 +577,7 @@ class StreamingService extends EventEmitter {
       for (const subscriber of subscribers) {
         try {
           subscriber.callback(event);
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Ignore errors during shutdown but log them
           logger.debug(`[StreamingService] Error notifying subscriber during shutdown: ${getErrorMessage(error)}`);
         }
@@ -639,7 +639,7 @@ export class OllamaStreamingAdapter {
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      let done = false;
+      let done = $state(false);
       while (!done) {
         const { done: d, value } = await reader.read();
         done = d;
@@ -660,14 +660,14 @@ export class OllamaStreamingAdapter {
             if (data.done) {
               onComplete(fullResponse);
             }
-          } catch (e: unknown) {
+          } catch (e: any) {
             // Ignore parse errors for partial chunks
           }
         }
       }
       // Ensure onComplete called if not signalled by stream
       onComplete(fullResponse);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[OllamaStreamingAdapter] Streaming failed: ${getErrorMessage(error)}`);
       throw error instanceof Error ? error : new Error(getErrorMessage(error));
     }
@@ -680,7 +680,7 @@ export class OllamaStreamingAdapter {
     try {
       const response = await fetch(this.buildUrl('/api/status'));
       return response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.debug(`[OllamaStreamingAdapter] Availability check failed: ${getErrorMessage(error)}`);
       return false;
     }

@@ -61,7 +61,7 @@ const chatState = writable<ChatState>({
  * Handles complex async operations and callback management
  */
 class LangChainServiceLogic {
-  private initialized = false;
+  private initialized = $state(false);
   async initialize(): Promise<void> {
     if (this.initialized) return;
     langchainState.update(state => ({ ...state, isProcessing: true }));

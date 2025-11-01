@@ -1,13 +1,10 @@
 import type { QdrantClient, QdrantVectorPayload, QdrantSearchResult } from '../../types/external-services';
-
 type QdrantConfig = {
   url?: string; // e.g. http://localhost:6333
   apiKey?: string | null;
 };
-
 export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
   const base = config.url ?? 'http://localhost:6333';
-
   async function indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
     if (!vectors || vectors.length === 0) return;
     const body = {
@@ -23,7 +20,6 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
       throw new Error(`Qdrant index error: ${res.status} ${txt}`);
     }
   }
-
   async function search<T = Record<string, unknown>>(collection: string, vector: number[], limit = 10): Promise<QdrantSearchResult<T>[]> {
     const body = {
       vector,
@@ -40,12 +36,10 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
     }
   const data = await res.json();
   // Map Qdrant result shape to QdrantSearchResult
-  type RawHit = { id: string | number; score?: number; payload?: T; [k: string]: unknown };
+  type RawHit = { id: string | number; score?: number; payload?: T; [k: string]: any };
   const hits = (data.result ?? data.points ?? []) as RawHit[];
   return hits.map((h) => ({ id: String(h.id), score: Number(h.score ?? 0), payload: (h.payload ?? undefined) as T }));
   }
-
   return { indexCollection, search };
 }
-
 export default createQdrantAdapter;

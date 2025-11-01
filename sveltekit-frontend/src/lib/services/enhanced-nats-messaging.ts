@@ -104,17 +104,17 @@ interface MockConsumer {
 class TypedEventEmitter<T extends Record<string, unknown[]>> {
 	// store handlers with a signature that is compatible with all T[K] (unknown[])
 	// Explicitly type and initialize the Map to avoid parser/type issues
-	private listeners: Map<keyof T, Set<(...args: unknown[]) => void>> = new Map();
+	private listeners: Map<keyof T, Set<(...args: any[]) => void>> = new Map();
 
 	on<K extends keyof T>(event: K, fn: (...args: T[K]) => void): void {
 		if (!this.listeners.has(event)) this.listeners.set(event, new Set());
 		// cast fn to the stored signature - safe because we will cast back on emit
-		this.listeners.get(event)!.add(fn as unknown as (...args: unknown[]) => void);
+		this.listeners.get(event)!.add(fn as unknown as (...args: any[]) => void);
 	}
 	off<K extends keyof T>(event: K, fn: (...args: T[K]) => void): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
-		set.delete(fn as unknown as (...args: unknown[]) => void);
+		set.delete(fn as unknown as (...args: any[]) => void);
 	}
 	emit<K extends keyof T>(event: K, ...args: T[K]): void {
 		const set = this.listeners.get(event);
@@ -122,8 +122,8 @@ class TypedEventEmitter<T extends Record<string, unknown[]>> {
 		set.forEach(fn => {
 			try {
 				// cast args to unknown[] to match stored fn signature
-				(fn as (...a: unknown[]) => void)(...args as unknown as unknown[]);
-			} catch (error: unknown) {
+				(fn as (...a: any[]) => void)(...args as unknown as unknown[]);
+			} catch (error: any) {
 				console.error('Event handler error:', error);
 			}
 		});
@@ -138,7 +138,7 @@ export interface NATSEvents {
   stream_created: [string];
   consumer_created: [string, string];
   metrics_updated: [MessageMetrics];
-  [key: string]: unknown[]; // Add index signature here
+  [key: string]: any[]; // Add index signature here
 }
 
 // Extend MessageMetrics to include connection_start_time
@@ -272,7 +272,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.emit('connected', status);
 			console.log('✅ Enhanced NATS: Connected successfully');
 			return true;
-		} catch (error: unknown) { // Changed any to unknown
+		} catch (error: any) { // Changed any to unknown
 			console.error('❌ Enhanced NATS: Connection failed:', error);
 			this.emit('error', error as Error);
 			return false;
@@ -285,7 +285,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			for (const [subject, subscription] of this.subscriptions) {
 				try {
 					await subscription.unsubscribe();
-				} catch (error: unknown) { // Changed any to unknown
+				} catch (error: any) { // Changed any to unknown
 					console.warn(`Warning: Failed to unsubscribe from ${subject}:`, error);
 				}
 			}
@@ -341,7 +341,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.metrics.last_message_time = message.timestamp;
 			console.log(`📤 Enhanced NATS: Published to ${subject}`, { type: message.type, id: message.id });
 			this.emit('message', subject, message);
-		} catch (error: unknown) { // Changed any to unknown
+		} catch (error: any) { // Changed any to unknown
 			this.metrics.error_count++;
 			console.error(`❌ Enhanced NATS: Publish failed for ${subject}:`, error);
 			throw error;
@@ -389,7 +389,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.processSubscriptionMessages(subject, subscription);
 			this.metrics.active_subscriptions++;
 			console.log(`📥 Enhanced NATS: Subscribed to ${subject}`, { durable: !!options?.durable_name });
-		} catch (error: unknown) { // Changed any to unknown
+		} catch (error: any) { // Changed any to unknown
 			console.error(`❌ Enhanced NATS: Subscribe failed for ${subject}:`, error);
 			throw error;
 		}
@@ -436,7 +436,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			const responseMessage = this.decodeMessage(response.data);
 			console.log(`🔄 Enhanced NATS: Request-reply completed for ${subject}`, { requestId });
 			return responseMessage;
-		} catch (error: unknown) {
+		} catch (error: any) {
 			console.error(`❌ Enhanced NATS: Request failed for ${subject}:`, error);
 			throw error;
 		}
@@ -454,7 +454,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.metrics.active_streams++;
 			console.log(`🌊 Enhanced NATS: Stream created ${config.name}`, { subjects: config.subjects });
 			this.emit('stream_created', config.name);
-		} catch (error: unknown) { // Changed any to unknown
+		} catch (error: any) { // Changed any to unknown
 			console.error(`❌ Enhanced NATS: Stream creation failed for ${config.name}:`, error);
 			throw error;
 		}
@@ -471,7 +471,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.consumers.set(consumerId, consumer);
 			console.log(`👤 Enhanced NATS: Consumer created ${config.name} for stream ${streamName}`);
 			this.emit('consumer_created', streamName, config.name);
-		} catch (error: unknown) { // Changed any to unknown
+		} catch (error: any) { // Changed any to unknown
 			console.error(`❌ Enhanced NATS: Consumer creation failed:`, error);
 			throw error;
 		}
@@ -634,7 +634,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 							uptime: this.getMetrics().connection_uptime,
 							metrics: this.getMetrics()
 						});
-					} catch (error: unknown) {
+					} catch (error: any) {
 						console.error('Error publishing system health:', error);
 						this.metrics.error_count++;
 						this.emit('error', error as Error);
@@ -668,7 +668,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 					handlers.forEach(handler => {
 						try {
 							handler(message);
-						} catch (error: unknown) {
+						} catch (error: any) {
 							console.error(`Error in message handler for ${subject}:`, error);
 						}
 					});
@@ -678,7 +678,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 				this.metrics.bytes_received += msg.data.length;
 				this.metrics.last_message_time = message.timestamp;
 			}
-		} catch (error: unknown) {
+		} catch (error: any) {
 			console.error(`Error processing subscription for ${subject}:`, error);
 			this.metrics.error_count++;
 		}

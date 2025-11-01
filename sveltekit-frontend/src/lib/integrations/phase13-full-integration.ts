@@ -246,7 +246,7 @@ export class Phase13IntegrationManager {
    */
   private async configureAIIntegration() {
     // Test Enhanced RAG service first (preferred production service)
-    let enhancedRAGAvailable = false;
+    let enhancedRAGAvailable = $state(false);
     try {
       const ragResponse = await fetch('http://localhost:8094/health', {
         method: 'GET',

@@ -5,7 +5,7 @@
   import { Brain, Sparkles, Mic, MicOff } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { SvelteComponent } from 'svelte';
-  import BadgeDefault from '$lib/components/ui/badge/Badge.svelte';
+  import { BadgeDefault } from '$lib/components/ui/badge/Badge.svelte';
   // Cast to constructor type so template receives a proper Svelte component constructor
   const Badge = BadgeDefault as unknown as typeof SvelteComponent;
   // Tooltip wrapper removed for now to avoid incomplete module issues
@@ -29,7 +29,6 @@
     class: className = '',
     onclick,
   }: Props = $props();
-
   // AI Assistant state
   let isActive = $state(false);
   let isListening = $state(false);
@@ -107,7 +106,6 @@
     };
   }
 </script>
-
 <!-- Floating Variant -->
 {#if variant === 'floating'}
   <button
@@ -121,8 +119,7 @@
     <div class="relative p-4">
       <Brain class="w-8 h-8" />
       {#if showStatus}
-        <div class="absolute -top-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}></div>
-      {/if}
+        <div class="absolute -top-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}>{/if}
       {#if showBadge && unreadCount > 0}
         <Badge
           class="absolute -top-2 -right-2 bg-yorha-accent-gold text-yorha-bg-primary text-xs min-w-[1.25rem] h-5 flex items-center justify-center"
@@ -146,8 +143,7 @@
       <div class="relative">
         <Brain class="w-6 h-6" />
         {#if showStatus}
-          <div class="absolute -bottom-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}></div>
-        {/if}
+          <div class="absolute -bottom-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}>{/if}
       </div>
       <div class="flex flex-col items-start">
         <span class="font-semibold text-sm">AI Assistant</span>
@@ -207,8 +203,7 @@
     <div class="relative p-2">
       <Brain class="w-5 h-5" />
       {#if showStatus}
-        <div class="absolute -top-0.5 -right-0.5 {StatusIndicator().class}" title={StatusIndicator().title}></div>
-      {/if}
+        <div class="absolute -top-0.5 -right-0.5 {StatusIndicator().class}" title={StatusIndicator().title}>{/if}
     </div>
   </button>
   <!-- Full Variant -->
@@ -231,8 +226,7 @@
             <div
               class="absolute -bottom-1 -right-1 {StatusIndicator().class} w-3 h-3"
               title={StatusIndicator().title}
-            ></div>
-          {/if}
+            >{/if}
         </div>
         <div class="text-left">
           <h3 class="font-bold text-lg">AI Legal Assistant</h3>
@@ -288,22 +282,21 @@
     </div>
   </button>
 {/if}
-
 <!-- Remove the disabled tooltip section as it's now handled in the compact variant above -->
 <style>
   .ai-assistant-btn {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .ai-assistant-btn::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(var(--yorha-accent-gold-rgb), 0.2), transparent);
-    transition: left 0.5s ease;
+    transition: left: 0.5s ease;
   }
   .ai-assistant-btn:hover::before {
     left: 100%;
@@ -326,4 +319,3 @@
     box-shadow: 0 0 30px rgba(var(--yorha-accent-gold-rgb), 0.3);
   }
 </style>
-

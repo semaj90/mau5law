@@ -45,7 +45,7 @@
     } catch (error) {
       console.error('Failed to load system status:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function testGPUCacheIntegration() {
@@ -187,7 +187,7 @@
     }
   }
   // Replace the previous string-typed helpers with versions that accept unknown
-  function getStatusColor(status: unknown): string {
+  function getStatusColor(status: any): string {
     if (typeof status !== 'string') return 'text-gray-500';
     switch (status) {
       case 'success':
@@ -201,7 +201,7 @@
   }
 
   // Returns CSS classes for badges based on status
-  function getBadgeClasses(status: unknown): string {
+  function getBadgeClasses(status: any): string {
     if (typeof status !== 'string') return 'bg-yellow-500 text-black'; // warning as default
     switch (status) {
       case 'healthy':
@@ -214,7 +214,7 @@
     }
   }
 
-  function getStatusIcon(status: unknown): string {
+  function getStatusIcon(status: any): string {
     if (typeof status !== 'string') return '⚪';
     switch (status) {
       case 'success':
@@ -279,23 +279,23 @@
             <h3 class="nes-text is-primary flex items-center justify-between text-white">
               <span class="capitalize">{testName.replace('-', ' ')}</span>
               <span class="text-xl"
-                >{getStatusIcon((result as { status?: unknown; message?: unknown; details?: unknown }).status)}</span
+                >{getStatusIcon((result as { status?: any; message?: any; details?: any }).status)}</span
               >
             </h3>
           </div>
           <div class="yorha-panel-content">
             <p
               class="text-sm {getStatusColor(
-                (result as { status?: unknown; message?: unknown; details?: unknown }).status
+                (result as { status?: any; message?: any; details?: any }).status
               )} mb-2"
             >
-              {(result as { status?: unknown; message?: unknown; details?: unknown }).message}
+              {(result as { status?: any; message?: any; details?: any }).message}
             </p>
-            {#if (result as { status?: unknown; message?: unknown; details?: unknown }).details}
+            {#if (result as { status?: any; message?: any; details?: any }).details}
               <details class="text-xs text-gray-400">
                 <summary class="cursor-pointer">Details</summary>
                 <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">
-{JSON.stringify((result as { details?: unknown }).details, null, 2)}
+{JSON.stringify((result as { details?: any }).details, null, 2)}
                 </pre>
               </details>
             {/if}
@@ -466,7 +466,7 @@
                 <div>
                   <h5 class="text-gray-400 mb-1">Protocols:</h5>
                   <div class="flex flex-wrap gap-2">
-                    {#each systemHealth.architecture.protocols as protocol}
+                    {#each Array.isArray(systemHealth.architecture.protocols) ? systemHealth.architecture.protocols : [] as protocol}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                         >{protocol}</span
                       >
@@ -476,7 +476,7 @@
                 <div>
                   <h5 class="text-gray-400 mb-1">Features:</h5>
                   <div class="flex flex-wrap gap-2">
-                    {#each systemHealth.architecture.features as feature}
+                    {#each Array.isArray(systemHealth.architecture.features) ? systemHealth.architecture.features : [] as feature}
                       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{feature}</span>
                     {/each}
                   </div>

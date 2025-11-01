@@ -28,9 +28,7 @@
  * });
  * ```
  */
-
 import { discoverServiceEndpoint, verifyServiceEndpoint } from './docker-discovery';
-
 export interface ServiceConfig {
   // Environment variable name to check first
   envVar: string;
@@ -45,7 +43,6 @@ export interface ServiceConfig {
   // Timeout for verification in ms
   verifyTimeout?: number;
 }
-
 export interface ServiceDiscoveryResult {
   // The resolved URL
   url: string;
@@ -54,7 +51,6 @@ export interface ServiceDiscoveryResult {
   // Whether the endpoint was verified reachable
   verified?: boolean;
 }
-
 /**
  * Main service discovery class
  */
@@ -62,7 +58,6 @@ export class ServiceDiscovery {
   private cache = new Map<string, ServiceDiscoveryResult>();
   private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
   private cacheTimestamps = new Map<string, number>();
-
   /**
    * Get a single service URL with discovery and fallbacks
    */
@@ -85,11 +80,9 @@ export class ServiceDiscovery {
       this.cache.delete(cacheKey);
       this.cacheTimestamps.delete(cacheKey);
     }
-
     // Try to discover URL
     let url: string;
     let source: 'env' | 'discovery' | 'fallback';
-
     try {
       // Use docker-discovery helper which already handles env var + Docker discovery + fallback
       url = await discoverServiceEndpoint(config.envVar, config.fallback, {
@@ -97,7 +90,6 @@ export class ServiceDiscovery {
         port: config.port,
         containerName: config.containerName
       });
-
       // Determine source by checking env var
       if (process.env[config.envVar]) {
         source = 'env';
@@ -114,7 +106,6 @@ export class ServiceDiscovery {
       url = config.fallback;
       source = 'fallback';
     }
-
     // Optional: verify endpoint is reachable
     let verified: boolean | undefined;
     if (config.verify) {
@@ -125,24 +116,19 @@ export class ServiceDiscovery {
         );
       }
     }
-
     const result: ServiceDiscoveryResult = {
       url,
       source,
       verified
     };
-
     // Cache result
     this.cache.set(cacheKey, result);
     this.cacheTimestamps.set(cacheKey, Date.now());
-
     console.log(
       `[ServiceDiscovery] ✅ ${serviceName}: ${url} (source: ${source})`
     );
-
     return result;
   }
-
   /**
    * Get multiple service URLs at once
    */
@@ -150,16 +136,13 @@ export class ServiceDiscovery {
     services: Record<string, ServiceConfig>
   ): Promise<Record<string, ServiceDiscoveryResult>> {
     const results: Record<string, ServiceDiscoveryResult> = {};
-
     const promises = Object.entries(services).map(async ([name, config]) => {
       const result = await this.getServiceUrl(name, config);
       results[name] = result;
     });
-
     await Promise.all(promises);
     return results;
   }
-
   /**
    * Clear cache (useful for testing or manual refresh)
    */
@@ -168,7 +151,6 @@ export class ServiceDiscovery {
     this.cacheTimestamps.clear();
     console.debug('[ServiceDiscovery] Cache cleared');
   }
-
   /**
    * Get cache statistics
    */
@@ -179,17 +161,14 @@ export class ServiceDiscovery {
     };
   }
 }
-
 // Singleton instance
 let discoveryInstance: ServiceDiscovery | null = null;
-
 export function getServiceDiscovery(): ServiceDiscovery {
   if (!discoveryInstance) {
     discoveryInstance = new ServiceDiscovery();
   }
   return discoveryInstance;
 }
-
 /**
  * Pre-defined service configurations for common services
  */
@@ -201,7 +180,6 @@ export const COMMON_SERVICES = {
     port: 9000,
     verify: true
   } as ServiceConfig,
-
   minioConsole: {
     envVar: 'MINIO_CONSOLE_ENDPOINT',
     fallback: 'http://localhost:9001',
@@ -209,7 +187,6 @@ export const COMMON_SERVICES = {
     port: 9001,
     verify: false
   } as ServiceConfig,
-
   ollama: {
     envVar: 'OLLAMA_URL',
     fallback: 'http://localhost:11434',
@@ -217,7 +194,6 @@ export const COMMON_SERVICES = {
     port: 11434,
     verify: true
   } as ServiceConfig,
-
   qdrant: {
     envVar: 'QDRANT_URL',
     fallback: 'http://localhost:6333',
@@ -225,7 +201,6 @@ export const COMMON_SERVICES = {
     port: 6333,
     verify: true
   } as ServiceConfig,
-
   redis: {
     envVar: 'REDIS_HOST',
     fallback: 'redis://localhost:6379',
@@ -233,7 +208,6 @@ export const COMMON_SERVICES = {
     port: 6379,
     verify: false // TCP, harder to verify with HTTP
   } as ServiceConfig,
-
   postgres: {
     envVar: 'DATABASE_URL',
     fallback: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
@@ -241,7 +215,6 @@ export const COMMON_SERVICES = {
     port: 5432,
     verify: false // TCP, harder to verify
   } as ServiceConfig,
-
   neo4j: {
     envVar: 'NEO4J_URL',
     fallback: 'bolt://localhost:7687',
@@ -249,7 +222,6 @@ export const COMMON_SERVICES = {
     port: 7687,
     verify: false
   } as ServiceConfig,
-
   rabbitmq: {
     envVar: 'RABBITMQ_URL',
     fallback: 'amqp://rabbitmq:5672',
@@ -257,7 +229,6 @@ export const COMMON_SERVICES = {
     port: 5672,
     verify: false
   } as ServiceConfig,
-
   rabbitmqManagement: {
     envVar: 'RABBITMQ_MANAGEMENT_URL',
     fallback: 'http://localhost:15672',
@@ -266,7 +237,6 @@ export const COMMON_SERVICES = {
     verify: true
   } as ServiceConfig
 } as const;
-
 /**
  * Initialize all common services at startup
  */
@@ -274,11 +244,8 @@ export async function initializeCommonServices(): Promise<
   Record<string, ServiceDiscoveryResult>
 > {
   const discovery = getServiceDiscovery();
-
   console.log('[ServiceDiscovery] Initializing common services...');
-
   const results = await discovery.getMultipleServices(COMMON_SERVICES);
-
   console.log('[ServiceDiscovery] ✅ Service initialization complete');
   console.table(
     Object.fromEntries(
@@ -288,6 +255,5 @@ export async function initializeCommonServices(): Promise<
       ])
     )
   );
-
   return results;
 }

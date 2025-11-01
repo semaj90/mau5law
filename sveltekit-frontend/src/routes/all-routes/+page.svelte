@@ -331,12 +331,12 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     }
     return routes;
   });
-  function openRouteModal(route: unknown) {
+  function openRouteModal(route: any) {
     selectedRoute = route;
     showModal = true;
   }
   function closeModal() {
-    showModal = false;
+    showModal = $state(false);
     selectedRoute = null;
   }
   function visitRoute(path: string) {
@@ -721,7 +721,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <button
             onclick={() => {
               layoutMode = 'grid';
-              showClustered = false;
+              showClustered = $state(false);
             }}
             class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'grid' && !showClustered
               ? 'bg-blue-500 text-white'
@@ -732,7 +732,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <button
             onclick={() => {
               layoutMode = 'flexbox';
-              showClustered = false;
+              showClustered = $state(false);
             }}
             class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'flexbox' && !showClustered
               ? 'bg-blue-500 text-white'
@@ -838,7 +838,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <CardContent class="card-content">
                   <!-- Service Endpoints Preview with enhanced styling -->
                   <div class="endpoint-list">
-                    {#each endpoints.slice(0, 5) as endpoint}
+                    {#each Array.isArray(endpoints.slice(0, 5)) ? endpoints.slice(0, 5) : [] as endpoint}
                       <div class="endpoint-item">
                         <code class="endpoint-code">{endpoint.path}</code>
                         <button
@@ -875,7 +875,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                           List of all endpoints for the {serviceName.replace('-', ' ')} service.
                         </DialogDescription>
                         <div class="grid gap-3 mt-4">
-                          {#each endpoints as endpoint}
+                          {#each Array.isArray(endpoints) ? endpoints : [] as endpoint}
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                               <div class="flex-1">
                                 <code class="text-sm font-mono text-gray-800">{endpoint.path}</code>
@@ -960,7 +960,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     {:else if !showClustered}
       <!-- Standard Grid Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        {#each filteredRoutes as route}
+        {#each Array.isArray(filteredRoutes) ? filteredRoutes : [] as route}
           {@const categoryInfo = routeCategories[route.category]}
           {@const cls = getCategoryClasses(categoryInfo?.color)}
           <button

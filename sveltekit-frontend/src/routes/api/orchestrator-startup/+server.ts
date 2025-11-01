@@ -5,7 +5,7 @@ import { json } from '@sveltejs/kit';
 // Define a type for orchestrator status
 type OrchestratorStatus = {
   isRunning: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Helper to safely get orchestrator status with type

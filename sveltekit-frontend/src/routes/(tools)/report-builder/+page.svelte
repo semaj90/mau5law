@@ -194,7 +194,7 @@
       console.error('Failed to load demo data:', err);
       error = 'Failed to load demo data';
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function handleReportSave(report: Report) {
@@ -350,7 +350,7 @@
         <h3>📚 Citation Library</h3>
         <p>{citationPoints.length} citations available</p>
         <div class="space-y-4">
-          {#each citationPoints.slice(0, 3) as citation}
+          {#each Array.isArray(citationPoints.slice(0, 3)) ? citationPoints.slice(0, 3) : [] as citation}
             <div class="space-y-4">
               <div>{citation.source}</div>
               <div>{citation.text.substring(0, 60)}...</div>
@@ -362,7 +362,7 @@
         <h3>📋 Evidence Repository</h3>
         <p>{evidence.length} pieces of evidence</p>
         <div class="space-y-4">
-          {#each evidence as item}
+          {#each Array.isArray(evidence) ? evidence : [] as item}
             <div class="space-y-4">
               <div>{item.title}</div>
               <div>{item.evidenceType || 'unknown'}</div>

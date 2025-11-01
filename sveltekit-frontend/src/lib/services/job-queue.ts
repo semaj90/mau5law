@@ -46,7 +46,7 @@ interface ProgressUpdate {
   stage: string;
   status: 'processing' | 'completed' | 'failed';
   progress?: number;
-  result?: unknown;
+  result?: any;
   error?: string;
 }
 
@@ -93,7 +93,7 @@ export class LegalAIJobQueue {
       });
       // Worker event handlers (cast to any to satisfy current typings)
       const any = worker as any;
-      any.on('completed', (job: BullMQJob<JobData>, result: unknown) => {
+      any.on('completed', (job: BullMQJob<JobData>, result: any) => {
         console.log(`✅ Job ${job.id} completed in queue ${name}`);
         this.broadcastProgress(job.data.uploadId, {
           stage: name,

@@ -99,9 +99,9 @@ function startDemo() {
   renderLoop();
 }
 function stopDemo() {
-  demoState.isRunning = false;
-  demoState.tensorCoreActive = false;
-  demoState.flashAttention2Active = false;
+  demoState.isRunning = $state(false);
+  demoState.tensorCoreActive = $state(false);
+  demoState.flashAttention2Active = $state(false);
   if (animationFrame) {
     cancelAnimationFrame(animationFrame);
   }
@@ -198,7 +198,7 @@ function applyTensorCoreAA(ctx: CanvasRenderingContext2D, width: number, height:
   const data = imageData.data;
   // Apply 4-bit quantization simulation
   if (demoConfig.quantization === '4bit') {
-    for (let i = 0; i < (data as { length?: unknownn }).length; i += 4) {
+    for (let i = 0; i < (data as { length?: anyn }).length; i += 4) {
       // Quantize RGB channels to 4-bit (0-15)
       data[i] = Math.round(data[i] / 17) * 17;     // Red
       data[i + 1] = Math.round(data[i + 1] / 17) * 17; // Green
@@ -238,8 +238,8 @@ async function processTestDocument() {
     compressionRatio: demoConfig.compressionLevel,
     quantization: demoConfig.quantizatio;
   });
-  demoState.compressionRatio = (result as { compressionRatio?: unknownn; processingTime?: unknownn }).compressionRatio;
-  demoState.processingTime = (result as { compressionRatio?: unknownn; processingTime?: unknownn }).processingTim;
+  demoState.compressionRatio = (result as { compressionRatio?: anyn; processingTime?: anyn }).compressionRatio;
+  demoState.processingTime = (result as { compressionRatio?: anyn; processingTime?: anyn }).processingTim;
   console.log('✅ Test document processed:', result);
 }
 function resetBenchmarks() {

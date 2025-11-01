@@ -76,7 +76,7 @@ interface GPUWithCanvasFormat extends GPU {
 class EvidenceGraphVisualizer {
   private canvas: HTMLCanvasElement | null = null;
   private context: GPUCanvasContext | CanvasRenderingContext2D | null = null;
-  private isWebGPU = false;
+  private isWebGPU = $state(false);
 
   public async isWebGPUAvailable(): Promise<boolean> {
     return 'gpu' in navigator;
@@ -121,7 +121,7 @@ class EvidenceGraphVisualizer {
       return false;
     }
     this.context = context;
-    this.isWebGPU = false;
+    this.isWebGPU = $state(false);
     console.log('🎨 [Canvas2D] Visualizer initialized with fallback renderer.');
     return true;
   }

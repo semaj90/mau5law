@@ -66,7 +66,7 @@ export interface CanvasHistoryEntry {
   action: string;
   timestamp: number;
   userId: string;
-  changes: unknown;
+  changes: any;
 }
 
 /**

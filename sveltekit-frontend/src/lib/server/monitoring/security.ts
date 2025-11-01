@@ -64,7 +64,7 @@ class SecurityManager {
     if (now > entry.resetTime) {
       entry.count = 1;
       entry.resetTime = now + limit.windowMs;
-      entry.blocked = false;
+      entry.blocked = $state(false);
       return true;
     }
     // Check if within limits

@@ -2,12 +2,10 @@
   import type { Props } from '$lib/types/global';
   let { checked = $bindable(false), disabled = false, id, class: klass = '' }: Props = $props();
 </script>
-
 <label class="switch {disabled ? 'opacity-50' : ''}">
   <input {id} type="checkbox" bind:checked {disabled} class="sr-only" />
   <span class="track {checked ? 'on' : ''} {klass}" aria-hidden="true"></span>
 </label>
-
 <style>
   .switch {
     display: inline-flex;
@@ -19,7 +17,7 @@
     height: 24px;
     background: #e5e7eb;
     border-radius: 9999px;
-    position relative;
+    position: relative;
     transition: background 0.2;
     display: inline-block;
   }
@@ -28,7 +26,7 @@
   }
   .track::after {
     content: '';
-    position absolute;
+    position: absolute;
     top: 3px;
     left: 3px;
     width: 18px;
@@ -41,4 +39,3 @@
     transform: translateX(18px);
   }
 </style>
-

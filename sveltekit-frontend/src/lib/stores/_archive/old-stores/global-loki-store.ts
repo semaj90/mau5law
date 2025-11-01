@@ -25,7 +25,7 @@ export class GlobalLokiStore {
   private subscriber?: Redis;
   private redisKeyPrefix = 'loki:jobs:';
   private pubsubChannel = 'loki:jobs:updates';
-  private initialized = false;
+  private initialized = $state(false);
   constructor() {
     this.db = new Loki('global-jobs.loki');
     this.coll = this.db.addCollection<JobState>('jobs', {

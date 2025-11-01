@@ -8,7 +8,6 @@
 import { extractTextFromImage, type OCRResult } from '$lib/ocr/ocr-client.js';
 import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
 import { browser } from '$app/environment';
-
 export interface WebElement {
   id: string;
   tagName: string;
@@ -80,7 +79,7 @@ export class IntelligentWebAnalyzer {
   private userAnalytics: UserAnalytics;
   private pageElements = new Map<string, WebElement>();
   private processingQueue: PageChunk[] = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   constructor(initialAnalytics: Partial<UserAnalytics> = {}) {
     this.userAnalytics = {
       userId: initialAnalytics.userId || 'anonymous',
@@ -139,7 +138,7 @@ export class IntelligentWebAnalyzer {
    * Set up DOM mutation observer for real-time page changes
    */ private setupDOMObserver(): void {
     this.mutationObserver = new MutationObserver(mutations => {
-      let hasSignificantChanges = false;
+      let hasSignificantChanges = $state(false);
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
           hasSignificantChanges = true;
@@ -309,17 +308,14 @@ export class IntelligentWebAnalyzer {
     const markers = elements.map((el, idx) => `[[elem_${idx}]]`);
     const pieces = elements.map((el, idx) => `${markers[idx]} ${el.tagName}: ${el.textContent}`);
     const fullText = pieces.join('\n\n');
-
     // Dynamic import to avoid bundling issues in environments that don't need the splitter
     const { RecursiveCharacterTextSplitter } = await import('langchain/text_splitter');
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 750,
       chunkOverlap: 100,
     });
-
     const texts = await splitter.splitText(fullText);
     const chunks: PageChunk[] = [];
-
     for (let i = 0; i < texts.length; i++) {
       const txt = texts[i].trim();
       // Find markers inside chunk to determine which elements are present
@@ -333,12 +329,10 @@ export class IntelligentWebAnalyzer {
       const includedElements = Array.from(new Set(matchedIndices))
         .map(idx => elements[idx])
         .filter(Boolean);
-
       // Determine position by searching in fullText (best-effort)
       const start = fullText.indexOf(txt);
       const posStart = start >= 0 ? start : 0;
       const posEnd = posStart + txt.length;
-
       chunks.push({
         id: `chunk_${chunks.length}`,
         content: txt,
@@ -462,7 +456,7 @@ export class IntelligentWebAnalyzer {
   private debouncePageAnalysis = this.debounce(() => {
     this.analyzeCurrentPage();
   }, 2000);
-  private debounce<T extends (...args: unknown[]) => unknown>(func: T, wait: number) {
+  private debounce<T extends (...args: any[]) => unknown>(func: T, wait: number) {
     let timeout: ReturnType<typeof setTimeout>;
     return (...args: Parameters<T>): void => {
       clearTimeout(timeout);

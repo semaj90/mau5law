@@ -2,7 +2,6 @@
   // Separate runtime import from type-only imports to avoid TS namespace/type conflicts
   import { LegalAILogic } from '$lib/core/logic/legal-ai-logic';
   import type { LegalDocument } from '$lib/core/logic/legal-ai-logic';
-
   // Local lightweight EvidenceItem type to avoid: "Cannot use namespace ... as a type"
   // Keeps the minimal shape used by this component and allows extra fields.
   type EvidenceItemType = {
@@ -12,24 +11,19 @@
     priority?: 'low' | 'medium' | 'high' | 'critical' | string;
     [key: string]: any;
   };
-
   // Import your existing components
-  import Button from '$lib/components/ui/bitsbutton.svelte';
-  import GlyphEngineRenderer from './GlyphEngineRenderer.svelte';
-  import * as Card from '$lib/components/ui/card';
-
+  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import { GlyphEngineRenderer } from './GlyphEngineRenderer.svelte';
+  import * as Card from '$lib/components/ui/card.svelte'';
   // Import hybrid theme as a global stylesheet to fix unused selector warnings
   // Use $lib alias so Vite/SvelteKit resolves the shared stylesheet reliably
   import '$lib/styles/hybrid-theme.css';
-
   // Safer constructor extraction with runtime fallback & warning
   const CardComponent: any = (Card as any).Root ?? (Card as any).default;
   if (!CardComponent)
     console.warn('Card component not found in $lib/components/ui/card. Check for a Root or default export.');
-
   const ButtonComponent: any = (Button && (Button as any).default) ?? Button;
   if (!ButtonComponent) console.warn('Button component not found at $lib/components/ui/bitsbutton.svelte');
-
   // Shared type for data prop
   type IntelligentRendererData = {
     documents?: LegalDocument[];
@@ -38,7 +32,6 @@
     interactiveElements?: number;
     realTimeUpdates?: boolean;
   };
-
   // Props using Svelte 5 syntax
   let {
     data = {
@@ -57,7 +50,6 @@
     type?: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'default';
     title?: string;
   } = $props();
-
   // Reactive intelligent rendering decision using Svelte 5
   let useGlyphEngine = $derived(
     Boolean(
@@ -66,7 +58,6 @@
         (LegalAILogic as any).requiresGlyphEngine(data)
     )
   );
-
   // Process data with pure logic using Svelte 5
   let processedData = $derived.by(() => {
     try {
@@ -87,7 +78,6 @@
     }
     return data;
   });
-
   // Accept either native DOM Events (e.g. click) or CustomEvent dispatched from components.
   function handleInteraction(event: (Event & { detail?: any }) | CustomEvent) {
     const detail = (event as any)?.detail ?? { type: (event as any)?.type ?? 'unknown' };
@@ -95,7 +85,6 @@
     console.log('User interaction', detail);
   }
 </script>
-
 <!--
   Intelligent Decision Use regular DOM (90% of cases) or canvas (10% for heavy processes)
 -->
@@ -120,7 +109,7 @@
       {#if type === 'evidence-card' && processedData?.evidence}
         <!-- Regular DOM evidence display -->
         <div class="grid gap-2">
-          {#each processedData.evidence as item}
+          {#each Array.isArray(processedData.evidence) ? processedData.evidence : [] as item}
             <div class="enhanced-bits-nier-bits-evidence-item p-3 border-l-4 border-n64-blue">
               <div class="flex justify-between items-center">
                 <span class="nes-text text-sm">{(item as any).title}</span>
@@ -134,13 +123,12 @@
       {:else if type === 'document-viewer' && processedData?.documents}
         <!-- Regular DOM document display -->
         <div class="space-y-3">
-          {#each processedData.documents as doc}
+          {#each Array.isArray(processedData.documents) ? processedData.documents : [] as doc}
             <div class="enhanced-bits-nier-bits-card p-4">
               <h3 class="nes-text font-bold mb-2">{(doc as any).title}</h3>
               <p class="text-yorha-white text-sm">{String((doc as any).content ?? '').slice(0, 200)}...</p>
               <div class="mt-2 flex justify-between">
                 <span class="nes-text text-xs">Confidence: {(doc as any).confidence ?? 0}%</span>
-
                 <svelte:component
                   this={ButtonComponent}
                   class="enhanced-bits-button is-small"
@@ -174,8 +162,7 @@
               <span>📁 No specific data to display.</span>
             {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Always show action buttons in regular DOM -->
       <div class="flex gap-2 mt-4">
         <svelte:component
@@ -185,7 +172,6 @@
         >
           Process
         </svelte:component>
-
         <svelte:component
           this={ButtonComponent}
           class="enhanced-bits-button nes-btn gaming-transition"
@@ -198,7 +184,6 @@
     </div>
   </svelte:component>
 {/if}
-
 <!-- ...existing code... -->
 <style>
   /* ...existing styles... */
@@ -215,7 +200,6 @@
   .card-content {
     padding: 1rem;
   }
-
   /* Modifier class for inner evidence items to avoid nested card styling conflicts */
   .enhanced-bits-nier-bits-evidence-item {
     background: rgba(30, 34, 54, 0.85);
@@ -227,4 +211,3 @@
     border-left-style: solid;
   }
 </style>
-

@@ -79,7 +79,7 @@
       }
       testResults = [result, ...testResults];
       console.log(`[Test] ${method.name} completed in ${duration}ms`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const result = {
         method: method.name,
         description: method.description,
@@ -181,7 +181,7 @@
           legalSimilarityEngineAvailable: !!legalSimilarityWebGPU
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('[Test] Health check failed:', error);
       return { error: error instanceof Error ? error.message: String(error) }
     }
@@ -292,7 +292,7 @@
     <div class="text-sm">
       <span class="font-medium">Sample queries:</span>
       <div class="flex flex-wrap gap-2 mt-1">
-        {#each sampleQueries as query}
+        {#each Array.isArray(sampleQueries) ? sampleQueries : [] as query}
           <button
             onclick={() => (testQuery = query)}
             class="px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs"
@@ -305,7 +305,7 @@
   </div>
   <!-- Individual Test Buttons -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-    {#each testMethods as method}
+    {#each Array.isArray(testMethods) ? testMethods : [] as method}
       <div
         class="border rounded-lg p-4 {method.options.useAcceleration
           ? 'border-green-300 bg-green-50'
@@ -364,18 +364,18 @@
   {#if testResults.length > 0}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">Test Results</h2>
-      {#each testResults as result}
+      {#each Array.isArray(testResults) ? testResults : [] as result}
         <div
           class="border rounded-lg p-4 {(
             result as {
-              success?: unknown;
-              method?: unknown;
-              description?: unknown;
-              timestamp?: unknown;
-              duration?: unknown;
-              query?: unknown;
-              response?: unknown;
-              error?: unknown;
+              success?: any;
+              method?: any;
+              description?: any;
+              timestamp?: any;
+              duration?: any;
+              query?: any;
+              response?: any;
+              error?: any;
             }
           ).success
             ? 'border-green-200 bg-green-50'
@@ -386,14 +386,14 @@
               <h3
                 class="font-semibold {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).success
                   ? 'text-green-800'
@@ -401,26 +401,26 @@
               >
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).method}
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).success
                   ? '✅'
@@ -429,14 +429,14 @@
               <p class="text-sm text-gray-600">
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).description}
               </p>
@@ -445,28 +445,28 @@
               <div>
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).timestamp}
               </div>
               <div>
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).duration}ms
               </div>
@@ -477,38 +477,38 @@
             <p class="text-sm text-gray-700 bg-gray-100 p-2 rounded">
               {(
                 result as {
-                  success?: unknown;
-                  method?: unknown;
-                  description?: unknown;
-                  timestamp?: unknown;
-                  duration?: unknown;
-                  query?: unknown;
-                  response?: unknown;
-                  error?: unknown;
+                  success?: any;
+                  method?: any;
+                  description?: any;
+                  timestamp?: any;
+                  duration?: any;
+                  query?: any;
+                  response?: any;
+                  error?: any;
                 }
               ).query}
             </p>
           </div>
-          {#if (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).success && (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).response}
+          {#if (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).success && (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).response}
             <div class="mb-3">
               <h4 class="font-medium text-sm mb-1">Response:</h4>
               <div class="text-sm bg-white p-3 rounded border max-h-48 overflow-y-auto">
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).response}
               </div>
             </div>
           {/if}
-          {#if (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown; accelerationMetrics?: unknown }).accelerationMetrics}
+          {#if (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any; accelerationMetrics?: any }).accelerationMetrics}
             <div class="mb-3">
               <h4 class="font-medium text-sm mb-1">🚀 Acceleration Metrics:</h4>
               <div class="bg-blue-50 border border-blue-200 p-3 rounded">
@@ -517,7 +517,7 @@
                     <span class="font-medium">Total Time:</span>
                     <br />
                     {(
-                      (result as { accelerationMetrics?: { totalProcessingTime?: unknown } }).accelerationMetrics
+                      (result as { accelerationMetrics?: { totalProcessingTime?: any } }).accelerationMetrics
                         ?.totalProcessingTime || 0
                     ).toFixed(1)}ms
                   </div>
@@ -525,7 +525,7 @@
                     <span class="font-medium">SIMD Time:</span>
                     <br />
                     {(
-                      (result as { accelerationMetrics?: { simdPreprocessingTime?: unknown } }).accelerationMetrics
+                      (result as { accelerationMetrics?: { simdPreprocessingTime?: any } }).accelerationMetrics
                         ?.simdPreprocessingTime || 0
                     ).toFixed(1)}ms
                   </div>
@@ -533,14 +533,14 @@
                     <span class="font-medium">GPU Time:</span>
                     <br />
                     {(
-                      (result as { accelerationMetrics?: { webgpuComputeTime?: unknown } }).accelerationMetrics
+                      (result as { accelerationMetrics?: { webgpuComputeTime?: any } }).accelerationMetrics
                         ?.webgpuComputeTime || 0
                     ).toFixed(1)}ms
                   </div>
                   <div>
                     <span class="font-medium">Vectors:</span>
                     <br />
-                    {(result as { accelerationMetrics?: { vectorsProcessed?: unknown } }).accelerationMetrics
+                    {(result as { accelerationMetrics?: { vectorsProcessed?: any } }).accelerationMetrics
                       ?.vectorsProcessed || 0}
                   </div>
                   <div>
@@ -548,18 +548,18 @@
                     <br />
                     <span
                       class="px-1 py-0.5 rounded text-white text-xs
-                      {(result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                      {(result as { accelerationMetrics?: { accelerationUsed?: any } }).accelerationMetrics
                         ?.accelerationUsed === 'hybrid'
                         ? 'bg-green-600'
-                        : (result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                        : (result as { accelerationMetrics?: { accelerationUsed?: any } }).accelerationMetrics
                               ?.accelerationUsed === 'gpu'
                           ? 'bg-blue-600'
-                          : (result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                          : (result as { accelerationMetrics?: { accelerationUsed?: any } }).accelerationMetrics
                                 ?.accelerationUsed === 'cpu'
                             ? 'bg-orange-600'
                             : 'bg-gray-600'}"
                     >
-                      {(result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                      {(result as { accelerationMetrics?: { accelerationUsed?: any } }).accelerationMetrics
                         ?.accelerationUsed || 'none'}
                     </span>
                   </div>
@@ -567,20 +567,20 @@
               </div>
             </div>
           {/if}
-          {#if (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).error}
+          {#if (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).error}
             <div>
               <h4 class="font-medium text-sm mb-1">Error:</h4>
               <p class="text-sm text-red-700 bg-red-100 p-2 rounded">
                 {(
                   result as {
-                    success?: unknown;
-                    method?: unknown;
-                    description?: unknown;
-                    timestamp?: unknown;
-                    duration?: unknown;
-                    query?: unknown;
-                    response?: unknown;
-                    error?: unknown;
+                    success?: any;
+                    method?: any;
+                    description?: any;
+                    timestamp?: any;
+                    duration?: any;
+                    query?: any;
+                    response?: any;
+                    error?: any;
                   }
                 ).error}
               </p>

@@ -4,7 +4,7 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 </script>
-  import GPULoadingProgress from './GPULoadingProgress.svelte';
+  import { GPULoadingProgress } from './GPULoadingProgress.svelte';
   interface InferenceResponse {
     result: string;
     confidence: number;
@@ -71,7 +71,7 @@ https://svelte.dev/e/expected_token -->
       clearInterval(progressInterval);
       status = 'complete';
       progress = 100;
-      isFirstCall = false; // Subsequent calls won't need full model loading
+      isFirstCall = $state(false); // Subsequent calls won't need full model loading
       console.log('Inference completed:', {
         totalTime: totalTime + 'ms',
         cached: data.metadata?.cached,
@@ -189,8 +189,7 @@ https://svelte.dev/e/expected_token -->
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Performance Info -->
   <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
     <h4 class="font-medium text-amber-800 mb-2">Performance Expectations</h4>

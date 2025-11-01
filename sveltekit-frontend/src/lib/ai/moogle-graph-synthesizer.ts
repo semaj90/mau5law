@@ -7,7 +7,6 @@
 // Import GPU-aware cache system
 import { gpuAwareCache, type LegalGPUAwareCache } from '$lib/services/gpu-aware-legal-cache.js';
 import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from './sora-graph-traversal.js';
-
 // Simplified types
 type TextureRegion = {
   x?: number;
@@ -46,7 +45,6 @@ type GPUTensorWorker = {
   optimizeMesh?: any;
   getStats?: () => Promise<any>;
 };
-
 export interface MoogleVisualizationConfig {
   width: number;
   height: number;
@@ -78,7 +76,6 @@ export interface MoogleVisualizationConfig {
   enableCaching: boolean;
   qualityLevel: 'low' | 'medium' | 'high' | 'ultra';
 }
-
 export interface Moogle2DOutput {
   canvas: HTMLCanvasElement;
   imageData: ImageData;
@@ -91,7 +88,6 @@ export interface Moogle2DOutput {
     renderTime: number;
   };
 }
-
 export interface Moogle3DMesh {
   vertices: Float32Array;
   indices: Uint32Array;
@@ -109,7 +105,6 @@ export interface Moogle3DMesh {
     renderTime: number;
   };
 }
-
 export interface MoogleReinforcementVisualization {
   qValueHeatmap: ImageData;
   pathHighlights: Array<any>;
@@ -117,7 +112,6 @@ export interface MoogleReinforcementVisualization {
   trainingProgress: Array<any>;
   optimalPolicy: Map<string, string>;
 }
-
 export class MoogleGraphSynthesizer {
   private gpuIntegration: NESGPUIntegration | null;
   private memoryArch: NESMemoryArchitecture | null;
@@ -128,11 +122,10 @@ export class MoogleGraphSynthesizer {
   private wasmInstance: WebAssembly.Instance | null = null;
   private renderingCache: Map<string, any> = new Map();
   private gpuCache: LegalGPUAwareCache;
-  private gpuCacheInitialized: boolean = false;
+  private gpuCacheInitialized: boolean = $state(false);
   private gl: WebGL2RenderingContext | null = null;
   private shaderPrograms: Map<string, WebGLProgram> = new Map();
   private vertexBuffers: Map<string, WebGLBuffer> = new Map();
-
   constructor(
     gpuIntegration?: NESGPUIntegration,
     memoryArch?: NESMemoryArchitecture,
@@ -151,7 +144,6 @@ export class MoogleGraphSynthesizer {
     this.initializeWebGL();
     this.loadWasmModule();
   }
-
   private async initializeGPUCache(): Promise<void> {
     try {
       if (!this.gpuCacheInitialized && this.gpuCache?.initialize) {
@@ -163,7 +155,6 @@ export class MoogleGraphSynthesizer {
       console.warn('⚠️ GPU cache initialization failed, continuing without cache:', error);
     }
   }
-
   private async initializeWebGL(): Promise<void> {
     try {
       const canvas = document.createElement('canvas');
@@ -186,7 +177,6 @@ export class MoogleGraphSynthesizer {
       this.gl = null;
     }
   }
-
   private async loadWasmModule(): Promise<void> {
     try {
       console.log('WASM module loading simulated - using optimized TypedArray operations');
@@ -205,7 +195,6 @@ export class MoogleGraphSynthesizer {
       this.wasmInstance = null;
     }
   }
-
   /**
    * Enhanced PageRank-style ranking with user analytics integration and GPU cache
    */
@@ -219,10 +208,8 @@ export class MoogleGraphSynthesizer {
     const dampingFactor = 0.85;
     const iterations = 100;
     const tolerance = 1e-6;
-
     const graphSignature = Array.from(nodes.keys()).sort().join(',') + '_' + Array.from(edges.keys()).sort().join(',');
     const cacheKey = `pagerank_${graphSignature}`;
-
     if (this.gpuCacheInitialized) {
       try {
         const legalDocumentIds = Array.from(nodes.keys()).filter(id => {
@@ -245,13 +232,11 @@ export class MoogleGraphSynthesizer {
         console.warn('⚠️ GPU cache PageRank enhancement failed:', error);
       }
     }
-
     const nodeCount = Math.max(1, nodes.size);
     const initialScore = 1.0 / nodeCount;
     for (const nodeId of nodes.keys()) {
       if (!pageRankScores.has(nodeId)) pageRankScores.set(nodeId, initialScore);
     }
-
     const outLinks = new Map<string, string[]>();
     const inLinks = new Map<string, string[]>();
     for (const nodeId of nodes.keys()) {
@@ -262,7 +247,6 @@ export class MoogleGraphSynthesizer {
       outLinks.get(edge.source)?.push(edge.target);
       inLinks.get(edge.target)?.push(edge.source);
     }
-
     for (let iteration = 0; iteration < iterations; iteration++) {
       const newScores = new Map<string, number>();
       let maxChange = 0;
@@ -298,7 +282,6 @@ export class MoogleGraphSynthesizer {
     }
     return pageRankScores;
   }
-
   private calculateUserInteractionWeight(nodeId: string, userAnalytics: any): number {
     if (!userAnalytics?.interactions) return 0;
     const nodeInteractions = userAnalytics.interactions.filter(
@@ -316,7 +299,6 @@ export class MoogleGraphSynthesizer {
     const durationWeight = Math.max(0, Math.min(1.0, averageDuration / 60000));
     return (frequencyWeight * 0.4 + successWeight * 0.4 + durationWeight * 0.2) * 0.5;
   }
-
   private calculateReinforcementWeight(nodeId: string, reinforcementData: any): number {
     if (!reinforcementData?.actionPreferences) return 0;
     const nodeActions = Object.entries(reinforcementData.actionPreferences)
@@ -327,7 +309,6 @@ export class MoogleGraphSynthesizer {
     const maxReward = Math.max(...nodeActions);
     return Math.min(((averageReward + maxReward) / 2) * 0.3, 0.3);
   }
-
   private calculateLegalImportanceWeight(node: SoraGraphNode): number {
     let weight = 1.0;
     const typeWeights: Record<string, number> = {
@@ -360,7 +341,6 @@ export class MoogleGraphSynthesizer {
     }
     return weight;
   }
-
   private calculateTimeDecayWeight(node: SoraGraphNode): number {
     const now = Date.now();
     const timestamp = node.metadata?.lastAccessed || node.metadata?.timestamp || now;
@@ -369,7 +349,6 @@ export class MoogleGraphSynthesizer {
     const decayFactor = Math.pow(0.5, ageInDays / halfLife);
     return Math.max(0.1, Math.min(1.0, 0.3 + 0.7 * decayFactor));
   }
-
   /**
    * Synthesize 2D visualization from graph traversal paths with enhanced ranking
    */
@@ -421,15 +400,12 @@ export class MoogleGraphSynthesizer {
       qualityLevel: 'high',
       ...config,
     };
-
     const cacheKey = this.generateCacheKey(paths, fullConfig, '2d');
     if (fullConfig.enableCaching && this.renderingCache.has(cacheKey)) {
       return this.renderingCache.get(cacheKey);
     }
-
     const { nodes, edges } = this.extractGraphElements(paths);
     const pageRankScores = await this.calculateEnhancedPageRank(nodes, edges, userAnalytics, reinforcementData);
-
     for (const [nodeId, score] of pageRankScores) {
       const node = nodes.get(nodeId);
       if (node) {
@@ -442,9 +418,7 @@ export class MoogleGraphSynthesizer {
         };
       }
     }
-
     const nodePositions = await this.calculateLayout(nodes, edges, fullConfig);
-
     const canvas = document.createElement('canvas');
     canvas.width = fullConfig.width;
     canvas.height = fullConfig.height;
@@ -459,16 +433,13 @@ export class MoogleGraphSynthesizer {
       imageData = canvasOutput.imageData;
       svg = canvasOutput.svg;
     }
-
     const base64 = canvas.toDataURL('image/png', 0.95);
-
     const edgePositions = Array.from(edges.values()).map(edge => {
       const sourcePos = nodePositions.get(edge.source);
       const targetPos = nodePositions.get(edge.target);
       if (!sourcePos || !targetPos) return { id: edge.id, points: [] };
       return { id: edge.id, points: [sourcePos.x, sourcePos.y, targetPos.x, targetPos.y] };
     });
-
     const positions = Array.from(nodePositions.values());
     const bounds = {
       minX: Math.min(...positions.map(p => p.x)),
@@ -476,7 +447,6 @@ export class MoogleGraphSynthesizer {
       minY: Math.min(...positions.map(p => p.y)),
       maxY: Math.max(...positions.map(p => p.y)),
     };
-
     const result: Moogle2DOutput = {
       canvas,
       imageData,
@@ -489,12 +459,10 @@ export class MoogleGraphSynthesizer {
         renderTime: performance.now() - startTime,
       },
     };
-
     await this.storeVisualizationTensor2D(result, paths, fullConfig);
     if (fullConfig.enableCaching) this.renderingCache.set(cacheKey, result);
     return result;
   }
-
   /**
    * Synthesize 3D mesh from graph traversal paths
    */
@@ -544,16 +512,13 @@ export class MoogleGraphSynthesizer {
       qualityLevel: 'high',
       ...config,
     };
-
     const cacheKey = this.generateCacheKey(paths, fullConfig, '3d');
     if (fullConfig.enableCaching && this.renderingCache.has(cacheKey)) {
       return this.renderingCache.get(cacheKey);
     }
-
     const { nodes, edges } = this.extractGraphElements(paths);
     const nodePositions3D = await this.calculate3DLayout(nodes, edges, fullConfig);
     const meshGeometry = await this.generateMeshGeometry(nodes, edges, nodePositions3D, fullConfig);
-
     const edgeGeometry = Array.from(edges.values()).map(edge => {
       const sourcePos = nodePositions3D.get(edge.source);
       const targetPos = nodePositions3D.get(edge.target);
@@ -565,7 +530,6 @@ export class MoogleGraphSynthesizer {
         curve: this.calculateEdgeCurve(sourcePos, targetPos),
       };
     });
-
     const positions = Array.from(nodePositions3D.values());
     const boundingBox = {
       min: [
@@ -585,7 +549,6 @@ export class MoogleGraphSynthesizer {
       (boundingBox.min[1] + boundingBox.max[1]) / 2,
       (boundingBox.min[2] + boundingBox.max[2]) / 2,
     ];
-
     const lodMeshes = await this.generateLODMeshes(meshGeometry, fullConfig.lodLevels);
     const meshStats = {
       vertexCount: meshGeometry.vertices.length / 3,
@@ -597,7 +560,6 @@ export class MoogleGraphSynthesizer {
         meshGeometry.uvs.byteLength +
         meshGeometry.colors.byteLength,
     };
-
     const result: Moogle3DMesh = {
       vertices: meshGeometry.vertices,
       indices: meshGeometry.indices,
@@ -615,12 +577,10 @@ export class MoogleGraphSynthesizer {
         renderTime: performance.now() - startTime,
       },
     };
-
     await this.storeVisualizationTensor3D(result, paths, fullConfig);
     if (fullConfig.enableCaching) this.renderingCache.set(cacheKey, result);
     return result;
   }
-
   /**
    * Generate reinforcement learning visualization
    */
@@ -660,7 +620,6 @@ export class MoogleGraphSynthesizer {
       optimalPolicy,
     };
   }
-
   /**
    * Store visualization in NES memory architecture
    */
@@ -673,7 +632,6 @@ export class MoogleGraphSynthesizer {
       let id: string;
       let canvasWidth = 512;
       let canvasHeight = 512;
-
       if ('canvas' in visualization) {
         // 2D visualization
         const canvas = visualization.canvas;
@@ -689,7 +647,6 @@ export class MoogleGraphSynthesizer {
         id = `moogle_3d_${Date.now()}`;
         // leave canvasWidth/Height as defaults for texture metadata
       }
-
       // Helper to store as texture (used as fallback)
       const storeAsTexture = async () => {
         const textureRegion: TextureRegion = {
@@ -708,7 +665,6 @@ export class MoogleGraphSynthesizer {
           size: data.byteLength,
         };
       };
-
       // Store in NES memory architecture when requested and available
       if (region === 'CHR_ROM') {
         if (this.memoryArch?.allocateCHR_ROM && this.memoryArch?.writeCHR_ROM) {
@@ -733,7 +689,6 @@ export class MoogleGraphSynthesizer {
       throw error;
     }
   }
-
   private extractGraphElements(paths: SoraTraversalPath[]): {
     nodes: Map<string, SoraGraphNode>;
     edges: Map<string, SoraGraphEdge>;
@@ -746,7 +701,6 @@ export class MoogleGraphSynthesizer {
     }
     return { nodes, edges };
   }
-
   private async calculateLayout(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
@@ -760,7 +714,6 @@ export class MoogleGraphSynthesizer {
       default: return this.forceDirectedLayout(nodes, edges, config);
     }
   }
-
   private async forceDirectedLayout(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
@@ -824,7 +777,6 @@ export class MoogleGraphSynthesizer {
     }
     return this.centerAndScalePositions(positions, config.width, config.height);
   }
-
   private async legalContextLayout(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
@@ -865,7 +817,6 @@ export class MoogleGraphSynthesizer {
     }
     return positions;
   }
-
   private centerAndScalePositions(
     positions: Map<string, { x: number; y: number }>,
     width: number,
@@ -892,7 +843,6 @@ export class MoogleGraphSynthesizer {
     }
     return out;
   }
-
   private async renderWebGL2D(
     canvas: HTMLCanvasElement,
     nodes: Map<string, SoraGraphNode>,
@@ -903,7 +853,6 @@ export class MoogleGraphSynthesizer {
     // For now, fall back to canvas rendering for deterministic output
     return this.renderCanvas2D(canvas, nodes, edges, positions, config);
   }
-
   private async renderCanvas2D(
     canvas: HTMLCanvasElement,
     nodes: Map<string, SoraGraphNode>,
@@ -939,7 +888,6 @@ export class MoogleGraphSynthesizer {
     const svg = `<svg width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg"></svg>`;
     return { imageData, svg };
   }
-
   private async calculate3DLayout(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
@@ -955,7 +903,6 @@ export class MoogleGraphSynthesizer {
     }
     return positions;
   }
-
   private async generateMeshGeometry(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
@@ -1012,7 +959,6 @@ export class MoogleGraphSynthesizer {
     }
     return { vertices, indices, normals, uvs, colors };
   }
-
   private async generateLODMeshes(geometry: any, lodLevels: number) {
     const lodMeshes: any[] = [];
     for (let level = 1; level <= lodLevels; level++) {
@@ -1028,7 +974,6 @@ export class MoogleGraphSynthesizer {
     }
     return lodMeshes;
   }
-
   private calculateEdgeCurve(
     start: { x: number; y: number; z: number },
     end: { x: number; y: number; z: number }
@@ -1036,7 +981,6 @@ export class MoogleGraphSynthesizer {
     const mid = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2, z: (start.z + end.z) / 2 + 10 };
     return [mid.x, mid.y, mid.z];
   }
-
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const cleaned = hex.replace('#', '');
     if (cleaned.length === 3) {
@@ -1053,7 +997,6 @@ export class MoogleGraphSynthesizer {
     }
     return { r: 0.5, g: 0.5, b: 0.5 };
   }
-
   private async loadGraphShaders(): Promise<void> {
     if (!this.gl) return;
     const vertexShaderSource = `#version 300 es
@@ -1097,7 +1040,6 @@ export class MoogleGraphSynthesizer {
       }
     }
   }
-
   private compileShader(source: string, type: number): WebGLShader | null {
     if (!this.gl) return null;
     const shader = this.gl.createShader(type);
@@ -1111,11 +1053,9 @@ export class MoogleGraphSynthesizer {
     }
     return shader;
   }
-
   public clearCache(): void {
     this.renderingCache.clear();
   }
-
   private async storeVisualizationTensor2D(
     visualization: Moogle2DOutput,
     paths: SoraTraversalPath[],
@@ -1153,7 +1093,6 @@ export class MoogleGraphSynthesizer {
       console.warn('Failed to store 2D visualization tensor:', error);
     }
   }
-
   private async storeVisualizationTensor3D(
     mesh: Moogle3DMesh,
     paths: SoraTraversalPath[],
@@ -1189,16 +1128,13 @@ export class MoogleGraphSynthesizer {
       console.warn('Failed to store 3D mesh tensor:', error);
     }
   }
-
   private hashVisualization(base64: string): string {
     return this.simpleHash(base64);
   }
-
   private hashFloat32Array(array: Float32Array): string {
     const buffer = new Uint8Array(array.buffer);
     return this.simpleHash(Array.from(buffer).join(','));
   }
-
   private simpleHash(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -1208,7 +1144,6 @@ export class MoogleGraphSynthesizer {
     }
     return (hash >>> 0).toString(16);
   }
-
   public async getEnhancedCacheStats(): Promise<any> {
     try {
       const tensorStats = (await this.tensorStore?.getStats?.()) || {};
@@ -1242,11 +1177,9 @@ export class MoogleGraphSynthesizer {
       };
     }
   }
-
   public getCacheStats(): { size: number; memoryUsage: number; hitRate: number } {
     return { size: this.renderingCache.size, memoryUsage: this.renderingCache.size * 1024, hitRate: 0.75 };
   }
-
   // WASM stubs
   private wasmForceDirectedLayout() {
     /* ... */
@@ -1260,13 +1193,11 @@ export class MoogleGraphSynthesizer {
   private wasmOptimizeMeshLOD() {
     /* ... */
   }
-
   // Cache key generation
   private generateCacheKey(paths: SoraTraversalPath[], _config: MoogleVisualizationConfig, mode: string): string {
     const pathSignature = paths.map(p => p.nodes.map(n => n.id).join('-')).join('_');
     return `moogle_${mode}_${this.simpleHash(pathSignature)}`;
   }
-
   // Missing visualization methods (stubs for now)
   private async generateQValueHeatmap(
     _nodes: Map<string, SoraGraphNode>,
@@ -1279,14 +1210,12 @@ export class MoogleGraphSynthesizer {
     const ctx = canvas.getContext('2d')!;
     return ctx.getImageData(0, 0, 512, 512);
   }
-
   private async highlightOptimalPaths(
     _paths: SoraTraversalPath[],
     _qValues: Map<string, Map<string, number>>
   ): Promise<Array<any>> {
     return [];
   }
-
   private async generateRewardSurface(
     _nodes: Map<string, SoraGraphNode>,
     _qValues: Map<string, Map<string, number>>,

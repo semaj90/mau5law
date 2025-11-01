@@ -5,7 +5,7 @@
   import { cubicOut, backOut } from 'svelte/easing';
   import type { Snippet } from 'svelte';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
-  import Portal from './Portal.svelte';
+  import { Portal } from './Portal.svelte';
   interface Props {
     open: boolean;
     title?: string;
@@ -27,13 +27,10 @@
     children,
     footer,
   }: Props = $props();
-
   interface DiamondModalEvents {
     close: void; // No payload for the close event
   }
-
   const dispatch = createEventDispatcher<DiamondModalEvents>();
-
   let modalElement: HTMLDivElement | null = $state(null);
   let canvasElement: HTMLCanvasElement | null = $state(null);
   let animationFrame: number;
@@ -103,7 +100,7 @@
     animate();
   }
   function closeModal() {
-    open = false;
+    open = $state(false);
     dispatch('close');
   }
   function handleKeydown(event: KeyboardEvent) {
@@ -112,7 +109,6 @@
     }
   }
 </script>
-
 {#if open}
   <Portal>
     <div
@@ -155,11 +151,10 @@
                 <span class="suit">♦</span>
                 <span class="rank">A</span>
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Body -->
           <div class="modal-body">
-            {@render children?.()}
+            <slot />
           </div>
           <!-- Footer -->
           <div class="modal-footer">
@@ -183,10 +178,9 @@
     </div>
   </Portal>
 {/if}
-
 <style>
   .modal-overlay {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -200,7 +194,7 @@
     padding: 1rem;
   }
   .modal-container {
-    position relative;
+    position: relative;
     background: linear-gradient(135deg, rgba(16, 16, 32, 0.95), rgba(32, 16, 48, 0.95), rgba(16, 16, 32, 0.95));
     border-radius: 16px;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -216,7 +210,7 @@
     background: linear-gradient(135deg, rgba(16, 16, 32, 0.85), rgba(32, 16, 48, 0.85), rgba(16, 16, 32, 0.85));
   }
   .diamond-canvas {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     width: 100%;
@@ -225,7 +219,7 @@
     pointer-events: none;
   }
   .gradient-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -237,7 +231,7 @@
     pointer-events: none;
   }
   .modal-content {
-    position relative;
+    position: relative;
     z-index: 1,
     display: flex;
     flex-direction: column;
@@ -299,7 +293,7 @@
     line-height: 1;
   }
   .modal-close {
-    position absolute;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     width: 32px;
@@ -352,4 +346,3 @@
     background: linear-gradient(180deg, rgba(138, 43, 226, 0.7), rgba(30, 144, 255, 0.7));
   }
 </style>
-

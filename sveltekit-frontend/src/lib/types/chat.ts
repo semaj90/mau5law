@@ -14,7 +14,7 @@ export interface ChatMessage {
     evalCount?: number;
     sources?: string[];
     processingTime?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface ChatSession {
@@ -28,7 +28,7 @@ export interface ChatSession {
     userAgent?: string;
     context?: string;
     tags?: string[];
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface ChatState {
@@ -63,5 +63,5 @@ export interface ChatResponse {
   sources?: string[];
   processingTime?: number;
   model: string;
-  metadata?: unknown;
+  metadata?: any;
 }

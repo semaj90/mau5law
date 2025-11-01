@@ -56,7 +56,7 @@ export interface VectorIndexStats {
   last_updated: Date;
 }
 class GemmaEmbeddingsService {
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     this.initialize();
   }

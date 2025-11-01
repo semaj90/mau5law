@@ -63,7 +63,7 @@ try {
 }
 
 // Helper to convert unknown errors to a string message
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   // Prefer Error message when available
   if (err instanceof Error) return err.message;
   try {
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Worker API error:', msg);
     return json(
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('Worker control error:', msg);
     return json(

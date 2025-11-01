@@ -2,7 +2,6 @@
   import { createMachine, assign, interpret } from 'xstate';
   import { slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
-
   // Replace fromPromise-based API with plain async functions
   const apiClient = {
     uploadDocument: async (file: File) => {
@@ -30,7 +29,6 @@
       };
     }
   };
-
   // XState v5 machine definition (unchanged logic, but invokes call apiClient directly)
   const legalProcessorMachine = createMachine({
     id: 'legalProcessor',
@@ -150,32 +148,25 @@
       }
     }
   });
-
   // Minimal local integration instead of @xstate/svelte
   const stateStore = writable<any>(null);
   const service = interpret(legalProcessorMachine);
-
   // update store on transitions
   service.onTransition((s) => {
     // onTransition will emit the current state (including initial after start)
     stateStore.set(s);
   });
-
   service.start(); // start the interpreter
-
   // expose Svelte-like store and send function used in template
   const state = stateStore;
   const send = (evt: any) => service.send(evt);
-
   let fileInput: HTMLInputElement;
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       send({ type: 'FILE_SELECTED', file: target.files[0] });
     }
   }
-
   function getProgress() {
     if ($state.matches('uploading')) return 25;
     if ($state.matches('processing')) return 50;
@@ -184,7 +175,6 @@
     return 0;
   }
 </script>
-
 <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 max-w-3xl mx-auto">
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold text-gray-800">Enhanced Legal Processor</h2>
@@ -197,7 +187,6 @@
       </button>
     {/if}
   </div>
-
   <!-- IDLE STATE: File Dropzone -->
   {#if $state.matches('idle')}
     <div
@@ -229,9 +218,7 @@
       />
       <p class="text-gray-500">Drag & drop a document here, or click to select a file.</p>
       <p class="text-xs text-gray-400 mt-2">Supported formats: PDF, DOC, DOCX, TXT</p>
-    </div>
-  {/if}
-
+    {/if}
   <!-- READY TO UPLOAD STATE -->
   {#if $state.matches('readyToUpload')}
     <div class="bg-gray-50 p-4 rounded-lg text-center">
@@ -250,9 +237,7 @@
           Cancel
         </button>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- PROCESSING STATES -->
   {#if ['uploading', 'processing', 'analyzing'].some($state.matches)}
     <div class="space-y-4">
@@ -268,9 +253,7 @@
       <p class="text-center text-blue-700 font-medium capitalize">
         {$state.value.toString()}...
       </p>
-    </div>
-  {/if}
-
+    {/if}
   <!-- ERROR STATE -->
   {#if $state.matches('error')}
     <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg" transition:slide>
@@ -282,9 +265,7 @@
       >
         Try Again
       </button>
-    </div>
-  {/if}
-
+    {/if}
   <!-- COMPLETE STATE: Results -->
   {#if $state.matches('complete')}
     <div class="space-y-6" transition:slide>
@@ -292,7 +273,6 @@
         <h3 class="font-bold text-lg">✅ Processing Complete</h3>
         <p>Document '{$state.context.file?.name}' has been successfully analyzed.</p>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Processing Results -->
         <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -314,7 +294,6 @@
             </div>
           </div>
         </div>
-
         <!-- AI Analysis Results -->
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <h4 class="font-semibold text-gray-800 mb-3">AI Analysis</h4>
@@ -334,7 +313,7 @@
             <div>
               <span class="text-gray-600">Key Entities:</span>
               <div class="flex flex-wrap gap-1 mt-1">
-                {#each $state.context.analysisResults?.keyEntities as entity}
+                {#each Array.isArray($state.context.analysisResults?.keyEntities) ? $state.context.analysisResults?.keyEntities : [] as entity}
                   <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                     {entity}
                   </span>
@@ -350,6 +329,5 @@
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>

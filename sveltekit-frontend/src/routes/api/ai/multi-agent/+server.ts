@@ -48,7 +48,7 @@ interface AutogenResponse {
 interface VllmResponse {
   token_count?: number;
   confidence?: number;
-  output?: unknown;
+  output?: any;
 }
 interface HybridResult {
   synthesizedAnalysis: string;
@@ -60,7 +60,7 @@ interface HybridResult {
 
 // Mock implementations for now
 class AutogenLegalTeam {
-  constructor(_config: unknown) {} // silence unused param
+  constructor(_config: any) {} // silence unused param
   async analyzeCase(request: AutogenRequest): Promise<AutogenResponse> {
     return {
       finalAnalysis: `Autogen analysis for: ${request.query}`,
@@ -74,10 +74,10 @@ class AutogenLegalTeam {
   }
 }
 class CrewAILegalTeam {
-  constructor(_config: unknown) {} // silence unused param
+  constructor(_config: any) {} // silence unused param
   async executeWorkflow(
     workflowType: string,
-    context: { query?: string; [k: string]: unknown },
+    context: { query?: string; [k: string]: any },
     _priority: string
   ): Promise<WorkflowResult> {
     return {
@@ -113,10 +113,10 @@ export interface MultiAgentResponse {
   analysisType: string;
   workflowType?: string;
   results: {
-    autogen?: unknown;
+    autogen?: any;
     crewai?: WorkflowResult;
-    vllm?: unknown;
-    hybrid?: unknown;
+    vllm?: any;
+    hybrid?: any;
   };
   performance: {
     totalTime: number;
@@ -274,7 +274,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         { status: 500 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Multi-agent API error:', error);
     return json({ error: 'Invalid request format' }, { status: 400 });
   }
@@ -327,7 +327,7 @@ async function runVLLMAnalysis(request: MultiAgentRequest, _sessionId: string): 
     }
     const data = (await response.json()) as VllmResponse;
     return data;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('vLLM analysis failed:', error);
     throw error;
   }

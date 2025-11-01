@@ -13,9 +13,9 @@ type ServerFileLike = {
 
 type ActorLike = {
   subscribe?: (
-    listener: (state: unknown) => void
+    listener: (state: any) => void
   ) => (() => void) | { unsubscribe?: () => void } | { stop?: () => void } | undefined;
-  send?: (evt: unknown) => void;
+  send?: (evt: any) => void;
   stop?: () => void;
   // added: actors created by xstate may expose start()
   start?: () => void;
@@ -163,7 +163,7 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
   const stream = new ReadableStream({
     start(controller) {
       // helper to enqueue SSE data
-      const send = (obj: unknown) => {
+      const send = (obj: any) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
@@ -174,11 +174,11 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
       // Narrow the actor runtime type for safe usage
       const actorRuntime = session!.actor as unknown as ActorLike;
       const sub = actorRuntime.subscribe
-        ? actorRuntime.subscribe((state: unknown) => {
+        ? actorRuntime.subscribe((state: any) => {
             // narrow state shape
             const st = state as {
-              value?: unknown;
-              context?: unknown;
+              value?: any;
+              context?: any;
               matches?: (s: string) => boolean;
             };
 
@@ -256,37 +256,37 @@ export const DELETE = (async ({ url }: RequestEvent): Promise<Response> => {
 
 // --- Helpers (keep; note ActorLike already declared above so remove any duplicate ActorLike below) ---
 // Normalize a subscription return value into a simple unsubscribe function or undefined.
-function normalizeSubscription(sub: unknown): (() => void) | undefined {
+function normalizeSubscription(sub: any): (() => void) | undefined {
   if (typeof sub === 'function') return sub as () => void;
-  if (sub && typeof (sub as { unsubscribe?: unknown }).unsubscribe === 'function') {
+  if (sub && typeof (sub as { unsubscribe?: any }).unsubscribe === 'function') {
     return () => (sub as { unsubscribe: () => void }).unsubscribe();
   }
-  if (sub && typeof (sub as { stop?: unknown }).stop === 'function') {
+  if (sub && typeof (sub as { stop?: any }).stop === 'function') {
     return () => (sub as { stop: () => void }).stop();
   }
   return undefined;
 }
 
 /** Safe send helper */
-function safeSend(actor: unknown, event: unknown): void {
+function safeSend(actor: any, event: any): void {
   if (actor && typeof actor === 'object' && typeof (actor as ActorLike).send === 'function') {
     (actor as ActorLike).send!(event);
   }
 }
 
 /** Safe stop helper */
-function safeStop(actor: unknown): void {
+function safeStop(actor: any): void {
   if (actor && typeof actor === 'object' && typeof (actor as ActorLike).stop === 'function') {
     (actor as ActorLike).stop!();
   }
 }
 
 /** Safe record conversion (avoid `any`) */
-const asRecord = (v: unknown): Record<string, unknown> =>
+const asRecord = (v: any): Record<string, unknown> =>
   typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
 
 /** Safe status extractor */
-const getStatusFromRecord = (obj: unknown): string | undefined => {
+const getStatusFromRecord = (obj: any): string | undefined => {
   if (typeof obj !== 'object' || obj === null) return undefined;
   const r = obj as Record<string, unknown>;
   if (typeof r.status === 'string') return r.status;
@@ -344,7 +344,7 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
   name?: string;
   index?: number;
   status?: string;
-  details?: unknown;
+  details?: any;
 } {
   if (!ctx) return {};
 

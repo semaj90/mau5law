@@ -98,8 +98,8 @@ await initializeSearchServices();
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
-    if ((response as { ok?: unknown; json?: unknown }).ok) {
-      return await (response as { ok?: unknown; json?: unknown }).json();
+    if ((response as { ok?: any; json?: any }).ok) {
+      return await (response as { ok?: any; json?: any }).json();
     }
     // Fallback sample data
     return [
@@ -148,7 +148,7 @@ await initializeSearchServices();
   async function performSearch(query: string) {
     if (!query.trim() || query.length < 2) {
       searchResults = [];
-      showDropdown = false;
+      showDropdown = $state(false);
       return;
     }
     // Check cache first
@@ -178,7 +178,7 @@ await initializeSearchServices();
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Fuse.js fuzzy search
@@ -191,15 +191,15 @@ await initializeSearchServices();
     const results = fuseIndex.search(searchQuery);
     return results.map(result => ({
       id: result.item.id,
-      title: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title,
-      content: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content.substring(0, 150) + '...',
+      title: (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).item.title,
+      content: (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).item.content.substring(0, 150) + '...',
       source: 'minio' as const,
-      similarity: 1 - ((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score || 0),
+      similarity: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).score || 0),
       confidence: 0.8,
-      metadata: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.metadata,
+      metadata: (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).item.metadata,
       highlight: {
-        title: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title, (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).matches?.filter(m => m.key === 'title')),
-        content: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content, (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).matches?.filter(m => m.key === 'content'))
+        title: highlightMatches((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).item.title, (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).matches?.filter(m => m.key === 'title')),
+        content: highlightMatches((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).item.content, (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).matches?.filter(m => m.key === 'content'))
       }
     }));
   }
@@ -215,9 +215,9 @@ await initializeSearchServices();
           limit: 5,
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const results = await (response as { ok?: unknown; json?: unknown }).json();
-        return results.map((r: unknown) => ({
+      if ((response as { ok?: any; json?: any }).ok) {
+        const results = await (response as { ok?: any; json?: any }).json();
+        return results.map((r: any) => ({
           ...r,
           source: 'qdrant' as const,
           content: r.content.substring(0, 150) + '...';
@@ -240,9 +240,9 @@ await initializeSearchServices();
           limit: 5,
         })
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const results = await (response as { ok?: unknown; json?: unknown }).json();
-        return results.map((r: unknown) => ({
+      if ((response as { ok?: any; json?: any }).ok) {
+        const results = await (response as { ok?: any; json?: any }).json();
+        return results.map((r: any) => ({
           ...r,
           source: 'postgresql' as const,
           content: r.content.substring(0, 150) + '...';
@@ -259,7 +259,7 @@ await initializeSearchServices();
     return results.filter(item => item.id))) {
         // Keep highest scoring result
         const existing = seen.get(result.id);
-        if ((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).similarity > existing.similarity) {
+        if ((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).similarity > existing.similarity) {
           seen.set(result.id, result);
           return true;
         }
@@ -279,7 +279,7 @@ await initializeSearchServices();
       return bScore - aScor;
     });
   }
-  function highlightMatches(text: string, matches?: unknown[]): string {
+  function highlightMatches(text: string, matches?: any[]): string {
     if (!matches?.length) return text;
     let highlighted = text;
     matches.forEach(match => {
@@ -300,9 +300,9 @@ await initializeSearchServices();
     performSearch(searchQuery);
   }
   function handleResultClick(result: SearchResult) {
-    searchQuery = (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).titl;
-    showDropdown = false;
-    goto(`/evidence/${(result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id}`);
+    searchQuery = (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).titl;
+    showDropdown = $state(false);
+    goto(`/evidence/${(result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).id}`);
   }
   function handleKeydown(_event: KeyboardEvent) {
     if (!showDropdown || searchResults.length === 0) return;
@@ -324,7 +324,7 @@ await initializeSearchServices();
         }
         break;
       case 'Escape':
-        showDropdown = false;
+        showDropdown = $state(false);
         selectedIndex = -1;
         searchInput.blur();
         break;
@@ -333,7 +333,7 @@ await initializeSearchServices();
   function setupKeyboardNavigation() {
     document.addEventListener('click', (event) => {
       if (!dropdownContainer?.contains(event.target as Node)) {
-        showDropdown = false;
+        showDropdown = $state(false);
         selectedIndex = -1;
       }
     });
@@ -431,8 +431,7 @@ await initializeSearchServices();
         />
         <span class="text-xs text-gray-500">{selectedFilters.confidenceMin}</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Search Results Dropdown -->
   {#if showDropdown && searchResults.length > 0}
     <div class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto">
@@ -446,31 +445,29 @@ await initializeSearchServices();
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <h3 class="text-sm font-medium text-gray-900 truncate">
-                  {@html (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlight?.title || (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).title}
+                  {@html (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).highlight?.title || (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).title}
                 </h3>
                 <div class="flex items-center gap-1">
-                  <span class="text-xs">{getSourceIcon((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source)}</span>
-                  <span class="text-xs text-gray-500">{getSourceLabel((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source)}</span>
+                  <span class="text-xs">{getSourceIcon((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).source)}</span>
+                  <span class="text-xs text-gray-500">{getSourceLabel((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).source)}</span>
                 </div>
               </div>
               <p class="text-xs text-gray-600 line-clamp-2">
-                {@html (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlight?.content || (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).content}
+                {@html (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).highlight?.content || (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).content}
               </p>
-              {#if (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata.entities?.length}
+              {#if (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).metadata.entities?.length}
                 <div class="flex flex-wrap gap-1 mt-2">
-                  {#each (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata.entities.slice(0, 3) as entity}
+                  {#each (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).metadata.entities.slice(0, 3) as entity}
                     <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{entity}</span>
                   {/each}
-                </div>
-              {/if}
+                {/if}
             </div>
             <div class="text-right">
               <div class="text-xs text-gray-500 mb-1">
-                {((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).similarity * 100).toFixed(0)}% match
+                {((result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).similarity * 100).toFixed(0)}% match
               </div>
-              {#if (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata.practiceArea}
-                <div class="text-xs text-gray-400">{(result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata.practiceArea}</div>
-              {/if}
+              {#if (result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).metadata.practiceArea}
+                <div class="text-xs text-gray-400">{(result as { item?: any; score?: any; matches?: any; id?: any; similarity?: any; title?: any; highlight?: any; source?: any; content?: any; metadata?: any }).metadata.practiceArea}{/if}
             </div>
           </div>
         </div>
@@ -484,8 +481,7 @@ await initializeSearchServices();
           View all results for: "{searchQuery}" →
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- No results message -->
   {#if showDropdown && searchResults.length === 0 && searchQuery && !isLoading}
     <div class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
@@ -501,8 +497,7 @@ await initializeSearchServices();
           Upload new evidence
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <!-- UnoCSS utilities for custom styling -->
 <style>

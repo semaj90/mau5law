@@ -11,7 +11,7 @@ Features:
 <script lang="ts">
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import * as Card from '$lib/components/ui/card';
+  import * as Card from '$lib/components/ui/card.svelte'';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import {
     Upload,
@@ -70,7 +70,7 @@ Features:
       const reader = new FileReader();
       reader.onload = e => {
         fileObj.content = e.target.result;
-        fileObj.analyzed = false;
+        fileObj.analyzed = $state(false);
       };
       reader.readAsText(fileObj.file);
     });
@@ -159,7 +159,7 @@ Features:
       console.error('Batch analysis failed:', error);
       alert(`Analysis failed: ${error.message}`);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
 
@@ -369,7 +369,7 @@ Features:
                 {#if uploadedFiles.length > 0}
                   <div class="space-y-2">
                     <h4 class="font-medium">Uploaded Files ({uploadedFiles.length})</h4>
-                    {#each uploadedFiles as file}
+                    {#each Array.isArray(uploadedFiles) ? uploadedFiles : [] as file}
                       <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center">
                           <FileText class="w-4 h-4 mr-2 text-gray-400" />
@@ -534,7 +534,7 @@ Features:
             </Card.Header>
             <Card.Content>
               <div class="space-y-4">
-                {#each batchAnalysisResults.individual_results as result}
+                {#each Array.isArray(batchAnalysisResults.individual_results) ? batchAnalysisResults.individual_results : [] as result}
                   <div
                     class="border rounded-lg p-4 {result.success
                       ? 'border-green-200 bg-green-50'
@@ -584,7 +584,7 @@ Features:
                   <div>
                     <h4 class="font-medium mb-3">Common Entities</h4>
                     <div class="space-y-2">
-                      {#each batchAnalysisResults.cross_document_analysis.correlation_analysis.common_entities as entity}
+                      {#each Array.isArray(batchAnalysisResults.cross_document_analysis.correlation_analysis.common_entities) ? batchAnalysisResults.cross_document_analysis.correlation_analysis.common_entities : [] as entity}
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
                           <span>{entity.entity}</span>
                           <span class="text-sm text-gray-500">×{entity.frequency}</span>
@@ -597,7 +597,7 @@ Features:
                   <div>
                     <h4 class="font-medium mb-3">Document Relationships</h4>
                     <div class="space-y-2">
-                      {#each batchAnalysisResults.cross_document_analysis.correlation_analysis.document_relationships as rel}
+                      {#each Array.isArray(batchAnalysisResults.cross_document_analysis.correlation_analysis.document_relationships) ? batchAnalysisResults.cross_document_analysis.correlation_analysis.document_relationships : [] as rel}
                         <div class="p-2 bg-gray-50 rounded">
                           <div class="text-sm font-medium">{rel.document1} ↔ {rel.document2}</div>
                           <div class="text-xs text-gray-500">
@@ -646,7 +646,7 @@ Features:
 
               <!-- Timeline Events -->
               <div class="space-y-3">
-                {#each timelineData.events as event}
+                {#each Array.isArray(timelineData.events) ? timelineData.events : [] as event}
                   <div class="flex items-start p-4 bg-white border rounded-lg shadow-sm">
                     <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-4 flex-shrink-0"></div>
                     <div class="flex-1">

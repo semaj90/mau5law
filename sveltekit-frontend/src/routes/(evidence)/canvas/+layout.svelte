@@ -9,7 +9,7 @@
     mounted = true;
   }
   interface Props {
-    children: Snippet;
+     Snippet;
   }
   let { children }: Props = $props();
 </script>

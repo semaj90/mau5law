@@ -10,7 +10,7 @@ export interface LocalLegalDoc {
 }
 let fuse: Fuse<LocalLegalDoc> | null = null;
 let documents: LocalLegalDoc[] = [];
-let loadedFromCache = false;
+let loadedFromCache = $state(false);
 const cacheKey = 'yorha-local-doc-index-v1';
 const options: any = {
   keys: [

@@ -27,7 +27,7 @@ interface AccelerationResult {
 export class WebGPUSIMDAccelerator {
   private device: GPUDevice | null = null;
   private queue: GPUQueue | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private config: WebGPUSIMDConfig;
   private performanceMetrics = new Map<string, number>();
   constructor(config: Partial<WebGPUSIMDConfig> = {}) {
@@ -76,8 +76,8 @@ export class WebGPUSIMDAccelerator {
       this.isInitialized = true;
     } catch (error) {
       console.warn('WebGPU initialization failed, using SIMD fallback:', error);
-      this.config.enableWebGPU = false;
-      this.isInitialized = false;
+      this.config.enableWebGPU = $state(false);
+      this.isInitialized = $state(false);
     }
   }
   /**
@@ -434,7 +434,7 @@ export class WebGPUSIMDAccelerator {
     // GPUDevice currently doesn't define a standard destroy() in all runtimes; just dereference.
     this.device = null;
     this.queue = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 WebGPU-SIMD Accelerator cleaned up');
   }
 }

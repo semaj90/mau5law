@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   // enhanced-bits exports components as default exports — import only what's used.
   // Remove problematic Input import (it exposed an object/instance type that TypeScript rejected).
-  // import Input from '$lib/components/ui/enhanced-bits';
+  // import Input from '$lib/components/ui/enhanced-bits.svelte'';
 
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
   // In Svelte 5 (runes mode) don't use `export let` for page props — use $props()
@@ -49,7 +49,7 @@
       const result = (await response.json()) as {
         success?: boolean;
         laws?: any[];
-        error?: unknown;
+        error?: any;
       };
       if (result.success) {
         searchResults = result.laws ?? [];
@@ -61,7 +61,7 @@
       console.error('Search error:', error);
       searchResults = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   function handleKeydown(event: KeyboardEvent) {
@@ -70,10 +70,10 @@
     }
   }
   // AI toolbar event handlers (typed)
-  function handleAIChatResult(result: unknown) {
+  function handleAIChatResult(result: any) {
     console.log('AI Chat Result:', result);
   }
-  function handleAISummarizeResult(result: unknown) {
+  function handleAISummarizeResult(result: any) {
     console.log('AI Summarization Result:', result);
   }
 </script>
@@ -145,7 +145,7 @@
       Quick Access
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each data.quickLinks ?? [] as link}
+      {#each Array.isArray(data.quickLinks ?? []) ? data.quickLinks ?? [] : [] as link}
         <div class="hover:shadow-lg transition-all duration-200 nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary text-lg">{link.title}</h3>
@@ -179,7 +179,7 @@
         Search Results ({searchResults.length})
       </h2>
       <div class="space-y-4">
-        {#each searchResults as law}
+        {#each Array.isArray(searchResults) ? searchResults : [] as law}
           <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">{law.title}</h3>

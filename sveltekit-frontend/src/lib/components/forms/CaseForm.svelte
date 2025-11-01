@@ -9,27 +9,23 @@
   // ensure adapter gets a concrete ZodObject type to satisfy its type signature
   // simpler, explicit cast to a ZodObject to satisfy adapter typing
   const typedCaseFormSchema = caseFormSchema as ZodObject<Record<string, ZodTypeAny>>;
-
   interface Props {
     // avoid referencing SuperValidated (namespace) — accept a partial of the inferred form type
     initialData?: Partial<CaseFormType> | undefined;
     isEditing?: boolean;
-    formApi?: unknown;
-    onsuccess?: (data: unknown) => void;
-    onerror?: (error: unknown) => void;
+    formApi?: any;
+    onsuccess?: (data: any) => void;
+    onerror?: (error: any) => void;
   }
-
   // Provide a valid default for initialData
   // avoid $bindable() here — default to undefined and accept a mutable object from parent if they want the API
   let { initialData = undefined, isEditing = false, formApi = undefined, onsuccess, onerror }: Props = $props();
-
   // Available users for assignment (would come from API)
   let availableUsers = $state([
     { id: '1', name: 'John Smith', role: 'prosecutor' },
     { id: '2', name: 'Jane Doe', role: 'investigator' },
     { id: '3', name: 'Mike Johnson', role: 'legal_assistant' },
   ]);
-
   // Initialize superForm (fixed commas & signatures)
   const { form, errors, constraints, enhance, submitting, delayed, message } = superForm(initialData as any, {
     // provide a typed ZodObject to the adapter to satisfy TypeScript
@@ -41,7 +37,7 @@
       console.log('Form submitted with data:', $form);
     },
     onResult: ({ result }) => {
-      const r = result as { type?: unknown; data?: unknown; error?: unknown };
+      const r = result as { type?: any; data?: any; error?: any };
       if (r.type === 'success') {
         onsuccess?.(r.data);
       } else if (r.type === 'error') {
@@ -49,7 +45,6 @@
       }
     },
   });
-
   // Update formApi when form changes using $effect
   $effect(() => {
     // If parent passed an object to receive the form API, mutate it so the reference remains valid for two-way binding
@@ -65,7 +60,6 @@
       });
     }
   });
-
   // Tag management
   let tagInput = $state('');
   function addTag() {
@@ -83,7 +77,6 @@
       addTag();
     }
   }
-
   // Auto-generate case number
   function generateCaseNumber() {
     const year = new Date().getFullYear();
@@ -91,7 +84,6 @@
     $form.caseNumber = `CAS-${year}-${random}`;
   }
 </script>
-
 <div class="space-y-4">
 	<div>
 		<div>
@@ -107,7 +99,6 @@
 			<button type="button" onclick={generateCaseNumber} class="space-y-4"> Generate Case # </button>
 		{/if}
 	</div>
-
 	<form method="POST" use:enhance>
 		<!-- Case Number and Title -->
 		<div>
@@ -141,7 +132,6 @@
 				{/if}
 			</div>
 		</div>
-
 		<!-- Title -->
 		<div>
 			<label for="title"> Case Title * </label>
@@ -160,7 +150,6 @@
 				<p id="title-error">{$errors.title}</p>
 			{/if}
 		</div>
-
 		<!-- Description -->
 		<div>
 			<label for="description"> Case Description </label>
@@ -179,7 +168,6 @@
 				<p id="description-error">{$errors.description}</p>
 			{/if}
 		</div>
-
 		<!-- Status and Assignment -->
 		<div>
 			<div>
@@ -195,13 +183,12 @@
 				<label for="assignedTo">Assigned To</label>
 				<select id="assignedTo" name="assignedTo" bind:value={$form.assignedTo} class="legal-input" {...$constraints.assignedTo}>
 					<option value="">Unassigned</option>
-					{#each availableUsers as user}
+					{#each Array.isArray(availableUsers) ? availableUsers : [] as user}
 						<option value={user.id}>{user.name} ({user.role})</option>
 					{/each}
 				</select>
 			</div>
 		</div>
-
 		<!-- Due Date -->
 		<div>
 			<label for="dueDate">Due Date</label>
@@ -219,12 +206,11 @@
 				<p id="dueDate-error">{$errors.dueDate}</p>
 			{/if}
 		</div>
-
 		<!-- Tags -->
 		<div>
 			<label for="tagInput">Tags</label>
 			<div>
-				{#each $form.tags || [] as tag}
+				{#each Array.isArray($form.tags || []) ? $form.tags || [] : [] as tag}
 					<span>
 						{tag}
 						<!-- use Svelte event directive -->
@@ -249,7 +235,6 @@
 				<p id="tags-error">{$errors.tags}</p>
 			{/if}
 		</div>
-
 		<!-- Checkboxes -->
 		<div>
 			<label>
@@ -261,7 +246,6 @@
 				<span>Notify assignee via email</span>
 			</label>
 		</div>
-
 		<!-- Submit Buttons -->
 		<div>
 			<button
@@ -282,21 +266,16 @@
 				{/if}
 			</button>
 		</div>
-
 		<!-- Server Messages -->
 		{#if $message}
 			<div>
 				{$message.text}
-			</div>
-		{/if}
-
+			{/if}
 		<!-- Loading Indicator -->
 		{#if $delayed}
-			<div>Processing your request...</div>
-		{/if}
+			<div>Processing your request...{/if}
 	</form>
 </div>
-
 <style>
 	/* @unocss-include */
 	/* Custom validation styles */
@@ -307,4 +286,3 @@
 		border-color: #10b981;
 	}
 </style>
-

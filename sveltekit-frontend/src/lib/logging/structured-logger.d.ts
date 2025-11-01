@@ -5,7 +5,6 @@ declare module '$lib/logging/structured-logger' {
   }
   export const logger: StructuredLogger;
 }
-
 declare module '$lib/logging/structured-logger.js' {
   export interface StructuredLogger {
     logUserAction?(payload: any): Promise<any>;

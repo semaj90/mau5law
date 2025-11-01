@@ -241,7 +241,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   function handleMouseLeave() {
     if (!hoverable) return;
-    isHovered = false;
+    isHovered = $state(false);
     rotationX = 0;
     rotationY = 0;
     translateZ = 0;
@@ -256,7 +256,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   function handleMouseUp() {
     if (!clickable) return;
-    isPressed = false;
+    isPressed = $state(false);
     playSpatialSound('release', 440, 0.05);
   }
   function handleClick(_event: MouseEvent) {
@@ -322,16 +322,13 @@ if (spatialAudio && typeof window !== 'undefined') {
       <div class="texture-filter-layer filter-{textureFiltering}"></div>
       <!-- Anti-aliasing layer -->
       {#if antiAliasing !== 'none'}
-        <div class="aa-layer aa-{antiAliasing}"></div>
-      {/if}
+        <div class="aa-layer aa-{antiAliasing}">{/if}
       <!-- Fog effect layer -->
       {#if fogEffect}
-        <div class="fog-layer"></div>
-      {/if}
+        <div class="fog-layer">{/if}
       <!-- Shadow layer -->
       {#if shadowCasting}
-        <div class="shadow-layer"></div>
-      {/if}
+        <div class="shadow-layer">{/if}
     </div>
     <!-- Card Header -->
     {#if title || subtitle}
@@ -359,21 +356,19 @@ if (spatialAudio && typeof window !== 'undefined') {
             style="transform: translateZ({-i * 3}px); opacity: {1 - (i * 0.15)}"
           ></div>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Selection indicator -->
     {#if selectable}
       <div
         class="selection-indicator"
         class:visible={selected}
         aria-hidden="true"
-      ></div>
-    {/if}
+      >{/if}
   </article>
 </div>
 <style>
   .n64-card-container {
-    position relative;
+    position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
 /* 3D perspective for N64 depth */ perspective: 1000px;
@@ -381,7 +376,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     transform-style: preserve-3d;
   }
 /* Base card styling */ .n64-card {
-    position relative;
+    position: relative;
     padding: 20px;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
@@ -424,7 +419,7 @@ clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 10
   .depth-deep { --depth-z: 30px, }
   .depth-extreme { --depth-z: 50px, }
 /* Visual enhancement layers */ .n64-card-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -433,7 +428,7 @@ clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 10
     z-index: 1,
   }
   .depth-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -441,7 +436,7 @@ clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 10
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(0, 0, 0, 0.2) 100% );
   }
   .texture-filter-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -461,7 +456,7 @@ background: linear-gradient( calc(var(--mouse-x, 0) * 45deg + 45deg), rgba(255, 
     animation: anisotropic-sweep 4s ease-in-out infinite;
   }
 /* Anti-aliasing layers */ .aa-layer {
-    position absolute;
+    position: absolute;
     top: -1px;
     left: -1px;
     right: -1px;
@@ -474,7 +469,7 @@ background: linear-gradient(45deg, rgba(255, 255, 255, 0.005) 0%, transparent 50
 background: radial-gradient( ellipse at top left, rgba(255, 255, 255, 0.01) 0%, transparent 25% ), radial-gradient( ellipse at top right, rgba(255, 255, 255, 0.01) 0%, transparent 25% ), radial-gradient( ellipse at bottom left, rgba(255, 255, 255, 0.01) 0%, transparent 25% ), radial-gradient( ellipse at bottom right, rgba(255, 255, 255, 0.01) 0%, transparent 25% );
   }
 /* Fog effect */ .fog-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -483,7 +478,7 @@ background: linear-gradient( 180deg, rgba(200, 200, 255, 0.08) 0%, transparent 2
     animation: fog-drift 8s ease-in-out infinite;
   }
 /* Shadow layer */ .shadow-layer {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 10%;
     right: 10%;
@@ -493,7 +488,7 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     transform-origin: center top;
   }
 /* Card header */ .n64-card-header {
-    position relative;
+    position: relative;
     z-index: 2;
     margin-bottom: 16px;
     padding-bottom: 12px;
@@ -515,13 +510,13 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     line-height: 1.4;
   }
 /* Card content */ .n64-card-content {
-    position relative;
+    position: relative;
     z-index: 2;
     font-size: 12px;
     line-height: 1.6;
   }
 /* Parallax layers */ .parallax-indicators {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -530,7 +525,7 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     z-index: 0,
   }
   .parallax-layer {
-    position absolute;
+    position: absolute;
     top: 2px;
     left: 2px;
     right: 2px;
@@ -539,7 +534,7 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     border-radius: inherit;
   }
 /* Selection indicator */ .selection-indicator {
-    position absolute;
+    position: absolute;
     top: -4px;
     left: -4px;
     right: -4px;

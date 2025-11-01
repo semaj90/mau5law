@@ -2,8 +2,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
   interface LegalQuery {
     id?: number;
     prompt: string;
@@ -78,7 +78,7 @@
       error = 'Network error: Failed to connect to legal AI service';
       console.error('Legal AI error:', err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function useSamplePrompt(sample: string) {
@@ -106,7 +106,6 @@
     loadRecentQueries();
   });
 </script>
-
 <div class="legal-ai-chat max-w-4xl mx-auto p-6">
   <div class="header mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Legal AI Assistant</h1>
@@ -191,7 +190,7 @@
     </CardHeader>
     <CardContent>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {#each samplePrompts as sample}
+        {#each Array.isArray(samplePrompts) ? samplePrompts : [] as sample}
           <button
             onclick={() => useSamplePrompt(sample)}
             class="p-3 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors disabled:opacity-50"
@@ -219,8 +218,7 @@
           <p class="text-sm text-red-700 mt-1">{error}</p>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Current Response -->
   {#if currentResponse}
     <Card class="mb-8 border-green-200 bg-green-50">
@@ -286,7 +284,6 @@
     </Card>
   {/if}
 </div>
-
 <style>
   .line-clamp-3 {
     display: -webkit-box;
@@ -298,4 +295,3 @@
     line-height: 1.6;
   }
 </style>
-

@@ -107,7 +107,7 @@
         }
       ];
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 
@@ -157,7 +157,7 @@
     </h2>
 
     <div class="flex flex-wrap gap-2">
-      {#each availableTools as tool}
+      {#each Array.isArray(availableTools) ? availableTools : [] as tool}
         <div class="bg-slate-800 px-3 py-2 rounded border border-slate-700 text-sm">
           <span class="mr-2">{getToolIcon(tool)}</span>
           <span class="text-slate-300">{tool}</span>
@@ -182,7 +182,7 @@
         </div>
       {/if}
 
-      {#each messages as message}
+      {#each Array.isArray(messages) ? messages : [] as message}
         <div class="message {message.role} bg-slate-800 p-4 rounded border border-slate-700">
           <!-- Message Header -->
           <div class="flex items-start justify-between mb-2">
@@ -213,7 +213,7 @@
               </div>
 
               <div class="space-y-2">
-                {#each message.toolCalls as toolCall}
+                {#each Array.isArray(message.toolCalls) ? message.toolCalls : [] as toolCall}
                   <div
                     class="bg-slate-900 p-2 rounded text-xs {toolCall.success
                       ? 'border-l-4 border-green-500'
@@ -304,7 +304,7 @@
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-      {#each sampleQueries as sample}
+      {#each Array.isArray(sampleQueries) ? sampleQueries : [] as sample}
         <button
           class="bg-slate-800 hover:bg-slate-700 transition-colors p-3 rounded border border-slate-700 text-left text-sm text-slate-300"
           onclick={() => useSampleQuery(sample)}

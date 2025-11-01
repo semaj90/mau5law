@@ -21,7 +21,7 @@ export interface ShimmedRedisClient {
   // The subscribe/psubscribe methods have complex overloads, keeping Promise<unknown> for simplicity in the shim interface
   subscribe: (...args: (string | ((channel: string, message: string) => void))[]) => Promise<unknown>;
   psubscribe: (...args: (string | ((pattern: string, channel: string, message: string) => void))[]) => Promise<unknown>;
-  on: (ev: string, fn: (...a: unknown[]) => void) => void; // Changed return type to void
+  on: (ev: string, fn: (...a: any[]) => void) => void; // Changed return type to void
   ping: (message?: string) => Promise<string>;
   _raw: typeof redis; // Expose the raw ioredis client type
 }
@@ -40,7 +40,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
     disconnect?: () => Promise<void>;
     quit?: () => Promise<void>;
     get?: (k: string) => Promise<string | null>;
-    set?: (k: string, v: string, ...rest: unknown[]) => Promise<unknown>;
+    set?: (k: string, v: string, ...rest: any[]) => Promise<unknown>;
     del?: (k: string) => Promise<number>;
     subscribe?: (...channels: string[]) => Promise<unknown>;
     psubscribe?: (...patterns: string[]) => Promise<unknown>;
@@ -51,12 +51,12 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
   const clientInstance = redis; // use the centralized ioredis instance
   const client: RedisLike = clientInstance as RedisLike; // Explicit cast here, assuming ioredis client matches RedisLike
 
-  const getErrorMessage = (err: unknown): string => {
+  const getErrorMessage = (err: any): string => {
     if (
       err &&
       typeof err === 'object' &&
       'message' in err &&
-      typeof (err as { message?: unknown }).message === 'string'
+      typeof (err as { message?: any }).message === 'string'
     ) {
       return (err as { message: string }).message;
     }
@@ -64,7 +64,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
   };
 
   // Attach minimal NOAUTH graceful handling
-  client.on('error', (err: unknown) => { // No ?. needed here as: 'on' is guaranteed by RedisLike
+  client.on('error', (err: any) => { // No ?. needed here as: 'on' is guaranteed by RedisLike
     if (getErrorMessage(err).includes('NOAUTH')) {
       if (!globalThis.__redisNoAuthWarned) {
         console.warn(
@@ -110,7 +110,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
         if (channels.length > 0 && typeof sub.subscribe === 'function') {
           await sub.subscribe(...channels);
         }
-        sub.on('message', (channel: unknown, message: unknown) => cb(String(channel), String(message))); // No ?.
+        sub.on('message', (channel: any, message: any) => cb(String(channel), String(message))); // No ?.
         return sub;
       } else {
         const channels = args.map(c => String(c)) as string[];
@@ -133,7 +133,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
         if (patterns.length > 0 && typeof sub.psubscribe === 'function') {
           await sub.psubscribe(...patterns);
         }
-        sub.on('pmessage', (_pattern: unknown, channel: unknown, message: unknown) => // No ?.
+        sub.on('pmessage', (_pattern: any, channel: any, message: any) => // No ?.
           cb(String(_pattern), String(channel), String(message))
         );
         return sub;
@@ -145,7 +145,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
         return patterns.length;
       }
     },
-    on: (ev: string, fn: (...a: unknown[]) => void) => {
+    on: (ev: string, fn: (...a: any[]) => void) => {
       client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on'
     },
     ping: async (message?: string) =>

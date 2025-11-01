@@ -6,8 +6,8 @@
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
   interface Props {
-    data?: unknown;
-    form?: unknown;
+    data?: any;
+    form?: any;
   }
   let { data, form }: Props = $props();
   let isLoading = $state(false);
@@ -36,8 +36,8 @@
         use:enhance={({ formData, cancel }) => {
           isLoading = true;
           return async ({ result }) => {
-            isLoading = false;
-            if ((result as { type?: unknown }).type === 'redirect') {
+            isLoading = $state(false);
+            if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
           };

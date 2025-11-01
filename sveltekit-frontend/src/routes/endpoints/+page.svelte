@@ -1,11 +1,11 @@
 <script lang="ts">
-  let { data }: { data: unknown } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] }
+  let { data }: { data: any } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] }
 </script>
 
 <div class="endpoints-page">
   <h1 class="page-title">Endpoints & Status</h1>
   <div class="endpoint-list">
-    {#each data.endpoints as ep}
+    {#each Array.isArray(data.endpoints) ? data.endpoints : [] as ep}
       <div class="endpoint-card {ep.healthy ? 'ok' : 'fail'}">
         <h2>{ep.name}</h2>
         <p class="path">{ep.path}</p>

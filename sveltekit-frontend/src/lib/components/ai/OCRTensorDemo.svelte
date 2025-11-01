@@ -91,7 +91,7 @@ try {
     } catch (error: any) {
       addLog(`❌ Processing failed: ${error.message}`);
     } finally {
-      processing = false;
+      processing = $state(false);
     }
   }
   /**
@@ -133,7 +133,7 @@ try {
     } catch (error: any) {
       addLog(`❌ Batch processing failed: ${error.message}`);
     } finally {
-      processing = false;
+      processing = $state(false);
     }
   }
   /**
@@ -220,8 +220,7 @@ try {
         <div class="file-info">
           <strong>{uploadedFile.name}</strong>
           <span>({(uploadedFile.size / 1024).toFixed(1)} KB)</span>
-        </div>
-      {/if}
+        {/if}
       <div class="action-buttons">
         <button
           onclick={processImage}
@@ -269,8 +268,7 @@ try {
             <span>{performanceMetrics.storageTime.toFixed(2)}ms</span>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Cache Statistics -->
     {#if cacheStats.hits + cacheStats.misses > 0}
       <div class="cache-stats">
@@ -293,8 +291,7 @@ try {
             <span>{averageProcessingTime.toFixed(2)}ms</span>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Results Display -->
     {#if results.length > 0}
       <div class="results-section">
@@ -328,19 +325,17 @@ try {
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Live Logs -->
     {#if logs.length > 0}
       <div class="logs-section">
         <h3>📜 Processing Logs</h3>
         <div class="logs-container">
-          {#each logs as log}
+          {#each Array.isArray(logs) ? logs : [] as log}
             <div class="log-entry">{log}</div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>
@@ -552,4 +547,3 @@ try {
     }
   }
 </style>
-

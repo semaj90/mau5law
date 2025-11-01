@@ -684,7 +684,7 @@ export class AsyncRabbitMQStateManager {
   private static instance: AsyncRabbitMQStateManager;
   private stateService: any;
   private svelteStores: Map<string, Writable<any>, = new Map();
-  private enableN64Logging = false;
+  private enableN64Logging = $state(false);
   // Svelte stores for reactive UI updates
   public readonly jobStates: Readable<Map<string, JobState>;
   public readonly queueStates: Readable<Map<string, QueueState>;

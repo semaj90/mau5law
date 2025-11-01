@@ -74,7 +74,7 @@ export class AdvisoryLockService {
     const { timeout = 30000, userId, sessionId, metadata } = options;
     try {
       console.log(`🔒 Acquiring ${mode} lock for ${entityType} ${entityId} (${numericLockId})`);
-      let lockAcquired = false;
+      let lockAcquired = $state(false);
       const startTime = Date.now();
       // Try to acquire the lock with timeout
       while (!lockAcquired && (Date.now() - startTime) < timeout) {
@@ -133,7 +133,7 @@ export class AdvisoryLockService {
     const numericLockId = this.generateLockId(entityType, entityId);
     try {
       console.log(`🔓 Releasing ${mode} lock for ${entityType} ${entityId}`);
-      let released = false;
+      let released = $state(false);
       if (mode === LOCK_MODES.EXCLUSIVE) {
         const [result] = await sql`SELECT pg_advisory_unlock(${numericLockId}) as released`;
         released = (result as { acquired?: any; released?: any; locked?: any }).released;

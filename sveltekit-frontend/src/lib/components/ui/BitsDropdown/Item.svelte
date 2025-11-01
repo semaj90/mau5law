@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   // Props
   let {
     className = '',
@@ -15,7 +14,6 @@
     onitemclick?: (e: MouseEvent) => void;
     children?: Snippet;
   } = $props();
-
   function handleClick(e: MouseEvent) {
     if (disabled) {
       e.preventDefault();
@@ -26,7 +24,6 @@
     onitemclick?.(e);
   }
 </script>
-
 <button class={`dropdown-item ${className}`} role="menuitem" onclick={handleClick} {disabled}>
-  {@render children?.()}
+  <slot />
 </button>

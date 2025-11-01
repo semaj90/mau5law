@@ -34,7 +34,7 @@ export interface EnhancedUploadContext {
     ocrBoundingBoxes?: any[];
     embeddings?: number[][];
     gemma3Embeddings?: number[][];
-    tensorProcessing?: unknown;
+    tensorProcessing?: any;
     indexingComplete?: boolean;
     neo4jNodes?: string[];
     neo4jRelationships?: any[];

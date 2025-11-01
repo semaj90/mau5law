@@ -29,14 +29,14 @@ type CacheEntry = {
   ttlSeconds?: number;
   ttlMs?: number;
   ts: number;
-  structured?: unknown;
+  structured?: any;
   model?: string;
   mode?: string;
   type?: string;
-  perf?: unknown;
+  perf?: any;
   summary?: string;
   // allow other optional fields
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 const originalGETHandler: RequestHandler = async ({ params, url }) => {

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   let hashInput = $state('81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd');
-  let searchResult: unknown = $state(null);
+  let searchResult: any = $state(null);
   let loading = $state(false);
   let error = $state('');
   $effect(() => {
@@ -24,16 +24,16 @@
     searchResult = null;
     try {
       // removed unused response assignment
-      const result = await (response as { json?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; ok?: unknown }).ok) {
+      const result = await (response as { json?: any; ok?: any }).json();
+      if ((response as { json?: any; ok?: any }).ok) {
         searchResult = result;
       } else {
-        error = (result as { error?: unknown; message?: unknown }).error || 'Search failed';
+        error = (result as { error?: any; message?: any }).error || 'Search failed';
       }
     } catch (e) {
       error = 'Network error occurred';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   async function verifyIntegrity(evidenceId: string) {
@@ -46,16 +46,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hash: hashInput, evidenceId }),
       });
-      const result = await (response as { json?: unknown; ok?: unknown }).json();
-      if ((response as { json?: unknown; ok?: unknown }).ok) {
-        alert(`Integrity Check: ${(result as { error?: unknown; message?: unknown }).message}`);
+      const result = await (response as { json?: any; ok?: any }).json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        alert(`Integrity Check: ${(result as { error?: any; message?: any }).message}`);
       } else {
-        error = (result as { error?: unknown; message?: unknown }).error || 'Verification failed';
+        error = (result as { error?: any; message?: any }).error || 'Verification failed';
       }
     } catch (e) {
       error = 'Network error occurred';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function copyToClipboard(text: string) {
@@ -107,43 +107,43 @@
               <strong>✅ {searchResult.message}</strong>
             </div>
             <div class="space-y-4">
-              {#each searchResult.evidence as item}
+              {#each Array.isArray(searchResult.evidence) ? searchResult.evidence : [] as item}
                 <div class="space-y-4">
                   <div class="space-y-4">
                     <div class="space-y-4">
                       <h4 class="space-y-4">
                         {(
                           item as {
-                            title?: unknown;
-                            id?: unknown;
-                            fileName?: unknown;
-                            fileSize?: unknown;
-                            fileType?: unknown;
-                            caseName?: unknown;
-                            caseNumber?: unknown;
-                            uploaderName?: unknown;
-                            uploadedAt?: unknown;
-                            hash?: unknown;
-                            description?: unknown;
-                            fileUrl?: unknown;
+                            title?: any;
+                            id?: any;
+                            fileName?: any;
+                            fileSize?: any;
+                            fileType?: any;
+                            caseName?: any;
+                            caseNumber?: any;
+                            uploaderName?: any;
+                            uploadedAt?: any;
+                            hash?: any;
+                            description?: any;
+                            fileUrl?: any;
                           }
                         ).title}
                       </h4>
                       <span class="space-y-4">
                         ID: {(
                           item as {
-                            title?: unknown;
-                            id?: unknown;
-                            fileName?: unknown;
-                            fileSize?: unknown;
-                            fileType?: unknown;
-                            caseName?: unknown;
-                            caseNumber?: unknown;
-                            uploaderName?: unknown;
-                            uploadedAt?: unknown;
-                            hash?: unknown;
-                            description?: unknown;
-                            fileUrl?: unknown;
+                            title?: any;
+                            id?: any;
+                            fileName?: any;
+                            fileSize?: any;
+                            fileType?: any;
+                            caseName?: any;
+                            caseNumber?: any;
+                            uploaderName?: any;
+                            uploadedAt?: any;
+                            hash?: any;
+                            description?: any;
+                            fileUrl?: any;
                           }
                         ).id}
                       </span>
@@ -154,18 +154,18 @@
                           <strong>File:</strong>
                           {(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).fileName || 'N/A'}
                         </p>
@@ -173,35 +173,35 @@
                           <strong>Size:</strong>
                           {(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).fileSize
                             ? (
                                 (
                                   item as {
-                                    title?: unknown;
-                                    id?: unknown;
-                                    fileName?: unknown;
-                                    fileSize?: unknown;
-                                    fileType?: unknown;
-                                    caseName?: unknown;
-                                    caseNumber?: unknown;
-                                    uploaderName?: unknown;
-                                    uploadedAt?: unknown;
-                                    hash?: unknown;
-                                    description?: unknown;
-                                    fileUrl?: unknown;
+                                    title?: any;
+                                    id?: any;
+                                    fileName?: any;
+                                    fileSize?: any;
+                                    fileType?: any;
+                                    caseName?: any;
+                                    caseNumber?: any;
+                                    uploaderName?: any;
+                                    uploadedAt?: any;
+                                    hash?: any;
+                                    description?: any;
+                                    fileUrl?: any;
                                   }
                                 ).fileSize / 1024
                               ).toFixed(1) + ' KB'
@@ -211,18 +211,18 @@
                           <strong>Type:</strong>
                           {(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).fileType || 'N/A'}
                         </p>
@@ -232,33 +232,33 @@
                           <strong>Case:</strong>
                           {(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).caseName || 'N/A'} ({(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).caseNumber || 'N/A'})
                         </p>
@@ -266,18 +266,18 @@
                           <strong>Uploaded by:</strong>
                           {(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).uploaderName || 'N/A'}
                         </p>
@@ -285,35 +285,35 @@
                           <strong>Uploaded:</strong>
                           {(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).uploadedAt
                             ? new Date(
                                 (
                                   item as {
-                                    title?: unknown;
-                                    id?: unknown;
-                                    fileName?: unknown;
-                                    fileSize?: unknown;
-                                    fileType?: unknown;
-                                    caseName?: unknown;
-                                    caseNumber?: unknown;
-                                    uploaderName?: unknown;
-                                    uploadedAt?: unknown;
-                                    hash?: unknown;
-                                    description?: unknown;
-                                    fileUrl?: unknown;
+                                    title?: any;
+                                    id?: any;
+                                    fileName?: any;
+                                    fileSize?: any;
+                                    fileType?: any;
+                                    caseName?: any;
+                                    caseNumber?: any;
+                                    uploaderName?: any;
+                                    uploadedAt?: any;
+                                    hash?: any;
+                                    description?: any;
+                                    fileUrl?: any;
                                   }
                                 ).uploadedAt
                               ).toLocaleString()
@@ -325,18 +325,18 @@
                       <strong>Hash:</strong>
                       {(
                         item as {
-                          title?: unknown;
-                          id?: unknown;
-                          fileName?: unknown;
-                          fileSize?: unknown;
-                          fileType?: unknown;
-                          caseName?: unknown;
-                          caseNumber?: unknown;
-                          uploaderName?: unknown;
-                          uploadedAt?: unknown;
-                          hash?: unknown;
-                          description?: unknown;
-                          fileUrl?: unknown;
+                          title?: any;
+                          id?: any;
+                          fileName?: any;
+                          fileSize?: any;
+                          fileType?: any;
+                          caseName?: any;
+                          caseNumber?: any;
+                          uploaderName?: any;
+                          uploadedAt?: any;
+                          hash?: any;
+                          description?: any;
+                          fileUrl?: any;
                         }
                       ).hash}
                       <button
@@ -344,18 +344,18 @@
                           copyToClipboard(
                             (
                               item as {
-                                title?: unknown;
-                                id?: unknown;
-                                fileName?: unknown;
-                                fileSize?: unknown;
-                                fileType?: unknown;
-                                caseName?: unknown;
-                                caseNumber?: unknown;
-                                uploaderName?: unknown;
-                                uploadedAt?: unknown;
-                                hash?: unknown;
-                                description?: unknown;
-                                fileUrl?: unknown;
+                                title?: any;
+                                id?: any;
+                                fileName?: any;
+                                fileSize?: any;
+                                fileType?: any;
+                                caseName?: any;
+                                caseNumber?: any;
+                                uploaderName?: any;
+                                uploadedAt?: any;
+                                hash?: any;
+                                description?: any;
+                                fileUrl?: any;
                               }
                             ).hash
                           )}
@@ -365,22 +365,22 @@
                         📋
                       </button>
                     </div>
-                    {#if (item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown }).description}
+                    {#if (item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).description}
                       <p class="space-y-4">
                         {(
                           item as {
-                            title?: unknown;
-                            id?: unknown;
-                            fileName?: unknown;
-                            fileSize?: unknown;
-                            fileType?: unknown;
-                            caseName?: unknown;
-                            caseNumber?: unknown;
-                            uploaderName?: unknown;
-                            uploadedAt?: unknown;
-                            hash?: unknown;
-                            description?: unknown;
-                            fileUrl?: unknown;
+                            title?: any;
+                            id?: any;
+                            fileName?: any;
+                            fileSize?: any;
+                            fileType?: any;
+                            caseName?: any;
+                            caseNumber?: any;
+                            uploaderName?: any;
+                            uploadedAt?: any;
+                            hash?: any;
+                            description?: any;
+                            fileUrl?: any;
                           }
                         ).description}
                       </p>
@@ -391,18 +391,18 @@
                           verifyIntegrity(
                             (
                               item as {
-                                title?: unknown;
-                                id?: unknown;
-                                fileName?: unknown;
-                                fileSize?: unknown;
-                                fileType?: unknown;
-                                caseName?: unknown;
-                                caseNumber?: unknown;
-                                uploaderName?: unknown;
-                                uploadedAt?: unknown;
-                                hash?: unknown;
-                                description?: unknown;
-                                fileUrl?: unknown;
+                                title?: any;
+                                id?: any;
+                                fileName?: any;
+                                fileSize?: any;
+                                fileType?: any;
+                                caseName?: any;
+                                caseNumber?: any;
+                                uploaderName?: any;
+                                uploadedAt?: any;
+                                hash?: any;
+                                description?: any;
+                                fileUrl?: any;
                               }
                             ).id
                           )}
@@ -411,22 +411,22 @@
                       >
                         Verify Integrity
                       </button>
-                      {#if (item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown }).fileUrl}
+                      {#if (item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileUrl}
                         <a
                           href={(
                             item as {
-                              title?: unknown;
-                              id?: unknown;
-                              fileName?: unknown;
-                              fileSize?: unknown;
-                              fileType?: unknown;
-                              caseName?: unknown;
-                              caseNumber?: unknown;
-                              uploaderName?: unknown;
-                              uploadedAt?: unknown;
-                              hash?: unknown;
-                              description?: unknown;
-                              fileUrl?: unknown;
+                              title?: any;
+                              id?: any;
+                              fileName?: any;
+                              fileSize?: any;
+                              fileType?: any;
+                              caseName?: any;
+                              caseNumber?: any;
+                              uploaderName?: any;
+                              uploadedAt?: any;
+                              hash?: any;
+                              description?: any;
+                              fileUrl?: any;
                             }
                           ).fileUrl}
                           target="_blank"

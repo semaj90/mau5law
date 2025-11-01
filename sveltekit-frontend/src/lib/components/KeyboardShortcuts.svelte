@@ -3,19 +3,17 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import Tooltip from '$lib/components/ui/Tooltip.svelte';
-  import Accessibility from 'lucide-svelte/icons/accessibility.svelte';
-  import Keyboard from 'lucide-svelte/icons/keyboard.svelte';
-  import Maximize2 from 'lucide-svelte/icons/maximize-2.svelte';
-  import Minimize2 from 'lucide-svelte/icons/minimize-2.svelte';
-  import AccessibilityPanel from './AccessibilityPanel.svelte';
-
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Tooltip } from '$lib/components/ui/Tooltip.svelte';
+  import { Accessibility } from 'lucide-svelte/icons/accessibility.svelte';
+  import { Keyboard } from 'lucide-svelte/icons/keyboard.svelte';
+  import { Maximize2 } from 'lucide-svelte/icons/maximize-2.svelte';
+  import { Minimize2 } from 'lucide-svelte/icons/minimize-2.svelte';
+  import { AccessibilityPanel } from './AccessibilityPanel.svelte';
   // local state (simple, compatible with Svelte 5 migration)
-  let showShortcuts = false;
-  let showAccessibilityPanel = false;
-  let isFullscreen = false;
-
+  let showShortcuts = $state(false);
+  let showAccessibilityPanel = $state(false);
+  let isFullscreen = $state(false);
   // keyboard shortcuts map (fixed object syntax)
   const shortcuts = [
     { key: 'Ctrl+K', description: 'Quick search', action: 'search' },
@@ -28,7 +26,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     { key: 'F11', description: 'Toggle fullscreen', action: 'fullscreen' },
     { key: 'Escape', description: 'Close modals/exit', action: 'escape' }
   ];
-
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // ignore input-like elements
     const target = event.target as Element | null;
@@ -40,10 +37,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     ) {
       return;
     }
-
     const key = event.key.toLowerCase();
     const ctrl = event.ctrlKey || event.metaKey;
-
     // simple mapping for a few shortcuts
     if (ctrl && key === 'h') {
       event.preventDefault();
@@ -62,16 +57,14 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       return;
     }
     if (key === 'escape') {
-      showShortcuts = false;
-      showAccessibilityPanel = false;
+      showShortcuts = $state(false);
+      showAccessibilityPanel = $state(false);
       return;
     }
   }
-
   function handleFullscreenChange() {
     isFullscreen = !!document.fullscreenElement;
   }
-
   async function toggleFullscreen() {
     try {
       if (!document.fullscreenElement) {
@@ -85,23 +78,19 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       console.error('Fullscreen toggle failed', err);
     }
   }
-
   onMount(() => {
     window.addEventListener('keydown', handleKeyboardShortcut);
     window.addEventListener('fullscreenchange', handleFullscreenChange);
   });
-
   onDestroy(() => {
     window.removeEventListener('keydown', handleKeyboardShortcut);
     window.removeEventListener('fullscreenchange', handleFullscreenChange);
   });
-
   // helper for UI test action
   function toggleAccessibilityPanel() {
     showAccessibilityPanel = !showAccessibilityPanel;
   }
 </script>
-
 {#if showShortcuts}
   <div class="mx-auto px-4 max-w-7xl" role="dialog" aria-modal="true">
     <div class="mx-auto px-4 max-w-7xl">
@@ -109,7 +98,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
       </p>
       <ul class="mt-4 space-y-2">
-        {#each shortcuts as s}
+        {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
           <li class="flex items-center justify-between p-2 bg-gray-800 rounded">
             <div>
               <div class="font-medium text-white">{s.description}</div>
@@ -126,9 +115,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         {/each}
       </ul>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <!-- Floating Action Buttons -->
 <div class="mx-auto px-4 max-w-7xl floating-actions">
   <!-- Accessibility Panel Toggle -->
@@ -143,7 +130,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Accessibility />
     </Button>
   </Tooltip>
-
   <!-- Keyboard Shortcuts Toggle -->
   <Tooltip content="Keyboard shortcuts (Ctrl+H)" placement="left">
     <Button
@@ -156,7 +142,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Keyboard />
     </Button>
   </Tooltip>
-
   <!-- Fullscreen Toggle -->
   <Tooltip content={isFullscreen ? 'Exit fullscreen (F11)' : 'Enter fullscreen (F11)'} placement="left">
     <Button
@@ -174,10 +159,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </Button>
   </Tooltip>
 </div>
-
 <!-- Accessibility Panel -->
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
-
 <style>
   :global(.floating-actions) {
     transition: all 0.3s ease;

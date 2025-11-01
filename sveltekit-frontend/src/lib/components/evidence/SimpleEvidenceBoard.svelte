@@ -1,27 +1,23 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, Dialog, Input, Label, Select } from '$lib/components/ui/enhanced-bits';
+  import { Button, Card, Dialog, Input, Label, Select } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { toast } from 'svelte-sonner';
   import { Plus, Save, Trash2, Edit, Link } from 'lucide-svelte';
-
   // Props
   let { caseId = '', boardId = null } = $props();
-
   // State
   let isLoading = $state(false);
   let isSaving = $state(false);
   let showAddItemDialog = $state(false);
   let selectedItem = $state(null);
-
   // Board data
   let board = $state(null);
   let items = $state([]);
   let connections = $state([]);
   let availableEvidence = $state([]);
   let availablePois = $state([]);
-
   // New item form
   let newItem = $state({
     type: 'note',
@@ -29,11 +25,9 @@
     evidenceId: null,
     poiId: null,
   });
-
   // Load board data
   async function loadBoard() {
     if (!caseId) return;
-
     isLoading = true;
     try {
       if (boardId) {
@@ -61,16 +55,14 @@
           boardId = board.id;
         }
       }
-
       await loadAvailableData();
     } catch (error) {
       console.error('Error loading board:', error);
       toast.error('Failed to load evidence board');
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   // Load available evidence and POIs
   async function loadAvailableData() {
     try {
@@ -78,10 +70,8 @@
         fetch(`/api/cases/${caseId}/evidence`),
         fetch(`/api/cases/${caseId}/poi`),
       ]);
-
       const evidenceResult = await evidenceResponse.json();
       const poisResult = await poisResponse.json();
-
       if (evidenceResult.success) {
         availableEvidence = evidenceResult.data;
       }
@@ -92,11 +82,9 @@
       console.error('Error loading available data:', error);
     }
   }
-
   // Add new item
   async function addItem() {
     if (!boardId) return;
-
     try {
       const response = await fetch(`/api/evidence-boards/${boardId}/items`, {
         method: 'POST',
@@ -107,11 +95,10 @@
           size: { width: 200, height: 100 },
         }),
       });
-
       const result = await response.json();
       if (result.success) {
         items = [...items, result.data];
-        showAddItemDialog = false;
+        showAddItemDialog = $state(false);
         resetNewItem();
         toast.success('Item added successfully');
       } else {
@@ -122,16 +109,13 @@
       toast.error('Failed to add item');
     }
   }
-
   // Delete item
   async function deleteItem(item) {
     if (!confirm('Are you sure you want to delete this item?')) return;
-
     try {
       const response = await fetch(`/api/evidence-boards/${boardId}/items/${item.id}`, {
         method: 'DELETE',
       });
-
       if (response.ok) {
         items = items.filter(i => i.id !== item.id);
         toast.success('Item deleted successfully');
@@ -143,7 +127,6 @@
       toast.error('Failed to delete item');
     }
   }
-
   // Reset new item form
   function resetNewItem() {
     newItem = {
@@ -153,7 +136,6 @@
       poiId: null,
     };
   }
-
   // Get item display text
   function getItemText(item) {
     if (item.type === 'evidence' && item.evidence) {
@@ -164,7 +146,6 @@
       return item.content || 'Note';
     }
   }
-
   // Get item color
   function getItemColor(type) {
     const colors = {
@@ -176,13 +157,11 @@
     };
     return colors[type] || 'bg-gray-50 border-gray-200';
   }
-
   // Initialize on mount
   onMount(() => {
     loadBoard();
   });
 </script>
-
 <div class="evidence-board-container min-h-screen p-6">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
@@ -194,7 +173,6 @@
         {board?.description || 'Visual evidence organization'}
       </p>
     </div>
-
     <div class="flex items-center gap-2">
       <Button onclick={() => (showAddItemDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
@@ -206,7 +184,6 @@
       </Button>
     </div>
   </div>
-
   <!-- Loading State -->
   {#if isLoading}
     <div class="flex items-center justify-center py-12">
@@ -229,7 +206,7 @@
   {:else}
     <!-- Items Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {#each items as item}
+      {#each Array.isArray(items) ? items : [] as item}
         <Card class="p-4 hover:shadow-lg transition-shadow {getItemColor(item.type)}">
           <div class="flex items-start justify-between mb-2">
             <Badge variant="outline" class="text-xs">
@@ -244,11 +221,9 @@
               </Button>
             </div>
           </div>
-
           <h4 class="font-medium text-gray-900 dark:text-white mb-2">
             {getItemText(item)}
           </h4>
-
           {#if item.type === 'evidence' && item.evidence}
             <p class="text-sm text-gray-600 dark:text-gray-400">
               {item.evidence.description || 'No description'}
@@ -264,10 +239,8 @@
           {/if}
         </Card>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <!-- Add Item Dialog -->
 <Dialog bind:open={showAddItemDialog}>
   <div class="p-6">
@@ -284,7 +257,6 @@
           bind:selected={newItem.type}
         />
       </div>
-
       {#if newItem.type === 'evidence'}
         <div>
           <Label for="evidence-select">Evidence</Label>
@@ -293,9 +265,7 @@
             bind:selected={newItem.evidenceId}
             placeholder="Select evidence"
           />
-        </div>
-      {/if}
-
+        {/if}
       {#if newItem.type === 'poi'}
         <div>
           <Label for="poi-select">Person of Interest</Label>
@@ -304,16 +274,12 @@
             bind:selected={newItem.poiId}
             placeholder="Select POI"
           />
-        </div>
-      {/if}
-
+        {/if}
       {#if newItem.type === 'note'}
         <div>
           <Label for="note-content">Content</Label>
           <Input id="note-content" bind:value={newItem.content} placeholder="Enter note content" />
-        </div>
-      {/if}
-
+        {/if}
       <div class="flex justify-end gap-2">
         <Button type="button" variant="ghost" onclick={() => (showAddItemDialog = false)}>Cancel</Button>
         <Button type="submit">Add Item</Button>

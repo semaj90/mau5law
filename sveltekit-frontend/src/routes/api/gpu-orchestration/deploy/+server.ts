@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(await getOrchestrationStatus());
       default: return error(400, 'Invalid action. Use deploy, start, stop, or status.');
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ GPU orchestration deployment error:', err);
     return error(500, `Deployment failed: ${(err as Error).message}`);
   }
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async () => {
   try {
     const status = await getOrchestrationStatus();
     return json(status);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Failed to get orchestration status:', err);
     return error(500, `Status check failed: ${(err as Error).message}`);
   }
@@ -107,7 +107,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
       status,
       timestamp: new Date().toISOString(),
     });
-  } catch (deployError: unknown) {
+  } catch (deployError: any) {
     console.error('❌ Deployment failed:', deployError);
     return json(
       {
@@ -154,7 +154,7 @@ async function validateModelConstraints(config: DeploymentConfig): Promise<void>
     }
     console.log('✅ Model constraints validated');
     return;
-  } catch (validationError: unknown) {
+  } catch (validationError: any) {
     throw new Error(`Model validation failed: ${(validationError as Error).message}`);
   }
 }
@@ -187,7 +187,7 @@ async function startErrorProcessorService(_config: DeploymentConfig): Promise<vo
     } else {
       console.log('⚠️ GPU service not responding, will start embedded');
     }
-  } catch (_err: unknown) {
+  } catch (_err: any) {
     console.log('⚠️ Starting embedded GPU error processor');
   }
   return;
@@ -205,7 +205,7 @@ async function configureMCPIntegration(_config: DeploymentConfig): Promise<void>
     } else {
       throw new Error('MCP configuration file not found');
     }
-  } catch (mcpError: unknown) {
+  } catch (mcpError: any) {
     throw new Error(`MCP configuration failed: ${(mcpError as Error).message}`);
   }
 }
@@ -224,7 +224,7 @@ async function verifyFlashAttentionGPU(): Promise<void> {
     } else {
       console.warn('⚠️ FlashAttention GPU test failed, CPU fallback available');
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('⚠️ FlashAttention verification failed:', (err as Error).message);
   }
   return;
@@ -265,7 +265,7 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<void> {
   try {
     await writeFile(reportPath, JSON.stringify(report, null, 2));
     console.log('✅ Deployment report updated');
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('⚠️ Failed to update deployment report:', (err as Error).message);
   }
   return;
@@ -300,7 +300,7 @@ async function startOrchestrationSystem(): Promise<Response> {
           status: response.ok ? 'running' : 'error',
           available: true,
         });
-      } catch (_err: unknown) {
+      } catch (_err: any) {
         serviceStatus.push({
           name: service.name,
           port: service.port,
@@ -316,7 +316,7 @@ async function startOrchestrationSystem(): Promise<Response> {
       services: serviceStatus,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Failed to start orchestration system:', err);
     return json(
       {
@@ -400,7 +400,7 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
     const modelsResponse = await fetch('http://localhost:11434/api/tags');
     if (modelsResponse.ok) {
       const models = await modelsResponse.json();
-      const modelNames = models.models?.map((m: unknown) => (m as { name: string }).name) || [];
+      const modelNames = models.models?.map((m: any) => (m as { name: string }).name) || [];
       status.models.gemma3Legal = modelNames.some((name: string) => name.includes('gemma3-legal'))
         ? 'available'
         : 'missing';
@@ -503,7 +503,7 @@ async function $deployCompleteLocal(): Promise<{
       await step.action();
       results.push({ step: step.name, status: 'success' });
       console.log(`✅ ${step.name} completed`);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error(`❌ ${step.name} failed:`, err);
       results.push({
         step: step.name,

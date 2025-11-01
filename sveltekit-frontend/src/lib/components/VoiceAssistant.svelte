@@ -1,32 +1,27 @@
 <script lang="ts">
   import { speak } from './speak';
-
   let isSupported = $state(false);
   let isListening = $state(false);
   let finalTranscript = $state('');
   let interimTranscript = $state('');
   let currentTranscript = $state('');
   let recognition = $state<any | null>(null);
-
   $effect(() => {
     const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     if (!SpeechRecognition) {
-      isSupported = false;
+      isSupported = $state(false);
       return;
     }
-
     isSupported = true;
     recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
     if ('maxAlternatives' in recognition) recognition.maxAlternatives = 1;
-
     recognition.onstart = () => {
       isListening = true;
       speak("I'm listening. You can ask me legal questions or give voice commands.");
     };
-
     recognition.onresult = (ev: any) => {
       let interim = '';
       let final = '';
@@ -45,16 +40,14 @@
       interimTranscript = interim;
       currentTranscript = final + interim;
     };
-
     recognition.onend = () => {
-      isListening = false;
+      isListening = $state(false);
       if (!finalTranscript) {
         speak('No speech detected. Please try again.');
       }
     };
-
     recognition.onerror = (ev: any) => {
-      isListening = false;
+      isListening = $state(false);
       const err = ev?.error ?? 'unknown';
       if (err === 'no-speech') {
         speak('No speech detected. Please try again.');
@@ -66,7 +59,6 @@
         speak('Error occurred in recognition: ' + err);
       }
     };
-
     return () => {
       try {
         recognition?.stop?.();
@@ -77,7 +69,6 @@
     };
   });
 </script>
-
 {#if isSupported}
   <div>
     {#if isListening}
@@ -89,7 +80,7 @@
       onclick={() => {
         if (isListening) {
           recognition?.stop();
-          isListening = false;
+          isListening = $state(false);
         } else {
           try {
             recognition?.start();
@@ -111,7 +102,6 @@
 {:else}
   <p>Speech recognition is not supported in this browser.</p>
 {/if}
-
 <style>
   /* @unocss-include */
   /* Add your styles here */

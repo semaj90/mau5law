@@ -33,9 +33,9 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   // ======================================================================
   // COMPONENT STATE
   // ======================================================================
@@ -88,10 +88,8 @@ https://svelte.dev/e/attribute_duplicate -->
       try {
         // Initialize enhanced Loki database
         await enhancedLoki.init();
-
         // Initialize state machines
         machines = await initializeEnhancedMachines();
-
         // Subscribe to real-time updates (safe checks)
         if (machines?.streamingActor?.subscribe) {
           machines.streamingActor.subscribe((state: any) => {
@@ -101,7 +99,6 @@ https://svelte.dev/e/attribute_duplicate -->
             }
           });
         }
-
         console.log('Enhanced Legal AI system initialized successfully');
       } catch (error) {
         console.error('Failed to initialize enhanced system:', error);
@@ -165,7 +162,7 @@ https://svelte.dev/e/attribute_duplicate -->
     evidenceText = '';
     processingActive = true;
   }
-  async function addDemoEvidence(demoEvidence: unknown) {
+  async function addDemoEvidence(demoEvidence: any) {
     if (!machines?.evidenceActor) return;
     machines.evidenceActor.send({
       type: 'ADD_EVIDENCE',
@@ -269,7 +266,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <h3 class="nes-text is-primary">Demo Evidence</h3>
           </div>
           <div class="yorha-panel-content space-y-3">
-            {#each demoEvidences as demo}
+            {#each Array.isArray(demoEvidences) ? demoEvidences : [] as demo}
               <div class="border rounded-lg p-3">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-medium text-sm">{demo.fileName}</h4>
@@ -329,8 +326,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 </p>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Processing Results -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -341,24 +337,23 @@ https://svelte.dev/e/attribute_duplicate -->
               <p class="text-gray-500 text-center py-4">No results yet</p>
             {:else}
               <div class="space-y-3 max-h-64 overflow-y-auto">
-                {#each processingResults.slice(-5) as result}
+                {#each Array.isArray(processingResults.slice(-5)) ? processingResults.slice(-5) : [] as result}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
-                      <Badge class="{(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white">
-                        {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).status}
+                      <Badge class="{(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white">
+                        {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status}
                       </Badge>
                       <span class="text-xs text-gray-500">
-                        {formatTimestamp((result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).timestamp)}
+                        {formatTimestamp((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).timestamp)}
                       </span>
                     </div>
-                    <p class="text-sm">Evidence: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).evidenceId}</p>
-                    <p class="text-sm">Type: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).type}</p>
-                    <p class="text-sm">Confidence: {((result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).confidence * 100).toFixed(1)}%</p>
-                    <p class="text-sm">Time: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).processingTime}ms</p>
+                    <p class="text-sm">Evidence: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).evidenceId}</p>
+                    <p class="text-sm">Type: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).type}</p>
+                    <p class="text-sm">Confidence: {((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).confidence * 100).toFixed(1)}%</p>
+                    <p class="text-sm">Time: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).processingTime}ms</p>
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
         <!-- AI Recommendations -->
@@ -371,7 +366,7 @@ https://svelte.dev/e/attribute_duplicate -->
               <p class="text-gray-500 text-center py-4">No recommendations yet</p>
             {:else}
               <div class="space-y-3 max-h-48 overflow-y-auto">
-                {#each aiRecommendations.slice(-3) as rec}
+                {#each Array.isArray(aiRecommendations.slice(-3)) ? aiRecommendations.slice(-3) : [] as rec}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{rec.type}</span>
@@ -383,8 +378,7 @@ https://svelte.dev/e/attribute_duplicate -->
                     <p class="text-xs text-gray-500 mt-1">Source: {rec.source}</p>
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       </div>
@@ -400,7 +394,7 @@ https://svelte.dev/e/attribute_duplicate -->
               <p class="text-gray-500 text-center py-4">No matches found</p>
             {:else}
               <div class="space-y-3 max-h-64 overflow-y-auto">
-                {#each vectorMatches.slice(0, 5) as match}
+                {#each Array.isArray(vectorMatches.slice(0, 5)) ? vectorMatches.slice(0, 5) : [] as match}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
                       <Badge>Rank #{match.rank}</Badge>
@@ -412,8 +406,7 @@ https://svelte.dev/e/attribute_duplicate -->
                     <p class="text-xs text-gray-500 mt-1">ID: {match.id}</p>
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
         <!-- Graph Relationships -->
@@ -426,7 +419,7 @@ https://svelte.dev/e/attribute_duplicate -->
               <p class="text-gray-500 text-center py-4">No relationships found</p>
             {:else}
               <div class="space-y-3 max-h-64 overflow-y-auto">
-                {#each graphRelationships.slice(0, 5) as node}
+                {#each Array.isArray(graphRelationships.slice(0, 5)) ? graphRelationships.slice(0, 5) : [] as node}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{node.type}</span>
@@ -437,17 +430,15 @@ https://svelte.dev/e/attribute_duplicate -->
                     <p class="font-medium text-sm">{node.label}</p>
                     {#if node.connections?.length}
                       <div class="mt-2 space-y-1">
-                        {#each node.connections.slice(0, 2) as conn}
+                        {#each Array.isArray(node.connections.slice(0, 2)) ? node.connections.slice(0, 2) : [] as conn}
                           <div class="text-xs bg-gray-50 rounded p-1">
                             {conn.type} → {conn.to} (strength: {conn.strength.toFixed(2)})
                           </div>
                         {/each}
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
         <!-- Cache Statistics -->
@@ -485,8 +476,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   <span class="text-sm font-medium">
                     {formatTimestamp(cacheStats.lastSync)}
                   </span>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
@@ -500,7 +490,7 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
         <div class="yorha-panel-content">
           <div class="space-y-2 max-h-32 overflow-y-auto">
-            {#each realTimeUpdates.slice(-5) as update}
+            {#each Array.isArray(realTimeUpdates.slice(-5)) ? realTimeUpdates.slice(-5) : [] as update}
               <div class="flex items-center justify-between text-sm bg-blue-50 rounded p-2">
                 <span>{update.type || 'Update'}: {JSON.stringify(slice)(0, 50)}...</span>
                 <span class="text-xs text-gray-500">
@@ -510,8 +500,7 @@ https://svelte.dev/e/attribute_duplicate -->
             {/each}
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>

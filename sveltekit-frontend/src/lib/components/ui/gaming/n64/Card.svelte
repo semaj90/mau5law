@@ -41,9 +41,9 @@
     enableSpatialAudio?: boolean;
     enableDepthShadows?: boolean;
     // Content slots
-    header?: unknown;
-    footer?: unknown;
-    children?: unknown;
+    header?: any;
+    footer?: any;
+    children?: any;
     class?: string;
   }
   let {
@@ -156,7 +156,7 @@
     isPressed = true;
     await playCardSound(440, 0.3);
     setTimeout(() => {
-      isPressed = false;
+      isPressed = $state(false);
     }, 200);
     onClick?.();
     // ondispatch removed;
@@ -169,7 +169,7 @@
     // ondispatch removed;
   }
   const handleUnhover = () => {
-    isHovered = false;
+    isHovered = $state(false);
   }
   const handleFocus = () => {
     if (disabled) return;
@@ -179,7 +179,7 @@
     // ondispatch removed;
   }
   const handleBlur = () => {
-    isFocused = false;
+    isFocused = $state(false);
   }
   const handleKeyDown = (_event: KeyboardEvent) => {
     if (clickable && (event.key === 'Enter' || event.key === ' ')) {
@@ -342,8 +342,7 @@
   {#if header}
     <div class="nier-bits-yorha-panel-header">
       {@render header()}
-    </div>
-  {/if}
+    {/if}
   <div class="nier-bits-yorha-panel-content">
     {#if loading}
       <div class="loading-overlay">
@@ -351,26 +350,21 @@
         <div class="loading-text">Loading...</div>
       </div>
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
   </div>
   {#if footer}
     <div class="nier-bits-yorha-panel-content">
       {@render footer()}
-    </div>
-  {/if}
+    {/if}
   {#if enableLighting}
-    <div class="lighting-overlay"></div>
-  {/if}
+    <div class="lighting-overlay">{/if}
   {#if enableReflections}
-    <div class="reflection-overlay"></div>
-  {/if}
+    <div class="reflection-overlay">{/if}
   {#if enableAtmosphere}
-    <div class="atmosphere-overlay"></div>
-  {/if}
+    <div class="atmosphere-overlay">{/if}
   {#if enableDepthShadows}
-    <div class="depth-shadow"></div>
-  {/if}
+    <div class="depth-shadow">{/if}
 </div>
 <style>
   .n64-card {
@@ -380,7 +374,7 @@
     border: 1px solid var(--material-border);
     border-radius: 6px;
     padding: var(--card-padding);
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -417,7 +411,7 @@
   }
   .card-content {
     flex: 1,
-    position relative;
+    position: relative;
     z-index: 2,
   }
   .card-footer {
@@ -428,7 +422,7 @@
     opacity: 0.8;
   }
 /* Loading overlay */ .loading-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -478,7 +472,7 @@
     50% { opacity: 0.6; }
   }
 /* Lighting overlay */ .lighting-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -489,7 +483,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255,
     border-radius: 6px;
   }
 /* Reflection overlay */ .reflection-overlay {
-    position absolute;
+    position: absolute;
     top: 10%;
     left: 15%;
     right: 60%;
@@ -501,7 +495,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 
     opacity: 0.7;
   }
 /* Atmosphere overlay for depth */ .atmosphere-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -513,7 +507,7 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
     border-radius: 6px;
   }
 /* Depth shadow */ .depth-shadow {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 5%;
     right: 5%;
@@ -575,7 +569,7 @@ filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
 /* Fog effects */ .n64-card::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,

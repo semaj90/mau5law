@@ -14,7 +14,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
   private redis: Redis;
   private centroids: number[][] = [];
   private labels: number[] = [];
-  private trained: boolean = false;
+  private trained: boolean = $state(false);
   private silhouetteScore: number = 0;
   constructor(config: KMeansConfig, redis: Redis) {
     super(config);

@@ -10,7 +10,6 @@
   }
   let { title, modified = false, children }: Props = $props();
 </script>
-
 <div class="editor-card">
   {#if title}
     <div class="editor-card-header">
@@ -18,13 +17,11 @@
       {#if modified}
         <span class="modified-badge">Modified</span>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <div class="editor-card-content">
-    {@render children?.()}
+    <slot />
   </div>
 </div>
-
 <style>
   .editor-card {
     background: var(--surface, #ffffff);
@@ -69,5 +66,3 @@
     }
   }
 </style>
-
-

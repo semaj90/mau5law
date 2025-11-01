@@ -231,8 +231,8 @@ export interface AuditLogEntry {
   userId: string;
   action: string;
   resource: string;
-  oldValue?: unknown;
-  newValue?: unknown;
+  oldValue?: any;
+  newValue?: any;
   metadata: Record<string, unknown>;
 }
 export interface CaseFilters {
@@ -295,8 +295,8 @@ export interface ConflictResolutionState {
 }
 export interface DataConflict {
   field: string;
-  localValue: unknown;
-  remoteValue: unknown;
+  localValue: any;
+  remoteValue: any;
   timestamp: Date;
   userId: string;
 }

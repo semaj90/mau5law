@@ -55,19 +55,19 @@
     evidenceCanvas.clear();
     // Render each evidence item
     evidenceData.forEach.color;
-      ctx.fillRect.x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
+      ctx.fillRect.x, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).width, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).height);
       // Draw border
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
-      ctx.strokeRect.x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
+      ctx.strokeRect.x, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).width, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).height);
       // Draw title
       ctx.fillStyle = '#ffffff';
       ctx.font = '14px system-ui';
-      ctx.fillText.title, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 25);
+      ctx.fillText.title, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).x + 10, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y + 25);
       // Draw type indicator
       ctx.fillStyle = '#000000';
       ctx.font = '12px system-ui';
-      ctx.fillText.type}`, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 45);
+      ctx.fillText.type}`, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).x + 10, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y + 45);
     });
   }
   function addEvidenceItem() {
@@ -155,19 +155,19 @@
     <div class="bg-slate-800 p-4 rounded border border-slate-700">
       <h3 class="font-semibold mb-3">Evidence Items ({evidenceData.length})</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
-        {#each evidenceData as item}
+        {#each Array.isArray(evidenceData) ? evidenceData : [] as item}
           <div class="flex items-center gap-3 p-2 bg-slate-700 rounded">
             <div
               class="w-4 h-4 rounded"
               style="background-color: {(
                 item as {
-                  color?: unknown;
-                  x?: unknown;
-                  y?: unknown;
-                  width?: unknown;
-                  height?: unknown;
-                  title?: unknown;
-                  type?: unknown;
+                  color?: any;
+                  x?: any;
+                  y?: any;
+                  width?: any;
+                  height?: any;
+                  title?: any;
+                  type?: any;
                 }
               ).color}"
             ></div>
@@ -175,26 +175,26 @@
               <div class="font-medium">
                 {(
                   item as {
-                    color?: unknown;
-                    x?: unknown;
-                    y?: unknown;
-                    width?: unknown;
-                    height?: unknown;
-                    title?: unknown;
-                    type?: unknown;
+                    color?: any;
+                    x?: any;
+                    y?: any;
+                    width?: any;
+                    height?: any;
+                    title?: any;
+                    type?: any;
                   }
                 ).title}
               </div>
               <div class="text-gray-400 capitalize">
                 {(
                   item as {
-                    color?: unknown;
-                    x?: unknown;
-                    y?: unknown;
-                    width?: unknown;
-                    height?: unknown;
-                    title?: unknown;
-                    type?: unknown;
+                    color?: any;
+                    x?: any;
+                    y?: any;
+                    width?: any;
+                    height?: any;
+                    title?: any;
+                    type?: any;
                   }
                 ).type}
               </div>

@@ -33,7 +33,7 @@ export interface UserHistoryEntry {
   outcome: {
     success: boolean;
     duration: number;
-    result?: unknown;
+    result?: any;
     error?: string;
     userFeedback?: 'positive' | 'negative' | 'neutral';
     confidence?: number;
@@ -109,10 +109,10 @@ export interface ProductivityCache {
     timeframe: string;
   };
   cached: {
-    insights: unknown[];        // tightened from any[]
-    connections: unknown[];     // tightened from any[]
-    recommendations: unknown[]; // tightened from any[]
-    analysis: unknown;          // tightened from any
+    insights: any[];        // tightened from any[]
+    connections: any[];     // tightened from any[]
+    recommendations: any[]; // tightened from any[]
+    analysis: any;          // tightened from any
     timestamp: number;
   };
   performance: {
@@ -170,13 +170,13 @@ interface NodePosition {
   id: string;
   pageRankScore?: number;
   avgDuration?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface Visualization {
   metadata?: {
     nodePositions?: NodePosition[];
-    [k: string]: unknown;
+    [k: string]: any;
   };
 }
 
@@ -197,7 +197,7 @@ interface PredictionsPayload {
 interface PatternPayload {
   description?: string;
   confidence?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface AnalyticsUpdatePayload extends Partial<UserAnalyticsProfile> {}
@@ -238,7 +238,7 @@ export class UserAnalyticsRLIntegration {
   // Processing state
   private processingWorkers: Worker[] = [];
   private cacheWorker: Worker | null = null;
-  private isProcessing = false;
+  private isProcessing = $state(false);
   private maxConcurrentProcesses = 6;
   // Analytics tracking
   private sessionId: string;
@@ -314,7 +314,7 @@ export class UserAnalyticsRLIntegration {
     } catch (error) {
       console.error('Failed to initialize workers:', error);
       // if worker init fails, ensure flag reflects that we're not processing
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
     }
   }
   /**
@@ -374,7 +374,7 @@ export class UserAnalyticsRLIntegration {
     actionId: string,
     outcome: {
       success: boolean;
-      result?: unknown; // tightened from any -> unknown
+      result?: any; // tightened from any -> unknown
       error?: string;
       userFeedback?: 'positive' | 'negative' | 'neutral';
       confidence?: number;
@@ -732,7 +732,7 @@ export class UserAnalyticsRLIntegration {
   }
 
   // Worker message handlers
-  private handleWorkerMessage(_workerId: number, data: { type: string; payload?: unknown }) {
+  private handleWorkerMessage(_workerId: number, data: { type: string; payload?: any }) {
     const { type, payload } = data;
     switch (type) {
       case 'analytics_updated':
@@ -754,7 +754,7 @@ export class UserAnalyticsRLIntegration {
     }
   }
 
-  private handleCacheMessage(data: { type: string; payload?: unknown }) {
+  private handleCacheMessage(data: { type: string; payload?: any }) {
     const { type, payload } = data;
     switch (type) {
       case 'cache_updated':

@@ -6,15 +6,15 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import {
     Play,
     Pause,
@@ -132,7 +132,7 @@ if (autoStart) {
     } catch (error) {
       console.error('Failed to initialize orchestrator:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function refreshStatus() {
@@ -317,8 +317,7 @@ showSettings = !showSettings}
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Provider Status -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -329,7 +328,7 @@ showSettings = !showSettings}
     </div>
     <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {#each providerConfigs as provider}
+        {#each Array.isArray(providerConfigs) ? providerConfigs : [] as provider}
           <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
@@ -345,7 +344,7 @@ showSettings = !showSettings}
             <div class="space-y-2">
               <p class="text-xs text-gray-500">{provider.endpoint}</p>
               <div class="flex flex-wrap gap-1">
-                {#each provider.models.slice(0, 2) as model}
+                {#each Array.isArray(provider.models.slice(0, 2)) ? provider.models.slice(0, 2) : [] as model}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{model.split(':')[0]}</span>
                 {/each}
                 {#if provider.models.length > 2}
@@ -410,8 +409,7 @@ cancelTask(taskId)}
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Recent Results -->
   {#if completedTasks.size > 0 || taskErrors.size > 0}
     <div class="nes-container">
@@ -457,8 +455,7 @@ cancelTask(taskId)}
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Worker Pool Status -->
   {#if showMetrics && workerPool}
     <div class="nes-container">
@@ -497,11 +494,9 @@ cancelTask(taskId)}
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* @unocss-include */

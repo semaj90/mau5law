@@ -4,16 +4,16 @@
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import { Dialog } from 'bits-ui'; // Changed from MeltDialog to bits-ui
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Input from '$lib/components/ui/Input.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Input } from '$lib/components/ui/Input.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import ScrollArea from '$lib/components/ui/scrollarea/ScrollArea.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { ScrollArea } from '$lib/components/ui/scrollarea/ScrollArea.svelte';
   import {
     Bot,
     User,
@@ -28,7 +28,6 @@
   } from 'lucide-svelte';
   import { getOllamaHealthEndpoint } from '$lib/utils/ollama-endpoint'; // Import Ollama endpoint utility
   import type { ChatMessage } from '$lib/types/chat'; // Import ChatMessage type
-
   // Props using Svelte 5 runes
   let { open = $bindable(false),
     caseId = undefined,
@@ -38,7 +37,6 @@
     caseId?: string;
     title?: string;
   } = $props();
-
   // State using Svelte 5 runes
   let messages = $state<ChatMessage[]>([]); // Fixed array type
   let currentMessage = $state('');
@@ -47,7 +45,6 @@
   let connectionStatus = $state<'checking' | 'connected' | 'error'>('checking');
   let messagesContainer: HTMLElement = $state(undefined as any);
   let inputElement: HTMLInputElement = $state(undefined as any);
-
   // Check system status on mount
   $effect(() => {
     if (browser) {
@@ -74,7 +71,6 @@
       })(); // End of IIFE
     }
   });
-
   // Check system health
   async function checkSystemHealth() {
     try {
@@ -92,7 +88,7 @@
           isConnected = true;
           connectionStatus = 'connected';
         } else {
-          isConnected = false;
+          isConnected = $state(false);
           connectionStatus = 'error';
         }
       }
@@ -109,22 +105,19 @@
         }
       } catch (fallbackError) {
         connectionStatus = 'error';
-        isConnected = false;
+        isConnected = $state(false);
       }
     }
   }
-
   // Send message to AI
   async function sendMessage() {
     if (!currentMessage.trim() || isLoading) return;
-
     const userMessage: ChatMessage = { // Explicitly type
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage.trim(),
       timestamp: new Date(),
     }
-
     const loadingMessage: ChatMessage = { // Explicitly type
       id: 'loading',
       role: 'assistant',
@@ -132,17 +125,14 @@
       timestamp: new Date(),
       loading: true,
     }
-
     // Add messages and clear input
     messages = [...messages, userMessage, loadingMessage];
     const messageContent = currentMessage; // Fixed typo
     currentMessage = '';
     isLoading = true;
-
     // Scroll to bottom
     await tick();
     scrollToBottom();
-
     try {
       const response = await fetch('/api/contextual/chat', { // Changed from /api/chat to /api/contextual/chat
         method: 'POST',
@@ -169,18 +159,14 @@
           ],
         }),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
       // Handle streaming response
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-
       // Remove loading message
       messages = messages.filter((m) => m.id !== 'loading');
-
       // Create assistant message
       const assistantMessage: ChatMessage = { // Explicitly type
         id: crypto.randomUUID(),
@@ -194,7 +180,6 @@
         },
       }
       messages = [...messages, assistantMessage];
-
       if (reader) {
         let fullContent = ''; // Removed $state, it's a local variable for accumulating stream
         while (true) {
@@ -237,10 +222,9 @@
         },
       ];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   // Handle Enter key
   function handleKeydown(event: KeyboardEvent) { // Removed unused _event, added type
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -248,14 +232,12 @@
       sendMessage();
     }
   }
-
   // Scroll to bottom of messages
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-
   // Clear conversation
   function clearMessages() {
     messages = [
@@ -271,7 +253,6 @@
       },
     ];
   }
-
   // Download conversation
   function downloadConversation() {
     const data = {
@@ -289,7 +270,6 @@
     a.click();
     URL.revokeObjectURL(url);
   }
-
   // Connection status component
   function getStatusIcon() {
     switch (connectionStatus) {
@@ -302,7 +282,6 @@
       default: return XCircle; // Fixed typo
     }
   }
-
   function getStatusColor() {
     switch (connectionStatus) {
       case 'checking':
@@ -315,7 +294,6 @@
     }
   }
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Trigger>
     <Button variant="ghost" class="gap-2 nes-btn"> <!-- Simplified bits-btn -->
@@ -383,8 +361,7 @@
               {#if message.role === 'assistant'}
                 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center nes-container is-dark is-small"> <!-- Adjusted styling -->
                   <Bot class="h-4 w-4 nes-text is-primary" /> <!-- Adjusted color -->
-                </div>
-              {/if}
+                {/if}
               <div
                 class="max-w-[80%] p-3 {message.role === 'user'
                   ? 'nes-container is-primary' // Changed to nes-container primary
@@ -410,8 +387,7 @@
                         >{message.metadata.gpu}</span
                       >
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
                 <div class="text-xs opacity-70 mt-1 nes-text is-disabled"> <!-- Adjusted styling -->
                   {message.timestamp.toLocaleTimeString()}
                 </div>
@@ -419,8 +395,7 @@
               {#if message.role === 'user'}
                 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center nes-container is-primary is-small"> <!-- Adjusted styling -->
                   <User class="h-4 w-4 nes-text is-dark" /> <!-- Adjusted color -->
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
         </div>
@@ -465,7 +440,6 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
 /* Custom styles for enhanced appearance */
   :global(.chat-message-content) {
@@ -543,4 +517,3 @@
     flex-grow: 1;
   }
 </style>
-

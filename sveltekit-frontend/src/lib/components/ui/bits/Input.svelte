@@ -64,7 +64,6 @@
     return classes.join(' ');
   });
 </script>
-
 <div class="input-wrapper" class:w-full={fullWidth}>
   {#if label}
     <label for={id} class={nesStyle ? 'nes-label' : 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}>
@@ -116,7 +115,6 @@
     </p>
   {/if}
 </div>
-
 <style>
   .input-wrapper {
     /* @apply space-y-1; */

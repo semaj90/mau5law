@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'x-encode-time': `${Number(metrics?.encodeTime ?? 0).toFixed(2)}ms`,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Binary shader cache GET error:', getErrorMessage(error));
     return json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     // Auto-detect request encoding
     const contentType = request.headers.get('content-type') || '';
-    let requestData: unknown;
+    let requestData: any;
     if (contentType.includes('application/cbor')) {
       const buffer = await request.arrayBuffer();
       const { decoded } = await binaryEncoder.decode(buffer, 'cbor');
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Binary shader cache POST error:', getErrorMessage(error));
     return json({ error: 'Failed to store shader' }, { status: 500 });
   }
@@ -164,7 +164,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
 
     // Normalize encoded shaders into concrete primitive types to satisfy TypeScript
-    const mappedShaders = (results.encodedShaders ?? []).map((shader: unknown, i: number) => {
+    const mappedShaders = (results.encodedShaders ?? []).map((shader: any, i: number) => {
       const s = (shader && typeof shader === 'object' ? (shader as Record<string, unknown>) : {}) as Record<
         string,
         unknown
@@ -211,7 +211,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Binary shader cache batch error:', getErrorMessage(error));
     return json({ error: 'Batch processing failed' }, { status: 500 });
   }
@@ -230,7 +230,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     }
 
     // Normalize binaryAssets to ArrayBuffer[]
-    const rawAssets = (webgpuShader as { binaryAssets?: unknown }).binaryAssets;
+    const rawAssets = (webgpuShader as { binaryAssets?: any }).binaryAssets;
     const assets: ArrayBuffer[] = Array.isArray(rawAssets)
       ? rawAssets.filter((a): a is ArrayBuffer => a instanceof ArrayBuffer)
       : rawAssets instanceof ArrayBuffer
@@ -252,7 +252,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         estimatedLoadTime: `${(compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('WebGPU shader cache error:', getErrorMessage(error));
     return json({ error: 'WebGPU shader retrieval failed' }, { status: 500 });
   }
@@ -267,7 +267,7 @@ export const DELETE: RequestHandler = async () => {
       message: 'Binary encoding metrics cleared',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Metrics clear error:', getErrorMessage(error));
     return json({ error: 'Failed to clear metrics' }, { status: 500 });
   }
@@ -286,7 +286,7 @@ export const OPTIONS: RequestHandler = async () => {
 };
 
 // Helper: convert unknown error to string safely
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
@@ -296,7 +296,7 @@ function getErrorMessage(err: unknown): string {
 }
 
 // Helper: normalize various binary shapes into ArrayBuffer or null
-async function toArrayBuffer(value: unknown): Promise<ArrayBuffer | null> {
+async function toArrayBuffer(value: any): Promise<ArrayBuffer | null> {
   // base64 string (possibly data URL)
   if (typeof value === 'string') {
     const base64 = value.split(',')[1] ?? value;
@@ -351,7 +351,7 @@ async function toArrayBuffer(value: unknown): Promise<ArrayBuffer | null> {
 
   // objects with .buffer property (e.g., { buffer: ArrayBuffer | SharedArrayBuffer })
   if (value && typeof value === 'object' && 'buffer' in (value as object)) {
-    const possible = (value as { buffer?: unknown }).buffer;
+    const possible = (value as { buffer?: any }).buffer;
     if (possible instanceof ArrayBuffer || possible instanceof SharedArrayBuffer) {
       // try to honor optional byteOffset/byteLength if present on the object
       const byteOffset = (value as { byteOffset?: number }).byteOffset ?? 0;
@@ -379,7 +379,7 @@ function normalizeToArrayBuffer(
 }
 
 // Lightweight typed helpers for runtime-shape interactions
-type MethodFn = (...args: unknown[]) => Promise<unknown> | unknown;
+type MethodFn = (...args: any[]) => Promise<unknown> | unknown;
 
 type ShaderRaw = Record<string, unknown> | null | undefined;
 
@@ -402,9 +402,9 @@ type ShaderEntry = {
   metrics?: { compressionRatio?: number; decodingTime?: number; encodeTime?: number };
   compiledBinary?: ArrayBuffer;
   binaryAssets?: ArrayBuffer | ArrayBuffer[];
-  shaderModule?: unknown;
+  shaderModule?: any;
   compressionSavings?: number;
-  [id: string]: unknown;
+  [id: string]: any;
 };
 
 type NormalizedEntry = {
@@ -547,7 +547,7 @@ function normalizeEntry(raw: ShaderRaw): NormalizedEntry {
   };
 }
 
-async function safeStoreShader(payload: unknown): Promise<NormalizedEntry> {
+async function safeStoreShader(payload: any): Promise<NormalizedEntry> {
   const candidates = [
     'storeShader',
     'saveShader',
@@ -580,7 +580,7 @@ async function safeOptimizeForLegalWorkflow(workflowType: string): Promise<unkno
   return null;
 }
 
-async function safeBatchEncodeShaders(shaders: unknown[]): Promise<BatchEncodeResult> {
+async function safeBatchEncodeShaders(shaders: any[]): Promise<BatchEncodeResult> {
   const candidates = ['batchEncodeShaders', 'batchEncode', 'encodeShadersBatch', 'batchProcess', 'encodeBatch'];
   const fn = getMethod(binaryGPUShaderCache as unknown as Record<string, unknown>, candidates);
   if (fn) {
@@ -591,7 +591,7 @@ async function safeBatchEncodeShaders(shaders: unknown[]): Promise<BatchEncodeRe
   // Fallback: attempt a best-effort local encoding shape so API continues to work
   const arr = Array.isArray(shaders) ? shaders : [];
   return {
-    encodedShaders: arr.map((s: unknown, i: number) => {
+    encodedShaders: arr.map((s: any, i: number) => {
       const r = (s && typeof s === 'object' ? (s as Record<string, unknown>) : {}) as Record<string, unknown>;
       return {
         cacheKey: typeof r['cacheKey'] === 'string' ? (r['cacheKey'] as string) : `generated-${Date.now()}-${i}`,
@@ -607,7 +607,7 @@ async function safeBatchEncodeShaders(shaders: unknown[]): Promise<BatchEncodeRe
 }
 
 // Lightweight runtime coercion helpers to avoid `unknown` -> `string|number` errors
-function asString(v: unknown, fallback = ''): string {
+function asString(v: any, fallback = ''): string {
   // keep falsy/undefined handled consistently
   if (typeof v === 'string') return v;
   try {
@@ -618,7 +618,7 @@ function asString(v: unknown, fallback = ''): string {
     return fallback;
   }
 }
-function asNumber(v: unknown, fallback = 0): number {
+function asNumber(v: any, fallback = 0): number {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
   const n = Number(v as unknown);
   return Number.isFinite(n) ? n : fallback;

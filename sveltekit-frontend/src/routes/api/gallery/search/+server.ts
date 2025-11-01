@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     const pageSize = Math.min(options?.pageSize || 20, 100);
     const sortBy = options?.sortBy || 'uploadedAt';
     const sortOrder = options?.sortOrder || 'desc';
-    const includeMetadata = options?.includeMetadata !== false;
+    const includeMetadata = options?.includeMetadata !== $state(false);
     const includeContent = options?.includeContent || false;
 
     // Build the base query (aliasing DB columns to friendly keys)
@@ -222,7 +222,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
   // Text search across multiple fields
   if (filters?.query) {
     const searchTerm = `%${filters.query}%`;
-    const ilikeExpr = (col: unknown) => sql`${col} ILIKE ${searchTerm}`;
+    const ilikeExpr = (col: any) => sql`${col} ILIKE ${searchTerm}`;
     conditions.push(
       or(
         ilikeExpr(E.title),

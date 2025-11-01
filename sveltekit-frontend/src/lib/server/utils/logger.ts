@@ -36,7 +36,7 @@ interface LoggerConfig {
 class Logger {
   private config: LoggerConfig;
   private logQueue: LogEntry[] = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   constructor(config: Partial<LoggerConfig> = {}) {
     this.config = {
       level: LogLevel.INFO,
@@ -86,7 +86,7 @@ class Logger {
       });
       this.logQueue.unshift(...retriableLogs);
     } finally {
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
     }
   }
   private async storeLogs(logs: LogEntry[]): Promise<void> {

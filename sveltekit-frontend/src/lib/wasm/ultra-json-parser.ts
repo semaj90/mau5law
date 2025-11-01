@@ -46,7 +46,7 @@ export interface UltraJSONMetrics {
 
 // ---------- MOVED/ADDED: lightweight local type definitions (placed before class) ----------
 interface WasmGpuService {
-  service?: unknown;
+  service?: any;
   initialize?: () => Promise<void>;
 }
 
@@ -54,7 +54,7 @@ interface ParseOptions {
   enableSIMD?: boolean;
   enableGPU?: boolean;
   cacheKey?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface StringifyOptions {
@@ -62,15 +62,15 @@ interface StringifyOptions {
   enableGPU?: boolean;
   enableCompression?: boolean;
   space?: number | string;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface DocWithMetadata {
   metadata?: {
     vectorEmbedding?: number[] | null;
-    [k: string]: unknown;
+    [k: string]: any;
   } | null;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 // ---------- ADDED: minimal WebGPU types to avoid `any` casts ----------
@@ -78,11 +78,11 @@ interface GPUAdapter {
   // minimal shape used here; expand if more fields are required
   name?: string;
   // Keep as unknown for adapter-specific methods not needed in this file
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface GPU {
-  requestAdapter?: (options?: unknown) => Promise<GPUAdapter | null>;
+  requestAdapter?: (options?: any) => Promise<GPUAdapter | null>;
 }
 // ---------- END ADDED ----------
 
@@ -93,7 +93,7 @@ export class UltraJSONParser {
   private config: UltraJSONConfig;
   private wasmGpuService: WasmGpuService | null = null;
   private performanceCache = new Map<string, UltraJSONMetrics>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor(config: Partial<UltraJSONConfig> = {}) {
     this.config = {
       enableBrowserSIMD: true,
@@ -432,7 +432,7 @@ export class UltraJSONParser {
   /**
    * Check if object is a legal document
    */
-  private isLegalDocument(obj: unknown): obj is LegalDocument {
+  private isLegalDocument(obj: any): obj is LegalDocument {
     // Guard: must be non-null object
     if (!obj || typeof obj !== 'object') return false;
 
@@ -456,7 +456,7 @@ export class UltraJSONParser {
   /**
    * Ultra-fast JSON stringification with SIMD acceleration
    */
-  async fastStringify(obj: unknown, options: StringifyOptions = {}): Promise<string> {
+  async fastStringify(obj: any, options: StringifyOptions = {}): Promise<string> {
     const startTime = performance.now();
     const opts: StringifyOptions = {
       enableSIMD: this.config.enableBrowserSIMD,
@@ -508,21 +508,21 @@ export class UltraJSONParser {
   /**
    * WASM SIMD stringification
    */
-  private async wasmSIMDStringify(obj: unknown, options: StringifyOptions): Promise<string> {
+  private async wasmSIMDStringify(obj: any, options: StringifyOptions): Promise<string> {
     console.log('⚡ Using WASM SIMD stringification...');
     return JSON.stringify(obj, null, options.space);
   }
   /**
    * WebGPU compute stringification
    */
-  private async webgpuComputeStringify(obj: unknown, options: StringifyOptions): Promise<string> {
+  private async webgpuComputeStringify(obj: any, options: StringifyOptions): Promise<string> {
     console.log('Using WebGPU compute stringification...');
     return JSON.stringify(obj, null, options.space);
   }
   /**
    * NES bridge stringification with FlatBuffer
    */
-  private async nesBridgeStringify(obj: unknown, options: StringifyOptions): Promise<string> {
+  private async nesBridgeStringify(obj: any, options: StringifyOptions): Promise<string> {
     console.log('<� Using NES bridge stringification...');
     if (this.isLegalDocument(obj)) {
       const document = obj as LegalDocument;
@@ -535,7 +535,7 @@ export class UltraJSONParser {
   /**
    * Estimate object size for strategy selection
    */
-  private estimateObjectSize(obj: unknown): number {
+  private estimateObjectSize(obj: any): number {
     // safe stringify of unknown
     try {
       return JSON.stringify(obj).length;
@@ -648,5 +648,5 @@ export const ultraJSONParser = new UltraJSONParser({
 
 // Convenience functions (canonical, typed exports)
 export const fastParse = <T = unknown>(jsonString: string) => ultraJSONParser.fastParse<T>(jsonString);
-export const fastStringify = (obj: unknown, space?: number) => ultraJSONParser.fastStringify(obj, { space });
+export const fastStringify = (obj: any, space?: number) => ultraJSONParser.fastStringify(obj, { space });
 export const bulkParse = <T = unknown>(documents: string[]) => ultraJSONParser.bulkProcess<T>(documents);

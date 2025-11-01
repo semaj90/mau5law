@@ -28,21 +28,21 @@ export interface LegalDocument {
   name?: string;
   type: string;
   metadata?: Record<string, unknown>;
-  chunks?: unknown[];
+  chunks?: any[];
 }
 
 // Add lightweight types for the AI analysis result to avoid: 'any'
 interface SemanticEntity {
   type: string;
   name: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 interface SemanticAnalysisResult {
   keyTopics: string[];
   legalEntities: SemanticEntity[];
   embedding: number[];
   // other optional fields that the analyzer might return
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface LegalPrincipleModification {
@@ -206,7 +206,7 @@ interface CaseAnalysisData {
   content: string;
   legalIssues: string[];
   embedding: number[];
-  entities: { type: string; name: string; [key: string]: unknown }[];
+  entities: { type: string; name: string; [key: string]: any }[];
 }
 
 export class PrecedentAnalysisEngine {
@@ -417,7 +417,7 @@ export class PrecedentAnalysisEngine {
       keyTopics?: string[];
       legalEntities?: Array<Record<string, unknown>>;
       embedding?: number[] | Float32Array;
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     const keyTopics = Array.isArray(normalized.keyTopics) ? normalized.keyTopics : [];

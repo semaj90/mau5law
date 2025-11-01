@@ -3,7 +3,7 @@ export interface ContentNode {
   type: string;
   text?: string;
   children?: ContentNode[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 /**
  * History Manager for undo/redo functionality in reports
@@ -24,7 +24,6 @@ export class HistoryManager {
   addSnapshot(_value: ContentNode[]): void {
     // Remove any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
-
     // Deep clone the incoming value and avoid pushing if identical to the current snapshot
     const snapshot: ContentNode[] = JSON.parse(JSON.stringify(_value));
     const lastSnapshot = this.history[this.currentIndex];
@@ -32,11 +31,9 @@ export class HistoryManager {
       // no changes compared to current snapshot
       return;
     }
-
     // Add new snapshot
     this.history.push(snapshot);
     this.currentIndex = this.history.length - 1;
-
     // Limit history size
     if (this.history.length > this.maxHistorySize) {
       this.history = this.history.slice(-this.maxHistorySize);

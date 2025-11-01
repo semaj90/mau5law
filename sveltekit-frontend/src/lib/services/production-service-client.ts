@@ -30,7 +30,7 @@ export interface QueryOptions {
   context?: string;
   temperature?: number;
   maxTokens?: number;
-  [key: string]: unknown; // Allow for additional arbitrary options
+  [key: string]: any; // Allow for additional arbitrary options
 }
 
 export interface QueryResult {
@@ -38,7 +38,7 @@ export interface QueryResult {
   modelUsed?: string;
   tokensUsed?: number;
   citations?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface SemanticSearchOptions {
@@ -46,7 +46,7 @@ export interface SemanticSearchOptions {
   threshold?: number;
   filters?: Record<string, unknown>;
   vectorEmbedding?: number[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface SemanticSearchResult {
@@ -54,7 +54,7 @@ export interface SemanticSearchResult {
   score: number;
   contentSnippet: string;
   metadata: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface UploadFileOptions {
@@ -63,7 +63,7 @@ export interface UploadFileOptions {
   title?: string;
   description?: string;
   enableAiAnalysis?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface FileUploadResult {
@@ -72,7 +72,7 @@ export interface FileUploadResult {
   file_hash: string;
   file_size: string; // Matches evidence-upload.ts schema
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 class ProductionServiceClient {
@@ -84,7 +84,7 @@ class ProductionServiceClient {
    */
   async makeRequest<T = unknown>(
     endpoint: string,
-    data?: unknown,
+    data?: any,
     options?: RequestInit,
     requestTimeout?: number
   ): Promise<ServiceResponse<T>> {
@@ -222,7 +222,7 @@ class ProductionServiceClient {
    */
   async callService<T = unknown>(
     endpoint: string,
-    data?: unknown,
+    data?: any,
     options?: RequestInit & { preferredProtocol?: ProtocolType; timeout?: number }
   ): Promise<ServiceResponse<T>> {
     const { preferredProtocol, timeout, ...requestInitOptions } = options || {};

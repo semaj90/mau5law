@@ -189,7 +189,6 @@ await loadCases();
   // Reactive search
   // TODO: Convert to $derived: $searchQuery, handleSearch()
 </script>
-
 <!-- Main Container -->
 <div class="legal-case-manager p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
   <!-- Header -->
@@ -255,15 +254,13 @@ await loadCases();
           </button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Loading State -->
   {#if $loading}
     <div class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       <span class="ml-3 text-gray-600">Loading cases...</span>
-    </div>
-  {/if}
+    {/if}
   <!-- Cases Grid -->
   {#if !$loading}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -321,8 +318,7 @@ await loadCases();
                     ></path>
                   </svg>
                   {caseData.location}
-                </div>
-              {/if}
+                {/if}
               {#if caseData.incidentDate}
                 <div class="flex items-center">
                   <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,8 +330,7 @@ await loadCases();
                     ></path>
                   </svg>
                   {new Date(caseData.incidentDate).toLocaleDateString()}
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
           <!-- Card Footer -->
@@ -362,8 +357,7 @@ await loadCases();
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Empty State -->
   {#if !$loading && $cases.length === 0}
     <div class="text-center py-12">
@@ -388,11 +382,9 @@ await loadCases();
             >
               Create First Case
             </button>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <!-- Create Case Modal -->
 {#if $isCreateDialogOpen}
@@ -499,8 +491,7 @@ await loadCases();
         </form>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Edit Case Modal -->
 {#if $isEditDialogOpen}
   <div
@@ -606,9 +597,7 @@ await loadCases();
         </form>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .line-clamp-2 {
     display: -webkit-box;

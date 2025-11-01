@@ -381,13 +381,13 @@
       processingStage = 'complete';
     }
   }
-  function getParticleStyle(particle: unknown) {
+  function getParticleStyle(particle: any) {
     const scale = Math.max(0.1, particle.life);
     const opacity = Math.min(1, particle.life * 2);
     const perspective = 1000;
     const translateZ = particle.z;
     return `
-      position absolute;
+      position: absolute;
       left: 50%;
       top: 50%;
       transform:
@@ -674,7 +674,6 @@
     }
   }
 </script>
-
 <div
   bind:this={container}
   class="nes-lod-processor"
@@ -720,8 +719,7 @@
           </svg>
           <div class="progress-text">{Math.round((document.progress || 0) * 100)}%</div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- 3D Particles -->
     {#each particles as particle (particle.id)}
       <div
@@ -810,8 +808,7 @@
           <span class="performance">P:{qualityInfo.performanceScore}%</span>
           <span class="cache">C:{qualityInfo.cacheHit}%</span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Debug Info (only in development) -->
   {#if import.meta.env.DEV}
@@ -826,15 +823,12 @@
         <div>FPS: {qualityInfo.fps}</div>
         <div>Performance: {qualityInfo.performanceScore}%</div>
         <div>Frame Time: {performanceMetrics.frameTime.toFixed(1)}ms</div>
-        <div>Cache Hit: {qualityInfo.cacheHit}%</div>
-      {/if}
-    </div>
-  {/if}
+        <div>Cache Hit: {qualityInfo.cacheHit}%{/if}
+    {/if}
 </div>
-
 <style>
   .nes-lod-processor {
-    position relative;
+    position: relative;
     width: 100%;
     height: 400px;
     overflow: hidden;
@@ -845,14 +839,14 @@
     justify-content: center;
   }
   .scene-container {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
     transition: all 0.1s ease-out;
   }
   .document-core {
-    position absolute;
+    position: absolute;
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
@@ -879,12 +873,12 @@
     margin-bottom: 1rem;
   }
   .progress-ring {
-    position relative;
+    position: relative;
     display: inline-block;
     margin-top: 1rem;
   }
   .progress-text {
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -910,13 +904,13 @@
     animation: pulse 1s ease-in-out infinite;
   }
   .connection-line {
-    position absolute;
+    position: absolute;
     height: 2px;
     transform-origin: left center;
     animation: flow 2s ease-in-out infinite;
   }
   .ui-overlay {
-    position absolute;
+    position: absolute;
     top: 1rem;
     left: 1rem;
     right: 1rem;
@@ -969,7 +963,7 @@
     font-size: 1.2rem;
   }
   .debug-info {
-    position absolute;
+    position: absolute;
     bottom: 1rem;
     right: 1rem;
     font-size: 0.7rem;
@@ -1049,5 +1043,3 @@
     }
   }
 </style>
-
-

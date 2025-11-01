@@ -7,36 +7,34 @@ https://svelte.dev/e/js_parse_error -->
   interface Props extends HTMLAttributes<HTMLHeadingElement> {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
   }
-  let { level = 3, class: className = '', children, ...restProps }: Props & { children?: unknown } = $props();
+  let { level = 3, class: className = '', children, ...restProps }: Props & { children?: any } = $props();
   let classes = $derived(['nier-card-title', className].filter(Boolean).join(' '));
 </script>
-
 {#if level === 1}
   <h1 class={classes} {...restProps}>
-    {@render children?.()}
+    <slot />
   </h1>
 {:else if level === 2}
   <h2 class={classes} {...restProps}>
-    {@render children?.()}
+    <slot />
   </h2>
 {:else if level === 3}
   <h3 class={classes} {...restProps}>
-    {@render children?.()}
+    <slot />
   </h3>
 {:else if level === 4}
   <h4 class={classes} {...restProps}>
-    {@render children?.()}
+    <slot />
   </h4>
 {:else if level === 5}
   <h5 class={classes} {...restProps}>
-    {@render children?.()}
+    <slot />
   </h5>
 {:else}
   <h6 class={classes} {...restProps}>
-    {@render children?.()}
+    <slot />
   </h6>
 {/if}
-
 <style>
   :global(.nier-card-title) {
     font-family: 'Oswald', 'Montserrat', sans-serif;
@@ -46,4 +44,3 @@ https://svelte.dev/e/js_parse_error -->
     line-height: 1.2;
   }
 </style>
-

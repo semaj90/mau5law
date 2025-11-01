@@ -14,18 +14,18 @@ interface ThreadSafeCache {
 }
 interface JsonbDocument {
   id: string;
-  content: unknown; // Changed from any
+  content: any; // Changed from any
   metadata: {
     lastModified: number;
     accessCount: number;
     gpuProcessed: boolean;
     threadId?: string;
-    [key: string]: unknown; // Allow additional metadata properties
+    [key: string]: any; // Allow additional metadata properties
   };
 }
 // Simple async mutex for thread synchronization
 class AsyncMutex {
-  private _locked = false;
+  private _locked = $state(false);
   private _waiting: Array<() => void> = [];
   async acquire(): Promise<() => void> {
     return new Promise(resolve => {
@@ -41,7 +41,7 @@ class AsyncMutex {
     });
   }
   private release(): void {
-    this._locked = false;
+    this._locked = $state(false);
     const next = this._waiting.shift();
     if (next) {
       next();
@@ -98,14 +98,14 @@ export const cacheStore: Writable<CacheStoreState> = writable({
         }
       } catch (error) {
         console.warn('GPU initialization failed, falling back to CPU:', error);
-        internalCache.gpuAccelerated = false;
+        internalCache.gpuAccelerated = $state(false);
       }
     }
   }
   /**
    * Thread-safe JSONB document insertion
    * Supports concurrent writes with proper locking
-   */ async storeJsonbDocument(id: string, document: unknown, metadata?: Record<string, unknown>): Promise<boolean> {
+   */ async storeJsonbDocument(id: string, document: any, metadata?: Record<string, unknown>): Promise<boolean> {
     const release = await internalCache.mutex.acquire();
     try {
       const jsonbDoc: JsonbDocument = {
@@ -164,7 +164,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
    */
   async queryJsonb(
     jsonPath: string,
-    value: unknown, // Changed from any
+    value: any, // Changed from any
     operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
   ): Promise<JsonbDocument[]> {
     const release = await internalCache.mutex.acquire();
@@ -210,12 +210,12 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       console.log(`🎯 GPU processed document: ${document.id}`);
     } catch (error) {
       console.warn('GPU processing failed, using CPU fallback:', error);
-      document.metadata.gpuProcessed = false;
+      document.metadata.gpuProcessed = $state(false);
     }
   }
   /**
    * Check if document should use GPU acceleration
-   */ private shouldUseGPU(document: unknown): boolean {
+   */ private shouldUseGPU(document: any): boolean {
     // Changed from any
     const serialized = JSON.stringify(document);
     return (
@@ -225,7 +225,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
   }
   /**
    * Detect complex document structures
-   */ private hasComplexStructure(obj: unknown, depth = 0): boolean {
+   */ private hasComplexStructure(obj: any, depth = 0): boolean {
     // Changed from any
     if (depth > 3) return true; // Deep nesting
     if (Array.isArray(obj) && obj.length > 100) return true; // Large arrays
@@ -239,7 +239,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
   /**
    * JSONB query matching logic
    */
-  private matchesJsonbQuery(content: unknown, jsonPath: string, value: unknown, operator: string): boolean {
+  private matchesJsonbQuery(content: any, jsonPath: string, value: any, operator: string): boolean {
     // Changed from any
     try {
       const pathValue = this.getJsonPathValue(content, jsonPath);
@@ -261,7 +261,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
   }
   /**
    * Extract value from JSON path
-   */ private getJsonPathValue(obj: unknown, path: string): unknown {
+   */ private getJsonPathValue(obj: any, path: string): any {
     // Changed from any
     const keys = path.split('.');
     let current = obj;
@@ -325,7 +325,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Compatibility layer for existing API expectations
 export const cognitiveCacheManager = {
-  async get(request: { key: string; type: string }, context?: unknown): Promise<unknown | null> {
+  async get(request: { key: string; type: string }, context?: any): Promise<unknown | null> {
     // Changed from any
     const doc = internalCache.jsonbIndex.get(request.key);
     if (doc) {
@@ -337,8 +337,8 @@ export const cognitiveCacheManager = {
     return null;
   },
   async set(
-    request: { key: string; type: string; context?: unknown }, // Changed from any
-    data: unknown, // Changed from any
+    request: { key: string; type: string; context?: any }, // Changed from any
+    data: any, // Changed from any
     options?: { distributeAcrossCaches?: boolean },
     cognitiveValue?: number
   ): Promise<boolean> {
@@ -372,7 +372,7 @@ export const cognitiveCacheManager = {
 // Export utility functions
 export async function storeJsonbDocument(
   id: string,
-  document: unknown,
+  document: any,
   metadata?: Record<string, unknown>
 ): Promise<boolean> {
   // Changed from any
@@ -394,7 +394,7 @@ export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument |
 }
 export async function queryJsonb(
   jsonPath: string,
-  value: unknown, // Changed from any
+  value: any, // Changed from any
   operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
   // Simple implementation - return all documents for now

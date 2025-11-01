@@ -31,7 +31,7 @@
 
   // --- Dialog Trigger Props ---
   type $$TriggerProps = DialogTriggerProps;
-  export let triggerAsChild: $$TriggerProps['asChild'] = false;
+  export let triggerAsChild: $$TriggerProps['asChild'] = $state(false);
   export let triggerClass: $$TriggerProps['class'] = undefined;
   export let triggerProps: Omit<$$TriggerProps, 'asChild' | 'class'> = {};
 
@@ -69,7 +69,7 @@
 
   // --- Dialog Close Props ---
   type $$CloseProps = DialogCloseProps;
-  export let closeAsChild: $$CloseProps['asChild'] = false;
+  export let closeAsChild: $$CloseProps['asChild'] = $state(false);
   export let closeClass: $$CloseProps['class'] = undefined;
   export let closeProps: Omit<$$CloseProps, 'asChild' | 'class'> = {};
 

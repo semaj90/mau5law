@@ -9,7 +9,7 @@
   let currentYear = new Date().getFullYear();
   // reactive values derived from the SvelteKit page store
   let currentPath = '';
-  let isDemoRoute = false;
+  let isDemoRoute = $state(false);
   // use Svelte 5 runes $effect to derive reactive values from the page store
   $effect(() => {
     currentPath = $page?.url?.pathname ?? '';
@@ -27,7 +27,6 @@
     { href: '#', label: 'Community', icon: '👥' }
   ];
 </script>
-
 <footer class="app-footer nes-container is-dark" data-variant={variant}>
   <div class="footer-content">
     {#if variant === 'full'}
@@ -56,15 +55,14 @@
           <div class="footer-section links-section">
             <h4 class="section-title nes-text is-primary">Quick Links</h4>
             <nav class="footer-nav" aria-label="Footer navigation">
-              {#each quickLinks as link}
+              {#each Array.isArray(quickLinks) ? quickLinks : [] as link}
                 <a href={link.path} class="footer-link nes-btn is-dark">
                   <span class="link-icon">{link.icon}</span>
                   <span class="link-label">{link.label}</span>
                 </a>
               {/each}
             </nav>
-          </div>
-        {/if}
+          {/if}
         <!-- System Status Section -->
         <div class="footer-section status-section">
           <h4 class="section-title nes-text is-primary">System Status</h4>
@@ -88,7 +86,7 @@
         <div class="footer-section resources-section">
           <h4 class="section-title nes-text is-primary">Resources</h4>
           <div class="resource-links">
-            {#each socialLinks as social}
+            {#each Array.isArray(socialLinks) ? socialLinks : [] as social}
               <a
                 href={social.href}
                 class="resource-link nes-btn is-dark"
@@ -150,11 +148,9 @@
             <a href="/all-routes" class="nes-btn is-dark"> Explore All Routes </a>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </footer>
-
 <style>
   .app-footer {
     margin-top: auto;
@@ -386,5 +382,3 @@
     }
   }
 </style>
-
-

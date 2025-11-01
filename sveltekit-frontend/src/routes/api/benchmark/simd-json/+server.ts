@@ -267,7 +267,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       case 'comparison': {
         // Run all scenarios for comparison
-        type BenchmarkResult = { data?: unknown; speedup?: number; [k: string]: unknown };
+        type BenchmarkResult = { data?: any; speedup?: number; [k: string]: any };
         const scenarios = ['legal_document', 'vector_operations', 'rabbitmq_message', 'cache_operations'];
         const comparisonResults: Record<string, BenchmarkResult | null> = {};
         for (const testScenario of scenarios) {
@@ -343,7 +343,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ SIMD JSON Benchmark Error:', error);
     const message = error instanceof Error ? error.message : 'Benchmark failed';
     return json(
@@ -419,7 +419,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ SIMD JSON Load Test Error:', error);
     const message = error instanceof Error ? error.message : 'Load test failed';
     return json(

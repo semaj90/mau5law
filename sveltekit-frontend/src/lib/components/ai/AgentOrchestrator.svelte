@@ -1,6 +1,6 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!--
 Agent Orchestrator Component
 Manages AutoGen and CrewAI multi-agent workflows
@@ -9,16 +9,16 @@ Manages AutoGen and CrewAI multi-agent workflows
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/CardTitle.svelte';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { CardContent } from '$lib/components/ui/CardContent.svelte';
+  import { CardHeader } from '$lib/components/ui/CardHeader.svelte';
+  import { CardTitle } from '$lib/components/ui/CardTitle.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/index.ts';
   import {
@@ -159,7 +159,7 @@ if (autoStartServices) {
       console.error('Workflow execution failed:', error);
       lastUpdate = `Error: ${(error as Error).message}`;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
       executionProgress = 100;
     }
   }
@@ -327,7 +327,7 @@ if (autoStartServices) {
         console.error('Failed to cancel CrewAI execution', error);
       }
     }
-    isProcessing = false;
+    isProcessing = $state(false);
     lastUpdate = 'Execution cancelled';
   }
   function clearResults() {
@@ -415,7 +415,7 @@ if (autoStartServices) {
                 <SelectValue placeholder="Select workflow..." />
             </SelectTrigger>
             <SelectContent>
-              {#each workflows as workflow}
+              {#each Array.isArray(workflows) ? workflows : [] as workflow}
                 <SelectItem value={workflow.id}>
                   <div class="flex items-center gap-2">
                     <workflow.icon class="h-4 w-4" />
@@ -433,7 +433,7 @@ if (autoStartServices) {
                 <SelectValue placeholder="Select provider..." />
             </SelectTrigger>
             <SelectContent>
-              {#each workflows.find(w => w.id === selectedWorkflow)?.providers || [] as provider}
+              {#each Array.isArray(workflows.find(w => w.id === selectedWorkflow)?.providers || []) ? workflows.find(w => w.id === selectedWorkflow)?.providers || [] : [] as provider}
                 <SelectItem value={provider}>
                   <div class="flex items-center gap-2">
                     {#if provider === 'autogen'}
@@ -464,8 +464,7 @@ if (autoStartServices) {
               </p>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <div>
         <label for="orchestrator-input" class="block text-sm font-medium mb-2">Input</label>
         <Textarea
@@ -537,8 +536,7 @@ Clear
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Results Display -->
   {#if selectedProvider === 'autogen' && conversationMessages.length > 0}
     <div class="nes-container">
@@ -550,7 +548,7 @@ Clear
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
-          {#each conversationMessages as message}
+          {#each Array.isArray(conversationMessages) ? conversationMessages : [] as message}
             <div class="flex items-start gap-3 p-3 border rounded-lg">
               <div class="flex-shrink-0">
                 <div class="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
@@ -575,8 +573,7 @@ Clear
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   {#if selectedProvider === 'crewai' && executionResults.length > 0}
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -587,7 +584,7 @@ Clear
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-3">
-          {#each executionResults as result}
+          {#each Array.isArray(executionResults) ? executionResults : [] as result}
             <div class="border rounded-lg p-4">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
@@ -612,8 +609,7 @@ Clear
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Workflow Templates -->
   {#if showAdvancedControls}
     <div class="nes-container">
@@ -687,8 +683,7 @@ Clear
 </Button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* @unocss-include */

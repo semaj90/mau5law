@@ -367,7 +367,6 @@
     return true;
   }
 </script>
-
 <div class="bg-[#F7F6F2] border border-[#D1CFC7] p-6">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-xl font-bold">📚 COGNITIVE DOCUMENTATION HUB</h2>
@@ -389,7 +388,7 @@
     <div class="mb-6 bg-[#EAE8E1] border border-[#D1CFC7] p-4">
       <h3 class="font-bold mb-3">🔍 Search Results ({filteredContent.length})</h3>
       <div class="space-y-3">
-        {#each filteredContent as result}
+        {#each Array.isArray(filteredContent) ? filteredContent : [] as result}
           <div class="bg-white p-3 border border-gray-300 rounded">
             <div class="flex justify-between items-start mb-2">
               <h4 class="font-bold text-sm">
@@ -413,8 +412,7 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Tab Navigation -->
   <div class="flex flex-wrap gap-2 mb-6">
     {#each Object.entries(documentationSections) as [key, section]}
@@ -431,7 +429,7 @@
   </div>
   <!-- Content Display -->
   <div class="space-y-6">
-    {#each documentationSections[activeTab].content as item}
+    {#each Array.isArray(documentationSections[activeTab].content) ? documentationSections[activeTab].content : [] as item}
       <div class="bg-[#EAE8E1] border border-[#D1CFC7] p-5 relative">
         <!-- Unlock Status -->
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock && !isUnlocked((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock)}
@@ -459,8 +457,7 @@
             ).unlock}
           </div>
         {:else if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock}
-          <div class="absolute top-2 right-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs">✅ UNLOCKED</div>
-        {/if}
+          <div class="absolute top-2 right-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs">✅ UNLOCKED{/if}
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-lg font-bold mb-1">
@@ -682,8 +679,7 @@
                   ).level
                 )}%
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Content Sections -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -702,8 +698,7 @@
                   </li>
                 {/each}
               </ol>
-            </div>
-          {/if}
+            {/if}
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).tips}
             <div>
               <h4 class="font-bold text-sm mb-2">💡 Pro Tips</h4>
@@ -715,8 +710,7 @@
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).effects}
             <div>
               <h4 class="font-bold text-sm mb-2">✨ Effects</h4>
@@ -728,8 +722,7 @@
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).objectives}
             <div>
               <h4 class="font-bold text-sm mb-2">🎯 Objectives</h4>
@@ -741,8 +734,7 @@
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).practices}
             <div>
               <h4 class="font-bold text-sm mb-2">⚡ Best Practices</h4>
@@ -754,8 +746,7 @@
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).warnings}
             <div>
               <h4 class="font-bold text-sm mb-2">⚠️ Warnings</h4>
@@ -767,8 +758,7 @@
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Special Content -->
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).secretTechniques}
@@ -779,8 +769,7 @@
                 <li class="text-purple-700">• {technique}</li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).advanced}
           <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-blue-800">🚀 Advanced Usage</h4>
@@ -789,8 +778,7 @@
                 <li class="text-blue-700">• {advanced}</li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).ultimate}
           <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-yellow-800">👑 Ultimate Goals</h4>
@@ -799,8 +787,7 @@
                 <li class="text-yellow-700">• {ultimate}</li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
       </div>
     {/each}
   </div>

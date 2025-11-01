@@ -35,25 +35,25 @@ if (browser) {
       console.error('Failed to load memory data:', err);
       error = err.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function triggerOptimization() {
     isLoading = true;
     try {
       // removed unused response assignment
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; error?: unknown }).success) {
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; error?: any }).success) {
         // Reload data after optimization
         await loadData();
       } else {
-        error = (result as { success?: unknown; error?: unknown }).error || 'Optimization failed';
+        error = (result as { success?: any; error?: any }).error || 'Optimization failed';
       }
     } catch (err) {
       console.error('Optimization failed:', err);
       error = err.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function getHealthColor(_value: number): string {
@@ -171,7 +171,7 @@ if (browser) {
         <div>
           <h4 class="font-medium mb-3">Recommendations</h4>
           <ul class="space-y-2">
-            {#each memoryPrediction.recommendations as recommendation}
+            {#each Array.isArray(memoryPrediction.recommendations) ? memoryPrediction.recommendations : [] as recommendation}
               <li class="flex items-start gap-2">
                 <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                 <span class="text-sm text-gray-700">{recommendation}</span>
@@ -184,7 +184,7 @@ if (browser) {
         <div class="mt-6">
           <h4 class="font-medium mb-3">Suggested Optimizations</h4>
           <div class="space-y-3">
-            {#each memoryPrediction.optimizations as optimization}
+            {#each Array.isArray(memoryPrediction.optimizations) ? memoryPrediction.optimizations : [] as optimization}
               <div class="bg-gray-50 rounded-lg p-3">
                 <div class="flex items-center justify-between mb-1">
                   <span class="font-medium capitalize">{optimization.type}</span>

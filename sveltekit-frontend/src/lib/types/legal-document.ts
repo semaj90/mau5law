@@ -19,7 +19,7 @@ export interface LegalDocumentUnified {
 }
 export type LegalDocument = LegalDocumentUnified;
 // tighten the guard: accept unknown and narrow safely
-export function isLegalDocument(value: unknown): value is LegalDocumentUnified {
+export function isLegalDocument(value: any): value is LegalDocumentUnified {
   if (!value || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
   return typeof v.id === 'string' && typeof v.title === 'string';

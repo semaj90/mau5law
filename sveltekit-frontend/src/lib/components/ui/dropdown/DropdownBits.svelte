@@ -8,7 +8,6 @@
     onclick?: () => void;
   }
 </script>
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import '$lib/styles/dropdown-global.css';
@@ -47,7 +46,6 @@
     onOpenChange?.(newOpen);
   }
 </script>
-
 <Popover.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
     <Popover.Trigger class="legal-ai-dropdown-trigger">
@@ -63,7 +61,7 @@
     {closeOnEscape}
     {closeOnOutsideClick}
   >
-    {@render children?.()}
+    <slot />
   </Popover.Content>
 </Popover.Root>
 <!-- Export helper components for easier usage -->
@@ -87,7 +85,7 @@
     {onclick}
   >
     {#if children}
-      {@render children?.()}
+      <slot />
     {/if}
   </button>
 {/snippet}
@@ -97,7 +95,7 @@
 {#snippet DropdownLabel({ class: className = '', children }: { class?: string; children?: Snippet })}
   <div class={cn('px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500', className)}>
     {#if children}
-      {@render children?.()}
+      <slot />
     {/if}
   </div>
 {/snippet}

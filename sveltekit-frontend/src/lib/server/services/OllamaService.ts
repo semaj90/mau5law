@@ -3,7 +3,6 @@
  * Provides lightweight, typed wrappers for the local Ollama HTTP API.
  */
 import { logger } from '../logger.js';
-
 export interface OllamaModel {
   name: string;
   size?: string;
@@ -13,7 +12,6 @@ export interface OllamaModel {
   parameter_size?: string;
   quantization_level?: string;
 }
-
 export interface OllamaResponse {
   model?: string;
   created_at?: string;
@@ -27,16 +25,13 @@ export interface OllamaResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 export class OllamaService {
   private readonly baseUrl: string;
   private readonly timeout: number;
-
   constructor(baseUrl = process.env.OLLAMA_URL || 'http://localhost:11434', timeout = 30000) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = timeout;
   }
-
   async isHealthy(): Promise<boolean> {
     try {
       const res = await fetch(`${this.baseUrl}/api/models`, { signal: AbortSignal.timeout(5000) });
@@ -46,7 +41,6 @@ export class OllamaService {
       return false;
     }
   }
-
   async listModels(): Promise<OllamaModel[]> {
     try {
       const res = await fetch(`${this.baseUrl}/api/models`, { signal: AbortSignal.timeout(this.timeout) });
@@ -62,7 +56,6 @@ export class OllamaService {
       return [];
     }
   }
-
   async generate(
     model: string,
     prompt: string,
@@ -78,19 +71,16 @@ export class OllamaService {
           num_predict: options.max_tokens ?? 1000,
         },
       };
-
       const res = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
         signal: AbortSignal.timeout(this.timeout),
       });
-
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         throw new Error(`Ollama API error: ${res.status} ${res.statusText}${text ? ' - ' + text : ''}`);
       }
-
       const data = (await res.json()) as OllamaResponse;
       return data.response ?? '';
     } catch (err) {
@@ -98,12 +88,10 @@ export class OllamaService {
       throw err;
     }
   }
-
   // Backwards-compatible alias
   async generateCompletion(model: string, prompt: string, options?: { temperature?: number; max_tokens?: number }) {
     return this.generate(model, prompt, options);
   }
-
   async embeddings(model: string, prompt: string): Promise<number[]> {
     try {
       const res = await fetch(`${this.baseUrl}/api/embeddings`, {
@@ -112,26 +100,21 @@ export class OllamaService {
         body: JSON.stringify({ model, prompt }),
         signal: AbortSignal.timeout(this.timeout),
       });
-
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText}${text ? ' - ' + text : ''}`);
       }
-
       const data = (await res.json()) as
         | { embedding?: number[] }
         | { data?: Array<{ embedding?: number[] }> }
         | Record<string, unknown>;
-
       if (Array.isArray((data as { embedding?: number[] }).embedding)) {
         return (data as { embedding: number[] }).embedding;
       }
-
       const maybeData = (data as { data?: Array<{ embedding?: number[] }> }).data;
       if (Array.isArray(maybeData) && Array.isArray(maybeData[0]?.embedding)) {
         return maybeData[0].embedding as number[];
       }
-
       return [];
     } catch (err) {
       logger.error('Failed to get embeddings from Ollama', { model, err });
@@ -139,6 +122,5 @@ export class OllamaService {
     }
   }
 }
-
 export const ollamaService = new OllamaService();
 export default ollamaService;

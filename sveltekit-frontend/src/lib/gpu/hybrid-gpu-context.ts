@@ -6,7 +6,6 @@ export interface HybridGPUContext {
   angle?: ANGLE_instanced_arrays | null;
   // Add other context-specific properties as needed
 }
-
 /**
  * Try to obtain and cache the ANGLE_instanced_arrays extension for a WebGL context.
  * Use this when using a WebGL1 context that needs instanced arrays support.
@@ -24,7 +23,6 @@ export function ensureAngleExtension(ctx: HybridGPUContext): ANGLE_instanced_arr
     return null;
   }
 }
-
 /**
  * Cross-backend helper to set vertex attribute divisor.
  * - WebGL2: uses gl.vertexAttribDivisor
@@ -40,7 +38,6 @@ export function setVertexAttribDivisor(ctx: HybridGPUContext, location: number, 
       // fall through to other attempts
     }
   }
-
   // Try ANGLE extension for WebGL1 contexts
   const angle =
     ctx.angle ?? (ctx.gl ? (ctx.gl.getExtension?.('ANGLE_instanced_arrays') as ANGLE_instanced_arrays | null) : null);
@@ -54,7 +51,6 @@ export function setVertexAttribDivisor(ctx: HybridGPUContext, location: number, 
       // ignore and continue to fallback
     }
   }
-
   if (ctx.type === 'webgpu') {
     // WebGPU uses buffer layouts: { stepMode: "vertex" | "instance" } in GPUVertexBufferLayout.
     // There's no direct per-attribute divisor setter; instruct caller to set GPUVertexBufferLayout.stepMode = "instance".
@@ -65,7 +61,6 @@ export function setVertexAttribDivisor(ctx: HybridGPUContext, location: number, 
     );
     return;
   }
-
   // If none of the above are available, warn once.
   console.warn('setVertexAttribDivisor: no supported instancing API available on this context');
 }

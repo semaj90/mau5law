@@ -69,8 +69,8 @@ export interface SIMDPerformanceMetrics {
  */
 export class SIMDJSONAccelerationService {
   private wasmModule: any;
-  private isInitialized: boolean = false;
-  private fallbackMode: boolean = false;
+  private isInitialized: boolean = $state(false);
+  private fallbackMode: boolean = $state(false);
   private performanceMetrics: SIMDPerformanceMetrics[] = [];
   constructor() {
     this.initializeWASM();

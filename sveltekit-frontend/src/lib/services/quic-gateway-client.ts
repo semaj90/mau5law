@@ -107,7 +107,7 @@ export class QUICGatewayClient {
     protocol: string;
     fromCache: boolean;
   }> = [];
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private reconnectAttempts = 0;
 
   // Reactive Stores
@@ -168,7 +168,7 @@ export class QUICGatewayClient {
       this.isInitialized = true;
       this.isReady.set(true);
       console.log(`✅ QUIC Gateway Client initialized (${this.config.baseURL}:${this.config.http3Port})`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ QUIC Gateway Client initialization failed:', error);
       if (this.config.fallbackToHTTP2) {
         console.log('🔄 Falling back to HTTP/2 mode');
@@ -231,7 +231,7 @@ export class QUICGatewayClient {
       } else {
         throw new Error(`Gateway health check failed: ${response.status}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ QUIC Gateway connection test failed:', error);
       throw error;
     }
@@ -269,7 +269,7 @@ export class QUICGatewayClient {
         }
         this.updatePerformanceMetrics(response);
         return response;
-      } catch (error: unknown) {
+      } catch (error: any) {
         lastError = error instanceof Error ? error : new Error(String(error));
         attempt++;
         if (attempt < maxAttempts) {
@@ -346,7 +346,7 @@ export class QUICGatewayClient {
         connectionReused: this.isConnectionReused(raw),
         zeroRTT: this.isZeroRTT(raw),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
       throw new Error(`Request failed: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -506,7 +506,7 @@ export class QUICGatewayClient {
           errorRate: healthResponse.success ? status.errorRate : Math.min(1, status.errorRate + 0.1),
         }));
         if (healthResponse.success) this.reconnectAttempts = 0;
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('⚠️ Connection monitoring failed:', error);
         this.handleConnectionFailure();
       }
@@ -599,7 +599,7 @@ export class QUICGatewayClient {
     this.requestCache.clear();
     this.performanceData.length = 0;
     this.connectionPool.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.isReady.set(false);
     console.log('✅ QUIC Gateway Client cleanup complete');
   }

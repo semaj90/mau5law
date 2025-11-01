@@ -4,5 +4,4 @@ export const sessionMachine = {
   states: { idle: {} },
   provide: function () { return this; },
 };
-
 export const sessionActions = {};

@@ -117,7 +117,7 @@
 
     {#if $errors._problem}
       <div class="error-alert">
-        {#each $errors._problem as error}
+        {#each Array.isArray($errors._problem) ? $errors._problem : [] as error}
           <p>{error}</p>
         {/each}
       </div>

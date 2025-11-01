@@ -28,7 +28,6 @@ https://svelte.dev/e/js_parse_error -->
     theme?: 'light' | 'dark' | 'yorha';
     ondispatch?: (event: any) => void;
   } = $props();
-
   import { onDestroy } from "svelte";
   import xstateIntegration from '$lib/services/xstate-integration'; // Import central XState service
   import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js';
@@ -42,7 +41,6 @@ https://svelte.dev/e/js_parse_error -->
   let animationFrame: number | null = null;
   let mounted = $state(false); // Use $state for reactive primitive
   let initialLoadDone = $state(false); // New state to track initial load
-
   // Reactive state
   let currentGraph: RecommendationGraph | null = $state(null);
   let isLoading = $state(false);
@@ -180,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
       error = `Failed to load recommendations: ${err.message || err}`;
       console.error(error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       setTimeout(() => {
         progressAnimation.target = 0;
       }, 1000);
@@ -194,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
       if (index >= progressAnimation.segments.length) return;
       progressAnimation.segments[index].active = true;
       setTimeout(() => {
-        progressAnimation.segments[index].active = false;
+        progressAnimation.segments[index].active = $state(false);
         animateSegment(index + 1);
       }, 100);
     }
@@ -361,7 +359,6 @@ https://svelte.dev/e/js_parse_error -->
       initialLoadDone = true; // Mark initial load attempt as done
     })();
   });
-
   // Reactive updates for nodeId changes
   $effect(() => {
     // Only trigger if mounted, initial load is done, nodeId is present, and not currently loading.
@@ -369,7 +366,6 @@ https://svelte.dev/e/js_parse_error -->
       loadRecommendations();
     }
   });
-
   // Reactive updates for idle state
   $effect(() => {
     const unsubscribe = xstateIntegration.subscribe((snapshot: Record<string, any>) => {
@@ -378,16 +374,14 @@ https://svelte.dev/e/js_parse_error -->
     });
     return () => unsubscribe();
   });
-
   $effect(() => {
     if (idleState?.matches('idle.generating_prompts')) { // Check if idleState is not null
       console.log('🤖 Self-prompting activated while viewing 3D graph');
       // Could trigger automatic graph updates or suggestions
     }
   });
-
   onDestroy(() => {
-    mounted = false;
+    mounted = $state(false);
     // Cleanup
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
@@ -451,8 +445,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Error Display -->
   {#if error}
     <div class="error-container">
@@ -465,8 +458,7 @@ https://svelte.dev/e/js_parse_error -->
       >
         Retry Loading
       </button>
-    </div>
-  {/if}
+    {/if}
   <!-- Graph Stats Overlay -->
   {#if currentGraph && !isLoading}
     <div class="stats-overlay">
@@ -486,10 +478,8 @@ https://svelte.dev/e/js_parse_error -->
         <div class="stat">
           <span class="stat-label">Chunks:</span>
           <span class="stat-value">{renderStats.streamingChunks}</span>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Camera Controls -->
   <div class="camera-controls">
     <button
@@ -590,7 +580,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
     background: linear-gradient(90deg, #0ea5e9, #06b6d4);
     border-radius: 4px;
-    transition: width 0.3s ease-out;
+    transition: width: 0.3s ease-out;
   }
   .yorha-theme .progress-fill {
     background: linear-gradient(90deg, #00ff00, #00cc00);

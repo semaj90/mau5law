@@ -1,7 +1,6 @@
 <script lang="ts">
   import { FileText, Trash2, Eye, Clock } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
-
+  import { Button } from '$lib/components/ui/button/Button.svelte';
   interface Document {
     id: string;
     filename: string;
@@ -16,17 +15,13 @@
       confidence?: number;
     };
   }
-
   interface Props {
     document: Document;
     onView?: (doc: Document) => void;
     onDelete?: (docId: string) => void;
   }
-
   let { document, onView, onDelete }: Props = $props();
-
   let deleting = $state(false);
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -34,13 +29,11 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   }
-
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
     if (days === 0) {
       const hours = Math.floor(diff / (1000 * 60 * 60));
       if (hours === 0) {
@@ -53,7 +46,6 @@
     if (days < 7) return `${days}d ago`;
     return date.toLocaleDateString();
   }
-
   async function handleDelete(e: Event) {
     e.stopPropagation();
     if (!confirm('Delete this document?')) return;
@@ -63,10 +55,9 @@
         onDelete(document.id);
       }
     } finally {
-      deleting = false;
+      deleting = $state(false);
     }
   }
-
   function handleView(e: Event) {
     e.stopPropagation();
     if (onView) {
@@ -74,7 +65,6 @@
     }
   }
 </script>
-
 <div class="group relative bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all duration-200">
   <!-- Card Header with Icon -->
   <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 border-b border-gray-200">
@@ -90,19 +80,16 @@
       </div>
     </div>
   </div>
-
   <!-- Card Content -->
   <div class="p-4 space-y-3">
     <!-- Embedding Info -->
     <div class="flex items-center gap-2 px-3 py-2 bg-yellow-50 rounded-lg">
       <span class="text-xs font-semibold text-yellow-700">⚡ {document.embeddingModel}</span>
     </div>
-
     <!-- Summary -->
     <div>
       <p class="text-xs text-gray-600 line-clamp-3">{document.summary || 'No summary available'}</p>
     </div>
-
     <!-- Metadata -->
     <div class="flex flex-wrap gap-2 text-xs">
       {#if document.metadata?.pageCount}
@@ -116,7 +103,6 @@
         {formatDate(document.uploadedAt)}
       </span>
     </div>
-
     <!-- Confidence Bar (if available) -->
     {#if document.metadata?.confidence}
       <div class="pt-2">
@@ -130,10 +116,8 @@
             style="width: {document.metadata.confidence * 100}%"
           />
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Card Footer / Actions -->
   <div class="flex gap-2 p-3 bg-gray-50 border-t border-gray-200">
     <Button
@@ -151,7 +135,6 @@
       <Trash2 class="w-4 h-4" />
     </Button>
   </div>
-
   <!-- Hover Overlay Badge -->
   <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
     <span class="px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">Click to view</span>

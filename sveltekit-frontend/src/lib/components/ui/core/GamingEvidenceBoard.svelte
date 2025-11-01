@@ -9,8 +9,8 @@
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits';
-  import { createEnhancedEvidenceCard } from '$lib/components/ui/enhanced-bits/builders';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { createEnhancedEvidenceCard } from '$lib/components/ui/enhanced-bits/builders.svelte'';
   interface EvidenceItem {
     id: string;
     title: string;
@@ -129,7 +129,6 @@
     drawConnections();
   });
 </script>
-
 <div class="gaming-evidence-board">
   <!-- Gaming-style header -->
   <div class="board-header">
@@ -209,7 +208,7 @@
               {item.connections.length} connection{item.connections.length !== 1 ? 's' : ''}
             </span>
             <div class="connection-indicators">
-              {#each item.connections as connId}
+              {#each Array.isArray(item.connections) ? item.connections : [] as connId}
                 <span class="connection-dot"></span>
               {/each}
             </div>
@@ -223,7 +222,6 @@
     {/each}
   </div>
 </div>
-
 <style>
   .gaming-evidence-board {
     width: 100%;
@@ -231,7 +229,7 @@
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #ffffff;
     font-family: 'Courier New', monospace;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   /* Header Styles */
@@ -269,7 +267,7 @@
     font-size: 0.875rem;
   }
   .case-dropdown {
-    position relative;
+    position: relative;
   }
   .case-name {
     background: #333333;
@@ -280,7 +278,7 @@
     font-size: 0.875rem;
   }
   .case-items {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0,
     background: rgba(0, 0, 0, 0.95);
@@ -380,12 +378,12 @@
   }
   /* Board Area Styles */
   .board-area {
-    position relative;
+    position: relative;
     height: calc(100vh - 140px);
     overflow: hidden;
   }
   .grid-background {
-    position absolute;
+    position: absolute;
     inset: 0;
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
@@ -394,14 +392,14 @@
     opacity: 0.3;
   }
   .connection-canvas {
-    position absolute;
+    position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 1,
   }
   /* Evidence Item Styles */
   .evidence-item {
-    position absolute;
+    position: absolute;
     width: 160px;
     min-height: 100px;
     background: rgba(0, 0, 0, 0.9);
@@ -482,7 +480,7 @@
     box-shadow: 0 0 4px #00ff41;
   }
   .status-badge {
-    position absolute;
+    position: absolute;
     top: -8px;
     right: -8px;
     padding: 0.125rem 0.375rem;
@@ -520,5 +518,3 @@
     }
   }
 </style>
-
-

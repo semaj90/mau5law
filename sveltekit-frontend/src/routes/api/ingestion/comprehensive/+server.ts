@@ -65,7 +65,7 @@ type PostAction =
 // Initialize the ingestion service
 // await ingestionService.initialize() // REMOVED: This was causing the: "Declaration or statement expected" error.
 
-let isIngestionServiceInitialized = false;
+let isIngestionServiceInitialized = $state(false);
 
 async function ensureIngestionServiceInitialized() {
   if (!isIngestionServiceInitialized) {

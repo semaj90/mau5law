@@ -91,7 +91,7 @@ async function ensureRedisInstance() {
     let RedisCtor: RedisConstructor | undefined;
 
     // Narrow importedModule safely: it may be a namespace with `default` or the constructor itself
-    if (importedModule && typeof (importedModule as { default?: unknown }).default === 'function') {
+    if (importedModule && typeof (importedModule as { default?: any }).default === 'function') {
       RedisCtor = (importedModule as { default: RedisConstructor }).default;
     } else if (typeof importedModule === 'function') {
       RedisCtor = importedModule as RedisConstructor;
@@ -174,7 +174,7 @@ async function setRedisHash(redisInstance: Redis, key: string, obj: Record<strin
 }
 
 // add helper to extract centroids robustly without using `any`
-function extractCentroids(candidate: unknown): number[][] {
+function extractCentroids(candidate: any): number[][] {
   if (!candidate) return [];
   // if candidate is an object with centroid(s) properties
   if (typeof candidate === 'object') {
@@ -205,9 +205,9 @@ type RawClusterResult =
       assignments?: number[];
       labels?: number[];
       clusters?: number[] | number[][];
-      [key: string]: unknown; // Allow other properties
+      [key: string]: any; // Allow other properties
     }
-  | Array<{ cluster?: number; label?: number; [key: string]: unknown }>
+  | Array<{ cluster?: number; label?: number; [key: string]: any }>
   | number[][];
 
 type ClusterSummary = {
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request }) => {
           id: legalDocuments.id,
         })
         .from(legalDocuments)
-        .where(inArray(legalDocuments.id, documentIds))) as Array<{ id: string | number; [key: string]: unknown }>; // cast to allow runtime inspection
+        .where(inArray(legalDocuments.id, documentIds))) as Array<{ id: string | number; [key: string]: any }>; // cast to allow runtime inspection
 
       // Secondary: Qdrant vector database - use compatibility helper
       type QdrantPoint = { id: string | number; vector?: number[]; payload?: Record<string, unknown> };
@@ -523,7 +523,7 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         // Try WASM clustering first for better performance
         const wasmMetrics = wasmClusteringService.getPerformanceMetrics();
-        let clusters: unknown;
+        let clusters: any;
         if (wasmMetrics.recommendedForDataSize(embeddings.length)) {
           console.log('Using WebAssembly K-Means clustering for enhanced performance');
           const wasmResult = await wasmClusteringService.performKMeansClustering(
@@ -683,7 +683,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 503 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('K-Means API error:', error);
     return json(
       {
@@ -737,7 +737,7 @@ export const GET: RequestHandler = async ({ url }) => {
       );
     }
 
-    const results: unknown = JSON.parse(resultsRaw);
+    const results: any = JSON.parse(resultsRaw);
     const centroids: number[][] = extractCentroids(results);
 
     if (!centroids || centroids.length === 0) {
@@ -804,7 +804,7 @@ export const GET: RequestHandler = async ({ url }) => {
         processingTime: Date.now() - 0,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('K-Means prediction error:', error);
     return json(
       {

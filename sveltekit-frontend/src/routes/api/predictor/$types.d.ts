@@ -30,7 +30,7 @@ export interface PredictionContext {
   docId?: string;
   query?: string;
   timestamp?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface RecordActionResponse {
   success: boolean;

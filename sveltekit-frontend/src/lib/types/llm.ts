@@ -104,7 +104,7 @@ export interface AgentDefinition {
 }
 // Temporary AgentConfig type to satisfy references
 export interface AgentConfig extends LLMAgentConfig {
-  [key: string]: unknown; // Changed from 'any' to: 'unknown'
+  [key: string]: any; // Changed from 'any' to: 'unknown'
 }
 export interface AgentTool {
   id: string;
@@ -118,7 +118,7 @@ export interface ToolParameter {
   type: 'string' | 'number' | 'boolean' | 'array' | 'object';
   description: string;
   required: boolean;
-  default?: unknown;
+  default?: any;
 }
 export interface LLMAgentConfig {
   maxIterations?: number;
@@ -177,7 +177,7 @@ export interface WorkflowCondition {
   type: 'output_value' | 'external_event' | 'time_based';
   field?: string; // e.g., 'output.status'
   operator?: 'eq' | 'ne' | 'gt' | 'lt' | 'ge' | 'le' | 'contains';
-  value?: unknown;
+  value?: any;
   negate?: boolean;
 }
 
@@ -188,7 +188,7 @@ export interface RetryConfig {
   attempts: number;
   delayMs: number;
   backoffStrategy?: 'linear' | 'exponential';
-  onRetry?: (attempt: number, error: unknown) => void;
+  onRetry?: (attempt: number, error: any) => void;
 }
 
 export interface WorkflowStep {
@@ -209,7 +209,7 @@ export interface WorkflowInput {
   required: boolean;
 }
 export interface WorkflowOutput {
-  result?: unknown;
+  result?: any;
   error?: string;
   duration: number;
   metrics?: ResponseMetrics;
@@ -234,7 +234,7 @@ export interface ProcessingStep {
   name: string;
   duration: number;
   status: 'completed' | 'failed' | 'skipped';
-  output?: unknown;
+  output?: any;
 }
 // System Health and Monitoring Types
 export interface SystemHealth {

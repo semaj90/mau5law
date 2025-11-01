@@ -13,10 +13,10 @@ https://svelte.dev/e/expected_token -->
     result = null;
     try {
       result = await diagnoseWebGPU();
-    } catch (e: unknown) {
+    } catch (e: any) {
       error = e?.message || String(e);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   $effect(run);
@@ -47,31 +47,31 @@ https://svelte.dev/e/expected_token -->
     <div class="nier-bits-card">
       <h2>Status</h2>
       <ul>
-        <li>Browser WebGPU Support: <span class={(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).supported ? 'ok' : 'bad'}>{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).supported ? 'Yes' : 'No'}</span></li>
-        <li>Adapter Found: <span class={(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapterFound ? 'ok' : 'bad'}>{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapterFound ? 'Yes' : 'No'}</span></li>
-        <li>Device Created: <span class={(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).deviceCreated ? 'ok' : 'bad'}>{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).deviceCreated ? 'Yes' : 'No'}</span></li>
+        <li>Browser WebGPU Support: <span class={(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).supported ? 'ok' : 'bad'}>{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).supported ? 'Yes' : 'No'}</span></li>
+        <li>Adapter Found: <span class={(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).adapterFound ? 'ok' : 'bad'}>{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).adapterFound ? 'Yes' : 'No'}</span></li>
+        <li>Device Created: <span class={(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).deviceCreated ? 'ok' : 'bad'}>{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).deviceCreated ? 'Yes' : 'No'}</span></li>
       </ul>
-      {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).error}
-        <div class="bad">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).error}</div>
+      {#if (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).error}
+        <div class="bad">{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).error}</div>
       {/if}
     </div>
     <div class="nier-bits-card">
       <h2>Timings</h2>
       <div class="mono">
-        <div>requestAdapter: {(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).timings.requestAdapterMs?.toFixed(1) ?? '—'} ms</div>
-        <div>requestDevice: {(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).timings.requestDeviceMs?.toFixed(1) ?? '—'} ms</div>
+        <div>requestAdapter: {(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).timings.requestAdapterMs?.toFixed(1) ?? '—'} ms</div>
+        <div>requestDevice: {(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).timings.requestDeviceMs?.toFixed(1) ?? '—'} ms</div>
       </div>
-      <div class="muted">Tried: {(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).powerPreferenceTried.join(', ')}</div>
-      {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).powerPreferenceUsed}
-        <div>Used: <span class="mono">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).powerPreferenceUsed}</span></div>
+      <div class="muted">Tried: {(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).powerPreferenceTried.join(', ')}</div>
+      {#if (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).powerPreferenceUsed}
+        <div>Used: <span class="mono">{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).powerPreferenceUsed}</span></div>
       {/if}
     </div>
     <div class="nier-bits-card">
       <h2>Adapter</h2>
-      {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapter}
-        <div class="mono">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapter.label || '(no label)'} {(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapter.isFallbackAdapter ? ' — fallback' : ''}</div>
+      {#if (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).adapter}
+        <div class="mono">{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).adapter.label || '(no label)'} {(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).adapter.isFallbackAdapter ? ' — fallback' : ''}</div>
         <h3>Features</h3>
-        <div class="mono" style="white-space: pre-wrap">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapter.features.join(', ') || '—'}</div>
+        <div class="mono" style="white-space: pre-wrap">{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).adapter.features.join(', ') || '—'}</div>
         <h3>Limits</h3>
         <div class="mono" style="white-space: pre-wrap">{JSON.stringify(adapter).limits, null, 2)}</div>
       {:else}
@@ -80,24 +80,24 @@ https://svelte.dev/e/expected_token -->
     </div>
     <div class="nier-bits-card">
       <h2>Device Limits</h2>
-      <div class="mono" style="white-space: pre-wrap">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).deviceLimits ? JSON.stringify(deviceLimits), null, 2) : '—'}</div>
+      <div class="mono" style="white-space: pre-wrap">{(result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).deviceLimits ? JSON.stringify(deviceLimits), null, 2) : '—'}</div>
     </div>
   </div>
-  {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).warnings.length}
+  {#if (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).warnings.length}
     <div class="nier-bits-card warn">
       <h2>Warnings</h2>
       <ul>
-        {#each (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).warnings as w}
+        {#each (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).warnings as w}
           <li>{w}</li>
         {/each}
       </ul>
     </div>
   {/if}
-  {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).recommendedActions.length}
+  {#if (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).recommendedActions.length}
     <div class="nier-bits-card">
       <h2>Recommended Actions</h2>
       <ol>
-        {#each (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).recommendedActions as a}
+        {#each (result as { supported?: any; adapterFound?: any; deviceCreated?: any; error?: any; timings?: any; powerPreferenceTried?: any; powerPreferenceUsed?: any; adapter?: any; deviceLimits?: any; warnings?: any; recommendedActions?: any }).recommendedActions as a}
           <li>{a}</li>
         {/each}
       </ol>

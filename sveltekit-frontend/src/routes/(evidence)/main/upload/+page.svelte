@@ -98,11 +98,11 @@
   }
   function onDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
   }
   function onDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);
@@ -165,7 +165,7 @@
         <div class="nes-select">
           <select name="case_id" id="case_id" required disabled={$submitting} bind:value={$form.case_id}>
             <option value="">Choose a case...</option>
-            {#each data.cases as caseItem}
+            {#each Array.isArray(data.cases) ? data.cases : [] as caseItem}
               <option value={caseItem.id}>
                 {caseItem.case_number ? `${caseItem.case_number}: ` : ''}{caseItem.title}
                 {caseItem.status !== 'active' ? ` (${caseItem.status})` : ''}

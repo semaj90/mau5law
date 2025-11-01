@@ -139,14 +139,14 @@
   </header>
 
   <section class="category-section">
-    {#each demoCategories as category}
+    {#each Array.isArray(demoCategories) ? demoCategories : [] as category}
       <article class="category">
         <header class="category-header">
           <span class="category-icon">{category.icon}</span>
           <h2>{category.name}</h2>
         </header>
         <div class="demo-grid">
-          {#each category.demos as demo}
+          {#each Array.isArray(category.demos) ? category.demos : [] as demo}
             <div class="demo-card">
               <div class="demo-card-header">
                 <h3>{demo.name}</h3>
@@ -154,7 +154,7 @@
               </div>
               <p class="demo-description">{demo.description}</p>
               <ul class="demo-features">
-                {#each demo.features as feature}
+                {#each Array.isArray(demo.features) ? demo.features : [] as feature}
                   <li>{feature}</li>
                 {/each}
               </ul>

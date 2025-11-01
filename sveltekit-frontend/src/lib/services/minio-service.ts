@@ -25,7 +25,7 @@ export interface MinIOFile {
     vectorEmbedding?: Float32Array;
     caseId?: string;
     jurisdiction?: string;
-    [k: string]: unknown;
+    [k: string]: any;
   };
 }
 

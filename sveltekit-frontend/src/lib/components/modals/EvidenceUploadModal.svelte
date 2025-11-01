@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button';
-  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button.svelte'';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
   import { uploadStore } from '$lib/stores/unified';
   import { formatFileSize } from '$lib/utils/file-utils';
   import AlertCircle from 'lucide-svelte/icons/alert-circle';
@@ -11,54 +11,44 @@
   import Loader2 from 'lucide-svelte/icons/loader-2';
   import Upload from 'lucide-svelte/icons/upload';
   import X from 'lucide-svelte/icons/x';
-
   interface Props {
     onViewEvidence?: (files: any[]) => void;
   }
   const { onViewEvidence = () => {} }: Props = $props();
-
   let fileInput: HTMLInputElement;
   let dragActive = $state(false);
-
   let isOpen = $derived($uploadStore.isOpen);
   let files = $derived($uploadStore.files || []);
   let activeUploads = $derived(files.filter(f => f?.status === 'uploading' || f?.status === 'processing'));
   let completedUploads = $derived(files.filter(f => f?.status === 'completed'));
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       uploadStore.addFiles(Array.from(target.files));
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       uploadStore.addFiles(Array.from(event.dataTransfer.files));
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
   }
-
   function removeFile(fileId: string) {
     uploadStore.removeFile(fileId);
   }
-
   function closeModal() {
     uploadStore.closeModal();
   }
 </script>
-
 <Dialog.Root open={isOpen} onOpenChange={(open) => !open && closeModal()}>
   <Dialog.Content class="max-w-3xl">
     <Dialog.Header>
@@ -70,7 +60,6 @@
         Upload images, documents, audio, and video files for your case.
       </Dialog.Description>
     </Dialog.Header>
-
     <div class="grid gap-4 py-4">
       <!-- File Drop Zone -->
       <div
@@ -108,7 +97,6 @@
           onchange={handleFileSelect}
         />
       </div>
-
       <!-- File List -->
       {#if files.length > 0}
         <div class="space-y-2">
@@ -151,8 +139,7 @@
                             class="bg-primary h-1 rounded-full"
                             style="width: {file.progress}%"
                           ></div>
-                        </div>
-                      {/if}
+                        {/if}
                       {#if file.error}
                         <p class="text-xs text-red-500 mt-1">{file.error}</p>
                       {/if}
@@ -168,14 +155,11 @@
                       <X class="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              {/if}
+                {/if}
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-
     <Dialog.Footer>
       <div class="flex-1 text-sm text-gray-600">
         {#if activeUploads.length > 0}

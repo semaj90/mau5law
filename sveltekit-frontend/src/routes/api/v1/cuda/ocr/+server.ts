@@ -8,7 +8,7 @@ import { join } from 'path';
 const execAsync = promisify(exec);
 
 /* Helper to safely extract useful info from unknown throwables */
-function normalizeError(err: unknown): { status?: number; message?: string; bodyMessage?: string } {
+function normalizeError(err: any): { status?: number; message?: string; bodyMessage?: string } {
   // Non-object errors (string, number, etc.)
   if (err === null || typeof err !== 'object') {
     return { message: typeof err === 'string' ? err : undefined };
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     let processPath: string;
-    let shouldCleanup = false;
+    let shouldCleanup = $state(false);
 
     if (imageFile) {
       // Save uploaded file temporarily
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
       }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('CUDA OCR error:', err);
 
@@ -177,7 +177,7 @@ async function processCudaOCR(imagePath: string): Promise<{
           tensorrtVersion: result.metadata?.tensorrtVersion,
         };
       }
-    } catch (fetchError: unknown) {
+    } catch (fetchError: any) {
       console.warn('CUDA service not available, falling back to local processing:', fetchError);
     }
 
@@ -209,11 +209,11 @@ async function processCudaOCR(imagePath: string): Promise<{
         cudaVersion: result.cuda_version,
         tensorrtVersion: result.tensorrt_version,
       };
-    } catch (execError: unknown) {
+    } catch (execError: any) {
       console.error('CUDA executable failed:', execError);
       throw new Error('CUDA OCR processing unavailable');
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('CUDA OCR processing failed:', err);
     // Safely extract a string representation for thrown Error
     const { message } = normalizeError(err);

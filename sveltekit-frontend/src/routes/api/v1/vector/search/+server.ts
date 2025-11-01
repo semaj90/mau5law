@@ -19,7 +19,7 @@ type SearchFilters = {
   practiceArea?: string[];
   riskLevel?: string[];
   // allow additional unknown keys but avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type Metadata = Record<string, unknown>;
@@ -257,19 +257,19 @@ async function performVectorSearch(params: {
     metadata?: Metadata;
     embedding?: number[];
     created_at?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 
   // Normalize various possible shapes returned by db.execute into a DBRow[]
   // NOTE: declared at function root (not inside try) and avoids `any` by using safe runtime checks
-  function normalizeRows(input: unknown): DBRow[] {
+  function normalizeRows(input: any): DBRow[] {
     if (Array.isArray(input)) {
       return input as DBRow[];
     }
 
-    const maybeObj = input as { rows?: unknown } | Record<string, unknown>;
-    if (Array.isArray((maybeObj as { rows?: unknown }).rows)) {
-      return (maybeObj as { rows?: unknown }).rows as DBRow[];
+    const maybeObj = input as { rows?: any } | Record<string, unknown>;
+    if (Array.isArray((maybeObj as { rows?: any }).rows)) {
+      return (maybeObj as { rows?: any }).rows as DBRow[];
     }
 
     // Handle iterable RowList-like objects without using `any`

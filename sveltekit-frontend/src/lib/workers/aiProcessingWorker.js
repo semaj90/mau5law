@@ -5,7 +5,7 @@
 let workerId = '';
 let workerType = '';
 let $config = {}; // renamed to $config to match allowed-unused-vars pattern
-let isInitialized = false;
+let isInitialized = $state(false);
 // Worker state
 let currentTask = null;
 let tasksCompleted = 0;

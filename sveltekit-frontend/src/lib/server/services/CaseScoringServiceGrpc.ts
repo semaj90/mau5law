@@ -34,10 +34,10 @@ class PerformanceMonitor {
 }
 // Simple logger - avoid `any`
 const logger = {
-  info: (msg: string, ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
-  error: (msg: string, ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
-  warn: (msg: string, ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
+  info: (msg: string, ...args: any[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
+  error: (msg: string, ...args: any[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
+  warn: (msg: string, ...args: any[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
+  debug: (msg: string, ...args: any[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
 };
 
 // --- Added: narrow gRPC types moved ahead of the class to avoid: "cannot find name" errors
@@ -63,20 +63,20 @@ type GrpcStreamUpdate = {
   event_type?: string;
   timestamp?: { seconds?: number };
   sequence_number?: number;
-  partial_score?: unknown;
-  criteria_update?: unknown;
-  recommendation_update?: unknown;
-  processing_status?: unknown;
+  partial_score?: any;
+  criteria_update?: any;
+  recommendation_update?: any;
+  processing_status?: any;
 };
 
 type GrpcWritableStream = {
-  write: (data: unknown) => void;
+  write: (data: any) => void;
   end: () => void;
-  on: (event: 'data' | 'error' | 'end', handler: (payload?: unknown) => void) => void;
+  on: (event: 'data' | 'error' | 'end', handler: (payload?: any) => void) => void;
 };
 
 type GrpcClientType = {
-  ScoreCase?: (req: unknown, cb: (err: unknown, res?: GrpcResponse) => void) => void;
+  ScoreCase?: (req: any, cb: (err: any, res?: GrpcResponse) => void) => void;
   StreamScoringUpdates?: () => GrpcWritableStream | undefined;
   StreamCaseScoring?: () => GrpcWritableStream | undefined;
 };
@@ -90,7 +90,7 @@ type OllamaServiceType = {
   complete?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
   run?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
   // allow other helpers on the service without typing everything
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
@@ -177,14 +177,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       type ExpectedProtoShape = {
         legal_ai?: {
           case_scoring?: {
-            CaseScoringService?: unknown;
+            CaseScoringService?: any;
           };
         };
       };
 
       const proto = loadedPkg as ExpectedProtoShape;
       const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
-        | ({ new (...args: unknown[]): GrpcClientType })
+        | ({ new (...args: any[]): GrpcClientType })
         | undefined;
 
       if (!CaseScoringService) {
@@ -192,7 +192,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       }
       const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
       // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
-      this.grpcClient = new (CaseScoringService as unknown as { new (...args: unknown[]): GrpcClientType })(
+      this.grpcClient = new (CaseScoringService as unknown as { new (...args: any[]): GrpcClientType })(
         target,
         credentials.createInsecure(),
         {
@@ -255,7 +255,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       }
 
       // Make gRPC call
-      this.grpcClient.ScoreCase(grpcRequest, async (error: unknown, response?: GrpcResponse) => {
+      this.grpcClient.ScoreCase(grpcRequest, async (error: any, response?: GrpcResponse) => {
         if (error) {
           return reject(error);
         }
@@ -336,7 +336,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   /**
    * Stream real-time scoring updates using gRPC bidirectional streaming
    */
-  async streamScoringUpdates(caseIds: string[], callback: (update: unknown) => void): Promise<() => void> {
+  async streamScoringUpdates(caseIds: string[], callback: (update: any) => void): Promise<() => void> {
     if (!this.grpcClient || !this.grpcClient.StreamScoringUpdates) {
       logger.warn('gRPC not available for streaming');
       return () => {};
@@ -364,7 +364,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     }
 
     // Handle streaming responses
-    stream.on('data', (payload: unknown) => {
+    stream.on('data', (payload: any) => {
       try {
         const update = payload as GrpcStreamUpdate;
         const processed = this.processStreamingUpdate(update);
@@ -380,7 +380,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       }
     });
 
-    stream.on('error', (err: unknown) => {
+    stream.on('error', (err: any) => {
       logger.error('Streaming error', err);
       this.emit('streaming-error', err);
     });
@@ -419,7 +419,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     return new Promise((resolve, reject) => {
       const results: CaseScoringResult[] = [];
       // changed: allow async processing inside: 'data' handler
-      call.on('data', async (payload: unknown) => {
+      call.on('data', async (payload: any) => {
         const response = payload as GrpcResponse;
         try {
           results.push(await this.convertGrpcResponse(response));
@@ -530,7 +530,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
       // Fallback: stringify whatever came in
       return String(compressedData);
-    } catch (err: unknown) {
+    } catch (err: any) {
       logger.warn('Failed to decompress analysis', err);
       return typeof compressedData === 'string' ? compressedData : String(compressedData);
     }
@@ -543,7 +543,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
     eventType?: string;
     timestamp: Date;
     sequenceNumber?: number;
-    data?: unknown;
+    data?: any;
   } {
     return {
       caseId: update.case_id,
@@ -673,7 +673,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5,
         resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       logger.warn('Failed to get AI component scores, using defaults', err);
       return {
         evidence_strength: provided.evidence_strength ?? 0.5,
@@ -847,7 +847,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       type InsertPayload = ReturnType<typeof mapScoringResultToInsert>;
       let attempt = 0;
       const maxAttempts = 3;
-      let lastError: unknown = null;
+      let lastError: any = null;
       while (attempt < maxAttempts) {
         try {
           // Build a concrete payload with required fields (avoid optional-indexed Insertable typing)
@@ -872,7 +872,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           // success
           lastError = null;
           break;
-        } catch (err: unknown) {
+        } catch (err: any) {
           lastError = err;
           attempt++;
           if (attempt < maxAttempts) {
@@ -895,8 +895,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         };
         try {
           const g = globalThis as unknown as {
-            redisLogger?: { logError?: (payload: unknown) => Promise<void> | void };
-            monitoringService?: { alertCritical?: (payload: unknown) => Promise<void> | void };
+            redisLogger?: { logError?: (payload: any) => Promise<void> | void };
+            monitoringService?: { alertCritical?: (payload: any) => Promise<void> | void };
           };
           if (g.monitoringService && typeof g.monitoringService.alertCritical === 'function') {
             await g.monitoringService.alertCritical(errorLog);
@@ -906,12 +906,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           } else {
             logger.error('[DB_PERSIST_ERROR_CRITICAL]', errorLog);
           }
-        } catch (logErr: unknown) {
+        } catch (logErr: any) {
           logger.error('Failed to surface critical DB error', logErr, errorLog);
         }
         // Do not rethrow to avoid breaking scoring flow; choose to log and continue
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const errorLog = {
         code: 'DB_PERSIST_ERROR',
         timestamp: new Date().toISOString(),
@@ -925,14 +925,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
       try {
         const g = globalThis as unknown as {
-          redisLogger?: { logError?: (payload: unknown) => Promise<void> | void };
+          redisLogger?: { logError?: (payload: any) => Promise<void> | void };
         };
         if (g.redisLogger && typeof g.redisLogger.logError === 'function') {
           await g.redisLogger.logError(errorLog);
         } else {
           logger.warn('[DB_PERSIST_ERROR]', errorLog);
         }
-      } catch (logErr: unknown) {
+      } catch (logErr: any) {
         logger.warn('Failed to log error to Redis', logErr, errorLog);
       }
       // Non-fatal: do not rethrow to avoid breaking scoring flow

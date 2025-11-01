@@ -12,20 +12,20 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
-  import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
-  import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
+  import { N64ProgressBar } from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
+  import { N64LoadingRing } from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
+  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   import { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search } from 'lucide-svelte';
   interface Props {
     caseId?: string;
@@ -416,7 +416,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     <TabsContent value="chat" class="flex-1 flex flex-col">
       <ScrollArea class="flex-1 p-4">
         <div class="space-y-4">
-          {#each $messages as message}
+          {#each Array.isArray($messages) ? $messages : [] as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
               <div class="max-w-[80%] {message.role === 'user' ? 'bg-primary/10' : ''} nes-container">
                 <div class="yorha-panel-content p-4">
@@ -431,15 +431,14 @@ https://svelte.dev/e/attribute_invalid_name -->
                     <div class="mt-3 pt-3 border-t">
                       <div class="text-xs nes-text is-disabled mb-2">Sources:</div>
                       <div class="space-y-1">
-                        {#each message.metadata.sources as source}
+                        {#each Array.isArray(message.metadata.sources) ? message.metadata.sources : [] as source}
                           <div class="text-xs">
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(source.relevanceScore * 100).toFixed(0)}%</span>
                             {source.title}
                           </div>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if message.metadata?.confidence}
                     <div class="mt-2">
                       <N64ProgressBar
@@ -454,8 +453,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                       <div class="text-xs nes-text is-disabled mt-1">
                         AI Confidence Level
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </div>
@@ -478,8 +476,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                   </div>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
       </ScrollArea>
       <!-- Input Area -->

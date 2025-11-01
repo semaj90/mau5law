@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       orchestration_id: generateOrchestrationId(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Orchestration Error:', error);
     return json(
       {
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async () => {
       performance_metrics: await orchestrator.getPerformanceMetrics(),
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         service: 'Comprehensive Service Orchestrator',
@@ -90,7 +90,7 @@ function generateOrchestrationId(): string {
 }
 
 // New: safe error message extractor for unknown errors
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {

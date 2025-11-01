@@ -2,7 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = ''  }: { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' : unknown } = $props();
+  let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = ''  }: { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' : any } = $props();
   function onInput(e: Event) {
   	// removed unused target assignment
   	value = target.valu;
@@ -14,7 +14,6 @@ https://svelte.dev/e/js_parse_error -->
   	ondispatch?.({ value });
   }
 </script>
-
 <input
   {id}
   {name}
@@ -27,7 +26,6 @@ https://svelte.dev/e/js_parse_error -->
   onchange={onChange}
   aria-label={placeholder || 'N64 text field'}
 />
-
 <style>
   .n64-textfield {
     box-sizing: border-box;
@@ -61,4 +59,3 @@ https://svelte.dev/e/js_parse_error -->
     cursor: not-allowed;
   }
 </style>
-

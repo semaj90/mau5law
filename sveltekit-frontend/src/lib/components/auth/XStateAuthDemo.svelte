@@ -7,14 +7,14 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Label from '$lib/components/ui/label/Label.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Alert from '$lib/components/ui/alert/Alert.svelte';
-  import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Label } from '$lib/components/ui/label/Label.svelte';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
+  import { AlertDescription } from '$lib/components/ui/alert/AlertDescription.svelte';
   import {
     Shield, CheckCircle, AlertCircle, Loader2,
     User, MessageCircle, Settings, LogOut,
@@ -87,11 +87,11 @@
         if (authenticated) {
           demoStep = 'dashboard';
         }
-        isLoading = false;
+        isLoading = $state(false);
       }, 2000);
     } catch (error) {
       console.error('Login demo failed:', error);
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function demonstrateAI() {
@@ -183,11 +183,9 @@
             </Badge></div>
             <div class="mt-1">Loading: {auth.isLoading ? 'Yes' : 'No'}</div>
             {#if auth.error}
-              <div class="mt-1 text-red-600">Error: {auth.error}</div>
-            {/if}
+              <div class="mt-1 text-red-600">Error: {auth.error}{/if}
             {#if user}
-              <div class="mt-1">User: {user.firstName} {user.lastName} ({user.role})</div>
-            {/if}
+              <div class="mt-1">User: {user.firstName} {user.lastName} ({user.role}){/if}
           </div>
         </div>
         <div class="space-y-3">
@@ -253,8 +251,7 @@
                 Demonstrate XState Login
               {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if demoStep === 'dashboard' && authenticated}
         <div class="space-y-4">
           <h3 class="text-lg font-semibold">Step 2: Dashboard Integration</h3>
@@ -279,8 +276,7 @@
           <Button onclick={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
 <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
-        </div>
-      {/if}
+        {/if}
       {#if demoStep === 'ai'}
         <div class="space-y-4">
           <h3 class="text-lg font-semibold">Step 3: AI Assistant with Context7</h3>
@@ -305,8 +301,7 @@
               <div class="bg-blue-50 p-4 rounded-lg">
                 <h4 class="font-medium mb-2">AI Response:</h4>
                 <p class="text-sm">{aiAssistant.response}</p>
-              </div>
-            {/if}
+              {/if}
             {#if aiAssistant.context7Analysis}
               <div class="bg-green-50 p-4 rounded-lg">
                 <h4 class="font-medium mb-2">Context7 Analysis:</h4>
@@ -315,8 +310,7 @@
                   <div>Suggestions: {aiAssistant.context7Analysis.suggestions?.length || 0}</div>
                   <div>Code Examples: {aiAssistant.context7Analysis.codeExamples?.length || 0}</div>
                 </div>
-              </div>
-            {/if}
+              {/if}
             <div class="flex gap-2">
               <Button class="bits-btn" onclick={() =>
 demoStep = 'dashboard'} variant="ghost">
@@ -326,8 +320,7 @@ demoStep = 'dashboard'} variant="ghost">
                 Complete Demo
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Session Information -->
       {#if authenticated && session}
         <div class="bg-slate-50 p-4 rounded-lg">
@@ -352,13 +345,12 @@ demoStep = 'dashboard'} variant="ghost">
               </Badge>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Notifications -->
       {#if global.ui.notifications && global.ui.notifications.length > 0}
         <div class="space-y-2">
           <h4 class="font-medium">Recent Notifications</h4>
-          {#each global.ui.notifications.slice(-3) as notification}
+          {#each Array.isArray(global.ui.notifications.slice(-3)) ? global.ui.notifications.slice(-3) : [] as notification}
             <Alert variant={(notification as { type?: any; title?: any; message?: any; timestamp?: any }).type === 'error' ? 'destructive' : 'default'}>
               {#if (notification as { type?: any; title?: any; message?: any; timestamp?: any }).type === 'success'}
                 <CheckCircle class="h-4 w-4" />
@@ -375,8 +367,7 @@ demoStep = 'dashboard'} variant="ghost">
               </AlertDescription>
             </Alert>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div.Content>
   </div.Root>
 </div>

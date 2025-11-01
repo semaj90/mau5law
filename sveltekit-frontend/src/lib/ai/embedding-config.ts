@@ -81,7 +81,6 @@ export function getOptimalEmbeddingModel(
   // If no models from the chain are available, return the full chain
   return availableChain.length > 0 ? availableChain : chain;
 }
-
 export function getEmbeddingModelConfig(modelId: string): EmbeddingModelConfig | null {
   return EMBEDDING_MODELS[modelId] || null;
 }

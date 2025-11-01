@@ -16,7 +16,6 @@ https://svelte.dev/e/js_parse_error -->
 	import type { Snippet } from 'svelte';
   import { spring } from 'svelte/motion';
   import { onMount } from 'svelte';
-
   interface Props {
     variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
     size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -36,7 +35,6 @@ https://svelte.dev/e/js_parse_error -->
     onclick?: (_event: MouseEvent) => void;
     class?: string;
   }
-
   let {
     variant = 'primary',
     size = 'md',
@@ -52,7 +50,6 @@ https://svelte.dev/e/js_parse_error -->
     class: className = '',
     ...restProp
   }: Props = $props();
-
   // element refs / webgl state
   let canvas = $state<HTMLCanvasElement | null>(null);
   let gl: WebGLRenderingContext | null = null;
@@ -66,24 +63,20 @@ https://svelte.dev/e/js_parse_error -->
     time: null,
     glow: null
   });
-
   let animationFrame = $state<number | null>(null);
   let isHovered = $state(false);
   let isPressed = $state(false);
-
   // reactive spring for confidence (smooth transitions)
   const confidenceSpring = spring(legalContext?.confidence ?? 0, {
     stiffness: 0.3,
     damping: 0.8
   });
-
   // update spring when legalContext changes
   $effect(() => {
     if (legalContext?.confidence !== undefined) {
       confidenceSpring.set(legalContext.confidence);
     }
   });
-
   // initialize or stop WebGL on mount / when canvas changes
   $effect(() => {
     if (gpuEffects && canvas) {
@@ -97,11 +90,9 @@ https://svelte.dev/e/js_parse_error -->
       cleanupWebGL();
     };
   });
-
   onMount(() => {
     // nothing else required here; $effect handles lifecycle
   });
-
   function initWebGL() {
     if (!canvas) return;
     gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
@@ -109,7 +100,6 @@ https://svelte.dev/e/js_parse_error -->
       // WebGL not supported; rely on CSS fallback
       return;
     }
-
     // simple full-quad vertex shader
     const vertexShaderSource = `
       attribute vec2 a_position;
@@ -120,7 +110,6 @@ https://svelte.dev/e/js_parse_error -->
         gl_Position = vec4(a_position, 0.0, 1.0);
       }
     `;
-
     // fragment shader uses confidence/time to produce glow
     const fragmentShaderSource = `
       precision mediump float;
@@ -137,15 +126,12 @@ https://svelte.dev/e/js_parse_error -->
         gl_FragColor = vec4(color * glow, glow * 0.6);
       }
     `;
-
     program = createShaderProgram(vertexShaderSource, fragmentShaderSource);
     if (!program) {
       cleanupWebGL();
       return;
     }
-
     gl.useProgram(program);
-
     // set up a full-screen quad (positions + texcoords interleaved)
     const vertices = new Float32Array([
       -1, -1, 0.0, 0.0,
@@ -156,26 +142,20 @@ https://svelte.dev/e/js_parse_error -->
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
     const aPos = gl.getAttribLocation(program, 'a_position');
     const aTex = gl.getAttribLocation(program, 'a_texCoord');
-
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 16, 0);
-
     gl.enableVertexAttribArray(aTex);
     gl.vertexAttribPointer(aTex, 2, gl.FLOAT, false, 16, 8);
-
     // store uniform locations
     uniformLocations.confidence = gl.getUniformLocation(program, 'u_confidence');
     uniformLocations.time = gl.getUniformLocation(program, 'u_time');
     uniformLocations.glow = gl.getUniformLocation(program, 'u_glow');
-
     // set blend for additive glow
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
   }
-
   function compileShader(type: number, source: string) {
     if (!gl) return null;
     const shader = gl.createShader(type)!;
@@ -190,7 +170,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     return shader;
   }
-
   function createShaderProgram(vertexSource: string, fragmentSource: string) {
     if (!gl) return null;
     const v = compileShader(gl.VERTEX_SHADER, vertexSource);
@@ -210,7 +189,6 @@ https://svelte.dev/e/js_parse_error -->
     gl.deleteShader(f);
     return p;
   }
-
   function startAnimation() {
     if (!gl || !program || !canvas) return;
     let start = performance.now();
@@ -226,19 +204,15 @@ https://svelte.dev/e/js_parse_error -->
         canvas.height = height;
         gl.viewport(0, 0, width, height);
       }
-
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-
       gl.useProgram(program);
-
       const t = (now - start) / 1000;
       const conf = $state.snapshot ? (/* fallback for older runtimes */  (legalContext?.confidence ?? 0)) : 0;
       // read current spring value (spring is a store; use $-prefixed access in template only)
       // safer: read via get() style by temporarily using a closure of the current spring value
       // but svelte/motion spring isn't directly readable here; instead, we'll read legalContext.confidence as source of truth if needed
       const currentConfidence = legalContext?.confidence ?? 0;
-
       if (uniformLocations.time && gl.getUniformLocation) {
         gl.uniform1f(uniformLocations.time, t);
       }
@@ -248,13 +222,11 @@ https://svelte.dev/e/js_parse_error -->
       if (uniformLocations.glow) {
         gl.uniform1f(uniformLocations.glow, glowIntensity);
       }
-
       // draw two triangles (triangle strip)
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     animationFrame = requestAnimationFrame(loop);
   }
-
   function cleanupWebGL() {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
@@ -269,7 +241,6 @@ https://svelte.dev/e/js_parse_error -->
     // don't null out canvas reference here (it's bound)
     gl = null;
   }
-
   // helper: compute classes for button
   function btnClass() {
     return [
@@ -282,13 +253,11 @@ https://svelte.dev/e/js_parse_error -->
     ].filter(Boolean).join(' ');
   }
 </script>
-
 <div class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
   <div class="canvas-layer" aria-hidden="true">
     <!-- make canvas non-self-closing to avoid potential parsing issues -->
     <canvas bind:this={canvas} class="gl-canvas"></canvas>
   </div>
-
   <button
     type="button"
     class={btnClass()}
@@ -300,13 +269,12 @@ https://svelte.dev/e/js_parse_error -->
     onpointerup={() => (isPressed = false)}
     {...restProp}
   >
-    {@render children?.()}
+    <slot />
     {#if loading}
       <span class="spinner" aria-hidden="true">⏳</span>
     {/if}
   </button>
 </div>
-
 <style>
   /* minimal styling + CSS fallback glow when WebGL not available */
   .unified-button-wrapper {
@@ -354,13 +322,11 @@ https://svelte.dev/e/js_parse_error -->
   .variant-primary { background: linear-gradient(180deg,#0ea5a4,#0284c7); }
   .variant-secondary { background: linear-gradient(180deg,#6b7280,#374151); }
   .variant-legal { background: linear-gradient(180deg,#10b981,#047857); }
-
   /* GPU animation: performance optimizations */
   canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-
   /* NES-style font rendering */
   .font-mono {
     font-family: 'Courier New', 'Monaco', monospace;

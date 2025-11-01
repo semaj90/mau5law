@@ -35,7 +35,7 @@ interface HeadlessDocument {
   // optional metadata bag for downstream processing
   metadata?: Record<string, unknown>;
   // allow extra fields but keep them typed
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface BatchProcessingRequest {
@@ -108,7 +108,7 @@ interface HeadlessProcessorLike {
     isHeadless?: boolean;
     queueLength?: number;
     lodCacheStats?: Record<string, unknown>;
-    [k: string]: unknown;
+    [k: string]: any;
   };
   initializeHeadless?: () => Promise<boolean> | boolean;
   processLegalDocument?: (
@@ -120,7 +120,7 @@ interface HeadlessProcessorLike {
     config?: Partial<HeadlessProcessingConfig>
   ) => Promise<HeadlessResult[]>;
   dispose?: () => void;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 // Safe, typed alias to the imported factory
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     console.log(`✅ Headless processing completed: ${(response as { processingTime?: number }).processingTime}ms`);
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errInfo = getErrorInfo(error);
     console.error('Headless processing error:', errInfo.message);
     return json(
@@ -344,7 +344,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       `✅ Batch processing completed: ${body.documents.length} documents in ${(response as { processingTime?: number }).processingTime}ms`
     );
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errInfo = getErrorInfo(error);
     console.error('Batch processing error:', errInfo.message);
     return json(
@@ -398,7 +398,7 @@ export const DELETE: RequestHandler = async () => {
       message: 'Headless processor resources cleaned up',
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errInfo = getErrorInfo(error);
     return json(
       {
@@ -458,7 +458,7 @@ function generateRequestId(): string {
 }
 
 // New helper: safely extract message/name from unknown error without using `any`
-function getErrorInfo(error: unknown): { message: string; name: string } {
+function getErrorInfo(error: any): { message: string; name: string } {
   if (error instanceof Error) {
     return { message: error.message, name: error.name };
   }
@@ -466,7 +466,7 @@ function getErrorInfo(error: unknown): { message: string; name: string } {
     return { message: error, name: 'Error' };
   }
   if (error && typeof error === 'object') {
-    const maybe = error as { message?: unknown; name?: unknown };
+    const maybe = error as { message?: any; name?: any };
     const message = typeof maybe.message === 'string' ? maybe.message : 'Unknown error';
     const name = typeof maybe.name === 'string' ? maybe.name : 'Error';
     return { message, name };

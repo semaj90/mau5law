@@ -203,7 +203,7 @@ export class UserChatRecommendationEngine {
   private feedbackCollection: any;
   private machine: any;
   private serviceWorker: ServiceWorker | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Reactive stores
   public sessionState = writable<any>(null);
   public recommendations = writable<RecommendationAction[]>([]);

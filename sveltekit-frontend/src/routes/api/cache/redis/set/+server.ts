@@ -4,7 +4,7 @@ import { setCache, checkApiKey, redisRateLimit } from '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = (await request.json()) as { key?: string; value?: unknown; ttlMs?: number };
+    const body = (await request.json()) as { key?: string; value?: any; ttlMs?: number };
     const { key, value, ttlMs } = body ?? {};
     if (!key) return json({ success: false, error: 'Key is required' }, { status: 400 });
 
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     await setCache(key, value ?? null, ttlMs);
     return json({ success: true, key, message: 'Value set in cache (Redis+memory best-effort)' });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json({ success: false, error: message }, { status: 500 });
   }

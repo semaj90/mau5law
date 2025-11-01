@@ -5,8 +5,8 @@ export interface RedisClientLike {
 }
 
 export interface RabbitPublisherLike {
-  publish: (queue: string, msg: unknown) => Promise<void>;
-  enqueue?: (queue: string, msg: unknown) => Promise<void>;
+  publish: (queue: string, msg: any) => Promise<void>;
+  enqueue?: (queue: string, msg: any) => Promise<void>;
 }
 
 export type OptionalRedis = Partial<RedisClientLike>;

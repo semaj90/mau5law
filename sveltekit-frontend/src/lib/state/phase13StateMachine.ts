@@ -7,14 +7,14 @@
 import * as xstate from 'xstate';
 
 // Safer runtime extraction types (avoid `any`)
-type CreateMachineRuntimeType = (config: unknown, options?: unknown) => unknown;
-type AssignRuntimeType = (arg: unknown) => unknown;
+type CreateMachineRuntimeType = (config: any, options?: any) => unknown;
+type AssignRuntimeType = (arg: any) => unknown;
 
 // extract runtime functions using `unknown` shaped types to avoid `any`
 const createMachineRuntime: CreateMachineRuntimeType =
   (xstate as unknown as { createMachine?: CreateMachineRuntimeType; default?: { createMachine?: CreateMachineRuntimeType } }).createMachine ??
   (xstate as unknown as { default?: { createMachine?: CreateMachineRuntimeType } }).default?.createMachine ??
-  ((): unknown => { throw new Error('xstate.createMachine not available at runtime'); });
+  ((): any => { throw new Error('xstate.createMachine not available at runtime'); });
 
 const assignRuntime: AssignRuntimeType =
   (xstate as unknown as { assign?: AssignRuntimeType; default?: { assign?: AssignRuntimeType } }).assign ??
@@ -35,7 +35,7 @@ type CreateMachineFn = <$TContext, $TEvent extends EventObject = EventObject>(
 
 // Safe casts to typed factories (no `any`)
 const createMachineTyped = createMachineRuntime as unknown as CreateMachineFn;
-const assign = assignRuntime as unknown as (<$TContext, $TEvent extends EventObject = EventObject>(fn: unknown) => unknown);
+const assign = assignRuntime as unknown as (<$TContext, $TEvent extends EventObject = EventObject>(fn: any) => unknown);
 
 import { writable, derived, type Writable, readable, type Readable } from 'svelte/store';
 import { NeuralSpriteEngine } from '$lib/engines/neural-sprite-engine';
@@ -86,7 +86,7 @@ export interface Phase13Context {
   // Compiler Feedback Loop system
   compilerFeedback: {
     isActive: boolean;
-    currentEvents: { type: string; payload?: unknown }[];
+    currentEvents: { type: string; payload?: any }[];
     activePatches: Patch[];
     clusters: Cluster[];
     attentionWeights?: Float32Array;
@@ -122,16 +122,16 @@ export interface Phase13Context {
 }
 
 // --- new small domain types to replace `any` usages ---
-type MCPNode = { id: string; title?: string; content?: string; [k: string]: unknown };
-type GPUStatus = { utilization: number; memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: unknown };
-type WorkerResult = { status: 'ok' | 'error'; output?: unknown; error?: string; [k: string]: unknown };
+type MCPNode = { id: string; title?: string; content?: string; [k: string]: any };
+type GPUStatus = { utilization: number; memoryUsed: number; temperature?: number; shaderPrograms?: number; [k: string]: any };
+type WorkerResult = { status: 'ok' | 'error'; output?: any; error?: string; [k: string]: any };
 type PerformanceMetricsUpdate = Partial<{ frameRate: number; latency: number; throughput: number; errorRate: number }>;
-type AIRecommendation = { id?: string; text: string; score?: number; [k: string]: unknown };
+type AIRecommendation = { id?: string; text: string; score?: number; [k: string]: any };
 type EnhancedRAGContext = Phase13Context | Record<string, unknown>;
-type CompilerLog = { file: string; line: number; message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: unknown };
-type Patch = { id?: string; diff?: string; author?: string; [k: string]: unknown };
-type FocusArea = { file: string; lines: [number, number]; confidence: number; [k: string]: unknown };
-type Cluster = { id: string; nodes: string[]; score?: number; [k: string]: unknown };
+type CompilerLog = { file: string; line: number; message: string; severity?: 'error' | 'warning' | 'info'; [k: string]: any };
+type Patch = { id?: string; diff?: string; author?: string; [k: string]: any };
+type FocusArea = { file: string; lines: [number, number]; confidence: number; [k: string]: any };
+type Cluster = { id: string; nodes: string[]; score?: number; [k: string]: any };
 
 // --- replace event union members that used `any` with explicit types ---
 export type Phase13Event =
@@ -163,7 +163,7 @@ export type Phase13Event =
   | { type: 'EMERGENCY_SHUTDOWN' };
 // WebGL vertex streaming service
 const webglVertexStreamingService = (context: Phase13Context) => {
-  return (sendBack: (e: unknown) => void, onReceive: (listener: (e: { type?: string } | Phase13Event) => void) => void) => {
+  return (sendBack: (e: any) => void, onReceive: (listener: (e: { type?: string } | Phase13Event) => void) => void) => {
     const ctx = context;
     if (!ctx.webglContext) {
       sendBack({ type: 'ERROR', error: 'WebGL context not initialized' });
@@ -206,14 +206,14 @@ const webglVertexStreamingService = (context: Phase13Context) => {
 
     const listener = (event: { type?: string } | Phase13Event) => {
       if ((event as { type?: string }).type === 'STOP_STREAMING') {
-        streamingActive = false;
+        streamingActive = $state(false);
         if (vertexBuffer) gl.deleteBuffer(vertexBuffer);
       }
     };
 
     onReceive(listener);
     return () => {
-      streamingActive = false;
+      streamingActive = $state(false);
       if (vertexBuffer) gl.deleteBuffer(vertexBuffer);
     };
   };
@@ -226,7 +226,7 @@ async function copilotOrchestrator(opts: {
   useMultiAgent?: boolean;
   synthesizeOutputs?: boolean;
   context?: EnhancedRAGContext;
-}): Promise<{ semantic?: EnhancedRAGItem[]; agentResults?: EnhancedRAGItem[]; [k: string]: unknown }> {
+}): Promise<{ semantic?: EnhancedRAGItem[]; agentResults?: EnhancedRAGItem[]; [k: string]: any }> {
   // Minimal stub - replace with real integration to Context7 MCP/orchestrator
   return {
     semantic: [],
@@ -243,7 +243,7 @@ type EnhancedRAGItem = {
   relevance?: number;
   pageRankScore?: number;
   enhancedRelevance?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type EnhancedRAGResult = {
@@ -252,10 +252,10 @@ type EnhancedRAGResult = {
   pageRankApplied?: boolean;
   orchestrationData?: {
     agentResults?: EnhancedRAGItem[] | unknown[];
-    [k: string]: unknown;
+    [k: string]: any;
   };
   processingTime?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // --- replace enhancedRAGService fromPromise helper with an async service ---
@@ -298,21 +298,21 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
       orchestrationData: orchestrationResult,
       processingTime: Date.now(),
     } as EnhancedRAGResult;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Enhanced RAG query failed: ${message}`);
   }
 };
 
 // --- replace apiCoordinationService fromCallback with service factory compatible with createMachine ---
-const apiCoordinationService = (_arg?: unknown) => { // explicitly typed param to avoid implicit any
-  return (sendBack: (e: Phase13Event | { type: string; [k: string]: unknown }) => void, onReceive: (listener: (e: Phase13Event | { type: string; [k: string]: unknown }) => void) => void) => {
-    let coordinationActive = false;
+const apiCoordinationService = (_arg?: any) => { // explicitly typed param to avoid implicit any
+  return (sendBack: (e: Phase13Event | { type: string; [k: string]: any }) => void, onReceive: (listener: (e: Phase13Event | { type: string; [k: string]: any }) => void) => void) => {
+    let coordinationActive = $state(false);
     let redisConnections: string[] = [];
     let natsChannels: string[] = [];
     let heartbeat: ReturnType<typeof setInterval> | null = null;
 
-    const listener = (evt: Phase13Event | { type: string; [k: string]: unknown }) => {
+    const listener = (evt: Phase13Event | { type: string; [k: string]: any }) => {
       switch (evt.type) {
         case 'API_COORDINATION_START': {
           coordinationActive = true;
@@ -339,7 +339,7 @@ const apiCoordinationService = (_arg?: unknown) => { // explicitly typed param t
           break;
         }
         case 'API_COORDINATION_STOP': {
-          coordinationActive = false;
+          coordinationActive = $state(false);
           redisConnections = [];
           natsChannels = [];
           if (heartbeat) {

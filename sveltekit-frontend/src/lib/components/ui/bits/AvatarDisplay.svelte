@@ -11,10 +11,9 @@
   }
   let { title, description, layout = 'horizontal', children }: Props = $props();
 </script>
-
 <div class="avatar-display layout-{layout}">
   <div class="avatar-content">
-    {@render children?.()}
+    <slot />
   </div>
   {#if title || description}
     <div class="avatar-info">
@@ -24,10 +23,8 @@
       {#if description}
         <p>{description}</p>
       {/if}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .avatar-display {
     display: flex;
@@ -70,4 +67,3 @@
     }
   }
 </style>
-

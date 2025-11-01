@@ -354,7 +354,7 @@ class ContextAwareAIMemoryService {
 		const s = this.extractString(obj, ...keys);
 		return s ?? new Date().toISOString();
 	}
-	private extractArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): unknown[] | undefined {
+	private extractArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): any[] | undefined {
 		if (!obj) return undefined;
 		for (const k of keys) {
 			const v = (obj as Record<string, unknown>)[k];

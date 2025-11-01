@@ -4,7 +4,6 @@ import { json, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { ApiError } from '../../types/api.js';
 import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
-
 // Standard response interface
 export interface StandardApiResponse<T = unknown> {
   success: boolean;
@@ -154,9 +153,9 @@ export function buildErrorResponse(
   } as UnifiedAPIResponse;
 }
 export function buildFormSubmissionResult(
-  result: unknown,
+  result: any,
   metadata: { processingTimeMs: number; requestId: string }
-): unknown {
+): any {
   return {
     ...(result as Record<string, unknown>),
     metadata: { ...metadata, timestamp: new Date().toISOString() },
@@ -167,7 +166,7 @@ function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 // Generate mock fallback data based on error context
-function generateMockFallbackData(errorCode: string): unknown {
+function generateMockFallbackData(errorCode: string): any {
   const baseData = {
     mockData: true,
     fallbackReason: 'Service temporarily unavailable',
@@ -300,7 +299,7 @@ export const CommonErrors = {
   ServiceUnavailable: (service: string) =>
     new ApiErrorClass(`${service} is currently unavailable`, 'SERVICE_UNAVAILABLE', 503),
   RateLimited: (message = 'Rate limit exceeded') => new ApiErrorClass(message, 'RATE_LIMITED', 429),
-  DatabaseError: (operation: string, details?: unknown) =>
+  DatabaseError: (operation: string, details?: any) =>
     new ApiErrorClass(
       `Database operation failed: ${operation}`,
       'DATABASE_ERROR',

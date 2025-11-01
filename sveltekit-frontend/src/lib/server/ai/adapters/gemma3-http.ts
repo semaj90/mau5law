@@ -1,18 +1,14 @@
 import type { LLMOutput } from '$lib/types/sharedTypes';
-
 const DEFAULT_URLS = {
   GEMMA3: process.env.GEMMA3_URL || process.env.TRITON_URL || 'http://localhost:8000',
 };
-
 export interface Gemma3Options {
   temperature?: number;
   maxTokens?: number;
   model?: string;
 }
-
 export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Promise<LLMOutput> {
   const url = DEFAULT_URLS.GEMMA3;
-
   // Build payload shape compatible with common Triton/Gemma3 HTTP wrappers.
   const body = {
     inputs: [
@@ -29,29 +25,23 @@ export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Prom
       model: opts.model ?? 'gemma3:270m'
     }
   };
-
   // @ts-ignore node global fetch assumed
   const resp = await fetch(`${url}/v2/models/gemma3/infer`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-
   if (!resp.ok) {
     throw new Error(`Gemma3 inference failed: ${resp.status} ${resp.statusText}`);
   }
-
   const json = await resp.json().catch(() => null);
   // Typical response may contain outputs[0].data[0]
   const text = json?.outputs?.[0]?.data?.[0] ?? (json?.text ?? '') ;
-
   const out: LLMOutput = {
     text: String(text),
     reasoning: json?.reasoning ?? undefined,
     embeddings: undefined,
   };
-
   return out;
 }
-
 export default callGemma3;

@@ -6,7 +6,7 @@ export interface SyncOptions {
   validateResponse?: boolean;
   enableOptimisticUpdates?: boolean;
   onError?: (error: Error) => void;
-  onSuccess?: (data: unknown) => void;
+  onSuccess?: (data: any) => void;
 }
 export interface EntityEndpoints {
   list: string;
@@ -104,7 +104,7 @@ export class DatabaseSyncManager {
       this.updateLocalCache(entity, 'create', result);
       options.onSuccess?.(result);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       options.onError?.(error instanceof Error ? error : new Error(String(error)));
       throw error;
     } finally {
@@ -112,7 +112,7 @@ export class DatabaseSyncManager {
     }
   }
   // READ operations with caching and sync
-  async read<T = unknown>(entity: string, id?: string, params?: unknown, options: SyncOptions = {}): Promise<T> {
+  async read<T = unknown>(entity: string, id?: string, params?: any, options: SyncOptions = {}): Promise<T> {
     const operationId = this.generateOperationId('read', entity, id);
     try {
       this.pendingOperations.add(operationId);
@@ -146,7 +146,7 @@ export class DatabaseSyncManager {
       this.updateLocalCache(entity, 'read', result, id);
       options.onSuccess?.(result);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       options.onError?.(error instanceof Error ? error : new Error(String(error)));
       throw error;
     } finally {
@@ -188,7 +188,7 @@ export class DatabaseSyncManager {
       this.updateLocalCache(entity, 'update', result, id);
       options.onSuccess?.(result);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       options.onError?.(error instanceof Error ? error : new Error(String(error)));
       throw error;
     } finally {
@@ -221,7 +221,7 @@ export class DatabaseSyncManager {
       this.updateLocalCache(entity, 'patch', result, id);
       options.onSuccess?.(result);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       options.onError?.(error instanceof Error ? error : new Error(String(error)));
       throw error;
     } finally {
@@ -249,7 +249,7 @@ export class DatabaseSyncManager {
       this.updateLocalCache(entity, 'delete', null, id);
       options.onSuccess?.(result);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       options.onError?.(error instanceof Error ? error : new Error(String(error)));
       throw error;
     } finally {
@@ -266,7 +266,7 @@ export class DatabaseSyncManager {
       options?: SyncOptions;
     }>
   ): Promise<unknown[]> {
-    const results: unknown[] = [];
+    const results: any[] = [];
     for (const op of operations) {
       try {
         let result;
@@ -288,7 +288,7 @@ export class DatabaseSyncManager {
             break;
         }
         results.push({ success: true, result });
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.push({ success: false, error: error instanceof Error ? error.message : String(error) });
       }
     }
@@ -309,7 +309,7 @@ export class DatabaseSyncManager {
       throw new Error(`No data provided for ${entity} update`);
     }
   }
-  private validateResponseData(entity: string, data: unknown, operation: string): void {
+  private validateResponseData(entity: string, data: any, operation: string): void {
     if (!data) {
       throw new Error(`No data returned from ${entity} ${operation} operation`);
     }
@@ -372,7 +372,7 @@ export class DatabaseSyncManager {
         // If not ok and we have retries left, wait and try again
         await this.delay(options.retryDelay || 1000);
         attempt++;
-      } catch (error: unknown) {
+      } catch (error: any) {
         if (attempt === maxAttempts - 1) {
           throw error;
         }
@@ -440,7 +440,7 @@ export class DatabaseSyncManager {
 export const dbSync = DatabaseSyncManager.getInstance();
 // Entity-specific helper functions
 export const CasesAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('cases', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('cases', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('cases', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('cases', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
@@ -449,7 +449,7 @@ export const CasesAPI = {
   delete: (id: string, options?: SyncOptions) => dbSync.delete('cases', id, options),
 };
 export const EvidenceAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('evidence', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('evidence', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('evidence', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('evidence', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
@@ -457,7 +457,7 @@ export const EvidenceAPI = {
   delete: (id: string, options?: SyncOptions) => dbSync.delete('evidence', id, options),
 };
 export const ReportsAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('reports', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('reports', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('reports', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('reports', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
@@ -467,7 +467,7 @@ export const ReportsAPI = {
   delete: (id: string, options?: SyncOptions) => dbSync.delete('reports', id, options),
 };
 export const CriminalsAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('criminals', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('criminals', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('criminals', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('criminals', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
@@ -477,7 +477,7 @@ export const CriminalsAPI = {
   delete: (id: string, options?: SyncOptions) => dbSync.delete('criminals', id, options),
 };
 export const ActivitiesAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('activities', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('activities', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('activities', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('activities', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
@@ -487,7 +487,7 @@ export const ActivitiesAPI = {
   delete: (id: string, options?: SyncOptions) => dbSync.delete('activities', id, options),
 };
 export const UsersAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('users', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('users', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('users', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('users', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>
@@ -496,7 +496,7 @@ export const UsersAPI = {
   delete: (id: string, options?: SyncOptions) => dbSync.delete('users', id, options),
 };
 export const CanvasAPI = {
-  list: (params?: unknown, options?: SyncOptions) => dbSync.read('canvasStates', undefined, params, options),
+  list: (params?: any, options?: SyncOptions) => dbSync.read('canvasStates', undefined, params, options),
   get: (id: string, options?: SyncOptions) => dbSync.read('canvasStates', id, {}, options),
   create: (data: Record<string, unknown>, options?: SyncOptions) => dbSync.create('canvasStates', data, options),
   update: (id: string, data: Record<string, unknown>, options?: SyncOptions) =>

@@ -96,7 +96,6 @@ export class QLoRAIntegrationAnalyzer {
       behavioral_clusters: [{ clusterId: 'c1', members: patterns.map(p => p.id) }],
     });
   }
-
   /**
    * Mock implementation for building user journey graphs.
    * Accepts an array of interaction-like objects and returns a simple graph shape.
@@ -105,8 +104,8 @@ export class QLoRAIntegrationAnalyzer {
     data: Array<{
       node_id: string;
       action_type: string;
-      context: unknown;
-      outcome: unknown;
+      context: any;
+      outcome: any;
       timestamp: number;
       edges: Array<{ target: string; weight: number }>;
     }>

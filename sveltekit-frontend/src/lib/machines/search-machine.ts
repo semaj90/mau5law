@@ -1,26 +1,22 @@
 import { createMachine, assign, setup, fromPromise } from 'xstate'; // removed unused sendParent
-
 // ============================================================================
 // 1. TYPES - Define a single source of truth for all types
 // ============================================================================
-
 type Analytics = {
   totalResults: number;
   searchTime: number;
   relevanceScore: number;
 };
-
 // The machine's context (its "extended state")
 export type SearchContext = {
   query: string;
   filters: Record<string, unknown>;
-  results: unknown[];
+  results: any[];
   searchHistory: string[];
   analytics: Analytics;
   validationErrors: Record<string, string[]>;
   error: string | null;
 };
-
 // The events that can be sent to the machine
 export type SearchEvent =
   | { type: 'UPDATE_QUERY'; query: string }
@@ -29,11 +25,9 @@ export type SearchEvent =
   | { type: 'LOAD_HISTORY' }
   | { type: 'CLEAR' }
   | { type: 'RETRY' };
-
 // ============================================================================
 // 2. ACTORS - Define async logic and side effects separately
 // ============================================================================
-
 const actors = {
   loadHistoryFromStorage: fromPromise(async () => {
     // Safe localStorage access (guards against SSR)
@@ -48,7 +42,6 @@ const actors = {
       return [];
     }
   }),
-
   validateSearchInput: fromPromise(
     async ({ input }: { input: { query: string; filters: Record<string, unknown> } }) => {
       const errors: Record<string, string[]> = {};
@@ -65,7 +58,6 @@ const actors = {
           errors.dateRange = ['The start date must be before the end date.'];
         }
       }
-
       if (Object.keys(errors).length > 0) {
         // In XState, we throw an error to trigger the onError transition
         throw errors;
@@ -74,33 +66,26 @@ const actors = {
       return { query: input.query, filters: input.filters };
     }
   ),
-
   performSearchApiCall: fromPromise(
     async ({ input }: { input: { query: string; filters: Record<string, unknown> } }) => {
       const startTime = Date.now();
       const searchParams = new URLSearchParams();
-
       if (input.query) {
         searchParams.append('query', input.query);
       }
-
       // A more robust way to handle complex filters
       Object.entries(input.filters).forEach(([key, value]) => {
         if (value) {
           searchParams.append(key, JSON.stringify(value));
         }
       });
-
       const response = await fetch(`/api/search/legal?${searchParams.toString()}`);
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || `Search failed with status: ${response.status}`);
       }
-
       const data = await response.json();
       const searchTime = Date.now() - startTime;
-
       return {
         results: data.results || [],
         analytics: {
@@ -112,7 +97,6 @@ const actors = {
     }
   ),
 };
-
 const actions = {
   saveHistoryToStorage: assign({
     searchHistory: context => {
@@ -122,7 +106,6 @@ const actions = {
       }
       // Create a new array with the latest query at the front, ensuring no duplicates
       const newHistory = [...new Set([query, ...context.searchHistory])].slice(0, 10);
-
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('legal-ai:search-history', JSON.stringify(newHistory));
       }
@@ -130,11 +113,9 @@ const actions = {
     },
   }),
 };
-
 // ============================================================================
 // 3. MACHINE DEFINITION - Create the machine using setup() for full type safety
 // ============================================================================
-
 export const searchMachine = setup({
   // Provide the types and implementations for actors and actions
   types: {} as {
@@ -149,7 +130,7 @@ export const searchMachine = setup({
       };
       performSearchApiCall: {
         input: { query: string; filters: Record<string, unknown> };
-        output: { results: unknown[]; analytics: Analytics };
+        output: { results: any[]; analytics: Analytics };
         error: Error;
       };
     };
@@ -291,5 +272,4 @@ export const searchMachine = setup({
     },
   },
 });
-
 export default searchMachine;

@@ -68,7 +68,7 @@ export type IWasmClusteringService = WasmClusteringService;
 // ===== Generic JSON Parser =====
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): T;
-  stringify(input: unknown): string;
+  stringify(input: any): string;
 }
 
 // ===== WASM Clustering Service =====
@@ -296,7 +296,7 @@ export interface PostgresConfig {
 }
 
 export interface PgVectorClient {
-  query<T = unknown>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
+  query<T = unknown>(sql: string, params?: any[]): Promise<{ rows: T[] }>;
   search(
     collection: string,
     vector: number[],
@@ -359,8 +359,8 @@ export interface RabbitMQConfig {
 }
 
 export interface RabbitMQClient {
-  publishJob(queue: string, payload: unknown): Promise<void>;
-  consumeQueue(queue: string, handler: (message: unknown) => Promise<void>): Promise<void>;
+  publishJob(queue: string, payload: any): Promise<void>;
+  consumeQueue(queue: string, handler: (message: any) => Promise<void>): Promise<void>;
   close(): Promise<void>;
   assertQueue?(queue: string, options?: Record<string, unknown>): Promise<void>;
   assertExchange?(exchange: string, type: string, options?: Record<string, unknown>): Promise<void>;

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   interface EnhancedModalProps {
     open?: boolean;
     title?: string;
@@ -10,7 +9,6 @@
     children?: any;
     onClose?: () => void;
   }
-
   let {
     open = false,
     title = 'Modal Title',
@@ -20,16 +18,13 @@
     onClose,
     ...restProps
   }: EnhancedModalProps = $props();
-
   const dispatch = createEventDispatcher();
-
   const sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
     xl: 'max-w-4xl',
   };
-
   const variantClasses = {
     default: 'enhanced-modal-default',
     gradient: 'enhanced-modal-gradient',
@@ -37,27 +32,22 @@
     gaming: 'enhanced-modal-gaming',
     legal: 'enhanced-modal-legal',
   };
-
   function handleBackdropClick(_event: MouseEvent) {
     if (event.target === event.currentTarget) {
       closeModal();
     }
   }
-
   function closeModal() {
     dispatch('close');
     onClose?.();
   }
-
   function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape' && open) {
       closeModal();
     }
   }
 </script>
-
 <svelte:window onkeydown={handleKeydown} />
-
 {#if open}
   <!-- Modal Backdrop -->
   <div
@@ -85,22 +75,18 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
-
         {#if title}
           <CardHeader class="pb-4">
             <CardTitle class="enhanced-modal-title {variant === 'diamond' ? 'nes-diamond-text' : ''}">{title}</CardTitle
             >
           </CardHeader>
         {/if}
-
         <CardContent class="max-h-[calc(90vh-8rem)] overflow-y-auto">
-          {@render children?.()}
+          <slot />
         </CardContent>
       </Card>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* Modal Base Styles */
   .enhanced-modal {
@@ -110,13 +96,11 @@
       0 20px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
-
   /* Default Modal */
   .enhanced-modal-default {
     background: var(--enhanced-bg-primary);
     border-color: var(--enhanced-border);
   }
-
   /* Gradient Modal */
   .enhanced-modal-gradient {
     background: linear-gradient(
@@ -136,17 +120,15 @@
       )
       1;
   }
-
   /* Diamond Pattern Modal */
   .enhanced-modal-diamond {
     background: var(--enhanced-bg-primary);
-    position relative;
+    position: relative;
     overflow: hidden;
   }
-
   .enhanced-modal-diamond::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -168,7 +150,6 @@
       );
     z-index: -1;
   }
-
   /* Gaming Modal */
   .enhanced-modal-gaming {
     background: linear-gradient(
@@ -182,43 +163,35 @@
       0 0 20px rgba(196, 30, 58, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-
   /* Legal Modal */
   .enhanced-modal-legal {
     background: linear-gradient(135deg, var(--enhanced-bg-primary) 0%, rgba(196, 30, 58, 0.05) 100%);
     border: 2px solid var(--enhanced-accent);
     box-shadow: 0 10px 40px rgba(196, 30, 58, 0.2);
   }
-
   /* NES Diamond Pattern */
   .nes-diamond-pattern {
     font-family: 'Press Start 2P', monospace;
   }
-
   .nes-diamond-text {
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
     color: var(--enhanced-accent);
   }
-
   /* Animation classes */
   .animate-in {
     animation-fill-mode: both;
   }
-
   .fade-in-0 {
     animation-name: fadeIn;
   }
-
   .zoom-in-95 {
     animation-name: zoomIn;
   }
-
   .duration-200 {
     animation-duration 200ms;
   }
-
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -227,7 +200,6 @@
       opacity: 1;
     }
   }
-
   @keyframes zoomIn {
     from {
       opacity: 0;
@@ -238,7 +210,6 @@
       transform: scale(1);
     }
   }
-
   /* NES Button Styles for Close Button */
   .nes-btn.is-small {
     font-size: 8px;
@@ -246,4 +217,3 @@
     min-height: auto;
   }
 </style>
-

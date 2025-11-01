@@ -81,7 +81,7 @@ export interface UserSession {
 export interface CacheEntry {
   id?: number;
   key: string;
-  data: unknown; // Changed from any
+  data: any; // Changed from any
   createdAt: Date;
   expiresAt: Date;
   size: number;
@@ -251,7 +251,7 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   // CACHE METHODS
   // ========================================================================
-  async setCache(key: string, data: unknown, ttlMs = 300000): Promise<number> {
+  async setCache(key: string, data: any, ttlMs = 300000): Promise<number> {
     const expiresAt = new Date(Date.now() + ttlMs);
     const size = JSON.stringify(data).length;
     // Remove existing entry

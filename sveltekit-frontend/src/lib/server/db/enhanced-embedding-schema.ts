@@ -191,7 +191,7 @@ export const documentChunksRelations = relations(documentChunks, ({ one, many })
     fields: [documentChunks.parentChunkId],
     references: [documentChunks.id]
   }),
-  children: many(documentChunks)
+   many(documentChunks)
 }));
 export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
   document: one(documents, {

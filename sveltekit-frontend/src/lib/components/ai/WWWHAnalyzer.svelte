@@ -26,11 +26,10 @@
     } catch (e) {
       error = String(e);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 </script>
-
 <div
   class="wwwh-analyzer uno-max-w-2xl uno-mx-auto uno-my-8 uno-p-4 uno-bg-white uno-border uno-border-gray-200 uno-rounded-lg"
 >
@@ -56,17 +55,13 @@
     {/if}
   </button>
   {#if error}
-    <div class="uno-text-red-600 uno-mt-2" role="alert">{error}</div>
-  {/if}
+    <div class="uno-text-red-600 uno-mt-2" role="alert">{error}{/if}
   {#if result}
     <div class="uno-mt-4 uno-p-3 uno-bg-gray-50 uno-border uno-rounded">
       <pre>{result}</pre>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   /* UnoCSS utility classes used above, no custom CSS needed. */
 </style>
-

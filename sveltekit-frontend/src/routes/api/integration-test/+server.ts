@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt'
 import crypto from "crypto"
 
 // --- ADDED HELPERS: safer error/id handling (replace uses of `any`) ---
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err
   if (err && typeof err === 'object') {
     // safe property access without `any` cast
@@ -19,7 +19,7 @@ function getErrorMessage(err: unknown): string {
   return 'Unknown error'
 }
 
-function extractId(result: unknown): number | string | undefined {
+function extractId(result: any): number | string | undefined {
   if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object' && result[0] !== null) {
     return (result[0] as Record<string, unknown>)['id'] as number | string | undefined
   }
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
           installed: vectorTest.length > 0,
           details: vectorTest[0] || null,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.vector = {
           installed: false,
           error: getErrorMessage(error),
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
           tablesCount: tables.length,
           expectedTables: ['users', 'cases', 'evidence', 'document_chunks'],
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         // use safe helper instead of `any` and direct .message access
         results.schema = {
           error: getErrorMessage(error),
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .insert(users)
           .values(testUser)
           .returning()
-          .catch(async (error: unknown) => {
+          .catch(async (error: any) => {
             // Unique constraint violation -> fetch existing
             const errObj = error as Record<string, unknown> | null;
             if (errObj && typeof errObj['code'] === 'string' && errObj['code'] === '23505') {
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url }) => {
         if (userId) {
           await db.delete(users).where(eq(users.id, userId));
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.crud = {
           success: false,
           error: getErrorMessage(error),
@@ -224,7 +224,7 @@ export const GET: RequestHandler = async ({ url }) => {
             search: similarChunks,
           },
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         results.vectorOps = {
           success: false,
           error: getErrorMessage(error),
@@ -245,7 +245,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testType,
       results,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -315,7 +315,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json({ error: 'Unknown action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,

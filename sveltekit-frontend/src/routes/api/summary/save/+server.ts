@@ -124,7 +124,7 @@ export const POST: RequestHandler = async event => {
       analysisId: analysisRecord[0].id,
       message: 'Summary saved successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Normalize unknown error to a safe string/message
     const normalizedErrorMessage =
       error instanceof Error

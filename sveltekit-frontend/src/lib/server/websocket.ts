@@ -155,7 +155,7 @@ function handleWebSocketMessage(
 function broadcastToCase(
   caseId: string,
   message: any,
-  excludeConnection?: unknown
+  excludeConnection?: any
 ) {
   const connections = caseConnections.get(caseId);
   if (!connections) return;

@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   export let conversationId: string = crypto.randomUUID();
   export let userId: string;
   export let caseId: string | null = null;
-  export let open: boolean = false;
+  export let open: boolean = $state(false);
   export let title: string = "Legal AI Assistant";
   export let onsuggestionsreceived: ((suggestions: string[]) => void) | undefined;
   export let onactionsreceived: ((actions: any[]) => void) | undefined;
@@ -33,9 +33,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // Local state
   let currentMessage: string = "";
-  let isGenerating: boolean = false;
+  let isGenerating: boolean = $state(false);
   let selectedMode: string = "professional";
-  let showModeSelector: boolean = false;
+  let showModeSelector: boolean = $state(false);
   let componentError: Error | null = null;
   let messagesContainer: HTMLElement | null = null;
   let messageInput: HTMLTextAreaElement | null = null;
@@ -187,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
       };
       messages.update((m) => [...m, errorMessage]);
     } finally {
-      isGenerating = false;
+      isGenerating = $state(false);
       scrollToBottom();
       focusInput();
     }
@@ -216,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function closeChat() {
-    open = false;
+    open = $state(false);
     if (onclose) onclose();
   }
 
@@ -276,7 +276,7 @@ https://svelte.dev/e/js_parse_error -->
               aria-label="Select AI mode"
               aria-expanded={showModeSelector}
             >
-              {#each aiModes as mode}
+              {#each Array.isArray(aiModes) ? aiModes : [] as mode}
                 {#if mode.id === selectedMode}
                   <span class="mode-icon" aria-hidden="true" style="line-height:0">{mode.icon}</span>
                   {mode.label}
@@ -286,13 +286,13 @@ https://svelte.dev/e/js_parse_error -->
 
             {#if showModeSelector}
               <div class="mode-dropdown">
-                {#each aiModes as mode}
+                {#each Array.isArray(aiModes) ? aiModes : [] as mode}
                   <button
                     class="mode-option"
                     class:selected={mode.id === selectedMode}
                     onclick={() => {
                       selectedMode = mode.id;
-                      showModeSelector = false;
+                      showModeSelector = $state(false);
                     }}
                     aria-label="Switch to {mode.label} mode"
                   >
@@ -303,8 +303,7 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   </button>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
 
@@ -366,16 +365,15 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="suggestions">
                     <h4>Suggestions:</h4>
                     <ul>
-                      {#each message.suggestions as suggestion}
+                      {#each Array.isArray(message.suggestions) ? message.suggestions : [] as suggestion}
                         <li>{suggestion}</li>
                       {/each}
                     </ul>
-                  </div>
-                {/if}
+                  {/if}
 
                 {#if message.actions && message.actions.length > 0}
                   <div class="actions">
-                    {#each message.actions as action}
+                    {#each Array.isArray(message.actions) ? message.actions : [] as action}
                       <button
                         class="action-button"
                         onclick={() => handleActionClick(action)}
@@ -385,8 +383,7 @@ https://svelte.dev/e/js_parse_error -->
                         {action.text}
                       </button>
                     {/each}
-                  </div>
-                {/if}
+                  {/if}
 
                 <div class="message-meta">
                   <span class="message-timestamp">{formatTimestamp(message.timestamp)}</span>
@@ -396,8 +393,7 @@ https://svelte.dev/e/js_parse_error -->
                       <span aria-hidden="true" style="font-size:12px">🧠</span>
                     </span>
                   {/if}
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {/each}
@@ -407,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="quick-actions">
           <h3>Quick Actions</h3>
           <div class="action-grid">
-            {#each quickActions as action}
+            {#each Array.isArray(quickActions) ? quickActions : [] as action}
               <button
                 class="quick-action"
                 onclick={() => handleQuickAction(action.text)}
@@ -419,8 +415,7 @@ https://svelte.dev/e/js_parse_error -->
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
 
       <div class="input-area">
         <div class="input-container">
@@ -453,8 +448,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   .error-boundary {

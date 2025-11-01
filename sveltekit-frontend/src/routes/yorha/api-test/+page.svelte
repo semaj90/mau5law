@@ -168,7 +168,7 @@
         await runEndpoint(endpoint);
       }
     } finally {
-      isRunning = false;
+      isRunning = $state(false);
     }
   }
 
@@ -344,7 +344,7 @@
       </div>
 
       <div class="grid gap-3 md:grid-cols-2">
-        {#each apiEndpoints as endpoint}
+        {#each Array.isArray(apiEndpoints) ? apiEndpoints : [] as endpoint}
           <article class="flex flex-col justify-between gap-3 rounded-lg border border-gray-800 bg-black/60 p-4">
             <div class="flex items-center gap-3">
               <endpoint.icon class="h-6 w-6 text-amber-300" />
@@ -387,7 +387,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-800 text-gray-200">
-              {#each filteredResults() as result}
+              {#each Array.isArray(filteredResults()) ? filteredResults() : [] as result}
                 <tr class="hover:bg-gray-800/40">
                   <td class="px-3 py-2">{result.name}</td>
                   <td class="px-3 py-2">

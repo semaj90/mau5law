@@ -43,7 +43,7 @@ export interface RAGContext {
   documents: string[];
   relevantSections: RelevantSection[];
   metadata: Record<string, unknown>;
-  recommendations?: unknown[];
+  recommendations?: any[];
   did_you_mean?: string;
 }
 export interface Recommendation {

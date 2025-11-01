@@ -4,7 +4,6 @@
  * - Simplified, type-safe relations
  * - Placeholder `vector()` for pgvector columns (replace with drizzle-pgvector if available)
  */
-
 import {
   pgTable,
   text,
@@ -20,11 +19,9 @@ import {
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm/relations';
-
 // ------------------------------------------------------------------
 // 🧩 Core Tables
 // ------------------------------------------------------------------
-
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -36,7 +33,6 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
@@ -49,7 +45,6 @@ export const cases = pgTable('cases', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 export const documents = pgTable(
   'documents',
   {
@@ -76,7 +71,6 @@ export const documents = pgTable(
     contentIdx: index('documents_content_idx').on(table.content),
   }),
 );
-
 export const documentChunks = pgTable(
   'document_chunks',
   {
@@ -97,7 +91,6 @@ export const documentChunks = pgTable(
     chunkIdx: index('document_chunks_chunk_idx').on(table.documentId, table.chunkIndex),
   }),
 );
-
 export const evidence = pgTable(
   'evidence',
   {
@@ -123,7 +116,6 @@ export const evidence = pgTable(
     caseIdx: index('evidence_case_idx').on(table.caseId),
   }),
 );
-
 export const searchIndex = pgTable(
   'search_index',
   {
@@ -142,7 +134,6 @@ export const searchIndex = pgTable(
     contentIdx: index('search_index_content_idx').on(table.content),
   }),
 );
-
 export const aiInteractions = pgTable(
   'ai_interactions',
   {
@@ -167,7 +158,6 @@ export const aiInteractions = pgTable(
     userIdx: index('ai_interactions_user_idx').on(table.userId),
   }),
 );
-
 export const vectorSimilarityCache = pgTable(
   'vector_similarity_cache',
   {
@@ -185,7 +175,6 @@ export const vectorSimilarityCache = pgTable(
     expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt),
   }),
 );
-
 export const legalKnowledgeBase = pgTable(
   'legal_knowledge_base',
   {
@@ -212,7 +201,6 @@ export const legalKnowledgeBase = pgTable(
     jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction),
   }),
 );
-
 export const embeddingJobs = pgTable(
   'embedding_jobs',
   {
@@ -238,7 +226,6 @@ export const embeddingJobs = pgTable(
     priorityIdx: index('embedding_jobs_priority_idx').on(table.priority, table.createdAt),
   }),
 );
-
 export const personsOfInterest = pgTable(
   'persons_of_interest',
   {
@@ -258,7 +245,6 @@ export const personsOfInterest = pgTable(
     activeIdx: index('persons_of_interest_active_idx').on(table.isActive),
   }),
 );
-
 export const casePoiRelations = pgTable(
   'case_poi_relations',
   {
@@ -274,7 +260,6 @@ export const casePoiRelations = pgTable(
     casePoiIdx: index('case_poi_relations_case_poi_idx').on(table.caseId, table.poiId),
   }),
 );
-
 export const evidenceBoards = pgTable(
   'evidence_boards',
   {
@@ -293,7 +278,6 @@ export const evidenceBoards = pgTable(
     activeIdx: index('evidence_boards_active_idx').on(table.isActive),
   }),
 );
-
 export const evidenceBoardItems = pgTable(
   'evidence_board_items',
   {
@@ -319,7 +303,6 @@ export const evidenceBoardItems = pgTable(
     typeIdx: index('evidence_board_items_type_idx').on(table.itemType),
   }),
 );
-
 export const evidenceBoardConnections = pgTable(
   'evidence_board_connections',
   {
@@ -343,11 +326,9 @@ export const evidenceBoardConnections = pgTable(
     typeIdx: index('evidence_board_connections_type_idx').on(table.connectionType),
   }),
 );
-
 // ------------------------------------------------------------------
 // 🧩 Relations (Drizzle infers types automatically)
 // ------------------------------------------------------------------
-
 export const usersRelations = relations(users, ({ many }) => ({
   createdCases: many(cases, { relationName: 'case_creator' }),
   assignedCases: many(cases, { relationName: 'case_assignee' }),
@@ -363,7 +344,6 @@ export const usersRelations = relations(users, ({ many }) => ({
     relationName: 'evidence_board_connection_creator',
   }),
 }));
-
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case one(cases, { fields: [documents.caseId], references: [cases.id] }),
   creator: one(users, {
@@ -374,11 +354,9 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
   chunks: many(documentChunks),
   evidence: many(evidence),
 }));
-
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
 }));
-
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case one(cases, { fields: [evidence.caseId], references: [cases.id] }),
   document: one(documents, { fields: [evidence.documentId], references: [documents.id] }),
@@ -388,7 +366,6 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     relationName: 'evidence_creator',
   }),
 }));
-
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.createdBy],
@@ -406,16 +383,13 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   casePoiRelations: many(casePoiRelations),
   evidenceBoards: many(evidenceBoards),
 }));
-
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users, { fields: [aiInteractions.userId], references: [users.id] }),
   case one(cases, { fields: [aiInteractions.caseId], references: [cases.id] }),
 }));
-
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
   verifier: one(users, { fields: [legalKnowledgeBase.verifiedBy], references: [users.id] }),
 }));
-
 export const personsOfInterestRelations = relations(personsOfInterest, ({ one, many }) => ({
   creator: one(users, {
     fields: [personsOfInterest.createdBy],
@@ -425,7 +399,6 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one, m
   caseRelations: many(casePoiRelations),
   evidenceBoardItems: many(evidenceBoardItems),
 }));
-
 export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) => ({
   case one(cases, { fields: [casePoiRelations.caseId], references: [cases.id] }),
   poi: one(personsOfInterest, { fields: [casePoiRelations.poiId], references: [personsOfInterest.id] }),
@@ -435,7 +408,6 @@ export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) =
     relationName: 'case_poi_relation_creator',
   }),
 }));
-
 export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many }) => ({
   case one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
   creator: one(users, {
@@ -446,7 +418,6 @@ export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many })
   items: many(evidenceBoardItems),
   connections: many(evidenceBoardConnections),
 }));
-
 export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one }) => ({
   board: one(evidenceBoards, { fields: [evidenceBoardItems.boardId], references: [evidenceBoards.id] }),
   evidence: one(evidence, { fields: [evidenceBoardItems.evidenceId], references: [evidence.id] }),
@@ -457,7 +428,6 @@ export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one 
     relationName: 'evidence_board_item_creator',
   }),
 }));
-
 export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnections, ({ one }) => ({
   board: one(evidenceBoards, { fields: [evidenceBoardConnections.boardId], references: [evidenceBoards.id] }),
   fromItem: one(evidenceBoardItems, { fields: [evidenceBoardConnections.fromItemId], references: [evidenceBoardItems.id] }),
@@ -468,23 +438,18 @@ export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnecti
     relationName: 'evidence_board_connection_creator',
   }),
 }));
-
 export const embeddingJobsRelations = relations(embeddingJobs, () => ({
   // Polymorphic relation. Query manually based on entityType and entityId.
 }));
-
 export const searchIndexRelations = relations(searchIndex, () => ({
   // Polymorphic relation. Query manually based on entityType and entityId.
 }));
-
 export const vectorSimilarityCacheRelations = relations(vectorSimilarityCache, () => ({
   // This table is a cache and has no direct relations to other tables.
 }));
-
 // ------------------------------------------------------------------
 // 🧩 Inferred Types
 // ------------------------------------------------------------------
-
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Case = typeof cases.$inferSelect;

@@ -387,7 +387,7 @@ function extractLogHighlights(message: string, query: string): string[] {
   return highlights;
 }
 
-function parseMetadata(metadata: unknown): Record<string, unknown> {
+function parseMetadata(metadata: any): Record<string, unknown> {
   if (typeof metadata === 'string') {
     try {
       const parsed = JSON.parse(metadata);

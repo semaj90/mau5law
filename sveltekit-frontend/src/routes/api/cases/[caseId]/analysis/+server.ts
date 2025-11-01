@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
         context: basicContext,
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Fixed: Changed error type to unknown for better safety
     console.error('Error in analysis endpoint:', error);
     return json({ error: 'Failed to perform analysis' }, { status: 500 });

@@ -133,7 +133,6 @@ https://svelte.dev/e/js_parse_error -->
   		cache: { cacheHitRate: number; averageLatency: number; totalRequests: number; };
   		overall: { memory: number; cpu: number; network: number; };
   	};
-
   	const performanceMetrics: Readable<PerformanceMetrics> = derived(
   		[webgpuStore, threeStore, serviceWorkerStore],
   		([$webgpu, $three, $sw]) => ({
@@ -151,7 +150,6 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		})
   	);
-
   	// Local typed metrics object populated from the derived store
   	let metrics: PerformanceMetrics = {
   		gpu: { computeTime: 0, memoryUsage: 0, throughput: 0 },
@@ -164,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
   	_perfUnsub = performanceMetrics.subscribe((v) => {
   		if (v) metrics = v;
   	});
-
   	// ============================================================================
   	// WEBGPU INITIALIZATION
   	// ============================================================================
@@ -444,7 +441,6 @@ https://svelte.dev/e/js_parse_error -->
   	let canvas: HTMLCanvasElement;
   	let animationFrame: number;
   	let initialized = $state(false);
-
   	onMount(() => {
   		const init = async () => {
   			console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
@@ -476,7 +472,6 @@ https://svelte.dev/e/js_parse_error -->
   					});
   				}
   			}
-
   			// Initialize Three.js
   			if (scene3D && canvas) {
   				const { scene, camera, renderer } = initializeThreeJS(canvas);
@@ -541,7 +536,6 @@ https://svelte.dev/e/js_parse_error -->
   				}
   				animate();
   			}
-
   			// Register Service Worker
   			if (enableServiceWorker) {
   				const registration = await registerServiceWorker();
@@ -556,12 +550,10 @@ https://svelte.dev/e/js_parse_error -->
   			console.log('✅ WebGPU + Three.js + Service Worker system initialized');
   		};
   		init();
-
   		return () => {
   			// onMount returns cleanup — but actual heavy cleanup is handled in onDestroy below
   		};
   	});
-
   	onDestroy(() => {
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
@@ -595,7 +587,7 @@ https://svelte.dev/e/js_parse_error -->
   			store.shaders.clear();
   			// Clear wrapper reference to allow GC
   			store.device = null;
-  			store.active = false;
+  			store.active = $state(false);
   			return store;
   		});
   		// unsubscribe performance metrics subscription
@@ -606,7 +598,6 @@ https://svelte.dev/e/js_parse_error -->
   	// ============================================================================
   	// (metrics is updated by the subscription above)
 </script>
-
 <!-- ============================================================================ -->
 <!-- TEMPLATE -->
 <!-- ============================================================================ -->
@@ -666,11 +657,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="loading-overlay">
         <div class="loading-spinner"></div>
         <p>Initializing WebGPU + Three.js + Service Worker...</p>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
-
 <!-- ============================================================================ -->
 <!-- STYLES -->
 <!-- ============================================================================ -->
@@ -800,5 +789,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-

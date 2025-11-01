@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(enhancedResult);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('GPU Processing Error:', error);
     return json(
       {
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         service: 'GPU-Accelerated TypeScript Processor',

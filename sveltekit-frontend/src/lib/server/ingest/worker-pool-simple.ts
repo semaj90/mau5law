@@ -12,7 +12,6 @@
 import { Worker } from 'worker_threads';
 import path from 'path';
 import os from 'os';
-
 // Define the expected successful result structure from a worker job
 interface JobResult {
   jobId: string;
@@ -23,7 +22,6 @@ interface JobResult {
   metadata?: Record<string, unknown>;
   // Add other properties that a successful worker message might contain
 }
-
 export type Job = {
   id: string;
   minioUrl?: string;
@@ -85,7 +83,7 @@ export class WorkerPool {
       if (!this.free[i]) continue;
       const job = this.queue.shift();
       if (!job) return;
-      this.free[i] = false;
+      this.free[i] = $state(false);
       this.pool[i].postMessage(job);
     }
   }

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/core';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/core.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -37,7 +37,7 @@
     } catch (error) {
       console.error('Failed to load citations:', error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 
@@ -96,7 +96,7 @@
     </div>
   {:else}
     <div class="citations-grid">
-      {#each citations as citation}
+      {#each Array.isArray(citations) ? citations : [] as citation}
         <Card class="citation-card">
           <CardHeader>
             <CardTitle class="citation-type">

@@ -1,15 +1,14 @@
 <!-- Legal Precedent Card for Legal AI App -->
 <script lang="ts">
-  import Scale from 'lucide-svelte/icons/scale.svelte';
-  import Calendar from 'lucide-svelte/icons/calendar.svelte';
-  import MapPin from 'lucide-svelte/icons/map-pin.svelte';
-  import ExternalLink from 'lucide-svelte/icons/external-link.svelte';
-  import BookOpen from 'lucide-svelte/icons/book-open.svelte';
-  import Star from 'lucide-svelte/icons/star.svelte';
-  import TrendingUp from 'lucide-svelte/icons/trending-up.svelte';
-  import Users from 'lucide-svelte/icons/users.svelte';
+  import { Scale } from 'lucide-svelte/icons/scale.svelte';
+  import { Calendar } from 'lucide-svelte/icons/calendar.svelte';
+  import { MapPin } from 'lucide-svelte/icons/map-pin.svelte';
+  import { ExternalLink } from 'lucide-svelte/icons/external-link.svelte';
+  import { BookOpen } from 'lucide-svelte/icons/book-open.svelte';
+  import { Star } from 'lucide-svelte/icons/star.svelte';
+  import { TrendingUp } from 'lucide-svelte/icons/trending-up.svelte';
+  import { Users } from 'lucide-svelte/icons/users.svelte';
   import { cn } from '$lib/utils';
-
   export interface LegalPrecedent {
     id: string;
     caseNumber: string;
@@ -33,7 +32,6 @@
     sourceUrl?: string;
     pdfUrl?: string;
   }
-
   export interface LegalPrecedentCardProps {
     precedent: LegalPrecedent;
     currentCaseId?: string;
@@ -46,7 +44,6 @@
     onViewRelated?: (caseId: string) => void;
     class?: string;
   }
-
   let {
     precedent,
     currentCaseId,
@@ -59,9 +56,7 @@
     onViewRelated,
     class: className = ''
   }: LegalPrecedentCardProps = $props();
-
   let expanded = $state(false);
-
   // Precedent type configurations (use className to avoid JS reserved word)
   const precedentTypeConfig = {
     binding: {
@@ -80,7 +75,6 @@
       priority: 3
     }
   };
-
   // Jurisdiction configurations
   const jurisdictionConfig = {
     federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
@@ -88,24 +82,20 @@
     local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
     international: { label: 'International', icon: Scale, color: 'text-purple-400' }
   };
-
   // Reactive derived values (avoid using {@const} in template)
   $: relevanceLevel = (() => {
     if (precedent.relevanceScore >= 90) return 'high';
     if (precedent.relevanceScore >= 70) return 'medium';
     return 'low';
   })();
-
   $: similarityLevel = (() => {
     if (precedent.similarityScore == null) return null;
     if (precedent.similarityScore >= 80) return 'high';
     if (precedent.similarityScore >= 60) return 'medium';
     return 'low';
   })();
-
   $: jurisdictionInfo = jurisdictionConfig[precedent.jurisdiction] ?? { label: '', icon: Scale, color: '' };
   $: JurisdictionIcon = jurisdictionInfo.icon;
-
   function formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -113,20 +103,17 @@
       day: 'numeric'
     });
   }
-
   function getAgeInYears(date: Date): number {
     const now = new Date();
     const d = new Date(date);
     return now.getFullYear() - d.getFullYear();
   }
-
   function truncateText(text: string, maxLength: number): string {
     if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength).trim() + '...';
   }
 </script>
-
 <div
   class={cn(
     'legal-precedent-card bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
@@ -192,8 +179,7 @@
             >
               {precedent.similarityScore}%
             </span>
-          </div>
-        {/if}
+          {/if}
         {#if showRelevanceScore}
           <div class="flex items-center gap-1">
             <Star class="w-3 h-3 text-yorha-text-secondary" />
@@ -209,8 +195,7 @@
             >
               {precedent.relevanceScore}%
             </span>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -226,7 +211,7 @@
     <div class="mb-4">
       <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Key Issues</h4>
       <div class="flex flex-wrap gap-2">
-        {#each precedent.keyIssues.slice(0, expanded ? undefined : 3) as issue}
+        {#each Array.isArray(precedent.keyIssues.slice(0, expanded ? undefined : 3)) ? precedent.keyIssues.slice(0, expanded ? undefined : 3) : [] as issue}
           <span
             class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary rounded border border-yorha-primary/20"
           >
@@ -246,7 +231,7 @@
     <div class="mb-4">
       <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Legal Areas</h4>
       <div class="flex flex-wrap gap-2">
-        {#each precedent.legalAreas.slice(0, expanded ? undefined : 4) as area}
+        {#each Array.isArray(precedent.legalAreas.slice(0, expanded ? undefined : 4)) ? precedent.legalAreas.slice(0, expanded ? undefined : 4) : [] as area}
           <span
             class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border"
           >
@@ -277,7 +262,7 @@
       <div class="mb-4">
         <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Reasoning</h4>
         <ul class="space-y-2">
-          {#each precedent.reasoning as reason}
+          {#each Array.isArray(precedent.reasoning) ? precedent.reasoning : [] as reason}
             <li class="text-sm text-yorha-text-primary font-mono flex items-start gap-2">
               <span class="text-yorha-primary mt-1">•</span>
               <span>{reason}</span>
@@ -292,8 +277,7 @@
           <Users class="w-4 h-4 text-yorha-text-secondary" />
           <span class="text-yorha-text-primary">{precedent.judge}</span>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Overruled Warning -->
     {#if precedent.overruled}
       <div class="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded">
@@ -304,8 +288,7 @@
         {#if precedent.overruledBy}
           <p class="text-xs text-red-300 font-mono">Overruled by: {precedent.overruledBy}</p>
         {/if}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Card Footer -->
   <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
@@ -319,8 +302,7 @@
           {expanded ? 'Show Less' : 'Show More'}
         </button>
       {:else}
-        <div></div>
-      {/if}
+        <div>{/if}
       <!-- Actions -->
       <div class="flex items-center gap-2">
         {#if precedent.sourceUrl && interactive}
@@ -368,7 +350,7 @@
       <div class="mt-3 pt-3 border-t border-yorha-border">
         <h5 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Related Cases</h5>
         <div class="flex flex-wrap gap-2">
-          {#each precedent.relatedCases.slice(0, 3) as relatedCase}
+          {#each Array.isArray(precedent.relatedCases.slice(0, 3)) ? precedent.relatedCases.slice(0, 3) : [] as relatedCase}
             <button
               onclick={() => onViewRelated?.(relatedCase)}
               class="text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors underline"
@@ -382,14 +364,11 @@
             </span>
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
-
 <style>
   .legal-precedent-card {
     transition: all 0.2s ease;
   }
 </style>
-

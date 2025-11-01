@@ -22,14 +22,11 @@
  *   await gemma.initialize();
  *   const response = await gemma.generate('Summarize this legal document...');
  */
-
 import { pipeline, env, TextStreamer } from '@huggingface/transformers';
-
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;
 env.allowRemoteModels = true;
-
 export interface GenerateOptions {
   maxTokens?: number;
   temperature?: number;
@@ -39,19 +36,16 @@ export interface GenerateOptions {
   systemPrompt?: string;
   stream?: boolean;
 }
-
 export interface StreamChunk {
   text: string;
   done: boolean;
   tokenCount?: number;
 }
-
 export class BrowserGemma {
   private generator: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private modelName: string;
   private device: 'webgpu' | 'wasm' | 'cpu';
-
   constructor(
     // Using smaller quantized Gemma model for browser compatibility
     modelName: string = 'onnx-community/gemma-2-2b-it-q4',
@@ -60,18 +54,15 @@ export class BrowserGemma {
     this.modelName = modelName;
     this.device = device;
   }
-
   /**
    * Initialize Gemma 3 270M model (downloads ~1.5GB on first run)
    * Model is cached in browser IndexedDB after first download
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
-
     try {
       console.log(`🧠 [Gemma Browser] Loading ${this.modelName} (${this.device})...`);
       console.log('⏳ First load may take 2-5 minutes (model caches for future use)');
-
       // Try WebGPU first, fallback to WASM/CPU
       try {
         this.generator = await pipeline(
@@ -97,7 +88,6 @@ export class BrowserGemma {
           device: 'wasm'
         });
       }
-
       this.isInitialized = true;
       console.log(`✅ [Gemma Browser] Model loaded successfully (${this.device})`);
     } catch (error) {
@@ -105,7 +95,6 @@ export class BrowserGemma {
       throw new Error(`Gemma initialization failed: ${error}`);
     }
   }
-
   /**
    * Generate text response (non-streaming)
    */
@@ -116,7 +105,6 @@ export class BrowserGemma {
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     const {
       maxTokens = 512,
       temperature = 0.7,
@@ -125,13 +113,10 @@ export class BrowserGemma {
       repetitionPenalty = 1.1,
       systemPrompt = 'You are a helpful legal AI assistant.'
     } = options;
-
     try {
       const startTime = performance.now();
-
       // Format prompt with system instruction (Gemma format)
       const formattedPrompt = `<bos><start_of_turn>user\n${systemPrompt}\n\n${prompt}<end_of_turn>\n<start_of_turn>model\n`;
-
       const output = await this.generator(formattedPrompt, {
         max_new_tokens: maxTokens,
         temperature,
@@ -141,20 +126,16 @@ export class BrowserGemma {
         do_sample: temperature > 0,
         return_full_text: false
       });
-
       const endTime = performance.now();
       const generatedText = output[0].generated_text.trim();
       const tokensPerSec = (maxTokens / (endTime - startTime)) * 1000;
-
       console.log(`⚡ [Gemma Browser] Generated in ${(endTime - startTime).toFixed(0)}ms (~${tokensPerSec.toFixed(1)} tokens/sec)`);
-
       return generatedText;
     } catch (error) {
       console.error('❌ [Gemma Browser] Generation failed:', error);
       throw error;
     }
   }
-
   /**
    * Stream text generation token by token
    */
@@ -165,7 +146,6 @@ export class BrowserGemma {
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     const {
       maxTokens = 512,
       temperature = 0.7,
@@ -174,18 +154,14 @@ export class BrowserGemma {
       repetitionPenalty = 1.1,
       systemPrompt = 'You are a helpful legal AI assistant.'
     } = options;
-
     const formattedPrompt = `<bos><start_of_turn>user\n${systemPrompt}\n\n${prompt}<end_of_turn>\n<start_of_turn>model\n`;
-
     let tokenCount = 0;
-
     try {
       // Create text streamer
       const streamer = new TextStreamer(this.generator.tokenizer, {
         skip_prompt: true,
         skip_special_tokens: true
       });
-
       // Generate with streaming
       const output = await this.generator(formattedPrompt, {
         max_new_tokens: maxTokens,
@@ -197,12 +173,10 @@ export class BrowserGemma {
         streamer,
         return_full_text: false
       });
-
       // Note: Transformer.js doesn't support true streaming yet
       // This will return the full response, but we can chunk it
       const fullText = output[0].generated_text.trim();
       const words = fullText.split(' ');
-
       for (let i = 0; i < words.length; i++) {
         tokenCount++;
         yield {
@@ -210,7 +184,6 @@ export class BrowserGemma {
           done: i === words.length - 1,
           tokenCount
         };
-
         // Simulate streaming delay
         await new Promise(resolve => setTimeout(resolve, 20));
       }
@@ -219,7 +192,6 @@ export class BrowserGemma {
       throw error;
     }
   }
-
   /**
    * Chat-style conversation with context
    */
@@ -229,7 +201,6 @@ export class BrowserGemma {
   ): Promise<string> {
     // Convert messages to Gemma format
     let prompt = '<bos>';
-
     for (const msg of messages) {
       if (msg.role === 'user') {
         prompt += `<start_of_turn>user\n${msg.content}<end_of_turn>\n`;
@@ -240,9 +211,7 @@ export class BrowserGemma {
         prompt += `<start_of_turn>user\n${msg.content}<end_of_turn>\n`;
       }
     }
-
     prompt += '<start_of_turn>model\n';
-
     const {
       maxTokens = 512,
       temperature = 0.7,
@@ -250,7 +219,6 @@ export class BrowserGemma {
       topK = 50,
       repetitionPenalty = 1.1
     } = options;
-
     try {
       const output = await this.generator(prompt, {
         max_new_tokens: maxTokens,
@@ -261,14 +229,12 @@ export class BrowserGemma {
         do_sample: temperature > 0,
         return_full_text: false
       });
-
       return output[0].generated_text.trim();
     } catch (error) {
       console.error('❌ [Gemma Browser] Chat failed:', error);
       throw error;
     }
   }
-
   /**
    * Legal-specific prompt templates
    */
@@ -285,7 +251,6 @@ export class BrowserGemma {
       }
     );
   }
-
   async extractLegalEntities(
     text: string
   ): Promise<{ parties: string[]; dates: string[]; locations: string[] }> {
@@ -297,14 +262,12 @@ export class BrowserGemma {
         systemPrompt: 'You are a legal entity extraction AI. Return valid JSON only.'
       }
     );
-
     try {
       return JSON.parse(response);
     } catch {
       return { parties: [], dates: [], locations: [] };
     }
   }
-
   async analyzeLegalRisk(
     caseDescription: string
   ): Promise<{ riskLevel: 'low' | 'medium' | 'high'; analysis: string }> {
@@ -316,20 +279,17 @@ export class BrowserGemma {
         systemPrompt: 'You are a legal risk analysis AI. Be objective and factual.'
       }
     );
-
     try {
       return JSON.parse(response);
     } catch {
       return { riskLevel: 'medium', analysis: 'Unable to analyze risk.' };
     }
   }
-
   /**
    * Check if WebGPU is available
    */
   static async isWebGPUAvailable(): Promise<boolean> {
     if (!navigator.gpu) return false;
-
     try {
       const adapter = await navigator.gpu.requestAdapter();
       return adapter !== null;
@@ -337,28 +297,24 @@ export class BrowserGemma {
       return false;
     }
   }
-
   /**
    * Get current device being used
    */
   getDevice(): string {
     return this.device;
   }
-
   /**
    * Cleanup resources
    */
   dispose(): void {
     this.generator = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
-
 /**
  * Singleton instance for global use
  */
 export const browserGemma = new BrowserGemma();
-
 /**
  * USAGE EXAMPLES:
  *
@@ -380,7 +336,7 @@ export const browserGemma = new BrowserGemma();
  *       maxTokens: 300,
  *       temperature: 0.7
  *     });
- *     isGenerating = false;
+ *     isGenerating = $state(false);
  *   }
  *
  *   async function streamResponse(question: string) {

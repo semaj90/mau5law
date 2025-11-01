@@ -9,7 +9,7 @@ export interface ServiceStatus {
   name: string
   status: 'healthy' | 'warning' | 'error'
   response_time?: number
-  details?: unknown
+  details?: any
 }
 export interface HealthResponse {
   overall_status: 'healthy' | 'warning' | 'error',

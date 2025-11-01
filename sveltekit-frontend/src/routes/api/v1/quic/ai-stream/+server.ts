@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
         if (sessionResponse.ok) {
           sessionInfo = (await sessionResponse.json()) as Record<string, unknown>;
         }
-      } catch (sessionError: unknown) {
+      } catch (sessionError: any) {
         console.warn('Failed to fetch session info:', sessionError);
       }
     }
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
       metrics: responseData['metrics'] ?? null,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('QUIC AI Stream health check failed:', err);
     return json({
       service: 'quic-ai-stream',
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const aiRequest: AIStreamRequest = await request.json();
     const useHttp3 = url.searchParams.get('http3') !== 'false';
-    const enableStreaming = aiRequest.stream !== false;
+    const enableStreaming = aiRequest.stream !== $state(false);
     // Validate AI request
     if (!aiRequest.prompt || aiRequest.prompt.trim().length === 0) {
       throw error(400, ensureError({ message: 'Prompt is required and cannot be empty' }));
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout),
       });
       protocol = useHttp3 ? 'HTTP/3' : 'HTTP/2';
-    } catch (quicError: unknown) {
+    } catch (quicError: any) {
       console.error('QUIC AI Stream service failed:', quicError);
       throw error(
         503,
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         streaming: enableStreaming,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('QUIC AI Stream error:', err);
     throw error(
       500,
@@ -268,7 +268,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('AI session termination error:', err);
     throw error(
       500,
@@ -303,7 +303,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'AI streaming configuration updated',
       config: updatedConfig,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('AI stream configuration update failed:', err);
     throw error(
       500,

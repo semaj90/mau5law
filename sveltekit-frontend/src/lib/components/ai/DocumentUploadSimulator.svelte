@@ -1,7 +1,6 @@
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
   import { onMount } from 'svelte';
-
   interface DocumentUpload {
     id: string;
     filename: string;
@@ -15,17 +14,14 @@
     localStorageKey?: string;
     error?: string;
   }
-
   // Replaced incorrect $state usage with plain reactive vars
   let uploads: DocumentUpload[] = [];
-  let isDragging = false;
+  let isDragging = $state(false);
   let errorMessage = '';
-  let isLoading = false;
+  let isLoading = $state(false);
   let fileInput: HTMLInputElement | null = null;
-
   const API_BASE = 'http://localhost:8081/api';
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
-
   async function simulateUpload(file: File): Promise<void> {
     const uploadId = crypto.randomUUID();
     const upload: DocumentUpload = {
@@ -37,30 +33,25 @@
       progress: 0,
     };
     uploads = [...uploads, upload];
-
     try {
       // Phase 1: Upload simulation (fast)
       await updateProgress(uploadId, 'uploading', 25);
       await delay(500);
-
       // Phase 2: OCR Processing (if PDF)
       await updateProgress(uploadId, 'processing', 50);
       const extractedText = await extractTextFromFile(file);
       await updateUpload(uploadId, { extractedText });
       await delay(1000);
-
       // Phase 3: AI Summarization
       await updateProgress(uploadId, 'processing', 75);
       const summary = await generateSummary(extractedText || '', file.type);
       await updateUpload(uploadId, { summary });
       await delay(1500);
-
       // Phase 4: Generate Embeddings
       await updateProgress(uploadId, 'embedding', 90);
       const embeddings = await generateEmbeddings(extractedText || '');
       await updateUpload(uploadId, { embeddings });
       await delay(1000);
-
       // Phase 5: Store in Local Storage (if under 10MB)
       const processedData = {
         filename: file.name,
@@ -69,7 +60,6 @@
         embeddings,
         processedAt: new Date().toISOString(),
       };
-
       let localStorageKey: string | undefined = undefined;
       if (file.size < MAX_LOCAL_STORAGE_SIZE) {
         localStorageKey = `doc_${uploadId}`;
@@ -80,7 +70,6 @@
           console.warn('localStorage set failed', err);
         }
       }
-
       // Complete
       await updateProgress(uploadId, 'completed', 100);
       await updateUpload(uploadId, { localStorageKey });
@@ -94,11 +83,9 @@
       errorMessage = message;
     }
   }
-
   async function extractTextFromFile(file: File): Promise<string> {
     const name = file.name.toLowerCase();
     const mime = file.type || '';
-
     // Helper: try to pull text from a parsed JSON object (common keys or recursive)
     function extractTextFromObject(obj: any, depth = 0): string {
       if (depth > 6) return ''; // avoid infinite recursion
@@ -127,7 +114,6 @@
       }
       return '';
     }
-
     try {
       // PDF detection content-type or filename
       if (mime === 'application/pdf' || name.endsWith('.pdf')) {
@@ -135,19 +121,16 @@
         formData.append('file', file);
         formData.append('enable_ocr', 'true');
         formData.append('document_type', 'legal');
-
         const response = await fetch(`${API_BASE}/upload`, {
           method: 'POST',
           body: formData,
         });
-
         if (!response.ok) {
           throw new Error(`OCR processing failed: ${response.statusText}`);
         }
         const result = await response.json();
         return result?.extracted_text || 'PDF text extraction returned no content';
       }
-
       // JSON files: try to parse and extract text from common fields
       if (mime === 'application/json' || name.endsWith('.json')) {
         const text = await file.text();
@@ -160,12 +143,10 @@
           return text;
         }
       }
-
       // Plain text files
       if (mime.startsWith('text/') || name.endsWith('.txt')) {
         return await file.text();
       }
-
       // Fallback for other types (images, unknowns): return a safe placeholder
       return `Content extracted from ${file.name}\n\nThis is simulated extracted text from the uploaded document. In production, this would contain the actual OCR-processed content from the file.`;
     } catch (err) {
@@ -173,7 +154,6 @@
       return `Failed to extract text from ${file.name}`;
     }
   }
-
   async function generateSummary(text: string, fileType: string): Promise<string> {
     const response = await fetch('/api/ai/summarize', {
       method: 'POST',
@@ -184,19 +164,16 @@
         length: 'medium',
       }),
     });
-
     if (!response.ok) {
       throw new Error(`Summarization failed: ${response.statusText}`);
     }
     const result = await response.json();
     return result?.summary || 'Summary generation failed';
   }
-
   import { getOllamaEndpoint, getOllamaBaseUrl } from '$lib/utils/ollama-endpoint';
   const OLLAMA_BASE = getOllamaBaseUrl();
   const OLLAMA_MODEL = 'embeddinggemma:latest';
   const PREFERRED_DIM = 1536; // prefer pgvector-friendly dimension
-
   async function generateEmbeddings(text: string): Promise<number[]> {
     // Try Ollama embeddings with a few common endpoint shapes, fall back gracefully
     const shortText = (text || '').substring(0, 10000);
@@ -205,7 +182,6 @@
       { url: getOllamaEndpoint('api/embeddings'), body: { model: OLLAMA_MODEL, input: shortText } },
       { url: getOllamaEndpoint('api/embed'), body: { model: OLLAMA_MODEL, text: shortText } },
     ];
-
     for (const attempt of attempts) {
       try {
         const res = await fetch(attempt.url, {
@@ -246,7 +222,6 @@
         // continue to next attempt
       }
     }
-
     // Fallback to remote embed endpoint on API_BASE (legacy nomic style)
     try {
       const res = await fetch(`${API_BASE}/embed`, {
@@ -264,20 +239,17 @@
     } catch (err) {
       // continue to final fallback
     }
-
     // Final fallback: deterministic-ish mock embedding of preferred size
     const rng = seededRandomFromString(text || 'fallback');
     const mock = Array.from({ length: PREFERRED_DIM }, () => rng() * 2 - 1);
     return mock;
   }
-
   function normalizeEmbedding(emb: number[], targetDim: number): number[] {
     if (emb.length === targetDim) return emb;
     if (emb.length > targetDim) return emb.slice(0, targetDim);
     // pad with small zeros if shorter
     return emb.concat(Array.from({ length: targetDim - emb.length }, () => 0));
   }
-
   // Simple seeded random generator from string to make fallback deterministic-ish
   function seededRandomFromString(seedStr: string): () => number {
     let h = 2166136261 >>> 0;
@@ -292,34 +264,28 @@
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
-
   async function updateProgress(id: string, status: DocumentUpload['status'], progress: number): Promise<void> {
     uploads = uploads.map(upload => (upload.id === id ? { ...upload, status, progress } : upload));
   }
-
   async function updateUpload(id: string, updates: Partial<DocumentUpload>): Promise<void> {
     uploads = uploads.map(upload => (upload.id === id ? { ...upload, ...updates } : upload));
   }
-
   function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
   function handleDrop(event: DragEvent): void {
     event.preventDefault();
-    isDragging = false;
+    isDragging = $state(false);
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => simulateUpload(file));
     }
   }
-
   // Added handler to set isDragging on dragenter for proper UX
   function handleDragEnter(event: DragEvent): void {
     event.preventDefault();
     isDragging = true;
   }
-
   // Keyboard handler to make the div accessible: Enter or Space opens file picker
   function handleKeyDown(event: KeyboardEvent): void {
     const key = event.key;
@@ -329,14 +295,12 @@
       fileInput?.click();
     }
   }
-
   function handleFileInput(event: Event): void {
     const files = (event.target as HTMLInputElement)?.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => simulateUpload(file));
     }
   }
-
   function removeUpload(id: string): void {
     const upload = uploads.find(u => u.id === id);
     if (upload?.localStorageKey) {
@@ -348,7 +312,6 @@
     }
     uploads = uploads.filter(u => u.id !== id);
   }
-
   function downloadProcessedData(upload: DocumentUpload): void {
     const data = {
       filename: upload.filename,
@@ -365,7 +328,6 @@
     a.click();
     URL.revokeObjectURL(url);
   }
-
   function getStatusColor(status: DocumentUpload['status']): string {
     switch (status) {
       case 'uploading':
@@ -381,7 +343,6 @@
       default: return 'text-gray-400';
     }
   }
-
   // Added: human-readable status labels used in the template
   function getStatusText(status: DocumentUpload['status']): string {
     switch (status) {
@@ -399,14 +360,12 @@
     }
   }
 </script>
-
 <div class="document-upload-simulator">
   <!-- Header -->
   <div class="text-center mb-8">
     <h1 class="text-4xl font-extrabold text-white">Document Upload Simulator</h1>
     <p class="text-lg text-gray-400 mt-2">Simulate document uploads and AI processing</p>
   </div>
-
   <!-- Upload Area -->
   <div
     class="upload-area bg-gray-900 rounded-lg p-6 mb-6 border-2 border-dashed border-gray-700 transition-all duration-300"
@@ -441,7 +400,6 @@
       <p class="text-sm text-gray-400 mt-4">Supports: PDF (OCR), TXT, JSON • Files under 10MB cached locally</p>
     </div>
   </div>
-
   <!-- Processing Queue -->
   {#each uploads as upload (upload.id)}
     <div class="upload-item bg-gray-800 rounded-lg p-6 mb-4 border border-gray-700">
@@ -493,8 +451,7 @@
                 {upload.extractedText.substring(0, 500)}
                 {#if upload.extractedText.length > 500}...{/if}
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- AI Summary -->
           {#if upload.summary}
             <div class="bg-gray-900 rounded p-4">
@@ -502,8 +459,7 @@
               <div class="text-sm text-gray-200">
                 {upload.summary}
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Embeddings Info -->
           {#if upload.embeddings}
             <div class="bg-gray-900 rounded p-4">
@@ -516,8 +472,7 @@
                   .map(n => n.toFixed(3))
                   .join(', ')}...]
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Actions -->
           <div class="flex space-x-3">
             <button
@@ -532,24 +487,19 @@
               <span class="px-4 py-2 bg-green-600/20 text-green-400 rounded text-sm"> 💾 Cached Locally </span>
             {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if upload.status === 'error'}
         <div class="bg-red-900/20 border border-red-700 rounded p-3">
           <p class="text-red-400 text-sm">❌ {upload.error}</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   {/each}
-
   {#if uploads.length === 0}
     <div class="text-center py-12 text-gray-500">
       <div class="text-6xl mb-4">📄</div>
       <p>No documents uploaded yet. Drop files above to start processing.</p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .document-upload-simulator {
     max-width: 800px;
@@ -573,4 +523,3 @@
     }
   }
 </style>
-

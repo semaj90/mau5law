@@ -138,7 +138,7 @@ export interface NeuralSpriteVisualization {
  */
 export class CUDAVectorService {
   private serviceUrl: string;
-  private isHealthy: boolean = false;
+  private isHealthy: boolean = $state(false);
   private lastHealthCheck: number = 0;
   private healthCheckInterval: number = 30000; // 30 seconds
 
@@ -168,7 +168,7 @@ export class CUDAVectorService {
     } catch (err) {
       console.warn('CUDA service health check failed:', err);
     }
-    this.isHealthy = false;
+    this.isHealthy = $state(false);
     this.lastHealthCheck = now;
     return false;
   }

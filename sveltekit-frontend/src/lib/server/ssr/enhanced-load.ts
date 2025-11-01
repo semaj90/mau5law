@@ -153,7 +153,7 @@ export const createEnhancedLayoutLoad = () => {
         });
         layoutData.systemStatus.aiServicesOnline = aiHealthResponse.ok;
       } catch {
-        layoutData.systemStatus.aiServicesOnline = false;
+        layoutData.systemStatus.aiServicesOnline = $state(false);
       }
       // Cache the layout data
       SSRCache.set(userCacheKey, layoutData, 300000); // 5 minute cache

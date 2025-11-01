@@ -48,14 +48,14 @@ type WebGLShaderCacheEntry = {
     description?: string;
     tags?: string[];
   };
-  config?: unknown;
+  config?: any;
   embedding?: number[] | null;
 };
 
 // New: typed shape for cache implementations we support (avoid `any`)
 type CacheLike = {
   get?<T = unknown>(key: string): Promise<T | null | undefined>;
-  set?(key: string, value: unknown, ttlMs?: number): Promise<void> | void;
+  set?(key: string, value: any, ttlMs?: number): Promise<void> | void;
   delete?(key: string): Promise<number | void> | void;
   del?(key: string): Promise<number | void> | void;
   remove?(key: string): Promise<number | void> | void;
@@ -63,11 +63,11 @@ type CacheLike = {
 };
 
 // small helper to safely get a string message from unknown errors
-const getErrorMessage = (e: unknown): string =>
+const getErrorMessage = (e: any): string =>
   e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
 
 // small helper to defensively convert various timestamp shapes to ISO
-function safeToIso(val: unknown): string {
+function safeToIso(val: any): string {
   try {
     if (typeof val === 'number') return new Date(val).toISOString();
     if (typeof val === 'string') {
@@ -82,7 +82,7 @@ function safeToIso(val: unknown): string {
 }
 
 // small helper to ensure the query is JSON-serializable for responses
-function sanitizeQuery(q: unknown) {
+function sanitizeQuery(q: any) {
   try {
     return q == null ? null : JSON.parse(JSON.stringify(q));
   } catch {
@@ -91,7 +91,7 @@ function sanitizeQuery(q: unknown) {
 }
 
 // New helper: safely normalize unknown config values to the expected shape
-function normalizeConfig(val: unknown): Record<string, unknown> | null {
+function normalizeConfig(val: any): Record<string, unknown> | null {
   if (val && typeof val === 'object' && !Array.isArray(val)) {
     return val as Record<string, unknown>;
   }
@@ -227,8 +227,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const unifiedIndex = (await cache.get<string[]>('unified_shader_index')) || [];
         // Fixed: close parentheses and ensure map receives a string
         const webglShaderIds = unifiedIndex
-          .filter((id: unknown) => typeof id === 'string' && String(id).startsWith('webgl:'))
-          .map((id: unknown) => String(id).replace('webgl:', ''));
+          .filter((id: any) => typeof id === 'string' && String(id).startsWith('webgl:'))
+          .map((id: any) => String(id).replace('webgl:', ''));
         for (const shaderId of webglShaderIds) {
           // Use typed cache.get and explicit null-check braces
           const shaderData = await cache.get<WebGLShaderCacheEntry>(`webgl_shader:${shaderId}`);

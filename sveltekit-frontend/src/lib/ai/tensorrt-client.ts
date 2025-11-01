@@ -1,6 +1,5 @@
 // TensorRT-LLM Client for SvelteKit 2
 // Production client for gemma3-legal:latest inference
-
 export interface EmbeddingRequest {
   text: string;
   model: string;
@@ -44,12 +43,10 @@ export interface TensorRTHealthResponse {
     performance_ratio: number;
   };
 }
-
 export class TensorRTLegalClient {
   private baseUrl: string;
   private timeout: number;
   private retryAttempts: number;
-
   constructor(
     baseUrl: string = 'http://localhost:8100',
     options: {
@@ -61,7 +58,6 @@ export class TensorRTLegalClient {
     this.timeout = options.timeout ?? 30000; // 30 second timeout
     this.retryAttempts = options.retryAttempts ?? 3;
   }
-
   async generateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
     const startTime = performance.now();
     try {
@@ -85,7 +81,6 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
-
   async generateLegalAnalysis(request: LegalAnalysisRequest): Promise<LegalAnalysisResponse> {
     const startTime = performance.now();
     try {
@@ -115,7 +110,6 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
-
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
@@ -133,7 +127,6 @@ export class TensorRTLegalClient {
       return null;
     }
   }
-
   async listModels(): Promise<any> {
     try {
       const response = await this.makeRequest('/v1/models', { method: 'GET' });
@@ -146,7 +139,6 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
-
   async getPerformanceMetrics(): Promise<any> {
     try {
       const response = await this.makeRequest('/v1/performance', { method: 'GET' });
@@ -159,7 +151,6 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
-
   private buildLegalPrompt(text: string, context?: string, analysisType?: string): string {
     const analysisTypes: Record<string, string> = {
       comprehensive: `Provide a comprehensive legal analysis covering:
@@ -201,15 +192,12 @@ Analysis Instructions:
 ${instructions}
 Provide a detailed, professional legal analysis:`;
   }
-
   private async makeRequest(endpoint: string, options: RequestInit): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
     let lastError: Error | null = null;
-
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
       const requestOptions: RequestInit = {
         ...options,
         headers: {
@@ -219,17 +207,14 @@ Provide a detailed, professional legal analysis:`;
         },
         signal: controller.signal,
       };
-
       try {
         console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET'} ${endpoint}`);
         const response = await fetch(url, requestOptions);
         clearTimeout(timeoutId);
-
         // Return for successful or client error (do not retry 4xx)
         if (response.ok || (response.status >= 400 && response.status < 500)) {
           return response;
         }
-
         // Retry on server errors (5xx)
         throw new Error(`Server error: ${response.status} ${response.statusText}`);
       } catch (err) {
@@ -244,10 +229,8 @@ Provide a detailed, professional legal analysis:`;
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
-
     throw lastError || new Error('Request failed after all retry attempts');
   }
-
   async validateConnection(): Promise<{
     connected: boolean;
     latency?: number;
@@ -281,7 +264,6 @@ Provide a detailed, professional legal analysis:`;
     }
   }
 }
-
 export const tensorRTClient = new TensorRTLegalClient(
   // process.env may not exist in the browser; many build systems replace it at build time
   (typeof process !== 'undefined' && (process.env as any)?.TENSORRT_URL) || 'http://localhost:8100'

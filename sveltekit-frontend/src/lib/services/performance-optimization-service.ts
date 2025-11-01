@@ -91,7 +91,7 @@ class PerformanceOptimizationService {
   private batchQueues: Map<string, BatchRequest[]> = new Map();
   private performanceObserver?: PerformanceObserver;
   private memoryMonitor?: NodeJS.Timeout;
-  private initialized = false;
+  private initialized = $state(false);
   private constructor() {
     this.config = this.getDefaultConfig();
     this.metrics = writable(this.getInitialMetrics();

@@ -154,9 +154,9 @@ export class WebGPUBufferUtils {
  * Type guards for buffer types
  */
 export const BufferTypeGuards = {
-  isArrayBuffer: (data: unknown): data is ArrayBuffer => data instanceof ArrayBuffer,
-  isFloat32Array: (data: unknown): data is Float32Array => data instanceof Float32Array,
-  isTypedArray: (data: unknown): data is Float32Array | Uint8Array | Int32Array | Uint32Array => {
+  isArrayBuffer: (data: any): data is ArrayBuffer => data instanceof ArrayBuffer,
+  isFloat32Array: (data: any): data is Float32Array => data instanceof Float32Array,
+  isTypedArray: (data: any): data is Float32Array | Uint8Array | Int32Array | Uint32Array => {
     return (
       data instanceof Float32Array ||
       data instanceof Uint8Array ||
@@ -164,7 +164,7 @@ export const BufferTypeGuards = {
       data instanceof Uint32Array
     );
   },
-  isBufferLike: (data: unknown): data is BufferLike => {
+  isBufferLike: (data: any): data is BufferLike => {
     return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data) || Array.isArray(data);
   },
 };
@@ -281,7 +281,7 @@ export class WebGPUBufferUtils_Advanced {
 /**
  * Helper: safely get a readable constructor/type name for unknown values
  */
-function getConstructorName(data: unknown): string {
+function getConstructorName(data: any): string {
   // explicit null/undefined handling
   if (data === null) return 'null';
   if (data === undefined) return 'undefined';

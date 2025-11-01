@@ -5,7 +5,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-
   // Props
   let {
     systemLoad,
@@ -32,7 +31,6 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Real-time updates
   let updateInterval: ReturnType<typeof setInterval> | null = null;
-
   onMount(() => {
     updateInterval = setInterval(() => {
       currentTime = new Date();
@@ -42,19 +40,16 @@ https://svelte.dev/e/js_parse_error -->
       diskUsage = Math.max(40, Math.min(60, diskUsage + (Math.random() - 0.5) * 1));
       activeConnections = Math.max(8, Math.min(20, activeConnections + Math.floor((Math.random() - 0.5) * 3)));
     }, 1000);
-
     return () => {
       if (updateInterval) clearInterval(updateInterval);
     };
   });
-
   onDestroy(() => {
     if (updateInterval) {
       clearInterval(updateInterval);
       updateInterval = null;
     }
   });
-
   function getStatusColor(status: string): string {
     switch (status) {
       case 'critical': return 'text-red-400';
@@ -92,7 +87,6 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
 </script>
-
 <!-- System Status Bar -->
 <div class="yorha-status-bar flex items-center justify-between text-xs text-yorha-light bg-yorha-darker p-4 font-mono">
   <!-- Left Section - System Metrics -->
@@ -206,7 +200,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   .yorha-status-bar {
     --yorha-primary: #c4b49a;
@@ -283,4 +276,3 @@ https://svelte.dev/e/js_parse_error -->
     animation: pulse-critical 1s infinite;
   }
 </style>
-

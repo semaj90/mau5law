@@ -6,32 +6,32 @@ import * as databaseConnection from '$lib/database/connection';
 // Minimal DB shape used in this module to avoid `any`
 // Lightweight query builder shape used by this module to allow method chaining
 interface QueryBuilder<T = unknown> {
-  from (table: unknown) => QueryBuilder<T>;
-  where: (cond?: unknown) => QueryBuilder<T>;
-  orderBy: (o: unknown) => QueryBuilder<T>;
+  from (table: any) => QueryBuilder<T>;
+  where: (cond?: any) => QueryBuilder<T>;
+  orderBy: (o: any) => QueryBuilder<T>;
   limit: (n: number) => QueryBuilder<T>;
   offset: (n: number) => QueryBuilder<T>;
-  returning: (sel: unknown) => Promise<T[]>;
+  returning: (sel: any) => Promise<T[]>;
   // optional helpers used for insert/update
-  values?: (v: unknown) => { returning: (sel: unknown) => Promise<T[]> };
-  set?: (u: unknown) => QueryBuilder<T>;
+  values?: (v: any) => { returning: (sel: any) => Promise<T[]> };
+  set?: (u: any) => QueryBuilder<T>;
 
   // Make the builder awaitable/promise-like so `await builder` yields T[]
   then<TResult1 = T[], TResult2 = never>(
     onfulfilled?: ((value: T[]) => TResult1 | PromiseLike<TResult1>) | null,
-    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
   ): Promise<TResult1 | TResult2>;
 
   catch?<TResult = never>(
-    onrejected?: ((reason: unknown) => TResult | PromiseLike<TResult>) | null
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null
   ): Promise<T[] | TResult>;
 }
 
 type MinimalDrizzleDB = {
-  select: <T = unknown>(sel?: unknown) => QueryBuilder<T>;
-  insert: (table: unknown) => { values: (v: unknown) => { returning: (sel: unknown) => Promise<unknown[]> } };
-  update: (table: unknown) => {
-    set: (u: unknown) => { where: (cond?: unknown) => { returning: (sel: unknown) => Promise<unknown[]> } };
+  select: <T = unknown>(sel?: any) => QueryBuilder<T>;
+  insert: (table: any) => { values: (v: any) => { returning: (sel: any) => Promise<unknown[]> } };
+  update: (table: any) => {
+    set: (u: any) => { where: (cond?: any) => { returning: (sel: any) => Promise<unknown[]> } };
   };
 };
 
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
         total: casesList.length,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = ensureError(err);
     console.error('Error fetching cases:', e);
     return error(
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = ensureError(err);
     console.error('Error creating case:', e);
     // Handle specific database errors by narrowing the unknown
@@ -207,7 +207,7 @@ export const PUT: RequestHandler = async ({ request, locals: _locals }) => {
       data: updatedCase[0],
       message: 'Case updated successfully',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = ensureError(err);
     console.error('Error updating case:', e);
     return error(
@@ -252,7 +252,7 @@ export const DELETE: RequestHandler = async ({ url, locals: _locals }) => {
       success: true,
       message: 'Case deleted successfully',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = ensureError(err);
     console.error('Error deleting case:', e);
     return error(

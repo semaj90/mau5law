@@ -19,7 +19,7 @@ export interface EmbeddingResult {
     model: string;
     textLength: number;
     generatedAt: string;
-    extracted?: unknown;
+    extracted?: any;
   }
 }
 /**

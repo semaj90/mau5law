@@ -115,7 +115,7 @@
       error = err instanceof Error ? err.message: "Search failed";
       console.error("Search error:", err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   // Handle Enter key
@@ -146,7 +146,6 @@
     return highlighted;
   }
 </script>
-
 <div class="enhanced-ai-search {className}">
   <!-- Search Header -->
   <div
@@ -178,8 +177,7 @@
         {#if loading}
           <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
             <div class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        {/if}
+          {/if}
       </div>
       <Button.Root
         onclick={performSearch}
@@ -206,7 +204,7 @@
             <SelectContent
               class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"
             >
-              {#each practiceAreas as area}
+              {#each Array.isArray(practiceAreas) ? practiceAreas : [] as area}
                 <SelectItem value={area.value} class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   {area.label}
                 </SelectItem>
@@ -225,7 +223,7 @@
             <SelectContent
               class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"
             >
-              {#each jurisdictions as jurisdiction}
+              {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                 <SelectItem value={jurisdiction.value} class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   {jurisdiction.label}
                 </SelectItem>
@@ -244,7 +242,7 @@
             <SelectContent
               class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"
             >
-              {#each ragModes as mode}
+              {#each Array.isArray(ragModes) ? ragModes : [] as mode}
                 <SelectItem value={mode.value} class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   {mode.label}
                 </SelectItem>
@@ -252,8 +250,7 @@
             </SelectContent>
           </SelectRoot>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Search Status -->
     {#if results.length > 0 || error}
       <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
@@ -273,13 +270,12 @@
             {error}
           </span>
         {/if}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Search Results -->
   {#if results.length > 0}
     <div class="mt-6 space-y-4">
-      {#each results as result}
+      {#each Array.isArray(results) ? results : [] as result}
         <div
           class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
         >
@@ -289,47 +285,47 @@
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                 {(
                   result as {
-                    title?: unknown;
-                    id?: unknown;
-                    documentType?: unknown;
-                    practiceArea?: unknown;
-                    jurisdiction?: unknown;
-                    similarity?: unknown;
-                    content?: unknown;
-                    analysisResults?: unknown;
+                    title?: any;
+                    id?: any;
+                    documentType?: any;
+                    practiceArea?: any;
+                    jurisdiction?: any;
+                    similarity?: any;
+                    content?: any;
+                    analysisResults?: any;
                   }
                 ).title ||
-                  `Document ${(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).id}`}
+                  `Document ${(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).id}`}
               </h3>
               <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
                 <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
                   {(
                     result as {
-                      title?: unknown;
-                      id?: unknown;
-                      documentType?: unknown;
-                      practiceArea?: unknown;
-                      jurisdiction?: unknown;
-                      similarity?: unknown;
-                      content?: unknown;
-                      analysisResults?: unknown;
+                      title?: any;
+                      id?: any;
+                      documentType?: any;
+                      practiceArea?: any;
+                      jurisdiction?: any;
+                      similarity?: any;
+                      content?: any;
+                      analysisResults?: any;
                     }
                   ).documentType}
                 </span>
-                {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).practiceArea}
+                {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).practiceArea}
                   <span
                     class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full"
                   >
                     {(
                       result as {
-                        title?: unknown;
-                        id?: unknown;
-                        documentType?: unknown;
-                        practiceArea?: unknown;
-                        jurisdiction?: unknown;
-                        similarity?: unknown;
-                        content?: unknown;
-                        analysisResults?: unknown;
+                        title?: any;
+                        id?: any;
+                        documentType?: any;
+                        practiceArea?: any;
+                        jurisdiction?: any;
+                        similarity?: any;
+                        content?: any;
+                        analysisResults?: any;
                       }
                     ).practiceArea.replace('_', ' ')}
                   </span>
@@ -337,14 +333,14 @@
                 <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
                   {(
                     result as {
-                      title?: unknown;
-                      id?: unknown;
-                      documentType?: unknown;
-                      practiceArea?: unknown;
-                      jurisdiction?: unknown;
-                      similarity?: unknown;
-                      content?: unknown;
-                      analysisResults?: unknown;
+                      title?: any;
+                      id?: any;
+                      documentType?: any;
+                      practiceArea?: any;
+                      jurisdiction?: any;
+                      similarity?: any;
+                      content?: any;
+                      analysisResults?: any;
                     }
                   ).jurisdiction}
                 </span>
@@ -355,14 +351,14 @@
                 {formatScore(
                   (
                     result as {
-                      title?: unknown;
-                      id?: unknown;
-                      documentType?: unknown;
-                      practiceArea?: unknown;
-                      jurisdiction?: unknown;
-                      similarity?: unknown;
-                      content?: unknown;
-                      analysisResults?: unknown;
+                      title?: any;
+                      id?: any;
+                      documentType?: any;
+                      practiceArea?: any;
+                      jurisdiction?: any;
+                      similarity?: any;
+                      content?: any;
+                      analysisResults?: any;
                     }
                   ).similarity,
                 )}
@@ -376,14 +372,14 @@
               {@html highlightContent(
                 (
                   result as {
-                    title?: unknown;
-                    id?: unknown;
-                    documentType?: unknown;
-                    practiceArea?: unknown;
-                    jurisdiction?: unknown;
-                    similarity?: unknown;
-                    content?: unknown;
-                    analysisResults?: unknown;
+                    title?: any;
+                    id?: any;
+                    documentType?: any;
+                    practiceArea?: any;
+                    jurisdiction?: any;
+                    similarity?: any;
+                    content?: any;
+                    analysisResults?: any;
                   }
                 ).content.substring(0, 300) + '...',
                 query,
@@ -391,38 +387,35 @@
             </p>
           </div>
           <!-- Analysis Results -->
-          {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults}
+          {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults}
             <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.keyInsights?.length}
+                {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.keyInsights?.length}
                   <div>
                     <h4 class="font-medium text-gray-900 dark:text-white mb-2">Key Insights</h4>
                     <ul class="space-y-1">
-                      {#each (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.keyInsights.slice(0, 3) as insight}
+                      {#each (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.keyInsights.slice(0, 3) as insight}
                         <li class="text-gray-600 dark:text-gray-400 flex items-start gap-2">
                           <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
                           {insight}
                         </li>
                       {/each}
                     </ul>
-                  </div>
-                {/if}
-                {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks?.length}
+                  {/if}
+                {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.risks?.length}
                   <div>
                     <h4 class="font-medium text-gray-900 dark:text-white mb-2">Risk Factors</h4>
                     <ul class="space-y-1">
-                      {#each (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks.slice(0, 3) as risk}
+                      {#each (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.risks.slice(0, 3) as risk}
                         <li class="text-red-600 dark:text-red-400 flex items-start gap-2">
                           <span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
                           {risk}
                         </li>
                       {/each}
                     </ul>
-                  </div>
-                {/if}
+                  {/if}
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Actions -->
           <div class="mt-4 flex gap-2">
             <Button.Root variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
@@ -436,8 +429,7 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   {#if !loading && query && results.length === 0 && !error}
     <div class="mt-6 text-center py-12">
       <div class="text-gray-400 dark:text-gray-600">
@@ -445,10 +437,8 @@
         <h3 class="text-lg font-medium mb-2">No results found</h3>
         <p>Try adjusting your search terms or filters</p>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .line-clamp-3 {
     display: -webkit-box;

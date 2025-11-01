@@ -1,7 +1,7 @@
 <!-- YoRHa Notification Manager Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import YoRHaNotification from './YoRHaNotification.svelte';
+  import { YoRHaNotification } from './YoRHaNotification.svelte';
   import { notificationStore as notificationStoreExport } from '$lib/stores/notifications';
   interface Notification {
     id: string;
@@ -34,7 +34,7 @@
   // Group notifications by position for proper stacking
   function groupNotificationsByPosition(notifications: Notification[]) {
     return notifications.reduce((groups, notification) => {
-      const position = (notification as { position?: unknown; id?: unknown }).position || 'top-right';
+      const position = (notification as { position?: any; id?: any }).position || 'top-right';
       if (!groups[position]) {
         groups[position] = [];
       }
@@ -44,22 +44,20 @@
   }
   const groupedNotifications = $derived(groupNotificationsByPosition(notifications));
 </script>
-
 <!-- Render notifications grouped by position -->
 {#each Object.entries(groupedNotifications) as [position, notificationGroup]}
   <div class="notification-group notification-group-{position}">
-    {#each notificationGroup as notification ((notification as { position?: unknown; id?: unknown }).id)}
+    {#each notificationGroup as notification ((notification as { position?: any; id?: any }).id)}
       <YoRHaNotification
         {...notification}
-        onclose={() => removeNotification((notification as { position?: unknown; id?: unknown }).id)}
+        onclose={() => removeNotification((notification as { position?: any; id?: any }).id)}
       />
     {/each}
   </div>
 {/each}
-
 <style>
   .notification-group {
-    position fixed;
+    position: fixed;
 d;
     z-index: 9999,
     display: flex;
@@ -111,4 +109,3 @@ d;
     }
   }
 </style>
-

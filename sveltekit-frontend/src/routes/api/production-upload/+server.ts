@@ -21,9 +21,9 @@ import { checkOllamaHealth, generateOllamaChatCompletion } from '$lib/server/hel
 // import { documentUploadMachine } from '$lib/state/documentUploadMachine'
 // Production logging
 const logger = {
-  info: (msg: string, data?: unknown) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),
-  error: (msg: string, error?: unknown) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, error || ''),
-  warn: (msg: string, data?: unknown) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || ''),
+  info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),
+  error: (msg: string, error?: any) => console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, error || ''),
+  warn: (msg: string, data?: any) => console.warn(`[WARN] ${new Date().toISOString()} - ${msg}`, data || ''),
 };
 // File type validation
 const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'image/png', 'image/jpeg'];
@@ -35,9 +35,9 @@ export interface UploadResult {
   success: boolean;
   documentId?: string;
   evidenceId?: string;
-  analysis?: unknown;
+  analysis?: any;
   embeddings?: number[];
-  ocrResult?: unknown;
+  ocrResult?: any;
   error?: string;
   processingTime: number;
 }
@@ -51,14 +51,14 @@ type LegalAnalysis = {
     label?: string;
   } | null;
   entities?: {
-    parties?: unknown[];
-    dates?: unknown[];
-    monetary?: unknown[];
-    clauses?: unknown[];
-    jurisdictions?: unknown[];
-    caseTypes?: unknown[];
+    parties?: any[];
+    dates?: any[];
+    monetary?: any[];
+    clauses?: any[];
+    jurisdictions?: any[];
+    caseTypes?: any[];
   } | null;
-  concepts?: unknown[] | null;
+  concepts?: any[] | null;
 };
 
 // Replace the generic DocumentMetadata with the allowed union for `type`
@@ -68,7 +68,7 @@ type DocumentMetadata = {
   type: 'contract' | 'legal_document' | 'case_law' | 'regulation' | 'brief';
   date?: string;
   confidence_score?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request, url: _url }) => {
@@ -359,7 +359,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     };
     logger.info('Upload completed successfully', { documentId, evidenceId, processingTime });
     return json(result);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const processingTime = Date.now() - startTime;
     logger.error('Upload failed', error);
     return json(
@@ -403,7 +403,7 @@ export const GET: RequestHandler = async () => {
     };
     logger.info('Health check completed successfully');
     return json(healthStatus);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Health check failed', error);
     return json(
       {
@@ -428,9 +428,9 @@ interface TesseractWorker {
     data: {
       text?: string;
       confidence?: number;
-      words?: unknown[];
-      lines?: unknown[];
-      paragraphs?: unknown[];
+      words?: any[];
+      lines?: any[];
+      paragraphs?: any[];
     };
   }>;
 }

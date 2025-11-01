@@ -40,9 +40,9 @@ type AISimilarDocument = {
       confidence?: number | null;
       tags?: string[] | null;
     } | null;
-    [k: string]: unknown;
+    [k: string]: any;
   } | null;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type FormattedResult = {
@@ -110,7 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Vector search POST API error:', error);
     return json({ error: 'Vector search failed' }, { status: 500 });
   }
@@ -150,7 +150,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Vector search GET API error:', error);
     return json({ error: 'Vector search failed' }, { status: 500 });
   }

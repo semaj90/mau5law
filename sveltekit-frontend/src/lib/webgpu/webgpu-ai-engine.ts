@@ -20,7 +20,7 @@ export interface AIComputeJob {
   inputData: BufferLike;
   shape: number[];
   attentionWeights?: BufferLike;
-  modelParams?: unknown; // Changed from any
+  modelParams?: any; // Changed from any
   priority: 'high' | 'medium' | 'low';
   createdAt: number;
 }
@@ -50,7 +50,7 @@ export interface CustomAILibrary {
     ): { data: Float32Array; attentionScore: number; startIndex: number }[];
   };
   ModularSwitch: {
-    switch(moduleName: string, config: unknown): { switched: boolean; module: string; config: unknown };
+    switch(moduleName: string, config: any): { switched: boolean; module: string; config: any };
     getActive(): string;
   };
   T5Accelerator: {
@@ -76,7 +76,7 @@ export class WebGPUAIEngine {
   private computeJobs = new Map<string, AIComputeJob>();
   private shaderCache = new Map<string, GPUComputePipeline>();
   private bufferPool: GPUBuffer[] = [];
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private initPromise: Promise<void> | null = null;
 
   /**
@@ -175,7 +175,7 @@ export class WebGPUAIEngine {
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('webgpu:ready', { detail: this.capabilities }));
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from error: any
       console.error('WebGPU initialization failed:', error);
       this.capabilities = { isSupported: false, features: [], limits: {} as GPUSupportedLimits }; // Cast limits
@@ -539,8 +539,8 @@ export class WebGPUAIEngine {
       },
       ModularSwitch: class {
         private static activeModule: string = 'default';
-        static switch(moduleName: string, config: unknown) {
-          // Changed config: any to config: unknown
+        static switch(moduleName: string, config: any) {
+          // Changed config: any to config: any
           console.log(`🔄 Switching to module: ${moduleName}`);
           this.activeModule = moduleName;
           // Hot-swappable module loading

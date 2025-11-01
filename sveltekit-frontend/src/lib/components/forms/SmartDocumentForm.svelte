@@ -3,13 +3,12 @@
   // Svelte 5 runes are auto-imported
   import { onMount, createEventDispatcher } from "svelte";
   // keep local Button component
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   // removed incorrect bits-ui named imports and unused variables
   import { ocrService, type FormField, type FieldType } from '$lib/services/ocrService';
   // removed enhancedRAG (unused)
   import { fade, scale } from 'svelte/transition'; // removed fly (unused)
   import { writable, get } from 'svelte/store';
-
   // expose props (including optional ondispatch callback)
   let {
     title = "Smart Document Form",
@@ -28,9 +27,7 @@
     documentTypes?: string[],
     ondispatch?: ((payload: any) => void) | undefined
   } = $props();
-
   const dispatch = createEventDispatcher();
-
   // Component state
   let fileInput = $state<HTMLInputElement | null>(null);
   let uploadedFile = $state<File | null>(null);
@@ -38,21 +35,17 @@
   let isProcessing = $state(false);
   let showPreview = $state(false);
   let selectedDocumentType = $state('auto');
-
   // OCR stores
   let processing = $derived(ocrService.processing$);
   let progress = $derived(ocrService.progress$);
   let ocrResult = $derived(ocrService.currentResult$);
   let extractedFields = $derived(ocrService.extractedFields$);
-
   // Form validation
   const formErrors = writable<Record<string, string>>({});
   let isFormValid = $state(false);
-
   // Smart suggestions
   let activeSuggestions = $state<Record<string, string[]>>({});
   let suggestionLoading = $state<Record<string, boolean>>({});
-
   // Default form schema if none provided
   $effect(() => {
     if (formSchema.length === 0) {
@@ -67,7 +60,6 @@
       ];
     }
   });
-
   // Handle file upload
   const handleFileUpload = async () => {
     if (!uploadedFile || !enableOCR) return;
@@ -90,10 +82,9 @@
     } catch (error) {
       console.error('OCR processing failed:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   };
-
   // Generate smart suggestions for incomplete fields
   const generateSmartSuggestions = async (documentText: string) => {
     for (const field of populatedFields) {
@@ -105,13 +96,12 @@
         } catch (error) {
           console.warn(`Failed to generate suggestions for ${field.name}:`, error);
         } finally {
-          suggestionLoading[field.name] = false;
+          suggestionLoading[field.name] = $state(false);
         }
       }
     }
     activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
   };
-
   // Handle field value changes
   const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
     const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
@@ -127,12 +117,10 @@
     if (ondispatch) ondispatch({ fieldName, value, confidence });
     else dispatch('fieldChange', { fieldName, value, confidence });
   };
-
   // Apply suggestion to field
   const applySuggestion = (fieldName: string, suggestion: string) => {
     handleFieldChange(fieldName, suggestion, 0.8);
   };
-
   // Field validation
   const validateField = (fieldName: string, value: string) => {
     const field = populatedFields.find(f => f.name === fieldName);
@@ -155,7 +143,6 @@
     isFormValid = Object.keys(errors).length === 0 &&
       populatedFields.every(f => !f.required || (f.value && f.value.toString().trim().length > 0));
   };
-
   // Form submission
   const handleSubmit = () => {
     // Final validation
@@ -171,7 +158,6 @@
       else dispatch('submit', { formData, extractedFields: $extractedFields });
     }
   };
-
   // Get field type icon
   const getFieldTypeIcon = (type: FieldType) => {
     switch (type) {
@@ -185,7 +171,6 @@
       default: return '📝';
     }
   };
-
   // Get confidence color
   const getConfidenceColor = (confidence?: number) => {
     if (!confidence) return 'bg-gray-500';
@@ -193,7 +178,6 @@
     if (confidence >= 0.7) return 'bg-yellow-500';
     return 'bg-red-500';
   };
-
   // Helper to compute input classes for components (components don't support class: directives)
   const getInputClasses = (field: FormField) => {
     const errors = get(formErrors);
@@ -203,7 +187,6 @@
     const success = field.confidence && field.confidence > 0.8 ? ' border-yorha-success' : '';
     return `${base}${danger}${success}`.trim();
   };
-
   // File drop handling
   const handleDrop = (_event: DragEvent) => {
     _event.preventDefault();
@@ -217,7 +200,6 @@
     _event.preventDefault();
   };
 </script>
-
 <div class="smart-document-form max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="text-center">
@@ -243,7 +225,7 @@
             class="px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary"
           >
             <option value="auto">Auto-detect</option>
-            {#each documentTypes as type}
+            {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
               <option value={type}>{type.replace(/_/g, ' ').toUpperCase()}</option>
             {/each}
           </select>
@@ -273,9 +255,7 @@
               <span class="text-4xl">📁</span>
               <p class="text-yorha-text-primary">Drop your document here or click to browse</p>
               <p class="text-sm text-yorha-text-secondary">Supports PDF, PNG, JPG, TIFF</p>
-            </div>
-          {/if}
-
+            {/if}
           <input
             bind:this={fileInput}
             type="file"
@@ -289,7 +269,6 @@
               }
             }}
           />
-
           {#if !uploadedFile}
             <Button
               variant="ghost"
@@ -300,7 +279,6 @@
             </Button>
           {/if}
         </div>
-
         <!-- Processing Status -->
         {#if $processing}
           <div class="space-y-2" transition:fade>
@@ -310,9 +288,7 @@
             </div>
             <!-- native progress element instead of Progress component -->
             <progress value={$progress} max="100" class="h-2 w-full"></progress>
-          </div>
-        {/if}
-
+          {/if}
         <!-- OCR Results Preview -->
         {#if $ocrResult && showPreview}
           <div class="bg-yorha-bg-secondary rounded-md p-4 border border-yorha-border">
@@ -328,12 +304,9 @@
               Processing Time: {$ocrResult.processingTime ?? 0}ms |
               Document Type: {$ocrResult.metadata?.documentType ?? 'unknown'}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Form Fields -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -370,10 +343,8 @@
                     <span class="text-xs text-yorha-text-secondary">
                       {Math.round((field.confidence ?? 0) * 100)}%
                     </span>
-                  </div>
-                {/if}
+                  {/if}
               </div>
-
               <!-- Field Input -->
               {#if field.type === 'text_block' && field.name.includes('notes')}
                 <!-- native textarea with new event syntax -->
@@ -393,20 +364,18 @@
                   oninput={(e: Event) => handleFieldChange(field.name, (e.target as HTMLInputElement).value)}
                 />
               {/if}
-
               <!-- Field Error -->
               {#if $formErrors[field.name]}
                 <p class="text-xs text-yorha-danger" transition:scale>
                   {$formErrors[field.name]}
                 </p>
               {/if}
-
               <!-- Smart Suggestions -->
               {#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
                 <div class="space-y-1">
                   <p class="text-xs text-yorha-text-secondary">Suggestions:</p>
                   <div class="flex flex-wrap gap-1">
-                    {#each activeSuggestions[field.name] as suggestion}
+                    {#each Array.isArray(activeSuggestions[field.name]) ? activeSuggestions[field.name] : [] as suggestion}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -417,20 +386,16 @@
                       </Button>
                     {/each}
                   </div>
-                </div>
-              {/if}
-
+                {/if}
               <!-- Loading Suggestions -->
               {#if suggestionLoading[field.name]}
                 <div class="flex items-center space-x-2 text-xs text-yorha-text-secondary">
                   <div class="animate-spin w-3 h-3 border border-yorha-accent border-t-transparent rounded-full"></div>
                   <span>Generating suggestions...</span>
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
         </div>
-
         <!-- Form Actions -->
         <div class="flex items-center justify-between pt-6 border-t border-yorha-border">
           <div class="flex items-center space-x-4">
@@ -463,7 +428,6 @@
       </form>
     </div>
   </div>
-
   <!-- Extracted Fields Preview -->
   {#if $extractedFields.length > 0 && showPreview}
     <div class="nes-container">
@@ -476,7 +440,6 @@
           </Button>
         </h3>
       </div>
-
       <!-- each extracted item: Badge -> span -->
       {#each $extractedFields as field (field.fieldName)}
         <div class="bg-yorha-bg-secondary rounded p-3 border border-yorha-border">
@@ -501,10 +464,8 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .smart-document-form {
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);

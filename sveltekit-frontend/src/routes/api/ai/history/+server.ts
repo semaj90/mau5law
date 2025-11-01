@@ -29,7 +29,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     const userId = getUserId(locals) || 'anonymous';
     await db.insert(aiHistory).values({ prompt, response, embedding, userId });
     return json({ success: true });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Failed to save AI history:', error);
     return json({ error: 'Failed to save AI history' }, { status: 500 });
@@ -42,7 +42,7 @@ const originalGETHandler: RequestHandler = async ({ url: _url, locals }) => {
     const userId = getUserId(locals) || 'anonymous';
     const history = await db.select().from(aiHistory).where(eq(aiHistory.userId, userId));
     return json({ history });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Failed to fetch AI history:', error);
     return json({ error: 'Failed to fetch AI history' }, { status: 500 });

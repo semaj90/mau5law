@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 export const POST: RequestHandler = async ({ request }) => {
-  let body: unknown = {};
+  let body: any = {};
   try {
     body = await request.json();
   } catch {
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
   return json({ success: true, operation, data, options, timestamp: new Date().toISOString() });
 };
 export const PUT: RequestHandler = async ({ request }) => {
-  let body: unknown = {};
+  let body: any = {};
   try {
     body = await request.json();
   } catch {

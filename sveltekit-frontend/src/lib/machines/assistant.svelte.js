@@ -1,28 +1,23 @@
 import { interpret } from 'xstate';
 import { browser } from '$app/environment';
 import { aiAssistantMachine } from './aiAssistantMachine.js';
-
 export function createAssistantStore() {
   // Determine a safe initial snapshot from the machine
   const machineInitialState =
     (typeof aiAssistantMachine?.getInitialState === 'function'
       ? aiAssistantMachine.getInitialState()
       : aiAssistantMachine?.initialState) ?? null;
-
   let snapshot = machineInitialState;
   let service;
   let cleanupHandler;
-
   if (browser) {
     try {
       // Create the real interpreter only in the browser
       service = interpret(aiAssistantMachine);
-
       // normalize unsubscribe function returned by service.subscribe/onTransition
       let unsubscribeFn = () => {
         /* noop */
       };
-
       if (typeof service.subscribe === 'function') {
         // subscribe may return a function or an object with unsubscribe()
         const subResult = service.subscribe(s => {
@@ -31,7 +26,6 @@ export function createAssistantStore() {
         });
         // Start after subscribing
         service.start();
-
         if (typeof subResult === 'function') {
           unsubscribeFn = subResult;
         } else if (subResult && typeof subResult.unsubscribe === 'function') {
@@ -54,7 +48,6 @@ export function createAssistantStore() {
           if (typeof service.stop === 'function') service.stop();
         };
       }
-
       // If getSnapshot is available, seed the snapshot immediately with the runtime snapshot.
       if (typeof service.getSnapshot === 'function') {
         try {
@@ -64,7 +57,6 @@ export function createAssistantStore() {
           /* ignore */
         }
       }
-
       // Ensure interpreter is stopped on page unload to avoid leaks
       const stopOnUnload = () => {
         try {
@@ -78,7 +70,6 @@ export function createAssistantStore() {
       };
       window.addEventListener('beforeunload', stopOnUnload);
       window.addEventListener('pagehide', stopOnUnload);
-
       // keep cleanup reference
       cleanupHandler = stopOnUnload;
     } catch (err) {
@@ -117,7 +108,6 @@ export function createAssistantStore() {
       },
     };
   }
-
   return {
     get snapshot() {
       return snapshot;
@@ -145,5 +135,4 @@ export function createAssistantStore() {
     },
   };
 }
-
 export const assistant = createAssistantStore();

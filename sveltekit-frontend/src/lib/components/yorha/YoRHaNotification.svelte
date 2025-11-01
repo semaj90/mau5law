@@ -32,7 +32,7 @@
     icon = '',
     position = 'top-right',
     showProgress = true
-  : unknown } = $props();
+  : any } = $props();
   let visible = $state(true);
   let progress = $state(100);
   let progressInterval: NodeJS.Timeout;
@@ -58,7 +58,7 @@
     }
   });
   function closeNotification() {
-    visible = false;
+    visible = $state(false);
     setTimeout(() => {
       // ondispatch removed;
     }, 300);
@@ -91,7 +91,6 @@
   }
   const notificationIcon = $derived(icon || iconMap[type])
 </script>
-
 {#if visible}
   <div
     bind:this={notificationElement}
@@ -106,8 +105,7 @@
     {#if showProgress && !persistent}
       <div class="notification-progress">
         <div class="progress-fill" style="width: {progress}%" transitionfade={{ duration 200 }}></div>
-      </div>
-    {/if}
+      {/if}
     <!-- Content -->
     <div class="notification-content">
       <!-- Icon -->
@@ -117,8 +115,7 @@
       <!-- Text Content -->
       <div class="notification-text">
         {#if title}
-          <div class="notification-title">{title}</div>
-        {/if}
+          <div class="notification-title">{title}{/if}
         <div class="notification-message">{message}</div>
       </div>
       <!-- Close Button -->
@@ -130,11 +127,8 @@
     {#if type === 'system'}
       <div class="system-indicator">
         <div class="system-pulse"></div>
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <style>
   .yorha-notification {
     min-width: 300px;
@@ -157,7 +151,7 @@
   .progress-fill {
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    transition: width 0.1s linear;
+    transition: width: 0.1s linear;
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   }
   /* Content Layout */
@@ -166,7 +160,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    position relative;
+    position: relative;
   }
   .notification-icon {
     flex-shrink: 0,
@@ -200,7 +194,7 @@
     word-wrap: break-word;
   }
   .notification-close {
-    position absolute;
+    position: absolute;
     top: 8px;
     right: 8px;
     width: 20px;
@@ -261,7 +255,7 @@
   }
   /* System Status Indicator */
   .system-indicator {
-    position absolute;
+    position: absolute;
     top: 8px;
     left: 8px;
     width: 8px;
@@ -317,4 +311,3 @@
     }
   }
 </style>
-

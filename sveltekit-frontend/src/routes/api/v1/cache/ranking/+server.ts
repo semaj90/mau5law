@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     // Validate results format
-    const results: CanonicalResult[] = body.results.map((result: unknown, index: number) => {
+    const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
       const r = result as Partial<RawCanonicalResult>;
       // Validate required fields
       if (!r.docId || typeof r.score !== 'number') {

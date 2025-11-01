@@ -6,8 +6,8 @@
   const signatures = writable<any>(null);
   const error = writable<string | null>(null);
   const loading = writable<boolean>(true);
-  let interval: unknown;
-  let fastAlertInterval: unknown;
+  let interval: any;
+  let fastAlertInterval: any;
   let fastPolling = $state<boolean>(false);
   function toggleFastPolling(){
     fastPolling = !fastPolling;
@@ -37,7 +37,7 @@
   // GPU (cuda-service) sampled metrics
   let gpuUtilSeries: number[] = [];
   let gpuMemSeries: number[] = [];
-  let gpuInfo: unknown = null;
+  let gpuInfo: any = null;
   const gpuRuntime = writable<any>(null);
   // NOTE: Using $runtime and $signatures directly in template (remove derived helpers for runes mode)
   // Enhanced metrics for comprehensive monitoring
@@ -523,7 +523,7 @@
       // Load enhanced metrics
   await loadAllEnhancedMetrics();
   error.set(null);
-    } catch (e: unknown) {
+    } catch (e: any) {
   error.set(e instanceof Error ? e.message : String(e));
     } finally {
   loading.set(false);
@@ -616,7 +616,7 @@
     <div class="text-xs text-gray-500">No recent server alerts</div>
   {:else}
     <ul class="space-y-1 text-sm max-h-48 overflow-auto pr-1">
-      {#each serverAlerts.slice().reverse() as a}
+      {#each Array.isArray(serverAlerts.slice().reverse()) ? serverAlerts.slice().reverse() : [] as a}
   <li class="flex items-start gap-2 p-2 rounded border text-xs {a.level === 'crit' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700' : 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700'} {a.anomaly ? 'outline outline-2 outline-indigo-400/70 dark:outline-indigo-500/60' : ''}">
           <span class="mt-0.5 font-bold {a.level === 'crit' ? 'text-red-600 dark:text-red-300' : 'text-amber-600 dark:text-amber-300'}">{a.level?.toUpperCase?.() || a.level}</span>
           <span class="flex-1">{a.message}</span>
@@ -635,7 +635,7 @@
   <div class="mb-8 p-4 border rounded-lg bg-white/60 dark:bg-gray-900/60 shadow">
     <h2 class="font-medium mb-4 flex items-center gap-2"><span class="text-lg">🕒</span> Historical Metrics (Server)</h2>
     <div class="flex gap-2 mb-4 text-xs">
-      {#each ['gpu','jobs','system','redis','anomaly'] as tab}
+      {#each Array.isArray(['gpu','jobs','system','redis','anomaly']) ? ['gpu','jobs','system','redis','anomaly'] : [] as tab}
         <button class="px-2 py-1 rounded border {activeHistoryTab===tab ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600'}" onclick={() => activeHistoryTab=tab as any}>{tab}</button>
       {/each}
     </div>
@@ -801,7 +801,7 @@
           <table class="w-full text-[11px]">
             <thead class="bg-gray-100"><tr class="text-left"><th class="py-1">PID</th><th class="py-1">SM%</th><th class="py-1">Mem%</th><th class="py-1">Enc%</th><th class="py-1">Dec%</th><th class="py-1">Time</th></tr></thead>
             <tbody>
-            {#each gpuEngines.process_utilization as p}
+            {#each Array.isArray(gpuEngines.process_utilization) ? gpuEngines.process_utilization : [] as p}
               <tr class="border-t hover:bg-gray-50"><td class="py-1 font-mono">{p.pid}</td><td class="py-1">{p.sm_util}</td><td class="py-1">{p.mem_util}</td><td class="py-1">{p.enc_util}</td><td class="py-1">{p.dec_util}</td><td class="py-1 text-gray-500">{new Date(p.timestamp/1e6).toLocaleTimeString?.() || p.timestamp}</td></tr>
             {/each}
             </tbody>
@@ -822,7 +822,7 @@
       <div class="overflow-auto max-h-56 border rounded">
         <table class="w-full text-[11px]">
           <thead class="bg-gray-100"><tr class="text-left"><th class="py-1 px-2">PID</th><th class="py-1 px-2">Name</th><th class="py-1 px-2">CPU%</th><th class="py-1 px-2">RSS MB</th><th class="py-1 px-2">Threads</th><th class="py-1 px-2">Started</th></tr></thead>
-          <tbody>{#each workerStats as w}<tr class="border-t hover:bg-gray-50"><td class="py-1 px-2 font-mono">{w.pid}</td><td class="py-1 px-2">{w.name}</td><td class="py-1 px-2">{w.cpu_percent?.toFixed?.(1) || w.CPUPercent?.toFixed?.(1) || w.CPUPercent}</td><td class="py-1 px-2">{(w.rss_bytes/1024/1024).toFixed(1)}</td><td class="py-1 px-2">{w.num_threads}</td><td class="py-1 px-2 text-gray-500">{new Date(w.create_time).toLocaleTimeString?.()}</td></tr>{/each}</tbody>
+          <tbody>{#each Array.isArray(workerStats) ? workerStats : [] as w}<tr class="border-t hover:bg-gray-50"><td class="py-1 px-2 font-mono">{w.pid}</td><td class="py-1 px-2">{w.name}</td><td class="py-1 px-2">{w.cpu_percent?.toFixed?.(1) || w.CPUPercent?.toFixed?.(1) || w.CPUPercent}</td><td class="py-1 px-2">{(w.rss_bytes/1024/1024).toFixed(1)}</td><td class="py-1 px-2">{w.num_threads}</td><td class="py-1 px-2 text-gray-500">{new Date(w.create_time).toLocaleTimeString?.()}</td></tr>{/each}</tbody>
         </table>
       </div>
     {:else}
@@ -844,7 +844,7 @@
       <div class="mb-3">
         <h4 class="font-semibold text-sm mb-1">Notes</h4>
         <ul class="text-[11px] list-disc list-inside space-y-0.5 max-h-32 overflow-auto">
-          {#each profilingSnapshot.notes || [] as n}<li>{n}</li>{/each}
+          {#each Array.isArray(profilingSnapshot.notes || []) ? profilingSnapshot.notes || [] : [] as n}<li>{n}</li>{/each}
         </ul>
       </div>
       <h4 class="font-semibold text-sm mb-2">Recent History ({profilingHistory.length})</h4>
@@ -852,7 +852,7 @@
         <div class="overflow-auto max-h-40 border rounded">
           <table class="w-full text-[11px]">
             <thead class="bg-gray-100"><tr class="text-left"><th class="py-1 px-2">Time</th><th class="py-1 px-2">Kernels</th><th class="py-1 px-2">Tensor%</th><th class="py-1 px-2">DRAM GB/s</th><th class="py-1 px-2">Occ%</th></tr></thead>
-            <tbody>{#each profilingHistory as h}<tr class="border-t hover:bg-gray-50"><td class="py-1 px-2">{new Date(h.ts || h.Timestamp || Date.now()).toLocaleTimeString()}</td><td class="py-1 px-2">{h.kernel_samples}</td><td class="py-1 px-2">{h.tensor_core_util?.toFixed?.(1)}</td><td class="py-1 px-2">{h.dram_throughput_gbs?.toFixed?.(2)}</td><td class="py-1 px-2">{(h.occupancy_avg!*100).toFixed?.(1)}</td></tr>{/each}</tbody>
+            <tbody>{#each Array.isArray(profilingHistory) ? profilingHistory : [] as h}<tr class="border-t hover:bg-gray-50"><td class="py-1 px-2">{new Date(h.ts || h.Timestamp || Date.now()).toLocaleTimeString()}</td><td class="py-1 px-2">{h.kernel_samples}</td><td class="py-1 px-2">{h.tensor_core_util?.toFixed?.(1)}</td><td class="py-1 px-2">{h.dram_throughput_gbs?.toFixed?.(2)}</td><td class="py-1 px-2">{(h.occupancy_avg!*100).toFixed?.(1)}</td></tr>{/each}</tbody>
           </table>
         </div>
       {:else}<div class="text-xs text-gray-500">No profiling history yet.</div>{/if}
@@ -933,7 +933,7 @@
           <tr class="text-left border-b"><th class="py-1">Signature</th><th class="py-1 w-24">Count</th></tr>
         </thead>
         <tbody>
-          {#each $signatures.top as row}
+          {#each Array.isArray($signatures.top) ? $signatures.top : [] as row}
             <tr class="border-b last:border-0">
               <td class="py-1 font-mono text-xs break-all">{row.Sig || row.SIG || row.sig}</td>
               <td class="py-1">{row.Count || row.count}</td>
@@ -1026,7 +1026,7 @@
       <div>
         <h3 class="text-sm font-medium mb-2">Active Modules</h3>
         <div class="space-y-2">
-          {#each $wasmMetrics.modules as module}
+          {#each Array.isArray($wasmMetrics.modules) ? $wasmMetrics.modules : [] as module}
           <div class="p-2 bg-gray-50 rounded text-xs">
             <div class="flex justify-between items-center">
               <span class="font-mono font-medium">{module.name}</span>
@@ -1178,7 +1178,7 @@
   <div class="p-4 border rounded bg-white/50 shadow mb-6">
     <h2 class="font-medium mb-3">🏥 Service Health Matrix</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-      {#each $serviceHealth as service}
+      {#each Array.isArray($serviceHealth) ? $serviceHealth : [] as service}
       <div class="p-3 bg-gray-50 rounded border-l-4 {
         service.health === 'excellent' ? 'border-green-500' :
         service.health === 'good' ? 'border-blue-500' :

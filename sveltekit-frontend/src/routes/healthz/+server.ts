@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { redis } from '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();
-  let redisOk = false;
+  let redisOk = $state(false);
   let latencyMs: number | null = null;
   try {
     const pingStart = Date.now();
@@ -10,7 +10,7 @@ export const GET = async () => {
     latencyMs = Date.now() - pingStart;
     redisOk = true;
   } catch (e: any) {
-    redisOk = false;
+    redisOk = $state(false);
   }
   return json(
     {

@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(enhancedResult);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const safeError = formatUnknownError(error);
     console.error('Batch Processing Error:', safeError);
     return json(
@@ -157,7 +157,7 @@ function getPerformanceTier(errorCount: number): string {
   if (errorCount >= 5) return 'basic';
   return 'minimal';
 }
-function formatUnknownError(error: unknown): { message: string; stack?: string } {
+function formatUnknownError(error: any): { message: string; stack?: string } {
   if (error instanceof Error) {
     return { message: error.message, stack: error.stack };
   }

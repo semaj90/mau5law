@@ -57,7 +57,7 @@ export async function generateEmbedding(text: string, useCache: boolean = true):
       embeddingCache.set(cacheKey, embedding);
     }
     return embedding;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
       console.error('Embedding generation error (gateway):', error.message);
@@ -107,7 +107,7 @@ export async function storeChatEmbedding(embeddingData: ChatEmbedding): Promise<
           embedding = EXCLUDED.embedding,
           metadata = EXCLUDED.metadata`
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       if (error instanceof Error) {
         console.error('Error storing chat embedding:', error.message);
@@ -154,7 +154,7 @@ export async function searchSimilarChats(
       similarity: parseFloat(row.similarity),
       metadata: row.metadata ? JSON.parse(row.metadata) : {},
     }));
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
       console.error('Vector search error:', error.message);
@@ -194,7 +194,7 @@ export async function searchSimilarChatsKeyword(
       similarity: parseFloat(row.similarity) / 4, // Normalize to 0-1 range;
       metadata: row.metadata ? JSON.parse(row.metadata) : {},
     }));
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
       console.error('Keyword search error:', error.message);
@@ -238,7 +238,7 @@ export async function initializeChatEmbeddingsTable(): Promise<void> {
       ON chat_embeddings (role)`
     );
     console.log('Chat embeddings table initialized successfully');
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any
     if (error instanceof Error) {
       console.error('Failed to initialize chat embeddings table:', error.message);
@@ -255,7 +255,7 @@ setInterval(() => {
   }
 }, cacheTimeout);
 // This function stores the log and its embedding in PostgreSQL
-export async function storeLogInVectorDB(data: { log: unknown; embedding: number[] }): Promise<unknown> {
+export async function storeLogInVectorDB(data: { log: any; embedding: number[] }): Promise<unknown> {
   // Changed from any
   // TODO: Implement error_logs table in schema
   console.warn('storeLogInVectorDB: errorLogs table not implemented yet');

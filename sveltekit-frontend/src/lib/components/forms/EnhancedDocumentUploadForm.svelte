@@ -50,8 +50,8 @@
     caseId = undefined,
     autoSave = true
   }: {
-    data: unknown, // SuperValidated<Infer<typeof DocumentUploadSchema>>
-    onSuccess?: ((result: unknown) => void) | undefined,
+    data: any, // SuperValidated<Infer<typeof DocumentUploadSchema>>
+    onSuccess?: ((result: any) => void) | undefined,
     onError?: ((error: string) => void) | undefined,
     caseId?: string | undefined,
     autoSave?: boolean
@@ -81,7 +81,7 @@
   );
   // File handling
   let fileInput: HTMLInputElement | null = null;
-  let dragActive = false;
+  let dragActive = $state(false);
   let selectedFile: File | null = null;
   // Form options
   const documentTypes = [
@@ -118,7 +118,7 @@
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     const file = event.dataTransfer?.files[0];
     if (file) {
       selectedFile = fil;
@@ -133,7 +133,7 @@
     dragActive = true;
   }
   function handleDragLeave() {
-    dragActive = false;
+    dragActive = $state(false);
   }
   function removeFile() {
     selectedFile = null;
@@ -282,8 +282,7 @@
             <p class="text-sm nes-text is-disabled">Processing with AI...</p>
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- File Drop Zone -->
   <div class="file-upload-nier-bits-card nes-container">
@@ -330,8 +329,7 @@
 <Upload class="mr-2" size={16} />
               Browse Files
 </Button>
-          </div>
-        {/if}
+          {/if}
       </div>
       <input;
         bind:this={fileInput}
@@ -391,7 +389,7 @@
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {#each documentTypes as type}
+                  {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
                     <SelectItem value={type.value}>{type.label}</SelectItem>
                   {/each}
                 </SelectContent>
@@ -409,7 +407,7 @@
                   <SelectValue placeholder="Select jurisdiction" />
                 </SelectTrigger>
                 <SelectContent>
-                  {#each jurisdictions as jurisdiction}
+                  {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                     <SelectItem value={jurisdiction.value}
                       >{jurisdiction.label}</SelectItem
                     >
@@ -524,8 +522,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
                   Skip AI Processing
 </Button>
               {/if}
-            </div>
-          {/if}
+            {/if}
         </AlertDescription>
       </Alert>
     {/if}
@@ -541,8 +538,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
                 AI processing completed with {contextValue.aiResults
                   .confidence}% confidence.
               </p>
-            </div>
-          {/if}
+            {/if}
         </AlertDescription>
       </Alert>
     {/if}

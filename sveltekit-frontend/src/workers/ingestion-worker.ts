@@ -9,11 +9,11 @@ import type { SOMConfig } from '$lib/ai/som-neural-network';
 // --- Replace brittle WorkerGlobalScope typing/detection with robust check ---
 /*
   Previous:
-  declare const WorkerGlobalScope: unknown;
+  declare const WorkerGlobalScope: any;
   if (typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' && typeof (self as any)?.postMessage === 'function') { ... }
 */
 type MaybeWorker = {
-  postMessage?: (msg: unknown) => void;
+  postMessage?: (msg: any) => void;
   // use DOM listener types instead of `any`
   addEventListener?: (
     type: string,
@@ -37,7 +37,7 @@ type EmbeddingOptions = {
   // added explicit optional numeric properties to avoid: '{}' -> number errors
   chunkSize?: number;
   overlap?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // New: typed upload options to remove use of `any`
@@ -45,14 +45,14 @@ type UploadOptions = {
   bucket?: string | undefined;
   uploadedBy?: number | undefined;
   caseId?: number | undefined;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add this top-level type (types cannot be declared with `private` inside a class)
 type PendingTask = {
-  resolve: (value: unknown) => void;
+  resolve: (value: any) => void;
   reject: (error: Error) => void;
-  onProgress?: (progress: number, stage?: string, data?: unknown) => void;
+  onProgress?: (progress: number, stage?: string, data?: any) => void;
 };
 
 // --- Add FileMetadata type and use it in UploadResult.metadata ---
@@ -66,7 +66,7 @@ type FileMetadata = {
   uploadedAt?: Date | string;
   uploadedBy?: number;
   caseId?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Local UploadResult type to avoid: "Cannot use namespace: 'UploadResult' as a type" errors
@@ -78,7 +78,7 @@ type UploadResult = {
   size: number;
   url: string;
   metadata?: FileMetadata;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export interface IngestionTask {
@@ -125,13 +125,13 @@ export interface IngestionResult {
 }
 export interface WorkerMessage {
   type: 'ingestion' | 'embedding' | 'som_clustering' | 'rtx_compression' | 'health_check';
-  data: unknown;
+  data: any;
   taskId: string;
 }
 export interface WorkerResponse {
   taskId: string;
   success: boolean;
-  data?: unknown;
+  data?: any;
   progress?: number;
   error?: string;
   stage?: string;
@@ -139,7 +139,7 @@ export interface WorkerResponse {
 // Worker implementation
 if (isWorkerEnv) {
   class DocumentIngestionWorker {
-    private processing = false;
+    private processing = $state(false);
     private currentTask: string | null = null;
     private cache = new Map<string, unknown>(); // replaced `any` with `unknown`
     constructor() {
@@ -150,7 +150,7 @@ if (isWorkerEnv) {
       const { type, data, taskId } = event.data;
       try {
         this.currentTask = taskId;
-        let result: unknown;
+        let result: any;
         switch (type) {
           case 'ingestion':
             result = await this.processIngestion(data as IngestionTask);
@@ -175,7 +175,7 @@ if (isWorkerEnv) {
           success: true,
           data: result,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         this.postResponse({
           taskId,
@@ -414,7 +414,7 @@ if (isWorkerEnv) {
       // Ensure structured, serializable response
       try {
         self.postMessage(response);
-      } catch (e: unknown) {
+      } catch (e: any) {
         // swallow non-serializable response errors; attempt a safe log if available
         try {
           const msg = e instanceof Error ? e.message : String(e);
@@ -448,7 +448,7 @@ export class IngestionWorkerManager {
         this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
         this.worker.addEventListener('error', this.handleWorkerError.bind(this));
         console.log('Ingestion worker manager initialized');
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = err instanceof Error ? err.message : String(err);
         console.warn('Failed to initialize ingestion worker:', msg);
       }
@@ -478,28 +478,28 @@ export class IngestionWorkerManager {
   }
   public async processIngestion(
     task: IngestionTask,
-    onProgress?: (progress: number, stage?: string, data?: unknown) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<IngestionResult> {
     return this.executeTask('ingestion', task, onProgress) as Promise<IngestionResult>;
   }
   public async generateEmbeddings(
     texts: string[],
     options: EmbeddingOptions = {},
-    onProgress?: (progress: number, stage?: string, data?: unknown) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<unknown> {
     return this.executeTask('embedding', { texts, options }, onProgress);
   }
   public async performSOMClustering(
     embeddings: number[][],
     config: SOMConfig,
-    onProgress?: (progress: number, stage?: string, data?: unknown) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<unknown> {
     return this.executeTask('som_clustering', { embeddings, config }, onProgress);
   }
   public async applyRTXCompression(
     documents: Array<{ size?: number }>,
     compressionRatio: number = 50,
-    onProgress?: (progress: number, stage?: string, data?: unknown) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<unknown> {
     return this.executeTask('rtx_compression', { documents, compressionRatio }, onProgress);
   }
@@ -508,8 +508,8 @@ export class IngestionWorkerManager {
   }
   private async executeTask(
     type: WorkerMessage['type'],
-    data: unknown,
-    onProgress?: (progress: number, stage?: string, data?: unknown) => void
+    data: any,
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<unknown> {
     if (!this.worker) {
       throw new Error('Ingestion worker not available');
@@ -720,7 +720,7 @@ function chunkTextStatic(text: string, chunkSize: number, overlap: number): stri
 // --- Use the worker env check to initialize the worker class instance ---
 if (isWorkerEnv) {
   class DocumentIngestionWorker {
-    private processing = false;
+    private processing = $state(false);
     private currentTask: string | null = null;
     private cache = new Map<string, unknown>(); // replaced `any` with `unknown`
     constructor() {
@@ -731,7 +731,7 @@ if (isWorkerEnv) {
       const { type, data, taskId } = event.data;
       try {
         this.currentTask = taskId;
-        let result: unknown;
+        let result: any;
         switch (type) {
           case 'ingestion':
             result = await this.processIngestion(data as IngestionTask);
@@ -756,7 +756,7 @@ if (isWorkerEnv) {
           success: true,
           data: result,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         this.postResponse({
           taskId,
@@ -995,7 +995,7 @@ if (isWorkerEnv) {
       // Ensure structured, serializable response
       try {
         self.postMessage(response);
-      } catch (e: unknown) {
+      } catch (e: any) {
         // swallow non-serializable response errors; attempt a safe log if available
         try {
           const msg = e instanceof Error ? e.message : String(e);

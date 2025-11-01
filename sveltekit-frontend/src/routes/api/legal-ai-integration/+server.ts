@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Legal AI Integration API error:', error);
     return json(
       {
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Document processing error:', error);
     return json(
       {
@@ -119,7 +119,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Config update error:', error);
     return json(
       {

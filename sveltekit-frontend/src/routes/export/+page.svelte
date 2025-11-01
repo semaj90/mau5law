@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
   import TooltipContent from '$lib/components/ui/TooltipContent.svelte';
   import TooltipTrigger from '$lib/components/ui/TooltipTrigger.svelte';
@@ -37,7 +37,7 @@
   async function exportData() {
     exportLoading = true;
     exportError = null;
-    exportSuccess = false;
+    exportSuccess = $state(false);
     try {
       const exportRequest = {
         format,
@@ -81,7 +81,7 @@
       console.error('Export failed:', error);
       exportError = error instanceof Error ? error.message : 'Export failed';
     } finally {
-      exportLoading = false;
+      exportLoading = $state(false);
     }
   }
   function toggleCaseSelection(caseId: string) {
@@ -195,7 +195,7 @@
             </div>
             {#if availableCases.length > 0}
               <div class="space-y-4">
-                {#each availableCases as caseItem}
+                {#each Array.isArray(availableCases) ? availableCases : [] as caseItem}
                   <label class="space-y-4">
                     <input
                       type="checkbox"

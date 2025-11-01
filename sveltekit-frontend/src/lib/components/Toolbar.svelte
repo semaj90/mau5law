@@ -2,11 +2,8 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 	// defensive import of the canvas module (works whether it's named or default)
 	import * as canvasModule from "../stores/canvas";
-
 	const toolbarStore = (canvasModule as any).toolbarStore ?? (canvasModule as any).default ?? null;
-
 	const dispatch = createEventDispatcher();
-
 	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)
 	const tools = [
 		{ id: 'select', icon: '🖱️', label: 'Select', category: 'selection' },
@@ -16,28 +13,24 @@
 		{ id: 'circle', icon: '◯', label: 'Circle', category: 'shapes' },
 		{ id: 'draw', icon: '🎨', label: 'Draw', category: 'drawing' }
 	];
-
 	const formatActions = [
 		{ id: 'bold', icon: 'B', label: 'Bold' },
 		{ id: 'italic', icon: 'I', label: 'Italic' },
 		{ id: 'underline', icon: 'U', label: 'Underline' },
 		{ id: 'strikethrough', icon: 'S', label: 'Strikethrough' }
 	];
-
 	const alignActions = [
 		{ id: 'left', icon: '⟵', label: 'Align Left' },
 		{ id: 'center', icon: '↔', label: 'Align Center' },
 		{ id: 'right', icon: '⟶', label: 'Align Right' }
 	];
-
 	// sensible defaults so component compiles standalone
 	let selectedTool = 'select';
 	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
 	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
-	let canUndo = false;
-	let canRedo = false;
+	let canUndo = $state(false);
+	let canRedo = $state(false);
 	let zoom = 100;
-
 	// subscribe to toolbarStore if available
 	onMount(() => {
 		if (toolbarStore && typeof toolbarStore.subscribe === 'function') {
@@ -52,14 +45,12 @@
 			return unsub;
 		}
 	});
-
 	function selectTool(toolId: string) {
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({ ...state, selectedTool: toolId }));
 		}
 		dispatch('change', { tool: toolId });
 	}
-
 	function toggleFormatting(formatType: string) {
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
@@ -72,7 +63,6 @@
 		}
 		dispatch('change', { type: formatType, value: !(formatting as any)[formatType] });
 	}
-
 	function setAlignment(alignment: string) {
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
@@ -85,7 +75,6 @@
 		}
 		dispatch('change', { alignment });
 	}
-
 	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
 		const target = event.target as HTMLInputElement | null;
 		const color = target?.value ?? (type === 'color' ? '#000000' : '#ffffff');
@@ -107,7 +96,6 @@
 		}
 		dispatch('change', { type, color });
 	}
-
 	function handleFontSizeChange(event: Event) {
 		const target = event.target as HTMLInputElement | null;
 		const fontSize = target ? parseInt(target.value, 10) || formatting.fontSize : formatting.fontSize;
@@ -122,7 +110,6 @@
 		}
 		dispatch('change', { fontSize });
 	}
-
 	function handleStrokeWidthChange(event: Event) {
 		const target = event.target as HTMLInputElement | null;
 		const strokeWidth = target ? parseInt(target.value, 10) || drawing.strokeWidth : drawing.strokeWidth;
@@ -137,11 +124,9 @@
 		}
 		dispatch('change', { strokeWidth });
 	}
-
 	function handleAction(action: string) {
 		dispatch('change', { action });
 	}
-
 	function handleZoom(delta: number) {
 		const newZoom = Math.max(10, Math.min(500, zoom + delta));
 		if (toolbarStore?.update) {
@@ -150,12 +135,11 @@
 		dispatch('change', { zoom: newZoom });
 	}
 </script>
-
 <div class="toolbar-container container mx-auto px-4" role="toolbar" aria-label="Canvas tools">
 	<!-- Tool Selection -->
 	<div class="toolbar-section container mx-auto px-4">
 		<div class="tool-group container mx-auto px-4">
-			{#each tools as tool}
+			{#each Array.isArray(tools) ? tools : [] as tool}
 				<button
 					class="tool-button container mx-auto px-4"
 					class:active={selectedTool === tool.id}
@@ -172,7 +156,7 @@
 	<!-- Text Formatting -->
 	<div class="toolbar-section container mx-auto px-4">
 		<div class="tool-group container mx-auto px-4">
-			{#each formatActions as action}
+			{#each Array.isArray(formatActions) ? formatActions : [] as action}
 				<button
 					class="format-button container mx-auto px-4"
 					class:active={(formatting as any)[action.id]}
@@ -186,7 +170,7 @@
 			{/each}
 		</div>
 		<div class="tool-group container mx-auto px-4">
-			{#each alignActions as action}
+			{#each Array.isArray(alignActions) ? alignActions : [] as action}
 				<button
 					class="align-button container mx-auto px-4"
 					class:active={formatting.textAlign === action.id}
@@ -298,7 +282,6 @@
 		</div>
 	</div>
 </div>
-
 <style>
 	/* @unocss-include */
 	.toolbar-container {
@@ -436,4 +419,3 @@
 		}
 	}
 </style>
-

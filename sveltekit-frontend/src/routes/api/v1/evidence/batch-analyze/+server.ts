@@ -70,7 +70,7 @@ type AnalysisResult = {
   recommendations?: string[];
   cross_references?: string[];
   timeline_events?: TimelineEvent[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type IndividualResult = {
@@ -421,7 +421,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Log raw error for diagnostics (keeps type-safety)
     console.error('Batch analysis failed:', err);
 

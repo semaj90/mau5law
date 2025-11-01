@@ -45,7 +45,7 @@ type ClickedResult = {
   id: string;
   score?: number;
   // allow extra fields from stored click payloads
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type QueryVectorRow = {
@@ -58,7 +58,7 @@ type QueryVectorRow = {
 };
 
 // small helper to stringify unknown errors
-function formatError(error: unknown): string {
+function formatError(error: any): string {
   return error instanceof Error ? error.message : String(error ?? 'Unknown error');
 }
 
@@ -71,7 +71,7 @@ export class DocumentUpdateLoop {
   private textSplitter: RecursiveCharacterTextSplitter;
   // Placeholder for the actual queue
   private updateQueue: Array<{ documentId: string; content?: string }> = [];
-  private isProcessing: boolean = false;
+  private isProcessing: boolean = $state(false);
   private lastProcessedTimestamp: string | undefined;
   private errorCount: number = 0;
 
@@ -143,7 +143,7 @@ export class DocumentUpdateLoop {
         `📝 Document change detected: ${documentId} (priority: ${priority}, similarity: ${similarity.toFixed(3)})`
       );
       return change;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Change detection failed:', formatError(error));
       throw error;
     }
@@ -186,7 +186,7 @@ export class DocumentUpdateLoop {
         }
       }
       return affectedChunks;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to detect affected chunks:', formatError(error));
       return []; // Return empty array on error
     }
@@ -268,7 +268,7 @@ export class DocumentUpdateLoop {
 
       console.log(`✅ Re-embedding complete: ${chunks.length} chunks in ${processingTime}ms`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Re-embedding failed:', formatError(error));
       throw error;
     }
@@ -319,7 +319,7 @@ export class DocumentUpdateLoop {
       }
       console.log(`✅ Re-ranked ${rerankingJobs.length} affected queries`);
       return rerankingJobs;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Re-ranking failed:', formatError(error));
       return [];
     }
@@ -376,7 +376,7 @@ export class DocumentUpdateLoop {
         newResults: newSearchResults,
         improvement: improvement,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to re-rank single query ${queryRecord.id}:`, formatError(error));
       return null;
     }

@@ -7,9 +7,7 @@
   import * as Tooltip from 'bits-ui/components/tooltip'; // Tooltip primitives
   // Use named UI primitives from bits-ui where available (avoid default vs named export mismatch)
   import { Button, Textarea } from 'bits-ui';
-
   import type { ChatMessage, MessageAnalysis } from '$lib/types/ai-chat';
-
   // Local UI type: ChatMessage plus a required `id` used by the UI (each block key)
   // and making confidence/tokensPerSecond optional as they are not always present.
   type UIMessage = ChatMessage & {
@@ -18,7 +16,6 @@
     tokensPerSecond?: number; // Make optional
     error?: boolean; // Added for consistency with error handling
   };
-
   // Local definition for RAGContext to include: 'summary'
   interface LocalRAGContext {
     summary: string | null;
@@ -26,7 +23,6 @@
     query?: string;
     // Add other properties of RAGContext if known and needed locally
   }
-
   // Replace legacy `export let` with runes-compatible $props() destructuring
   type Props = {
     caseId?: string;
@@ -36,7 +32,6 @@
     showAnalysisPanel?: boolean;
     maxMessages?: number;
   };
-
   let {
     caseId = '',
     userId = '',
@@ -45,7 +40,6 @@
     showAnalysisPanel = true,
     maxMessages = 100,
   } = $props<Props>();
-
   // Component state using $state runes
   let chatContainer = $state<HTMLDivElement | null>(null);
   let messageInput = $state<any>(null); // Changed type from HTMLTextAreaElement | null to any
@@ -89,16 +83,16 @@
         }
       };
       wsConnection.onclose = () => {
-        isConnected = false;
+        isConnected = $state(false);
         console.log('❌ Enhanced AI Chat disconnected');
       };
       wsConnection.onerror = error => {
         console.error('❌ WebSocket error:', error);
-        isConnected = false;
+        isConnected = $state(false);
       };
     } catch (error) {
       console.error('Failed to initialize connection', error);
-      isConnected = false;
+      isConnected = $state(false);
       wsConnection = null;
     }
   }
@@ -111,7 +105,7 @@
       webgpuAccelerator = { initialized: true };
     } catch (error) {
       console.warn('WebGPU not available:', error);
-      enableWebGPU = false;
+      enableWebGPU = $state(false);
     }
   }
   // Handle WebSocket messages
@@ -134,7 +128,6 @@
       tokensPerSecond,
     } as UIMessage;
   }
-
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
       case 'message':
@@ -172,11 +165,10 @@
           ];
           streamingResponse = '';
         }
-        isTyping = false;
+        isTyping = $state(false);
         break;
     }
   }
-
   // Helper to send via HTTP (extracted to avoid duplication)
   async function sendViaHttp(messageToSend: string) {
     try {
@@ -185,7 +177,6 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [{ role: 'user', content: messageToSend }] }),
       });
-
       // Safely parse response body (handle non-JSON or empty bodies without throwing)
       let data: any = {};
       const contentType = response.headers.get('content-type') || '';
@@ -204,7 +195,6 @@
           data = {};
         }
       }
-
       if (response.ok && data?.message) {
         messages = [
           ...messages,
@@ -236,10 +226,9 @@
         } as UIMessage,
       ];
     } finally {
-      isTyping = false;
+      isTyping = $state(false);
     }
   }
-
   async function sendMessage() {
     // allow fallback to HTTP when WS is not connected; only block empty messages or when already typing
     if (!currentMessage.trim() || isTyping) return;
@@ -254,7 +243,6 @@
     const messageToSend = currentMessage;
     currentMessage = '';
     isTyping = true;
-
     // Try WebSocket first; if send fails, fall back to HTTP
     if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
       try {
@@ -277,7 +265,6 @@
     } else {
       await sendViaHttp(messageToSend);
     }
-
     // Auto-scroll to bottom
     await tick();
     if (chatContainer) {
@@ -288,7 +275,6 @@
       }
     }
   }
-
   // Handle keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -296,7 +282,6 @@
       sendMessage();
     }
   }
-
   // Clear chat
   function clearChat() {
     messages = [];
@@ -304,7 +289,6 @@
     ragContext = null;
     streamingResponse = '';
   }
-
   // Track user attention if enabled
   function trackUserAttention() {
     if (!enableAttentionTracking || !browser) return;
@@ -313,7 +297,6 @@
       lastActivity: Date.now(),
     };
   }
-
   // Safe timestamp formatter (handles Date or ISO string or number)
   function formatTimestamp(ts: Date | string | number | undefined | null) {
     if (!ts) return '';
@@ -327,7 +310,6 @@
     }
     return isNaN(d.getTime()) ? '' : d.toLocaleTimeString();
   }
-
   // Initialize on mount
   $effect(() => {
     (async () => {
@@ -360,7 +342,6 @@
     }
   });
 </script>
-
 <div class="enhanced-ai-chat w-full max-w-6xl mx-auto nes-container is-dark with-title">
   <p class="title">Enhanced Legal AI Assistant</p>
   <!-- Main Chat Interface -->
@@ -387,7 +368,6 @@
             </div>
           </div>
         </div>
-
         <div class="flex items-center gap-2">
           {#if showAnalysisPanel}
             <Tooltip.Root>
@@ -401,7 +381,6 @@
               </Tooltip.Content>
             </Tooltip.Root>
           {/if}
-
           <Button class="nes-btn is-small" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">Clear</Button>
         </div>
       </div>
@@ -433,8 +412,7 @@
                       >{Math.round(message.tokensPerSecond)} tok/s</span
                     >
                   {/if}
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {/each}
@@ -445,8 +423,7 @@
               <div class="whitespace-pre-wrap nes-text">{streamingResponse}</div>
               <div class="w-2 h-4 bg-current animate-pulse inline-block ml-1"></div>
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if isTyping && !streamingResponse}
           <div class="flex justify-start">
             <div class="max-w-[80%] p-3 rounded-lg nes-container">
@@ -460,8 +437,7 @@
                 </div>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- Input Area -->
@@ -491,8 +467,7 @@
           <span>Speed: {processingMetrics.tokensPerSecond} tok/s</span>
           <span>GPU: {processingMetrics.gpuUtilization}%</span>
           <span>Memory: {processingMetrics.memoryUsage}MB</span>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Analysis Dialog -->
@@ -515,16 +490,14 @@
                   >Confidence: {Math.round((currentAnalysis.confidence || 0) * 100)}%</span
                 >
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if ragContext}
             <div>
               <h4 class="font-medium mb-2 nes-text is-primary">Relevant Context</h4>
               <div class="text-sm nes-text is-disabled">
                 <p>{ragContext.summary || 'No relevant context found'}</p>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <Dialog.Footer class="nes-container is-dark">
           <Button class="nes-btn is-small" variant="ghost">Close</Button>
@@ -533,7 +506,6 @@
     </Dialog.Root>
   {/if}
 </div>
-
 <style>
   .enhanced-ai-chat {
     font-family:

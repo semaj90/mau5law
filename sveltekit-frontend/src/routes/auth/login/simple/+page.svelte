@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-  let { data, form  }: { data, form : unknown } = $props();
+  let { data, form  }: { data, form : any } = $props();
   let isAutoLoggingIn = $state(false);
   // Check for registration success message
   let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true');
@@ -45,12 +45,12 @@ https://svelte.dev/e/js_parse_error -->
           'Content-Type': 'application/json',
         }
       });
-      const result = await (response as { json?: unknown }).json();
+      const result = await (response as { json?: any }).json();
       console.log('📨 Auto-login response:', result);
-      if ((result as { success?: unknown; redirectTo?: unknown; error?: unknown }).success) {
+      if ((result as { success?: any; redirectTo?: any; error?: any }).success) {
         console.log('✅ Auto-login successful, redirecting...');
         // Redirect to dashboard
-        window.location.href = (result as { success?: unknown; redirectTo?: unknown; error?: unknown }).redirectTo || '/dashboard';
+        window.location.href = (result as { success?: any; redirectTo?: any; error?: any }).redirectTo || '/dashboard';
       } else {
         // Fall back to auto-fill if auto-login fails
         console.warn.error);
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       // Fall back to auto-fill
       autoLoginDemo();
     } finally {
-      isAutoLoggingIn = false;
+      isAutoLoggingIn = $state(false);
     }
   }
 </script>

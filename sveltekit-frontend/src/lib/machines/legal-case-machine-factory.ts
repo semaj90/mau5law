@@ -108,7 +108,7 @@ export function createLegalCaseMachine(_options: CaseMachineOptions) {
  * Svelte integration helper - use with $page params
  * Example usage in +page.svelte: *
  * ```svelte
- * <script>
+ * <script lang="ts">
  *   import { page } from '$app/stores';
  *   import { useMachine } from '@xstate/svelte';
  *   import { createLegalCaseMachineForRoute } from '$lib/machines/legal-case-machine-factory';

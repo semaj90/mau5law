@@ -32,7 +32,7 @@ export interface OrchestrationEvent {
 class WorkflowOrchestrator {
   private workflows: Map<string, WorkflowInstance> = new Map();
   private eventQueue: OrchestrationEvent[] = [];
-  private running = false;
+  private running = $state(false);
   private subscribers: Map<string, ((_event: OrchestrationEvent) => void)[]> = new Map();
   constructor() {
     console.log('🎭 Workflow Orchestrator initialized');

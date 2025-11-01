@@ -5,7 +5,7 @@
 import type { APIResponse } from '$lib/types/api-schemas';
 
 // new helper to safely extract messages from unknown errors
-function extractErrorMessage(err: unknown): string {
+function extractErrorMessage(err: any): string {
   // Error instance
   if (err instanceof Error) return err.message;
   // string error
@@ -15,7 +15,7 @@ function extractErrorMessage(err: unknown): string {
     typeof err === 'object' &&
     err !== null &&
     'message' in err &&
-    typeof (err as { message?: unknown }).message === 'string'
+    typeof (err as { message?: any }).message === 'string'
   ) {
     return (err as { message: string }).message;
   }
@@ -31,7 +31,7 @@ export async function fetchSSRData<T>(
     params?: Record<string, string>;
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     // use unknown so callers must be explicit; handle FormData separately
-    body?: unknown;
+    body?: any;
   }
 ): Promise<APIResponse<T>> {
   const { params, method = 'GET', body } = options || {};
@@ -97,11 +97,11 @@ export function createSSRStore<T>(
       } else {
         error = response.error || 'Request failed';
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       error = extractErrorMessage(err) || 'Unknown error';
       console.error('SSR Store Error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   };
   // Auto-refresh setup
@@ -157,7 +157,7 @@ export async function submitForm<T>(
       onError(response.error || 'Form submission failed');
     }
     return response;
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorMsg = extractErrorMessage(err) || 'Network error';
     if (onError) {
       onError(errorMsg);
@@ -186,7 +186,7 @@ export async function loadBatchData<T extends Record<string, unknown>>(
 /**
  * Type-safe data validator for runtime checks
  */
-export function validateSSRData<T>(data: unknown, validator: (data: unknown) => data is T): T | null {
+export function validateSSRData<T>(data: any, validator: (data: any) => data is T): T | null {
   return validator(data) ? data : null;
 }
 /**
@@ -204,7 +204,7 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
     }
     if (!query.trim()) {
       results = [];
-      searching = false;
+      searching = $state(false);
       return;
     }
     searching = true;
@@ -216,7 +216,7 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
         console.error('Search error:', error);
         results = [];
       } finally {
-        searching = false;
+        searching = $state(false);
       }
     }, delay);
   };
@@ -264,13 +264,13 @@ export function createOptimisticStore<T>(initialData: T) {
     try {
       const result = await updateFn();
       data = result;
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Revert to previous data on error
       data = previousData;
       error = extractErrorMessage(err) || 'Update failed';
       throw err;
     } finally {
-      pending = false;
+      pending = $state(false);
     }
   };
   return {

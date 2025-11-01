@@ -11,12 +11,9 @@
    * - Bitmap HMM-SOM prediction integration
    */
   import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
-
   type BitmapHMMSOMPredictorType = InstanceType<typeof BitmapHMMSOMPredictor>;
-
   // Quality tier definitions
   export type QualityTier = '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
-
   export interface QualityConfig {
     tier: QualityTier;
     targetResolution number;
@@ -28,7 +25,6 @@
     particleEffects: boolean;
     advancedLighting: boolean;
   }
-
   export interface SystemMetrics {
     fps: number;
     frameTime: number;
@@ -37,17 +33,14 @@
     gpuUtilization number;
     drawCalls: number;
   }
-
   interface Props {
-    content: unknown;
+    content: any;
     assetType?: string;
     priority?: number;
     predictive?: boolean;
     className?: string;
   }
-
   let { content, assetType = 'general', priority = 50, predictive = false, className = '' }: Props = $props();
-
   // Reactive state using Svelte 5 runes
   let currentQuality = $state<QualityConfig>({
     tier: '8-BIT_NES',
@@ -60,7 +53,6 @@
     particleEffects: false,
     advancedLighting: false,
   });
-
   let systemMetrics = $state<SystemMetrics>({
     fps: 60,
     frameTime: 16.67,
@@ -69,33 +61,27 @@
     gpuUtilization 30,
     drawCalls: 100,
   });
-
   let isMonitoring = $state(false);
   let canvasElement = $state<HTMLCanvasElement | undefined>(undefined);
   let renderContext = $state<CanvasRenderingContext2D | WebGLRenderingContext | null>(null);
   let webgpuDevice = $state<GPUDevice | null>(null);
   let hmmPredictor = $state<BitmapHMMSOMPredictorType | null>(null);
-
   // Performance monitoring
   let frameCount = 0;
   let lastFrameTime = 0;
   let fpsHistory: number[] = [];
   let monitoringInterval: ReturnType<typeof setInterval> | undefined;
   let qualityAdjustmentTimer: ReturnType<typeof setInterval> | undefined;
-
   $effect(() => {
     return () => {
       stopPerformanceMonitoring();
     };
   });
-
   async function initializeRenderingEngine(): Promise<void> {
     console.log('🎮 Initializing Adaptive Rendering Engine...');
-
     // Initialize HMM-SOM predictor for asset prediction
     hmmPredictor = new BitmapHMMSOMPredictor();
     await hmmPredictor.initialize();
-
     // Setup WebGPU if available
     if ('gpu' in navigator) {
       try {
@@ -108,7 +94,6 @@
         console.warn('WebGPU not available:', error);
       }
     }
-
     // Initialize canvas context
     if (canvasElement) {
       renderContext = canvasElement.getContext('2d');
@@ -116,12 +101,10 @@
         console.log('✅ Canvas 2D context initialized');
       }
     }
-
     // Set initial quality based on device capabilities
     currentQuality = calculateInitialQuality();
     console.log(`🎯 Initial quality: ${currentQuality.tier}`);
   }
-
   function calculateInitialQuality(): QualityConfig {
     // Detect device capabilities
     const isHighEnd = navigator.hardwareConcurrency > 4 && (navigator as any).deviceMemory > 4;
@@ -188,7 +171,7 @@
     requestAnimationFrame(frameTimeCallback);
   }
   function stopPerformanceMonitoring(): void {
-    isMonitoring = false;
+    isMonitoring = $state(false);
     if (monitoringInterval) clearInterval(monitoringInterval);
     if (qualityAdjustmentTimer) clearInterval(qualityAdjustmentTimer);
   }
@@ -426,7 +409,6 @@
       }, 10);
     });
   }
-
   async function loadTextureChunks(assetKey: string, chunkSize: number): Promise<string> {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -443,7 +425,6 @@
       isMonitoring,
     };
   }
-
   // Quality control API
   function setQuality(tier: QualityTier) {
     switch (tier) {
@@ -459,13 +440,11 @@
     }
     applyQualityChanges();
   }
-
   // Expose methods via props for parent component access
   let api = $derived({
     getPerformanceMetrics,
     setQuality,
   });
-
   // Initialize on mount
   $effect(() => {
     (async () => {
@@ -474,7 +453,6 @@
     })();
   });
 </script>
-
 <div class="adaptive-rendering-container {className}">
   <canvas bind:this={canvasElement} class="rendering-canvas {currentQuality.tier.toLowerCase().replace(/_/g, '-')}"
   ></canvas>
@@ -489,17 +467,14 @@
         <span class="memory">MEM: {systemMetrics.memoryUsage}%</span>
         <span class="cache">CACHE: {systemMetrics.cacheHitRate.toFixed(0)}%</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- WebGPU Status -->
   {#if webgpuDevice}
-    <div class="webgpu-indicator">⚡ WebGPU</div>
-  {/if}
+    <div class="webgpu-indicator">⚡ WebGPU{/if}
 </div>
-
 <style>
   .adaptive-rendering-container {
-    position relative;
+    position: relative;
     display: inline-block;
     border-radius: 4px;
     overflow: hidden;
@@ -517,7 +492,7 @@
     filter: none;
   }
   .quality-indicator {
-    position absolute;
+    position: absolute;
     top: 4px;
     right: 4px;
     display: flex;
@@ -551,7 +526,7 @@
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
   }
   .webgpu-indicator {
-    position absolute;
+    position: absolute;
     bottom: 4px;
     left: 4px;
     font-size: 8px;
@@ -596,4 +571,3 @@
     }
   }
 </style>
-

@@ -6,7 +6,6 @@ import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
-
 export interface SOMConfig {
   gridSize: { width: number; height: number };
   learningRate: number;
@@ -64,7 +63,7 @@ export class SOMNeuralNetwork {
   private inputTensor: tf.Tensor | null = null;
   private weightTensor: tf.Tensor | null = null;
   private trainingHistory: SOMTrainingMetrics[] = [];
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private gpuBackend: 'webgl' | 'webgpu' | 'cpu' = 'cpu';
   private cache: MultiLayerCache | null = null;
   constructor(config: SOMConfig) {

@@ -8,11 +8,8 @@
   import { createEventDispatcher } from 'svelte';
   import { generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';
-
   // Props (use export let pattern)
-  export let maxFiles: number = 10;
-  export let maxFileSize: number = 100 * 1024 * 1024; // 100MB
-  export let acceptedTypes: string[] = [
+  let { maxFiles = 10, maxFileSize = 100 * 1024 * 1024, acceptedTypes = [
     'image/*',
     'application/pdf',
     'text/plain',
@@ -21,12 +18,14 @@
     'video/mp4',
     'audio/mpeg',
     'audio/wav'
-  ];
-  export let enableGPUProcessing: boolean = true;
-  export let enableAIAnalysis: boolean = true;
-
+  ], enableGPUProcessing = true, enableAIAnalysis = true } = $props<{
+    maxFiles?: number;
+    maxFileSize?: number;
+    acceptedTypes?: string[];
+    enableGPUProcessing?: boolean;
+    enableAIAnalysis?: boolean;
+  }>();
   const dispatch = createEventDispatcher();
-
   // Types
   interface EvidenceFile {
     id: string;
@@ -53,7 +52,6 @@
     processing: number;
     averageTime: number;
   }
-
   // State
   let dragActive = false;
   let files: EvidenceFile[] = [];
@@ -65,7 +63,6 @@
     processing: 0,
     averageTime: 0,
   };
-
   // Drag and drop handlers (unchanged logic, kept for clarity)
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
@@ -85,7 +82,6 @@
       addFiles(Array.from(e.dataTransfer.files));
     }
   }
-
   // File selection handler
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -94,7 +90,6 @@
       input.value = ''; // Reset input
     }
   }
-
   // Add files to processing queue
   function addFiles(newFiles: File[]) {
     const validFiles = newFiles.filter(file => {
@@ -126,7 +121,6 @@
       }
       return true;
     });
-
     // Add valid files
     const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({
       id: `evidence_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
@@ -145,7 +139,6 @@
       processFiles();
     }
   }
-
   // Determine file type
   function getFileType(mimeType: string): 'document' | 'image' | 'video' | 'audio' {
     if (mimeType.startsWith('image/')) return 'image';
@@ -153,14 +146,13 @@
     if (mimeType.startsWith('audio/')) return 'audio';
     return 'document';
   }
-
   // Process all pending files
   async function processFiles() {
     if (isProcessing) return;
     isProcessing = true;
     const pendingFiles = files.filter(f => f.status === 'pending');
     if (pendingFiles.length === 0) {
-      isProcessing = false;
+      isProcessing = $state(false);
       return;
     }
     processingStats.totalFiles = files.length;
@@ -180,10 +172,9 @@
     processingStats.completed = files.filter(f => f.status === 'completed').length;
     processingStats.failed = files.filter(f => f.status === 'error').length;
     processingStats.processing = 0;
-    isProcessing = false;
+    isProcessing = $state(false);
     dispatch('update', { files, stats: processingStats });
   }
-
   // Process individual file
   async function processFile(evidenceFile: EvidenceFile) {
     try {
@@ -232,7 +223,6 @@
       });
     }
   }
-
   // Upload file to server
   async function uploadFile(evidenceFile: EvidenceFile): Promise<any> {
     const formData = new FormData();
@@ -247,7 +237,6 @@
     }
     return await response.json();
   }
-
   // Extract metadata from file
   async function extractMetadata(evidenceFile: EvidenceFile): Promise<any> {
     // Simulate metadata extraction
@@ -274,7 +263,6 @@
     }
     return extractedMetadata;
   }
-
   // Perform AI analysis using tensor service
   async function performAIAnalysis(evidenceFile: EvidenceFile): Promise<any> {
     if (!enableGPUProcessing) {
@@ -321,16 +309,14 @@
       };
     }
   }
-
   // Remove file
   function removeFile(id: string) {
     files = files.filter(f => f.id !== id);
   }
-
   // Clear all files
   function clearAll() {
     files = [];
-    isProcessing = false;
+    isProcessing = $state(false);
     processingStats = {
       totalFiles: 0,
       completed: 0,
@@ -340,7 +326,6 @@
     };
     dispatch('cleared');
   }
-
   // Utility functions
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -370,7 +355,6 @@
     }
   }
 </script>
-
 <div class="evidence-upload">
   <!-- Upload Zone -->
   <div
@@ -456,11 +440,9 @@
           <div class="stat-item">
             <div class="stat-value">{(processingStats.averageTime / 1000).toFixed(1)}s</div>
             <div class="stat-label">Avg Time</div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- File List -->
   {#if files.length > 0}
     <div class="file-list" in:fade={{ duration: 300 }}>
@@ -487,8 +469,7 @@
                   class="progress-fill"
                   style="width: {file.progress}%; background-color: {getStatusColor(file.status)}"
                 ></div>
-              </div>
-            {/if}
+              {/if}
             <div class="file-status">
               <span class="status-text" style="color: {getStatusColor(file.status)}">
                 {file.status === 'pending'
@@ -508,24 +489,20 @@
             </div>
             {#if file.metadata?.tags && file.metadata.tags.length > 0}
               <div class="file-tags">
-                {#each file.metadata.tags as tag}
+                {#each Array.isArray(file.metadata.tags) ? file.metadata.tags : [] as tag}
                   <span class="tag">{tag}</span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
             {#if file.metadata?.aiAnalysis}
               <div class="ai-analysis">
                 <strong>🧠 AI Analysis:</strong>
                 {file.metadata.aiAnalysis}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .evidence-upload {
     max-width: 800px;
@@ -746,7 +723,7 @@
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .file-status {
     margin: 0.5rem 0;
@@ -802,5 +779,3 @@
     }
   }
 </style>
-
-

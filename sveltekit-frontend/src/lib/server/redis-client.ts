@@ -58,7 +58,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
     retryStrategy: (times: number) => Math.min(times * 250, 4000),
-    reconnectOnError: (err: unknown) => {
+    reconnectOnError: (err: any) => {
       const msg = err instanceof Error ? err.message : String(err ?? '');
       return msg.includes('READONLY') || msg.includes('ECONNRESET');
     },
@@ -76,8 +76,8 @@ type RedisLike = IORedis & {
   connect?: () => Promise<void>;
   quit?: () => Promise<void>;
   disconnect?: () => void;
-  on?: (event: string, listener: (...args: unknown[]) => void) => void;
-  off?: (event: string, listener: (...args: unknown[]) => void) => void; // <--- added
+  on?: (event: string, listener: (...args: any[]) => void) => void;
+  off?: (event: string, listener: (...args: any[]) => void) => void; // <--- added
 };
 
 export function createRedisClient(options?: RedisClientOptions): IORedis {
@@ -102,7 +102,7 @@ redisLike.on?.('connect', () => {
   console.log(`[redis] connected to ${host}`);
 });
 
-redisLike.on?.('error', (err: unknown) => {
+redisLike.on?.('error', (err: any) => {
   const message = err instanceof Error ? err.message : String(err);
   if (message.includes('NOAUTH')) {
     console.warn('[redis] authentication required. Supply REDIS_URL with credentials or REDIS_PASSWORD.');
@@ -118,14 +118,14 @@ redisLike.on?.('end', () => {
 // small helper: wait for a specific event or timeout
 function waitForEvent(obj: RedisLike, event: string, timeoutMs = 5000): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    let settled = false;
+    let settled = $state(false);
     const onEvent = () => {
       if (settled) return;
       settled = true;
       cleanup();
       resolve();
     };
-    const onError = (err: unknown) => {
+    const onError = (err: any) => {
       if (settled) return;
       settled = true;
       cleanup();
@@ -179,7 +179,7 @@ export async function ensureRedisReady(timeoutMs = 5000): Promise<void> {
           await waitForEvent(redisLike, 'ready', timeoutMs);
         }
         return;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = err instanceof Error ? err.message : String(err);
         // Common benign race: "Redis is already connecting/connected"
         if (msg.includes('already connecting') || msg.includes('already connected')) {
@@ -200,7 +200,7 @@ export async function ensureRedisReady(timeoutMs = 5000): Promise<void> {
         console.error('[redis] connect failed', msg);
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error(
       '[redis] ensure ready failed (unexpected)',
       err instanceof Error ? err.message : String(err)
@@ -214,7 +214,7 @@ export async function shutdownRedis(): Promise<void> {
     if (typeof redisLike.quit === 'function') {
       await redisLike.quit();
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn(
       '[redis] graceful shutdown failed, forcing disconnect',
       err instanceof Error ? err.message : String(err)

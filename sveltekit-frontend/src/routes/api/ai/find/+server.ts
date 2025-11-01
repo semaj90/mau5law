@@ -22,14 +22,14 @@ import { copilotOrchestrator, generateMCPPrompt, commonMCPQueries, semanticSearc
 // Define the types locally since they're not exported from mcp-helpers
 export interface MCPContextAnalysis {
   query?: string
-  context?: unknown
+  context?: any
   suggestions?: string[]
   confidence?: number
-  stackAnalysis?: unknown
-  recommendations?: unknown[]
-  bestPractices?: unknown[]
-  integrationSuggestions?: unknown[]
-  [key: string]: unknown; // Allow additional properties
+  stackAnalysis?: any
+  recommendations?: any[]
+  bestPractices?: any[]
+  integrationSuggestions?: any[]
+  [key: string]: any; // Allow additional properties
 }
 export interface AutoMCPSuggestion {
   type: 'enhancement' | 'correction' | 'alternative' | 'ai-integration' | 'performance' | 'ui-enhancement'
@@ -40,7 +40,7 @@ export interface AutoMCPSuggestion {
   priority?: string
   suggestion?: string
   implementation?: string
-  [key: string]: unknown; // Allow additional properties
+  [key: string]: any; // Allow additional properties
 }
 // Mock database imports for testing without DB connection
 // { db } from '$lib/server/db'

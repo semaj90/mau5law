@@ -4,7 +4,7 @@
   import { onMount } from 'svelte';
   import { logCustomError } from '$lib/vite/vscode-error-logger';
   import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension';
-  let errorLog: unknown[] = $state([]);
+  let errorLog: any[] = $state([]);
   let errorStats = $state({ total: 0, errors: 0, warnings: 0, info: 0 });
   let isWatching = $state(false);
   // Demo error generators
@@ -83,7 +83,7 @@
   function stopWatching() {
     if (isWatching) {
       vscodeIntegration.stopWatching();
-      isWatching = false;
+      isWatching = $state(false);
       console.log('⏹️ Stopped watching for error log changes');
     }
   }
@@ -213,7 +213,7 @@
           </div>
         {:else}
           <div class="divide-y divide-gray-200">
-            {#each errorLog as error}
+            {#each Array.isArray(errorLog) ? errorLog : [] as error}
               <div class="p-4 hover:bg-gray-50 transition-colors">
                 <div class="flex items-start space-x-3">
                   <div class="text-xl">{getErrorIcon(error.level)}</div>

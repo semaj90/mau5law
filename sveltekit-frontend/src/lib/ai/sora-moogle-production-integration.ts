@@ -73,7 +73,7 @@ export interface MoogleVisualizationConfig {
  */
 export class ProductionSoraService {
   private cache: Map<string, SoraTraversalPath[]> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     if (browser) {
       this.initialize();

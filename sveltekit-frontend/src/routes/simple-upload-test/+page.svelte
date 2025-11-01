@@ -8,7 +8,7 @@
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
 
-  function handleUploadComplete(result: unknown) {
+  function handleUploadComplete(result: any) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
@@ -44,7 +44,7 @@
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
 </script>
@@ -81,7 +81,7 @@
     {#if searchResults.length > 0}
       <div class="space-y-3">
         <h3 class="font-medium">Search Results:</h3>
-        {#each searchResults as result}
+        {#each Array.isArray(searchResults) ? searchResults : [] as result}
           <div class="border rounded-lg p-4">
             <div class="font-medium">
               {(

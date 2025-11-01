@@ -138,7 +138,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       } else {
         console.warn('NLP service returned non-ok status:', nlpResponse.status);
       }
-    } catch (vectorError: unknown) {
+    } catch (vectorError: any) {
       console.warn('Vector search failed:', vectorError);
       // Continue without vector recommendations
     }
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       success: true,
       recommendations: recommendations.sort((a, b) => b.confidence - a.confidence).slice(0, 10),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error generating recommendations:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json({ error: 'Failed to generate recommendations', message }, { status: 500 });

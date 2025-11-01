@@ -9,7 +9,7 @@ type GenerationResult = {
   success: boolean;
   provider: string;
   model?: string;
-  response?: unknown;
+  response?: any;
   error?: string;
   executionTime?: number;
   troubleshooting?: string[];
@@ -17,7 +17,7 @@ type GenerationResult = {
 
 // safe extractor for Ollama models response
 type OllamaModelsResponse = { models?: Array<{ name?: string }> };
-function extractModelNames(data: unknown): string[] {
+function extractModelNames(data: any): string[] {
   if (typeof data !== 'object' || data === null) return [];
   const d = data as OllamaModelsResponse;
   if (!Array.isArray(d.models)) return [];
@@ -65,7 +65,7 @@ async function testOllamaConnection(): Promise<HealthCheckResult> {
     }
 
     return { success: true, message: 'Ollama is running but model list unavailable' };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return { success: false, message: `Ollama connection failed: ${msg}` };
   }
@@ -83,7 +83,7 @@ async function testLlamaCppConnection(): Promise<HealthCheckResult> {
       return { success: true, message: 'llama.cpp server is running' };
     }
     return { success: false, message: 'llama.cpp server not responding properly' };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return { success: false, message: `llama.cpp connection failed: ${msg}` };
   }
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async () => {
                 const raw = (await Promise.resolve(ollamaService.getAvailableModels())) as unknown;
                 if (!Array.isArray(raw)) return [];
                 return raw
-                  .map((item: unknown) => {
+                  .map((item: any) => {
                     if (typeof item === 'string') return item;
                     if (item && typeof item === 'object') {
                       const obj = item as Record<string, unknown>;
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async () => {
         const gemmaModel = hasGetGemma3Model ? String(ollamaService.getGemma3Model()) : undefined;
 
         return { available: isAvailable, models, gemmaModel };
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         return { available: false, error: msg };
       }
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async () => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Local AI health check failed:', msg);
     return json(
@@ -251,7 +251,7 @@ export const POST: RequestHandler = async ({ request }) => {
             };
           }
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         result = {
           success: false,
@@ -277,7 +277,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json(result);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return json({ success: false, error: msg }, { status: 500 });
   }

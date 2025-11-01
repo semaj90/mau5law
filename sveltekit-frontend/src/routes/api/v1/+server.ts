@@ -218,7 +218,7 @@ export const GET: RequestHandler = async ({ url }) => {
         } satisfies APIResponse<typeof data>);
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = ensureError(err);
     console.error('API v1 Error:', e);
     return json(
@@ -262,7 +262,7 @@ async function handleHealthCheck(): Promise<Response> {
             endpoint: healthEndpoint,
             lastCheck: new Date().toISOString(),
           } as HealthCheckResult;
-        } catch (error: unknown) {
+        } catch (error: any) {
           healthChecks[serviceName] = {
             status: 'error',
             error: String(error),

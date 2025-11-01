@@ -120,7 +120,7 @@ class WindowsPerformanceMonitor {
           freeMemory: Math.round(os.freemem() / 1024 / 1024),
         },
       };
-    } catch (_error: unknown) {
+    } catch (_error: any) {
       return { error: 'Failed to collect Windows metrics' };
     }
   }
@@ -187,7 +187,7 @@ class WindowsPerformanceMonitor {
           system: cpuUsage.system,
         },
       };
-    } catch (_err: unknown) {
+    } catch (_err: any) {
       return null;
     }
   }
@@ -453,7 +453,7 @@ export class ProductionLogger {
       if (this.config.file.rotate) {
         await this.handleLogRotation();
       }
-    } catch (_error: unknown) {
+    } catch (_error: any) {
       // Use console.error minimally; keep no-any usage out of signatures
       // No-op: entries were removed from buffer; re-add for retry (best effort)
     }
@@ -485,7 +485,7 @@ export class ProductionLogger {
         const rotatedFile = path.join(dirName, `${baseName}.1${extension}`);
         fs.renameSync(this.config.file.path, rotatedFile);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Safely handle unknown error values without using `any`
       if (error instanceof Error) {
         console.error('Log rotation failed:', error);
@@ -529,7 +529,7 @@ export class ProductionLogger {
           memoryTrendSize: this.metrics.memoryTrend.length,
         },
       });
-    } catch (_error: unknown) {
+    } catch (_error: any) {
       this.error('Failed to collect logger metrics', _error instanceof Error ? _error : undefined);
     }
   }

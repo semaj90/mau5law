@@ -61,7 +61,7 @@ export type PrecomputeDocument = Partial<LegalDocument> & {
 export class CHRROMPrecomputationService {
   private strategies: Map<string, PrecomputationStrategy> = new Map();
   private backgroundTimer: ReturnType<typeof setInterval> | null = null;
-  private isRunning = false;
+  private isRunning = $state(false);
 
   constructor() {
     this.initializeStrategies();
@@ -311,7 +311,7 @@ export class CHRROMPrecomputationService {
     const results: T[] = [];
     let idx = 0;
     const pool: Promise<void>[] = [];
-    const errors: unknown[] = [];
+    const errors: any[] = [];
 
     async function runNext() {
       if (idx >= promises.length) return;
@@ -373,7 +373,7 @@ export class CHRROMPrecomputationService {
       clearInterval(this.backgroundTimer);
       this.backgroundTimer = null;
     }
-    this.isRunning = false;
+    this.isRunning = $state(false);
     console.log('✅ CHR-ROM Pre-computation Service stopped');
   }
 
@@ -408,7 +408,7 @@ export class CHRROMPrecomputationService {
    * Determine whether an existing cached pattern is: "fresh" relative to the strategy frequency.
    * Expects cached object to have metadata.timestamp (ms). Returns true when cached item is recent.
    */
-  private isPatternFresh(existing: unknown, frequencyMs: number): boolean {
+  private isPatternFresh(existing: any, frequencyMs: number): boolean {
     try {
       // attempt to safely pull timestamp
       const maybeMeta = (existing as any)?.metadata;

@@ -75,7 +75,7 @@ export interface TextureProcessResult {
 export class YoRHaWebGPUMath {
   private device?: GPUDevice;
   private adapter?: GPUAdapter | null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private config: WebGPUMathConfig;
   private computePipelines = new Map<string, GPUComputePipeline>();
   constructor(config: Partial<WebGPUMathConfig> = {}) {
@@ -117,7 +117,7 @@ export class YoRHaWebGPUMath {
       this.isInitialized = true;
       console.log('YoRHa WebGPU Math initialized successfully');
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to initialize WebGPU:', error);
       return false;
     }
@@ -345,7 +345,7 @@ export class YoRHaWebGPUMath {
         executionTime: endTime - startTime,
         memoryUsed: vectorsA.length * 3 * 4 * 3, // 3 buffers
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebGPU vector operation failed:', error);
       return this.fallbackVectorAdd(vectorsA, vectorsB);
     }
@@ -405,7 +405,7 @@ export class YoRHaWebGPUMath {
         executionTime: endTime - startTime,
         memoryUsed: matricesA.length * 16 * 4 * 3, // 3 buffers
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebGPU matrix operation failed:', error);
       return this.fallbackMatrixMultiply(matricesA, matricesB);
     }
@@ -433,7 +433,7 @@ export class YoRHaWebGPUMath {
         executionTime: endTime - startTime,
         memoryUsed: nodes.length * 32, // Estimated
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebGPU layout computation failed:', error);
       return this.fallbackComputeLayout(nodes, containerSize, layoutType);
     }
@@ -456,7 +456,7 @@ export class YoRHaWebGPUMath {
         executionTime: endTime - startTime,
         memoryUsed: particles.length * 48, // Estimated
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebGPU physics simulation failed:', error);
       return this.fallbackSimulatePhysics(particles, deltaTime, gravity);
     }
@@ -659,7 +659,7 @@ export class YoRHaWebGPUMath {
         });
 
         const mipmapResult = (rawResult as MipmapChainResult) ?? {};
-        const rawLevels: unknown[] = mipmapResult.mipLevels ?? mipmapResult.mipmapLevels ?? [];
+        const rawLevels: any[] = mipmapResult.mipLevels ?? mipmapResult.mipmapLevels ?? [];
 
         let estimatedMemory = 0;
         for (const lvl of rawLevels) {
@@ -717,7 +717,7 @@ export class YoRHaWebGPUMath {
           streamingUsed: Boolean(enableStreaming),
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('processTextureWithMipmaps failed:', error);
       const processingTime = performance.now() - startTime;
       // Return a safe fallback result
@@ -756,19 +756,19 @@ interface YoRHaTextureManager {
 }
 
 // Type guards to avoid any-casts
-function isGPUTexture(x: unknown): x is GPUTexture {
+function isGPUTexture(x: any): x is GPUTexture {
   return (
     typeof x === 'object' &&
     x !== null &&
     'createView' in x &&
-    typeof (x as { createView?: unknown }).createView === 'function'
+    typeof (x as { createView?: any }).createView === 'function'
   );
 }
-function isLevelDescriptor(x: unknown): x is { width: number; height: number; bytesPerPixel?: number } {
+function isLevelDescriptor(x: any): x is { width: number; height: number; bytesPerPixel?: number } {
   return (
     typeof x === 'object' &&
     x !== null &&
-    typeof (x as { width?: unknown }).width === 'number' &&
-    typeof (x as { height?: unknown }).height === 'number'
+    typeof (x as { width?: any }).width === 'number' &&
+    typeof (x as { height?: any }).height === 'number'
   );
 }

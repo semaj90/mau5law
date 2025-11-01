@@ -1,25 +1,20 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-
   interface Props {
     variant?: 'primary' | 'secondary' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
     showLabel?: boolean;
   }
-
   let { variant = 'secondary', size = 'md', showLabel = true }: Props = $props();
-
   let isLoading = $state(false);
   let error = $state<string | null>(null);
   let selectedRole = $state<'user' | 'admin'>('user');
-
   async function handleDemoLogin(role: 'user' | 'admin') {
     try {
       isLoading = true;
       error = null;
       selectedRole = role;
-
       const response = await fetch('/api/auth/demo-login', {
         method: 'POST',
         headers: {
@@ -30,35 +25,28 @@
           role,
         }),
       });
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || 'Demo login failed');
       }
-
       const data = await response.json();
       console.log('✅ Demo login successful:', data);
-
       // Redirect to dashboard
       await goto('/dashboard');
     } catch (err) {
       error = err instanceof Error ? err.message : 'Login failed';
       console.error('[Demo Login Error]', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   // Only show in development with demo auth enabled
   const isDemoMode = import.meta.env.DEV || import.meta.env.VITE_DEV_BYPASS_AUTH === 'true';
 </script>
-
 {#if isDemoMode}
   <div class="demo-login-container">
     {#if error}
-      <div class="error-message">⚠️ {error}</div>
-    {/if}
-
+      <div class="error-message">⚠️ {error}{/if}
     <div class="button-group">
       <button
         class="demo-btn {variant} size-{size}"
@@ -75,7 +63,6 @@
           <span>Demo</span>
         {/if}
       </button>
-
       <button
         class="demo-btn {variant} size-{size}"
         onclick={() => handleDemoLogin('admin')}
@@ -92,11 +79,8 @@
         {/if}
       </button>
     </div>
-
     <p class="dev-notice">🔓 Development Mode: Demo login enabled</p>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .demo-login-container {
     display: flex;
@@ -104,13 +88,11 @@
     gap: 0.75rem;
     padding: 0.5rem 0;
   }
-
   .button-group {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   .demo-btn {
     display: flex;
     align-items: center;
@@ -129,57 +111,47 @@
     font-family: 'Press Start 2P', 'Courier New', monospace;
     letter-spacing: 0.5px;
   }
-
   .demo-btn:hover:not(:disabled) {
     transform: scale(1.05);
     box-shadow: 0 0 10px var(--console-primary, rgba(0, 170, 0, 0.5));
   }
-
   .demo-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   /* Variants */
   .demo-btn.primary {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
     border-color: var(--console-primary, #00aa00);
   }
-
   .demo-btn.secondary {
     background: transparent;
     color: var(--console-primary, #00aa00);
     border-color: var(--console-primary, #00aa00);
   }
-
   .demo-btn.secondary:hover:not(:disabled) {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-
   .demo-btn.ghost {
     background: transparent;
     color: var(--console-fg, white);
     border-color: transparent;
   }
-
   .demo-btn.ghost:hover:not(:disabled) {
     background: rgba(0, 170, 0, 0.2);
     border-color: var(--console-primary, #00aa00);
   }
-
   /* Sizes */
   .demo-btn.size-sm {
     padding: 0.35rem 0.75rem;
     font-size: 0.75rem;
   }
-
   .demo-btn.size-lg {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
   }
-
   /* Loading spinner */
   .spinner {
     display: inline-block;
@@ -190,13 +162,11 @@
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-
   .error-message {
     padding: 0.75rem;
     background: var(--console-error, #ff5555);
@@ -205,7 +175,6 @@
     font-size: 0.85rem;
     font-family: 'Courier New', monospace;
   }
-
   .dev-notice {
     font-size: 0.7rem;
     color: var(--console-primary, #00aa00);

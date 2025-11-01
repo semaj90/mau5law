@@ -109,14 +109,14 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
       ws.onclose=() => {
-        isConnected = false;
+        isConnected = $state(false);
         console.log('[observability-panel] WebSocket disconnected');
         // Reconnect after 5 seconds
         setTimeout(connectWebSocket, 5000);
       }
       ws.onerror = (error) => {
         console.error('[observability-panel] WebSocket error:', error);
-        isConnected = false;
+        isConnected = $state(false);
       }
     } catch (error) {
       console.error('[observability-panel] Failed to connect WebSocket:', error);
@@ -160,7 +160,6 @@ await loadState();
     }
   });
 </script>
-
 <div class="observability-panel">
   <!-- Header -->
   <div class="panel-header">
@@ -221,8 +220,7 @@ await loadState();
         <small>Last calculated: {formatTimestamp(state.baselines.last_calculated)}</small>
         <small>Last reset: {formatTimestamp(state.sustained_counters.last_reset)}</small>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Alert Stream -->
   <div class="alerts-section">
     <div class="alerts-header">
@@ -250,15 +248,13 @@ await loadState();
                 {#if alert.threshold !== undefined}
                   (threshold: {alert.threshold})
                 {/if}
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
       {/if}
     </div>
   </div>
 </div>
-
 <style>
   .observability-panel {
     background: var(--bg-secondary, #1a1a2e);
@@ -355,7 +351,7 @@ await loadState();
   .progress-bar {
     height: 100%;
     background: currentColor;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .details-section {
     background: var(--bg-primary, #000);
@@ -493,5 +489,3 @@ await loadState();
     }
   }
 </style>
-
-

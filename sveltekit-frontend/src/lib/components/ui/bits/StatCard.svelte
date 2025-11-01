@@ -18,13 +18,11 @@
     lg: 'text-3xl',
   };
 </script>
-
 <div class="stat-card {variant}" class:hoverable>
   {#if icon}
     <div class="stat-icon">
       {@render icon()}
-    </div>
-  {/if}
+    {/if}
   <div class="stat-value {sizeClasses[size]}">
     {value}
   </div>
@@ -32,7 +30,6 @@
     {label}
   </div>
 </div>
-
 <style>
   .stat-card {
     background: var(--surface, #ffffff);
@@ -42,7 +39,7 @@
     text-align: center;
     box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
     transition: all 0.2s ease;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .stat-card.hoverable:hover {
@@ -97,4 +94,3 @@
     }
   }
 </style>
-

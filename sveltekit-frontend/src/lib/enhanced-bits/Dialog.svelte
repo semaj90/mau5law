@@ -1,14 +1,14 @@
 <script lang="ts">
   // Compatibility shim: forward to real Dialog implementation
-  import RealDialog from '$lib/components/ui/Dialog.svelte';
-  export let open: boolean = false;
-  export let onClose: (() => void) | undefined;
+  import { default as RealDialog } from '$lib/components/ui/dialog.svelte';
+  let { open = false, onClose = undefined, ...rest } = $props<{
+    open?: boolean;
+    onClose?: (() => void);
+  }>();
 </script>
-
-<svelte:component this={RealDialog} {open} on:close={onClose} {...$$restProps}>
+<svelte:component this={RealDialog} {open} onclose={onClose} {...rest}>
   <slot />
 </svelte:component>
-
 <style>
   /* shim - no styles */
 </style>

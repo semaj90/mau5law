@@ -75,7 +75,7 @@ export interface AccessLogEntry {
 export interface AnalysisResult {
   id: string;
   type: 'ocr' | 'image_analysis' | 'audio_transcription' | 'video_analysis' | 'forensic_analysis';
-  result: unknown;
+  result: any;
   confidence: number;
   timestamp: string;
   tool_used: string;
@@ -193,7 +193,7 @@ const createEvidenceStore = () => {
       }));
       // Log access for audit trail
       await logEvidenceAccess(caseId, 'case_evidence_accessed');
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('Error fetching evidence:', err);
       update(state => ({
@@ -218,7 +218,7 @@ const createEvidenceStore = () => {
   };
   class QUICTensorStream {
     private writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
-    private connected = false;
+    private connected = $state(false);
     async connect(url: string): Promise<void> {
       if (typeof window === 'undefined') return;
       // If WebTransport is not available, return early
@@ -231,12 +231,12 @@ const createEvidenceStore = () => {
         this.connected = true;
         // Ensure we clean up on errors
         transport.closed.catch(() => {
-          this.connected = false;
+          this.connected = $state(false);
           this.writer?.releaseLock();
           this.writer = null;
         });
       } catch {
-        this.connected = false;
+        this.connected = $state(false);
         this.writer = null;
       }
     }
@@ -366,7 +366,7 @@ const createEvidenceStore = () => {
         // Log evidence addition
         await logEvidenceAccess(createdEvidence.id, 'evidence_added');
         return createdEvidence;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         update(state => ({
           ...state,
@@ -437,7 +437,7 @@ const createEvidenceStore = () => {
         }
         // Log evidence modification
         await logEvidenceAccess(evidenceId, 'evidence_modified');
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Error updating evidence:', error);
         // Revert optimistic update on failure
         if (originalEvidence) {
@@ -483,7 +483,7 @@ const createEvidenceStore = () => {
         }
         // Log evidence deletion
         await logEvidenceAccess(evidenceId, 'evidence_deleted', { reason });
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Error deleting evidence:', error);
         // Revert optimistic update on failure
         update(state => ({
@@ -527,7 +527,7 @@ const createEvidenceStore = () => {
         // Log evidence processing
         await logEvidenceAccess(evidenceId, 'evidence_processed', { type: processingType });
         return processedEvidence;
-      } catch (error: unknown) {
+      } catch (error: any) {
         update(state => ({
           ...state,
           processing_queue: state.processing_queue.filter(id => id !== evidenceId),
@@ -628,7 +628,7 @@ const createEvidenceStore = () => {
           ),
         }));
         return updatedEvidence;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
         update((state: EvidenceStoreState) => ({ ...state, error: message })); // Added type annotation for state
         throw err;
@@ -650,7 +650,7 @@ const createEvidenceStore = () => {
           throw new Error(errorData.message || 'Failed to generate evidence report');
         }
         return await response.blob(); // PDF or other report format
-      } catch (err: unknown) {
+      } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
         update((state: EvidenceStoreState) => ({ ...state, error: message })); // Added type annotation for state
         throw err;
@@ -686,7 +686,7 @@ const createEvidenceStore = () => {
           }));
         }
         return validation;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
         update(state => ({ ...state, error: message }));
         throw err;
@@ -714,7 +714,7 @@ const createEvidenceStore = () => {
           const stats = await response.json();
           update(state => ({ ...state, stats }));
         }
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error('Failed to refresh stats:', err);
       }
     },
@@ -734,7 +734,7 @@ const createEvidenceStore = () => {
           throw new Error(errorData.message || 'Failed to export evidence');
         }
         return await response.blob();
-      } catch (err: unknown) {
+      } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
         update(state => ({ ...state, error: message }));
         throw err;
@@ -817,7 +817,7 @@ async function validateEvidenceIntegrity(evidence: Evidence[]): Promise<void> {
     }
   }
 }
-async function logEvidenceAccess(evidenceId: string, action: string, metadata?: unknown): Promise<void> {
+async function logEvidenceAccess(evidenceId: string, action: string, metadata?: any): Promise<void> {
   try {
     await fetch('/api/evidence/access-log', {
       method: 'POST',
@@ -832,7 +832,7 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
         metadata,
       }),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to log evidence access:', error);
   }
 }

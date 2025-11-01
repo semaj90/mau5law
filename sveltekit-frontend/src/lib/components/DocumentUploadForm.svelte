@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { fade, slide } from 'svelte/transition';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
@@ -27,7 +27,7 @@
   export let maxFileSize: number = 10 * 1024 * 1024; // 10MB
   export let maxFiles: number = 10;
   export let onUploadComplete: ((payload: { caseId?: string; files: File[]; ocr_results: OCRResult[] }) => void) | undefined;
-  export let onUploadError: ((err: unknown) => void) | undefined;
+  export let onUploadError: ((err: any) => void) | undefined;
   export let onNext: ((event: { step: 'documents'; data: InternalFormData }) => void) | undefined;
   export let onPrevious: ((event: { step: 'documents' }) => void) | undefined;
   export let onSaveDraft: ((event: { step: 'documents'; data: InternalFormData }) => void) | undefined;
@@ -37,7 +37,7 @@
   export let formData: InternalFormData = createDefaultFormData();
 
   // Local state variables
-  let dragActive = false;
+  let dragActive = $state(false);
   let fileInput: HTMLInputElement | null = null;
   let uploadProgress: Record<string, number> = {};
   let processingErrors: Record<string, string> = {};
@@ -68,12 +68,12 @@
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (!(e.currentTarget as Element)?.contains((e as any).relatedTarget as Node)) {
-      dragActive = false;
+      dragActive = $state(false);
     }
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     const files = Array.from(e.dataTransfer?.files || []);
     handleFileSelection(files);
   }
@@ -226,8 +226,7 @@
           <span class="error-text">{errorMessage}</span>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <div class="actions">
     <Button onclick={handleSaveDraft} variant="secondary" class="save-draft-button">
       Save Draft

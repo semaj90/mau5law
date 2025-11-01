@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import ModernButton from '$lib/components/ui/Button.svelte';
+  import { ModernButton } from '$lib/components/ui/Button.svelte';
   interface UploadResponse {
     success?: boolean;
     error?: string;
@@ -70,10 +70,10 @@
       } else {
         errorMessage = typedResult.error || 'Upload failed';
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       errorMessage = (error as Error)?.message || String(error) || 'Network error during upload';
     } finally {
-      uploading = false;
+      uploading = $state(false);
     }
   }
   function formatFileSize(bytes: number): string {
@@ -84,7 +84,6 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 <div class="enhanced-upload-container">
   <div class="upload-header">
     <h2>📄 Enhanced Document Upload</h2>
@@ -95,7 +94,7 @@
     <div class="config-info">
       <h3>🎯 AI Capabilities</h3>
       <div class="capabilities-grid">
-        {#each uploadConfig.enhancedFeatures as feature}
+        {#each Array.isArray(uploadConfig.enhancedFeatures) ? uploadConfig.enhancedFeatures : [] as feature}
           <div class="capability-item">
             <span class="checkmark">✅</span>
             <span>{feature}</span>
@@ -105,7 +104,7 @@
       <div class="supported-formats">
         <h4>📁 Supported Formats</h4>
         <div class="formats-list">
-          {#each uploadConfig.supportedFormats as format}
+          {#each Array.isArray(uploadConfig.supportedFormats) ? uploadConfig.supportedFormats : [] as format}
             <span class="format-badge">
               {format.extension.toUpperCase()}
             </span>
@@ -113,8 +112,7 @@
         </div>
         <p class="format-note">Max file size: {uploadConfig.maxFileSize}</p>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Upload Form -->
   <div class="upload-form">
     <div class="file-input-section">
@@ -140,8 +138,7 @@
           <span class="file-size">{formatFileSize(selectedFile.size)}</span>
           <span class="file-type">{selectedFile.type || 'Unknown type'}</span>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Metadata Form -->
     <div class="metadata-form">
       <div class="form-row">
@@ -193,8 +190,7 @@
     <div class="error-message">
       <span class="error-icon">❌</span>
       <span>{errorMessage}</span>
-    </div>
-  {/if}
+    {/if}
   <!-- Success Result -->
   {#if uploadResult}
     <div class="success-result">
@@ -223,8 +219,7 @@
           <div class="detail-item">
             <strong>File Size:</strong>
             {formatFileSize(uploadResult.processingDetails.fileSize)}
-          </div>
-        {/if}
+          {/if}
       </div>
       <div class="features-enabled">
         <h4>🎯 AI Features Enabled:</h4>
@@ -238,10 +233,8 @@
           {/if}
         </ul>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .enhanced-upload-container {
     max-width: 800px;
@@ -446,4 +439,3 @@
     font-size: 0.85rem;
   }
 </style>
-

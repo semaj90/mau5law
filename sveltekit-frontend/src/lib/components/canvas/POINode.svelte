@@ -3,7 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { draggable } from '$lib/actions/draggable';
   import { aiService } from '$lib/services/aiService';
-  import * as ContextMenu from "$lib/components/ui/context-menu";
+  import * as ContextMenu from '$lib/components/ui/context-menu.svelte'";
   import { Edit, Save, Sparkles, Tag, User as UserIcon, X } from "lucide-svelte";
   // Simple POI interface for the component
   export interface POIData {
@@ -30,8 +30,8 @@
   let { poi } = $props(): POIData;
   const dispatch = createEventDispatcher();
   let nodeElement: HTMLElement | null = null;
-  let isEditing = false;
-  let showContextMenu = false;
+  let isEditing = $state(false);
+  let showContextMenu = $state(false);
   let contextX = 0;
   let contextY = 0;
   // Derived reactive values
@@ -108,10 +108,10 @@
     // Update local poi reference and emit an update event
     poi = updatedPoi;
     dispatch('update', updatedPoi);
-    isEditing = false;
+    isEditing = $state(false);
   }
   function cancelEditing() {
-    isEditing = false;
+    isEditing = $state(false);
     // reset form to current poi values
     formData = {
       name,
@@ -208,8 +208,7 @@
           <span class={`nier-badge nier-badge-secondary ${getStatusColor(status)}`}>{status.toUpperCase()}</span>
         </div>
         {#if aliases.length > 0 && !isEditing}
-          <div class="nier-alias text-xs text-gray-400 mb-1">AKA: {aliases.join(", ")}</div>
-        {/if}
+          <div class="nier-alias text-xs text-gray-400 mb-1">AKA: {aliases.join(", ")}{/if}
         {#if relationship && !isEditing}
           <span class="nier-badge nier-badge-secondary">{relationship}</span>
         {/if}
@@ -280,26 +279,20 @@
           {:else}
             <div class="space-y-2">
               {#if profileData.who}
-                <div><span class="nier-label">Who:</span> <span>{profileData.who}</span></div>
-              {/if}
+                <div><span class="nier-label">Who:</span> <span>{profileData.who}</span>{/if}
               {#if profileData.what}
-                <div><span class="nier-label">What:</span> <span>{profileData.what}</span></div>
-              {/if}
+                <div><span class="nier-label">What:</span> <span>{profileData.what}</span>{/if}
               {#if profileData.why}
-                <div><span class="nier-label">Why:</span> <span>{profileData.why}</span></div>
-              {/if}
+                <div><span class="nier-label">Why:</span> <span>{profileData.why}</span>{/if}
               {#if profileData.how}
-                <div><span class="nier-label">How:</span> <span>{profileData.how}</span></div>
-              {/if}
+                <div><span class="nier-label">How:</span> <span>{profileData.how}</span>{/if}
               {#if tags.length > 0}
                 <div class="flex flex-wrap gap-1 mt-2">
-                  {#each tags as tag}
+                  {#each Array.isArray(tags) ? tags : [] as tag}
                     <span class="nier-badge nier-badge-secondary flex items-center gap-1"><Tag class="w-3 h-3" /> {tag}</span>
                   {/each}
-                </div>
-              {/if}
-            </div>
-          {/if}
+                {/if}
+            {/if}
         </div>
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}

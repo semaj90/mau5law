@@ -52,7 +52,7 @@ type AmqplibConnection = {
   // minimal methods used in this file
   createChannel: () => Promise<Channel>; // Updated to return the new Channel type
   close: () => Promise<void>;
-  on: (event: 'error' | 'close' | string, cb: (...args: unknown[]) => void) => void;
+  on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void;
 };
 
 // Define the AmqplibModule interface for dynamic import typing
@@ -123,7 +123,7 @@ export interface DocumentType {
 }
 export interface AIAssistantContext {
   // allow extra keys so this type satisfies XState's AnyObject constraint
-  [key: string]: unknown;
+  [key: string]: any;
 
   currentQuery: string;
   response: string;
@@ -133,7 +133,7 @@ export interface AIAssistantContext {
   model: string;
   temperature: number;
   maxTokens: number;
-  availableModels: unknown[];
+  availableModels: any[];
   // minimal placeholders for previously used properties
   context7Available?: boolean;
   rabbitmqConnected?: boolean;
@@ -265,7 +265,7 @@ type NavWithGPU = Navigator & {
 // --- Minimal, correct GPU processor ---
 class GPUProcessor {
   private static instance: GPUProcessor;
-  private initialized = false;
+  private initialized = $state(false);
   static getInstance(): GPUProcessor {
     if (!GPUProcessor.instance) GPUProcessor.instance = new GPUProcessor();
     return GPUProcessor.instance;
@@ -277,13 +277,13 @@ class GPUProcessor {
 
       // Guard against missing WebGPU support
       if (!nav?.gpu) {
-        this.initialized = false;
+        this.initialized = $state(false);
         return false;
       }
 
       const adapter = await nav.gpu.requestAdapter?.();
       if (!adapter) {
-        this.initialized = false;
+        this.initialized = $state(false);
         return false;
       }
       // requestDevice might not be available in test envs; guard it
@@ -291,7 +291,7 @@ class GPUProcessor {
       this.initialized = true;
       return true;
     } catch (err) {
-      this.initialized = false;
+      this.initialized = $state(false);
       return false;
     }
   }
@@ -311,7 +311,7 @@ class MultiLayerCache {
   async get(key: string): Promise<unknown> {
     return this.l1Cache.has(key) ? this.l1Cache.get(key) : null;
   }
-  async set(key: string, value: unknown, _ttl = 3600000): Promise<void> {
+  async set(key: string, value: any, _ttl = 3600000): Promise<void> {
     this.l1Cache.set(key, value);
     if (this.l1Cache.size > 2000) {
       // simple eviction
@@ -361,7 +361,7 @@ class MemoryManager {
 // --- Minimal worker pool (uses blobs safely) ---
 type Task = { type: 'processDocument'; data: { content: string } } | { type: string; data?: Record<string, unknown> };
 
-type TaskResult = { ok: true; result: unknown } | { ok: false; error: string };
+type TaskResult = { ok: true; result: any } | { ok: false; error: string };
 
 class $WebWorkerPool {
   private _workers: Worker[] = [];
@@ -522,9 +522,9 @@ class RabbitMQService {
     for (const entry of Array.from(this.channels.values())) {
       try {
         if (entry.consumerTag && entry.channel?.cancel) {
-          await entry.channel.cancel(entry.consumerTag).catch((e: unknown) => console.warn('[RabbitMQ] Error cancelling consumer:', e)); // Added error logging
+          await entry.channel.cancel(entry.consumerTag).catch((e: any) => console.warn('[RabbitMQ] Error cancelling consumer:', e)); // Added error logging
         }
-        await entry.channel?.close?.().catch((e: unknown) => console.warn('[RabbitMQ] Error closing channel:', e)); // Added error logging
+        await entry.channel?.close?.().catch((e: any) => console.warn('[RabbitMQ] Error closing channel:', e)); // Added error logging
       } catch (e) {
         console.warn('[RabbitMQ] Error during channel disconnect cleanup:', e); // Added error logging
       }
@@ -547,7 +547,7 @@ class RabbitMQService {
     return this.connect();
   }
 
-  private async publish(exchange: string, routingKey: string, payload: unknown): Promise<void> {
+  private async publish(exchange: string, routingKey: string, payload: any): Promise<void> {
     if (browser) {
       console.warn('[RabbitMQ] publish skipped in browser.');
       return;
@@ -581,16 +581,16 @@ class RabbitMQService {
     }
   }
 
-  publishSystemHealth(payload: unknown): Promise<void> {
+  publishSystemHealth(payload: any): Promise<void> {
     return this.publish('system_events', 'health.log', payload);
   }
 
-  notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
+  notifyAIAnalysisCompleted(id: string, payload: any): Promise<void> {
     return this.publish('ai_events', `analysis.completed.${id}`, payload);
   }
 
   // Fire-and-forget subscription helpers (signature preserved: returns void)
-  subscribeToSystemEvents(cb: (msg: unknown) => void): void {
+  subscribeToSystemEvents(cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).');
       return;
@@ -610,7 +610,7 @@ class RabbitMQService {
           q.queue,
           (msg: ConsumeMessage | null) => { // Changed from any
             if (!msg) return;
-            let payload: unknown = null;
+            let payload: any = null;
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
@@ -645,7 +645,7 @@ class RabbitMQService {
     })();
   }
 
-  subscribeToCase(caseId: string, cb: (msg: unknown) => void): void {
+  subscribeToCase(caseId: string, cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToCase is not available in the browser (no-op).');
       return;
@@ -666,7 +666,7 @@ class RabbitMQService {
           q.queue,
           (msg: ConsumeMessage | null) => { // Changed from any
             if (!msg) return;
-            let payload: unknown = null;
+            let payload: any = null;
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
@@ -701,7 +701,7 @@ class RabbitMQService {
     })();
   }
 
-  subscribeToAIAnalysis(cb: (msg: unknown) => void): void {
+  subscribeToAIAnalysis(cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToAIAnalysis is not available in the browser (no-op).');
       return;
@@ -720,7 +720,7 @@ class RabbitMQService {
           q.queue,
           (msg: ConsumeMessage | null) => { // Changed from any
             if (!msg) return;
-            let payload: unknown = null;
+            let payload: any = null;
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
@@ -835,7 +835,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign<AIAssistantContext, { error?: unknown }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({
             error: { message: String(event.error) },
           })),
         },
@@ -884,7 +884,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign<AIAssistantContext, { error?: unknown }>((_ctx, event) => ({
+          actions: assign<AIAssistantContext, { error?: any }>((_ctx, event) => ({
             error: { message: String(event.error) },
             isProcessing: false,
           })),

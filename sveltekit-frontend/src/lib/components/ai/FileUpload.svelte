@@ -3,18 +3,18 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from "$lib/components/ui/button";
-  import { Label } from "$lib/components/ui/label";
-  import { Progress } from "$lib/components/ui/progress";
-  import { Alert, AlertDescription, AlertTitle } from "$lib/components/ui/alert";
+  import { Button } from '$lib/components/ui/button.svelte'";
+  import { Label } from '$lib/components/ui/label.svelte'";
+  import { Progress } from '$lib/components/ui/progress.svelte'";
+  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte'";
   import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
-  import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
+  import { FeedbackIntegration } from '$lib/components/feedback/FeedbackIntegration.svelte';
 
   // Replace Svelte 5 $state runes with plain typed local variables to avoid parsing issues during migration.
   let files: FileList | null = null;
-  let verboseMode: boolean = false;
-  let thinkingMode: boolean = false;
-  let isUploading: boolean = false;
+  let verboseMode: boolean = $state(false);
+  let thinkingMode: boolean = $state(false);
+  let isUploading: boolean = $state(false);
   let uploadProgress: number = 0;
   let error: string | null = null;
   let analysisResult: any = null;
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
     };
 
     xhr.onload = () => {
-      isUploading = false;
+      isUploading = $state(false);
       const processingTime = Date.now() - uploadStartTime;
 
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
     };
 
     xhr.onerror = () => {
-      isUploading = false;
+      isUploading = $state(false);
       const errorMsg = "Upload failed. Please check your network connection.";
       error = errorMsg;
 
@@ -189,8 +189,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-panel-content">
             <pre class="whitespace-pre-wrap text-sm">{JSON.stringify(analysisResult, null, 2)}</pre>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </FeedbackIntegration>

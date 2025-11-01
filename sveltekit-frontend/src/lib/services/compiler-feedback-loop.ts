@@ -165,9 +165,9 @@ class SelfOrganizingMap {
 export class CompilerFeedbackLoop {
   private ragEngine: EnhancedRAGEngine;
   private somClustering: SelfOrganizingMap;
-  private isActive = false;
+  private isActive = $state(false);
   private eventQueue: CompilerEvent[] = [];
-  private processingQueue = false;
+  private processingQueue = $state(false);
 
   // Reactive stores
   public events: Writable<CompilerEvent[]> = writable([]);
@@ -201,7 +201,7 @@ export class CompilerFeedbackLoop {
    * Stop monitoring
    */
   stopMonitoring(): void {
-    this.isActive = false;
+    this.isActive = $state(false);
     console.log('⏹️ Compiler Feedback Loop stopped');
   }
 
@@ -481,7 +481,7 @@ export class CompilerFeedbackLoop {
       // Small delay to prevent blocking
       await new Promise(resolve => setTimeout(resolve, 10));
     }
-    this.processingQueue = false;
+    this.processingQueue = $state(false);
   }
 
   /**

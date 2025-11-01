@@ -4,7 +4,6 @@
  */
 import { createMachine, assign, fromPromise } from 'xstate';
 import { dimensionalCache, type DimensionalArray } from '../ai/dimensional-cache-engine.js';
-
 // Add a concrete type for computation results
 export type ComputationResult = {
   computation?: string | number;
@@ -15,7 +14,6 @@ export type ComputationResult = {
   background?: boolean;
   // extend with other fields as needed
 };
-
 export interface AIComputationContext {
   userId: string;
   sessionId: string;
@@ -33,7 +31,6 @@ export interface AIComputationContext {
   computationResults: ComputationResult[]; // <-- replaced any[] with ComputationResult[]
   errorMessage?: string;
 }
-
 // Replace `any` with the concrete ComputationResult type
 export type AIComputationEvent =
   | { type: 'START_COMPUTATION'; data: { input: number[]; shape: number[]; attentionWeights: number[] } }
@@ -50,7 +47,6 @@ export type AIComputationEvent =
   | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray }
   | { type: 'RESUME_FROM_IDLE' }
   | { type: 'PICK_UP_WHERE_LEFT_OFF' };
-
 // Async services for computations
 const perform3DComputation = fromPromise(
   async ({
@@ -76,12 +72,10 @@ const perform3DComputation = fromPromise(
     };
   }
 );
-
 const getRecommendations = fromPromise(async ({ input }: { input: { userId: string; context: string } }) => {
   const { userId, context } = input;
   return await dimensionalCache.getRecommendations(userId, context);
 });
-
 const processRabbitMQQueue = fromPromise(
   async ({ input }: { input: { queuedComputations: string[] } }): Promise<ComputationResult[]> => {
     const { queuedComputations } = input;
@@ -100,7 +94,7 @@ const processRabbitMQQueue = fromPromise(
           }, 500);
         });
         results.push(result);
-      } catch (error: unknown) {
+      } catch (error: any) {
         // safer error handling: narrow unknown to string message
         console.error('Failed to process queued computation:', error instanceof Error ? error.message : String(error));
       }
@@ -108,14 +102,12 @@ const processRabbitMQQueue = fromPromise(
     return results;
   }
 );
-
 // Minimal helper to extract a safe error message from XState error events (no `any`)
-function extractErrorMessageFromEvent(event: unknown): string {
+function extractErrorMessageFromEvent(event: any): string {
   // XState onError events commonly provide { data: <error> } or a plain Error
   if (!event || typeof event !== 'object') return 'Computation failed';
-  const evt = event as { data?: unknown; error?: unknown };
+  const evt = event as { data?: any; error?: any };
   const payload = evt.data ?? evt.error ?? undefined;
-
   if (payload instanceof Error) return payload.message;
   if (typeof payload === 'string') return payload;
   if (
@@ -128,7 +120,6 @@ function extractErrorMessageFromEvent(event: unknown): string {
   }
   return 'Computation failed';
 }
-
 export const aiComputationMachine = createMachine({
   id: 'aiComputation',
   types: {} as {

@@ -1,12 +1,10 @@
 // AI Analysis State Machine - XState v5 compatible
 // Manages AI-powered legal document analysis and recommendations
 import { createMachine, assign, fromPromise, type DoneActorEvent, type ErrorActorEvent } from 'xstate';
-
 // Define specific event types for clarity and type safety
 type UpdatePromptEvent = { type: 'UPDATE_PROMPT'; prompt: string };
 type UpdateOptionsEvent = { type: 'UPDATE_OPTIONS'; options: Partial<AIAnalysisContext['options']> };
 type StreamChunkEvent = { type: 'STREAM_CHUNK'; chunk: string };
-
 // Define the output type for the: 'performAIAnalysis' actor
 type PerformAIAnalysisOutput = {
   analysisResults: AIAnalysisContext['analysisResults'];
@@ -14,23 +12,18 @@ type PerformAIAnalysisOutput = {
   tokensUsed: number;
   confidence: number;
 };
-
 // Define the done event for: 'performAIAnalysis'
 type PerformAIAnalysisDoneEvent = DoneActorEvent<PerformAIAnalysisOutput, 'performAIAnalysis'>;
-
 // Define the error event for: 'validateAnalysisRequest'
 type ValidateAnalysisRequestError = ErrorActorEvent<
   { validationErrors: Record<string, string[]> },
   'validateAnalysisRequest'
 >;
-
 // Define the error event for: 'performAIAnalysis'
 type PerformAIAnalysisError = ErrorActorEvent<Error, 'performAIAnalysis'>; // Assuming it throws an Error object
-
 // Define specific types for precedents and references to avoid: 'any'
 interface LegalPrecedent extends Record<string, unknown> {}
 interface LegalReference extends Record<string, unknown> {}
-
 export interface AIAnalysisContext {
   prompt: string;
   context: {
@@ -60,7 +53,6 @@ export interface AIAnalysisContext {
   validationErrors: Record<string, string[]>;
   error: string | null;
 }
-
 // Union of all possible events the machine can receive
 // This type is not explicitly used by createMachine due to the `types` property being commented out.
 // Removing it resolves the: "defined but never used" error.
@@ -74,7 +66,6 @@ export interface AIAnalysisContext {
 //   | PerformAIAnalysisDoneEvent
 //   | ValidateAnalysisRequestError
 //   | PerformAIAnalysisError;
-
 export const aiAnalysisMachine = createMachine({
   id: 'aiAnalysis',
   initial: 'idle',
@@ -230,8 +221,8 @@ export const aiAnalysisMachine = createMachine({
                       analysisResults = data.analysis;
                       tokensUsed = data.tokensUsed || 0;
                     }
-                  } catch (e: unknown) {
-                    // Changed e: any to e: unknown
+                  } catch (e: any) {
+                    // Changed e: any to e: any
                     console.warn('Failed to parse SSE data:', e);
                   }
                 }

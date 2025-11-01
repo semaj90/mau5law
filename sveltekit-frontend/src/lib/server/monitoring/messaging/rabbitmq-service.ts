@@ -31,7 +31,7 @@ export class RabbitMQService {
   private static instance: RabbitMQService;
   private connection: any = null;
   private channel: any = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   static getInstance(): RabbitMQService {
     if (!RabbitMQService.instance) {
       RabbitMQService.instance = new RabbitMQService();

@@ -14,7 +14,6 @@ https://svelte.dev/e/js_parse_error -->
   import { SOMWebGPUCache } from '$lib/webgpu/som-webgpu-cache.js';
   import { GPUTensorWorker } from '$lib/workers/gpu-tensor-worker.js';
   import { LegalAIReranker } from '$lib/ai/custom-reranker.js';
-
   // Props type
   interface Props {
     query?: string;
@@ -29,7 +28,6 @@ https://svelte.dev/e/js_parse_error -->
     theme?: 'dark' | 'light' | 'legal';
     interactive?: boolean;
   }
-
   let {
     query = '',
     startNodeId = '',
@@ -43,9 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     theme = 'legal',
     interactive = true
   }: Props = $props();
-
   const dispatch = createEventDispatcher();
-
   // State stores
   const loading: Writable<boolean> = writable(false);
   const paths: Writable<SoraTraversalPath[]> = writable([]);
@@ -53,7 +49,6 @@ https://svelte.dev/e/js_parse_error -->
   const visualization3D: Writable<Moogle3DMesh | null> = writable(null);
   const stats: Writable<Record<string, any>> = writable({});
   const error: Writable<string | null> = writable(null);
-
   // Component instances / DOM refs
   let soraTraversal: SoraGraphTraversal | null = null;
   let moogleSynthesizer: MoogleGraphSynthesizer | null = null;
@@ -67,7 +62,6 @@ https://svelte.dev/e/js_parse_error -->
   let somCache: SOMWebGPUCache | null = null;
   let gpuWorker: GPUTensorWorker | null = null;
   let reranker: LegalAIReranker | null = null;
-
   // Theme configurations
   const themes = {
     dark: {
@@ -86,9 +80,7 @@ https://svelte.dev/e/js_parse_error -->
       edgeColors: { cites: '#ff9f40', contains: '#4bc0c0', related: '#ff6384', similar: '#36a2eb', references: '#9966ff', contradicts: '#ff4757' }
     }
   };
-
   const currentTheme = themes[theme] ?? themes.legal;
-
   // Default configs merged with user config (keep plain objects to avoid type errors)
   const traversalConfig = {
     maxDepth: 5,
@@ -105,7 +97,6 @@ https://svelte.dev/e/js_parse_error -->
     },
     ...config
   };
-
   const visualizationConfig = {
     width,
     height,
@@ -133,7 +124,6 @@ https://svelte.dev/e/js_parse_error -->
     qualityLevel: 'high',
     ...config
   };
-
   onMount(async () => {
     try {
       await initializeComponents();
@@ -147,11 +137,9 @@ https://svelte.dev/e/js_parse_error -->
       dispatch('error', { message: 'Component initialization failed', error: err });
     }
   });
-
   onDestroy(() => {
     cleanup();
   });
-
   async function initializeComponents(): Promise<void> {
     try {
       gpuIntegration = new NESGPUIntegration();
@@ -165,11 +153,9 @@ https://svelte.dev/e/js_parse_error -->
       });
       somCache = new SOMWebGPUCache();
       reranker = new LegalAIReranker();
-
       if (enableGPUAcceleration && typeof Worker !== 'undefined') {
         gpuWorker = new GPUTensorWorker();
       }
-
       if (neo4jDriver) {
         soraTraversal = new SoraGraphTraversal(
           neo4jDriver,
@@ -180,7 +166,6 @@ https://svelte.dev/e/js_parse_error -->
           reranker
         );
       }
-
       moogleSynthesizer = new MoogleGraphSynthesizer(
         gpuIntegration,
         memoryArch,
@@ -193,7 +178,6 @@ https://svelte.dev/e/js_parse_error -->
       throw new Error(`Component initialization failed: ${message}`);
     }
   }
-
   async function performGraphTraversal(): Promise<void> {
     if (!soraTraversal || !moogleSynthesizer) {
       error.set('Components not initialized');
@@ -202,31 +186,25 @@ https://svelte.dev/e/js_parse_error -->
     try {
       loading.set(true);
       error.set(null);
-
       const traversalPaths = await soraTraversal.traverseGraph(startNodeId, query, traversalConfig);
       paths.set(traversalPaths);
-
       if (mode === '2d' || mode === 'both') {
         const viz2D = await moogleSynthesizer.synthesize2D(traversalPaths, visualizationConfig);
         visualization2D.set(viz2D);
         renderCanvas2D(viz2D);
         dispatch('visualization', { mode: '2d', viz: viz2D });
       }
-
       if (mode === '3d' || mode === 'both') {
         const viz3D = await moogleSynthesizer.synthesize3D(traversalPaths, visualizationConfig);
         visualization3D.set(viz3D);
         renderCanvas3D(viz3D);
         dispatch('visualization', { mode: '3d', viz: viz3D });
       }
-
       const reinforcementStats = soraTraversal.getReinforcementStats?.() ?? { totalNodes: 0, avgVisitCount: 0 };
       const tensorStats = (await (soraTraversal.getTensorStats?.() ?? Promise.resolve({ totalSlices: 0 })));
       const cacheStats = await (moogleSynthesizer.getEnhancedCacheStats?.() ?? Promise.resolve({ renderingCache: { hitRate: 0 } }));
-
       const viz2 = get(visualization2D);
       const viz3 = get(visualization3D);
-
       stats.set({
         paths: traversalPaths.length,
         totalNodes: reinforcementStats.totalNodes,
@@ -235,7 +213,6 @@ https://svelte.dev/e/js_parse_error -->
         cacheHitRate: cacheStats.renderingCache?.hitRate ?? 0,
         renderTime: (viz2?.metadata?.renderTime ?? viz3?.metadata?.renderTime ?? 0)
       });
-
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('Graph traversal failed:', err);
@@ -245,7 +222,6 @@ https://svelte.dev/e/js_parse_error -->
       loading.set(false);
     }
   }
-
   function renderCanvas2D(viz: Moogle2DOutput): void {
     if (!canvas2D || !viz) return;
     const ctx = canvas2D.getContext('2d');
@@ -256,7 +232,6 @@ https://svelte.dev/e/js_parse_error -->
     if (viz.imageData) ctx.putImageData(viz.imageData, 0, 0);
     if (interactive) addInteractiveOverlays2D(ctx, viz);
   }
-
   function renderCanvas3D(viz: Moogle3DMesh): void {
     if (!canvas3D || !viz) return;
     const ctx = canvas3D.getContext('2d');
@@ -267,7 +242,6 @@ https://svelte.dev/e/js_parse_error -->
     ctx.fillRect(0, 0, canvas3D.width, canvas3D.height);
     renderSimple3DProjection(ctx, viz);
   }
-
   function addInteractiveOverlays2D(ctx: CanvasRenderingContext2D, viz: Moogle2DOutput): void {
     const nodePositions = viz.metadata?.nodePositions ?? [];
     nodePositions.forEach((nodePos: any) => {
@@ -279,7 +253,6 @@ https://svelte.dev/e/js_parse_error -->
       ctx.stroke();
     });
   }
-
   function renderSimple3DProjection(ctx: CanvasRenderingContext2D, viz: Moogle3DMesh): void {
     const nodePositions = viz.metadata?.nodePositions ?? [];
     nodePositions.forEach((nodePos: any) => {
@@ -291,7 +264,6 @@ https://svelte.dev/e/js_parse_error -->
       ctx.fill();
     });
   }
-
   function handleCanvasClick(e: MouseEvent, is3D = false): void {
     if (!interactive) return;
     const target = e.target as HTMLCanvasElement;
@@ -310,24 +282,20 @@ https://svelte.dev/e/js_parse_error -->
       dispatch('nodeclick', { nodeId: clickedNode.id, nodeType: clickedNode.type ?? 'unknown' });
     }
   }
-
   function handlePathSelection(pathIndex: number): void {
     const ps = get(paths);
     const selectedPath = ps[pathIndex];
     if (selectedPath) dispatch('pathselect', { path: selectedPath });
   }
-
   function cleanup(): void {
     if (gpuWorker) gpuWorker.terminate?.();
     if (soraTraversal) soraTraversal.clearCache?.();
     if (moogleSynthesizer) moogleSynthesizer.clearCache?.();
   }
-
   // Public methods
   export async function refresh(): Promise<void> {
     if (query && startNodeId) await performGraphTraversal();
   }
-
   export function clearVisualization(): void {
     paths.set([]);
     visualization2D.set(null);
@@ -335,7 +303,6 @@ https://svelte.dev/e/js_parse_error -->
     stats.set({});
     error.set(null);
   }
-
   export function exportVisualization(format: 'png' | 'svg' | 'json' = 'png'): string | null {
     const viz = get(visualization2D);
     if (!viz) return null;
@@ -348,7 +315,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div
   class="sora-graph-visualization"
   class:loading={$loading}
@@ -369,17 +335,13 @@ https://svelte.dev/e/js_parse_error -->
           <span class="loading-detail">⚡ GPU Acceleration Enabled</span>
         {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   {#if $error}
     <div class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
       <button onclick={() => error.set(null)}>Dismiss</button>
-    </div>
-  {/if}
-
+    {/if}
   {#if (mode === '2d' || mode === 'both') && !$loading}
     <div class="canvas-container" class:hidden={mode === '3d'}>
       <canvas
@@ -395,9 +357,7 @@ https://svelte.dev/e/js_parse_error -->
         <button class="control-btn" title="Reset View">⟲</button>
         <button class="control-btn" title="Export">💾</button>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   {#if (mode === '3d' || mode === 'both') && !$loading}
     <div class="canvas-container" class:hidden={mode === '2d'}>
       <canvas
@@ -413,16 +373,12 @@ https://svelte.dev/e/js_parse_error -->
         <button class="control-btn" title="LOD Toggle">📊</button>
         <button class="control-btn" title="Mesh Export">📦</button>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   {#if mode === 'both' && !$loading}
     <div class="mode-switcher">
       <button class="mode-btn" class:active={true}>2D</button>
       <button class="mode-btn" class:active={false}>3D</button>
-    </div>
-  {/if}
-
+    {/if}
   {#if $paths.length > 0 && interactive}
     <div class="path-explorer">
       <h4>🛤️ Traversal Paths ({$paths.length})</h4>
@@ -439,9 +395,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   {#if $stats && Object.keys($stats).length > 0}
     <div class="stats-panel">
       <h4>📊 Performance Stats</h4>
@@ -463,10 +417,8 @@ https://svelte.dev/e/js_parse_error -->
           <span class="stat-value">{$stats.renderTime ? $stats.renderTime.toFixed(0) + 'ms' : '0ms'}</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .sora-graph-visualization {
     position: relative;
@@ -676,7 +628,6 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600;
     font-family: monospace;
   }
-
   /* Theme overrides */
   :global(.sora-graph-visualization[data-theme='light']) {
     --bg-color: #ffffff;
@@ -712,5 +663,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-

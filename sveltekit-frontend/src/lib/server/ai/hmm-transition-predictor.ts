@@ -1,17 +1,14 @@
 import { redisService } from '$lib/server/redis-service';
-
 // Add a narrow interface describing the redis client surface we use.
 interface RedisClientLike {
   // hash get-all variations
   hGetAll?: (key: string) => Promise<Record<string, string> | null>;
   hgetall?: (key: string) => Promise<Record<string, string> | null>;
   hgetAll?: (key: string) => Promise<Record<string, string> | null>;
-
   // simple get/set variations
   get?: (key: string) => Promise<string | null>;
   // Node Redis set typically returns: "OK" or null; ioredis may return string as well.
   set?: (key: string, value: string) => Promise<string | null>;
-
   // hash increment/set variations
   hIncrBy?: (key: string, field: string, increment: number) => Promise<number>;
   hincrby?: (key: string, field: string, increment: number) => Promise<number>;
@@ -19,45 +16,36 @@ interface RedisClientLike {
   hSet?: (key: string, field: string, value: string) => Promise<number>;
   hset?: (key: string, field: string, value: string) => Promise<number>;
 }
-
-export interface TransitionObservation {
-  from string;
+export interface TransitionObservation { from: string;
   to: string;
   weight?: number;
   timestamp?: number;
   context?: Record<string, unknown> | null;
 }
-
 export interface TransitionPrediction {
   state: string;
   probability: number;
   support: number;
 }
-
 export interface HMMPredictorSnapshot {
   states: string[];
-  transitions: Array<{ from string; to: string; probability: number; count: number }>;
+  transitions: Array<{ from: string; to: string; probability: number; count: number }>;
 }
-
 // Single unified predictor (combines Redis-backed ops + in-memory fallback)
 export class HMMTransitionPredictor {
   private prefix = 'hmm:transitions:';
   private transitionCounts: Map<string, number> = new Map();
   private outgoingTotals: Map<string, number> = new Map();
-
   constructor(private modelKey = 'default') {}
-
   // small helper to form a redis key (now used)
   private key(from string) {
     return `${this.prefix}${this.modelKey}:${from}`;
   }
-
   // --- runtime-safe Redis adapters (adapt to different client APIs) ---
   private get _r(): RedisClientLike {
     // cast to the narrow interface we declared above
     return redisService as unknown as RedisClientLike;
   }
-
   private async redisHGetAll(key: string): Promise<Record<string, string> | null> {
     const r = this._r;
     try {
@@ -83,7 +71,6 @@ export class HMMTransitionPredictor {
     }
     return null;
   }
-
   private async redisHIncrBy(key: string, field: string, increment = 1): Promise<number | null> {
     const r = this._r;
     try {
@@ -111,7 +98,6 @@ export class HMMTransitionPredictor {
     return null;
   }
   // --- end adapters ---
-
   // Train/provide counts to Redis (async) and update in-memory counts as well
   async train(sequence: string[]) {
     if (!sequence || sequence.length < 2) return;
@@ -124,7 +110,6 @@ export class HMMTransitionPredictor {
       this.observe({ from a, to: b, weight: 1 });
     }
   }
-
   // Async prediction: prefer Redis counts when available, otherwise fallback to memory
   async predictNext(sequence: string[], topK = 5): Promise<TransitionPrediction[]> {
     if (!sequence || sequence.length === 0) return [];
@@ -140,7 +125,6 @@ export class HMMTransitionPredictor {
     // fallback to in-memory predictor
     return this.predictNextFromMemory(last, topK);
   }
-
   // In-memory observation API
   observe(observation: TransitionObservation): void {
     if (!observation.from || !observation.to) return;
@@ -148,11 +132,9 @@ export class HMMTransitionPredictor {
     const key = `${observation.from}->${observation.to}`;
     const current = this.transitionCounts.get(key) ?? 0;
     this.transitionCounts.set(key, current + weight);
-
     const total = this.outgoingTotals.get(observation.from) ?? 0;
     this.outgoingTotals.set(observation.from, total + weight);
   }
-
   observeSequence(sequence: string[]): void {
     for (let i = 0; i < sequence.length - 1; i++) {
       const from = sequence[i];
@@ -160,12 +142,10 @@ export class HMMTransitionPredictor {
       this.observe({ from, to });
     }
   }
-
   // synchronous in-memory prediction
   predictNextFromMemory(current: string, topK = 3): TransitionPrediction[] {
     const total = this.outgoingTotals.get(current) ?? 0;
     if (total === 0) return [];
-
     const predictions: TransitionPrediction[] = [];
     Array.from(this.transitionCounts.entries()).forEach(([key, count]) => {
       if (!key.startsWith(`${current}->`)) return;
@@ -173,12 +153,10 @@ export class HMMTransitionPredictor {
       const probability = count / total;
       predictions.push({ state: to, probability, support: count });
     });
-
     return predictions
       .sort((a, b) => b.probability - a.probability)
       .slice(0, Math.max(1, topK));
   }
-
   blendWith(sequence: string[], weight = 0.2): TransitionPrediction[] {
     if (sequence.length === 0) return [];
     const current = sequence[sequence.length - 1];
@@ -186,7 +164,6 @@ export class HMMTransitionPredictor {
     const fallback = sequence
       .slice(-3)
       .map((state, idx) => ({ state, probability: Math.max(0.01, weight / (idx + 1)), support: 0 }));
-
     const combined = new Map<string, TransitionPrediction>();
     for (const item of [...base, ...fallback]) {
       const existing = combined.get(item.state);
@@ -196,12 +173,10 @@ export class HMMTransitionPredictor {
         combined.set(item.state, { ...item });
       }
     }
-
     return Array.from(combined.values())
       .sort((a, b) => b.probability - a.probability)
       .slice(0, base.length || 3);
   }
-
   snapshot(): HMMPredictorSnapshot {
     const transitions: HMMPredictorSnapshot['transitions'] = [];
     Array.from(this.transitionCounts.entries()).forEach(([key, count]) => {
@@ -212,14 +187,11 @@ export class HMMTransitionPredictor {
     const states = Array.from(this.outgoingTotals.keys());
     return { states, transitions };
   }
-
   reset(): void {
     this.transitionCounts.clear();
     this.outgoingTotals.clear();
   }
 }
-
 // exports (instances created after class declaration)
 export const defaultHMM = new HMMTransitionPredictor();
 export const hmmTransitionPredictor = new HMMTransitionPredictor();
-

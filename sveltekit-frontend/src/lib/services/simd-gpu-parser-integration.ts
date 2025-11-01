@@ -39,7 +39,7 @@ export interface ParsingConfig {
 }
 export default class SIMDGPUParserIntegration {
   private config: ParsingConfig;
-  private initialized = false;
+  private initialized = $state(false);
   constructor(config: ParsingConfig) {
     this.config = config;
   }

@@ -5,7 +5,7 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte'';
   import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte';
   interface Evidence {
     id?: string;
@@ -88,7 +88,7 @@
       showError('Failed to load evidence');
       handleClose();
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function resetForm() {
@@ -132,7 +132,7 @@
   }
   function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const file = event.dataTransfer?.files[0];
     if (file) {
       processFile(file);
@@ -197,7 +197,7 @@
       console.error('❌ AI analysis failed:', error);
       showError('AI analysis failed');
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   // CRUD operations
@@ -270,7 +270,7 @@
       console.error('❌ Save failed:', error);
       showError('Failed to save evidence');
     } finally {
-      isSaving = false;
+      isSaving = $state(false);
     }
   }
   async function handleDelete() {
@@ -293,15 +293,15 @@
       console.error('❌ Delete failed:', error);
       showError('Failed to delete evidence');
     } finally {
-      isDeleting = false;
+      isDeleting = $state(false);
     }
   }
   function handleClose() {
     if (isSaving || isDeleting) return;
     isClosing = true;
     setTimeout(() => {
-      isOpen = false;
-      isClosing = false;
+      isOpen = $state(false);
+      isClosing = $state(false);
       onClose();
     }, 200);
   }
@@ -444,7 +444,7 @@
                   </div>
                   {#if evidence.tags?.length}
                     <div class="flex flex-wrap gap-2">
-                      {#each evidence.tags as tag}
+                      {#each Array.isArray(evidence.tags) ? evidence.tags : [] as tag}
                         <span class="inline-flex items-center gap-1 px-2 py-1 text-sm bg-primary/10 rounded-full">
                           #{tag}
                           {#if mode !== 'view'}
@@ -457,8 +457,7 @@
                           {/if}
                         </span>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </div>
@@ -491,8 +490,7 @@
                               class="bg-primary h-2 rounded-full transition-all"
                               style="width: {uploadProgress}%"
                             ></div>
-                          </div>
-                        {/if}
+                          {/if}
                       </div>
                     {:else}
                       <div class="space-y-2">
@@ -504,11 +502,9 @@
                           onchange={handleFileUpload}
                           accept="*/*"
                         />
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
-                </div>
-              {/if}
+                {/if}
               <!-- AI Analysis -->
               <div>
                 <div class="flex items-center justify-between mb-2">
@@ -541,8 +537,7 @@
                     <p class="text-sm text-muted-foreground">
                       No AI analysis available
                     </p>
-                  </div>
-                {/if}
+                  {/if}
               </div>
               <!-- Position -->
               <div class="grid grid-cols-2 gap-3">
@@ -572,8 +567,7 @@
                   <div class="p-3 bg-muted/50 rounded text-xs">
                     <pre>{JSON.stringify(evidence.metadata, null, 2)}</pre>
                   </div>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </CardContent>
@@ -614,11 +608,9 @@
               </Button>
             {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   @keyframes fadeOut {
     from { opacity: 1; }

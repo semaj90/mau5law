@@ -147,7 +147,7 @@ export class QdrantAutoTagger {
   private baseUrl: string;
   private collectionName: string;
   private taggingRules: TaggingRule[];
-  private initialized: boolean = false;
+  private initialized: boolean = $state(false);
 
   constructor(collectionName: string = 'vite_errors', baseUrl: string = 'http://localhost:6333') {
     this.baseUrl = baseUrl;
@@ -324,7 +324,7 @@ export class QdrantAutoTagger {
     for (const rule of sortedRules) {
       const target = `${error.errorCode} ${error.message} ${error.filePath}`;
 
-      let matches = false;
+      let matches = $state(false);
       if (rule.pattern instanceof RegExp) {
         matches = rule.pattern.test(target);
       } else {

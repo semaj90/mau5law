@@ -10,7 +10,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 type LocalsWithAuth = {
   // session and user may be present on locals depending on your auth hooks
   session?: Record<string, unknown> | null;
-  user?: { id: string; [key: string]: unknown } | null;
+  user?: { id: string; [key: string]: any } | null;
 };
 
 // Schema for updating timeline events
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ params, locals, request }) => {
         event: updatedEvent,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -204,7 +204,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         deletedEventId: eventId,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Delete timeline event error:', err);
     return error(
       500,

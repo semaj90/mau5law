@@ -262,8 +262,8 @@ const originalPOSTHandler: RequestHandler = async event => {
 // Check Ollama model availability
 async function checkOllamaModel(model: string): Promise<ModelCheck> {
   // move type-guard to function root (not inside try/catch)
-  function hasModelsField(obj: unknown): obj is { models: Array<{ name?: string }> } {
-    return typeof obj === 'object' && obj !== null && Array.isArray((obj as { models?: unknown }).models);
+  function hasModelsField(obj: any): obj is { models: Array<{ name?: string }> } {
+    return typeof obj === 'object' && obj !== null && Array.isArray((obj as { models?: any }).models);
   }
 
   try {

@@ -99,7 +99,7 @@ export class QLoRABinaryCodec {
    * Calculate compression statistics
    */
   static getCompressionStats(
-    original: unknown,
+    original: any,
     compressed: Uint8Array
   ): {
     originalSize: number;

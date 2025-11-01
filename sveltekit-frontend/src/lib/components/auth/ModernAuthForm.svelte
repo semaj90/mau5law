@@ -1,25 +1,21 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
-  import Alert from '$lib/components/ui/alert/Alert.svelte';
-  import Label from '$lib/components/ui/Label.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
-
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
+  import { Label } from '$lib/components/ui/Label.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
   interface Props {
     mode?: 'login' | 'register';
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     onSuccess?: (user: any) => void;
   }
-
   let { mode = $bindable('login'), open = $bindable(false), onOpenChange, onSuccess }: Props = $props();
-
   let formData = $state({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '' });
   let loading = $state(false);
   let error = $state('');
   let success = $state('');
   let emailInput: any = $state(null);
   let passwordInput: any = $state(null);
-
   let isValid = $derived(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const hasValidEmail = emailRegex.test(formData.email);
@@ -31,7 +27,6 @@
     }
     return hasValidEmail && hasPassword;
   });
-
   async function handleSubmit(event?: Event) {
     event?.preventDefault?.();
     loading = true;
@@ -49,7 +44,7 @@
         success = result.message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
         setTimeout(() => {
           formData = { email: '', password: '', confirmPassword: '', firstName: '', lastName: '' };
-          open = false;
+          open = $state(false);
           onSuccess?.(result.user);
         }, 1000);
       } else {
@@ -58,16 +53,14 @@
     } catch (err) {
       error = 'Network error occurred. Please try again.';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   function toggleMode() {
     mode = mode === 'login' ? 'register' : 'login';
     error = '';
     success = '';
   }
-
   $effect(() => {
     if (open && emailInput) {
       setTimeout(() => {
@@ -83,7 +76,6 @@
     if (onOpenChange) onOpenChange(open);
   });
 </script>
-
 {#if open}
   <div class="fixed inset-0 z-50 bg-black/80"></div>
   <div
@@ -95,7 +87,6 @@
     See: https://github.com/sveltejs/rfcs/blob/main/text/0127-runes.md and Svelte 5 migration docs.
     If migrating to a different event system or reverting to idiomatic Svelte, use: 'onsubmit={handleSubmit}' instead.
     This workaround is required for compatibility with the current runes-based event handling.
-
     MIGRATION INSTRUCTIon
     - If you are upgrading away from Svelte 5 runes or restoring standard Svelte event handling,
       replace: 'onsubmit={handleSubmit}' with: 'onsubmit={handleSubmit}' below.
@@ -117,8 +108,7 @@
             <Label for="lastName">Last Name</Label>
             <Input id="lastName" bind:value={formData.lastName} required class="nes-input" />
           </div>
-        </div>
-      {/if}
+        {/if}
       <div class="nes-field">
         <Label for="email">Email</Label>
         <Input bind:this={emailInput} id="email" type="email" bind:value={formData.email} required class="nes-input" />
@@ -144,24 +134,19 @@
             required
             class="nes-input"
           />
-        </div>
-      {/if}
+        {/if}
       <Button type="submit" class="w-full nes-btn is-primary" disabled={loading || !isValid}>
         {loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Create Account'}
       </Button>
-
       <!-- replace deprecated onclick with onclick attribute -->
       <button type="button" onclick={toggleMode} class="nes-btn is-dark is-small">
         {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
       </button>
     </form>
-
     <button type="button" onclick={() => (open = false)} class="absolute right-4 top-4 nes-btn is-error is-small">
       ×
     </button>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* Place to add any component-specific styles */
 </style>

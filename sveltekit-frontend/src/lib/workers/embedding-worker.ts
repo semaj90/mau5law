@@ -18,7 +18,7 @@ export interface WorkerMessage {
 export interface WorkerResponse {
   id: string;
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   progress?: number;
   metadata?: { [key: string]: any }
@@ -45,7 +45,7 @@ export interface SimilarityTask {
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   // We're in a worker context
   class EmbeddingWorker {
-    private processing = false;
+    private processing = $state(false);
     private cache = new Map<string, any>();
     constructor() {
       self.addEventListener('message', this.handleMessage.bind(this));
@@ -398,7 +398,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       });
       return grouped;
     }
-    private filterData(data: any[], criteria: { [key: string]: any }): unknown[] {
+    private filterData(data: any[], criteria: { [key: string]: any }): any[] {
       return data.filter((item: any) => {
         return Object.entries(criteria).every(([key, value]) => {
           return item[key] === value;
@@ -418,7 +418,7 @@ export class EmbeddingWorkerManager {
   private pendingTasks = new Map<string, {
     resolve: (_value: any) => void;
     reject: (error: Error) => void;
-    onProgress?: (progress: number, data?: unknown) => void
+    onProgress?: (progress: number, data?: any) => void
   }>();
   constructor() {
     this.initializeWorker();
@@ -460,32 +460,32 @@ export class EmbeddingWorkerManager {
     this.pendingTasks.clear();
   }
   public async processEmbeddings(_task: EmbeddingTask
-    onProgress?: (progress: number, data?: unknown) => void
+    onProgress?: (progress: number, data?: any) => void
   ): Promise<BatchEmbeddingResult> {
     return this.executeTask('embeddings', task, onProgress);
   }
   public async processChunking(_task: ChunkingTask
-    onProgress?: (progress: number, data?: unknown) => void
+    onProgress?: (progress: number, data?: any) => void
   ): Promise<DocumentChunk[]> {
     return this.executeTask('chunking', task, onProgress);
   }
   public async processSimilarity(_task: SimilarityTask
-    onProgress?: (progress: number, data?: unknown) => void
+    onProgress?: (progress: number, data?: any) => void
   ): Promise<Array<any>> {
     return this.executeTask('similarity', task, onProgress);
   }
   public async processGeneral(
     data: any;
     options: any,
-    onProgress?: (progress: number, data?: unknown) => void
+    onProgress?: (progress: number, data?: any) => void
   ): Promise<any> {
     return this.executeTask('processing', data, onProgress, options);
   }
   private async executeTask(
     type: WorkerMessage['type'],
     data: any,
-    onProgress?: (progress: number, data?: unknown) => void,
-    options?: unknown
+    onProgress?: (progress: number, data?: any) => void,
+    options?: any
   ): Promise<any> {
     if (!this.worker) {
       throw new Error('Worker not available');

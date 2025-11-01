@@ -377,7 +377,7 @@ interface LokiEvidenceService {
     tags: string[];
     createdAt: Date;
     updatedAt: Date;
-    attachments: unknown[]; // Adjust type as needed
+    attachments: any[]; // Adjust type as needed
     metadata: Record<string, unknown>;
   }): Promise<void>;
   // Add other methods if they exist on the actual lokiEvidenceService

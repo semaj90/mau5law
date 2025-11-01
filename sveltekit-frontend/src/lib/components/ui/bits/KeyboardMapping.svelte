@@ -309,7 +309,6 @@
     return Array.from.sort();
   });
 </script>
-
 <!-- Keyboard Mapping Display (Optional) -->
 {#if enableDebugMode}
   <div class={cn('fixed bottom-4 right-4 z-50 max-w-sm', className)}>
@@ -322,11 +321,10 @@
           <span class="text-xs font-mono text-yellow-300">
             {Array.from.join(' + ')}
           </span>
-        </div>
-      {/if}
+        {/if}
       <!-- Debug Log -->
       <div class="text-xs space-y-1 max-h-32 overflow-y-auto">
-        {#each debugLog.slice(-5) as log}
+        {#each Array.isArray(debugLog.slice(-5)) ? debugLog.slice(-5) : [] as log}
           <div
             class="text-gray-300 {log.type === 'error' ? 'text-red-400' : log.type === 'warn' ? 'text-yellow-400' : ''}"
           >
@@ -335,14 +333,12 @@
         {/each}
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Screen Reader Announcements -->
 <div class="sr-only" aria-live="polite" id="keyboard-announcements"></div>
-
 <style>
   .sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,

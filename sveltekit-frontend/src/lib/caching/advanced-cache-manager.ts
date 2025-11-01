@@ -54,7 +54,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
   }
 
   // --- CHANGED: avoid `any`, accept unknown and safely stringify ---
-  private byteSizeOf(obj: unknown): number {
+  private byteSizeOf(obj: any): number {
     try {
       if (typeof obj === 'string') {
         return new TextEncoder().encode(obj).length;

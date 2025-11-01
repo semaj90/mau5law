@@ -34,7 +34,6 @@
     danger: 'nes-card-danger',
   }
 </script>
-
 <div
   class="nes-card-container {variantClasses[variant]} {sizeClasses[size]}"
   class:is-elevated={elevated}
@@ -50,16 +49,14 @@
       {#if subtitle}
         <p class="nes-card-subtitle">{subtitle}</p>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <div class="nes-card-content">
-    {@render children?.()}
+    <slot />
   </div>
 </div>
-
 <style>
   .nes-card-container {
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     font-family: 'Press Start 2P', cursiv;
@@ -208,4 +205,3 @@
     }
   }
 </style>
-

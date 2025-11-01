@@ -11,25 +11,20 @@
  *   await embedder.initialize();
  *   const vector = await embedder.embed('legal document text');
  */
-
 import { pipeline, env } from '@huggingface/transformers';
-
 // Configure Transformers.js environment
 env.allowLocalModels = true;
 env.useBrowserCache = true;
-
 export interface EmbeddingOptions {
   pooling?: 'mean' | 'cls';
   normalize?: boolean;
   device?: 'webgpu' | 'wasm' | 'cpu';
 }
-
 export class BrowserEmbeddings {
   private embedder: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private modelName: string;
   private device: 'webgpu' | 'wasm' | 'cpu';
-
   constructor(
     modelName: string = 'Xenova/all-MiniLM-L6-v2',
     device: 'webgpu' | 'wasm' | 'cpu' = 'webgpu'
@@ -37,17 +32,14 @@ export class BrowserEmbeddings {
     this.modelName = modelName;
     this.device = device;
   }
-
   /**
    * Initialize the embedding model (loads ~25MB model to browser)
    * This only happens once - model is cached in IndexedDB
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
-
     try {
       console.log(`🧠 [BrowserML] Loading ${this.modelName} (${this.device})...`);
-
       // Try WebGPU first, fallback to WASM
       try {
         this.embedder = await pipeline('feature-extraction', this.modelName, {
@@ -61,7 +53,6 @@ export class BrowserEmbeddings {
           device: 'wasm'
         });
       }
-
       this.isInitialized = true;
       console.log(`✅ [BrowserML] Model loaded successfully (${this.device})`);
     } catch (error) {
@@ -69,7 +60,6 @@ export class BrowserEmbeddings {
       throw new Error(`Browser ML initialization failed: ${error}`);
     }
   }
-
   /**
    * Generate embeddings for text (runs in browser)
    * Returns 384-dimensional vector for all-MiniLM-L6-v2
@@ -81,20 +71,15 @@ export class BrowserEmbeddings {
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     const { pooling = 'mean', normalize = true } = options;
-
     try {
       const startTime = performance.now();
-
       const output = await this.embedder(text, {
         pooling,
         normalize
       });
-
       const endTime = performance.now();
       console.log(`⚡ [BrowserML] Embedded in ${(endTime - startTime).toFixed(2)}ms`);
-
       // Convert tensor to array
       if (Array.isArray(text)) {
         return Array.from(output.data); // Batch embeddings
@@ -106,7 +91,6 @@ export class BrowserEmbeddings {
       throw error;
     }
   }
-
   /**
    * Compute cosine similarity between two embeddings
    */
@@ -114,20 +98,16 @@ export class BrowserEmbeddings {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same dimensions');
     }
-
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-
     for (let i = 0; i < a.length; i++) {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
-
   /**
    * Find most similar documents to query
    */
@@ -139,23 +119,19 @@ export class BrowserEmbeddings {
     const queryEmbedding = await this.embed(query) as number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts) as number[][];
-
     const results = documents.map((doc, idx) => ({
       ...doc,
       score: this.cosineSimilarity(queryEmbedding, docEmbeddings[idx])
     }));
-
     return results
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
   }
-
   /**
    * Check if WebGPU is available in browser
    */
   static async isWebGPUAvailable(): Promise<boolean> {
     if (!navigator.gpu) return false;
-
     try {
       const adapter = await navigator.gpu.requestAdapter();
       return adapter !== null;
@@ -163,28 +139,24 @@ export class BrowserEmbeddings {
       return false;
     }
   }
-
   /**
    * Get device being used
    */
   getDevice(): string {
     return this.device;
   }
-
   /**
    * Cleanup resources
    */
   dispose(): void {
     this.embedder = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
-
 /**
  * Singleton instance for global use
  */
 export const browserEmbeddings = new BrowserEmbeddings();
-
 /**
  * USAGE EXAMPLES:
  *

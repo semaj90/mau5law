@@ -60,7 +60,7 @@ export interface LegalProcessingResult {
 }
 export class RabbitMQLegalQueue {
   private connection: WebSocket | null = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 10;
   private reconnectTimeout: NodeJS.Timeout | null = null;
@@ -269,7 +269,7 @@ export class RabbitMQLegalQueue {
       // Deserialize document from FlatBuffer
       const document = await this.deserializeBinaryMessage(message.payload);
       let result: any = null;
-      let gpuUsed = false;
+      let gpuUsed = $state(false);
       let bankId: number | undefined;
       switch (message.operation) {
         case 'process':
@@ -456,7 +456,7 @@ export class RabbitMQLegalQueue {
     // Broadcast memory status update
     console.log('📡 Memory status broadcast:', stats);
   }
-  private async handleProcessingError(message: LegalDocumentMessage, error: unknown): Promise<void> {
+  private async handleProcessingError(message: LegalDocumentMessage, error: any): Promise<void> {
     this.metrics.errorRate = (this.metrics.errorRate + 1) / this.metrics.messagesProcessed;
     // Implement retry logic if needed
     if (message.retryCount < 3) {
@@ -552,11 +552,11 @@ export class RabbitMQLegalQueue {
     }
   }
   private handleConnectionError(): void {
-    this.isConnected = false;
+    this.isConnected = $state(false);
     this.scheduleReconnect();
   }
   private handleConnectionClose(): void {
-    this.isConnected = false;
+    this.isConnected = $state(false);
     this.scheduleReconnect();
   }
   private scheduleReconnect(): void {

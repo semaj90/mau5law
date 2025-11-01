@@ -74,7 +74,7 @@ type ContextPayload = {
   domain_confidence?: number;
   user_experience?: number;
   // allow additional optional fields without falling back to `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Return shape for switchContext
@@ -182,7 +182,7 @@ export class AutoencoderContextSwitcher {
     const currentModelId = await this.getCurrentActiveModel();
     let bestModel = currentModelId;
     let bestScore = 0;
-    let shouldSwitch = false;
+    let shouldSwitch = $state(false);
     // Score each model candidate
     for (const pattern of candidates) {
       const score = this.calculateModelScore(contextVector, pattern);
@@ -500,7 +500,7 @@ export class AutoencoderContextSwitcher {
   }
   private extractTrainingData(
     _modelId: string,
-    clusters: { domain?: string; [k: string]: unknown }
+    clusters: { domain?: string; [k: string]: any }
   ): {
     domain?: string;
     examples: Array<Record<string, unknown>>;
@@ -529,7 +529,7 @@ export class AutoencoderContextSwitcher {
   private async createDirectoryStructure(path: string): Promise<void> {
     console.log(`📁 Creating directory: ${path}`);
   }
-  private async writeToFile(path: string, _data: unknown): Promise<void> {
+  private async writeToFile(path: string, _data: any): Promise<void> {
     // data intentionally unused in this stub; typed as unknown
     console.log(`💾 Writing to file: ${path}`);
   }

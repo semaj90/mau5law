@@ -4,9 +4,9 @@
   import { spring } from 'svelte/motion';
   import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
   import { n64TextureLOD } from '$lib/webgpu/N64TextureLODSystem';
-  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
+  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
-  import DiamondModal from '$lib/components/ui/DiamondModal.svelte';
+  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
   interface EvidenceNode {
     id: string;
     type: 'document' | 'witness' | 'physical' | 'digital' | 'timeline';
@@ -18,8 +18,7 @@
     metadata: any;
     glyphData?: Uint8Array;
   }
-  interface EvidenceConnection {
-    from string;
+  interface EvidenceConnection { from: string;
     to: string;
     strength: number;
     type: 'causal' | 'temporal' | 'evidential' | 'contradictory';
@@ -42,7 +41,7 @@
   const TEXTURE_CACHE_SIZE = 1024; // 1KB per node texture
   let animationFrame: number;
   let mousePos = { x: 0, y: 0 }
-  let isDragging = false;
+  let isDragging = $state(false);
   let lastMousePos = { x: 0, y: 0 }
   onMount(async () => {
     await initializeBoard();
@@ -96,7 +95,7 @@
       lastMousePos = { x: mousePos.x, y: mousePos.y }
     });
     canvas.addEventListener('mouseup', () => {
-      isDragging = false;
+      isDragging = $state(false);
     });
     canvas.addEventListener('click', () => {
       if (hoveredNode) {
@@ -304,7 +303,7 @@
     connections = sampleConnections; // Fixed typo
     // Cache the state
     await multiLayerCache.set('evidence-board-state', { nodes, connections }, 1800, 200);
-    isProcessing = false;
+    isProcessing = $state(false);
   }
   function startRendering() {
     function render() {
@@ -555,7 +554,6 @@
     URL.revokeObjectURL(url);
   }
 </script>
-
 <div class="evidence-board-container">
   <!-- 3D Canvas -->
   <canvas bind:this={canvas} width={1200} height={800} class="evidence-canvas"></canvas>
@@ -609,21 +607,18 @@
       </div>
       <div class="detail-connections">
         <h4>Connections ({selectedNode.connections.length})</h4>
-        {#each selectedNode.connections as connectionId}
+        {#each Array.isArray(selectedNode.connections) ? selectedNode.connections : [] as connectionId}
           {@const connectedNode = nodes.find(n => n.id === connectionId)}
           {#if connectedNode}
             <div class="connection-item">
               <span class="connection-icon">🔗</span>
               <span>{connectedNode.title}</span>
               <span class="connection-type">({connectedNode.type})</span>
-            </div>
-          {/if}
+            {/if}
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </DiamondModal>
-
 <style>
   .evidence-board-container {
     position: relative; /* Fixed syntax */
@@ -733,7 +728,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #8a2be2, #4b0082);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .priority-value {
     color: #8a2be2;
@@ -773,5 +768,3 @@
     font-size: 0.8rem;
   }
 </style>
-
-

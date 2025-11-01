@@ -65,14 +65,14 @@ https://svelte.dev/e/js_parse_error -->
   filteredEvidence = $derived(() => {
     return evidence
       .filter((item) => {
-        if (caseId && (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).caseId !== caseId) return false;
+        if (caseId && (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).caseId !== caseId) return false;
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
           const searchableText = [
-            (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title,
-            (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description,
-            (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type,
-            ...((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).tags || []),
+            (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title,
+            (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description,
+            (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type,
+            ...((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).tags || []),
           ]
             .join.toLowerCase();
           if (!searchableText.includes(query)) return false;
@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
         return true;
       })
       .sort((a, b) => {
-        let aVal: unknown, bVal: unknown;
+        let aVal: any, bVal: any;
         switch (sortBy) {
           case "date":
             aVal = new Date(a.timeline?.updatedAt || 0);
@@ -170,8 +170,8 @@ https://svelte.dev/e/js_parse_error -->
         ? `/api/evidence?caseId=${caseId}`
         : "/api/evidence";
       // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const serverEvidence = await (response as { ok?: unknown; json?: unknown }).json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const serverEvidence = await (response as { ok?: any; json?: any }).json();
         await lokiEvidenceService.syncWithServer(serverEvidence);
         evidenceStore.evidence.set(serverEvidence);
         lastUpdateTime = new Date().toISOString();
@@ -485,7 +485,7 @@ https://svelte.dev/e/js_parse_error -->
       <div
         class="mx-auto px-4 max-w-7xl"
       >
-        {#each paginatedEvidence as item ((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+        {#each paginatedEvidence as item ((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
           <div
             class="mx-auto px-4 max-w-7xl"
           >
@@ -495,16 +495,16 @@ https://svelte.dev/e/js_parse_error -->
                 <input
                   type="checkbox"
                   checked={selectedEvidence.has.id)}
-                  onchange={() => toggleSelection((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  onchange={() => toggleSelection((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                   class="mx-auto px-4 max-w-7xl"
                 />
                 <svelte:component
-                  this={getTypeIcon((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type)}
+                  this={getTypeIcon((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type)}
                   class="mx-auto px-4 max-w-7xl"
                 />
               </div>
               <div class="mx-auto px-4 max-w-7xl">
-                {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).classification?.relevance !== undefined}
+                {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).classification?.relevance !== undefined}
                   <span
                     class="mx-auto px-4 max-w-7xl"
                   >
@@ -514,39 +514,39 @@ https://svelte.dev/e/js_parse_error -->
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => (editingEvidence = (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  onclick={() => (editingEvidence = (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                 >
                   <Eye class="w-4 h-4" />
                 </Button>
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => deleteEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  onclick={() => deleteEvidence((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                 >
                   <Trash2 class="w-4 h-4" />
                 </Button>
               </div>
             </div>
             <!-- Content -->
-            {#if editingEvidence === (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id}
+            {#if editingEvidence === (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id}
               <div class="mx-auto px-4 max-w-7xl">
                 <input
                   type="text"
-                  bind:value={(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title}
+                  bind:value={(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title}
                   class="mx-auto px-4 max-w-7xl"
                   placeholder="Evidence title"
                 />
                 <textarea
-                  bind:value={(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
+                  bind:value={(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description}
                   class="mx-auto px-4 max-w-7xl"
                   placeholder="Description"
                 ></textarea>
                 <div class="mx-auto px-4 max-w-7xl">
                   <Button class="bits-btn"
                     size="sm"
-                    onclick={() => updateEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id, {
-                        title: (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title,
-                        description: (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description,
+                    onclick={() => updateEvidence((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id, {
+                        title: (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title,
+                        description: (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description,
                       })}
                   >
                     Save
@@ -562,30 +562,30 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             {:else}
               <h3 class="mx-auto px-4 max-w-7xl">
-                {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title}
+                {(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title}
               </h3>
-              {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
+              {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description}
                 <p class="mx-auto px-4 max-w-7xl">
-                  {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
+                  {(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description}
                 </p>
               {/if}
               <!-- Metadata -->
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
                   <Tag class="mx-auto px-4 max-w-7xl" />
-                  <span>{(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type}</span>
+                  <span>{(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type}</span>
                 </div>
-                {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).timeline?.createdAt}
+                {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).timeline?.createdAt}
                   <div class="mx-auto px-4 max-w-7xl">
                     <Calendar class="mx-auto px-4 max-w-7xl" />
-                    <span>{formatDate((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).timeline.createdAt)}</span>
+                    <span>{formatDate((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).timeline.createdAt)}</span>
                   </div>
                 {/if}
               </div>
               <!-- Tags -->
-              {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).tags?.length}
+              {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).tags?.length}
                 <div class="mx-auto px-4 max-w-7xl">
-                  {#each (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).tags as tag}
+                  {#each (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).tags as tag}
                     <span
                       class="mx-auto px-4 max-w-7xl"
                       >{tag}</span
@@ -636,7 +636,7 @@ https://svelte.dev/e/js_parse_error -->
             </tr>
           </thead>
           <tbody class="mx-auto px-4 max-w-7xl">
-            {#each paginatedEvidence as item ((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+            {#each paginatedEvidence as item ((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
               <tr
                 class="mx-auto px-4 max-w-7xl"
               >
@@ -644,38 +644,38 @@ https://svelte.dev/e/js_parse_error -->
                   <input
                     type="checkbox"
                     checked={selectedEvidence.has.id)}
-                  onchange={() => toggleSelection((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  onchange={() => toggleSelection((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                     class="mx-auto px-4 max-w-7xl"
                   />
                 </td>
                 <td class="mx-auto px-4 max-w-7xl">
                   <div class="mx-auto px-4 max-w-7xl">
                     <svelte:component
-                      this={getTypeIcon((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type)}
+                      this={getTypeIcon((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type)}
                       class="mx-auto px-4 max-w-7xl"
                     />
                     <div>
                       <div class="mx-auto px-4 max-w-7xl">
-                        {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title}
+                        {(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title}
                       </div>
-                      {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
+                      {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description}
                         <div class="mx-auto px-4 max-w-7xl">
-                          {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
+                          {(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description}
                         </div>
                       {/if}
                     </div>
                   </div>
                 </td>
                 <td class="mx-auto px-4 max-w-7xl"
-                  >{(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type}</td
+                  >{(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type}</td
                 >
                 <td class="mx-auto px-4 max-w-7xl">
-                  {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).timeline?.createdAt
-                    ? formatDate((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).timeline.createdAt)
+                  {(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).timeline?.createdAt
+                    ? formatDate((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).timeline.createdAt)
                     : "-"}
                 </td>
                 <td class="mx-auto px-4 max-w-7xl">
-                  {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).classification?.relevance !== undefined}
+                  {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).classification?.relevance !== undefined}
                     <span
                       class="mx-auto px-4 max-w-7xl"
                     >
@@ -692,14 +692,14 @@ https://svelte.dev/e/js_parse_error -->
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      onclick={() => (editingEvidence = (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                      onclick={() => (editingEvidence = (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                     >
                       <Eye class="w-4 h-4" />
                     </Button>
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      onclick={() => deleteEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                      onclick={() => deleteEvidence((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                     >
                       <Trash2 class="w-4 h-4" />
                     </Button>

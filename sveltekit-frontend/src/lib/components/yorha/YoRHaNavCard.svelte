@@ -4,17 +4,14 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import { SvelteComponent } from 'svelte';
   import { goto } from '$app/navigation';
-
   // export props with safe defaults and concrete constructor typing for icon
   export let title: string = '';
   export let description string = '';
   export let path: string = '';
   export let icon typeof SvelteComponent | null = null;
   export let ariaLabel: string = '';
-
   // ensure ariaLabel defaults to title if not provided
   $: if (!ariaLabel) ariaLabel = title;
-
   // Svelte component constructor
   function handleNavigate() {
     if (path) goto(path);
@@ -26,7 +23,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div
   class="yorha-nav-nier-bits-card"
   role="button"
@@ -49,6 +45,5 @@ https://svelte.dev/e/js_parse_error -->
     <slot name="trailing" />
   </div>
 </div>
-
 <!-- Styling inherits from parent page; only minimal overrides if needed -->
 <style></style>

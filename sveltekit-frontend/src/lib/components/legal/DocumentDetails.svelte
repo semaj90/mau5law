@@ -5,14 +5,12 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
-
   // Correct prop destructuring and types for Svelte 5
   let {
     documentId = '',
     isVisible = false,
     onClose = () => {}
   }: { documentId?: string; isVisible?: boolean; onClose?: () => void } = $props();
-
   // Reactive state management
   const documentData = writable<any>(null);
   const isLoading = writable<boolean>(false);
@@ -26,14 +24,12 @@ https://svelte.dev/e/js_parse_error -->
   let showGPUAnalysis = $state(false);
   let cacheHitTime = $state(0);
   let serverFetchTime = $state(0);
-
   // Node click handler with cache-first strategy
   async function loadDocumentDetails(docId: string, forceRefresh = false) {
     if (!docId) return;
     const startTime = performance.now();
     isLoading.set(true);
     errorMessage.set(null);
-
     try {
       // THE FAST PATH: Check IndexedDB cache first
       if (!forceRefresh) {
@@ -46,7 +42,6 @@ https://svelte.dev/e/js_parse_error -->
           displayDocumentDetails(cachedDocument);
           loadingSource.set(null);
           isLoading.set(false);
-
           // Check if cache is still fresh (5 minutes)
           const cacheAge = Date.now() - new Date(cachedDocument.lastAccessed).getTime();
           const cacheTimeout = 5 * 60 * 1000; // 5 minutes
@@ -61,7 +56,6 @@ https://svelte.dev/e/js_parse_error -->
           console.log('❌ CACHE MISS! Document not in IndexedDB');
         }
       }
-
       // THE SLOW PATH: Fetch from server
       await fetchAndCacheDocument(docId, forceRefresh);
     } catch (error) {
@@ -71,14 +65,12 @@ https://svelte.dev/e/js_parse_error -->
       loadingSource.set(null);
     }
   }
-
   // Server fetch with caching
   async function fetchAndCacheDocument(docId: string, includeGPU = false) {
     const serverStartTime = performance.now();
     loadingSource.set('server');
     console.log('🌐 Fetching from server with full analysis...');
     const url = `/api/document/${docId}${includeGPU ? '?gpu=true' : ''}`;
-
     // perform network request
     const response = await fetch(url);
     if (!response.ok) {
@@ -88,7 +80,6 @@ https://svelte.dev/e/js_parse_error -->
     serverFetchTime = performance.now() - serverStartTime;
     console.log(`🚀 Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
     console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
-
     // Build a safe cache entry (cast to any to avoid strict schema mismatch here)
     const doc = (data && (data.document ?? data)) as any;
     const cacheEntry: any = {
@@ -109,7 +100,6 @@ https://svelte.dev/e/js_parse_error -->
       lastAccessed: new Date().toISOString(),
       cacheSize: JSON.stringify((doc.content && doc.content.length) || 0)
     };
-
     // Store in IndexedDB with error handling
     try {
       await legalDB.documentCache.put(cacheEntry);
@@ -117,19 +107,16 @@ https://svelte.dev/e/js_parse_error -->
     } catch (cacheError) {
       console.warn('⚠️ Failed to cache document:', cacheError);
     }
-
     // Update UI with server data
     displayDocumentDetails(data);
     loadingSource.set(null);
     isLoading.set(false);
   }
-
   // Display document details (unified function for cache and server data)
-  function displayDocumentDetails(data: unknown) {
+  function displayDocumentDetails(data: any) {
     const obj = data as any;
     const doc = obj.document ?? obj;
     const metadata = obj.metadata ?? obj;
-
     documentData.set({
       id: doc.id ?? doc.documentId ?? null,
       title: doc.title ?? '',
@@ -139,14 +126,12 @@ https://svelte.dev/e/js_parse_error -->
       created_at: doc.created_at ?? null,
       updated_at: doc.updated_at ?? null
     });
-
     relatedDocuments.set(obj.related_documents ?? metadata.related_documents ?? []);
     graphConnections.set(obj.graph_connections ?? metadata.graph_connections ?? []);
     caseAssociations.set(obj.case_associations ?? metadata.case_associations ?? []);
     gpuAnalysis.set(obj.gpu_analysis ?? metadata.gpu_analysis ?? null);
     processingMetrics.set(obj.enhanced_metadata ?? metadata.enhanced_metadata ?? null);
   }
-
   // Reactive updates when documentId or visibility changes
   // CHANGED: use Svelte 5 rune $effect instead of legacy $:
   $effect(() => {
@@ -154,18 +139,16 @@ https://svelte.dev/e/js_parse_error -->
       loadDocumentDetails(documentId);
     }
   });
-
   // GPU Analysis toggle
   async function toggleGPUAnalysis() {
     if (!showGPUAnalysis && documentId) {
       showGPUAnalysis = true;
       await fetchAndCacheDocument(documentId, true);
     } else {
-      showGPUAnalysis = false;
+      showGPUAnalysis = $state(false);
       gpuAnalysis.set(null);
     }
   }
-
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -173,14 +156,12 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function formatDuration(ms: number): string {
     if (!ms) return '0ms';
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
 </script>
-
 <!-- Document Details Modal -->
 {#if isVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -218,8 +199,7 @@ https://svelte.dev/e/js_parse_error -->
               Loading document details...
             {/if}
           </p>
-        </div>
-      {/if}
+        {/if}
       <!-- Error State -->
       {#if $errorMessage}
         <div class="p-8 text-center">
@@ -231,8 +211,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             Retry
           </button>
-        </div>
-      {/if}
+        {/if}
       <!-- Document Content -->
       {#if $documentData && !$isLoading}
         <div class="overflow-y-auto max-h-[calc(90vh-120px)]">
@@ -342,10 +321,8 @@ https://svelte.dev/e/js_parse_error -->
                           {$gpuAnalysis.legalAnalysis.conceptClusters?.join(', ') || 'None detected'}
                         </p>
                       </div>
-                    </div>
-                  {/if}
-                </div>
-              {/if}
+                    {/if}
+                {/if}
             </div>
             <!-- Sidebar: Related Information -->
             <div class="space-y-6">
@@ -356,7 +333,7 @@ https://svelte.dev/e/js_parse_error -->
                     🔗 Related Documents ({$relatedDocuments.length})
                   </h3>
                   <div class="space-y-3 max-h-64 overflow-y-auto">
-                    {#each $relatedDocuments as doc}
+                    {#each Array.isArray($relatedDocuments) ? $relatedDocuments : [] as doc}
                       <div class="bg-gray-50 rounded p-3 text-sm">
                         <h4 class="font-medium text-gray-800">{doc.title}</h4>
                         <p class="text-gray-600 text-xs mt-1">
@@ -370,8 +347,7 @@ https://svelte.dev/e/js_parse_error -->
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/if}
+                {/if}
               <!-- Graph Connections -->
               {#if $graphConnections.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -379,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
                     🌐 Knowledge Graph ({$graphConnections.length})
                   </h3>
                   <div class="space-y-3 max-h-64 overflow-y-auto">
-                    {#each $graphConnections as conn}
+                    {#each Array.isArray($graphConnections) ? $graphConnections : [] as conn}
                       <div class="bg-gray-50 rounded p-3 text-sm">
                         <div class="flex items-center gap-2 mb-1">
                           <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
@@ -394,8 +370,7 @@ https://svelte.dev/e/js_parse_error -->
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/if}
+                {/if}
               <!-- Case Associations -->
               {#if $caseAssociations.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -403,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
                     ⚖️ Associated Cases ({$caseAssociations.length})
                   </h3>
                   <div class="space-y-3 max-h-64 overflow-y-auto">
-                    {#each $caseAssociations as caseItem}
+                    {#each Array.isArray($caseAssociations) ? $caseAssociations : [] as caseItem}
                       <div class="bg-gray-50 rounded p-3 text-sm">
                         <h4 class="font-medium text-gray-800">{caseItem.title}</h4>
                         <div class="flex items-center gap-2 mt-1">
@@ -417,8 +392,7 @@ https://svelte.dev/e/js_parse_error -->
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/if}
+                {/if}
               <!-- Processing Metrics -->
               {#if $processingMetrics}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -457,19 +431,14 @@ https://svelte.dev/e/js_parse_error -->
                             <span class="font-mono">{$processingMetrics.server_processing.vector_search_time}</span>
                           </div>
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .line-clamp-2 {
     display: -webkit-box;

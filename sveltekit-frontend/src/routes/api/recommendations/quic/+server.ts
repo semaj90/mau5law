@@ -12,7 +12,7 @@ type RecommendationResult = {
   tensorMetrics?: { tensorCoresUsed?: boolean };
   metadata?: { simdOptimized?: boolean };
   // replaced `any` with `unknown` to avoid linter error and improve type-safety
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type QuicRecommendationEngine = {
@@ -27,7 +27,7 @@ type QuicRecommendationEngine = {
     useTensorCores?: boolean;
   }): Promise<RecommendationResult>;
   benchmarkPerformance?(query: string): Promise<unknown>;
-  getConnectionInfo?(): unknown;
+  getConnectionInfo?(): any;
 };
 // --- end added types ---
 

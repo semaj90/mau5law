@@ -1,10 +1,10 @@
 <script lang="ts">
-  	import Button from '$lib/components/ui/enhanced-bits';
+  	import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
   	// Built-in modal components
-  	function ConfirmModal({ props, onConfirm, onClose }: unknown) {
+  	function ConfirmModal({ props, onConfirm, onClose }: any) {
   		return {
   			title: 'Confirm Action',
   			content: props.message,
@@ -22,7 +22,7 @@
   			]
   		}
   }
-  	function AlertModal({ props, onClose }: unknown) {
+  	function AlertModal({ props, onClose }: any) {
   		return {
   			title: 'Alert',
   			content: props.message,
@@ -35,7 +35,7 @@
   			]
   		}
   }
-  	function PromptModal({ props, onConfirm, onClose }: unknown) {/* JSX syntax converted to Svelte */}"
+  	function PromptModal({ props, onConfirm, onClose }: any) {/* JSX syntax converted to Svelte */}"
   						value="${inputValue}"
   						autofocus
   					/>
@@ -70,11 +70,11 @@
   		}
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }
-  	function handleBackdropClick(_event: MouseEvent, modal: unknown) {
+  	function handleBackdropClick(_event: MouseEvent, modal: any) {
   		if (event.target === event.currentTarget && !modal.persistent) {
   			modals.close(modal.id);
   }}
-  	function handleKeydown(_event: KeyboardEvent, modal: unknown) {
+  	function handleKeydown(_event: KeyboardEvent, modal: any) {
   		if (event.key === 'Escape' && modal.closable) {
   			modals.close(modal.id);
   }}
@@ -136,8 +136,7 @@
 							<iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
 						</button>
 					{/if}
-				</div>
-			{/if}
+				{/if}
 			<!-- Content -->
 			<div class="space-y-4">
 				{#if modal.component && typeof modal.component === 'string' && modal.component in builtInComponents}
@@ -155,7 +154,7 @@
 					<!-- Built-in component actions -->
 					{#if builtInModal.actions}
 						<div class="space-y-4">
-							{#each builtInModal.actions as action}
+							{#each Array.isArray(builtInModal.actions) ? builtInModal.actions : [] as action}
 								<Button class="bits-btn"
 									variant={action.variant}
 									onclick={() =>
@@ -164,8 +163,7 @@ action.action()}
 									{action.label}
 </Button>
 							{/each}
-						</div>
-					{/if}
+						{/if}
 				{:else if modal.component}
 					<!-- Custom Svelte component -->
 					<modal.component
@@ -177,8 +175,7 @@ action.action()}
 					<!-- Default slot content -->
 					<div class="space-y-4">
 						Modal content goes here
-					</div>
-				{/if}
+					{/if}
 			</div>
 		</div>
 	</div>

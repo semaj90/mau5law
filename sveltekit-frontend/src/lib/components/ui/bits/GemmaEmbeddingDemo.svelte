@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from './Button.svelte';
-  import Input from './Input.svelte';
-  import Card from './Card.svelte';
-  import SearchInput from './SearchInput.svelte';
+  import { Button } from './Button.svelte';
+  import { Input } from './Input.svelte';
+  import { Card } from './Card.svelte';
+  import { SearchInput } from './SearchInput.svelte';
   import { z } from "zod";
   import {
     Brain,
@@ -76,7 +76,7 @@
         embeddingWorker.onerror = handleWorkerError;
       } catch (err) {
         console.warn('Could not initialize embeddings worker:', err);
-        useWorker = false;
+        useWorker = $state(false);
       }
     }
     return () => {
@@ -103,12 +103,12 @@
           timestamp: new Date().toISOString();
         }
       }
-      isGenerating = false;
+      isGenerating = $state(false);
     }
   }
   function handleWorkerError(_event: ErrorEvent) {
     error = `Worker error: ${event.message}`;
-    isGenerating = false;
+    isGenerating = $state(false);
   }
   // Validate form data
   function validateForm(): boolean {
@@ -200,7 +200,7 @@
     } finally {
       // Only set false if we're not waiting for worker
       if (!embeddingWorker || error.includes('API unavailable')) {
-        isGenerating = false;
+        isGenerating = $state(false);
       }
     }
   }
@@ -237,7 +237,7 @@
     } catch (err: any) {
       error = err.message || 'Search error occurred';
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   // Load system stats
@@ -265,7 +265,6 @@
   let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
   let canSearch = $derived(searchQuery.trim().length > 0);
 </script>
-
 <div class="gemma-demo-container">
   <!-- Header -->
   <Card title="🧠 Gemma Embeddings + Enhanced-Bits Demo" nesStyle={true} variant="legal">
@@ -367,8 +366,7 @@
               </p>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if error}
         <div class="error-display">
           <div class="nes-container is-rounded">
@@ -377,8 +375,7 @@
               {error}
             </p>
           </div>
-        </div>
-      {/if}
+        {/if}
     {/snippet}
   </Card>
   <!-- Search Section -->
@@ -414,7 +411,7 @@
           {#if searchResults.length > 0}
             <div class="search-results">
               <h4 class="nes-text">Search Results:</h4>
-              {#each searchResults as result}
+              {#each Array.isArray(searchResults) ? searchResults : [] as result}
                 <div class="search-result-item">
                   <div class="result-content">
                     <p class="nes-text">
@@ -440,7 +437,6 @@
     </Card>
   {/if}
 </div>
-
 <style>
   .gemma-demo-container {
     max-width: 1000px;
@@ -596,5 +592,3 @@
     }
   }
 </style>
-
-

@@ -79,7 +79,6 @@
     }
   });
 </script>
-
 <div class={containerClasses} onclick={handleThumbnailClick} {...restProps}>
   {#if evidence.thumbnailUrl}
     <!-- Image/Video Thumbnail -->
@@ -92,7 +91,7 @@
     <!-- AI Highlights Overlay -->
     {#if showAIOverlay && isLoaded && aiHighlights.length > 0}
       <div class="absolute inset-0">
-        {#each aiHighlights as highlight}
+        {#each Array.isArray(aiHighlights) ? aiHighlights : [] as highlight}
           <div
             class="absolute border-2 border-yellow-400 bg-yellow-400/20"
             style="
@@ -107,8 +106,7 @@
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Play Button for Video/Audio -->
     {#if (evidence.type === 'video' || evidence.type === 'audio') && showControls}
       <div class="absolute inset-0 flex items-center justify-center bg-black/30">
@@ -117,14 +115,12 @@
         {:else}
           <Play class="w-6 h-6 text-white drop-shadow-lg" />
         {/if}
-      </div>
-    {/if}
+      {/if}
   {:else}
     <!-- Fallback Icon Display -->
     <div class="w-full h-full flex items-center justify-center bg-gray-200">
       <svelte:component this={getEvidenceIcon(evidence.type)} class="w-8 h-8 {getTypeColor(evidence.type)}" />
-    </div>
-  {/if}
+    {/if}
   <!-- Type Badge -->
   <div class="absolute top-1 right-1">
     <span class="px-1 py-0.5 bg-black/70 text-white text-xs rounded">
@@ -135,8 +131,7 @@
   {#if showHashVerification && evidence.hash}
     <div class="absolute bottom-1 right-1">
       <Shield class="w-3 h-3 text-green-500" title="Hash Verified" />
-    </div>
-  {/if}
+    {/if}
   <!-- Controls Overlay -->
   {#if showControls && size !== 'sm'}
     <div class="absolute bottom-1 left-1 flex gap-1 opacity-0 hover:opacity-100 transition-opacity">
@@ -146,8 +141,7 @@
       <button class="p-1 bg-black/70 text-white rounded hover:bg-black/90" title="Download">
         <Download class="w-3 h-3" />
       </button>
-    </div>
-  {/if}
+    {/if}
   <!-- AI Confidence Indicator -->
   {#if evidence.confidence && evidence.confidence > 0}
     <div class="absolute top-1 left-1">
@@ -158,10 +152,8 @@
         class:bg-red-500={evidence.confidence <= 0.6}
         title="AI Confidence: {Math.round(evidence.confidence * 100)}%"
       ></div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* Additional hover effects for legal evidence */
   .nes-container: hover {

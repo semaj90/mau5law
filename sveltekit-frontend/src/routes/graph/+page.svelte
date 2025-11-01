@@ -61,7 +61,7 @@ await loadEngineData();
         }
       }
     } finally {
-      isExecuting = false;
+      isExecuting = $state(false);
     }
   }
   async function useHotQuery(query) {
@@ -164,7 +164,7 @@ await loadEngineData();
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-4">
       <h3 class="font-bold text-nier-accent-warm mb-3">Hot Queries</h3>
       <div class="space-y-2">
-        {#each hotQueries.slice(0, 3) as query}
+        {#each Array.isArray(hotQueries.slice(0, 3)) ? hotQueries.slice(0, 3) : [] as query}
           <button
             onclick={() => useHotQuery(query.query)}
             class="w-full text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
@@ -252,7 +252,7 @@ await loadEngineData();
           Common Queries
         </label>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {#each commonQueries as query}
+          {#each Array.isArray(commonQueries) ? commonQueries : [] as query}
             <button
               onclick={() => { queryInput = query,}}
               class="text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
@@ -297,7 +297,7 @@ await loadEngineData();
               Nodes ({queryResult.nodes?.length || 0})
             </h4>
             <div class="space-y-2 max-h-64 overflow-y-auto">
-              {#each queryResult.nodes || [] as node}
+              {#each Array.isArray(queryResult.nodes || []) ? queryResult.nodes || [] : [] as node}
                 <div class="bg-nier-bg-primary border border-nier-border-muted rounded p-3">
                   <div class="flex justify-between items-center mb-2">
                     <span class="font-mono text-sm text-nier-accent-warm">{node.type}</span>
@@ -319,7 +319,7 @@ await loadEngineData();
               Edges ({queryResult.edges?.length || 0})
             </h4>
             <div class="space-y-2 max-h-64 overflow-y-auto">
-              {#each queryResult.edges || [] as edge}
+              {#each Array.isArray(queryResult.edges || []) ? queryResult.edges || [] : [] as edge}
                 <div class="bg-nier-bg-primary border border-nier-border-muted rounded p-3">
                   <div class="font-mono text-sm text-nier-accent-warm mb-1">{edge.label}</div>
                   <div class="text-xs text-nier-text-muted">
@@ -342,7 +342,7 @@ await loadEngineData();
               Recommendations ({queryResult.recommendations.length})
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {#each queryResult.recommendations as rec}
+              {#each Array.isArray(queryResult.recommendations) ? queryResult.recommendations : [] as rec}
                 <div class="bg-nier-bg-primary border border-blue-500/30 rounded p-3">
                   <div class="font-mono text-sm text-blue-400 mb-1">{rec.type}</div>
                   <div class="text-sm text-nier-text-primary">{rec.label}</div>
@@ -361,7 +361,7 @@ await loadEngineData();
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
       <h3 class="font-bold text-nier-accent-warm mb-4">Query History</h3>
       <div class="space-y-3">
-        {#each queryHistory as historyItem}
+        {#each Array.isArray(queryHistory) ? queryHistory : [] as historyItem}
           <div class="bg-nier-bg-primary border border-nier-border-muted rounded p-3">
             <div class="flex justify-between items-center mb-2">
               <span class="font-mono text-sm">{historyItem.query}</span>

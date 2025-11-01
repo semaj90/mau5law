@@ -13,7 +13,7 @@ class RealTimeServer {
   private redisClient: any;
   private redisSub: any;
   private clients: Map<string, ClientConnection> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor(port: number = 3030) {
     this.wss = new WebSocketServer({ port });
     this.setupWebSocketServer();

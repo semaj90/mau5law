@@ -113,7 +113,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return document as LegalDocument;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -225,7 +225,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return { documents: documents as any[], totalCount: totalCount ?? 0 };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -452,7 +452,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return evidence as Evidence;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -519,7 +519,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return updatedEvidence as Evidence;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -598,7 +598,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return { isValid, evidence, chainValidation };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger
@@ -672,7 +672,7 @@ export class JsonbLegalService {
         .catch(() => {});
 
       return { nodes, edges };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       await logger

@@ -22,7 +22,7 @@ export interface PerformanceMetrics {
   cpu_usage?: number;
   memory_usage?: number;
   disk_io?: number;
-  [key: string]: unknown; // Allow additional metrics
+  [key: string]: any; // Allow additional metrics
 }
 export interface WindowsService {
   name: string;
@@ -162,7 +162,7 @@ export interface RustBridgeConfig {
 export interface RustBridgeError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
   timestamp: string;
   stack?: string;
 }
@@ -173,7 +173,7 @@ export interface SystemEvent {
   message: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   source: string;
-  metadata?: unknown;
+  metadata?: any;
 }
 // Legal AI specific integration types
 export interface LegalAISystemStatus {

@@ -63,7 +63,7 @@ export const ADVANCED_COMPONENTS = {
 // ======================================
 /**
  * shadcn/ui style compound exports
- * Import as: import * as Card from '$lib/components/ui/enhanced-bits/compound/card'
+ * Import as: import * as Card from '$lib/components/ui/enhanced-bits/compound/card.svelte''
  */
 export const CompoundComponents = {
   Card: {

@@ -73,9 +73,9 @@ interface FeedbackTestPayload {
 interface MonitoringPerformance {
 	overall?: {
 		p95?: number;
-		[key: string]: unknown;
+		[key: string]: any;
 	};
-	[key: string]: unknown;
+	[key: string]: any;
 }
 
 interface MonitoringTestPayload {
@@ -108,15 +108,15 @@ type ExtendedCacheStats = CacheStats & {
 	redisConnected?: boolean;
 	hotCacheSize?: number;
 	lruCacheSize?: number;
-	redisStats?: unknown;
+	redisStats?: any;
 };
 
 const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
-const toErrorMessage = (error: unknown): string =>
+const toErrorMessage = (error: any): string =>
 	error instanceof Error ? error.message : String(error ?? 'Unknown error');
 
-const toNumber = (value: unknown, fallback = 0): number => {
+const toNumber = (value: any, fallback = 0): number => {
 	const parsed = Number(value);
 	return Number.isFinite(parsed) ? parsed : fallback;
 };
@@ -399,8 +399,8 @@ async function testOllama(): Promise<TestResult<OllamaTestPayload>> {
 		const latencyMs = now() - healthStart;
 		const available = health.available;
 
-		let generationWorked = false;
-		let embeddingsWorked = false;
+		let generationWorked = $state(false);
+		let embeddingsWorked = $state(false);
 
 		if (available) {
 			if (typeof ollamaLLM.generate === 'function') {
@@ -633,7 +633,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const payload = (await request.json()) as {
 			query?: string;
-			context?: unknown;
+			context?: any;
 		};
 
 		if (!payload?.query || typeof payload.query !== 'string') {

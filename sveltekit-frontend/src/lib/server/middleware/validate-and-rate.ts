@@ -1,14 +1,12 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import type { ZodTypeAny } from 'zod';
 import { RedisCacheService } from '$lib/server/services/redis-cache';
-
 type RateOptions = {
   capacity?: number; // max tokens
   refillPerSecond?: number; // tokens per second
   keyPrefix?: string; // redis key prefix
   identifierFromRequest?: (req: Request) => string; // extracts id (ip / api key)
 };
-
 /**
  * Wrap a SvelteKit RequestHandler with Zod validation and a Redis-backed token-bucket rate limiter.
  * Usage:
@@ -24,7 +22,6 @@ export function withValidationAndRate(
   const keyPrefix = opts.keyPrefix ?? 'rl:';
   const identifierFromRequest =
     opts.identifierFromRequest ?? ((req: Request) => req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'anon');
-
   return async (event) => {
     // Validate body if schema provided
     if (schema) {
@@ -39,7 +36,6 @@ export function withValidationAndRate(
         });
       }
     }
-
     // Rate limiting
     try {
       const id = identifierFromRequest(event.request) || 'anon';
@@ -56,7 +52,6 @@ export function withValidationAndRate(
           last = now;
         }
       }
-
       if (tokens >= 1) {
         tokens = tokens - 1;
         // persist state for 2x capacity seconds to give the key time to expire
@@ -72,12 +67,10 @@ export function withValidationAndRate(
       // On Redis error, fail-open but log to server console
       console.error('Rate limiter internal error', err);
     }
-
     // Call the original handler
     return handler(event);
   };
 }
-
 // Small helper to generate a Zod wrapper around a shape
 export function schemaFor<T extends ZodTypeAny>(s: T): T {
   return s;

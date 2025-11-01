@@ -36,7 +36,7 @@ https://svelte.dev/e/attribute_duplicate -->
     persistent = false,
     value = "",
     children
-  : unknown } = $props();
+  : any } = $props();
   let dialogElement = $state<HTMLDivElement | null>(null);
   let inputElement = $state<HTMLInputElement | null>(null);
   let promptValue = $state(value);
@@ -218,11 +218,10 @@ https://svelte.dev/e/attribute_duplicate -->
       <!-- Terminal Scan Effect -->
       <div class="scan-effect" style="background: {config.color}"></div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .yorha-dialog-backdrop {
-position fixed;
+position: fixed;
 top: 0,
     left: 0;
     right: 0,
@@ -233,7 +232,7 @@ align-items: center justify-content: center background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(1px);
   }
   .yorha-dialog {
-position relative;
+position: relative;
 background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid;
     font-family: var(--yorha-font-primary, "JetBrains Mono", monospace);
@@ -373,7 +372,7 @@ background: currentColor color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 12px;
   }
 /* Terminal Scan Effect */ .scan-effect {
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;

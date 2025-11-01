@@ -39,7 +39,7 @@ interface OllamaSystemStatus {
 }
 
 // New small helpers to avoid: 'any' casts and to create a timeout-able AbortSignal
-function getErrorMessage(e: unknown): string {
+function getErrorMessage(e: any): string {
   // Prefer Error.message when available, otherwise try JSON/stringify fallback
   if (e instanceof Error) return e.message;
   try {
@@ -56,7 +56,7 @@ function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal; clear: ()
 }
 
 // New type guard for embeddings response
-function isEmbeddingsResponse(obj: unknown): obj is { embedding: number[] } {
+function isEmbeddingsResponse(obj: any): obj is { embedding: number[] } {
   if (typeof obj !== 'object' || obj === null) return false;
   const maybe = obj as Record<string, unknown>;
   if (!Array.isArray(maybe.embedding)) return false;
@@ -110,7 +110,7 @@ export interface OllamaGenerateResponse {
 
 class OllamaService {
   private baseUrl: string;
-  private isAvailable = false;
+  private isAvailable = $state(false);
   private availableModels: OllamaModelInfo[] = [];
   private gemma3Model: string | null = null;
 
@@ -142,7 +142,7 @@ class OllamaService {
       }
     } catch (err) {
       console.warn('Ollama initialize failed', getErrorMessage(err));
-      this.isAvailable = false;
+      this.isAvailable = $state(false);
     }
     return false;
   }
@@ -155,10 +155,10 @@ class OllamaService {
       });
       if (response.ok) {
         // parse as unknown and validate shape instead of using `any`
-        const raw: unknown = await response.json();
+        const raw: any = await response.json();
 
         // Helper type-guard for a potential model object
-        const isModelObj = (obj: unknown): obj is OllamaModelInfo =>
+        const isModelObj = (obj: any): obj is OllamaModelInfo =>
           typeof obj === 'object' &&
           obj !== null &&
           typeof (obj as Record<string, unknown>).name === 'string' &&
@@ -341,7 +341,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
           const data = JSON.parse(trimmed) as OllamaGenerateResponse;
           if (data.response) yield data.response;
           if (data.done) return;
-        } catch (e: unknown) {
+        } catch (e: any) {
           // Ignore non-JSON partial lines but log at debug level for troubleshooting
           console.debug('OllamaService: ignored non-JSON partial line while streaming', {
             error: getErrorMessage(e),
@@ -355,7 +355,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
       try {
         const data = JSON.parse(buffer) as OllamaGenerateResponse;
         if (data.response) yield data.response;
-      } catch (e: unknown) {
+      } catch (e: any) {
         // Ignore leftover non-JSON buffer but log at debug level for troubleshooting
         console.debug('OllamaService: ignored leftover non-JSON buffer after stream ended', {
           error: getErrorMessage(e),
@@ -484,7 +484,7 @@ ${snippet}
         model: this.gemma3Model,
         timestamp: new Date().toISOString(),
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       return {
         summary: 'Analysis failed due to service error',
         keyPoints: [],

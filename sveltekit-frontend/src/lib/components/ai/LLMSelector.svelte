@@ -136,7 +136,7 @@
   const option = () => ({});
   const label = {};
   const selectedLabel = 'Select Model';
-  const open = false;
+  const open = $state(false);
   const selected = null;
   const isSelected = () => false;
   // Provider Icons
@@ -187,7 +187,7 @@
   function selectModel(model: LLMModel) {
     selectedModel = model;
     onModelChange(model);
-    isOpen = false;
+    isOpen = $state(false);
   }
   // Load model statuses on mount
   $effect(() => {
@@ -239,7 +239,6 @@
     availableModels = [...availableModels];
   }
 </script>
-
 <!-- LLM Selector Component -->
 <div class="w-full max-w-md">
   <!-- Label -->
@@ -329,7 +328,7 @@
                 </div>
                 <!-- Capabilities -->
                 <div class="flex flex-wrap gap-1 mt-2">
-                  {#each model.capabilities.slice(0, 3) as capability}
+                  {#each Array.isArray(model.capabilities.slice(0, 3)) ? model.capabilities.slice(0, 3) : [] as capability}
                     <span
                       class="inline-flex items-center px-1.5 py-0.5 rounded text-xs
                                 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
@@ -376,8 +375,7 @@
         {#if filteredModels.length === 0}
           <div class="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
             No models available for: "{filterBy}" filter
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Footer Actions -->
       <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
@@ -394,11 +392,9 @@
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 ;
-
 <style>
   /* @unocss-include */
 </style>

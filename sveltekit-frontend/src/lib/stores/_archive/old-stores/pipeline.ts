@@ -5,7 +5,7 @@ import { EventEmitter } from "events";
 // Local base event interface used throughout pipeline events
 export interface PipelineEventBase { type: string; ts: number; raw: any; [k: string]: any }
 export interface EvidenceUploadEvent extends PipelineEventBase { type: 'evidence.upload' }
-export interface AIResponseEvent extends PipelineEventBase { type: 'ai.response'; llmResult?: unknown }
+export interface AIResponseEvent extends PipelineEventBase { type: 'ai.response'; llmResult?: any }
 export type PipelineEvent = EvidenceUploadEvent | AIResponseEvent | PipelineEventBase;
 function createPipelineStore(){
   const events = writable<PipelineEvent[]>([]);

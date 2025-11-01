@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       query,
       totalResults: results.length,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // safe fallbacks for use in the mock response
     const safeQuery = query ?? '';
     const safeCaseId = caseId ?? 'mock-case-1';
@@ -241,7 +241,7 @@ async function searchEvidenceContent(query: string, options: SearchOptions): Pro
         contentMatch: qdrantMatch?.payload.content_snippet || null,
       };
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Qdrant search failed, falling back to PostgreSQL:', error);
     return await searchEvidenceSemantic(query, options);
   }
@@ -321,7 +321,7 @@ async function searchEvidenceHybrid(query: string, options: SearchOptions): Prom
 }
 
 // Lightweight Qdrant search shim — replace with real client integration as available
-async function searchEvidence(query: string, opts: { limit?: number; filter?: unknown }): Promise<QdrantHit[]> {
+async function searchEvidence(query: string, opts: { limit?: number; filter?: any }): Promise<QdrantHit[]> {
   try {
     // Try to use a qdrant client module if present (optional integration)
     const mod = await import('$lib/server/qdrant').catch(() => null);

@@ -6,30 +6,24 @@
  */
 import neo4j, { Driver, Session } from 'neo4j-driver';
 import { env } from '$env/dynamic/private';
-
 type LegalEntity = {
   name?: string;
   type?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type LegalDocument = {
   id?: string;
   entities?: LegalEntity[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 const NEO4J_URI = env.NEO4J_URI || 'bolt://localhost:7687';
 const NEO4J_USER = env.NEO4J_USER || 'neo4j';
 const NEO4J_PASS = env.NEO4J_PASS || 'password';
-
 class Neo4jClientService {
   private driver: Driver;
-
   constructor() {
     this.driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASS));
   }
-
   async mergeEntityRelations(legalDoc: LegalDocument) {
     const session: Session = this.driver.session();
     try {
@@ -50,7 +44,6 @@ class Neo4jClientService {
       await session.close();
     }
   }
-
   async getEntityGraph(limit = 100) {
     const session: Session = this.driver.session();
     try {
@@ -68,10 +61,8 @@ class Neo4jClientService {
       await session.close();
     }
   }
-
   async close() {
     await this.driver.close();
   }
 }
-
 export const Neo4jClient = new Neo4jClientService();

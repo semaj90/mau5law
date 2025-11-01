@@ -15,7 +15,6 @@
     children,
   }: Props = $props();
 </script>
-
 <section class="nes-container with-title is-dark">
   <h3 class="title">{title}</h3>
   {#if subtitle}
@@ -27,6 +26,5 @@
     <p>{content}</p>
   {/if}
   {#if footer}
-    <div class="footer">{footer}</div>
-  {/if}
+    <div class="footer">{footer}{/if}
 </section>

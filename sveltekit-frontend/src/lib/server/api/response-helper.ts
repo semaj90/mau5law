@@ -3,7 +3,6 @@
  * Ensures proper HTTP status codes and consistent response format
  */
 import { json } from '@sveltejs/kit';
-
 export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -11,7 +10,6 @@ export interface APIResponse<T = unknown> {
   timestamp: number;
   requestId?: string;
 }
-
 export function apiSuccess<T>(data: T, status = 200): Response {
   return json(
     {
@@ -22,7 +20,6 @@ export function apiSuccess<T>(data: T, status = 200): Response {
     { status }
   );
 }
-
 export function apiError(error: string | object, status = 500, requestId?: string): Response {
   return json(
     {
@@ -34,7 +31,6 @@ export function apiError(error: string | object, status = 500, requestId?: strin
     { status }
   );
 }
-
 /**
  * Pre-built response helpers for common HTTP status codes
  * Usage: return apiResponses.badRequest('Missing required field');
@@ -59,7 +55,6 @@ export const apiResponses = {
   accepted: <T>(data: T) => apiSuccess<T>(data, 202),
   noContent: () => new Response(null, { status: 204 }),
 };
-
 /**
  * Legal AI specific response helpers
  */
@@ -87,21 +82,18 @@ export const legalApiResponses = {
   aiAnalysisComplete: <T>(analysis: T) =>
     apiSuccess<{ analysis: T; message: string }>({ analysis, message: 'AI analysis completed' }, 200),
 };
-
 /**
  * Middleware to wrap API handlers with standardized error handling
  */
-export type ApiHandler = (...args: unknown[]) => Promise<Response> | Response;
-
+export type ApiHandler = (...args: any[]) => Promise<Response> | Response;
 export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: Parameters<T>) => Promise<Response> {
   return async (...args: Parameters<T>): Promise<Response> => {
     try {
       const result = await handler(...args);
       return result as Response;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('API Error:', error);
-      const err = error as { name?: string; details?: unknown; message?: string };
-
+      const err = error as { name?: string; details?: any; message?: string };
       if (err.name === 'ValidationError') {
         return apiResponses.validationFailed(
           (err.details as object) ?? { message: err.message ?? 'Validation failed' }
@@ -120,7 +112,6 @@ export function withErrorHandling<T extends ApiHandler>(handler: T): (...args: P
     }
   };
 }
-
 /**
  * Request validation helper
  */
@@ -135,7 +126,6 @@ export function validateRequest(
   });
   return missing.length > 0 ? `Missing required fields: ${missing.join(', ')}` : null;
 }
-
 /**
  * Pagination helper for API responses
  */

@@ -41,8 +41,8 @@ export interface LegalContextAnalysis {
 
 // --- Minimal local GPU types to avoid: 'any' casts ---
 type GPUDeviceLike = Record<string, unknown>;
-type GPUAdapterLike = { requestDevice?: (desc?: unknown) => Promise<GPUDeviceLike | null> | null };
-type NavigatorWithGPU = { gpu?: { requestAdapter?: (opts?: unknown) => Promise<GPUAdapterLike | null> | null } };
+type GPUAdapterLike = { requestDevice?: (desc?: any) => Promise<GPUDeviceLike | null> | null };
+type NavigatorWithGPU = { gpu?: { requestAdapter?: (opts?: any) => Promise<GPUAdapterLike | null> | null } };
 
 /**
  * Add a small Performance type that includes optional memory to avoid: 'any' casts
@@ -54,8 +54,8 @@ type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number 
  */
 export class FlashAttention2RTX3060Service {
   private config: FlashAttention2Config;
-  private isInitialized = false;
-  private gpuDevice: unknown | null = null;
+  private isInitialized = $state(false);
+  private gpuDevice: any | null = null;
   private memoryPool: Float32Array[] = [];
 
   constructor(config: Partial<FlashAttention2Config> = {}) {
@@ -83,7 +83,7 @@ export class FlashAttention2RTX3060Service {
       }
     } catch (err) {
       // ignore and fall back to CPU
-      this.config.enableGPUOptimization = false;
+      this.config.enableGPUOptimization = $state(false);
     }
     this.initializeMemoryPools();
     this.isInitialized = true;
@@ -326,7 +326,7 @@ export class FlashAttention2RTX3060Service {
   async cleanup(): Promise<void> {
     this.memoryPool.length = 0;
     this.gpuDevice = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 
   getStatus() {
@@ -423,7 +423,7 @@ export class GPUErrorProcessor {
 
       if (result.resolved) this.errorCache.set(cacheKey, result);
       return result;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       const result: ErrorProcessingResult = {
         resolved: false,

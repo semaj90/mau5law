@@ -5,9 +5,9 @@ Features: Case management, evidence upload, AI chat, vector search
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from '$lib/types/global';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button.svelte'';
+  import { Input } from '$lib/components/ui/input.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // dynamically loaded components to avoid static import / default export issues
   let EvidenceUploadComponent: typeof import('svelte').SvelteComponent | null = null;
   let OllamaChatInterface: typeof import('svelte').SvelteComponent | null = null;
@@ -159,7 +159,7 @@ Features: Case management, evidence upload, AI chat, vector search
     }
   };
   // Handle evidence upload completion
-  const handleEvidenceUploaded = (results: unknown[]) => {
+  const handleEvidenceUploaded = (results: any[]) => {
     console.log('Evidence uploaded:', results);
     loadRecentEvidence(); // Refresh evidence list
   };
@@ -207,7 +207,7 @@ Features: Case management, evidence upload, AI chat, vector search
       </div>
       <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
-          {#each cases as caseItem}
+          {#each Array.isArray(cases) ? cases : [] as caseItem}
             <span class="bits-btn">
               <Button
                 variant={selectedCaseId === caseItem.id ? 'secondary' : 'ghost'}
@@ -260,7 +260,7 @@ Features: Case management, evidence upload, AI chat, vector search
             {#if searchResults.length > 0}
               <div class="space-y-2">
                 <h4 class="font-medium">Search Results ({searchResults.length})</h4>
-                {#each searchResults as result}
+                {#each Array.isArray(searchResults) ? searchResults : [] as result}
                   <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <div class="flex justify-between items-start">
                       <div>
@@ -270,7 +270,7 @@ Features: Case management, evidence upload, AI chat, vector search
                         </p>
                         {#if result.payload?.tags}
                           <div class="flex gap-1 mt-2">
-                            {#each result.payload.tags as tag}
+                            {#each Array.isArray(result.payload.tags) ? result.payload.tags : [] as tag}
                               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                                 >{tag}</span
                               >
@@ -312,7 +312,7 @@ Features: Case management, evidence upload, AI chat, vector search
               <p class="text-gray-500 text-center py-8">No evidence uploaded yet</p>
             {:else}
               <div class="space-y-3">
-                {#each recentEvidence as evidence}
+                {#each Array.isArray(recentEvidence) ? recentEvidence : [] as evidence}
                   <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div class="flex items-center space-x-3">
                       <FileText class="w-5 h-5 text-blue-500" />
@@ -371,7 +371,7 @@ Features: Case management, evidence upload, AI chat, vector search
               <p class="text-gray-500 text-center py-4">No POIs for this case</p>
             {:else}
               <div class="space-y-3">
-                {#each personsOfInterest as poi}
+                {#each Array.isArray(personsOfInterest) ? personsOfInterest : [] as poi}
                   <div class="p-3 bg-gray-50 rounded-lg">
                     <div class="flex justify-between items-start">
                       <div>
@@ -379,7 +379,7 @@ Features: Case management, evidence upload, AI chat, vector search
                         <p class="text-xs text-gray-500">{poi.role}</p>
                         {#if poi.tags}
                           <div class="flex gap-1 mt-1">
-                            {#each poi.tags as tag}
+                            {#each Array.isArray(poi.tags) ? poi.tags : [] as tag}
                               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                                 >{tag}</span
                               >

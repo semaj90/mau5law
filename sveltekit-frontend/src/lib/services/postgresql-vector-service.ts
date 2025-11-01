@@ -5,20 +5,20 @@ export interface VectorSearchResult {
   id: string;
   content: string;
   similarity: number;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 export interface VectorDocument {
   id: string;
   content: string;
   embedding?: number[];
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 
 // Define a more specific type for legal analysis results
 export type LegalAnalysisResult = Record<string, unknown>;
 
 export class PostgreSQLVectorService {
-  private isConnected = false;
+  private isConnected = $state(false);
   private documents: VectorDocument[] = [];
   constructor() {
     if (browser) {
@@ -33,7 +33,7 @@ export class PostgreSQLVectorService {
       console.log('PostgreSQL Vector Service initialized (fallback mode)');
     } catch (error) {
       console.warn('PostgreSQL Vector Service connection failed, using fallback:', error);
-      this.isConnected = false;
+      this.isConnected = $state(false);
     }
   }
   async storeDocument(_document: VectorDocument): Promise<boolean> {

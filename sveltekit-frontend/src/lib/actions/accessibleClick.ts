@@ -17,7 +17,6 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
   // Destructure params into constants; keep a mutable handler reference for updates.
   const { handler, role = 'button', label, description } = params;
   let currentHandler = handler;
-
   // 1. Set the ARIA role to tell screen readers what this element is.
   node.setAttribute('role', role);
   // 2. Make the element focusable with the Tab key.
@@ -29,7 +28,6 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
   if (description) {
     node.setAttribute('aria-describedby', description);
   }
-
   // This function will be our keyboard event listener.
   const onKeyDown = (event: KeyboardEvent) => {
     // Buttons should be activatable with Enter or Space.
@@ -40,16 +38,13 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
       currentHandler(event);
     }
   };
-
   // Click should call the same handler
   const onClick = (event: MouseEvent) => {
     currentHandler(event);
   };
-
   // Attach the event listeners for keyboard and mouse interaction.
   node.addEventListener('keydown', onKeyDown);
   node.addEventListener('click', onClick);
-
   // The: 'destroy' function is called when the element is removed from the DOM.
   // It's crucial for cleaning up event listeners to prevent memory leaks.
   return {

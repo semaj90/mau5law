@@ -32,12 +32,12 @@ export interface WorkerInfo {
 export interface ProcessingTask {
   id: string;
   type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
-  data: unknown;
+  data: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   createdAt: Date;
   workerId?: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
-  result?: unknown;
+  result?: any;
   error?: string;
 }
 
@@ -55,12 +55,12 @@ export interface TensorData {
   shape: number[];
   dtype: 'float32' | 'float64' | 'int32' | 'int64';
   data: number[];
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 
 export interface JSONParsingResult {
   valid: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   schema?: string;
   complexity: number;
@@ -126,7 +126,7 @@ class Context7MulticoreService extends EventEmitter {
       this.startTaskProcessor();
       await this.checkLoadBalancer();
       this.emit('initialized', { workerCount: this.workers.size });
-    } catch (e: unknown) {
+    } catch (e: any) {
       // Initialization should not throw during typechecks; log and continue
       console.warn('Context7MulticoreService initialization warning:', e);
     }
@@ -170,7 +170,7 @@ class Context7MulticoreService extends EventEmitter {
       const res = await fetchFn(url, { method: 'GET', signal: controller.signal });
       clearTimeout(timeout);
       return res.ok;
-    } catch (e: unknown) {
+    } catch (e: any) {
       clearTimeout(timeout);
       return false;
     }
@@ -310,7 +310,7 @@ class Context7MulticoreService extends EventEmitter {
       task.result = result;
       this.metrics.completedTasks++;
       this.emit('task_completed', { task, result });
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Normalize unknown to error message safely
       const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
       task.status = 'failed';
@@ -351,7 +351,7 @@ class Context7MulticoreService extends EventEmitter {
         return await res.json();
       }
       return await res.text();
-    } catch (err: unknown) {
+    } catch (err: any) {
       clearTimeout(timeout);
       if (err instanceof Error) throw err;
       throw new Error(String(err ?? 'Unknown error'));

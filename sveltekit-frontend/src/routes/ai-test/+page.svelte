@@ -8,7 +8,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   // Badge replaced with span - not available in enhanced-bits
   import EnhancedAIChatTest from '$lib/components/ai/EnhancedAIChatTest.svelte';
   import {
@@ -60,7 +60,7 @@
         database: { status: 'error', error: 'Failed to connect' },
       }
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function getStatusIcon(status: string) {

@@ -37,13 +37,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
-    children: 'Button',
+     'Button',
     variant: 'default',
   },
 };
 export const Legal: Story = {
   args: {
-    children: 'Legal Action',
+     'Legal Action',
     variant: 'legal',
   },
   parameters: {
@@ -56,7 +56,7 @@ export const Legal: Story = {
 };
 export const Evidence: Story = {
   args: {
-    children: 'Add Evidence',
+     'Add Evidence',
     variant: 'evidence',
   },
   parameters: {
@@ -69,7 +69,7 @@ export const Evidence: Story = {
 };
 export const case Story = {
   args: {
-    children: 'Create Case',
+     'Create Case',
     variant: 'case',
   },
   parameters: {
@@ -82,7 +82,7 @@ export const case Story = {
 };
 export const Loading: Story = {
   args: {
-    children: 'Processing...',
+     'Processing...',
     loading: true,
   },
   parameters: {
@@ -95,43 +95,43 @@ export const Loading: Story = {
 };
 export const Disabled: Story = {
   args: {
-    children: 'Disabled',
+     'Disabled',
     disabled: true,
   },
 };
 export const Large: Story = {
   args: {
-    children: 'Large Button',
+     'Large Button',
     size: 'lg',
   },
 };
 export const ExtraLarge: Story = {
   args: {
-    children: 'Extra Large',
+     'Extra Large',
     size: 'xl',
   },
 };
 export const Small: Story = {
   args: {
-    children: 'Small',
+     'Small',
     size: 'sm',
   },
 };
 export const Outline: Story = {
   args: {
-    children: 'Outline',
+     'Outline',
     variant: 'outline',
   },
 };
 export const Ghost: Story = {
   args: {
-    children: 'Ghost',
+     'Ghost',
     variant: 'ghost',
   },
 };
 export const Destructive: Story = {
   args: {
-    children: 'Delete',
+     'Delete',
     variant: 'destructive',
   },
   parameters: {
@@ -144,7 +144,7 @@ export const Destructive: Story = {
 };
 export const FullWidth: Story = {
   args: {
-    children: 'Full Width Button',
+     'Full Width Button',
     fullWidth: true,
   },
   parameters: {

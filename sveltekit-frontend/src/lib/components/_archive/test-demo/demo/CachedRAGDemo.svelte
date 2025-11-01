@@ -54,7 +54,7 @@
       error = `Request failed: ${err.message}`;
       console.error('❌ Cached RAG query failed:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   async function loadCacheMetrics() {
@@ -81,7 +81,7 @@
     } catch (err: any) {
       alert(`Cache test error: ${err.message}`);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   async function warmupCache() {
@@ -102,7 +102,7 @@
     } catch (err: any) {
       alert(`Cache warmup error: ${err.message}`);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   // Load metrics on component mount
@@ -130,7 +130,7 @@
     <div class="sample-queries">
       <p>Sample queries:</p>
       <div class="query-buttons">
-        {#each sampleQueries as sampleQuery}
+        {#each Array.isArray(sampleQueries) ? sampleQueries : [] as sampleQuery}
           <button
             type="button"
             onclick={() => {

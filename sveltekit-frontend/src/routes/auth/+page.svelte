@@ -63,20 +63,20 @@ https://svelte.dev/e/js_parse_error -->
         method: 'POST',
         body: form,
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
+      if ((response as { ok?: any; json?: any }).ok) {
         success = authMode === 'login' ? 'Login successful! Redirecting...' : 'Registration successful! Redirecting...';
         // Redirect on success
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 1500);
       } else {
-        const result = await (response as { ok?: unknown; json?: unknown }).json();
-        error = (result as { error?: unknown }).error || `${authMode === 'login' ? 'Login' : 'Registration'} failed`;
+        const result = await (response as { ok?: any; json?: any }).json();
+        error = (result as { error?: any }).error || `${authMode === 'login' ? 'Login' : 'Registration'} failed`;
       }
     } catch (err) {
       error = 'Network error. Please try again.';
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Validate form

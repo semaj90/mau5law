@@ -1,8 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  export let checked: boolean = false;
-  export let disabled: boolean = false;
-  export let ariaLabel: string = 'Toggle';
+  let { checked = false, disabled = false, ariaLabel = 'Toggle' } = $props<{
+    checked?: boolean;
+    disabled?: boolean;
+    ariaLabel?: string;
+  }>();
   const dispatch = createEventDispatcher();
 
   function toggle() {
@@ -18,7 +20,7 @@
   aria-checked={checked}
   aria-label={ariaLabel}
   class="inline-flex items-center rounded-full p-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2"
-  on:click={toggle}
+  onclick={toggle}
   disabled={disabled}
 >
   <span class="sr-only">{ariaLabel}</span>

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  import DiamondModal from '$lib/components/ui/DiamondModal.svelte';
+  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface SearchItem {
     id: string;
@@ -51,7 +51,7 @@
   });
   async function loadSearchHistory() {
     isLoading = true;
-    let usingMockData = false;
+    let usingMockData = $state(false);
     try {
       // perform an actual fetch; if the endpoint is not available the catch block will provide mock data
       const response = await fetch('/api/recommendations/last-searched');
@@ -92,13 +92,13 @@
       ];
       await generateAISuggestions();
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       // Display fallback notice if using mock data
       if (usingMockData) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -137,18 +137,18 @@
       // In real app, this would trigger the actual search
       console.log('Repeating search:', searchItem.query);
       // Close modal and navigate to search results
-      open = false;
+      open = $state(false);
     } catch (error) {
       console.error('Failed to repeat search:', error);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - search repeated locally';
       notice.style.cssText =
-        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
-      open = false;
+      open = $state(false);
     }
   }
   async function deleteSearch(searchId: string) {
@@ -198,7 +198,6 @@
     return `${minutes}m`;
   }
 </script>
-
 <DiamondModal bind:open title="🔍 Search History & AI Suggestions" size="large">
   <div class="search-history-modal">
     <!-- Header Controls -->
@@ -219,7 +218,7 @@
         <div class="ai-suggestions" transitionslide={{ duration 300 }}>
           <h4>🤖 AI Suggestions</h4>
           <div class="suggestions-grid">
-            {#each aiSuggestions as suggestion}
+            {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
               <button
                 class="suggestion-pill"
                 onclick={() => {
@@ -230,8 +229,7 @@
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Search History List -->
     <div class="search-list">
@@ -297,19 +295,17 @@
                           <span class="filter-tag">{key}: {value}</span>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Clicked Results -->
                   {#if searchItem.clickedResults.length > 0}
                     <div class="clicked-results">
                       <h5>Documents Accessed ({searchItem.clickedResults.length}):</h5>
                       <div class="result-chips">
-                        {#each searchItem.clickedResults as resultId}
+                        {#each Array.isArray(searchItem.clickedResults) ? searchItem.clickedResults : [] as resultId}
                           <span class="result-chip">{resultId}</span>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Action Buttons -->
                   <div class="search-actions">
                     <button class="action-btn primary" onclick={() => repeatSearch(searchItem)}>
@@ -323,8 +319,7 @@
                     </button>
                     <button class="action-btn danger" onclick={() => deleteSearch(searchItem.id)}> 🗑️ Delete </button>
                   </div>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {/each}
@@ -332,7 +327,6 @@
     </div>
   </div>
 </DiamondModal>
-
 <style>
   .search-history-modal {
     max-height: 80vh;
@@ -583,4 +577,3 @@
     background: rgba(138, 43, 226, 0.7);
   }
 </style>
-

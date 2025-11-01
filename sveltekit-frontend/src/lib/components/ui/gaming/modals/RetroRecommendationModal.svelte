@@ -164,8 +164,8 @@ https://svelte.dev/e/attribute_duplicate -->
     playSound('close');
     isAnimating = true;
     setTimeout(() => {
-      show = false;
-      isAnimating = false;
+      show = $state(false);
+      isAnimating = $state(false);
       onClose?.();
     }, 300);
   }
@@ -212,7 +212,6 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   });
 </script>
-
 {#if show}
   <!-- Backdrop -->
   <div
@@ -307,8 +306,7 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Footer -->
     <div class="modal-footer" style:border-top-color={currentTheme.colors.border}>
@@ -318,12 +316,10 @@ https://svelte.dev/e/attribute_duplicate -->
         <span>Esc Close</span>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .modal-backdrop {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -333,7 +329,7 @@ d;
     backdrop-filter: blur(4px);
   }
   .retro-modal {
-    position fixed;
+    position: fixed;
 d;
     top: 50%;
     left: 50%;
@@ -375,11 +371,11 @@ d;
     border-radius: 0;
     border-style: solid;
     border-width: 2px;
-    position relative;
+    position: relative;
   }
   .retro-modal.yorha::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -443,7 +439,7 @@ d;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2;
-    position relative;
+    position: relative;
   }
   .recommendation-item:hover {
     transform: translateX(4px);
@@ -524,5 +520,3 @@ d;
     border-radius: 4px;
   }
 </style>
-
-

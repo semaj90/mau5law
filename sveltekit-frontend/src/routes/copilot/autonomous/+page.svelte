@@ -4,8 +4,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits'; // use default export for Button component
-  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // use default export for Button component
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   import {
     Bot,
     Brain,
@@ -239,7 +239,7 @@ export function activate(context: vscode.ExtensionContext) {
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
     <!-- System Status Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-      {#each architectureFeatures as feature}
+      {#each Array.isArray(architectureFeatures) ? architectureFeatures : [] as feature}
         <div class="nes-container">
           <div class="yorha-panel-content p-4">
             <div class="flex items-center justify-between mb-2">
@@ -287,7 +287,7 @@ export function activate(context: vscode.ExtensionContext) {
       {#if showArchitecture}
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {#each architectureFeatures as feature}
+            {#each Array.isArray(architectureFeatures) ? architectureFeatures : [] as feature}
               <div class="border rounded-lg p-4">
                 <div class="flex items-center gap-3 mb-3">
                   <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -312,7 +312,7 @@ export function activate(context: vscode.ExtensionContext) {
                 </p>
                 <div class="space-y-1">
                   <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Capabilities:</p>
-                  {#each feature.capabilities as capability}
+                  {#each Array.isArray(feature.capabilities) ? feature.capabilities : [] as capability}
                     <div class="flex items-center gap-2 text-xs">
                       <CheckCircle class="h-3 w-3 text-green-500" />
                       <span class="text-gray-600 dark:text-gray-400">{capability}</span>
@@ -342,7 +342,7 @@ export function activate(context: vscode.ExtensionContext) {
       {#if showIntegration}
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {#each integrationExamples as example}
+            {#each Array.isArray(integrationExamples) ? integrationExamples : [] as example}
               <div class="border rounded-lg p-4">
                 <h3 class="font-semibold mb-2">{example.title}</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -379,7 +379,7 @@ export function activate(context: vscode.ExtensionContext) {
       </div>
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {#each useCases as useCase}
+          {#each Array.isArray(useCases) ? useCases : [] as useCase}
             <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div class="flex items-center gap-3 mb-3">
                 <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
@@ -398,7 +398,7 @@ export function activate(context: vscode.ExtensionContext) {
               </p>
               <div class="space-y-1">
                 <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Benefits:</p>
-                {#each useCase.benefits as benefit}
+                {#each Array.isArray(useCase.benefits) ? useCase.benefits : [] as benefit}
                   <div class="flex items-center gap-2 text-xs">
                     <CheckCircle class="h-3 w-3 text-green-500" />
                     <span class="text-gray-600 dark:text-gray-400">{benefit}</span>

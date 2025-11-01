@@ -38,7 +38,6 @@
     onblur = undefined,
   }: Props = $props();
 </script>
-
 <textarea
   bind:value
   {placeholder}

@@ -44,7 +44,7 @@ interface LlamaInitOptions {
   thread_count?: number;
   batch_size?: number;
   use_gpu?: number | boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface LlamaParams {
@@ -53,7 +53,7 @@ interface LlamaParams {
   max_tokens?: number;
   presence_penalty?: number;
   frequency_penalty?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface LlamaGenerateOptions {
@@ -62,7 +62,7 @@ interface LlamaGenerateOptions {
   temperature?: number;
   top_p?: number;
   batch_size?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Add a typed interface for wasm exports we call so TS knows functions and memory exist
@@ -94,13 +94,13 @@ interface WasmExports {
   llama_text_length(textPtr: WasmPtr): number;
 
   // any other exported helpers used elsewhere can be added here
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export class WebASMLlamaCppEngine {
   // change wasmModule type to the new interface (or null)
   private wasmModule: WasmExports | null = null; // was WebAssembly.Exports | null
-  private modelLoaded = false;
+  private modelLoaded = $state(false);
   private config: LlamaCppConfig;
   private gpuDevice: GPUDevice | null = null;
   // Added GPU buffer registry to map numeric: "pointers" to GPUBuffer instances
@@ -398,7 +398,7 @@ export class WebASMLlamaCppEngine {
     }
     // Destroy the GPU buffer if API supports it, and remove from registry
     try {
-      if (typeof (buffer as unknown as { destroy?: unknown }).destroy === 'function') {
+      if (typeof (buffer as unknown as { destroy?: any }).destroy === 'function') {
         (buffer as unknown as { destroy: () => void }).destroy();
       }
     } catch {
@@ -524,7 +524,7 @@ export class WebASMLlamaCppEngine {
     if (this.gpuDevice) {
       for (const [ptr, buffer] of this.gpuBuffers.entries()) {
         try {
-          if (typeof (buffer as unknown as { destroy?: unknown }).destroy === 'function') {
+          if (typeof (buffer as unknown as { destroy?: any }).destroy === 'function') {
             (buffer as unknown as { destroy: () => void }).destroy();
           }
         } catch {
@@ -533,7 +533,7 @@ export class WebASMLlamaCppEngine {
         this.gpuBuffers.delete(ptr);
       }
       // Some implementations may not expose destroy(); guard defensively
-      const anyDevice = this.gpuDevice as unknown as { destroy?: unknown };
+      const anyDevice = this.gpuDevice as unknown as { destroy?: any };
       if (typeof anyDevice.destroy === 'function') {
         (anyDevice.destroy as () => void)();
       }

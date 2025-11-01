@@ -2,12 +2,9 @@
  * LangChain RAG Integration for Legal AI
  * Connects LangChain Ollama service to API endpoints
  */
-
 import { LangChainOllamaService } from './langchain-ollama-service';
-
 // Initialize singleton LangChain service
 let langChainServiceInstance: LangChainOllamaService | null = null;
-
 export function getLangChainService(): LangChainOllamaService {
   if (!langChainServiceInstance) {
     langChainServiceInstance = new LangChainOllamaService({
@@ -21,7 +18,6 @@ export function getLangChainService(): LangChainOllamaService {
   }
   return langChainServiceInstance;
 }
-
 // Type helpers for RAG results
 export interface LegalRAGResult {
   answer: string;
@@ -33,7 +29,6 @@ export interface LegalRAGResult {
     score: number;
   }>;
 }
-
 export interface RAGDocument {
   pageContent: string;
   metadata: {
@@ -42,16 +37,13 @@ export interface RAGDocument {
     score: number;
   };
 }
-
 /**
  * Query with RAG using LangChain
  */
 export async function queryWithLangChain(query: string, documents: RAGDocument[]): Promise<LegalRAGResult> {
   const service = getLangChainService();
-
   try {
     const result = await service.queryWithRAG(query, documents);
-
     return {
       answer: result.answer,
       confidence: result.confidence || 0.9,
@@ -67,7 +59,6 @@ export async function queryWithLangChain(query: string, documents: RAGDocument[]
     throw error;
   }
 }
-
 /**
  * Process document with LangChain embeddings
  */
@@ -80,7 +71,6 @@ export async function processDocumentWithLangChain(
   processingTime: number;
 }> {
   const service = getLangChainService();
-
   try {
     return await service.processDocument(content, { documentId });
   } catch (error) {

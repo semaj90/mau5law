@@ -281,7 +281,7 @@ type BitsUICompatibleObject = Record<string, unknown>;
 // Workflow orchestration class
 class LegalAIOrchestrator {
   private activeWorkflows = new Map<string, OrchestrationResult>();
-  private stepExecutors = new Map<string, (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>>();
+  private stepExecutors = new Map<string, (params: any, options?: WorkflowStepOptions) => Promise<unknown>>();
   constructor() {
     this.initializeStepExecutors();
   }
@@ -290,18 +290,18 @@ class LegalAIOrchestrator {
     this.stepExecutors.set(
       'search-legal-documents',
       this.executeSearchLegalDocuments.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     this.stepExecutors.set(
       'analyze-precedents',
-      this.executeAnalyzePrecedents.bind(this) as (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>
+      this.executeAnalyzePrecedents.bind(this) as (params: any, options?: WorkflowStepOptions) => Promise<unknown>
     );
     this.stepExecutors.set(
       'generate-research-summary',
       this.executeGenerateResearchSummary.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
@@ -309,59 +309,59 @@ class LegalAIOrchestrator {
     this.stepExecutors.set(
       'extract-document-entities',
       this.executeExtractDocumentEntities.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     this.stepExecutors.set(
       'analyze-document-content',
       this.executeAnalyzeDocumentContent.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     this.stepExecutors.set(
       'generate-document-summary',
       this.executeGenerateDocumentSummary.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     // Case creation workflow steps
     this.stepExecutors.set(
       'score-case-strength',
-      this.executeScoreCaseStrength.bind(this) as (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>
+      this.executeScoreCaseStrength.bind(this) as (params: any, options?: WorkflowStepOptions) => Promise<unknown>
     );
     this.stepExecutors.set(
       'suggest-research-topics',
       this.executeSuggestResearchTopics.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     this.stepExecutors.set(
       'create-case-timeline',
-      this.executeCreateCaseTimeline.bind(this) as (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>
+      this.executeCreateCaseTimeline.bind(this) as (params: any, options?: WorkflowStepOptions) => Promise<unknown>
     );
     // Evidence analysis workflow steps
     this.stepExecutors.set(
       'process-evidence-metadata',
       this.executeProcessEvidenceMetadata.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     this.stepExecutors.set(
       'analyze-evidence-relevance',
       this.executeAnalyzeEvidenceRelevance.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
     this.stepExecutors.set(
       'generate-evidence-report',
       this.executeGenerateEvidenceReport.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );
@@ -369,7 +369,7 @@ class LegalAIOrchestrator {
     this.stepExecutors.set(
       'trigger-qlora-distillation',
       this.executeTriggerQLoRADistillation.bind(this) as (
-        params: unknown,
+        params: any,
         options?: WorkflowStepOptions
       ) => Promise<unknown>
     );

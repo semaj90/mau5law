@@ -16,7 +16,7 @@
   }
   // typed events for createEventDispatcher to avoid deprecated untyped signature
   type EvidenceBoardEvents = {
-    connectionCreated: { from string; to: string };
+    connectionCreated: { from: string; to: string };
     itemsDeleted: { deletedIds: string[] };
     itemAdded: { item: EvidenceItem };
   };
@@ -198,7 +198,7 @@
       }
     }
     connectionStart = null;
-    isConnecting = false;
+    isConnecting = $state(false);
   }
   function deleteSelected() {
     if (readonly || selectedItems.size === 0) return;
@@ -243,7 +243,7 @@
     if (event.key === 'Escape') {
       selectedItems.clear();
       connectionStart = null;
-      isConnecting = false;
+      isConnecting = $state(false);
     }
   }
   function handleItemKeyDown(event: KeyboardEvent, item: EvidenceItem) {
@@ -287,9 +287,9 @@
   <!-- Connection Lines -->
   {#if showConnections}
     <svg class="absolute inset-0 pointer-events-none" width={width} height={height}>
-      {#each items as item}
+      {#each Array.isArray(items) ? items : [] as item}
         {#if item.connections}
-          {#each item.connections as connectionId}
+          {#each Array.isArray(item.connections) ? item.connections : [] as connectionId}
             <path
               d={getConnectionPath(item.id, connectionId)}
               fill="none"
@@ -394,8 +394,7 @@
           ${theme === 'yorha' ? 'text-green-400/80 font-mono' : 'text-gray-600 dark:text-gray-400'}
         `}>
           {item.content}
-        </div>
-      {/if}
+        {/if}
       <!-- Item Metadata -->
       {#if item.metadata}
         <div class="mt-2 flex flex-wrap gap-1">
@@ -410,8 +409,7 @@
               {key}: {value}
             </span>
           {/each}
-        </div>
-      {/if}
+        {/if}
       <!-- Connection indicators -->
       {#if item.connections && item.connections.length > 0}
         <div class="absolute -top-1 -right-1">
@@ -424,8 +422,7 @@
           `}>
             {item.connections.length}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   {/each}
   <!-- Toolbar -->
@@ -491,8 +488,7 @@
           🗑️ Delete ({selectedItems.size})
         </button>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Instructions -->
   {#if items.length === 0}
     <div class="absolute inset-0 flex items-center justify-center">
@@ -510,8 +506,7 @@
           Drag items to reposition • Right-click to connect
         </p>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* Smooth animations for YoRHa theme */

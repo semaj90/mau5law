@@ -2,18 +2,18 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
-  import Database from 'lucide-svelte/dist/icons/database.svelte';
-	import Zap from 'lucide-svelte/dist/icons/zap.svelte';
-	import TrendingUp from 'lucide-svelte/dist/icons/trending-up.svelte';
-	import DollarSign from 'lucide-svelte/dist/icons/dollar-sign.svelte';
-	import Clock from 'lucide-svelte/dist/icons/clock.svelte';
-	import BarChart3 from 'lucide-svelte/dist/icons/bar-chart-3.svelte';
-	import RefreshCw from 'lucide-svelte/dist/icons/refresh-cw.svelte';
-	import AlertTriangle from 'lucide-svelte/dist/icons/alert-triangle.svelte';
-	import CheckCircle from 'lucide-svelte/dist/icons/check-circle.svelte';
-	import Target from 'lucide-svelte/dist/icons/target.svelte';
-	import Cpu from 'lucide-svelte/dist/icons/cpu.svelte';
-	import HardDrive from 'lucide-svelte/dist/icons/hard-drive.svelte';
+  import { Database } from 'lucide-svelte/dist/icons/database.svelte';
+	import { Zap } from 'lucide-svelte/dist/icons/zap.svelte';
+	import { TrendingUp } from 'lucide-svelte/dist/icons/trending-up.svelte';
+	import { DollarSign } from 'lucide-svelte/dist/icons/dollar-sign.svelte';
+	import { Clock } from 'lucide-svelte/dist/icons/clock.svelte';
+	import { BarChart3 } from 'lucide-svelte/dist/icons/bar-chart-3.svelte';
+	import { RefreshCw } from 'lucide-svelte/dist/icons/refresh-cw.svelte';
+	import { AlertTriangle } from 'lucide-svelte/dist/icons/alert-triangle.svelte';
+	import { CheckCircle } from 'lucide-svelte/dist/icons/check-circle.svelte';
+	import { Target } from 'lucide-svelte/dist/icons/target.svelte';
+	import { Cpu } from 'lucide-svelte/dist/icons/cpu.svelte';
+	import { HardDrive } from 'lucide-svelte/dist/icons/hard-drive.svelte';
   // Sample cache metrics - replace with real data
   let cacheMetrics = $state({
     retrieval: {
@@ -92,7 +92,6 @@
     performance.mark('refresh-start');
     if (isRefreshing) return;
     isRefreshing = true;
-
     try {
       // Parallel fetch from backend API endpoints. Fall back to local simulators on failure.
       const endpoints = {
@@ -101,14 +100,12 @@
         recent: '/api/cache/recent-queries',
         health: '/api/health/system',
       };
-
       const [cacheResp, nintendoResp, recentResp, healthResp] = await Promise.allSettled([
         fetch(endpoints.cache, { headers: { Accept: 'application/json' } }),
         fetch(endpoints.nintendo, { headers: { Accept: 'application/json' } }),
         fetch(endpoints.recent, { headers: { Accept: 'application/json' } }),
         fetch(endpoints.health, { headers: { Accept: 'application/json' } }),
       ]);
-
       // Handle cache metrics
       if (cacheResp.status === 'fulfilled' && cacheResp.value.ok) {
         try {
@@ -122,7 +119,6 @@
         console.warn('Cache metrics endpoint failed, using simulator.', cacheResp);
         await updateCacheMetrics();
       }
-
       // Handle Nintendo stats
       if (nintendoResp.status === 'fulfilled' && nintendoResp.value.ok) {
         try {
@@ -136,7 +132,6 @@
         console.warn('Nintendo endpoint failed, using simulator.', nintendoResp);
         await updateNintendoStats();
       }
-
       // Handle recent queries
       if (recentResp.status === 'fulfilled' && recentResp.value.ok) {
         try {
@@ -150,7 +145,6 @@
         console.warn('Recent queries endpoint failed, using simulator.', recentResp);
         await updateRecentQueries();
       }
-
       // Handle system health
       if (healthResp.status === 'fulfilled' && healthResp.value.ok) {
         try {
@@ -169,7 +163,7 @@
       console.error('Failed to refresh metrics:', error);
       systemHealth = 'error';
     } finally {
-      isRefreshing = false;
+      isRefreshing = $state(false);
       performance.mark('refresh-end');
       try {
         performance.measure('refreshMetrics', 'refresh-start', 'refresh-end');
@@ -277,7 +271,6 @@
     }
   }
 </script>
-
 <div class="cache-dashboard">
   <!-- Header -->
   <header class="dashboard-header">
@@ -318,7 +311,6 @@
       </div>
     </div>
   </header>
-
   <!-- Main Dashboard -->
   <main class="dashboard-content">
     <!-- Key Metrics Row -->
@@ -369,7 +361,6 @@
         </div>
       </div>
     </section>
-
     <!-- Cache Performance Details -->
     <div class="dashboard-grid">
       <!-- Retrieval Cache Stats -->
@@ -553,7 +544,6 @@
     </div>
   </main>
 </div>
-
 <style>
   .cache-dashboard {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
@@ -747,7 +737,7 @@
   .fill {
     height: 100%;
     border-radius: 4px;
-    transition: width 0.5s ease;
+    transition: width: 0.5s ease;
   }
   .fill.retrieval {
     background: linear-gradient(90deg, #3b82f6, #1d4ed8);
@@ -792,7 +782,7 @@
     height: 100%;
     background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
     border-radius: 6px;
-    transition: width 0.5s ease;
+    transition: width: 0.5s ease;
   }
   .bank-info {
     display: flex;
@@ -859,7 +849,7 @@
     height: 100%;
     background: currentColor;
     border-radius: 3px;
-    transition: width 0.5s ease;
+    transition: width: 0.5s ease;
   }
   .usage-text {
     min-width: 50px;
@@ -984,5 +974,3 @@
     color: #6b7280;
   }
 </style>
-
-

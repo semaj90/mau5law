@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       metrics: responseData.metrics || null,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = err instanceof Error ? err : new Error(String(err));
     console.error('QUIC Gateway health check failed:', e);
     return json({
@@ -109,20 +109,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
           attempt: attempt + 1,
           timestamp: new Date().toISOString(),
         });
-      } catch (attemptError: unknown) {
+      } catch (attemptError: any) {
         const normalized = attemptError instanceof Error ? attemptError : new Error(String(attemptError));
         lastError = normalized;
         console.warn(`QUIC Gateway attempt ${attempt + 1} failed:`, normalized);
         // On first attempt failure with HTTP/3, try HTTP/2 fallback
         if (attempt === 0 && useHttp3) {
-          useHttp3 = false;
+          useHttp3 = $state(false);
           targetUrl = `${QUIC_GATEWAY_CONFIG.fallbackUrl}${targetPath}`;
         }
       }
     }
     // All attempts failed
     throw lastError || new Error('All gateway attempts failed');
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = err instanceof Error ? err : new Error(String(err));
     console.error('QUIC Gateway proxy error:', e);
     throw error(
@@ -161,7 +161,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Gateway configuration updated',
       config: updatedConfig,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const e = err instanceof Error ? err : new Error(String(err));
     console.error('Gateway configuration update failed:', e);
     throw error(

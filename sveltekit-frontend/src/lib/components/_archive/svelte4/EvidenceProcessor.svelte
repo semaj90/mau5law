@@ -8,8 +8,8 @@
     evidenceId: string;
     steps?: string[];
     autoStart?: boolean;
-    onComplete?: (result: unknown) => void;
-    onError?: (error: unknown) => void;
+    onComplete?: (result: any) => void;
+    onError?: (error: any) => void;
   }
   let {
     evidenceId,
@@ -136,7 +136,7 @@
       default: return 'text-gray-600';
     }
   }
-  function formatFragment(fragment: unknown): string {
+  function formatFragment(fragment: any): string {
     if (!fragment) return '';
     if (typeof fragment === 'string') return fragment;
     if (fragment.textPreview) return fragment.textPreview;
@@ -357,7 +357,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           {#if showLogs}
             <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
-              {#each processingLogs as log}
+              {#each Array.isArray(processingLogs) ? processingLogs : [] as log}
                 <div class="flex items-start space-x-2 mb-1">
                   <span class="text-gray-500">[{log.timestamp}]</span>
                   <span

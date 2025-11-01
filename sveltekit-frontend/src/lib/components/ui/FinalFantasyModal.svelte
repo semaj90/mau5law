@@ -61,7 +61,6 @@
     }
   });
 </script>
-
 {#if isOpen}
   <!-- Final Fantasy Style Backdrop -->
   <div
@@ -90,8 +89,7 @@
         <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-yellow-300"></div>
         <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-yellow-300"></div>
         <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-yellow-300"></div>
-        <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-300"></div>
-      {/if}
+        <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-300">{/if}
       <!-- FF-Style Title Bar -->
       {#if title}
         <div
@@ -113,11 +111,10 @@
           >
             ×
           </button>
-        </div>
-      {/if}
+        {/if}
       <!-- Modal Content Area -->
       <div class="flex-1 p-6 overflow-y-auto custom-scrollbar">
-        {@render children?.()}
+        <slot />
       </div>
       <!-- FF-Style Action Bar (if actions snippet provided) -->
       {#if actions}
@@ -128,12 +125,9 @@
           <div class="flex justify-end space-x-3">
             {@render actions()}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
 /* Final Fantasy Corner Styles */ {}
   .ff-corner-classic {
@@ -150,11 +144,11 @@ calc(100% - 8px) 100%, {}
   }
   .ff-corner-modern {
     border-radius: 0.5rem;
-    position relative;
+    position: relative;
   }
   .ff-corner-modern::before {
     content: '';
-    position absolute;
+    position: absolute;
     inset: -2px;
     background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706, #92400e);
     border-radius: 0.5rem;
@@ -204,10 +198,9 @@ calc(100% - 12px) 100%, {}
   }
   .ff-corner-classic::after {
     content: '';
-    position absolute;
+    position: absolute;
     inset: 0,
     background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%);
     animation: ff-shimmer 3s ease-in-out infinite;
   }
 </style>
-

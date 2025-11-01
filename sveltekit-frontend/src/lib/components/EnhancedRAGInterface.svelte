@@ -1,16 +1,13 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
-  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-
+  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
   // defensive wrapper in case the store import is undefined at runtime
   const store = (enhancedRAGStore as any) ?? {};
-
   let searchQuery = '';
-  let isLoading = false;
+  let isLoading = $state(false);
   let lastDuration = 0;
-
   async function handleSearch() {
     if (!searchQuery || !searchQuery.trim()) return;
     isLoading = true;
@@ -21,25 +18,22 @@
       }
     } finally {
       lastDuration = Math.round(performance.now() - t0);
-      isLoading = false;
+      isLoading = $state(false);
       await tick();
       if (typeof document !== 'undefined') {
         document.querySelector('#search-results')?.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }
-
   async function handleOptimize() {
     if (typeof store?.optimizeCache === 'function') await store.optimizeCache().catch(() => null);
   }
-
   // safe reactive defaults if store.state is missing
   $: ragState = store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: { hitRate: 0 } };
   $: intelligentSuggestions = store?.intelligentSuggestions ?? [];
   $: optimizedResults = store?.results ?? [];
   $: searchDuration = lastDuration;
 </script>
-
 <div class="enhanced-rag-interface nes-container">
   <div class="search-bar bits-row">
     <Input bind:value={searchQuery} placeholder="Ask about case documents..." class="bits-input" />
@@ -52,14 +46,12 @@
       <Button onclick={handleOptimize}>Optimize</Button>
     </div>
   </div>
-
   <div class="meta mt-3"><small>Last search time: {searchDuration}ms</small></div>
-
   {#if intelligentSuggestions.length}
     <div class="mt-3">
       <div class="mb-2"><strong>Suggestions</strong></div>
       <div class="suggestions">
-        {#each intelligentSuggestions as s}
+        {#each Array.isArray(intelligentSuggestions) ? intelligentSuggestions : [] as s}
           <div class="bits-chip mr-2" style="display:inline-block;">
             <Button
               onclick={() => {
@@ -72,9 +64,7 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <div id="search-results" class="results mt-4">
     {#if optimizedResults && optimizedResults.length > 0}
       <div class="results-header nes-container p-3">
@@ -89,16 +79,14 @@
           </div>
         </div>
       </div>
-
       <div class="space-y-3 mt-3">
-        {#each optimizedResults as result}
+        {#each Array.isArray(optimizedResults) ? optimizedResults : [] as result}
           <div class="nes-container p-3">
             <div class="result-row">
               <div class="result-main">
                 <h4>{result?.document?.title || result?.id || 'Document'}</h4>
                 {#if result?.highlights && result.highlights.length > 0}
-                  <div class="highlights mt-2">{@html result.highlights[0]}</div>
-                {/if}
+                  <div class="highlights mt-2">{@html result.highlights[0]}{/if}
               </div>
               <div class="result-meta">
                 <div class="badge">Relevance: {Math.round((result?.score || 0) * 100)}%</div>
@@ -110,15 +98,11 @@
     {:else}
       <div class="nes-container p-4 mt-3">
         <p class="text-sm text-gray-600">No results yet. Try searching for a case term or document title.</p>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   {#if ragState.error}
-    <div class="nes-container is-error mt-3 p-3"><strong>Error:</strong> {ragState.error}</div>
-  {/if}
+    <div class="nes-container is-error mt-3 p-3"><strong>Error:</strong> {ragState.error}{/if}
 </div>
-
 <style>
   .enhanced-rag-interface {
     padding: 0.75rem;
@@ -151,12 +135,9 @@
 </style>
     {/if}
   </div>
-
   {#if ragState.error}
-    <div class="nes-container is-error mt-3 p-3"><strong>Error:</strong> {ragState.error}</div>
-  {/if}
+    <div class="nes-container is-error mt-3 p-3"><strong>Error:</strong> {ragState.error}{/if}
 </div>
-
 <style>
   .enhanced-rag-interface {
     padding: 0.75rem;
@@ -187,4 +168,3 @@
     border-radius: 6px;
   }
 </style>
-

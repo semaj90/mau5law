@@ -1,11 +1,9 @@
 <script lang="ts">
   import { browser } from '$app/environment';
-
   interface Route {
     name: string;
     href: string;
   }
-
   // Svelte 5 runes with static nav items for production
   let navItems = $state<Route[]>([
     { name: 'Home', href: '/' },
@@ -18,25 +16,20 @@
   ]);
   let searchOpen = $state(false);
   let searchQuery = $state('');
-
   let searchInput: HTMLInputElement | null = null;
-
   function toggleSearch() {
     searchOpen = !searchOpen;
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && searchOpen) {
       toggleSearch();
     }
   }
-
   // Overlay pointer/keyboard handlers (typed)
   function overlayClick(e: Event) {
     // close only when clicking on the overlay itself (not the dialog)
     if (e.currentTarget === e.target) toggleSearch();
   }
-
   function overlayKeydown(e: KeyboardEvent) {
     // Allow Enter to confirm/close and Escape is handled globally
     if (e.key === 'Enter') {
@@ -44,18 +37,15 @@
       if (e.currentTarget === (e.target as EventTarget)) toggleSearch();
     }
   }
-
   // SvelteKit 2 compatible - keyboard listener only in browser
   $effect(() => {
     if (browser) {
       window.addEventListener('keydown', handleKeydown);
-
       return () => {
         window.removeEventListener('keydown', handleKeydown);
       };
     }
   });
-
   // Focus the input when modal opens
   $effect(() => {
     if (searchOpen && browser) {
@@ -64,22 +54,19 @@
     }
   });
 </script>
-
 <nav class="nes-container is-rounded bg-gray-800 p-4 shadow-md flex flex-wrap items-center justify-between relative">
   <ul class="flex flex-wrap gap-2">
-    {#each navItems as item}
+    {#each Array.isArray(navItems) ? navItems : [] as item}
       <li class="relative list-none">
         <a href={item.href} class="nes-btn is-primary">{item.name}</a>
       </li>
     {/each}
   </ul>
-
   <!-- Search -->
   <div class="relative">
     <button class="nes-btn is-warning" onclick={toggleSearch} aria-expanded={searchOpen}>Search</button>
   </div>
 </nav>
-
 <!-- Search Modal - Svelte 5 syntax -->
 {#if searchOpen}
   <div
@@ -104,9 +91,7 @@
         aria-label="Search"
       />
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style lang="postcss">
   nav {
     @apply relative;

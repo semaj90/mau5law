@@ -15,7 +15,7 @@ import { createIOIORedisInstance } from '$lib/server/redis.js';
 export class LegalDocumentSOM extends SelfOrganizingMap {
   private neurons: number[][][]; // [x][y][dimensions]
   private redis: Redis;
-  private trained: boolean = false;
+  private trained: boolean = $state(false);
 
   constructor(config: SOMConfig, redis?: Redis) {
     super(config);

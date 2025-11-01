@@ -6,11 +6,11 @@ https://svelte.dev/e/props_duplicate -->
   import { avatarStore } from '../stores/avatarStore';
 
   export let size: 'small' | 'medium' | 'large' = 'medium';
-  export let clickable: boolean = false;
-  export let showUploadButton: boolean = false;
+  export let clickable: boolean = $state(false);
+  export let showUploadButton: boolean = $state(false);
 
   let fileInput: HTMLInputElement | null = null;
-  let dragOver = false;
+  let dragOver = $state(false);
 
   // reactive avatarSize based on size prop
   $: avatarSize = size === 'small' ? '32px' : size === 'large' ? '80px' : '48px';
@@ -35,7 +35,7 @@ https://svelte.dev/e/props_duplicate -->
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       uploadFile(files[0]);
@@ -49,7 +49,7 @@ https://svelte.dev/e/props_duplicate -->
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
   }
 
   async function uploadFile(file: File) {

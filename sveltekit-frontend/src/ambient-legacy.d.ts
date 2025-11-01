@@ -8,13 +8,13 @@ declare interface RedisLegacy {
   get?: (_key: string) => Promise<string | null>;
   set?: (_key: string, value: string, mode?: string, duration?: number) => Promise<unknown>;
   keys?: (pattern: string) => Promise<string[]>;
-  xAdd?: (...args: unknown[]) => Promise<unknown>;
+  xAdd?: (...args: any[]) => Promise<unknown>;
 }
 declare const redis: RedisLegacy;
 // Enhanced Ollama service placeholder methods referenced but not yet implemented
 interface EnhancedOllamaServiceLegacy {
-  generate?: (prompt: string, opts?: unknown) => Promise<unknown>;
-  generateCompletion?: (prompt: string, opts?: unknown) => Promise<unknown>;
+  generate?: (prompt: string, opts?: any) => Promise<unknown>;
+  generateCompletion?: (prompt: string, opts?: any) => Promise<unknown>;
   extractLegalEntities?: (text: string) => Promise<string[]>;
   classifyLegalDocument?: (text: string) => Promise<string>;
   generateEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
@@ -32,7 +32,7 @@ interface LegalAgentsLegacy {
 declare const crewAIOrchestrator: CrewAIOrchestratorLegacy;
 declare const LEGAL_AGENTS: LegalAgentsLegacy;
 declare module '$lib/services/enhanced-rag-integration.js' {
-  export const enhancedRAGService: unknown;
+  export const enhancedRAGService: any;
 }
 declare module '$lib/*';
 declare module '$lib/server/*';

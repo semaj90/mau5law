@@ -1,8 +1,7 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
-  import Input from '$lib/components/ui/enhanced-bits';
+  import { Input } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
-
   // Props using Svelte 5 syntax
   let {
     data = [],
@@ -17,12 +16,10 @@
     showAIActions?: boolean;
     maxResults?: number;
   } = $props();
-
   let searchQuery = $state('');
   let searchResults = $state<any[]>([]);
   let isSearching = $state(false);
   let fuse = $state<Fuse<any> | null>(null);
-
   // --- fixed: proper Fuse options (missing commas removed) ---
   const fuseOptions = {
     keys: [
@@ -39,7 +36,6 @@
     ignoreLocation true,
     useExtendedSearch: true,
   };
-
   // Initialize Fuse when data changes
   $effect(() => {
     if (data && data.length > 0) {
@@ -51,7 +47,6 @@
       }
     }
   });
-
   // Run search reactively when query changes
   $effect(() => {
     if (searchQuery && searchQuery.trim() && fuse) {
@@ -60,7 +55,6 @@
       searchResults = [];
     }
   });
-
   function performFuseSearch() {
     if (!fuse || !searchQuery.trim()) {
       searchResults = [];
@@ -77,10 +71,8 @@
       } else if (/search|warrant/i.test(query)) {
         query = 'search | warrant | "fourth amendment" | seizure';
       }
-
       // --- fixed: actually call fuse.search and then slice ---
       const rawResults = fuse.search(query).slice(0, maxResults);
-
       searchResults = rawResults.map(result => {
         const res: any = result as any;
         return {
@@ -94,10 +86,9 @@
       console.error('Fuse search error:', error);
       searchResults = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
-
   function highlightMatches(item, matches) {
     const highlighted = { ...item };
     matches.forEach(match => {
@@ -115,7 +106,6 @@
     });
     return highlighted;
   }
-
   function getScoreColor(score) {
     if (score == null) return 'text-gray-500';
     if (score < 0.2) return 'text-green-600 dark:text-green-400';
@@ -136,12 +126,10 @@
       handleAIAction(searchResults[0], 'select');
     }
   }
-
   // Cast Input to a constructor-compatible value for svelte:component usage
   // (works around TypeScript error when the imported type is seen as SvelteComponentTyped instance)
   const InputAny: any = Input as unknown as any;
 </script>
-
 <div class="space-y-4">
   <!-- Search Input -->
   <div class="relative">
@@ -159,12 +147,11 @@
       {#if searchResults.length === maxResults}
         (showing top {maxResults})
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-3">
-      {#each searchResults as law}
+      {#each Array.isArray(searchResults) ? searchResults : [] as law}
         <div class="bg-white dark:bg-slate-800 rounded-md shadow-sm hover:shadow-md transition-shadow">
           <div class="px-4 py-3 pb-3">
             <div class="flex items-start justify-between">
@@ -193,7 +180,6 @@
               {/if}
             </div>
           </div>
-
           {#if showAIActions}
             <div class="px-4 pb-4 pt-0">
               <div class="flex gap-2 flex-wrap">
@@ -205,7 +191,6 @@
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
                 </button>
-
                 <button
                   type="button"
                   class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm border border-gray-200 bg-transparent text-gray-700 hover:bg-gray-50"
@@ -214,7 +199,6 @@
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
                 </button>
-
                 {#if law.fullTextUrl}
                   <a
                     href={law.fullTextUrl}
@@ -227,8 +211,7 @@
                   </a>
                 {/if}
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
     </div>
@@ -238,10 +221,8 @@
         No results found for: "{searchQuery}".
       </p>
       <p class="text-sm nes-text is-disabled mt-1">Try adjusting your search terms or use more general keywords.</p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* replaced invalid `theme(...)` calls with concrete color values */
   :global(mark.hl) {
@@ -255,4 +236,3 @@
     color: #fff7ed; /* approximate Tailwind yellow-100 */
   }
 </style>
-

@@ -15,14 +15,14 @@ type OptimizedModule = {
   executeOptimizedPipeline?: (cacheKey: string) => Promise<Partial<RawMetrics> | RawMetrics>;
   searchOptimizedResults?: (query: string, limit?: number) => Promise<PipelineSearchHit[]>;
   cleanup?: () => Promise<void>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type AdvancedModule = {
   executeAdvancedPipeline?: (cacheKey: string) => Promise<Partial<RawMetrics> | RawMetrics>;
   searchProcessedTensors?: (query: string, limit?: number) => Promise<PipelineSearchHit[]>;
   cleanup?: () => Promise<void>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type EndToEndModule = {
@@ -30,7 +30,7 @@ type EndToEndModule = {
   fuzzySearch?: (query: string, limit?: number) => Promise<PipelineSearchHit[]>;
   search?: (query: string, limit?: number) => Promise<PipelineSearchHit[]>;
   cleanup?: () => Promise<void>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // -----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ type EndToEndModule = {
 // -----------------------------------------------------------------------------
 async function loadModule<T = Record<string, unknown>>(path: string): Promise<T> {
   // annotate import result as unknown to avoid `any`
-  const mod: unknown = await import(path);
+  const mod: any = await import(path);
   // prefer default export if present, otherwise treat the module object as the export
   const maybeDefault = (mod as { default?: T }).default;
   const normalized = maybeDefault ?? (mod as T);
@@ -79,7 +79,7 @@ export interface PipelineMetrics {
 export interface PipelineResult {
   id: string;
   type: PipelineType;
-  results: unknown[]; // changed from any[] to unknown[]
+  results: any[]; // changed from any[] to unknown[]
   metrics: PipelineMetrics;
   success: boolean;
   error?: string;
@@ -135,10 +135,10 @@ type RawMetrics = {
   memoryUsageMB?: number;
   gpuUtilization?: number;
   // results returned by some pipeline modules (typed as unknown[] to be permissive)
-  results?: unknown[]; // e.g. optimized/advanced pipelines
-  fuzzySearchResults?: unknown[]; // e.g. end-to-end pipeline fuzzy search output
+  results?: any[]; // e.g. optimized/advanced pipelines
+  fuzzySearchResults?: any[]; // e.g. end-to-end pipeline fuzzy search output
   // allow extension by unknown keys from external modules
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export class PipelineManager {
@@ -168,7 +168,7 @@ export class PipelineManager {
 
     try {
       let pipelineMetricsRaw: Partial<RawMetrics> = {};
-      let results: unknown[] = [];
+      let results: any[] = [];
 
       switch (finalConfig.type) {
         case 'optimized':
@@ -311,7 +311,7 @@ export class PipelineManager {
     ]);
 
     // --- Changed: extract callable functions safely instead of relying on TS to infer callability ---
-    type CandidateFn = (this: unknown, query: string, limit?: number) => Promise<PipelineSearchHit[]>;
+    type CandidateFn = (this: any, query: string, limit?: number) => Promise<PipelineSearchHit[]>;
 
     const safeSearchFn = (mod: Record<string, unknown> | undefined, candidates: string[]): CandidateFn => {
       const empty: CandidateFn = async () => [];

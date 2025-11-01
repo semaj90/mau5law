@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({}) => {
       metrics: null,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('QUIC Vector Proxy health check failed:', err);
     return json({
       service: 'quic-vector-proxy',
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({}) => {
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     // Define a type for the expected response shapes from the vector service to avoid `any`
-    type VectorServiceResponse = unknown[] | { results?: unknown[]; totalCount?: number };
+    type VectorServiceResponse = unknown[] | { results?: any[]; totalCount?: number };
 
     // Define a more specific type to avoid using: 'any' for optional properties
     type ExtendedVectorSearchQuery = VectorSearchQuery & {
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     // Fallback to Enhanced RAG service
     return await handleEnhancedRagFallback(searchQuery, 'HTTP', 'vector-search-service');
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('QUIC Vector search error:', err);
     error(
       500,
@@ -191,7 +191,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Vector cache clear error:', err);
     error(
       500,
@@ -226,7 +226,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Vector proxy configuration updated',
       config: updatedConfig,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Vector proxy configuration update failed:', err);
     error(
       500,

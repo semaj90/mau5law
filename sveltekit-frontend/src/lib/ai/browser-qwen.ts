@@ -20,14 +20,11 @@
  *   await qwen.initialize();
  *   const response = await qwen.generate('Summarize this contract...');
  */
-
 import { pipeline, env } from '@huggingface/transformers';
-
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;
 env.allowRemoteModels = true;
-
 export interface GenerateOptions {
   maxTokens?: number;
   temperature?: number;
@@ -36,13 +33,11 @@ export interface GenerateOptions {
   repetitionPenalty?: number;
   systemPrompt?: string;
 }
-
 export class BrowserQwen {
   private generator: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private modelName: string;
   private device: 'webgpu' | 'wasm' | 'cpu';
-
   constructor(
     modelName: string = 'onnx-community/Qwen2.5-0.5B-Instruct-q4',
     device: 'webgpu' | 'wasm' | 'cpu' = 'webgpu'
@@ -50,17 +45,14 @@ export class BrowserQwen {
     this.modelName = modelName;
     this.device = device;
   }
-
   /**
    * Initialize Qwen 0.5B model (downloads ~300MB on first run)
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
-
     try {
       console.log(`🧠 [Qwen Browser] Loading ${this.modelName} (${this.device})...`);
       console.log('⏳ First load: ~1-2 minutes (~300MB download)');
-
       try {
         this.generator = await pipeline(
           'text-generation',
@@ -85,7 +77,6 @@ export class BrowserQwen {
           device: 'wasm'
         });
       }
-
       this.isInitialized = true;
       console.log(`✅ [Qwen Browser] Model loaded (${this.device})`);
     } catch (error) {
@@ -93,7 +84,6 @@ export class BrowserQwen {
       throw new Error(`Qwen initialization failed: ${error}`);
     }
   }
-
   /**
    * Generate text response
    */
@@ -104,7 +94,6 @@ export class BrowserQwen {
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     const {
       maxTokens = 256,
       temperature = 0.7,
@@ -113,13 +102,10 @@ export class BrowserQwen {
       repetitionPenalty = 1.1,
       systemPrompt = 'You are a helpful legal AI assistant.'
     } = options;
-
     try {
       const startTime = performance.now();
-
       // Qwen prompt format
       const formattedPrompt = `<|im_start|>system\n${systemPrompt}<|im_end|>\n<|im_start|>user\n${prompt}<|im_end|>\n<|im_start|>assistant\n`;
-
       const output = await this.generator(formattedPrompt, {
         max_new_tokens: maxTokens,
         temperature,
@@ -129,20 +115,16 @@ export class BrowserQwen {
         do_sample: temperature > 0,
         return_full_text: false
       });
-
       const endTime = performance.now();
       const generatedText = output[0].generated_text.trim();
       const tokensPerSec = (maxTokens / (endTime - startTime)) * 1000;
-
       console.log(`⚡ [Qwen] Generated in ${(endTime - startTime).toFixed(0)}ms (~${tokensPerSec.toFixed(1)} tok/sec)`);
-
       return generatedText;
     } catch (error) {
       console.error('❌ [Qwen] Generation failed:', error);
       throw error;
     }
   }
-
   /**
    * Chat with conversation history
    */
@@ -151,7 +133,6 @@ export class BrowserQwen {
     options: GenerateOptions = {}
   ): Promise<string> {
     let prompt = '';
-
     for (const msg of messages) {
       if (msg.role === 'system') {
         prompt += `<|im_start|>system\n${msg.content}<|im_end|>\n`;
@@ -161,11 +142,8 @@ export class BrowserQwen {
         prompt += `<|im_start|>assistant\n${msg.content}<|im_end|>\n`;
       }
     }
-
     prompt += '<|im_start|>assistant\n';
-
     const { maxTokens = 256, temperature = 0.7, topP = 0.9, topK = 50, repetitionPenalty = 1.1 } = options;
-
     try {
       const output = await this.generator(prompt, {
         max_new_tokens: maxTokens,
@@ -176,14 +154,12 @@ export class BrowserQwen {
         do_sample: temperature > 0,
         return_full_text: false
       });
-
       return output[0].generated_text.trim();
     } catch (error) {
       console.error('❌ [Qwen] Chat failed:', error);
       throw error;
     }
   }
-
   /**
    * Legal-specific helpers
    */
@@ -197,7 +173,6 @@ export class BrowserQwen {
       }
     );
   }
-
   async answerLegalQuestion(question: string, context: string): Promise<string> {
     return this.generate(
       `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
@@ -208,22 +183,18 @@ export class BrowserQwen {
       }
     );
   }
-
   getDevice(): string {
     return this.device;
   }
-
   dispose(): void {
     this.generator = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
-
 /**
  * Singleton instance
  */
 export const browserQwen = new BrowserQwen();
-
 /**
  * COMPARISON: Qwen 0.5B vs Ollama gemma3:270m
  *

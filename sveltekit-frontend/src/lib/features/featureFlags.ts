@@ -1,7 +1,6 @@
 export type FeatureFlagValue = boolean | string | number;
 export type FeatureFlags = Record<string, FeatureFlagValue>;
-
-function safeParseJson<T = any>(input: unknown, fallback: T): T {
+function safeParseJson<T = any>(input: any, fallback: T): T {
   try {
     if (typeof input === 'string') return JSON.parse(input) as T;
     if (typeof input === 'object' && input != null) return input as T;
@@ -10,22 +9,18 @@ function safeParseJson<T = any>(input: unknown, fallback: T): T {
   }
   return fallback;
 }
-
 class FeatureFlagService {
   private flags: FeatureFlags = {};
   private localKey = 'featureFlags:overrides';
-
   constructor() {
     this.flags = this.loadFromEnv();
     this.applyLocalOverrides();
   }
-
   // Load initial flags from environment variable FEATURE_FLAGS_JSON (safe fallback to {})
   private loadFromEnv(): FeatureFlags {
     const envJson = (typeof process !== 'undefined' && (process.env as any)?.FEATURE_FLAGS_JSON) || undefined;
     return safeParseJson<FeatureFlags>(envJson, {});
   }
-
   // Merge localStorage overrides (browser-only) to allow dev testing
   private applyLocalOverrides() {
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
@@ -33,12 +28,10 @@ class FeatureFlagService {
     const overrides = safeParseJson<FeatureFlags>(raw, {});
     this.flags = { ...this.flags, ...overrides };
   }
-
   // Public API
   get(key: string, fallback?: FeatureFlagValue): FeatureFlagValue | undefined {
     return key in this.flags ? this.flags[key] : fallback;
   }
-
   isEnabled(key: string): boolean {
     const v = this.get(key);
     if (typeof v === 'boolean') return v;
@@ -46,11 +39,9 @@ class FeatureFlagService {
     if (typeof v === 'string') return v === 'true' || v === '1';
     return false;
   }
-
   toObject(): FeatureFlags {
     return { ...this.flags };
   }
-
   // Set a browser-local override and persist to localStorage
   setLocalOverride(key: string, value: FeatureFlagValue) {
     this.flags[key] = value;
@@ -64,7 +55,6 @@ class FeatureFlagService {
       /* ignore storage errors */
     }
   }
-
   clearLocalOverrides() {
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
     try {
@@ -75,7 +65,6 @@ class FeatureFlagService {
     // reload env defaults
     this.flags = this.loadFromEnv();
   }
-
   // Fetch remote flags (merge, optional)
   async loadRemote(url: string, init?: RequestInit) {
     if (typeof fetch === 'undefined') return;
@@ -91,6 +80,5 @@ class FeatureFlagService {
     }
   }
 }
-
 export const featureFlags = new FeatureFlagService();
 export default featureFlags;

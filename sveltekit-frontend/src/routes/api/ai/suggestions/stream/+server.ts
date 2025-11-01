@@ -47,7 +47,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
       async start(controller: ReadableStreamDefaultController<Uint8Array>) {
         const encoder = new TextEncoder();
         // helper to normalize incoming suggestion objects without using `any`
-        const toSuggestionPayload = (s: unknown) => {
+        const toSuggestionPayload = (s: any) => {
           const obj = typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : {};
           return {
             content: typeof obj.content === 'string' ? obj.content : String(obj.content ?? ''),
@@ -112,7 +112,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                       )
                     ); // Added semicolon
                   }
-                } catch (error: unknown) {
+                } catch (error: any) {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({
@@ -165,7 +165,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
                       )
                     ); // Added semicolon
                   }
-                } catch (error: unknown) {
+                } catch (error: any) {
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({
@@ -193,7 +193,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
               })}\\n\\n`
             )
           );
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Send error message
           controller.enqueue(
             encoder.encode(
@@ -212,7 +212,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
       },
     });
     return new Response(stream, { headers });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     console.error('Streaming endpoint error:', msg);

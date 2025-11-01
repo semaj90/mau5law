@@ -64,7 +64,7 @@ type DocumentUpdateLoopAdapter = {
     embedQuery(query: string): Promise<number[] | Float32Array>;
   };
   detectDocumentChanges(documentId: string | number, modifiedContent: string): Promise<{ priority?: string } | null>;
-  reembedDocument(changeDetection: unknown): Promise<UpdateResult>;
+  reembedDocument(changeDetection: any): Promise<UpdateResult>;
   rerankAffectedQueries(documentId: string | number): Promise<RerankJob[]>;
   getQueueStatus(): Promise<Record<string, unknown>>;
 };
@@ -150,7 +150,7 @@ class UpdateLoopTester {
       this.testResults.status = 'completed';
       this.testResults.totalTime = Date.now() - startTime;
       return this.testResults;
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.testResults.status = 'failed';
       this.testResults.error = err instanceof Error ? err.message : 'Unknown error';
       this.testResults.totalTime = Date.now() - startTime;
@@ -196,7 +196,7 @@ class UpdateLoopTester {
       this.testResults.testUserId = testUser.id;
       this.testResults.testCaseId = testCase.id;
       console.log('✅ Test environment ready');
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.testResults.steps.setup = {
         status: 'failed',
         error: err instanceof Error ? err.message : 'Setup failed',
@@ -282,7 +282,7 @@ class UpdateLoopTester {
         time: Date.now() - stepStart,
       };
       console.log(`✅ Scenario ${scenario.name} completed`);
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
         error: err instanceof Error ? err.message : 'Scenario failed',
@@ -352,7 +352,7 @@ class UpdateLoopTester {
         time: Date.now() - stepStart,
       };
       console.log('✅ Search impact testing completed');
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.testResults.steps.searchImpact = {
         status: 'failed',
         error: err instanceof Error ? err.message : 'Search testing failed',
@@ -403,7 +403,7 @@ class UpdateLoopTester {
         time: Date.now() - stepStart,
       };
       console.log('✅ Performance analysis completed');
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.testResults.performance = {
         error: err instanceof Error ? err.message : 'Performance analysis failed',
       };
@@ -427,7 +427,7 @@ class UpdateLoopTester {
         time: Date.now() - stepStart,
       };
       console.log('✅ Cleanup completed');
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.testResults.steps.cleanup = {
         status: 'failed',
         error: err instanceof Error ? err.message : 'Cleanup failed',
@@ -447,7 +447,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ success: true, data: results }, { status: 200 });
     }
     return json({ success: false, error: 'Unknown action' }, { status: 400 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Update loop test error:', err);
     return json(
       {
@@ -490,7 +490,7 @@ export const GET: RequestHandler = async ({ url }) => {
       });
     }
     return json({ success: false, error: 'Unknown action' }, { status: 400 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,

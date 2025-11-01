@@ -41,8 +41,8 @@
     if (!closable) return;
     isClosing = true;
     setTimeout(() => {
-      open = false;
-      isClosing = false;
+      open = $state(false);
+      isClosing = $state(false);
       dispatch('close');
     }, 150);
   }
@@ -124,22 +124,20 @@
               ✕
             </button>
           {/if}
-        </div>
-      {/if}
+        {/if}
       <!-- Modal Content -->
       <div class="nes-modal-content">
-        {@render children?.()}
+        <slot />
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Keyboard event listener -->
 {#if open}
   <svelte:window onkeydown={handleKeydown} />
 {/if}
 <style>
   .nes-modal-overlay {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -156,7 +154,7 @@ d;
     backdrop-filter: blur(4px);
   }
   .nes-modal {
-    position relative;
+    position: relative;
     width: 100%;
     max-height: calc(100vh - 2rem);
     overflow: hidden;
@@ -333,4 +331,3 @@ d;
     }
   }
 </style>
-

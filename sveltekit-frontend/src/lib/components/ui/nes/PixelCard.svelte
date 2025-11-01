@@ -58,8 +58,8 @@
     }
   }
   function handleMouseLeave() {
-    isHovered = false;
-    isPressed = false;
+    isHovered = $state(false);
+    isPressed = $state(false);
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
       animationFrame = null;
@@ -70,7 +70,7 @@
     isPressed = true;
   }
   function handleMouseUp() {
-    isPressed = false;
+    isPressed = $state(false);
   }
   function handleClick() {
     if (interactive && onclick) {
@@ -121,7 +121,6 @@
     return `${base} ${variantClass} ${rarityClass} ${stateClasses} ${className}`.trim();
   });
 </script>
-
 <div
   class={cardClasses}
   {style}
@@ -144,12 +143,10 @@
     <div
       class="pixel-card__border-animation"
       style="--pixel-offset: {pixelOffset}px; --glow-intensity: {glowIntensity}"
-    ></div>
-  {/if}
+    >{/if}
   <!-- Rarity Glow Effect -->
   {#if glowEffect && (isHovered || rarity !== 'common')}
-    <div class="pixel-card__glow" style="--glow-color: {rarityStyles.glow}"></div>
-  {/if}
+    <div class="pixel-card__glow" style="--glow-color: {rarityStyles.glow}">{/if}
   <!-- Header Section -->
   {#if header || title || subtitle}
     <div class="pixel-card__header">
@@ -171,17 +168,14 @@
         {#if rarity !== 'common'}
           <div class="pixel-card__rarity" style="color: {rarityStyles.color}">
             {'★'.repeat(['uncommon', 'rare', 'epic', 'legendary'].indexOf(rarity) + 1)}
-          </div>
-        {/if}
+          {/if}
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Image Section -->
   {#if imageUrl}
     <div class="pixel-card__image-container">
       <img src={imageUrl} alt={title || 'Card image'} class="pixel-card__image" loading="lazy" />
-    </div>
-  {/if}
+    {/if}
   <!-- Content Section -->
   <div class="pixel-card__content">
     {#if children}
@@ -198,23 +192,20 @@
             <span class="pixel-card__stat-value">{stat.value}</span>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Tags -->
     {#if tags.length > 0}
       <div class="pixel-card__tags">
         {#each tags as tag (tag)}
           <span class="pixel-card__tag">{tag}</span>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Footer Section -->
   {#if footer}
     <div class="pixel-card__footer">
       {@render footer()}
-    </div>
-  {/if}
+    {/if}
   <!-- Pixel Art Corners -->
   <div class="pixel-card__pixel-corners" aria-hidden="true">
     <div class="pixel-card__corner pixel-card__corner--tl"></div>
@@ -223,10 +214,9 @@
     <div class="pixel-card__corner pixel-card__corner--br"></div>
   </div>
 </div>
-
 <style>
   .pixel-card {
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     background: #1a1a2e;
@@ -355,7 +345,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
 /* Image */ {}
   .pixel-card__image-container {
-    position relative;
+    position: relative;
     width: 100%;
     aspect-ratio: 16/9;
     overflow: hidden;
@@ -429,7 +419,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
 /* Animation Effects */ {}
   .pixel-card__border-animation {
-    position absolute;
+    position: absolute;
     inset: -2px;
 background: repeating-linear-gradient( {}
 90deg, {}
@@ -442,7 +432,7 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     pointer-events: none;
   }
   .pixel-card__glow {
-    position absolute;
+    position: absolute;
     inset: -4px;
     background: var(--glow-color, #cccccc);
     filter: blur(8px);
@@ -466,12 +456,12 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
   }
 /* Pixel Corners */ {}
   .pixel-card__pixel-corners {
-    position absolute;
+    position: absolute;
     inset: 0;
     pointer-events: none;
   }
   .pixel-card__corner {
-    position absolute;
+    position: absolute;
     width: 8px;
     height: 8px;
     background: var(--console-tertiary, #4caf50);
@@ -546,5 +536,3 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     }
   }
 </style>
-
-

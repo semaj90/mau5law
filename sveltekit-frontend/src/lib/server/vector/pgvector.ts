@@ -9,10 +9,10 @@ const DEFAULT_PARTY_TYPE = 'individual' as const;
 const POOL: Pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // Type guards for robust type checking
-const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
-const isString = (v: unknown): v is string => typeof v === 'string';
-const isNumber = (v: unknown): v is number => typeof v === 'number';
-const isStringArray = (v: unknown): v is string[] => Array.isArray(v) && v.every(e => typeof e === 'string');
+const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+const isString = (v: any): v is string => typeof v === 'string';
+const isNumber = (v: any): v is number => typeof v === 'number';
+const isStringArray = (v: any): v is string[] => Array.isArray(v) && v.every(e => typeof e === 'string');
 
 // Define LegalCaseInfo type locally as it's not exported from sharedTypes
 export type LegalCaseInfo = {
@@ -68,15 +68,15 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       | string
       | {
           // Updated: 'case' can be a string (ID) or an object
-          id?: unknown;
-          jurisdiction?: unknown;
-          parties?: unknown;
-          datesFiled?: unknown;
-          courtLevel?: unknown;
+          id?: any;
+          jurisdiction?: any;
+          parties?: any;
+          datesFiled?: any;
+          courtLevel?: any;
         };
     // Removed redundant properties from MetaShape as they are now part of the: 'case' object or handled separately
-    classification?: unknown;
-    processing?: unknown;
+    classification?: any;
+    processing?: any;
   };
   type RowType = {
     id: string;
@@ -92,7 +92,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     // type RiskLevel = 'low' | 'medium' | 'high' | 'critical'; // Removed unused type
 
     // Type guard for LegalMetadata['classification']
-    function isClassificationInfo(v: unknown): v is LegalMetadata['classification'] {
+    function isClassificationInfo(v: any): v is LegalMetadata['classification'] {
       if (!isRecord(v)) return false;
       const docTypeValid =
         isString(v.documentType) && ['contract', 'evidence', 'brief', 'citation'].includes(v.documentType as string);
@@ -104,7 +104,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     }
 
     // Type guard for LegalMetadata['processing']
-    function isProcessingInfo(v: unknown): v is LegalMetadata['processing'] {
+    function isProcessingInfo(v: any): v is LegalMetadata['processing'] {
       if (!isRecord(v)) return false;
       const extractedEntitiesValid = isStringArray(v.extractedEntities);
       const keyTermsValid = isStringArray(v.keyTerms);

@@ -2,22 +2,17 @@
   import { onMount, onDestroy } from 'svelte';
   // removed static uploadStore import because the module has no exported member: 'uploadStore'
   import { writable, type Writable } from 'svelte/store';
-
   // Props (exported to avoid $props() compile issues in this environment)
   export let caseId: string = '';
   export let uploadId: string = '';
-  export let showTensorMetrics: boolean = false;
+  export let showTensorMetrics: boolean = $state(false);
   export let enableAttentionTracking: boolean = true;
-
   // Socket instance - don't import socket.io-client at module-level (SSR safe)
   let socket: any = null;
-
   // local optional reference for uploadStore (populated via dynamic import in onMount)
   let uploadStoreRef: any = null;
-
   // Stores used by the template (template uses $-prefix)
   const connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
-
   type Progress = {
     stage: string;
     progress: number;
@@ -32,7 +27,6 @@
     metrics: {},
     error: null
   });
-
   type TensorResultsType = {
     clusters: any[];
     embeddings: any[];
@@ -45,20 +39,17 @@
     interpolationResults: [],
     metrics: {}
   });
-
   const aiSuggestions = writable({
     suggestions: [] as Array<{ text?: string; confidence?: number }>,
     relevantDocuments: [] as Array<{ title: string; relevanceScore?: number }>,
     confidence: 0
   });
-
   const realtimeMetrics = writable({
     uploadSpeed: 0,
     processingTime: 0,
     memoryUsage: 0,
     gpuUtilization: 0
   });
-
   // Lifecycle
   onMount(async () => {
     // attempt optional dynamic import of uploadStore (safe if module doesn't export it)
@@ -68,43 +59,35 @@
     } catch {
       uploadStoreRef = null;
     }
-
     await initializeWebSocket();
     if (enableAttentionTracking) {
       setupAttentionTracking();
     }
   });
-
   onDestroy(() => {
     cleanupWebSocket();
     cleanupAttentionTracking();
   });
-
   // WebSocket initialization and handlers
   async function initializeWebSocket() {
     connectionStatus.set('connecting');
-
     // dynamic import so SSR won't try to load socket.io-client
     const mod = await import('socket.io-client');
     const io = mod.io;
-
     socket = io('/api/ws', {
       transports: ['websocket', 'polling'],
       timeout: 5000
     });
-
     socket.on('connect', () => {
       console.log('🔌 WebSocket connected');
       connectionStatus.set('connected');
       if (caseId) socket?.emit('join-case', caseId);
       if (uploadId) socket?.emit('join-upload', uploadId);
     });
-
     socket.on('disconnect', () => {
       console.log('🔌 WebSocket disconnected');
       connectionStatus.set('disconnected');
     });
-
     socket.on('upload-progress', (data: any) => {
       // Merge incoming progress safely
       progressData.update((current) => ({
@@ -115,7 +98,6 @@
         metrics: { ...(current.metrics ?? {}), ...(data?.metrics ?? {}) },
         error: data?.error ?? current.error
       }));
-
       // Update realtime metrics if present
       realtimeMetrics.update((current) => ({
         ...current,
@@ -123,7 +105,6 @@
         processingTime: (data?.metrics?.processingTime as number) ?? current.processingTime,
         memoryUsage: (data?.metrics?.memoryUsage as number) ?? current.memoryUsage
       }));
-
       // Optional: inform XState/uploadStore (use uploadStoreRef safely)
       try {
         if (uploadStoreRef?.send) {
@@ -133,12 +114,10 @@
         // swallow to avoid breaking UI if store API differs
       }
     });
-
     socket.on('case-progress', (data: any) => {
       console.log('📂 Case progress:', data);
       // handle if required
     });
-
     socket.on('tensor-result', (data: any) => {
       console.log('🧮 Tensor result:', data);
       if (showTensorMetrics) {
@@ -150,7 +129,6 @@
           interpolationResults: result.interpolationResults ?? current.interpolationResults,
           metrics: { ...(current.metrics ?? {}), ...(result.metrics ?? {}) }
         }));
-
         if (result.metrics?.gpuUtilization !== undefined) {
           realtimeMetrics.update((current) => ({
             ...current,
@@ -158,13 +136,11 @@
           }));
         }
       }
-
       // Notify store/state machine if needed (safe, optional)
       try {
         // uploadStoreRef?.send?.({ type: 'tensor.completed', payload: data });
       } catch {}
     });
-
     socket.on('ai-context-suggestion', (data: any) => {
       console.log('🤖 AI suggestions:', data);
       aiSuggestions.set({
@@ -173,7 +149,6 @@
         confidence: data?.confidence ?? 0
       });
     });
-
     socket.on('upload-error', (data: any) => {
       console.error('❌ Upload error:', data);
       progressData.update((current) => ({
@@ -185,46 +160,38 @@
         // uploadStoreRef?.send?.({ type: 'upload.error', payload: data });
       } catch {}
     });
-
     socket.on('document-change', (data: any) => {
       console.log('📝 Document change:', data);
       // future collaboration handling
     });
-
     socket.on('search-results', (data: any) => {
       console.log('🔍 Search results:', data);
       // streaming search handling
     });
   }
-
   function cleanupWebSocket() {
     if (socket?.disconnect) {
       socket.disconnect();
     }
     socket = null;
   }
-
   // Attention tracking
   let attentionListeners: Array<() => void> = [];
-
   function setupAttentionTracking() {
     if (!socket) return;
-
-    const trackEvent = (type: string, metadata?: unknown) => {
+    const trackEvent = (type: string, metadata?: any) => {
       socket?.emit('attention', {
         type,
         metadata,
         timestamp: new Date().toISOString()
       });
     };
-
     const focusHandler = () => trackEvent('focus');
     const blurHandler = () => trackEvent('blur');
     window.addEventListener('focus', focusHandler);
     window.addEventListener('blur', blurHandler);
     attentionListeners.push(() => window.removeEventListener('focus', focusHandler));
     attentionListeners.push(() => window.removeEventListener('blur', blurHandler));
-
     // Throttled scroll tracking
     let scrollTimeout: number | null = null;
     const scrollHandler = () => {
@@ -242,7 +209,6 @@
         clearTimeout(scrollTimeout);
       }
     });
-
     const clickHandler = (e: MouseEvent) => {
       trackEvent('click', {
         x: e.clientX,
@@ -253,28 +219,23 @@
     document.addEventListener('click', clickHandler);
     attentionListeners.push(() => document.removeEventListener('click', clickHandler));
   }
-
   function cleanupAttentionTracking() {
     attentionListeners.forEach((fn) => fn());
     attentionListeners = [];
   }
-
   // Exposed helpers
   export function trackTyping(query: string) {
     if (!socket || !enableAttentionTracking) return;
     socket.emit('typing', { query, timestamp: new Date().toISOString() });
   }
-
   export function subscribeTensorJob(jobId: string) {
     if (!socket) return;
     socket.emit('subscribe-tensor', jobId);
   }
-
   export function subscribeSearch(searchId: string) {
     if (!socket) return;
     socket.emit('subscribe-search', searchId);
   }
-
   // Helpers
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -283,7 +244,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function formatDuration(seconds: number): string {
     if (seconds < 60) return `${seconds.toFixed(1)}s`;
     const minutes = Math.floor(seconds / 60);
@@ -291,7 +251,6 @@
     return `${minutes}m ${remainingSeconds}s`;
   }
 </script>
-
 <!-- Connection Status -->
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
   <div class="flex items-center justify-between mb-4">
@@ -308,7 +267,6 @@
       </span>
     </div>
   </div>
-
   <!-- Progress Bar -->
   <div class="mb-4">
     <div class="flex justify-between items-center mb-2">
@@ -336,7 +294,6 @@
       {/if}
     </div>
   </div>
-
   <!-- Real-time Metrics -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
@@ -365,7 +322,6 @@
     </div>
   </div>
 </div>
-
 <!-- Tensor Processing Results -->
 {#if showTensorMetrics && Object.keys($tensorResults.metrics || {}).length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
@@ -390,7 +346,6 @@
         </div>
       </div>
     </div>
-
     <!-- Detailed Metrics -->
     {#if Object.keys($tensorResults.metrics || {}).length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -403,17 +358,14 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <!-- AI Context Suggestions -->
 {#if $aiSuggestions.suggestions.length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Context Suggestions</h3>
     <div class="space-y-3">
-      {#each $aiSuggestions.suggestions as suggestion}
+      {#each Array.isArray($aiSuggestions.suggestions) ? $aiSuggestions.suggestions : [] as suggestion}
         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
           <div class="text-sm text-gray-900 dark:text-white">
             {suggestion.text}
@@ -424,22 +376,18 @@
         </div>
       {/each}
     </div>
-
     {#if $aiSuggestions.relevantDocuments.length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Relevant Documents</h4>
         <div class="space-y-2">
-          {#each $aiSuggestions.relevantDocuments as doc}
+          {#each Array.isArray($aiSuggestions.relevantDocuments) ? $aiSuggestions.relevantDocuments : [] as doc}
             <div class="text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
               {doc.title} ({doc.relevanceScore ?? 0}% match)
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <style>
   /* Add any custom styles here */
   .transition-all {

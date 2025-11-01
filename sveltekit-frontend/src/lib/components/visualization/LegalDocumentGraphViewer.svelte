@@ -17,17 +17,17 @@ https://svelte.dev/e/js_parse_error -->
   import { WebGPULegalDocumentGraph } from '$lib/webgpu/legal-document-graph';
   import { DimensionalTensorStore } from '$lib/webgpu/dimensional-tensor-store';
   import { legalDB, type GraphVisualizationData } from '$lib/db/client-db';
-  import DocumentDetails from '$lib/components/legal/DocumentDetails.svelte';
+  import { DocumentDetails } from '$lib/components/legal/DocumentDetails.svelte';
   // ============================================================================
   // COMPONENT PROPS
   // ============================================================================
-  let { graphId = $bindable()  }: { graphId = $bindable() : unknown } = $props(); // string = 'legal-network-main'
-  let { width = $bindable()  }: { width = $bindable() : unknown } = $props(); // number = 800
-  let { height = $bindable()  }: { height = $bindable() : unknown } = $props(); // number = 600
-  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : unknown } = $props(); // boolean = true
-  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : unknown } = $props(); // boolean = true
-  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : unknown } = $props(); // number = 10000
-  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = ''
+  let { graphId = $bindable()  }: { graphId = $bindable() : any } = $props(); // string = 'legal-network-main'
+  let { width = $bindable()  }: { width = $bindable() : any } = $props(); // number = 800
+  let { height = $bindable()  }: { height = $bindable() : any } = $props(); // number = 600
+  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : any } = $props(); // boolean = true
+  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : any } = $props(); // boolean = true
+  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : any } = $props(); // number = 10000
+  let { class = $bindable()  }: { class = $bindable() : any } = $props(); // string = ''
   // ============================================================================
   // REACTIVE STORES
   // ============================================================================
@@ -149,7 +149,7 @@ try {
       console.error('[Graph Viewer] Failed to load graph data:', err);
       throw new Error('Failed to load graph data from database');
     } finally {
-      $isLoading = false;
+      $isLoading = $state(false);
     }
   }
   /**
@@ -206,7 +206,7 @@ try {
     });
     canvas.addEventListener('mouseup', (e) => {
       if (isDragging) {
-        isDragging = false;
+        isDragging = $state(false);
         canvas.style.cursor = 'grab';
       } else {
         // Handle node click when not dragging
@@ -328,7 +328,7 @@ try {
    * Handle related document visualization updates
    * Called when document details are loaded to update the graph
    */
-  async function updateGraphWithRelations(documentId: string, relatedDocs: unknown[]): Promise<void> {
+  async function updateGraphWithRelations(documentId: string, relatedDocs: any[]): Promise<void> {
     if (!graphEngine) return;
     try {
       // Extract related document IDs
@@ -492,7 +492,6 @@ try {
     // This would need implementation in the engine
   }
 </script>
-
 <!-- ============================================================================ -->
 <!-- COMPONENT TEMPLATE -->
 <!-- ============================================================================ -->
@@ -502,8 +501,7 @@ try {
     <div class="loading-overlay">
       <div class="loading-spinner"></div>
       <p>Loading legal document network...</p>
-    </div>
-  {/if}
+    {/if}
   <!-- Error State -->
   {#if $error}
     <div class="error-overlay">
@@ -511,8 +509,7 @@ try {
       <h3>WebGPU Error</h3>
       <p>{$error}</p>
       <button onclick={() => window.location.reload()}>Reload Page</button>
-    </div>
-  {/if}
+    {/if}
   <!-- WebGPU Canvas -->
   <canvas bind:this={canvas as any} class="graph-canvas" class:interactive={$canInteract} {width} {height}></canvas>
   <!-- Performance HUD -->
@@ -534,8 +531,7 @@ try {
         <span class="label">GPU:</span>
         <span class="value">{Math.round($performanceStats.gpuMemoryUsage / 1024 / 1024)}MB</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
@@ -573,16 +569,14 @@ try {
       >
         📷
       </button>
-    </div>
-  {/if}
+    {/if}
   <!-- Selected Node Info -->
   {#if $renderState.selectedNode}
     <div class="node-info-panel">
       <h4>Node Information</h4>
       <p><strong>ID:</strong> {$renderState.selectedNode}</p>
       <!-- Additional node details would be populated here -->
-    </div>
-  {/if}
+    {/if}
 </div>
 <!-- ============================================================================ -->
 <!-- DOCUMENT DETAILS MODAL - CACHE-FIRST INTEGRATION                            -->
@@ -602,13 +596,12 @@ try {
     }
   }}
 />
-
 <!-- ============================================================================ -->
 <!-- COMPONENT STYLES -->
 <!-- ============================================================================ -->
 <style>
   .legal-graph-viewer {
-    position relative;
+    position: relative;
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 8px;
     overflow: hidden;
@@ -619,7 +612,7 @@ try {
   }
   .loading-overlay,
   .error-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -673,7 +666,7 @@ try {
     background: #2563eb;
   }
   .performance-hud {
-    position absolute;
+    position: absolute;
     top: 12px;
     left: 12px;
     background: rgba(0, 0, 0, 0.7);
@@ -701,7 +694,7 @@ try {
     color: #60a5fa;
   }
   .controls-panel {
-    position absolute;
+    position: absolute;
     top: 12px;
     right: 12px;
     display: flex;
@@ -730,7 +723,7 @@ try {
     border-color: #60a5fa;
   }
   .node-info-panel {
-    position absolute;
+    position: absolute;
     bottom: 12px;
     left: 12px;
     background: rgba(0, 0, 0, 0.8);
@@ -766,4 +759,3 @@ try {
     }
   }
 </style>
-

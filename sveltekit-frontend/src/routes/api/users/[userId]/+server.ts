@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ error: 'User not found' }, { status: 404 });
     }
     return json(userResult[0]);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching user:', error instanceof Error ? error.message : String(error));
     return json({ error: 'Failed to fetch user' }, { status: 500 });
   }
@@ -109,7 +109,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       updatedAt: users.updatedAt,
     });
     return json(updatedUser);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error updating user:', error instanceof Error ? error.message : String(error));
     return json({ error: 'Failed to update user' }, { status: 500 });
   }
@@ -146,7 +146,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       name: users.name,
     });
     return json({ success: true, deletedUser });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error deleting user:', error instanceof Error ? error.message : String(error));
     return json({ error: 'Failed to delete user' }, { status: 500 });
   }
@@ -182,7 +182,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     if (data.operation === 'activate' && currentUser.role === 'admin') {
       updateData.isActive = true;
     } else if (data.operation === 'deactivate' && currentUser.role === 'admin') {
-      updateData.isActive = false;
+      updateData.isActive = $state(false);
     } else if (data.operation === 'changeRole' && currentUser.role === 'admin') {
       updateData.role = data.role;
     } else if (data.operation === 'updateAvatar') {
@@ -225,7 +225,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       updatedAt: users.updatedAt,
     });
     return json(updatedUser);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error patching user:', error instanceof Error ? error.message : String(error));
     return json({ error: 'Failed to update user' }, { status: 500 });
   }

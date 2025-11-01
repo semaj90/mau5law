@@ -5,7 +5,7 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 // Helper to safely stringify unknown errors
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
@@ -32,7 +32,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<boolean>
     const timeoutPromise = new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout));
     const response = (await Promise.race([fetchPromise, timeoutPromise])) as Response;
     return Boolean(response && response.ok);
-  } catch (_err: unknown) {
+  } catch (_err: any) {
     return false;
   }
 }
@@ -67,12 +67,12 @@ async function checkPostgresHealth(host: string, port: number): Promise<boolean>
     const cmd = `PGPASSWORD=123456 psql -h ${host} -p ${port} -U legal_admin -d legal_ai_db -c "SELECT 1;" --quiet --tuples-only`;
     const { stdout } = await execWithTimeout(cmd, 5000);
     return String(stdout || '').trim() === '1';
-  } catch (_err: unknown) {
+  } catch (_err: any) {
     try {
       // Fallback to Docker exec if available
       await execWithTimeout('docker exec legal-ai-postgres pg_isready -U legal_admin -d legal_ai_db', 3000);
       return true;
-    } catch (_innerErr: unknown) {
+    } catch (_innerErr: any) {
       return false;
     }
   }
@@ -86,7 +86,7 @@ async function checkRedisHealth(host: string, port: number): Promise<boolean> {
         .trim()
         .toLowerCase() === 'pong'
     );
-  } catch (_err: unknown) {
+  } catch (_err: any) {
     try {
       const { stdout } = await execWithTimeout('docker exec legal-ai-redis redis-cli ping', 3000);
       return (
@@ -94,7 +94,7 @@ async function checkRedisHealth(host: string, port: number): Promise<boolean> {
           .trim()
           .toLowerCase() === 'pong'
       );
-    } catch (_innerErr: unknown) {
+    } catch (_innerErr: any) {
       return false;
     }
   }

@@ -1,5 +1,4 @@
 import { setup, assign, createActor, fromPromise, type DoneActorEvent } from 'xstate';
-
 // Define User and Session types for clarity and reuse
 export type User = {
   id?: string;
@@ -13,19 +12,16 @@ export type User = {
   isActive?: boolean;
   emailVerified?: boolean;
 };
-
 export type Session = {
   id?: string;
   expiresAt?: Date;
   fresh?: boolean;
 };
-
 type AuthenticateActorOutput = {
   user: User;
   session: Session;
   requiresTwoFactor?: boolean;
 };
-
 // Authentication context interface
 export interface AuthContext {
   user: User | null;
@@ -44,7 +40,7 @@ export interface AuthContext {
   lastLoginAttempt?: Date;
   lockoutUntil?: Date;
   twoFactorRequired: boolean;
-  registrationData?: unknown;
+  registrationData?: any;
 }
 // Authentication events
 export type AuthEvent =
@@ -73,7 +69,7 @@ export interface LoginData {
   password: string;
   rememberMe?: boolean;
   twoFactorCode?: string;
-  deviceInfo?: unknown;
+  deviceInfo?: any;
 }
 export interface RegistrationData {
   email: string;
@@ -85,7 +81,7 @@ export interface RegistrationData {
   jurisdiction: string;
   badgeNumber?: string;
   enableTwoFactor?: boolean;
-  deviceInfo?: unknown;
+  deviceInfo?: any;
 }
 const initialContext: AuthContext = {
   user: null,

@@ -14,7 +14,6 @@
     class?: string;
     children?: any; // Svelte 5 runes children render callbacks
   }
-
   let {
     columns = 1,
     expandedColumns = 3,
@@ -27,32 +26,27 @@
     class: className = '',
     children,
   }: Props = $props();
-
   // Guard: ensure expandedColumns is never less than columns (prevents shrink-on-expand bugs)
   if (expandedColumns < columns) {
     console.warn('[ExpandGrid] expandedColumns < columns; promoting', expandedColumns, '->', columns);
     expandedColumns = columns;
   }
-
   import { onMount, onDestroy } from 'svelte';
   const state = $state({ expanded: false });
   let containerElement: HTMLDivElement | null = null;
   const currentColumns = $derived(state.expanded ? expandedColumns : columns);
-
   function expand() {
     if (!state.expanded) {
       state.expanded = true;
       onexpand?.();
     }
   }
-
   function collapse() {
     if (state.expanded) {
-      state.expanded = false;
+      state.expanded = $state(false);
       onexpand?.();
     }
   }
-
   function handleMouseEnter() {
     if (expandOnHover) expand();
   }
@@ -65,7 +59,6 @@
   function handleFocusOut(e: FocusEvent) {
     if (expandOnFocus && containerElement && !containerElement.contains(e.relatedTarget as Node)) collapse();
   }
-
   onMount(() => {
     if (!containerElement) return;
     const el = containerElement;
@@ -89,7 +82,6 @@
     };
   });
 </script>
-
 <div
   bind:this={containerElement}
   class={`expand-grid ${state.expanded ? 'expanded' : ''} ${className}`}
@@ -101,7 +93,6 @@
     {@render children.default()}
   {/if}
 </div>
-
 <style>
   /* Base grid */
   .expand-grid {
@@ -132,7 +123,7 @@
       box-shadow var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
     overflow: hidden;
-    position relative;
+    position: relative;
   }
   .expand-grid.expanded :global(.grid-item) {
     transform: scale(1.015);
@@ -159,4 +150,3 @@
     }
   }
 </style>
-

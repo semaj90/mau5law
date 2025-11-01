@@ -153,15 +153,12 @@ export const usersRelations = relations(users, ({ many }) => ({
   createdEvidence: many(evidence),
   aiInteractions: many(aiInteractions),
 }));
-
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users),
 }));
-
 export const userAuditLogsRelations = relations(userAuditLogs, ({ one }) => ({
   user: one(users),
 }));
-
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users),
   assignee: one(users),
@@ -169,19 +166,16 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   evidence: many(evidence),
   aiInteractions: many(aiInteractions),
 }));
-
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case one(cases),
   creator: one(users),
   evidence: many(evidence),
 }));
-
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case one(cases),
   document: one(documents),
   creator: one(users),
 }));
-
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users),
   case one(cases),

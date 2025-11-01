@@ -25,7 +25,7 @@ interface WasmModule {
 }
 class VectorWasmClient {
   private wasmModule: WasmModule | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private memoryPools: Map<number, number[]> = new Map();
 
   async initialize(): Promise<void> {
@@ -67,7 +67,7 @@ class VectorWasmClient {
       forceServer || Boolean(this.wasmModule.shouldUseServer(0, length, complexityScore)) || length > 5000; // Threshold for large vectors
 
     let result: number;
-    let usedServer = false;
+    let usedServer = $state(false);
     if (shouldUseServer) {
       // Route to server for GPU processing
       result = await this.computeServerSimilarity(vectorA, vectorB, algorithm);
@@ -75,7 +75,7 @@ class VectorWasmClient {
     } else {
       // Use local WASM with SIMD optimization
       result = this.computeLocalSimilarity(vectorA, vectorB, algorithm);
-      usedServer = false;
+      usedServer = $state(false);
     }
     const processingTime = performance.now() - startTime;
     return { result, usedServer, processingTime };

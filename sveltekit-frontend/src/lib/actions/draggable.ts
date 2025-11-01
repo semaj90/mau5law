@@ -19,7 +19,7 @@ export interface DraggableOptions {
  * Enhanced draggable action for making elements draggable on the detective board
  */ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   let { id, onDrag, onDragStart, onDragEnd, handle, disabled = false, constraint } = options;
-  let isDragging = false;
+  let isDragging = $state(false);
   let startX = 0;
   let startY = 0;
   let initialX = 0;
@@ -105,7 +105,7 @@ export interface DraggableOptions {
   }
   function handleMouseUp(_e: MouseEvent) {
     if (!isDragging) return;
-    isDragging = false;
+    isDragging = $state(false);
     // Remove visual feedback
     node.style.cursor = disabled ? '' : 'grab';
     node.style.zIndex = '';

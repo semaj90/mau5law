@@ -50,10 +50,10 @@
     maxPixelRatio?: number;
     // Fabric.js integration
     enableFabricJS?: boolean;
-    fabricConfig?: unknown;
+    fabricConfig?: any;
     // Event callbacks
-    onCanvasReady?: (canvas: HTMLCanvasElement, context: unknown) => void;
-    onDraw?: (context: unknown, deltaTime: number) => void;
+    onCanvasReady?: (canvas: HTMLCanvasElement, context: any) => void;
+    onDraw?: (context: any, deltaTime: number) => void;
     onResize?: (width: number, height: number) => void;
     class?: string;
   }
@@ -372,8 +372,8 @@
   const adjustQuality = (direction 'up' | 'down') => {
     if (direction === 'down') {
       // Reduce effects for better performance
-      if (enableBloom) enableBloom = false;
-      else if (enableParticleSystem) enableParticleSystem = false;
+      if (enableBloom) enableBloom = $state(false);
+      else if (enableParticleSystem) enableParticleSystem = $state(false);
       else if (anisotropicLevel > 1) anisotropicLevel = Math.max(1, anisotropicLevel / 2);
     } else {
       // Increase effects for better quality
@@ -475,11 +475,9 @@
     <div class="canvas-loading">
       <div class="n64-spinner"></div>
       <div class="loading-text">Initializing Canvas...</div>
-    </div>
-  {/if}
+    {/if}
   {#if enablePostProcessing}
-    <div class="post-processing-overlay"></div>
-  {/if}
+    <div class="post-processing-overlay">{/if}
   <!-- Debug information -->
   {#if typeof window !== 'undefined' && (window as any).__N64_DEBUG__}
     <div class="debug-info">
@@ -487,12 +485,11 @@
       <div>Frame Time: {performanceMonitor.frameTime.toFixed(1)}ms</div>
       <div>Context: {context?.constructor.name}</div>
       <div>Anisotropic: {anisotropicLevel}x</div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .n64-canvas-container {
-    position relative;
+    position: relative;
     display: inline-block;
     width: var(--canvas-width);
     height: var(--canvas-height);
@@ -526,7 +523,7 @@
   }
   /* Post-processing overlay for additional effects */
   .post-processing-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -551,7 +548,7 @@
   }
   /* Loading overlay */
   .canvas-loading {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -587,7 +584,7 @@
   }
   /* Debug information */
   .debug-info {
-    position absolute;
+    position: absolute;
     top: 8px;
     left: 8px;
     background: rgba(0, 0, 0, 0.8);

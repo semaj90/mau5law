@@ -31,7 +31,7 @@ export interface LegalDocumentContext {
     legalPrecedents: any[];
   }
   // Context7 MCP results
-  mcpAnalysis?: unknown;
+  mcpAnalysis?: any;
   stackRecommendations?: string[];
   // Error handling
   errors: string[];

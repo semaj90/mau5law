@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js';
 import crypto from 'crypto';
 
 // helper to safely stringify unknown errors
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
     return JSON.stringify(error);
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
       logs,
       count: logs.length,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to get agent logs:', getErrorMessage(error));
     return json({ success: false, error: 'Failed to get agent logs' }, { status: 500 });
   }
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Agent call logged successfully',
       logId: agentLog.id,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to log agent call:', getErrorMessage(error));
     return json({ success: false, error: 'Failed to log agent call' }, { status: 500 });
   }

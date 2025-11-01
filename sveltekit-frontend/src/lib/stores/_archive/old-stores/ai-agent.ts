@@ -15,13 +15,13 @@ interface StreamingData {
   confidence?: number;
   executionTime?: number;
   fromCache?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface RealAIChatResponse {
   response?: string;
   // other fields that may be returned by realAIService chat
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface SearchOptions {
@@ -32,17 +32,17 @@ interface SearchOptions {
 interface IndexResult {
   success: boolean;
   error?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface HealthCheckResult {
   overall?: boolean;
   models?: Array<{ name: string }>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface RealAIService {
-  connect?: (model?: string) => Promise<{ success: boolean; model?: string; availableModels?: string[]; [k: string]: unknown }>;
+  connect?: (model?: string) => Promise<{ success: boolean; model?: string; availableModels?: string[]; [k: string]: any }>;
   sendMessage?: (opts: { message: string; sessionId: string; context?: Record<string, unknown>; options?: Record<string, unknown> }) => Promise<RealAIChatResponse>;
   searchSimilarDocuments?: (query: string, opts?: SearchOptions) => Promise<SimilarDocument[]>;
   indexDocument?: (doc: { title: string; content: string; metadata?: Record<string, unknown> }) => Promise<IndexResult>;
@@ -95,8 +95,8 @@ export interface ProcessingJob {
   id: string;
   type: 'chat' | 'summarize' | 'analyze' | 'embed' | 'search';
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  input: unknown;
-  output?: unknown;
+  input: any;
+  output?: any;
   startTime: Date;
   endTime?: Date;
   error?: string;
@@ -126,7 +126,7 @@ export interface AIError {
   type: 'connection' | 'processing' | 'timeout' | 'model' | 'rate_limit';
   message: string;
   timestamp: Date;
-  context?: unknown;
+  context?: any;
   resolved: boolean;
   retryable: boolean;
 }
@@ -183,7 +183,7 @@ const createAIAgentStore = () => {
         }));
         // Start heartbeat
         this.startHeartbeat();
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         this.addError({
           type: 'connection',
@@ -208,7 +208,7 @@ const createAIAgentStore = () => {
       }));
     },
     // Chat Functions
-    async sendMessage(message: string, context?: unknown) {
+    async sendMessage(message: string, context?: any) {
       const startTime = Date.now();
       const jobId = crypto.randomUUID();
       const sessionId = crypto.randomUUID();
@@ -273,7 +273,7 @@ const createAIAgentStore = () => {
           isProcessing: false,
           typingIndicator: false,
         }));
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         this.addError({
           type: 'processing',
@@ -304,7 +304,7 @@ const createAIAgentStore = () => {
         streamingResponse: '',
       }));
       try {
-        let done = false;
+        let done = $state(false);
         while (!done) {
           const result = await reader.read();
           done = !!result.done;
@@ -324,7 +324,7 @@ const createAIAgentStore = () => {
             if (!line) continue;
             if (line.startsWith('data: ')) {
               try {
-                const parsed: unknown = JSON.parse(line.slice(6));
+                const parsed: any = JSON.parse(line.slice(6));
                 const data = parsed as StreamingData;
                 const content = data.content;
                 if (content) {
@@ -338,7 +338,7 @@ const createAIAgentStore = () => {
                   this.completeStreamingResponse(assistantMessage, data, jobId);
                   return;
                 }
-              } catch (e: unknown) {
+              } catch (e: any) {
                 const errMsg = e instanceof Error ? e.message : String(e);
                 console.warn('Failed to parse streaming data:', line, errMsg);
               }
@@ -348,7 +348,7 @@ const createAIAgentStore = () => {
       } finally {
         try {
           reader.releaseLock();
-        } catch (releaseError: unknown) {
+        } catch (releaseError: any) {
           // non-fatal: log for diagnostics
           console.warn('reader.releaseLock failed:', releaseError);
         }
@@ -396,7 +396,7 @@ const createAIAgentStore = () => {
           similarDocuments: documents,
         }));
         return documents;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         this.addError({
           type: 'processing',
@@ -407,7 +407,7 @@ const createAIAgentStore = () => {
       }
     },
 
-    async indexDocument(document: { title: string; content: string; metadata?: unknown }) {
+    async indexDocument(document: { title: string; content: string; metadata?: any }) {
       try {
         const service = realAIService as unknown as RealAIService;
         const result =
@@ -430,7 +430,7 @@ const createAIAgentStore = () => {
           },
         }));
         return { success: true };
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         this.addError({
           type: 'processing',
@@ -524,7 +524,7 @@ const createAIAgentStore = () => {
       }));
     },
     // Job Management
-    completeJob(jobId: string, result: unknown) {
+    completeJob(jobId: string, result: any) {
       update(state => {
         const job = state.processingQueue.find(j => j.id === jobId);
         if (!job) return state;
@@ -571,7 +571,7 @@ const createAIAgentStore = () => {
             availableModels: ((health as HealthCheckResult)?.models || []).map((m: { name: string }) => m.name),
             isConnected: !!(health as HealthCheckResult)?.overall,
           }));
-        } catch (error: unknown) {
+        } catch (error: any) {
           update(state => ({
             ...state,
             systemHealth: 'critical',

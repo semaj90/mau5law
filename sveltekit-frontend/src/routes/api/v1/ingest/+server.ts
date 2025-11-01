@@ -90,12 +90,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         success: true,
         api_version: 'v1',
       });
-    } catch (fetchError: unknown) {
+    } catch (fetchError: any) {
       clearTimeout(timeoutId);
       // Safely extract `name` property without using `any`
       const fetchErrorName =
         typeof fetchError === 'object' && fetchError !== null && 'name' in fetchError
-          ? String((fetchError as { name?: unknown }).name ?? '')
+          ? String((fetchError as { name?: any }).name ?? '')
           : '';
       if (fetchErrorName === 'AbortError') {
         return json({ error: 'Request timeout - document processing took too long' }, { status: 504 });
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       // rethrow unknown error to be handled by outer catch
       throw fetchError;
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Ensure we log and return a safe message string
     const message = error instanceof Error ? error.message : String(error);
     console.error('Ingest API error:', error);
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       timestamp: new Date().toISOString(),
       architecture: 'go-microservice',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {

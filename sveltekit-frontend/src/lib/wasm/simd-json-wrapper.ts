@@ -386,7 +386,7 @@ export interface WasmExports {
   // add other exports as needed
 }
 
-export let isWASMReady = false;
+export let isWASMReady = $state(false);
 
 /**
  * Singleton instance for global use
@@ -403,7 +403,7 @@ export const simdJSONAccelerator = new SIMDJSONAccelerator();
     })
     .catch(error => {
       console.warn('⚠️ Failed to initialize SIMD JSON accelerator, falling back to JavaScript:', error);
-      isWASMReady = false;
+      isWASMReady = $state(false);
     });
 }
 
@@ -420,7 +420,7 @@ export async function initWASM(timeoutMs = 3000): Promise<boolean> {
     isWASMReady = true;
     return true;
   } catch (err) {
-    isWASMReady = false;
+    isWASMReady = $state(false);
     return false;
   }
 }

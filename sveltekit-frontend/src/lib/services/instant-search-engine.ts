@@ -170,7 +170,7 @@ export class InstantSearchEngine extends EventEmitter {
       // });
       console.log('✅ InstantSearchEngine initialized successfully');
       this.emit('initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ InstantSearchEngine initialization failed:', error);
       throw error;
     }
@@ -205,7 +205,7 @@ export class InstantSearchEngine extends EventEmitter {
       this.fuse = new Fuse(documents, fuseOptions);
       console.log(`🔍 Fuse.js index refreshed with ${documents.length} documents`);
       this.emit('indexRefreshed', { documentCount: documents.length });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to refresh Fuse index:', error);
     }
   }
@@ -225,7 +225,7 @@ export class InstantSearchEngine extends EventEmitter {
         return [];
       }
       return documents;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to fetch cached documents:', error);
       return [];
     }
@@ -295,7 +295,7 @@ export class InstantSearchEngine extends EventEmitter {
       });
 
       return results;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Search failed for query: "${normalizedQuery}":`, error);
       this.updateSearchStats('error', Date.now() - startTime);
       return [];
@@ -335,7 +335,7 @@ export class InstantSearchEngine extends EventEmitter {
         resultType: 'fuzzy',
         responseTime: 0,
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Fuzzy search failed:', error);
       return [];
     }
@@ -429,7 +429,7 @@ export class InstantSearchEngine extends EventEmitter {
       }
 
       return results;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Semantic search failed:', error);
       return [];
     }
@@ -661,7 +661,7 @@ export class InstantSearchEngine extends EventEmitter {
           (this.searchStats.cacheHitRate * this.searchStats.totalSearches + 1) / (this.searchStats.totalSearches + 1);
         return JSON.parse(cached) as InstantSearchResult[];
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Cache retrieval failed:', error);
     }
     return null;
@@ -670,7 +670,7 @@ export class InstantSearchEngine extends EventEmitter {
   private async cacheResults(cacheKey: string, results: InstantSearchResult[]): Promise<void> {
     try {
       await lokiRedisCache.set(cacheKey, JSON.stringify(results), this.options.cacheTtl);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Cache storage failed:', error);
     }
   }

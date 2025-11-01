@@ -407,7 +407,7 @@ const autoAttachMachine = createMachine({
     evaluateAutoAttachment: (_ctx, _evt) => {
       // placeholder: evaluate whether to auto attach
     },
-    updateWorkerHealth: assign((_ctx, _evt: unknown) => {
+    updateWorkerHealth: assign((_ctx, _evt: any) => {
       // placeholder: update specific worker health snapshot
       return {};
     }),
@@ -417,7 +417,7 @@ const autoAttachMachine = createMachine({
     collectLearningData: (_ctx, _evt) => {
       // placeholder: collect data for learning
     },
-    storeLearningResults: assign((_ctx, _evt: unknown) => {
+    storeLearningResults: assign((_ctx, _evt: any) => {
       // placeholder: persist learning results into context
       return {};
     }),

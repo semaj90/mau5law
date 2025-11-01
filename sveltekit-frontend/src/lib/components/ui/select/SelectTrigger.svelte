@@ -4,16 +4,14 @@
   interface Props {
     children?: import('svelte').Snippet;
     class?: string;
-    [attr: string]: unknown;
+    [attr: string]: any;
   }
   let { children, class: className = '', ...rest }: Props = $props();
 </script>
-
 <Select.Trigger class="space-y-4 {className}" {...rest}>
-  {@render children?.()}
+  <slot />
   <!-- No {#snippet children()} usage to avoid slot/snippet conflict -->
 </Select.Trigger>
-
 <style>
 /* @unocss-include */ {}
 </style>

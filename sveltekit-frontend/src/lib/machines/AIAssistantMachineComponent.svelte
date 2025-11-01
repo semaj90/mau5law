@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
-  import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
+  import { DidYouMeanSuggestions } from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
   import { IntelligentModelSwitcher } from '$lib/ai/intelligent-model-switcher';
   import { UserIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system';
   import { Brain, Zap, Target, Cpu, Activity } from 'lucide-svelte';
@@ -105,7 +105,7 @@
       }
       send({ type: 'QUERY', query, model: currentModel });
       queryInput = '';
-      showSuggestions = false;
+      showSuggestions = $state(false);
     }
   }
   function clearConversation() {
@@ -118,13 +118,13 @@
   function handleSuggestionSelect(_event: CustomEvent) {
     const { suggestion } = e(vent as CustomEvent).detail;
     queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
-    showSuggestions = false;
+    showSuggestions = $state(false);
   }
   // Handle task selection
   function handleTaskSelect(_event: CustomEvent) {
     const { task } = e(vent as CustomEvent).detail;
     queryInput = task.task;
-    showSuggestions = false;
+    showSuggestions = $state(false);
   }
   // Load user insights
   async function loadUserInsights() {
@@ -145,7 +145,7 @@
     if (queryInput.length >= 2) {
       showSuggestions = true;
     } else {
-      showSuggestions = false;
+      showSuggestions = $state(false);
     }
   });
   // Get status indicators
@@ -155,7 +155,6 @@
   let currentState = $derived(state.value as string);
   let context = $derived(state.context);
 </script>
-
 <div class="ai-assistant-machine-demo max-w-4xl mx-auto p-6 space-y-6">
   <!-- Machine Status Header -->
   <div class="bg-gray-900 text-white p-4 rounded-lg">
@@ -182,8 +181,7 @@
           <div class="flex items-center gap-2 text-sm">
             <Zap class="w-4 h-4 text-yellow-400" />
             <span class="text-yellow-300">AI Enhanced</span>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- AI Enhancement Status -->
@@ -213,10 +211,8 @@
                 Confidence: <span class="text-blue-300">{Math.round(userLearningInsights.confidenceLevel * 100)}%</span>
               </div>
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     <!-- Service Health Indicators -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
       <div class="bg-gray-800 p-3 rounded">
@@ -288,8 +284,7 @@
                   onsuggestion={handleSuggestionSelect}
                   ontask={handleTaskSelect}
                 />
-              </div>
-            {/if}
+              {/if}
           </div>
           <button
             onclick={submitQuery}
@@ -311,8 +306,7 @@
               <Cpu class="w-3 h-3" />
               Using <span class="font-mono text-blue-600">{currentModel}</span> - {modelSwitchReason}
             </span>
-          </div>
-        {/if}
+          {/if}
       </div>
       <div class="flex gap-2">
         <button onclick={toggleStreaming} class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
@@ -328,7 +322,7 @@
   {#if context.processingQueue && context.processingQueue.length > 0}
     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
       <h3 class="font-semibold text-yellow-800 mb-2">Processing Queue</h3>
-      {#each context.processingQueue as job}
+      {#each Array.isArray(context.processingQueue) ? context.processingQueue : [] as job}
         <div class="bg-white p-3 rounded mb-2">
           <div class="flex items-center justify-between mb-2">
             <span class="font-medium">{job.type?.replace.toUpperCase() || 'Unknown Job'}</span>
@@ -342,14 +336,13 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Conversation History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
     <div class="bg-white border rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-4">Conversation History</h2>
       <div class="space-y-4 max-h-96 overflow-y-auto">
-        {#each context.conversationHistory as entry}
+        {#each Array.isArray(context.conversationHistory) ? context.conversationHistory : [] as entry}
           <div
             class="flex gap-3 p-3 rounded-lg {entry.type === 'user'
               ? 'bg-blue-50'
@@ -376,8 +369,7 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Current Response -->
   {#if context.response}
     <div class="bg-green-50 border rounded-lg p-6">
@@ -388,17 +380,15 @@
           <div class="mt-4 p-3 bg-white rounded border-l-4 border-green-400">
             <div class="text-sm text-gray-600 mb-2">Streaming...</div>
             <div class="whitespace-pre-wrap">{context.streamBuffer}</div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Document Processing -->
   {#if context.currentDocuments && context.currentDocuments.length > 0}
     <div class="bg-white border rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-4">Document Analysis</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {#each context.currentDocuments as doc}
+        {#each Array.isArray(context.currentDocuments) ? context.currentDocuments : [] as doc}
           <div class="border rounded-lg p-4">
             <div class="font-medium mb-2">{doc.filename}</div>
             <div class="text-sm text-gray-600 mb-2">
@@ -430,25 +420,22 @@
                   <div class="mt-2">
                     <div class="font-medium mb-1">Key Terms:</div>
                     <div class="flex flex-wrap gap-1">
-                      {#each doc.aiAnalysis.keyTerms as term}
+                      {#each Array.isArray(doc.aiAnalysis.keyTerms) ? doc.aiAnalysis.keyTerms : [] as term}
                         <span class="px-2 py-1 bg-gray-100 rounded text-xs">{term}</span>
                       {/each}
                     </div>
-                  </div>
-                {/if}
-              </div>
-            {/if}
+                  {/if}
+              {/if}
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Collaboration Users -->
   {#if context.collaborationUsers && context.collaborationUsers.length > 0}
     <div class="bg-white border rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-4">Collaboration Users</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {#each context.collaborationUsers as user}
+        {#each Array.isArray(context.collaborationUsers) ? context.collaborationUsers : [] as user}
           <div class="flex items-center gap-3 p-3 border rounded-lg">
             <div class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center text-sm font-bold">
               {user.name.split.map - join('')}
@@ -464,8 +451,7 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Context7 Analysis -->
   {#if context.context7Analysis}
     <div class="bg-blue-50 border rounded-lg p-6">
@@ -483,14 +469,13 @@
         <div>
           <h3 class="font-medium mb-2">Recommendations</h3>
           <ul class="list-disc list-inside text-sm space-y-1">
-            {#each context.context7Analysis.recommendations || [] as recommendation}
+            {#each Array.isArray(context.context7Analysis.recommendations || []) ? context.context7Analysis.recommendations || [] : [] as recommendation}
               <li>{recommendation}</li>
             {/each}
           </ul>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Debug Information -->
   <details class="bg-gray-50 border rounded-lg p-4">
     <summary class="cursor-pointer font-medium">Debug Information</summary>
@@ -500,7 +485,6 @@
     </div>
   </details>
 </div>
-
 <style>
   .ai-assistant-machine-demo {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

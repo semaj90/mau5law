@@ -218,7 +218,7 @@ export class OllamaLocalLLM {
       });
       this.modelCache.delete(model);
       logger.info(`[OllamaLLM] Unloaded model ${model}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to unload model ${model}:`, error.message);
       } else {
@@ -240,7 +240,7 @@ export class OllamaLocalLLM {
         throw new Error(`Failed to get model info: ${(response as FetchResponseCommon).statusText}`);
       }
       return await (response as FetchResponseCommon).json() as OllamaModelInfo;
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to get model info for ${model}:`, error.message);
       } else {
@@ -288,7 +288,7 @@ export class OllamaLocalLLM {
               logger.error(`[OllamaLLM] Pull error for ${model}: ${data.error}`);
               return false; // Indicate failure if an error is reported in the stream
             }
-          } catch (e: unknown) {
+          } catch (e: any) {
             logger.warn('[OllamaLLM] Error parsing pull stream line:', (e instanceof Error ? e.message : e));
           }
         }
@@ -304,7 +304,7 @@ export class OllamaLocalLLM {
             logger.error(`[OllamaLLM] Pull error for ${model}: ${data.error}`);
             return false;
           }
-        } catch (e: unknown) {
+        } catch (e: any) {
           logger.warn('[OllamaLLM] Error parsing final buffer content:', (e instanceof Error ? e.message : e));
         }
       }
@@ -312,7 +312,7 @@ export class OllamaLocalLLM {
       await this.loadAvailableModels();
       logger.info(`[OllamaLLM] Successfully pulled model ${model}`);
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to pull model ${model}:`, error.message);
       } else {

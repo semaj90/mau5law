@@ -1,6 +1,5 @@
 <!--
   Enhanced Contextual Chat with Bits-UI + Superforms
-
   Features:
   - SvelteKit 2 Superforms validation
   - bits-ui components (Accordion, Dialog, Tooltip)
@@ -8,7 +7,6 @@
   - Real-time HMM state tracking
   - Entity extraction visualization
 -->
-
 <script lang="ts">
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
@@ -23,26 +21,22 @@
     ConversationTurn
   } from '$lib/types/sharedTypes';
   import { onMount } from 'svelte';
-
   // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
   // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
   // Drizzle-ORM, and Docker environment variables for production readiness
   // occurs within those server-side SvelteKit API routes (+server.ts files).
   // This component correctly uses relative paths for API calls, allowing SvelteKit to handle routing.
-
   // Props
   interface Props {
     sessionId?: string;
     userId?: string;
     caseId?: string;
   }
-
   let {
     sessionId = `session-${Date.now()}`,
     userId = 'demo-user',
     caseId = undefined
   }: Props = $props();
-
   // Form state
   const { form, errors, enhance, message, submitting } = superForm({
     sessionId,
@@ -70,17 +64,14 @@
             hmmState: result.data.metadata?.currentState || 0
           }
         ];
-
         // Clear message
         $form.message = '';
-
         // Fetch updated state
         await fetchContextualState();
         await fetchPredictions();
       }
     }
   });
-
   // State
   let conversationHistory = $state<ConversationTurn[]>([]);
   let contextualState = $state<ContextualState | null>(null);
@@ -89,7 +80,6 @@
   let showSettings = $state(false);
   let showEntityDetails = $state(false);
   let selectedEntity = $state<LegalEntity | null>(null);
-
   // Derived
   const stateNames = {
     0: 'Greeting',
@@ -101,31 +91,26 @@
     6: 'Follow-up',
     7: 'Conclusion'
   };
-
   // explicit derived values (Svelte 5 runes) — use $derived.by to evaluate at runtime
   const currentStateName = $derived.by(() => {
     if (!contextualState) return 'Unknown';
     const idx = contextualState.hmmState?.currentState;
     return stateNames[idx as keyof typeof stateNames] ?? 'Unknown';
   });
-
   const confidencePercentage = $derived.by(() => {
     if (!contextualState) return '0.0';
     return ((contextualState.confidence ?? 0) * 100).toFixed(1);
   });
-
   const canSubmit = $derived.by(() => {
     const text = ($form?.message ?? '') + '';
     return text.trim().length > 0 && !$submitting;
   });
-
   // load initial contextual state & predictions in browser only
   onMount(() => {
     // fire-and-forget; errors are already logged inside helpers
     fetchContextualState();
     fetchPredictions();
   });
-
   /**
    * Fetch contextual state
    */
@@ -135,7 +120,6 @@
         `/api/contextual/state?sessionId=${sessionId}&userId=${userId}`
       );
       const result = await response.json();
-
       if (result.success) {
         contextualState = result.data;
         entities = result.data.extractedEntities;
@@ -144,7 +128,6 @@
       console.error('Failed to fetch contextual state:', error);
     }
   }
-
   /**
    * Fetch predictions
    */
@@ -154,7 +137,6 @@
         `/api/contextual/predictions?sessionId=${sessionId}&userId=${userId}`
       );
       const result = await response.json();
-
       if (result.success) {
         predictions = result.data.predictions;
       }
@@ -162,7 +144,6 @@
       console.error('Failed to fetch predictions:', error);
     }
   }
-
   /**
    * Show entity details
    */
@@ -170,7 +151,6 @@
     selectedEntity = entity;
     showEntityDetails = true;
   }
-
   /**
    * Clear conversation
    */
@@ -180,7 +160,6 @@
         `/api/contextual/state?sessionId=${sessionId}`,
         { method: 'DELETE' }
       );
-
       if (response.ok) {
         conversationHistory = [];
         contextualState = null;
@@ -193,7 +172,6 @@
     }
   }
 </script>
-
 <div class="enhanced-contextual-chat">
   <!-- Header -->
   <div class="chat-header nes-container is-dark">
@@ -208,7 +186,6 @@
             <p>Settings</p>
           </Tooltip.Content>
         </Tooltip.Root>
-
         <button
           class="nes-btn is-small is-warning"
           onclick={clearConversation}
@@ -218,17 +195,14 @@
         </button>
       </div>
     </div>
-
     <!-- State indicator -->
     {#if contextualState}
       <div class="state-indicator">
         <span class="state-label">Current State:</span>
         <span class="state-name">{currentStateName}</span>
         <span class="state-confidence">{confidencePercentage}%</span>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <div class="chat-body">
     <!-- Left: Conversation -->
     <div class="conversation-panel">
@@ -239,7 +213,6 @@
               <div class="message-label">👤 You</div>
               <p>{turn.userMessage}</p>
             </div>
-
             <div class="agent-message nes-container">
               <div class="message-label">🤖 Assistant</div>
               <p>{turn.agentResponse}</p>
@@ -256,17 +229,14 @@
             </div>
           </div>
         {/each}
-
         {#if conversationHistory.length === 0}
           <div class="empty-state nes-container">
             <p class="nes-text">Start a conversation about your legal case...</p>
             <p class="nes-text is-disabled">
               Try asking about case analysis, document review, or risk assessment.
             </p>
-          </div>
-        {/if}
+          {/if}
       </div>
-
       <!-- Input form -->
       <form
         method="POST"
@@ -279,7 +249,6 @@
         {#if caseId}
           <input type="hidden" name="caseId" bind:value={$form.caseId} />
         {/if}
-
         <div class="nes-field">
           <textarea
             name="message"
@@ -294,7 +263,6 @@
             <p class="error-text nes-text is-error">{$errors.message}</p>
           {/if}
         </div>
-
         <div class="form-controls">
           <label class="nes-text">
             <input
@@ -305,7 +273,6 @@
             />
             <span>Enable AI Functions</span>
           </label>
-
           <button
             type="submit"
             class="nes-btn is-primary"
@@ -316,7 +283,6 @@
         </div>
       </form>
     </div>
-
     <!-- Right: State & Predictions -->
     <div class="info-panel">
       <Accordion.Root multiple>
@@ -354,7 +320,6 @@
             {/if}
           </Accordion.Content>
         </Accordion.Item>
-
         <!-- Entities -->
         <Accordion.Item value="entities">
           <Accordion.Header>
@@ -382,7 +347,6 @@
             {/if}
           </Accordion.Content>
         </Accordion.Item>
-
         <!-- State History -->
         {#if contextualState}
           <Accordion.Item value="history">
@@ -410,7 +374,6 @@
     </div>
   </div>
 </div>
-
 <!-- Entity Details Dialog -->
 <Dialog.Root bind:open={showEntityDetails}>
   <Dialog.Portal>
@@ -419,7 +382,6 @@
       <Dialog.Title class="dialog-title">
         Entity Details
       </Dialog.Title>
-
       {#if selectedEntity}
         <div class="entity-details">
           <div class="detail-row">
@@ -442,16 +404,12 @@
               <span class="detail-value">
                 {selectedEntity.startPos} - {selectedEntity.endPos}
               </span>
-            </div>
-          {/if}
-        </div>
-      {/if}
-
+            {/if}
+        {/if}
       <Dialog.Close class="nes-btn is-primary">Close</Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   .enhanced-contextual-chat {
     display: flex;
@@ -462,25 +420,21 @@
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 12px;
   }
-
   .chat-header {
     padding: 1.5rem;
     border-bottom: 4px solid #d4af37;
     background: #1a1d20 !important;
   }
-
   .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .header-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .state-indicator {
     display: flex;
     gap: 1rem;
@@ -490,55 +444,45 @@
     border: 2px solid #d4af37;
     border-radius: 4px;
   }
-
   .state-label {
     color: #888;
   }
-
   .state-name {
     color: #d4af37;
     font-weight: bold;
   }
-
   .state-confidence {
     color: #4ade80;
   }
-
   .chat-body {
     display: grid;
     grid-template-columns: 1fr 400px;
     flex: 1;
     overflow: hidden;
   }
-
   .conversation-panel {
     display: flex;
     flex-direction: column;
     border-right: 4px solid #d4af37;
   }
-
   .messages-container {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
   }
-
   .message-group {
     margin-bottom: 1.5rem;
   }
-
   .user-message,
   .agent-message {
     margin-bottom: 0.75rem;
     padding: 1rem !important;
   }
-
   .message-label {
     font-size: 10px;
     margin-bottom: 0.5rem;
     color: #d4af37;
   }
-
   .message-meta {
     display: flex;
     gap: 1rem;
@@ -546,36 +490,30 @@
     font-size: 10px;
     color: #888;
   }
-
   .empty-state {
     text-align: center;
     padding: 3rem 2rem;
   }
-
   .message-form {
     padding: 1rem;
     background: #1a1d20;
     border-top: 4px solid #d4af37;
   }
-
   .form-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 0.75rem;
   }
-
   .error-text {
     margin-top: 0.25rem;
     font-size: 10px;
   }
-
   .info-panel {
     overflow-y: auto;
     padding: 1rem;
     background: #1a1d20;
   }
-
   .accordion-trigger {
     width: 100%;
     display: flex;
@@ -585,11 +523,9 @@
     cursor: pointer;
     margin-bottom: 0.5rem;
   }
-
   .accordion-content {
     padding: 1rem;
   }
-
   .predictions-list,
   .entities-list,
   .state-history {
@@ -597,32 +533,26 @@
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .prediction-item {
     padding: 1rem !important;
   }
-
   .prediction-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
   }
-
   .prediction-action {
     font-weight: bold;
     color: #d4af37;
   }
-
   .prediction-confidence {
     color: #4ade80;
   }
-
   .prediction-description {
     margin: 0.5rem 0;
     font-size: 10px;
     color: #ccc;
   }
-
   .confidence-bar {
     height: 6px;
     background: #2a2d30;
@@ -630,42 +560,35 @@
     border-radius: 2px;
     overflow: hidden;
   }
-
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #d4af37, #4ade80);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
-
   .entity-item {
     display: flex;
     justify-content: space-between;
     text-align: left;
     width: 100%;
   }
-
   .entity-type {
     color: #d4af37;
     font-weight: bold;
   }
-
   .history-item {
     display: flex;
     gap: 1rem;
     padding: 0.5rem 1rem !important;
   }
-
   .history-index {
     color: #888;
   }
-
   .dialog-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
     z-index: 50;
   }
-
   .dialog-content {
     position: fixed;
     top: 50%;
@@ -677,39 +600,30 @@
     padding: 2rem;
     z-index: 51;
   }
-
   .dialog-title {
     margin-bottom: 1.5rem;
     color: #d4af37;
     font-size: 14px;
   }
-
   .entity-details {
     margin-bottom: 1.5rem;
   }
-
   .detail-row {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid #444;
   }
-
   .detail-label {
     color: #888;
   }
-
   .detail-value {
     color: #d4af37;
     font-weight: bold;
   }
-
   .tooltip-content {
     padding: 0.5rem 1rem !important;
     font-size: 10px;
     z-index: 100;
   }
 </style>
-
-
-

@@ -5,7 +5,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { ssrLegalAPICache } from '$lib/cache/ssr-legal-api-cache.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 
-type CacheResultItem = { source?: string; data?: unknown };
+type CacheResultItem = { source?: string; data?: any };
 type BasicCacheResult = {
   success?: boolean;
   cacheResults: CacheResultItem[];
@@ -13,7 +13,7 @@ type BasicCacheResult = {
 };
 
 interface ParallelCacheOrchestrator {
-  storeParallel(key: string, data: unknown, opts?: Record<string, unknown>): Promise<void>;
+  storeParallel(key: string, data: any, opts?: Record<string, unknown>): Promise<void>;
   executeParallel(
     options: { id: string; type: string; priority?: string; keys: string[] } | Record<string, unknown>
   ): Promise<BasicCacheResult>;
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return await testLegalAPIIntegration(userId);
       default: return json({ error: 'Invalid test type' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cache test failed:', error);
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
@@ -315,7 +315,7 @@ async function testLegalAPIIntegration(userId: string) {
         cacheLayer: response?.meta?.cacheLayer,
         dataPresent: !!response?.data,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       results.push({
         endpoint,
@@ -368,7 +368,7 @@ export const DELETE: RequestHandler = async () => {
       success: true,
       message: 'All caches cleared successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error as Error;
     return json(
       {

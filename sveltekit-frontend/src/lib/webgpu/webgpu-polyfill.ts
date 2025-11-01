@@ -6,21 +6,21 @@ export class WebGPUPolyfillService {
   private adapter: GPUAdapter | null = null;
   private device: GPUDevice | null = null;
   private queue: GPUQueue | null = null;
-  private isWebGPUAvailable = false;
+  private isWebGPUAvailable = $state(false);
   private webglFallback: WebGL2RenderingContext | null = null;
   private canvas: HTMLCanvasElement | null = null;
 
   // Safe logging helpers to avoid: "object possibly undefined" diagnostics in some runtimes
-  private safeLog = (...args: unknown[]) => {
+  private safeLog = (...args: any[]) => {
     if (typeof console !== 'undefined' && typeof console.log === 'function') console.log(...args);
   };
-  private safeWarn = (...args: unknown[]) => {
+  private safeWarn = (...args: any[]) => {
     if (typeof console !== 'undefined' && typeof console.warn === 'function') console.warn(...args);
   };
-  private safeError = (...args: unknown[]) => {
+  private safeError = (...args: any[]) => {
     if (typeof console !== 'undefined' && typeof console.error === 'function') console.error(...args);
   };
-  private safeDebug = (...args: unknown[]) => {
+  private safeDebug = (...args: any[]) => {
     if (typeof console !== 'undefined' && typeof console.debug === 'function') console.debug(...args);
   };
 
@@ -63,14 +63,14 @@ export class WebGPUPolyfillService {
               try {
                 // Pass the actual GPUDevice (this.device) — avoid casting to project-specific WebGPUDevice
                 await shaderCacheManager.initialize?.(this.device);
-              } catch (e: unknown) {
+              } catch (e: any) {
                 this.safeDebug('shaderCacheManager initialize ignored:', String(e));
               }
               this.safeLog('🔥 WebGPU initialized successfully');
               return true;
             }
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           this.safeWarn('WebGPU initialization failed, falling back to WebGL:', String(error));
         }
       }
@@ -98,7 +98,7 @@ export class WebGPUPolyfillService {
       }
       this.safeLog('✅ WebGL2 fallback initialized');
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.safeError('WebGL initialization failed:', error);
       return false;
     }
@@ -126,7 +126,7 @@ export class WebGPUPolyfillService {
         startTime;
       this.updatePerformanceStats(processingTime);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.safeError('Embedding computation failed:', error);
       return this.computeEmbeddingCPU(inputVector, dimensions);
     }
@@ -180,7 +180,7 @@ export class WebGPUPolyfillService {
         startTime;
       this.updatePerformanceStats(processingTime);
       return similarity;
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.safeError('Similarity computation failed:', error);
       return this.computeSimilarityCPU(vector1, vector2);
     }
@@ -258,10 +258,10 @@ export class WebGPUPolyfillService {
         if (typeof deviceWithDestroy.destroy === 'function') {
           try {
             const maybePromise = deviceWithDestroy.destroy();
-            if (maybePromise && typeof (maybePromise as { then?: unknown }).then === 'function') {
+            if (maybePromise && typeof (maybePromise as { then?: any }).then === 'function') {
               (maybePromise as Promise<void>).catch(e => this.safeDebug('device.destroy() rejected:', String(e)));
             }
-          } catch (callErr: unknown) {
+          } catch (callErr: any) {
             this.safeDebug('device.destroy() call threw:', String(callErr));
           }
         }
@@ -271,7 +271,7 @@ export class WebGPUPolyfillService {
       this.device = null;
       this.queue = null;
       this.adapter = null;
-      this.isWebGPUAvailable = false;
+      this.isWebGPUAvailable = $state(false);
     }
 
     // Cleanup WebGL resources

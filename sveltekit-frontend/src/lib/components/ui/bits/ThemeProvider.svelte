@@ -159,10 +159,8 @@
     return unsubscrib;
   });
 </script>
-
 <!-- Theme Provider doesn't render its own content, just provides context -->
-{@render children?.()}
-
+<slot />
 <style>
 /* Global theme variables */ {}
   :global(:root) {
@@ -234,4 +232,3 @@ color var(--enhanced-bits-transition), {}
     transition: none !important;
   }
 </style>
-

@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
     // Export evidence
     if (includeEvidence) {
-      const evidenceFilters: unknown[] = [];
+      const evidenceFilters: any[] = [];
       if (caseIds?.length) {
         evidenceFilters.push(inArray(evidence.caseId, caseIds));
       }
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'Content-Length': responseData.length.toString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Export error:', msg);
     return json(

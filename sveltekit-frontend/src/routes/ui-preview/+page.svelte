@@ -7,7 +7,7 @@
   import StatsCard from '$lib/components/ui/StatsCard.svelte';
   import Dialog from '$lib/components/ui/Dialog.svelte';
   // Enhanced-Bits UI Components
-  import Button from '$lib/components/ui/enhanced-bits'; // ADDED
+  import Button from '$lib/components/ui/enhanced-bits.svelte''; // ADDED
   // Using built-in dialog since N64Modal might be incomplete
   import QuickActionButton from '$lib/components/ui/QuickActionButton.svelte';
   // Global Components
@@ -61,7 +61,7 @@
     showDialog = true;
   }
   function closeDialog() {
-    showDialog = false;
+    showDialog = $state(false);
   }
 
   // Modal functions
@@ -71,7 +71,7 @@
     showModal = true;
   }
   function closeModal() {
-    showModal = false;
+    showModal = $state(false);
   }
   const buttonVariants = ['primary', 'success', 'warning', 'error', 'info'] as const;
   type ButtonVariant = (typeof buttonVariants)[number];
@@ -94,7 +94,7 @@
     });
   }
   function simulateLogout() {
-    mockSessionActive = false;
+    mockSessionActive = $state(false);
     mockSessionActions.clearSession();
   }
   function simulateRefreshSession() {
@@ -169,7 +169,7 @@
     { title: 'Criminal Defense - Armed Robbery Case', status: 'closed', priority: 'critical' },
     { title: 'Family Law Custody Battle', status: 'open', priority: 'low' },
   ];
-  let focusReady = false;
+  let focusReady = $state(false);
   $effect(() => {
     focusReady = true;
   });
@@ -191,7 +191,7 @@
 <div class="layout">
   <h1>NES UI Preview</h1>
   <nav class="tabs" aria-label="Preview Tabs">
-    {#each tabs as t}
+    {#each Array.isArray(tabs) ? tabs : [] as t}
       <button
         class="nes-btn tab-btn {selectedTab === t.id ? 'is-primary active' : ''}"
         aria-pressed={selectedTab === t.id}
@@ -204,7 +204,7 @@
     <section class="section-wrap">
       <h2 class="section">Buttons</h2>
       <div class="grid buttons">
-        {#each buttonVariants as v}
+        {#each Array.isArray(buttonVariants) ? buttonVariants : [] as v}
           <div>
             <!-- use alias to avoid TS constructor/instance mismatch in demo -->
             <ButtonComponent variant={v} class="nes-btn">{v}</ButtonComponent>
@@ -223,7 +223,7 @@
     <section class="section-wrap">
       <h2 class="section">Avatars</h2>
       <div class="grid avatars">
-        {#each avatarSizes as size}
+        {#each Array.isArray(avatarSizes) ? avatarSizes : [] as size}
           <div>
             <div
               class="avatar-placeholder"
@@ -358,7 +358,7 @@
         <div class="demo-group">
           <h3>Timestamp Formatting:</h3>
           <div class="timestamp-examples">
-            {#each mockTimestamps as timestamp}
+            {#each Array.isArray(mockTimestamps) ? mockTimestamps : [] as timestamp}
               <div class="timestamp-row">
                 <span class="original">Original: {timestamp.toISOString()}</span>
                 <span class="relative">Relative: {formatRelativeTime(timestamp)}</span>
@@ -372,7 +372,7 @@
         <div class="demo-group">
           <h3>Filename Truncation</h3>
           <div class="filename-examples">
-            {#each mockFilenames as filename}
+            {#each Array.isArray(mockFilenames) ? mockFilenames : [] as filename}
               <div class="filename-row">
                 <span class="file-icon">{getFileIcon(filename.split('.').pop() || '')}</span>
                 <span class="original" title={filename}>{filename}</span>
@@ -384,7 +384,7 @@
         <div class="demo-group">
           <h3>Case Title & Status Formatting:</h3>
           <div class="case-examples">
-            {#each mockCases as case_}
+            {#each Array.isArray(mockCases) ? mockCases : [] as case_}
               <div class="case-row nes-container">
                 <div class="case-header">
                   <span class="case-title" title={case_.title}>

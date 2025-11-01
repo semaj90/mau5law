@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'health': {
         // Guarded call: checkDatabaseHealth might not exist; provide fallback
-        let health: unknown;
+        let health: any;
         if (typeof checker.checkDatabaseHealth === 'function') {
           health = await checker.checkDatabaseHealth();
         } else {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       case 'metrics': {
         // Guarded call: getDatabaseMetrics might not exist; provide fallback
-        let metrics: unknown;
+        let metrics: any;
         if (typeof checker.getDatabaseMetrics === 'function') {
           metrics = await checker.getDatabaseMetrics();
         } else {
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         );
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const normalized = ensureError(err);
     console.error('Database health check error:', normalized);
     return json(
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       case 'force_check': {
         // Guarded call: checkHealth might not exist; fall back to validateDatabaseOnStartup
-        let health: unknown;
+        let health: any;
         if (typeof checker.checkHealth === 'function') {
           health = await checker.checkHealth(false); // Force fresh check
         } else {
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
           })
         );
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const normalized = ensureError(err);
     console.error('Database health check POST error:', normalized);
     return json(

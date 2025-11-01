@@ -93,7 +93,7 @@ export class YoRHaLayout3D extends THREE.Group {
         this.layoutFlow();
         break;
     }
-    this.needsLayout = false;
+    this.needsLayout = $state(false);
   }
   private layoutFlex(): void {
     if (this.children3D.length === 0) return;

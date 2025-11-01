@@ -17,7 +17,7 @@
     CardDescription,
     Input,
     Select
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     createUploadAnalyticsActor,
     getContextualPromptsByTiming,
@@ -25,7 +25,6 @@
     generateUserInsights,
     type UserAnalytics
   } from '$lib/machines/comprehensive-upload-analytics-machine-fixed';
-
   // Props with enhanced legal context
   interface Props {
     caseId?: string;
@@ -42,7 +41,6 @@
       urgency?: 'low' | 'medium' | 'high' | 'critical';
     }
   }
-
   let {
     caseId = '',
     // page store is deprecated here — accept userId as prop or leave anonymous
@@ -55,7 +53,6 @@
     mode = 'standard',
     legalContext = {}
   }: Props = $props();
-
   // Enhanced state management
   let uploadActor = $state<ReturnType<typeof createUploadAnalyticsActor> | null>(null);
   let machineState = $state<any>(null);
@@ -65,7 +62,6 @@
   let aiAnalysisResults = $state<any[]>([]);
   let showAdvancedSettings = $state(false);
   let uploadStartTime = $state<number>(0);
-
   // Legal AI integration
   let ollamaConnected = $state(false);
   let currentModel = $state('gemma3:270m');
@@ -75,7 +71,6 @@
     { value: 'standard', label: 'Standard Analysis' },
     { value: 'comprehensive', label: 'Comprehensive Review' }
   ];
-
   // Reactive derived state with legal enhancements
   let contextualPrompts = $derived(
     machineState?.context?.contextualPrompts || []
@@ -101,7 +96,6 @@
   let hasErrors = $derived(machineState?.context?.errors?.length > 0 || false);
   let uploadResults = $derived(machineState?.context?.uploadResults || []);
   let pipelineStatus = $derived(machineState?.context?.pipeline || {});
-
   // Legal-specific derived state
   let legalInsights = $derived(() => {
     if (!aiAnalysisResults || aiAnalysisResults.length === 0) return null;
@@ -112,7 +106,6 @@
       riskAssessment: assessLegalRisks(aiAnalysisResults)
     };
   });
-
   // Initialize enhanced analytics with legal context
   $effect(() => {
     initializeEnhancedUploadAnalytics();
@@ -124,7 +117,6 @@
       uploadActor?.stop?.();
     };
   });
-
   async function initializeEnhancedUploadAnalytics() {
     const userAnalytics: UserAnalytics = {
       userId: userId || 'anonymous',
@@ -156,7 +148,6 @@
         expertise: expertiseLevel
       }
     };
-
     uploadActor = createUploadAnalyticsActor({ userAnalytics });
     // annotate state to avoid implicit-any
     uploadActor.subscribe((state: any) => {
@@ -164,7 +155,6 @@
     });
     uploadActor.start();
   }
-
   async function checkOllamaConnection() {
     try {
       const modelsResponse = await fetch('/api/ai/ollama/models');
@@ -175,18 +165,16 @@
         }
         ollamaConnected = true;
       } else {
-        ollamaConnected = false;
+        ollamaConnected = $state(false);
       }
     } catch (error) {
       console.warn('Ollama connection check failed:', error);
-      ollamaConnected = false;
+      ollamaConnected = $state(false);
     }
   }
-
   function setupAdvancedUserTracking() {
     let typingStartTime = 0;
     let keyStrokes = 0;
-
     // Enhanced typing pattern analysis for legal professionals
     document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (typingStartTime === 0) {
@@ -224,7 +212,6 @@
       });
     });
   }
-
   async function handleFileSelect(ev: Event) {
     const target = ev.target as HTMLInputElement | null;
     if (target?.files) {
@@ -232,25 +219,21 @@
       await selectFiles(files);
     }
   }
-
   async function handleDrop(ev: DragEvent) {
     ev.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     if (ev.dataTransfer?.files) {
       const files = Array.from(ev.dataTransfer.files);
       await selectFiles(files);
     }
   }
-
   function handleDragOver(ev: DragEvent) {
     ev.preventDefault();
     dragOver = true;
   }
-
   function handleDragLeave() {
-    dragOver = false;
+    dragOver = $state(false);
   }
-
   async function selectFiles(files: File[]) {
     // Enhanced file validation for legal documents
     const validFiles = files.filter(file => {
@@ -288,7 +271,6 @@
       await performPreAnalysis(limitedFiles);
     }
   }
-
   async function performPreAnalysis(files: File[]) {
     try {
       const analysisPromises = files.map(async (file) => {
@@ -308,7 +290,6 @@
       console.warn('Pre-analysis failed:', error);
     }
   }
-
   async function startEnhancedUpload() {
     if (uploadActor && selectedFiles.length > 0) {
       uploadStartTime = Date.now();
@@ -319,7 +300,6 @@
       }
     }
   }
-
   async function performEnhancedAnalysis() {
     try {
       const analysisRequests = selectedFiles.map(async (file) => {
@@ -344,7 +324,6 @@
       console.error('Enhanced analysis failed:', error);
     }
   }
-
   function calculateEvidenceQuality(results: any[]): number {
     if (!results.length) return 0;
     const qualityFactors = results.map((r: any) => {
@@ -357,7 +336,6 @@
     });
     return qualityFactors.reduce((sum, score) => sum + score, 0) / qualityFactors.length;
   }
-
   function generateLegalRecommendations(results: any[], context: any): string[] {
     const recommendations: string[] = [];
     const privilegedCount = results.filter(item => !!item?.privileged).length;
@@ -375,7 +353,6 @@
     }
     return recommendations;
   }
-
   function assessLegalRisks(results: any[]): { level: string; factors: string[] } {
     const risks: string[] = [];
     let level = 'low';
@@ -394,7 +371,6 @@
     }
     return { level, factors: risks };
   }
-
   function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {
       uploadActor.send({
@@ -404,7 +380,6 @@
       });
     }
   }
-
   function resetUpload() {
     if (uploadActor) {
       uploadActor.send({ type: 'RESET' });
@@ -413,7 +388,6 @@
     aiAnalysisResults = [];
     uploadStartTime = 0;
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -421,7 +395,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function formatDuration(ms: number): string {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -430,7 +403,6 @@
     }
     return `${seconds}s`;
   }
-
   function getPriorityColor(urgency?: string) {
     switch (urgency) {
       case 'critical': return 'text-red-500';
@@ -440,7 +412,6 @@
     }
   }
 </script>
-
 <!-- Template: replace div.Root/Header/Content/Title/Description with Card components and ensure explicit closing tags -->
 <div class="legal-upload-analytics yorha-container">
   <!-- Enhanced Header with Legal Context -->
@@ -485,8 +456,7 @@
             <div class="yorha-insights-badge">
               <span class="expertise-level">{currentUserInsights.behaviorPattern}</span>
               <span class="engagement-score">Engagement: {Math.round(engagementScore * 100)}%</span>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </CardHeader>
@@ -501,7 +471,7 @@
         </CardTitle>
       </CardHeader>
       <CardContent class="nes-container">
-        {#each beforeUploadPrompts as prompt}
+        {#each Array.isArray(beforeUploadPrompts) ? beforeUploadPrompts : [] as prompt}
           <div class="ai-prompt yorha-prompt {prompt.category}" data-legal-action="ai-prompt">
             <div class="prompt-header">
               <span class="prompt-category">{prompt.category.toUpperCase()}</span>
@@ -578,8 +548,7 @@
                       {legalInsights.privilegedDocuments} Privileged
                     </span>
                   {/if}
-                </div>
-              {/if}
+                {/if}
             </div>
             {#each selectedFiles as file, index}
               <div class="file-item yorha-file-item">
@@ -602,8 +571,7 @@
                     {:else}
                       <span class="status-error yorha-error">✗ Failed</span>
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
                 {#if aiAnalysisResults[index]}
                   <div class="ai-preview">
                     {#if aiAnalysisResults[index].privileged}
@@ -614,8 +582,7 @@
                         {aiAnalysisResults[index].entities.length} entities
                       </span>
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
               </div>
             {/each}
             {#if !isUploading && !isComplete}
@@ -633,8 +600,7 @@
                 <button class="nes-btn" onclick={() => showAdvancedSettings = !showAdvancedSettings}>
                   Advanced Settings
                 </button>
-               </div>
-            {/if}
+               {/if}
             <!-- Advanced Settings Panel -->
             {#if showAdvancedSettings}
               <Card class="mt-4 yorha-settings nes-container">
@@ -646,7 +612,7 @@
                      <div class="setting-item">
                        <label for="analysis-depth-select">Analysis Depth</label>
                        <select id="analysis-depth-select" bind:value={analysisDepth} class="enhanced-select">
-                         {#each analysisDepthOptions as opt}
+                         {#each Array.isArray(analysisDepthOptions) ? analysisDepthOptions : [] as opt}
                            <option value={opt.value}>{opt.label}</option>
                          {/each}
                        </select>
@@ -665,8 +631,7 @@
                 </CardContent>
               </Card>
             {/if}
-          </div>
-        {/if}
+          {/if}
       </div>
     </CardContent>
   </Card>
@@ -712,14 +677,13 @@
         <!-- AI Processing Insights -->
         {#if duringUploadPrompts.length > 0}
           <div class="processing-insights">
-            {#each duringUploadPrompts as prompt}
+            {#each Array.isArray(duringUploadPrompts) ? duringUploadPrompts : [] as prompt}
               <div class="processing-insight yorha-insight">
                 <span class="insight-icon">🔍</span>
                 <span class="insight-text">{prompt.content}</span>
               </div>
             {/each}
-          </div>
-        {/if}
+          {/if}
         <div class="upload-actions">
           <button class="nes-btn is-error" onclick={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}>
             Cancel Upload
@@ -747,7 +711,7 @@
           <div class="legal-summary yorha-summary">
             <div class="summary-stats">
               <div class="stat-item">
-                <span class="stat-value">{uploadResults.filter((r: unknown) => r.success).length}</span>
+                <span class="stat-value">{uploadResults.filter((r: any) => r.success).length}</span>
                 <span class="stat-label">Successfully Processed</span>
               </div>
               <div class="stat-item">
@@ -764,15 +728,13 @@
             {#if legalInsights.recommendedActions.length > 0}
               <div class="recommendations">
                 <h4>Legal Recommendations</h4>
-                {#each legalInsights.recommendedActions as recommendation}
+                {#each Array.isArray(legalInsights.recommendedActions) ? legalInsights.recommendedActions : [] as recommendation}
                   <div class="recommendation-item yorha-recommendation">
                     {recommendation}
                   </div>
                 {/each}
-              </div>
-            {/if}
-          </div>
-        {/if}
+              {/if}
+          {/if}
         <!-- Detailed Results -->
         <div class="results-list">
           {#each uploadResults as result, index}
@@ -801,24 +763,22 @@
                       <div class="entities">
                         <strong>Key Entities:</strong>
                         <div class="entity-tags">
-                          {#each (result as any).aiInsights.keyEntities as entity}
+                          {#each Array.isArray((result as any).aiInsights.keyEntities) ? (result as any).aiInsights.keyEntities : [] as entity}
                             <span class="entity-tag yorha-tag" class:person={entity.type === 'person'} class:organization={entity.type === 'organization'}>
                               {entity.value} ({entity.type})
                             </span>
                           {/each}
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                     {#if (result as any).aiInsights.suggestedTags}
                       <div class="suggested-tags">
                         <strong>Evidence Categories:</strong>
                         <div class="tag-list">
-                          {#each (result as any).aiInsights.suggestedTags as tag}
+                          {#each Array.isArray((result as any).aiInsights.suggestedTags) ? (result as any).aiInsights.suggestedTags : [] as tag}
                             <span class="tag yorha-tag">{tag}</span>
                           {/each}
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                     {#if (result as any).aiInsights.confidenceScore}
                       <div class="confidence-indicator">
                         <span class="confidence-label">AI Confidence:</span>
@@ -831,15 +791,12 @@
                         <span class="confidence-value">
                           {Math.round(((result as any).aiInsights.confidenceScore || 0) * 100)}%
                         </span>
-                      </div>
-                    {/if}
-                  </div>
-                {/if}
+                      {/if}
+                  {/if}
                 {#if !(result as any).success && (result as any).errorMessage}
                   <div class="error-message yorha-error">
                     <strong>Error:</strong> {(result as any).errorMessage}
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
           {/each}
@@ -854,7 +811,7 @@
         <CardTitle class="nes-container">🎯 Recommended Next Steps</CardTitle>
       </CardHeader>
       <CardContent class="nes-container">
-        {#each afterUploadPrompts as prompt}
+        {#each Array.isArray(afterUploadPrompts) ? afterUploadPrompts : [] as prompt}
           <div class="ai-prompt yorha-prompt next-step">
             <p class="prompt-content">{prompt.content}</p>
             <div class="prompt-actions">
@@ -888,7 +845,7 @@
           <div class="insight-nier-bits-card">
             <h4>Legal Workflow Recommendations</h4>
             <ul class="recommendations-list">
-              {#each currentUserInsights.recommendations as recommendation}
+              {#each Array.isArray(currentUserInsights.recommendations) ? currentUserInsights.recommendations : [] as recommendation}
                 <li>{recommendation}</li>
               {/each}
             </ul>
@@ -904,7 +861,7 @@
         <CardTitle class="nes-container">⚠️ Issues Detected</CardTitle>
       </CardHeader>
       <CardContent class="nes-container">
-        {#each machineState?.context?.errors ?? [] as error}
+        {#each Array.isArray(machineState?.context?.errors ?? []) ? machineState?.context?.errors ?? [] : [] as error}
           <div class="error-item">
             <p>{error}</p>
           </div>
@@ -938,10 +895,8 @@
           View in Evidence Board
         </button>
       {/if}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
 	/* Replace invalid: '…' placeholders with safe comments / minimal rules */
 	.legal-upload-analytics { --yorha: initial; }
@@ -955,18 +910,14 @@
 	.yorha-insights-badge { --yorha: initial; }
 	.expertise-level { --yorha: initial; }
 	.engagement-score { --yorha: initial; }
-
 	.file-drop-zone { --yorha: initial; }
 	.file-drop-zone.drag-over { --yorha: initial; }
 	.file-drop-zone.has-files { --yorha: initial; }
 	.file-drop-zone.detective-mode { --yorha: initial; }
 	.drop-zone-content { --yorha: initial; }
-
 	.upload-icon { --yorha: initial; }
-
 	.file-constraints { --yorha: initial; }
 	.files-header { --yorha: initial; }
-
 	.legal-insights-summary { --yorha: initial; }
 	.insight-item { --yorha: initial; }
 	.insight-warning { --yorha: initial; }
@@ -986,7 +937,6 @@
 	.setting-item label { --yorha: initial; }
 	.yorha-progress { --yorha: initial; }
 	.progress-fill { --yorha: initial; }
-
 	.yorha-pipeline { --yorha: initial; }
 	.pipeline-stage { --yorha: initial; }
 	.pipeline-stage.active { --yorha: initial; }
@@ -1019,12 +969,10 @@
 		font-size: 0.875rem;
 	}
 	.insight-icon { color: #339af0; }
-
 	/* small fix from selection */
 	.recommendations-list li {
 		padding: 0.5rem 0;
 	}
-
 	/* mobile placeholders */
 	@media (max-width: 768px) {
 		.legal-upload-analytics { --yorha: initial; }
@@ -1038,7 +986,6 @@
 		.analytics-grid { --yorha: initial; }
 		.settings-grid { --yorha: initial; }
 	}
-
 	/* ...rest of original CSS remains unchanged... */
 </style>
 		text-transform: capitalize;
@@ -1065,12 +1012,10 @@
 		font-size: 0.875rem;
 	}
 	.insight-icon { color: #339af0; }
-
 	/* small fix from selection */
 	.recommendations-list li {
 		padding: 0.5rem 0;
 	}
-
 	/* mobile placeholders */
 	@media (max-width: 768px) {
 		.legal-upload-analytics { --yorha: initial; }
@@ -1084,6 +1029,5 @@
 		.analytics-grid { --yorha: initial; }
 		.settings-grid { --yorha: initial; }
 	}
-
 	/* ...rest of original CSS remains unchanged... */
 </style>

@@ -208,7 +208,7 @@ export class ComprehensiveCachingArchitecture {
   private complianceAlerts = writable<any[]>([]);
   // Encryption keys for sensitive data
   private encryptionKey: string = '';
-  private initialized: boolean = false;
+  private initialized: boolean = $state(false);
 
   constructor(
     private config: {
@@ -252,7 +252,7 @@ export class ComprehensiveCachingArchitecture {
       console.log('✅ All cache layers initialized successfully with legal compliance');
     } catch (error: any) {
       console.error('❌ Failed to initialize caching architecture:', error);
-      this.initialized = false;
+      this.initialized = $state(false);
       throw error;
     }
   }
@@ -972,7 +972,7 @@ export class ComprehensiveCachingArchitecture {
   }
 
   private isLegallyCompliant(): boolean {
-    return this.initialized && this.config.legalCompliance?.enabled !== false;
+    return this.initialized && this.config.legalCompliance?.enabled !== $state(false);
   }
 
   // ===== INDIVIDUAL CACHE LAYER IMPLEMENTATIONS =====
@@ -1369,7 +1369,7 @@ export class ComprehensiveCachingArchitecture {
       if (this.rabbitConnection) await this.rabbitConnection.close();
       if (this.neo4jSession) await this.neo4jSession.close();
       if (this.neo4jDriver) await this.neo4jDriver.close();
-      this.initialized = false;
+      this.initialized = $state(false);
       console.log('🔄 Legal caching architecture destroyed');
     } catch (error: any) {
       console.error('Error during cleanup:', error);
@@ -1386,7 +1386,7 @@ export function createLegalCacheConfig(options: {
   nodeId: string;
   jurisdiction: string;
   complianceLevel: 'basic' | 'detailed' | 'forensic';
-}): unknown {
+}): any {
   return {
     redis: { host: 'localhost', port: 6379, db: 0, password: undefined },
     qdrant: { host: 'localhost', port: 6333, collection: `legal-vectors-${options.nodeId}` },

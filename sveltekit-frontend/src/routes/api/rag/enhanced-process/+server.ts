@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(result);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Enhanced RAG processing error:', err);
     const message = err instanceof Error ? err.message : String(err);
     throw error(500, `Enhanced RAG processing failed: ${message}`);
@@ -294,7 +294,7 @@ async function generateRAGRecommendations(
   });
   return recommendations.sort((a, b) => b.relevance * b.confidence - a.relevance * a.confidence);
 }
-function createEnhancedMetadata(simdData: SimdData, analysis: SemanticAnalysis): unknown {
+function createEnhancedMetadata(simdData: SimdData, analysis: SemanticAnalysis): any {
   return {
     processing: {
       simd_processing_time: simdData.processingTime || 0,

@@ -46,7 +46,7 @@ export interface CollectionStats {
 export interface IndexStrategy {
   field: string;
   type: "btree" | "hash" | "text" | "vector";
-  options?: unknown;
+  options?: any;
 }
 // ======================================================================
 // ENHANCED LOKI DATABASE CLASS
@@ -890,7 +890,7 @@ export const enhancedLoki = {
     async cacheEmbeddings(
       contentHash: string,
       embeddings: number[],
-      metadata?: unknown
+      metadata?: any
     ) {
       return await enhancedLokiDB.cacheEmbeddings(
         contentHash,

@@ -1,20 +1,16 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     class?: string;
     children?: Snippet;
   }
-
   let { class: className = '', children }: Props = $props();
 </script>
-
 <div class={`card-content-ssr ${className}`.trim()}>
   {#if children}
     {@render children()}
   {/if}
 </div>
-
 <style>
 /* SSR-optimized CardContent for consistent rendering */
 .card-content-ssr {
@@ -28,12 +24,10 @@
   /* Prevent layout shift during hydration */
   contain: layout style;
 }
-
 /* Improve spacing between child elements */
 .card-content-ssr > * + * {
   margin-top: 1rem;
 }
-
 /* Responsive text scaling for better readability */
 .card-content-ssr h3 {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
@@ -50,7 +44,6 @@
   border-radius: 0.25rem;
   word-break: break-all;
 }
-
 /* Ensure buttons are properly sized and accessible */
 .card-content-ssr button {
   min-height: 2.5rem;
@@ -59,13 +52,11 @@
   border-radius: 0.375rem;
   transition: all 0.2s ease;
 }
-
 /* Loading state for SSR hydration */
 .card-content-ssr.loading {
   opacity: 0.8;
   pointer-events: none;
 }
-
 /* Focus management for keyboard navigation */
 .card-content-ssr:focus-within {
   outline: 2px solid #3b82f6;

@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="top-operations">
           <h3>Top Operations</h3>
           <div class="operation-tags">
-            {#each stats.topOperations as op}
+            {#each Array.isArray(stats.topOperations) ? stats.topOperations : [] as op}
               <!-- REPLACED: non-interactive span -> accessible button -->
               <button
                 type="button"
@@ -277,7 +277,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="filter-group">
           <label for="operation">Operation</label><select id="operation" bind:value={selectedOperation}>
             <option value="">All Operations</option>
-            {#each availableOperations as operation}
+            {#each Array.isArray(availableOperations) ? availableOperations : [] as operation}
               <option value={operation}>{operation}</option>
             {/each}
           </select>
@@ -312,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="tags-section">
           <span id="tags-label">Tags:</span>
           <div class="tag-filters" role="group" aria-labelledby="tags-label">
-            {#each availableTags as tag}
+            {#each Array.isArray(availableTags) ? availableTags : [] as tag}
               <!-- tag-button is already a button; keep but ensure aria-pressed -->
               <button
                 type="button"
@@ -330,7 +330,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if selectedTags.length > 0}
         <div class="selected-tags">
           <strong>Selected Tags:</strong>
-          {#each selectedTags as tag}
+          {#each Array.isArray(selectedTags) ? selectedTags : [] as tag}
             <!-- REPLACED: non-interactive span -> accessible button -->
             <button
               type="button"
@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {:else}
       <div class="results-grid">
-        {#each searchResults as shader}
+        {#each Array.isArray(searchResults) ? searchResults : [] as shader}
           <!-- REPLACED: div role=button -> real <button> for accessibility -->
           <button
             type="button"
@@ -414,7 +414,7 @@ https://svelte.dev/e/js_parse_error -->
               {shader.metadata.description}
             </div>
             <div class="shader-tags">
-              {#each shader.metadata.tags as tag}
+              {#each Array.isArray(shader.metadata.tags) ? shader.metadata.tags : [] as tag}
                 <span class="tag">{tag}</span>
               {/each}
             </div>
@@ -480,7 +480,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="detail-group">
               <h3>Tags</h3>
               <div class="tags">
-                {#each selectedShader.metadata.tags as tag}
+                {#each Array.isArray(selectedShader.metadata.tags) ? selectedShader.metadata.tags : [] as tag}
                   <span class="tag">{tag}</span>
                 {/each}
               </div>
