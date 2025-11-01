@@ -26,11 +26,11 @@ export function getOllamaEndpoint(): string {
   // Check if running inside Docker and try to access host Ollama
   // This pattern is common for Dockerized SvelteKit apps needing to reach host services
   if (process.env.DOCKER_ENV === 'true' || process.env.NODE_ENV === 'docker') {
-    return 'http://host.docker.internal:11434'; // Ollama on host from Docker container
+    return: 'http://host.docker.internal:11434'; // Ollama on host from Docker container
   }
 
   // Default to local host Ollama URL
-  return 'http://localhost:11434';
+  return: 'http://localhost:11434';
 }
 
 /**
@@ -68,7 +68,7 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
  * Generates a chat completion using the Ollama API.
  * This is a placeholder/stub. Implement actual Ollama API call logic here.
  * @param messages An array of chat messages.
- * @param model The model to use (defaults to 'gemma3').
+ * @param model The model to use (defaults to: 'gemma3').
  * @param options Additional options for the completion.
  * @returns A promise that resolves to the generated chat completion string, or null if an error occurs.
  */
@@ -98,7 +98,7 @@ export async function generateOllamaChatCompletion(
     }
 
     const data = await response.json();
-    // Assuming the response structure has a 'message.content' field for the completion
+    // Assuming the response structure has a: 'message.content' field for the completion
     return data?.message?.content || null;
   } catch (error) {
     console.error('Error generating Ollama chat completion:', error);

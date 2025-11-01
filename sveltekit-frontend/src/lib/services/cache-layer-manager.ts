@@ -183,15 +183,15 @@ export class CacheLayerManager {
 
   private async getFromLayer(layerName: string, key: string): Promise<unknown> {
     switch (layerName) {
-      case 'memory':
+      case: 'memory':
         return this.getFromMemory(key);
-      case 'redis':
+      case: 'redis':
         return this.getFromRedis(key);
-      case 'qdrant':
+      case: 'qdrant':
         return this.getFromQdrant(key);
-      case 'postgres':
+      case: 'postgres':
         return this.getFromPostgres(key);
-      case 'neo4j':
+      case: 'neo4j':
         return this.getFromNeo4j(key);
       default:
         return null;
@@ -200,15 +200,15 @@ export class CacheLayerManager {
 
   private async setInLayer(layerName: string, key: string, data: unknown, ttl?: number): Promise<void> {
     switch (layerName) {
-      case 'memory':
+      case: 'memory':
         return this.setInMemory(key, data, ttl);
-      case 'redis':
+      case: 'redis':
         return this.setInRedis(key, data, ttl);
-      case 'qdrant':
+      case: 'qdrant':
         return this.setInQdrant(key, data);
-      case 'postgres':
+      case: 'postgres':
         return this.setInPostgres(key, data);
-      case 'neo4j':
+      case: 'neo4j':
         return this.setInNeo4j(key, data);
       default:
         return;
@@ -233,7 +233,7 @@ export class CacheLayerManager {
     this.memoryCache.set(key, { data, expires });
   }
 
-  // Safe redis client connector to avoid "possibly undefined" invocation on createClient
+  // Safe redis client connector to avoid: "possibly undefined" invocation on createClient
   private async createConnectedRedisClient(): Promise<RedisClientType | null> {
     if (typeof createClient !== 'function') {
       console.warn('redis.createClient is not available');

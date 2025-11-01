@@ -65,7 +65,7 @@ export const GET: RequestHandler = async () => {
       success: true,
       service: 'webgpu-langextract',
       capabilities: {
-        // Use optional chaining and boolean coercion to avoid "property does not exist on type 'unknown'" errors.
+        // Use optional chaining and boolean coercion to avoid: "property does not exist on type: 'unknown'" errors.
         webgpuOptimization: !!(
           s?.webgpuOptimizer?.gpuMetrics?.availableComputeUnits &&
           s?.webgpuOptimizer?.gpuMetrics?.availableComputeUnits > 0
@@ -106,19 +106,19 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     let result: any;
     const startTime = Date.now();
     switch (action) {
-      case 'process':
+      case: 'process':
         result = await handleSingleDocumentProcessing(requestData);
         break;
-      case 'batch':
+      case: 'batch':
         result = await handleBatchDocumentProcessing(requestData);
         break;
-      case 'benchmark':
+      case: 'benchmark':
         result = await handleBenchmarkTesting(requestData);
         break;
-      case 'stats':
+      case: 'stats':
         result = await getLangChainWebGPUStats();
         break;
-      case 'config':
+      case: 'config':
         result = await handleConfigurationUpdate(requestData);
         break;
       default:

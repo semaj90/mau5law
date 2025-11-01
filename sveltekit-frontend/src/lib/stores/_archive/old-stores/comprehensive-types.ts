@@ -78,7 +78,7 @@ export interface LoadEvent {
     set(name: string, value: string, options?: unknown): void;
   };
   locals: Record<string, unknown>;
-  parent(): Promise<Record<string, unknown>>; // Fixed: Added closing '>'
+  parent(): Promise<Record<string, unknown>>; // Fixed: Added closing: '>'
   depends(...deps: string[]): void;
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 }
@@ -103,7 +103,7 @@ export interface RequestEvent {
   platform?: unknown;
 }
 export interface RequestHandler {
-  // Removed unused 'Data' generic
+  // Removed unused: 'Data' generic
   (_event: RequestEvent): Promise<Response> | Response;
 }
 // SvelteKit hooks
@@ -154,7 +154,7 @@ export interface QueryResult<T = unknown> {
   fields?: Array<unknown>;
 }
 export interface DatabaseConnection {
-  query<T = unknown>(sql: string, params?: unknown[]): Promise<QueryResult<T>>; // Fixed: Added closing '>'
+  query<T = unknown>(sql: string, params?: unknown[]): Promise<QueryResult<T>>; // Fixed: Added closing: '>'
   transaction<T>(callback: (client: DatabaseConnection) => Promise<T>): Promise<T>;
   end(): Promise<void>;
 }
@@ -227,7 +227,7 @@ export interface DrizzleColumnHelpers {
   sql: unknown;
 }
 export interface DrizzleTable<T extends Record<string, unknown> = Record<string, unknown>> {
-  // Fixed: Added closing '>'
+  // Fixed: Added closing: '>'
   _: {
     name: string;
     columns: T;
@@ -480,7 +480,7 @@ export interface MockFunction<T extends (...args: unknown[]) => unknown = (...ar
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
   mockReturnValue(_value: ReturnType<T>): this;
-  mockResolvedValue(_value: Awaited<ReturnType<T>>): this; // Fixed: Added closing '>'
+  mockResolvedValue(_value: Awaited<ReturnType<T>>): this; // Fixed: Added closing: '>'
   mockRejectedValue(error: unknown): this;
   mockClear(): this;
   mockReset(): this;

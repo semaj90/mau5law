@@ -4,7 +4,7 @@ import { EventEmitter } from 'events';
  * 10x faster than RapidJSON with neural network optimization
  * Memory-efficient streaming parser with intelligent compression
  */
-// Add small shared types to avoid repeating 'any'
+// Add small shared types to avoid repeating: 'any'
 type JSONCharacteristics = {
   size: number;
   depth: number;
@@ -105,7 +105,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       simdAcceleration: false,
       throughputMBps: 0,
     };
-    // Fire-and-forget initialization; listeners can wait for 'initialized'
+    // Fire-and-forget initialization; listeners can wait for: 'initialized'
     void this.initializeAsync();
   }
 
@@ -432,10 +432,10 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     characteristics: JSONCharacteristics
   ): 'direct' | 'streaming' | 'compression' | 'neural' {
     if (!this.config.enableNeuralOptimization) {
-      if (characteristics.size < this.optimizationPatterns.smallObjects.threshold) return 'direct';
-      if (characteristics.size > this.optimizationPatterns.largeObjects.threshold) return 'streaming';
-      if (characteristics.repetition > this.optimizationPatterns.repetitiveData.threshold) return 'compression';
-      return 'direct';
+      if (characteristics.size < this.optimizationPatterns.smallObjects.threshold) return: 'direct';
+      if (characteristics.size > this.optimizationPatterns.largeObjects.threshold) return: 'streaming';
+      if (characteristics.repetition > this.optimizationPatterns.repetitiveData.threshold) return: 'compression';
+      return: 'direct';
     }
     const input = new Float32Array([
       characteristics.size / 1_000_000,
@@ -496,16 +496,16 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     const optimizationStrategy = this.selectOptimizationStrategy(characteristics);
     let result: unknown;
     switch (optimizationStrategy) {
-      case 'direct':
+      case: 'direct':
         result = this.directParse(input);
         break;
-      case 'streaming':
+      case: 'streaming':
         result = this.streamingParseString(input);
         break;
-      case 'compression':
+      case: 'compression':
         result = this.compressedParse(input);
         break;
-      case 'neural':
+      case: 'neural':
         result = this.neuralOptimizedParse(input, characteristics);
         break;
       default:

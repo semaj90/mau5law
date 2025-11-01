@@ -33,8 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   let displayPercentage = $derived(Math.round(percentage));
   // UnoCSS-based progress variants
   const progressVariants = cva(
-    // Base classes
-    'relative w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800',
+    // Base classes: 'relative w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800',
     {
       variants: {
         variant: {
@@ -59,8 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   );
   const fillVariants = cva(
-    // Base classes
-    'h-full transition-all duration-300 ease-in-out',
+    // Base classes: 'h-full transition-all duration-300 ease-in-out',
     {
       variants: {
         variant: {

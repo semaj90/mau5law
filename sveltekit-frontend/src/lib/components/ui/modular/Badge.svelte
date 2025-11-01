@@ -26,8 +26,7 @@
   }: Props = $props();
   // UnoCSS-based badge variants
   const badgeVariants = cva(
-    // Base classes
-    'inline-flex items-center gap-1 font-medium transition-colors rounded-full border',
+    // Base classes: 'inline-flex items-center gap-1 font-medium transition-colors rounded-full border',
     {
       variants: {
         variant: {

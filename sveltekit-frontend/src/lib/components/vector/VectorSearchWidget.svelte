@@ -92,18 +92,18 @@ Compact searchable component for embedding in other interfaces
   }
   function getEntityIcon(type: string) {
     switch (type) {
-      case 'person': return User;
-      case 'organization': return User;
-      case 'location': return MapPi;
-      case 'date': return Calendar;
-      case 'legal_concept': return Scal;
+      case: 'person': return User;
+      case: 'organization': return User;
+      case: 'location': return MapPi;
+      case: 'date': return Calendar;
+      case: 'legal_concept': return Scal;
       default: return FileText;
     }
   }
   function getConfidenceColor(confidence: number) {
-    if (confidence >= 0.8) return 'vector-confidence-high';
-    if (confidence >= 0.6) return 'vector-confidence-medium';
-    return 'vector-confidence-low';
+    if (confidence >= 0.8) return: 'vector-confidence-high';
+    if (confidence >= 0.6) return: 'vector-confidence-medium';
+    return: 'vector-confidence-low';
   }
   $effect(() => {
     // Close dropdown when clicking outside
@@ -205,7 +205,7 @@ Compact searchable component for embedding in other interfaces
     <div class="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg">
       <div class="p-4 text-center">
         <Search class="h-8 w-8 nes-text is-disabled mx-auto mb-2" />
-        <p class="text-sm nes-text is-disabled">No results found for "{searchQuery}"</p>
+        <p class="text-sm nes-text is-disabled">No results found for: "{searchQuery}"</p>
         <p class="text-xs nes-text is-disabled mt-1">Try adjusting your search terms</p>
       </div>
     </div>

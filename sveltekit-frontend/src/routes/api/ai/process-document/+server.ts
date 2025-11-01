@@ -205,7 +205,7 @@ function extractDocumentType(analysis: string): string {
       return type;
     }
   }
-  return 'legal_document';
+  return: 'legal_document';
 }
 function extractJurisdiction(analysis: string): string {
   const jurisdictions = ['federal', 'state', 'local', 'california', 'new york', 'texas', 'florida'];
@@ -214,7 +214,7 @@ function extractJurisdiction(analysis: string): string {
       return jurisdiction;
     }
   }
-  return 'unknown';
+  return: 'unknown';
 }
 function extractKeyClauses(analysis: string): string[] {
   // Simple extraction - in production, use NER models

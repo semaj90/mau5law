@@ -135,7 +135,7 @@
   function handleRealtimeUpdate(data: any) {
     if (!data || !data.type) return;
     switch (data.type) {
-      case 'cluster-metrics-update':
+      case: 'cluster-metrics-update':
         clusterMetrics.set({
           activeWorkers: data.metrics?.activeWorkers || 0,
           totalRequests: data.metrics?.totalRequests || 0,
@@ -144,12 +144,12 @@
           cacheHitRate: data.metrics?.cacheHitRate || 0,
         });
         break;
-      case 'mcp-tool-status':
+      case: 'mcp-tool-status':
         mcpTools.update(tools =>
           tools.map(tool => (tool.id === data.toolId ? { ...tool, status: data.status, lastUsed: new Date() } : tool))
         );
         break;
-      case 'query-result':
+      case: 'query-result':
         queryResults.update(r => [data.result, ...r].slice(0, 20));
         break;
     }
@@ -244,205 +244,210 @@
 </script>
 
 <div class="nes-container is-dark with-title">
-  <p class="title">Enhanced MCP Integration</p>
-  <div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-4">
-    <div class="flex items-center gap-2">
-      <strong class="nes-text is-primary">Enhanced MCP</strong>
-      <span class="nes-text is-disabled">{$mcpStatus}</span>
-    </div>
-    <div class="flex items-center gap-2">
-      {#if $mcpStatus === 'checking'}
-        <i class="nes-icon coin is-small animate-pulse"></i>
-        <span class="nes-text is-warning">Checking...</span>
-      {:else if $mcpStatus === 'connected'}
-        <i class="nes-icon star is-small"></i>
-        <span class="nes-text is-success">Connected</span>
-      {:else}
-        <i class="nes-icon close is-small"></i>
-        <span class="nes-text is-error">Disconnected</span>
-      {/if}
-    </div>
-  </div>
+	<p class="title">Enhanced MCP Integration</p>
+	<div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-4">
+		<div class="flex items-center gap-2">
+			<strong class="nes-text is-primary">Enhanced MCP</strong>
+			<span class="nes-text is-disabled">{$mcpStatus}</span>
+		</div>
+		<div class="flex items-center gap-2">
+			{#if $mcpStatus === 'connecting'}
+				<i class="nes-icon coin is-small animate-pulse"></i>
+				<span class="nes-text is-warning">Checking...</span>
+			{:else if $mcpStatus === 'connected'}
+				<i class="nes-icon star is-small"></i>
+				<span class="nes-text is-success">Connected</span>
+			{:else if $mcpStatus === 'error'}
+				<i class="nes-icon close is-small"></i>
+				<span class="nes-text is-error">Error</span>
+			{:else}
+				<i class="nes-icon close is-small"></i>
+				<span class="nes-text is-error">Disconnected</span>
+			{/if}
+		</div>
+	</div>
 
-  {#if showMetrics}
-    <div class="nes-container is-dark is-small mb-4">
-      <p class="nes-text is-primary">Cluster Metrics</p>
-      <div class="flex justify-around items-center mt-2">
-        <div class="text-center">
-          <div class="nes-text is-disabled text-xs">Active Workers</div>
-          <div class="nes-text is-success text-lg font-bold">{$clusterMetrics.activeWorkers}</div>
-        </div>
-        <div class="text-center">
-          <div class="nes-text is-disabled text-xs">Total Requests</div>
-          <div class="nes-text is-success text-lg font-bold">{$clusterMetrics.totalRequests}</div>
-        </div>
-        <div class="text-center">
-          <div class="nes-text is-disabled text-xs">Success Rate</div>
-          <div class="nes-text is-success text-lg font-bold">{$successRatePercent}%</div>
-        </div>
-      </div>
-    </div>
-  {/if}
+	{#if showMetrics}
+		<div class="nes-container is-dark is-small mb-4">
+			<p class="nes-text is-primary">Cluster Metrics</p>
+			<div class="flex justify-around items-center mt-2">
+				<div class="text-center">
+					<div class="nes-text is-disabled text-xs">Active Workers</div>
+					<div class="nes-text is-success text-lg font-bold">{$clusterMetrics.activeWorkers}</div>
+				</div>
+				<div class="text-center">
+					<div class="nes-text is-disabled text-xs">Total Requests</div>
+					<div class="nes-text is-success text-lg font-bold">{$clusterMetrics.totalRequests}</div>
+				</div>
+				<div class="text-center">
+					<div class="nes-text is-disabled text-xs">Success Rate</div>
+					<div class="nes-text is-success text-lg font-bold">{$successRatePercent}%</div>
+				</div>
+			</div>
+		</div>
+	{/if}
 
-  <div class="mb-6">
-    <h3 class="nes-text is-primary mb-2">Run MCP Tool</h3>
-    <div class="nes-field is-inline">
-      <div class="nes-select">
-        <select bind:value={selectedTool}>
-          <option value="">Select tool...</option>
-          {#each $mcpTools as tool}
-            <option value={tool?.id}>{tool?.name}</option>
-          {/each}
-        </select>
-      </div>
-      <input
-        type="text"
-        class="nes-input"
-        placeholder="Enter query or parameters"
-        bind:value={queryInput}
-      />
-      <button
-        class="nes-btn is-primary"
-        onclick={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
-        disabled={!selectedTool || isProcessing}
-      >
-        {#if isProcessing}
-          <i class="nes-icon coin is-small animate-pulse"></i> Processing...
-        {:else}
-          Execute
-        {/if}
-      </button>
-    </div>
-  </div>
+	<div class="mb-6">
+		<h3 class="nes-text is-primary mb-2">Run MCP Tool</h3>
+		<div class="nes-field is-inline">
+			<div class="nes-select">
+				<select bind:value={selectedTool}>
+					<option value="">Select tool...</option>
+					{#each $mcpTools as tool}
+						<option value={tool?.id}>{tool?.name}</option>
+					{/each}
+				</select>
+			</div>
+			<input
+				type="text"
+				class="nes-input"
+				placeholder="Enter query or parameters"
+				bind:value={queryInput}
+			/>
+			<button
+				class="nes-btn is-primary"
+				onclick={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
+				disabled={!selectedTool || isProcessing}
+			>
+				{#if isProcessing}
+					<i class="nes-icon coin is-small animate-pulse"></i> Processing...
+				{:else}
+					Execute
+				{/if}
+			</button>
+		</div>
+	</div>
 
-  <div class="mb-6">
-    <h3 class="nes-text is-primary mb-2">Suggestions</h3>
-    <ul class="nes-list is-disc">
-      {#each $contextualSuggestions as s}
-        <li><span class="nes-text is-warning">{s.title}</span> — <span class="nes-text is-disabled">{s.description}</span></li>
-      {/each}
-    </ul>
-  </div>
+	<div class="mb-6">
+		<h3 class="nes-text is-primary mb-2">Suggestions</h3>
+		<ul class="nes-list is-disc">
+			{#each $contextualSuggestions as s}
+				<li><span class="nes-text is-warning">{s.title}</span> — <span class="nes-text is-disabled">{s.description}</span></li>
+			{/each}
+		</ul>
+	</div>
 
-  <div>
-    <h3 class="nes-text is-primary mb-2">Recent Results</h3>
-    <div class="space-y-4">
-      {#each $queryResults as result}
-        <div class="nes-container is-dark is-small">
-          <div class="flex justify-between items-center mb-2">
-            <div class="nes-text is-disabled text-xs">{result?.source || 'mcp'}</div>
-            <div class="nes-text is-disabled text-xs">{result?.timestamp ? new Date(result.timestamp).toLocaleTimeString() : ''}</div>
-          </div>
-          <div class="nes-text is-primary mb-2">Query: {result?.query || 'N/A'}</div>
-          <div class="nes-text">
-            {#if result.success}
-              <pre class="whitespace-pre-wrap break-words text-xs">{JSON.stringify(result.result, null, 2)}</pre>
-            {:else}
-              <div class="nes-text is-error">Error: {result.error || 'Unknown error'}</div>
-            {/if}
-          </div>
-        </div>
-      {/each}
-    </div>
-  </div>
+	<div>
+		<h3 class="nes-text is-primary mb-2">Recent Results</h3>
+		<div class="space-y-4">
+			{#each $queryResults as result}
+				<div class="nes-container is-dark is-small">
+					<div class="flex justify-between items-center mb-2">
+						<div class="nes-text is-disabled text-xs">{result?.source || 'mcp'}</div>
+						<div class="nes-text is-disabled text-xs">{result?.timestamp ? new Date(result.timestamp).toLocaleTimeString() : ''}</div>
+					</div>
+					<div class="nes-text is-primary mb-2">Query: {result?.query || 'N/A'}</div>
+					<div class="nes-text">
+						{#if result.success}
+							<pre class="whitespace-pre-wrap break-words text-xs">{JSON.stringify(result.result, null, 2)}</pre>
+						{:else}
+							<div class="nes-text is-error">Error: {result.error || 'Unknown error'}</div>
+						{/if}
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
 </div>
-  .connection-indicator {
-    display: flex;
-    align-items: center;
-  }
-  .connection-indicator:not(.show-metrics) {
-    display: none;
-  }
-  .status-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .cluster-metrics {
-    margin-bottom: 24px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    padding: 12px;
-  }
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-  }
-  .metric {
-    text-align: center;
-  }
-  .metric-label {
-    color: #9ca3af;
-    font-size: 0.75rem;
-  }
-  .metric-value {
-    color: #10b981;
-    font-weight: 700;
-    font-size: 1.1rem;
-  }
-  .query-form {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .tool-selector,
-  .query-input {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 6px;
-    padding: 8px 10px;
-    color: #e5e7eb;
-  }
-  .tool-selector {
-    min-width: 180px;
-  }
-  .query-input {
-    flex: 1,
-  }
-  .execute-button {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.12s ease;
-  }
-  .execute-buttondisabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .execute-buttonhover:not(:disabled) {
-    transform: translateY(-2px);
-  }
-  .results-list {
-    margin-top: 12px;
-    display: grid;
-    gap: 10px;
-  }
-  .result-card {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 8px;
-    padding: 12px;
-  }
-  .result-meta {
-    display: flex;
-    justify-content: space-betweennn;
-    font-size: 0.8rem;
-    color: #9ca3af;
-    margin-bottom: 8px;
-  }
-  .result-content pre {
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-size: 0.85rem;
-  }
-  .error-message {
-    color: #fca5a5;
-  }
+
+<style>
+	.connection-indicator {
+		display: flex;
+		align-items: center;
+	}
+	.connection-indicator:not(.show-metrics) {
+		display: none;
+	}
+	.status-indicator {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		display: inline-block;
+	}
+	.cluster-metrics {
+		margin-bottom: 24px;
+		background: rgba(255, 255, 255, 0.03);
+		border-radius: 8px;
+		padding: 12px;
+	}
+	.metrics-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		gap: 12px;
+	}
+	.metric {
+		text-align: center;
+	}
+	.metric-label {
+		color: #9ca3af;
+		font-size: 0.75rem;
+	}
+	.metric-value {
+		color: #10b981;
+		font-weight: 700;
+		font-size: 1.1rem;
+	}
+	.query-form {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+	}
+	.tool-selector,
+	.query-input {
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 6px;
+		padding: 8px 10px;
+		color: #e5e7eb;
+	}
+	.tool-selector {
+		min-width: 180px;
+	}
+	.query-input {
+		flex: 1;
+	}
+	.execute-button {
+		background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+		border: none;
+		border-radius: 6px;
+		padding: 8px 14px;
+		color: white;
+		font-weight: 600;
+		cursor: pointer;
+		transition: transform 0.12s ease;
+	}
+	.execute-button.disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.execute-button:hover:not(:disabled) {
+		transform: translateY(-2px);
+	}
+	.results-list {
+		margin-top: 12px;
+		display: grid;
+		gap: 10px;
+	}
+	.result-card {
+		background: rgba(255, 255, 255, 0.02);
+		border-radius: 8px;
+		padding: 12px;
+	}
+	.result-meta {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.8rem;
+		color: #9ca3af;
+		margin-bottom: 8px;
+	}
+	.result-content pre {
+		white-space: pre-wrap;
+		word-break: break-word;
+		font-size: 0.85rem;
+	}
+	.error-message {
+		color: #fca5a5;
+	}
 </style>
 
 

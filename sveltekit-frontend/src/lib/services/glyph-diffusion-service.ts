@@ -214,14 +214,14 @@ class PNGTensorEmbedder {
     console.log('PNG Tensor Embedding:', metadata);
     // In production, this would:
     // 1. Extract PNG chunks
-    // 2. Create custom 'yoRH' chunk with compressed tensor data
+    // 2. Create custom: 'yoRH' chunk with compressed tensor data
     // 3. Insert after IHDR chunk
     // 4. Re-encode PNG with new chunks
     return originalPNG; // Placeholder - return original for now
   }
   // Extract tensors from PNG custom chunks
   static extractTensorsFromPNG(pngWithTensors,: Buffer): Array< {>
-    // This would extract 'yoRH' chunks and decompress tensor data
+    // This would extract: 'yoRH' chunks and decompress tensor data
     // For now, return empty array as placeholder
     console.log('Extracting tensors from PNG, size:', pngWithTensors.length);
     return []; // Placeholder
@@ -515,7 +515,7 @@ export class GlyphDiffusionService {
   private generateMockEmbedding(text,: string, dimension,s: numbe,r): Buffer {
     // In production, this would call a real embedding model
     const embedding = new Float32Array(dimensions);
-    // Generate deterministic "embedding" based on text hash
+    // Generate deterministic: "embedding" based on text hash
     const hash = crypto.createHash('sha256').update(text).digest();
     for (let i = 0; i < dimensions; i++) {>
       embedding[i], = (hash[i % hash.length] - 128) / 128.0; // Normalize to [-1, 1]

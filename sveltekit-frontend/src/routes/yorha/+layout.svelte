@@ -1,6 +1,6 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
-  import '../../app.css'; // Add this line to import the global Tailwind CSS
+  import: '../../app.css'; // Add this line to import the global Tailwind CSS
   // Svelte 5 runes are auto-imported
   import { afterNavigate, goto } from '$app/navigation';
   import { onMount } from 'svelte';
@@ -21,7 +21,7 @@
   }
 
   // System status and navigation
-  // Replace rune $state usage with plain local variables to avoid runtime 'undefined' errors
+  // Replace rune $state usage with plain local variables to avoid runtime: 'undefined' errors
   let systemStatus = { connected: false, services: 0, errors: 0 };
   let sidebarOpen = false;
   let currentPath = '';
@@ -166,7 +166,7 @@
       <button
         class="yorha-menu-toggle"
         aria-label="Open sidebar"
-        on:click={() => (sidebarOpen = true)}
+        onclick={() => (sidebarOpen = true)}
       >
         <Terminal size={16} />
       </button>
@@ -202,14 +202,14 @@
     <!-- changed: expanded overlay element (no self-closing), use onclick/onkeydown and accessible role/tabindex -->
     <div
       class="yorha-overlay"
-      on:click={closeSidebar}
-      on:keydown={handleSidebarKeydown}
+      onclick={closeSidebar}
+      onkeydown={handleSidebarKeydown}
       role="button"
       tabindex="0"
       aria-label="Close sidebar overlay"
     ></div>
 
-    <!-- changed: aside -> div because aside cannot have interactive role 'dialog' -->
+    <!-- changed: aside -> div because aside cannot have interactive role: 'dialog' -->
     <div class="yorha-sidebar yorha-sidebar-open" role="dialog" aria-label="YoRHa Sidebar">
       <nav class="yorha-nav" aria-label="Main navigation">
         <!-- Sidebar header moved here (was incorrectly inside <script>) -->
@@ -219,8 +219,8 @@
             class="yorha-sidebar-close"
             aria-label="Close sidebar"
             tabindex="0"
-            on:click={closeSidebar}
-            on:keydown={handleSidebarKeydown}
+            onclick={closeSidebar}
+            onkeydown={handleSidebarKeydown}
           >
             <ChevronLeft size={16} />
           </button>
@@ -231,7 +231,7 @@
             <li class="yorha-nav-item">
               <button
                 class="yorha-nav-link"
-                on:click={() => navigateTo(item.path)}
+                onclick={() => navigateTo(item.path)}
                 class:yorha-nav-active={isActivePath(item.path)}
                 aria-current={isActivePath(item.path) ? 'page' : undefined}
               >

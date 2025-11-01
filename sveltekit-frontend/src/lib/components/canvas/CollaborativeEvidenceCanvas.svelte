@@ -575,14 +575,14 @@
     if (!fabricCanvas) return;
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case 'z':
+        case: 'z':
           e.shiftKey ? redo() : undo();
           break;
-        case 's':
+        case: 's':
           e.preventDefault();
           saveCanvasState();
           break;
-        case 'a':
+        case: 'a':
           e.preventDefault();
           fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject();
           fabricCanvas.renderAll && fabricCanvas.renderAll();
@@ -591,22 +591,22 @@
     }
     if (e.key === 'Delete' || e.key === 'Backspace') deleteSelectedObjects();
     switch (e.key) {
-      case '1':
+      case: '1':
         selectedTool = 'select';
         break;
-      case '2':
+      case: '2':
         selectedTool = 'evidence';
         break;
-      case '3':
+      case: '3':
         selectedTool = 'connection';
         break;
-      case '4':
+      case: '4':
         selectedTool = 'note';
         break;
-      case '5':
+      case: '5':
         selectedTool = 'highlight';
         break;
-      case '6':
+      case: '6':
         selectedTool = 'draw';
         break;
     }
@@ -728,11 +728,11 @@
   function handleCollaborativeChange(data: any) {
     // lightweight handlers reserved for future merging logic
     switch (data.action) {
-      case 'object_modified':
+      case: 'object_modified':
         /* merge logic */ break;
-      case 'connection_added':
+      case: 'connection_added':
         /* create connection if missing */ break;
-      case 'objects_deleted':
+      case: 'objects_deleted':
         /* remove objects */ break;
     }
   }
@@ -1364,7 +1364,7 @@
   }
   .sidebar-header {
     display: flex;
-    justify-content: space-between; /* Fixed: typo 'space-betweenn' */
+    justify-content: space-between; /* Fixed: typo: 'space-betweenn' */
     align-items: center;
     margin-bottom: 20px;
   }
@@ -1421,7 +1421,7 @@
   .evidence-type {
     font-size: 12px;
     color: #ccc;
-    text-transform: capitalize; /* Fixed: typo 'capitaliz' */
+    text-transform: capitalize; /* Fixed: typo: 'capitaliz' */
   }
   .sidebar-toggle {
     position: absolute; /* Fixed: added colon */
@@ -1455,7 +1455,7 @@
   }
   .panel-header {
     display: flex;
-    justify-content: space-between; /* Fixed: typo 'space-betweenn' */
+    justify-content: space-between; /* Fixed: typo: 'space-betweenn' */
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -1552,7 +1552,7 @@
   }
   .suggestion-item {
     display: flex;
-    justify-content: space-between; /* Fixed: typo 'space-betweenn' */
+    justify-content: space-between; /* Fixed: typo: 'space-betweenn' */
     align-items: flex-start;
     gap: 10px;
     padding: 10px;

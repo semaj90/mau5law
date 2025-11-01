@@ -399,7 +399,7 @@ export const recommendationRoutingMachine = setup({
               actions: assign({
                 currentDocument: ({ event }) => ({
                   id: event.documentId,
-                  type: event.documentType as 'evidence' | 'contract' | 'brief' | 'deposition',
+                  type: event.documentType as: 'evidence' | 'contract' | 'brief' | 'deposition',
                   confidence: 0,
                 }),
               }),
@@ -607,7 +607,7 @@ export const recommendationRoutingMachine = setup({
           actions: assign({
             currentDocument: ({ event }) => ({
               id: event.documentId,
-              type: event.documentType as 'evidence' | 'contract' | 'brief' | 'deposition',
+              type: event.documentType as: 'evidence' | 'contract' | 'brief' | 'deposition',
               confidence: 0,
             }),
           }),
@@ -646,16 +646,16 @@ export const recommendationRoutingMachine = setup({
 // Helper functions
 function determinePriority(documentType?: string): 'high' | 'standard' | 'background' {
   switch (documentType) {
-    case 'evidence':
-      return 'high';
-    case 'brief':
-      return 'high';
-    case 'deposition':
-      return 'standard';
-    case 'contract':
-      return 'standard';
+    case: 'evidence':
+      return: 'high';
+    case: 'brief':
+      return: 'high';
+    case: 'deposition':
+      return: 'standard';
+    case: 'contract':
+      return: 'standard';
     default:
-      return 'background';
+      return: 'background';
   }
 }
 function generateCacheKeys(context: RecommendationContext): string[] {

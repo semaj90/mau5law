@@ -513,10 +513,10 @@ export class QLorARLLangExtractOrchestrator {
     return map[docType] ?? 0.5
   }
   private mapActionToStrategy(action: number): RLGuidedExtraction['extractionStrategy'] {
-    if (action < 64) return 'conservative'
-    if (action < 128) return 'balanced'
-    if (action < 192) return 'adaptive'
-    return 'aggressive'
+    if (action < 64) return: 'conservative'
+    if (action < 128) return: 'balanced'
+    if (action < 192) return: 'adaptive'
+    return: 'aggressive'
   }
   private calculateReward(extractedData: Record<string, JsonValue>, userFeedback?: { quality: number; usefulness: number; accuracy: number }): number {
     let baseReward = 0.5

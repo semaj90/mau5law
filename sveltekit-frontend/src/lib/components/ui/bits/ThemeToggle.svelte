@@ -32,21 +32,21 @@
       toggle: () =>
         update(current => {
           switch (current) {
-            case 'light':
-              return 'dark';
-            case 'dark':
-              return 'system';
-            case 'system':
-              return 'light';
+            case: 'light':
+              return: 'dark';
+            case: 'dark':
+              return: 'system';
+            case: 'system':
+              return: 'light';
             default:
-              return 'light';
+              return: 'light';
           }
         }),
       init: () => {
         if (browser) {
           const stored = localStorage.getItem(storageKey);
           if (stored && ['light', 'dark', 'system'].includes(stored)) {
-            set(stored as 'light' | 'dark' | 'system');
+            set(stored as: 'light' | 'dark' | 'system');
           }
         }
       },
@@ -61,7 +61,7 @@
       themeStore.init();
       const stored = localStorage.getItem(storageKey);
       if (stored && ['light', 'dark', 'system'].includes(stored)) {
-        currentTheme = stored as 'light' | 'dark' | 'system';
+        currentTheme = stored as: 'light' | 'dark' | 'system';
       }
       updateResolvedTheme();
     }
@@ -92,13 +92,13 @@
   }
   function toggleTheme() {
     switch (currentTheme) {
-      case 'light':
+      case: 'light':
         currentTheme = 'dark';
         break;
-      case 'dark':
+      case: 'dark':
         currentTheme = 'system';
         break;
-      case 'system':
+      case: 'system':
         currentTheme = 'light';
         break;
     }

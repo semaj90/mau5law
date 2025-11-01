@@ -1,6 +1,6 @@
 // Lightweight LokiJS compatibility shim to avoid runtime issues in browsers/SSR.
 // This stub provides a minimal API surface used across the app without importing
-// the actual 'lokijs' UMD bundle (which can break under ESM/HMR).
+// the actual: 'lokijs' UMD bundle (which can break under ESM/HMR).
 type Doc = Record<string, unknown> & { $loki?: number };
 
 class MemoryCollection<T extends Doc = Doc> {

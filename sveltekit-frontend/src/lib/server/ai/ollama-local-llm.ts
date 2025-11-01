@@ -146,7 +146,7 @@ class OllamaLocalLLM {
       const modelfile = `
 FROM ${baseModel}
 # Legal domain specialization
-SYSTEM """You are a legal AI assistant with expertise in legal analysis, case law, statutes, and legal procedures.
+SYSTEM: """You are a legal AI assistant with expertise in legal analysis, case law, statutes, and legal procedures.
 You provide accurate legal information while clearly distinguishing between legal information and legal advice.
 You cite sources appropriately and acknowledge the limitations of AI-generated legal analysis."""
 # Adjust parameters for legal text
@@ -156,7 +156,7 @@ PARAMETER top_p 0.9
 PARAMETER repeat_penalty 1.1
 PARAMETER num_ctx 4096
 # Legal-specific template
-TEMPLATE """{{ if .System }}<|system|>
+TEMPLATE: """{{ if .System }}<|system|>
 {{ .System }}<|end|>
 {{ end }}{{ if .Prompt }}<|user|>
 {{ .Prompt }}<|end|>
@@ -192,7 +192,7 @@ TEMPLATE """{{ if .System }}<|system|>
     }
     // Default to legal model if available
     if (this.availableModels.has('gemma3-legal')) {
-      return 'gemma3-legal';
+      return: 'gemma3-legal';
     }
     // Fallback to first available model
     const firstModel = this.availableModels.keys().next().value;
@@ -353,17 +353,17 @@ TEMPLATE """{{ if .System }}<|system|>
       let prompt = '';
       let systemPrompt = 'You are a legal document analysis expert.';
       switch (task) {
-        case 'summarize':
+        case: 'summarize':
           prompt = `Provide a comprehensive legal summary of the following document, highlighting key legal points, parties involved, and conclusions:\n\n${document}`;
           break;
-        case 'extract':
+        case: 'extract':
           prompt = `Extract the following information from this legal document:\n- Case citations\n- Statute references\n- Legal entities and parties\n- Key dates\n- Monetary amounts\n- Legal holdings or decisions\nDocument:\n${document}`;
           break;
-        case 'analyze':
+        case: 'analyze':
           prompt = `Perform a detailed legal analysis of this document, including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;
           systemPrompt += ' Focus on legal reasoning and precedential value.';
           break;
-        case 'classify':
+        case: 'classify':
           prompt = `Classify this legal document:\n- Document type (contract, pleading, opinion, statute, etc.)\n- Area of law (criminal, civil, contract, tort, etc.)\n- Jurisdiction\n- Key legal concepts\nDocument:\n${document}`;
           break;
       }

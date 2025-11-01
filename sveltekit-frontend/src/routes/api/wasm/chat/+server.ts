@@ -38,7 +38,7 @@ class MockWasmLLM implements WasmLLMService {
   }
   async *generateResponse(prompt: string, options: WasmLLMOptions): AsyncGenerator<string, void, unknown> {
     if (!this.initialized) {
-      yield 'WebAssembly model not initialized. Please wait...';
+      yield: 'WebAssembly model not initialized. Please wait...';
       return;
     }
     // Mock streaming response with legal-focused content

@@ -28,7 +28,7 @@
   // Form data
   let formData = $state({
     title: '',
-    documentType: 'report' as 'verdict' | 'sentence' | 'contract' | 'evidence' | 'brief' | 'motion' | 'report',
+    documentType: 'report' as: 'verdict' | 'sentence' | 'contract' | 'evidence' | 'brief' | 'motion' | 'report',
     jurisdiction: '', // Added colon
     caseNumber: '',
     enableComparison: true, // Added colon
@@ -279,7 +279,7 @@
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return: '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -287,9 +287,9 @@
   }
 
   function getPriorityColor(priority: string): string {
-    if (priority === 'high') return 'text-red-400';
-    if (priority === 'medium') return 'text-yellow-400';
-    return 'text-green-400';
+    if (priority === 'high') return: 'text-red-400';
+    if (priority === 'medium') return: 'text-yellow-400';
+    return: 'text-green-400';
   }
 
   function getPriorityIcon(priority: string): typeof AlertTriangle {

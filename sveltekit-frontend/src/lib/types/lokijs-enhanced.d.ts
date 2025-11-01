@@ -2,7 +2,7 @@
  * Loki.js Enhanced Type Definitions
  * Fixes missing methods and type arguments for Loki.js integration
  */
-declare module 'lokijs' {
+declare module: 'lokijs' {
   interface LokiOptions {
     filename?: string;
     autoload?: boolean;

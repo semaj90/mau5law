@@ -110,13 +110,13 @@
     if ((file.fileSize || 0) > 10000000) risk += 20;
     // Risk from confidentiality level
     switch (file.confidentialityLevel) {
-      case 'classified':
+      case: 'classified':
         risk += 40;
         break;
-      case 'confidential':
+      case: 'confidential':
         risk += 25;
         break;
-      case 'restricted':
+      case: 'restricted':
         risk += 15;
         break;
       default:
@@ -126,13 +126,13 @@
     if (!file.chainOfCustody) risk += 30;
     // Risk from evidence type
     switch (file.evidenceType) {
-      case 'digital':
+      case: 'digital':
         risk += 10;
         break;
-      case 'witness':
+      case: 'witness':
         risk += 15;
         break;
-      case 'forensic':
+      case: 'forensic':
         risk += 5;
         break;
       default:
@@ -142,29 +142,29 @@
   }
   function getEvidenceColor(evidenceType: string): string {
     switch (evidenceType) {
-      case 'forensic':
+      case: 'forensic':
         return currentTheme.success;
-      case 'document':
+      case: 'document':
         return currentTheme.accent;
-      case 'witness':
+      case: 'witness':
         return currentTheme.warning;
-      case 'digital':
-        return '#00ccff';
-      case 'physical':
-        return '#9c88ff';
+      case: 'digital':
+        return: '#00ccff';
+      case: 'physical':
+        return: '#9c88ff';
       default:
         return currentTheme.text;
     }
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'verified':
+      case: 'verified':
         return currentTheme.success;
-      case 'pending':
+      case: 'pending':
         return currentTheme.warning;
-      case 'disputed':
+      case: 'disputed':
         return currentTheme.danger;
-      case 'archived':
+      case: 'archived':
         return currentTheme.border;
       default:
         return currentTheme.text;
@@ -235,7 +235,7 @@
       ctx.fillRect(padding, y + 10, 6, itemHeight - 20);
       // File title
       ctx.fillStyle = currentTheme.text;
-      ctx.font = 'bold 14px "Press Start 2P", monospace';
+      ctx.font = 'bold 14px: "Press Start 2P", monospace';
       ctx.fillText(file.title.substring(0, 40), padding + 15, y + 25);
       // File details
       ctx.font = '10px "Press Start 2P", monospace';
@@ -287,7 +287,7 @@
     ctx.strokeRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
     // Tooltip content
     ctx.fillStyle = currentTheme.text;
-    ctx.font = 'bold 12px "Press Start 2P", monospace';
+    ctx.font = 'bold 12px: "Press Start 2P", monospace';
     ctx.fillText(hoveredFile.title, tooltipX + 10, tooltipY + 20);
     ctx.font = '8px "Press Start 2P", monospace';
     let textY = tooltipY + 35;
@@ -325,7 +325,7 @@
     ctx.strokeRect(width - 200, 10, 190, 130);
     // Stats content
     ctx.fillStyle = currentTheme.text;
-    ctx.font = 'bold 10px "Press Start 2P", monospace';
+    ctx.font = 'bold 10px: "Press Start 2P", monospace';
     ctx.fillText('EVIDENCE STATS', width - 190, 30);
     ctx.font = '8px "Press Start 2P", monospace';
     let statsY = 45;

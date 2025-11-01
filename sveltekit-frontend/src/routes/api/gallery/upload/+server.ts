@@ -16,38 +16,32 @@ import crypto from 'crypto';
 const UPLOAD_DIR = 'uploads';
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_TYPES = [
-  // Images
-  'image/jpeg',
+  // Images: 'image/jpeg',
   'image/png',
   'image/gif',
   'image/webp',
   'image/svg+xml',
-  // Documents
-  'application/pdf',
+  // Documents: 'application/pdf',
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.ms-powerpoint',
   'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  // Text files
-  'text/plain',
+  // Text files: 'text/plain',
   'text/csv',
   'application/json',
   'application/xml',
-  // Audio
-  'audio/mpeg',
+  // Audio: 'audio/mpeg',
   'audio/wav',
   'audio/ogg',
   'audio/mp4',
-  // Video
-  'video/mp4',
+  // Video: 'video/mp4',
   'video/avi',
   'video/mov',
   'video/wmv',
   'video/webm',
-  // Archives
-  'application/zip',
+  // Archives: 'application/zip',
   'application/x-rar-compressed',
   'application/x-7z-compressed',
 ];
@@ -169,7 +163,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         originalName: file.name,
         size: file.size,
         type: file.type,
-        url: `/${relativePath}`, // relativePath already includes "uploads/..."
+        url: `/${relativePath}`, // relativePath already includes: "uploads/..."
         uploadPath: relativePath,
         thumbnailUrl,
       },
@@ -322,9 +316,9 @@ export const GET: RequestHandler = async ({ url }) => {
       .orderBy(evidence.updatedAt) // use existing timestamp column from schema
       .limit(limit);
 
-    // Apply category filtering when requested (skip when 'all' or not provided)
+    // Apply category filtering when requested (skip when: 'all' or not provided)
     if (category && category !== 'all') {
-      // The evidence table stores category inside a JSON 'metadata' column.
+      // The evidence table stores category inside a JSON: 'metadata' column.
       // Use a raw SQL fragment to compare the JSON property so we don't reference a non-existent typed column.
       query = query.where(sql`(evidence.metadata->>'category') = ${category}`);
     }

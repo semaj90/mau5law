@@ -1,71 +1,84 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { useMachine } from '@xstate/svelte';
+  import { interpret } from 'xstate';
   import { chatMachine } from '$lib/machines/chatMachine.js';
-  let chatContainer;
+  let chatContainer: HTMLDivElement | null = null;
   let userInput = $state('');
-  const { snapshot, send } = useMachine(chatMachine, {
-    actors: {
-      streamChatActor:
-        ({ input }) =>
-        (sendBack, receive) => {
-          const controller = new AbortController();
-          async function stream() {
-            try {
-              const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: input.messages }),
-                signal: controller.signal,
-              });
-              if (!response.ok || !response.body) {
-                throw new Error('Failed to get response stream.');
-              }
-              const reader = response.body.getReader();
-              const decoder = new TextDecoder();
-              while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n').filter(line => line.trim().startsWith('data:'));
-                for (const line of lines) {
-                  try {
-                    const jsonResponse = JSON.parse(line.replace('data:', '').trim());
-                    if (jsonResponse.message && jsonResponse.message.content) {
-                      sendBack({ type: 'STREAM_CHUNK', chunk: jsonResponse.message.content });
-                    } else if (jsonResponse.type === 'token' && jsonResponse.content) {
-                      sendBack({ type: 'STREAM_CHUNK', chunk: jsonResponse.content });
-                    }
-                  } catch (e) {
-                    // Ignore parsing errors for incomplete chunks
-                  }
+
+  // Create and start XState service manually so we don't rely on @xstate/svelte types.
+  const service = interpret(chatMachine);
+  let snapshot: any = service.initialState;
+  service.subscribe((state: any) => {
+    snapshot = state;
+  });
+  service.start();
+  const send = (event: any) => service.send(event);
+
+  // Actor implementation with explicit types and safer error handling
+  // (the machine will call this actor via options; ensure machine expects actor name `streamChatActor`)
+  // Provide the actor factory on the machine side or pass it via machine options where used.
+  // If the machine already wires actors via context, this factory can be exported elsewhere.
+  const streamChatActorFactory = ({ input }: any) => {
+    return (sendBack: (e: any) => void, _receive: any) => {
+      const controller = new AbortController();
+      async function stream() {
+        try {
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: input?.messages ?? [] }),
+            signal: controller.signal,
+          });
+          if (!response.ok || !response.body) {
+            throw new Error('Failed to get response stream.');
+          }
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n').filter((line: string) => line.trim().startsWith('data:'));
+            for (const line of lines) {
+              try {
+                const jsonResponse = JSON.parse(line.replace('data:', '').trim());
+                if (jsonResponse?.message?.content) {
+                  sendBack({ type: 'STREAM_CHUNK', chunk: jsonResponse.message.content });
+                } else if (jsonResponse?.type === 'token' && jsonResponse.content) {
+                  sendBack({ type: 'STREAM_CHUNK', chunk: jsonResponse.content });
                 }
-              }
-              sendBack({ type: 'STREAM_DONE' });
-            } catch (error) {
-              if (error.name !== 'AbortError') {
-                console.error('Chat stream error:', error);
-                sendBack({ type: 'error', data: error });
+              } catch (_err) {
+                // ignore incomplete chunks
               }
             }
           }
-          stream();
-          return () => {
-            controller.abort();
-          };
-        },
-    },
-  });
-  function handleSubmit(event: SubmitEvent) {
-    event.preventDefault();
+          sendBack({ type: 'STREAM_DONE' });
+        } catch (err: unknown) {
+          const e = err as any;
+          if (e?.name !== 'AbortError') {
+            console.error('Chat stream error:', e);
+            sendBack({ type: 'error', data: e });
+          }
+        }
+      }
+      stream();
+      return () => {
+        controller.abort();
+      };
+    };
+  };
+
+  // Submit handler: accept generic Event to match Svelte DOM types, then cast to SubmitEvent
+  function handleSubmit(event: Event) {
+    const submitEvent = event as SubmitEvent;
+    submitEvent.preventDefault();
     if (!userInput.trim()) return;
     send({ type: 'SUBMIT', message: userInput });
     userInput = '';
   }
+
   // Reactive statement to scroll down when messages change
   $effect(() => {
-    if (snapshot.context.messages && typeof window !== 'undefined') {
+    if (snapshot?.context?.messages && typeof window !== 'undefined') {
       // Use a microtask to wait for the DOM to update
       Promise.resolve().then(() => {
         if (chatContainer) {
@@ -125,7 +138,7 @@
   }
   .chat-message.user {
     margin-left: auto;
-    flex-direction row-reverse;
+    flex-direction: row-reverse;
   }
   .chat-message.assistant {
     margin-right: auto;
@@ -134,7 +147,7 @@
     padding: 0.75rem 1rem;
     border-radius: 1.25rem;
     word-wrap: break-word;
-    position relative;
+    position: relative;
   }
   .user .message-bubble {
     background-color: #2563eb;

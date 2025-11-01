@@ -111,7 +111,7 @@
   let newCaseData = $state({
     title: '',
     description: '',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical'
+    priority: 'medium' as: 'low' | 'medium' | 'high' | 'critical'
   });
 
   const quickStats = $derived(() => ({
@@ -169,14 +169,14 @@
 
   function priorityBadge(priority?: string) {
     switch (priority) {
-      case 'critical':
-        return 'border-red-500/50 text-red-300';
-      case 'high':
-        return 'border-orange-500/50 text-orange-300';
-      case 'medium':
-        return 'border-amber-500/50 text-amber-300';
+      case: 'critical':
+        return: 'border-red-500/50 text-red-300';
+      case: 'high':
+        return: 'border-orange-500/50 text-orange-300';
+      case: 'medium':
+        return: 'border-amber-500/50 text-amber-300';
       default:
-        return 'border-slate-500/40 text-slate-300';
+        return: 'border-slate-500/40 text-slate-300';
     }
   }
 </script>

@@ -45,7 +45,7 @@
     {
       id: 'new-case',
       keys: ['ctrl', 'shift', 'c'],
-      description 'Create New Case',
+      description: 'Create New Case',
       category: 'Case Management',
       action () => goto('/cases/new'),
       global: true,
@@ -54,7 +54,7 @@
     {
       id: 'case-search',
       keys: ['ctrl', 'shift', 'f'],
-      description 'Search Cases',
+      description: 'Search Cases',
       category: 'Case Management',
       action () => goto('/cases/search'),
       global: true,
@@ -64,7 +64,7 @@
     {
       id: 'upload-evidence',
       keys: ['ctrl', 'u'],
-      description 'Upload Evidence',
+      description: 'Upload Evidence',
       category: 'Evidence',
       action () => goto('/evidence/upload'),
       global: true,
@@ -73,7 +73,7 @@
     {
       id: 'evidence-analysis',
       keys: ['ctrl', 'shift', 'a'],
-      description 'AI Evidence Analysis',
+      description: 'AI Evidence Analysis',
       category: 'Evidence',
       action () => goto('/evidence/analysis'),
       global: true,
@@ -83,7 +83,7 @@
     {
       id: 'ai-assistant',
       keys: ['ctrl', 'shift', 'i'],
-      description 'Open AI Assistant',
+      description: 'Open AI Assistant',
       category: 'AI Tools',
       action () => goto('/ai-assistant'),
       global: true,
@@ -92,7 +92,7 @@
     {
       id: 'legal-research',
       keys: ['ctrl', 'shift', 'r'],
-      description 'Legal Research',
+      description: 'Legal Research',
       category: 'AI Tools',
       action () => goto('/research'),
       global: true,
@@ -102,7 +102,7 @@
     {
       id: 'new-document',
       keys: ['ctrl', 'n'],
-      description 'New Document',
+      description: 'New Document',
       category: 'Documents',
       action () => goto('/documents/new'),
       global: true,
@@ -111,7 +111,7 @@
     {
       id: 'document-review',
       keys: ['ctrl', 'shift', 'd'],
-      description 'Document Review',
+      description: 'Document Review',
       category: 'Documents',
       action () => goto('/documents/review'),
       global: true,
@@ -121,7 +121,7 @@
     {
       id: 'dashboard',
       keys: ['ctrl', 'h'],
-      description 'Go to Dashboard',
+      description: 'Go to Dashboard',
       category: 'Navigation',
       action () => goto('/dashboard'),
       global: true,
@@ -130,7 +130,7 @@
     {
       id: 'settings',
       keys: ['ctrl', ','],
-      description 'Open Settings',
+      description: 'Open Settings',
       category: 'Navigation',
       action () => goto('/settings'),
       global: true,
@@ -140,7 +140,7 @@
     {
       id: 'accessibility-panel',
       keys: ['ctrl', 'alt', 'a'],
-      description 'Accessibility Panel',
+      description: 'Accessibility Panel',
       category: 'Accessibility',
       action () => document.dispatchEvent(new CustomEvent('toggle-accessibility')),
       global: true,
@@ -149,7 +149,7 @@
     {
       id: 'keyboard-help',
       keys: ['shift', '?'],
-      description 'Keyboard Shortcuts Help',
+      description: 'Keyboard Shortcuts Help',
       category: 'Help',
       action () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),
       global: true,
@@ -185,11 +185,11 @@
   function formatShortcut(keys: string[]): string {
     const formatted = keys.map(key => {
       switch (key) {
-        case 'ctrl': return 'Ctrl';
-        case 'cmd': return 'Cmd';
-        case 'alt': return 'Alt';
-        case 'shift': return 'Shift';
-        case 'space': return 'Space';
+        case: 'ctrl': return: 'Ctrl';
+        case: 'cmd': return: 'Cmd';
+        case: 'alt': return: 'Alt';
+        case: 'shift': return: 'Shift';
+        case: 'space': return: 'Space';
         default: return key.toUpperCase();
       }
     });

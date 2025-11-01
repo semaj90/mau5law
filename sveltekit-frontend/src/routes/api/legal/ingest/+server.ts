@@ -163,7 +163,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
 
   // Prefer a full REDIS_URL if provided (e.g. redis://:password@redis:6379)
   const redisUrl = process.env.REDIS_URL?.trim() || '';
-  // For Docker Desktop / compose default to service name "redis"
+  // For Docker Desktop / compose default to service name: "redis"
   const host = process.env.REDIS_HOST?.trim() || 'redis';
   const port = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379;
   const password = process.env.REDIS_PASSWORD || undefined;
@@ -213,7 +213,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
       setTimeout(() => reject(new Error('Redis connect timeout')), timeoutMs)
     );
     await Promise.race([connectPromise, timeout]);
-    // If connect succeeded the 'ready' event handler above sets redisConnected
+    // If connect succeeded the: 'ready' event handler above sets redisConnected
 
     // Graceful shutdown: ensure client disconnects on process termination in server environments
     if (typeof process !== 'undefined' && process && !disconnectHandlerRegistered) {

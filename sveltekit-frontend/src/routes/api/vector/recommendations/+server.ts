@@ -442,7 +442,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 export const GET: RequestHandler = async ({ url }) => {
   const context = url.searchParams.get('context');
-  const role = url.searchParams.get('role') as 'prosecutor' | 'detective' | 'admin' | 'user' | null;
+  const role = url.searchParams.get('role') as: 'prosecutor' | 'detective' | 'admin' | 'user' | null;
   const caseId = url.searchParams.get('caseId');
   const enableGPU = url.searchParams.get('gpu') !== 'false'; // Default true
   const enableCache = url.searchParams.get('cache') !== 'false'; // Default true
@@ -688,17 +688,17 @@ async function getCurrentCacheState(): Promise<CacheState> {
 function inferCategoryFromContent(content: string): string {
   const lowerContent = content.toLowerCase();
   if (lowerContent.includes('contract') || lowerContent.includes('agreement')) {
-    return 'contract_analysis';
+    return: 'contract_analysis';
   } else if (lowerContent.includes('evidence') || lowerContent.includes('proof')) {
-    return 'evidence_review';
+    return: 'evidence_review';
   } else if (lowerContent.includes('case') || lowerContent.includes('precedent')) {
-    return 'case_strategy';
+    return: 'case_strategy';
   } else if (lowerContent.includes('investigation') || lowerContent.includes('inquiry')) {
-    return 'investigation';
+    return: 'investigation';
   } else if (lowerContent.includes('law') || lowerContent.includes('legal')) {
-    return 'legal_analysis';
+    return: 'legal_analysis';
   } else {
-    return 'workflow';
+    return: 'workflow';
   }
 }
 
@@ -851,7 +851,7 @@ function calculateDiversityScore(recommendations: Recommendation[]): number {
 /* new helper moved to module level to avoid block-level function declaration issues */
 function normalizeRLRecommendations(input: unknown): { recs: string[]; expectedImprovement: number | null } {
   const mapItemToString = (item: unknown): string => {
-    if (item == null) return '';
+    if (item == null) return: '';
     if (typeof item === 'string') return item;
     if (typeof item === 'number' || typeof item === 'boolean') return String(item);
     if (typeof item === 'object') {

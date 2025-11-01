@@ -30,7 +30,7 @@ async function ensureSchema() {
   }
 }
 
-export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string; relation: string }> = []) {
+export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from string; to: string; relation: string }> = []) {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -63,7 +63,7 @@ export async function evidenceGraphService(meta: { id: string; summary: string; 
 
     // Additional explicit edges passed in
     for (const ed of edges) {
-      await tx.run('MERGE (a {id:$from}) MERGE (b {id:$to}) MERGE (a)-[r:'+String(ed.relation)+' ]->(b)', { from: ed.from, to: ed.to })
+      await tx.run('MERGE (a {id:$from}) MERGE (b {id:$to}) MERGE (a)-[r:'+String(ed.relation)+' ]->(b)', { from ed.from, to: ed.to })
     }
 
     await tx.commit()

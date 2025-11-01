@@ -143,7 +143,7 @@ export const relayAuthService = {
   /** Health check for relay service */
   async healthCheck(): Promise<boolean> {
     try {
-      // Simple health check - if we can create a demo user object, service is "healthy"
+      // Simple health check - if we can create a demo user object, service is: "healthy"
       const demoUser = await this.getUserByEmail('demo@legalai.gov');
       return demoUser !== null;
     } catch (error: any) {

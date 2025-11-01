@@ -15,7 +15,7 @@
   import TextAlign from "@tiptap/extension-text-align";
   import TextStyle from "@tiptap/extension-text-style";
   import Typography from "@tiptap/extension-typography";
-  import Underline from "@tiptap/extension-underline"; // Added Underline extension import
+  import Underline from "@tiptap/extension-underline";
   import StarterKit from "@tiptap/starter-kit";
   import {
     AlignCenter,
@@ -40,7 +40,7 @@
     Strikethrough,
     Table as TableIcon,
     Type,
-    Underline as UnderlineIcon, // Renamed to avoid conflict
+    Underline as UnderlineIcon,
     Undo,
     Upload,
     ZoomIn,
@@ -121,6 +121,13 @@
   // Auto-save timeout typed to be compatible with browser/node
   let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  // --- NEW: provide the missing data used by the template ---
+  const fontFamilies = ["Inter", "Roboto", "Georgia", "Times New Roman", "Arial"];
+  const colorPalettes = {
+    highlight: ["#fff59d", "#ffcc80", "#80deea", "#c5e1a5", "transparent"]
+  };
+  // --- end new definitions ---
+
   // Editor state stores
   // Auto-save functionality
   onMount(() => {
@@ -156,11 +163,11 @@
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case "s":
+          case: "s":
             e.preventDefault();
             saveContent(editor); // editor is guaranteed to be non-null here
             break;
-          case "z":
+          case: "z":
             if (e.shiftKey) {
               editor.commands.redo();
             } else {
@@ -187,7 +194,7 @@
             depth: 100,
           },
         }),
-        Underline, // Added Underline extension
+        Underline,
         Image.configure({
           inline: true,
           allowBase64: true,
@@ -200,7 +207,7 @@
         }),
         Typography,
         Placeholder.configure({
-          placeholder: placeholder, // Corrected semicolon to comma
+          placeholder: placeholder,
         }),
         Table.configure({
           resizable: true,
@@ -214,7 +221,7 @@
           types: ["textStyle"],
         }),
       ],
-      content: content, // Corrected semicolon to comma
+      content: content,
       onTransaction: () => updateEditorState(),
       onUpdate: ({ editor: currentEditorInstance }: { editor: InstanceType<typeof TiptapEditor> | null }) => {
         updateWordCount(currentEditorInstance);
@@ -278,7 +285,7 @@
 
   async function saveContent(editorInstance: InstanceType<typeof TiptapEditor> | null): Promise<void> {
     if (!editorInstance) return;
-    const jsonContent = editorInstance.getJSON(); // Renamed to avoid conflict with prop 'content'
+    const jsonContent = editorInstance.getJSON(); // Renamed to avoid conflict with prop: 'content'
     const html = editorInstance.getHTML();
     // Update the bindable prop to reflect the latest content
     content = jsonContent;
@@ -328,13 +335,13 @@
   //   const handleKeyDown = (e: KeyboardEvent) => { // Corrected effect syntax
   //     if (e.ctrlKey || e.metaKey) {
   //       switch (e.key) {
-  //         case "s":
+  //         case: "s":
   //           e.preventDefault();
   //           if (editor) { // Ensure editor is initialized before saving
   //             saveContent(editor);
   //           }
   //           break;
-  //         case "z":
+  //         case: "z":
   //           if (e.shiftKey) {
   //             editor?.commands.redo();
   //           } else {
@@ -357,29 +364,29 @@
   function toggleItalic() {
     editor?.chain().focus().toggleItalic().run();
   }
-  function toggleUnderline() { // Corrected function signature
-    editor?.chain().focus().toggleUnderline().run(); // Corrected command
+  function toggleUnderline() {
+    editor?.chain().focus().toggleUnderline().run();
   }
   function toggleStrike() {
     editor?.chain().focus().toggleStrike().run();
   }
-  function setAlignment(align: string) { // Corrected function signature
-    editor?.chain().focus().setTextAlign(align).run(); // Corrected command
+  function setAlignment(align: string) {
+    editor?.chain().focus().setTextAlign(align).run();
   }
-  function setTextColor(color: string) { // Corrected function signature
-    editor?.chain().focus().setColor(color).run(); // Corrected command
+  function setTextColor(color: string) {
+    editor?.chain().focus().setColor(color).run();
   }
-  function setHighlight(color: string) { // Corrected function signature
+  function setHighlight(color: string) {
     if (color === "transparent") {
       editor?.chain().focus().unsetHighlight().run();
     } else {
-      editor?.chain().focus().setHighlight({ color }).run(); // Corrected command
+      editor?.chain().focus().setHighlight({ color }).run();
     }
   }
-  function setFontFamily(family: string) { // Corrected function signature
-    editor?.chain().focus().setFontFamily(family).run(); // Corrected command
+  function setFontFamily(family: string) {
+    editor?.chain().focus().setFontFamily(family).run();
   }
-  function insertTable() { // Corrected function signature
+  function insertTable() {
     editor
       ?.chain().focus()
       .insertTable({ rows: 3, cols: 3, withHeaderRow: true }) // Added default table dimensions
@@ -389,7 +396,7 @@
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
-    input.onchange=(e) => {
+    input.onchange = (e) => {
       const file = (e.target as HTMLInputElement)?.files?.[0];
       if (file) {
         const reader = new FileReader();
@@ -437,7 +444,7 @@
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".json,.html";
-    input.onchange=(e) => {
+    input.onchange = (e) => {
       const file = (e.target as HTMLInputElement)?.files?.[0];
       if (file) {
         const reader = new FileReader();
@@ -453,6 +460,7 @@
         reader.readAsText(file);
       }
     }
+    input.click(); // ensure picker opens
   }
   // Reactive statements
   // 'state' is updated via the editorState subscription above and used in the template.
@@ -468,53 +476,24 @@
     class:z-50={isFullscreen}
   >
     <!-- Main Toolbar -->
-    <div
-      class="flex flex-wrap items-center justify-between gap-2 p-2 border-b border-gray-200 bg-white sticky top-0 z-10"
-    >
+    <div class="flex flex-wrap items-center justify-between gap-2 p-2 border-b border-gray-200 bg-white sticky top-0 z-10">
       <!-- File Operations -->
       <div class="flex items-center gap-1">
-        <button
-          aria-label="Action button"
-          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => saveContent(editor)}
-          title="Save (Ctrl+S)"
-        >
+        <button aria-label="Action button" class="p-2 rounded-md bg-transparent cursor-pointer" onclick={() => saveContent(editor)} title="Save (Ctrl+S)">
           <Save size="18" />
         </button>
-        <button
-          aria-label="Action button"
-          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => importDocument()}
-          title="Import Document"
-        >
+        <button aria-label="Action button" class="p-2 rounded-md bg-transparent cursor-pointer" onclick={() => importDocument()} title="Import Document">
           <Upload size="18" />
         </button>
         <div class="relative group">
-          <button
-            aria-label="Button"
-            class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-          >
+          <button aria-label="Button" class="p-2 rounded-md bg-transparent cursor-pointer">
             <Download size="18" />
             <ChevronDown size="14" />
           </button>
-          <div
-            class="absolute top-full left-0 bg-white border border-gray-200 rounded-md shadow-md py-1 z-20 min-w-[150px] hidden group-hover:block"
-          >
-            <button
-              aria-label="Action button"
-              class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-              on:click={() => exportDocument("html")}>Export as HTML</button
-            >
-            <button
-              aria-label="Action button"
-              class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-              on:click={() => exportDocument("json")}>Export as JSON</button
-            >
-            <button
-              aria-label="Action button"
-              class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-              on:click={() => exportDocument("pdf")}>Export as PDF</button
-            >
+          <div class="absolute top-full left-0 bg-white border rounded-md shadow-md py-1 z-20 min-w-[150px] hidden group-hover:block">
+            <button class="w-full text-left px-3 py-2" onclick={() => exportDocument("html")}>Export as HTML</button>
+            <button class="w-full text-left px-3 py-2" onclick={() => exportDocument("json")}>Export as JSON</button>
+            <button class="w-full text-left px-3 py-2" onclick={() => exportDocument("pdf")}>Export as PDF</button>
           </div>
         </div>
       </div>
@@ -525,7 +504,7 @@
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:disabled={!state.canUndo}
-          on:click={() => editor?.commands.undo()}
+          onclick={() => editor?.commands.undo()}
           title="Undo (Ctrl+Z)"
         >
           <Undo size="18" />
@@ -534,7 +513,7 @@
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:disabled={!state.canRedo}
-          on:click={() => editor?.commands.redo()}
+          onclick={() => editor?.commands.redo()}
           title="Redo (Ctrl+Shift+Z)"
         >
           <Redo size="18" />
@@ -547,7 +526,7 @@
           <select
             class="border border-gray-300 rounded-md px-2 py-1 text-sm"
             value={state.currentFontFamily}
-            on:change={(e) => { e.preventDefault(); setFontFamily((e.target as HTMLSelectElement).value); }}
+            onchange={(e) => { e.preventDefault(); setFontFamily((e.target as HTMLSelectElement).value); }}
           >
             {#each fontFamilies as font}
               <option value={font}>{font}</option>
@@ -559,7 +538,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isBold}
           class:text-blue-700={state.isBold}
-          on:click={() => toggleBold()}
+          onclick={() => toggleBold()}
           title="Bold (Ctrl+B)"
         >
           <Bold size="18" />
@@ -569,7 +548,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isItalic}
           class:text-blue-700={state.isItalic}
-          on:click={() => toggleItalic()}
+          onclick={() => toggleItalic()}
           title="Italic (Ctrl+I)"
         >
           <Italic size="18" />
@@ -579,7 +558,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isUnderline}
           class:text-blue-700={state.isUnderline}
-          on:click={() => toggleUnderline()}
+          onclick={() => toggleUnderline()}
           title="Underline (Ctrl+U)"
         >
           <UnderlineIcon size="18" />
@@ -589,7 +568,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isStrike}
           class:text-blue-700={state.isStrike}
-          on:click={() => toggleStrike()}
+          onclick={() => toggleStrike()}
           title="Strikethrough"
         >
           <Strikethrough size="18" />
@@ -605,10 +584,10 @@
             type="color"
             class="absolute inset-0 opacity-0 cursor-pointer"
             value={state.currentColor}
-            on:input={(e) => setTextColor((e.target as HTMLInputElement).value)}
+            oninput={(e) => setTextColor((e.target as HTMLInputElement).value)}
             title="Text Color"
           />
-          <!-- The browser's default color input swatch will correctly display the selected color based on the 'value' attribute. -->
+          <!-- The browser's default color input swatch will correctly display the selected color based on the: 'value' attribute. -->
           <Type size="18" />
         </div>
         <div class="relative group">
@@ -629,7 +608,7 @@
                   : `Highlight with ${color}`}
                 class="w-6 h-6 rounded-md border border-gray-300 cursor-pointer"
                 style="background-color: {color}"
-                on:click={() => setHighlight(color)}
+                onclick={() => setHighlight(color)}
                 title={color === "transparent"
                   ? "Remove highlight"
                   : `Highlight with ${color}`}
@@ -646,7 +625,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "left"}
           class:text-blue-700={state.currentAlignment === "left"}
-          on:click={() => setAlignment("left")}
+          onclick={() => setAlignment("left")}
           title="Align Left"
         >
           <AlignLeft size="18" />
@@ -656,7 +635,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "center"}
           class:text-blue-700={state.currentAlignment === "center"}
-          on:click={() => setAlignment("center")}
+          onclick={() => setAlignment("center")}
           title="Align Center"
         >
           <AlignCenter size="18" />
@@ -666,7 +645,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "right"}
           class:text-blue-700={state.currentAlignment === "right"}
-          on:click={() => setAlignment("right")}
+          onclick={() => setAlignment("right")}
           title="Align Right"
         >
           <AlignRight size="18" />
@@ -676,7 +655,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "justify"}
           class:text-blue-700={state.currentAlignment === "justify"}
-          on:click={() => setAlignment("justify")}
+          onclick={() => setAlignment("justify")}
           title="Align Justify"
         >
           <AlignJustify size="18" />
@@ -690,7 +669,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isList}
           class:text-blue-700={state.isList}
-          on:click={() => editor?.chain().focus().toggleBulletList().run()}
+          onclick={() => editor?.chain().focus().toggleBulletList().run()}
           title="Bullet List"
         >
           <List size="18" />
@@ -700,7 +679,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isOrderedList}
           class:text-blue-700={state.isOrderedList}
-          on:click={() => editor?.chain().focus().toggleOrderedList().run()}
+          onclick={() => editor?.chain().focus().toggleOrderedList().run()}
           title="Numbered List"
         >
           <ListOrdered size="18" />
@@ -710,7 +689,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isQuote}
           class:text-blue-700={state.isQuote}
-          on:click={() => editor?.chain().focus().toggleBlockquote().run()}
+          onclick={() => editor?.chain().focus().toggleBlockquote().run()}
           title="Quote"
         >
           <Quote size="18" />
@@ -720,7 +699,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isCode}
           class:text-blue-700={state.isCode}
-          on:click={() => editor?.chain().focus().toggleCode().run()}
+          onclick={() => editor?.chain().focus().toggleCode().run()}
           title="Code"
         >
           <Code size="18" />
@@ -732,7 +711,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => insertImage()}
+          onclick={() => insertImage()}
           title="Insert Image"
         >
           <ImageIcon size="18" />
@@ -740,7 +719,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => insertTable()}
+          onclick={() => insertTable()}
           title="Insert Table"
         >
           <TableIcon size="18" />
@@ -749,21 +728,42 @@
       <div class="w-px h-6 bg-gray-300 mx-1"></div>
       <!-- View Controls -->
       <div class="flex items-center gap-1">
-        <button
-          aria-label="Action button"
-          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => adjustZoom(-10)}
-          title="Zoom Out"
-        >
-          <ZoomOut size="18" />
+        <button class="p-2 rounded-md" onclick={() => adjustZoom(-10)} title="Zoom Out"><ZoomOut size="18" /></button>
+        <span class="text-sm text-gray-600 min-w-10 text-center">{currentZoom}%</span>
+        <button class="p-2 rounded-md" onclick={() => adjustZoom(10)} title="Zoom In"><ZoomIn size="18" /></button>
+        <button class="p-2 rounded-md" class:bg-blue-100={showGrid} onclick={() => (showGrid = !showGrid)} title="Toggle Grid"><Grid size="18" /></button>
+        <button class="p-2 rounded-md" onclick={() => toggleFullscreen()} title="Toggle Fullscreen">
+          {#if isFullscreen}<EyeOff size="18" />{:else}<Eye size="18" />{/if}
         </button>
-        <span class="text-sm text-gray-600 min-w-10 text-center"
-          >{currentZoom}%</span
-        >
-        <button
-          aria-label="Action button"
+      </div>
+    </div>
+
+    <!-- Secondary Toolbar -->
+    <div class="flex items-center justify-between gap-2 p-2 border-b bg-gray-50 text-sm text-gray-600">
+      <div class="flex items-center gap-1">Words: <span class="font-medium">{wordCount}</span> | Characters: <span class="font-medium">{characterCount}</span></div>
+      <div class="flex-grow"></div>
+      {#if errorMessage}<div class="text-red-500 text-xs">{errorMessage}</div>{/if}
+      {#if autosave}<div class="text-xs text-gray-500">Auto-save enabled</div>{/if}
+    </div>
+
+    {#if showRuler}
+      <div class="h-6 w-full bg-gray-100 border-b flex items-center relative overflow-hidden" style="background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 10px, #e5e7eb 10px, #e5e7eb 11px);">
+        {#each Array(20) as _, i}
+          <div class="absolute h-full border-l border-gray-400 flex flex-col justify-end items-center" style="left: {i * 50}px">
+            {#if i % 2 === 0}<span class="text-xs text-gray-600 -mb-1">{i}</span>{/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
+
+    <!-- Editor Container -->
+    <div class="flex flex-col flex-1 overflow-auto min-h-[400px]" class:bg-[linear-gradient(to_right,#f3f4f6_1px,transparent_1px),linear-gradient(to_bottom,#f3f4f6_1px,transparent_1px)]={showGrid} class:bg-size-[20px_20px]={showGrid}>
+      <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
+    </div>
+  </div>
+</ErrorBoundary>
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => adjustZoom(10)}
+          onclick={() => adjustZoom(10)}
           title="Zoom In"
         >
           <ZoomIn size="18" />
@@ -773,7 +773,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={showGrid}
           class:text-blue-700={showGrid}
-          on:click={() => (showGrid = !showGrid)}
+          onclick={() => (showGrid = !showGrid)}
           title="Toggle Grid"
         >
           <Grid size="18" />
@@ -781,7 +781,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          on:click={() => toggleFullscreen()}
+          onclick={() => toggleFullscreen()}
           title="Toggle Fullscreen"
         >
           {#if isFullscreen}

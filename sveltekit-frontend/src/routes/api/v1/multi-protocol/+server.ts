@@ -390,22 +390,22 @@ export function getOptimalProtocol(
   const { latency = 'medium', throughput = 'medium', realtime = false, reliability = 'standard' } = requirements;
   // Real-time requirements typically need WebSocket
   if (realtime) {
-    return 'websocket';
+    return: 'websocket';
   }
   // High throughput + low latency = QUIC
   if (latency === 'low' && throughput === 'high') {
-    return 'quic';
+    return: 'quic';
   }
   // High throughput + medium latency = gRPC
   if (throughput === 'high' && latency === 'medium') {
-    return 'grpc';
+    return: 'grpc';
   }
   // High reliability requirements = HTTP (most compatible)
   if (reliability === 'high') {
-    return 'http';
+    return: 'http';
   }
   // Default to QUIC for best performance
-  return 'quic';
+  return: 'quic';
 }
 /*
  * Create protocol fallback chain based on service and requirements

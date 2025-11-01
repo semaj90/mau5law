@@ -1,24 +1,50 @@
-
 // VS Code Extension Integration for Vite Error Logger
 // Provides real-time error notifications and quick navigation
-import { existsSync, readFileSync, watchFile } from "fs";
-import { resolve } from "path";
-}
+import { existsSync, readFileSync, watchFile } from 'fs';
+import { resolve } from 'path';
+
 export interface VSCodeCommand {
   command: string;
   args?: unknown[];
 }
+export interface VSCodeAction {
+  title: string;
+  command: VSCodeCommand;
+}
 export interface VSCodeNotification {
   message: string;
   type: 'error' | 'warning' | 'info';
-  actions?: Array<any>
+  actions?: VSCodeAction[];
+}
+
+// New: strongly-typed error record used across the module
+export interface ErrorRecord {
+  timestamp?: string;
+  level?: 'error' | 'warn' | 'info' | string;
+  message?: string;
+  stack?: string | null;
+  file?: string;
+  line?: number;
+  column?: number;
+  frame?: string;
+  plugin?: string;
+  [key: string]: unknown;
+}
+
+interface ErrorLogFile {
+  errors?: ErrorRecord[];
+  diagnostics?: unknown[];
+}
+
 export class VSCodeIntegration {
   private logFile: string;
   private isWatching = false;
-  private callbacks: Array<(errors: any[]) => void> = [];
+  private callbacks: Array<(errors: ErrorRecord[]) => void> = [];
+
   constructor(logFile?: string) {
     this.logFile = logFile || resolve(process.cwd(), '.vscode/vite-errors.json');
   }
+
   // Start watching for error log changes
   startWatching() {
     if (this.isWatching || !existsSync(this.logFile)) {
@@ -30,36 +56,57 @@ export class VSCodeIntegration {
     });
     console.log(`📟 VS Code integration started - watching ${this.logFile}`);
   }
+
   // Stop watching
   stopWatching() {
     this.isWatching = false;
-    // Note: fs.watchFile doesn't return a watcher to close in Node.js
     console.log('📟 VS Code integration stopped');
   }
+
+  // small helper to safely stringify unknown errors
+  private static formatUnknown(err: unknown) {
+    if (err instanceof Error) return err;
+    try {
+      return JSON.stringify(err);
+    } catch {
+      return String(err);
+    }
+  }
+
   // Handle log file updates
   private handleLogUpdate() {
     try {
       const data = readFileSync(this.logFile, 'utf-8');
-      const logData = JSON.parse(data);
+      const parsed = JSON.parse(data) as unknown;
+      const logData = (parsed && typeof parsed === 'object') ? (parsed as ErrorLogFile) : { errors: [] };
+
       // Get recent errors (last 5 minutes)
-      const recentErrors = logData.errors.filter((error: any) => {
-        const errorTime = new Date(error.timestamp);
-        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-        return errorTime > fiveMinutesAgo;
-      });
+      const recentErrors = Array.isArray(logData.errors)
+        ? logData.errors.filter((error: ErrorRecord) => {
+            const t = typeof error?.timestamp === 'string' ? new Date(error.timestamp) : null;
+            if (!t) return false;
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+            return t > fiveMinutesAgo;
+          })
+        : [];
+
       if (recentErrors.length > 0) {
         this.notifyErrors(recentErrors);
       }
-      // Notify callbacks
-      this.callbacks.forEach((callback: any) => callback(logData.errors);
-    } catch (error: any) {
-      console.warn('Failed to parse error log:', error);
+
+      // Notify callbacks (guard for missing errors)
+      const allErrors = Array.isArray(logData.errors) ? logData.errors : [];
+      this.callbacks.forEach((callback) => callback(allErrors));
+    } catch (err: unknown) {
+      console.warn('Failed to parse error log:', VSCodeIntegration.formatUnknown(err));
     }
   }
+
   // Send error notifications
-  private notifyErrors(errors: any[]) {
-    const errorCount = errors.filter((e: any) => e.level === 'error').length;
-    const warningCount = errors.filter((e: any) => e.level === 'warn').length;
+  private notifyErrors(errors: ErrorRecord[]) {
+    const errorCount = errors.filter((e) => e.level === 'error').length;
+    const warningCount = errors.filter((e) => e.level === 'warn').length;
+
     if (errorCount > 0) {
       this.sendNotification({
         message: `Vite: ${errorCount} error(s) detected`,
@@ -67,13 +114,13 @@ export class VSCodeIntegration {
         actions: [
           {
             title: 'View Errors',
-            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
+            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] },
           },
           {
             title: 'Clear Log',
-            command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] }
-          }
-        ]
+            command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] },
+          },
+        ],
       });
     } else if (warningCount > 0) {
       this.sendNotification({
@@ -82,41 +129,46 @@ export class VSCodeIntegration {
         actions: [
           {
             title: 'View Warnings',
-            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
-          }
-        ]
+            command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] },
+          },
+        ],
       });
     }
   }
+
   // Send notification to VS Code
   private sendNotification(notification: VSCodeNotification) {
-    // In a real VS Code extension, this would use the VS Code API
-    // For now, we'll use console output with special formatting
     const timestamp = new Date().toLocaleTimeString();
-    const icon = (notification as { type?: any; message?: any; actions?: any }).type === 'error' ? '🚨' : (notification as { type?: any; message?: any; actions?: any }).type === 'warning' ? '⚠️' : 'ℹ️';
-    console.log(`\n${icon} [${timestamp}] VS Code Notification: ${(notification as { type?: any; message?: any; actions?: any }).message}`);
-    if ((notification as { type?: any; message?: any; actions?: any }).actions) {
-      (notification as { type?: any; message?: any; actions?: any }).actions.forEach((action, index) => {
-        console.log(`   ${index + 1}. ${action.title} (${action.command.command})`);
+    const icon =
+      notification.type === 'error' ? '🚨' : notification.type === 'warning' ? '⚠️' : 'ℹ️';
+    console.log(`\n${icon} [${timestamp}] VS Code Notification: ${notification.message}`);
+    if (notification.actions) {
+      notification.actions.forEach((action, index) => {
+        const cmd = action.command?.command ?? 'unknown';
+        console.log(`   ${index + 1}. ${action.title} (${cmd})`);
       });
     }
   }
+
   // Register callback for error updates
-  onErrorUpdate(callback: (errors: any[]) => void) {
+  onErrorUpdate(callback: (errors: ErrorRecord[]) => void) {
     this.callbacks.push(callback);
   }
+
   // Get current errors
-  getCurrentErrors() {
+  getCurrentErrors(): ErrorLogFile {
     try {
       if (existsSync(this.logFile)) {
         const data = readFileSync(this.logFile, 'utf-8');
-        return JSON.parse(data);
+        const parsed = JSON.parse(data) as unknown;
+        if (parsed && typeof parsed === 'object') return parsed as ErrorLogFile;
       }
-    } catch (error: any) {
-      console.warn('Failed to read current errors:', error);
+    } catch (err: unknown) {
+      console.warn('Failed to read current errors:', VSCodeIntegration.formatUnknown(err));
     }
-    return { errors: [], diagnostics: [] }
+    return { errors: [], diagnostics: [] };
   }
+
   // Generate problem matcher for VS Code tasks
   static generateProblemMatcher() {
     return {
@@ -129,7 +181,7 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'error'
+          severity: 'error',
         },
         {
           regexp: '^WARN\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
@@ -137,17 +189,18 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'warning'
-        }
-      ]
-    }
+          severity: 'warning',
+        },
+      ],
+    };
   }
+
   // Generate VS Code settings for the integration
   static generateVSCodeSettings() {
     return {
       'files.associations': {
         'vite-errors.json': 'json',
-        'vite-diagnostics.json': 'json'
+        'vite-diagnostics.json': 'json',
       },
       'json.schemas': [
         {
@@ -161,8 +214,8 @@ export class VSCodeIntegration {
                   lastUpdated: { type: 'string' },
                   totalEntries: { type: 'number' },
                   viteVersion: { type: 'string' },
-                  projectRoot: { type: 'string' }
-                }
+                  projectRoot: { type: 'string' },
+                },
               },
               errors: {
                 type: 'array',
@@ -176,119 +229,144 @@ export class VSCodeIntegration {
                     line: { type: 'number' },
                     column: { type: 'number' },
                     stack: { type: 'string' },
-                    suggestion: { type: 'string' }
-                  }
-                }
-              }
-            }
-          }
-        }
+                    suggestion: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
       ],
-      'problems.decorations.enabled': true
-      'problems.sortOrder': 'severity'
-    }
+      'problems.decorations.enabled': true,
+      'problems.sortOrder': 'severity',
+    };
   }
 }
+
 // Error navigation utilities
 export class ErrorNavigator {
-  private errors: any[] = [];
+  private errors: ErrorRecord[] = [];
+
   constructor(private integration: VSCodeIntegration) {
     integration.onErrorUpdate((errors) => {
       this.errors = errors;
     });
   }
+
   // Navigate to next error
   nextError() {
-    const errorWithFile = this.errors.find((e: any) => e.level === 'error' && e.file);
+    const errorWithFile = this.errors.find((e) => e.level === 'error' && e.file);
     if (errorWithFile) {
-      this.openFile(errorWithFile.file, errorWithFile.line, errorWithFile.column);
+      this.openFile(errorWithFile.file as string, errorWithFile.line, errorWithFile.column);
     }
   }
+
   // Navigate to previous error
   previousError() {
-    const errors = this.errors.filter((e: any) => e.level === 'error' && e.file).reverse();
+    const errors = this.errors.filter((e) => e.level === 'error' && e.file).reverse();
     const errorWithFile = errors[0];
     if (errorWithFile) {
-      this.openFile(errorWithFile.file, errorWithFile.line, errorWithFile.column);
+      this.openFile(errorWithFile.file as string, errorWithFile.line, errorWithFile.column);
     }
   }
+
   // Open file at specific location
   private openFile(file: string, line?: number, column?: number) {
     const location = line ? `:${line}${column ? `:${column}` : ''}` : '';
     console.log(`📂 Opening file: ${file}${location}`);
-    // In a real VS Code extension, this would use:
-    // vscode.window.showTextDocument(vscode.Uri.file(file), {
-    //   selection: new vscode.Range(line - 1, column - 1, line - 1, column - 1)
-    // })
   }
+
   // Get error summary
   getErrorSummary() {
     const summary = {
       total: this.errors.length,
-      errors: this.errors.filter((e: any) => e.level === 'error').length,
-      warnings: this.errors.filter((e: any) => e.level === 'warn').length,
-      info: this.errors.filter((e: any) => e.level === 'info').length,
-      files: Array.from(new Set(this.errors.filter((e: any) => e.file).map((e: any) => e.file))).length,
-      recent: this.errors.filter((e: any) => {
-        const errorTime = new Date(e.timestamp);
+      errors: this.errors.filter((e) => e.level === 'error').length,
+      warnings: this.errors.filter((e) => e.level === 'warn').length,
+      info: this.errors.filter((e) => e.level === 'info').length,
+      files: Array.from(new Set(this.errors.filter((e) => e.file).map((e) => e.file))).length,
+      recent: this.errors.filter((e) => {
+        const errorTime = e.timestamp ? new Date(e.timestamp) : null;
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        return errorTime > oneHourAgo;
-      }).length
-    }
+        return errorTime ? errorTime > oneHourAgo : false;
+      }).length,
+    };
     return summary;
   }
 }
+
 // Auto-fix suggestions
 export class AutoFixSuggestions {
-  static getSuggestions(error: any): Array< {
-    const suggestions = [];
-    const message = error.message.toLowerCase();
-    if (message,.include,s('module not found') || message.includes('cannot resolve,')) {
+  static getSuggestions(
+    error: unknown
+  ): Array<{ title: string; command: string; args?: unknown[] }> {
+    const suggestions: Array<{ title: string; command: string; args?: unknown[] }> = [];
+
+    // Replace ad-hoc any casts with a small typed extractor
+    const msg = AutoFixSuggestions.extractMessage(error);
+    const message = msg.toLowerCase();
+
+    if (message.includes('module not found') || message.includes('cannot resolve')) {
       suggestions.push({
         title: 'Install missing dependencies',
         command: 'npm install',
-        args: []
+        args: [],
       });
       suggestions.push({
         title: 'Check import paths',
         command: 'editor.action.quickFix',
-        args: []
+        args: [],
       });
     }
+
     if (message.includes('typescript') || message.includes('type')) {
       suggestions.push({
         title: 'Run TypeScript check',
         command: 'workbench.action.tasks.runTask',
-        args: ['npm: check']
+        args: ['npm: check'],
       });
       suggestions.push({
         title: 'Generate missing types',
         command: 'typescript.generateGettersAndSetters',
-        args: []
+        args: [],
       });
     }
+
     if (message.includes('svelte')) {
       suggestions.push({
         title: 'Check Svelte syntax',
         command: 'svelte.restartLanguageServer',
-        args: []
+        args: [],
       });
       suggestions.push({
         title: 'Update to Svelte 5 patterns',
         command: 'editor.action.codeAction',
-        args: [{ kind: 'refactor.rewrite' }]
+        args: [{ kind: 'refactor.rewrite' }],
       });
     }
+
     if (message.includes('css') || message.includes('style')) {
       suggestions.push({
         title: 'Check UnoCSS configuration',
         command: 'editor.action.formatDocument',
-        args: []
+        args: [],
       });
     }
+
     return suggestions;
   }
+
+  // New helper: safely extract a string message from unknown error shapes
+  private static extractMessage(err: unknown): string {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'object' && err !== null && 'message' in err) {
+      const m = (err as { message?: unknown }).message;
+      if (typeof m === 'string') return m;
+      if (m != null) return String(m);
+    }
+    return String(err ?? '');
+  }
 }
+
 // Export default integration instance
 export const vscodeIntegration = new VSCodeIntegration();
 export const errorNavigator = new ErrorNavigator(vscodeIntegration);

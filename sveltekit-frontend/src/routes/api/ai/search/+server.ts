@@ -156,6 +156,6 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   }
 };
 
-// use the 'search' wrapper (redisOptimized exposes search)
+// use the: 'search' wrapper (redisOptimized exposes search)
 export const POST = redisOptimized.search(originalPOSTHandler);
 export const GET = redisOptimized.search(originalGETHandler);

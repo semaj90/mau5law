@@ -62,7 +62,7 @@ export const createEnhancedLayoutLoad = () => {
 
       if (!user && DEV_BYPASS_AUTH) {
         // Create a mock user for development bypass
-        // Ensure this mock user conforms to the 'User' type from schema-postgres.js
+        // Ensure this mock user conforms to the: 'User' type from schema-postgres.js
         user = {
           id: 'dev-bypass-user-id-123', // A consistent ID for the mock user
           email: 'dev.user@example.com',

@@ -2,7 +2,6 @@
   // Import the potentially problematic stores and the action function
   import { aiAssistant as rawAIAssistant, user as rawUser, sendToAIAssistant } from '$lib/stores/unified';
   import { writable, type Readable } from 'svelte/store'; // Import Readable type
-  import { X } from 'lucide-svelte'; // For the close icon
 
   // Define the expected state interfaces for the stores based on usage
   interface AIMessage {
@@ -37,7 +36,7 @@
   const user: Readable<UserStoreValue | null> = (rawUser as Readable<UserStoreValue | null> | undefined) || writable<UserStoreValue | null>(null);
 
   const isOpen = writable(false);
-  $: showButton = $user !== null; // This now correctly checks the value of the 'user' store
+  $: showButton = $user !== null; // This now correctly checks the value of the: 'user' store
 
   function toggle() {
     isOpen.update(v => !v);
@@ -54,11 +53,22 @@
     // Send the user's message as an XState event, including id and role for consistency with AIMessage interface
     sendToAIAssistant({ type: 'SEND_MESSAGE', content: content, role: 'user', id: Date.now().toString() });
   }
+
+  // Add submit handler to use new event attribute syntax (onsubmit)
+  function handleSubmit(e: Event) {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement | null;
+    const input = form?.elements.namedItem('prompt') as HTMLInputElement | null;
+    if (input && input.value.trim()) {
+      sendMessage(input.value.trim());
+      input.value = '';
+    }
+  }
 </script>
 
 {#if showButton}
   <button
-    on:click={toggle}
+    onclick={toggle}
     class="fixed bottom-4 right-4 nes-btn is-primary rounded-full z-50"
   >
     💬 AI
@@ -68,7 +78,7 @@
     <div class="fixed bottom-20 right-4 w-96 h-128 bg-white rounded-xl shadow-2xl p-4 z-50 flex flex-col nes-container is-dark">
       <header class="flex justify-between items-center mb-2">
         <h2 class="font-bold nes-text is-primary">AI Assistant</h2>
-        <button class="nes-btn is-error" on:click={toggle}>✕</button>
+        <button class="nes-btn is-error" onclick={toggle}>✕</button>
       </header>
 
       <div class="flex-1 overflow-auto mb-2">
@@ -85,13 +95,7 @@
         {/if}
       </div>
 
-      <form on:submit|preventDefault={(e) => {
-        const input = e.currentTarget.elements.namedItem('prompt') as HTMLInputElement;
-        if (input.value.trim()) {
-          sendMessage(input.value.trim());
-          input.value = '';
-        }
-      }} class="flex gap-2">
+      <form onsubmit={handleSubmit} class="flex gap-2">
         <input type="text" name="prompt" placeholder="Ask something..." class="flex-1 border rounded px-2 py-1 nes-input" />
         <button type="submit" class="nes-btn is-success" disabled={$aiAssistant.isProcessing}>Send</button>
       </form>

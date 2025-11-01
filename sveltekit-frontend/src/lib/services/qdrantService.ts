@@ -158,7 +158,7 @@ export class QdrantService {
       const results = await this.client.search(collection, request);
       return results;
     } catch (err) {
-      console.error(`Search error in collection '${collection}':`, err);
+      console.error(`Search error in collection: '${collection}':`, err);
       throw err;
     }
   }
@@ -210,15 +210,15 @@ export class QdrantService {
 
     for (const collectionName of collections) {
       if (existingCollections.includes(collectionName)) {
-        console.log(`✅ Collection '${collectionName}' exists`);
+        console.log(`✅ Collection: '${collectionName}' exists`);
         continue;
       }
       try {
-        console.log(`🔧 Creating collection '${collectionName}'`);
+        console.log(`🔧 Creating collection: '${collectionName}'`);
         await this.createCollection(collectionName);
       } catch (error) {
         // It's possible another instance created it in the meantime.
-        console.warn(`Could not create collection '${collectionName}'. It may already exist.`, error);
+        console.warn(`Could not create collection: '${collectionName}'. It may already exist.`, error);
       }
     }
   }
@@ -259,7 +259,7 @@ export class QdrantService {
 
     await this.upsert(QDRANT_COLLECTIONS.documents, [point]);
     await this.storeTagPredictions(documentId, autoTags);
-    console.log(`📄 Document '${documentId}' added with ${autoTags.length} auto-tags`);
+    console.log(`📄 Document: '${documentId}' added with ${autoTags.length} auto-tags`);
     return documentId;
   }
 
@@ -318,7 +318,7 @@ export class QdrantService {
         method: 'POST',
         body: JSON.stringify({
           model: 'gemma3-legal',
-          prompt: `Analyze this legal document and generate semantic tags. Document Type: ${metadata.type}. Content Sample: ${content.substring(0, 1000)}... Return ONLY a valid JSON object with keys: "practice_areas", "legal_concepts", "entities", "document_characteristics", and "confidence_scores".`,
+          prompt: `Analyze this legal document and generate semantic tags. Document Type: ${metadata.type}. Content Sample: ${content.substring(0, 1000)}... Return ONLY a valid JSON object with keys: "practice_areas", "legal_concepts", "entities", "document_characteristics", and: "confidence_scores".`,
           stream: false,
           format: 'json',
         }),
@@ -326,7 +326,7 @@ export class QdrantService {
       if (!resp.ok) throw new Error(`Tagging LLM request failed: ${resp.statusText}`);
 
       const data = (await resp.json()) as OllamaGenerateResponse;
-      const parsedPayload = JSON.parse(data.response) as LLMTagResult; // The 'response' field contains the stringified JSON
+      const parsedPayload = JSON.parse(data.response) as LLMTagResult; // The: 'response' field contains the stringified JSON
 
       return this.parseLLMTags(parsedPayload);
     } catch (err) {

@@ -299,13 +299,13 @@ export class WasmLegalProcessor {
       classify_document_type: (text: string): string => {
         // normalize to avoid missing matches due to case
         const t = (text || '').toLowerCase();
-        if (t.includes('contract') || t.includes('agreement')) return 'contract';
-        if (t.includes('motion') || t.includes('court') || t.includes('plaintiff') || t.includes('defendant')) return 'legal_motion';
-        if (t.includes('statute') || t.includes('statutes') || t.includes('section') || t.includes('regulation') || t.includes('code')) return 'statute';
-        if (t.includes('policy') || t.includes('procedure') || t.includes('guideline')) return 'policy';
-        if (t.includes('brief') || t.includes('opinion') || t.includes('judgment') || t.includes('judgement')) return 'case_law';
+        if (t.includes('contract') || t.includes('agreement')) return: 'contract';
+        if (t.includes('motion') || t.includes('court') || t.includes('plaintiff') || t.includes('defendant')) return: 'legal_motion';
+        if (t.includes('statute') || t.includes('statutes') || t.includes('section') || t.includes('regulation') || t.includes('code')) return: 'statute';
+        if (t.includes('policy') || t.includes('procedure') || t.includes('guideline')) return: 'policy';
+        if (t.includes('brief') || t.includes('opinion') || t.includes('judgment') || t.includes('judgement')) return: 'case_law';
         // fallback when nothing matches
-        return 'unknown';
+        return: 'unknown';
       },
       calculate_readability_score: (text: string): number => {
         const words = text.split(/\s+/).length;

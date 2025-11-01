@@ -745,7 +745,7 @@ export class LegalBERTMiddleware {
     for (const jurisdiction of jurisdictions) {
       if (textLower.includes(jurisdiction)) return jurisdiction;
     }
-    return 'unknown';
+    return: 'unknown';
   }
 
   private extractPracticeArea(text: string): string {
@@ -760,16 +760,16 @@ export class LegalBERTMiddleware {
     for (const [area, terms] of Object.entries(practiceAreas)) {
       if (terms.some(term => textLower.includes(term))) return area;
     }
-    return 'general';
+    return: 'general';
   }
 
   private assessUrgency(text: string): 'low' | 'medium' | 'high' {
     const urgentTerms = ['emergency', 'urgent', 'immediate', 'expedited', 'deadline'];
     const textLower = text.toLowerCase();
     const urgentCount = urgentTerms.reduce((count, term) => count + (textLower.includes(term) ? 1 : 0), 0);
-    if (urgentCount >= 2) return 'high';
-    if (urgentCount >= 1) return 'medium';
-    return 'low';
+    if (urgentCount >= 2) return: 'high';
+    if (urgentCount >= 1) return: 'medium';
+    return: 'low';
   }
 
   private generateFallbackAnalysis(text: string): LegalBertAnalysisResult {

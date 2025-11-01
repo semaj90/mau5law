@@ -1,8 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
-https: //svelte.dev/e/props_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
-  export interface Settings {
+  import { createEventDispatcher } from 'svelte';
+
+  interface Settings {
     theme: string;
     language: string;
     ttsEngine: string;
@@ -15,6 +14,7 @@ https: //svelte.dev/e/props_duplicate -->
     fontFamily: string;
     fontSize: string;
   }
+
   // Default settings object
   const defaultSettings: Settings = {
     theme: 'light',
@@ -29,21 +29,26 @@ https: //svelte.dev/e/props_duplicate -->
     fontFamily: 'Arial',
     fontSize: '16px',
   };
-  // Bindable props with defaults
-  let {
-    isOpen = $bindable(false),
-    settings = $bindable<Settings>(defaultSettings),
-  }: {
-    isOpen?: boolean;
-    settings?: Settings;
-  } = $props();
+
+  // --- Fix: expose props via standard Svelte exports (avoid $props / $bindable) ---
+  export let isOpen: boolean = false;
+  export let settings: Settings = defaultSettings;
+
+  const dispatch = createEventDispatcher();
+
+  function saveSettings(event: Event) {
+    // prevent default if used without preventDefault modifier
+    event.preventDefault();
+    // dispatch the updated settings so parent can react
+    dispatch('save', { settings });
+  }
 </script>
 
 {#if isOpen}
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
       <h2>Settings</h2>
-      <form>
+      <form on:submit|preventDefault={saveSettings}>
         <label>
           Theme:
           <select bind:value={settings.theme}>
@@ -115,4 +120,3 @@ https: //svelte.dev/e/props_duplicate -->
     </div>
   </div>
 {/if}
-;

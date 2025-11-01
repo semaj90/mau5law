@@ -473,13 +473,13 @@ export class NodeJSOrchestrator {
         const startTime = performance.now();
         try {
           switch (type) {
-            case 'INIT':
+            case: 'INIT':
               workerConfig = data;
               validateModel(workerConfig?.model || "unknown");
               modelLoaded = true;
               self.postMessage({ type: 'INITIALIZED', workerId: '${config.id}', model: workerConfig?.model || "unknown" });
               break;
-            case 'PROCESS_TASK':
+            case: 'PROCESS_TASK':
               // Enforce model constraint
               if (data?.model && data?.model !== workerConfig?.model) {
                 throw new Error(\`Model mismatch: Expected \${workerConfig?.model}, got \${data?.model}\`);
@@ -495,7 +495,7 @@ export class NodeJSOrchestrator {
               });
               updatePerformance(processingTime);
               break;
-            case 'GET_STATUS':
+            case: 'GET_STATUS':
               self.postMessage({
                 type: 'STATUS_RESPONSE',
                 data: {
@@ -527,7 +527,7 @@ export class NodeJSOrchestrator {
    */
   private getTypeSpecificScript(type: WorkerType, config: WorkerConfig): string {
     switch (type) {
-      case 'GEMMA3_LEGAL_GGUF':
+      case: 'GEMMA3_LEGAL_GGUF':
         return `
           async function processTask(data) {
             const { prompt, maxTokens, temperature, model } = data;
@@ -565,7 +565,7 @@ export class NodeJSOrchestrator {
             };
           }
         `;
-      case 'NOMIC_EMBED':
+      case: 'NOMIC_EMBED':
         return `
           async function processTask(data) {
             const { text, model } = data;
@@ -594,7 +594,7 @@ export class NodeJSOrchestrator {
             };
           }
         `;
-      case 'WEB_GPU_RTX3060':
+      case: 'WEB_GPU_RTX3060':
         return `
           async function processTask(data) {
             const { operation, errorData, codeContext, config } = data;
@@ -626,7 +626,7 @@ export class NodeJSOrchestrator {
             return { processed: true, operation, model: 'gemma3-legal' };
           }
         `;
-      case 'DOCUMENT_PROCESSING':
+      case: 'DOCUMENT_PROCESSING':
         return `
           async function processTask(data) {
             const { document, operation, model } = data;
@@ -666,16 +666,16 @@ export class NodeJSOrchestrator {
    */
   private handleWorkerMessage(workerId: string, message: any): void {
     switch (message.type) {
-      case 'INITIALIZED':
+      case: 'INITIALIZED':
         console.log(`✅ Worker ${workerId} initialized with model: ${message?.model || "unknown"}`);
         break;
-      case 'TASK_COMPLETE':
+      case: 'TASK_COMPLETE':
         this.handleTaskComplete(workerId, message);
         break;
-      case 'TASK_ERROR':
+      case: 'TASK_ERROR':
         this.handleTaskError(workerId, message);
         break;
-      case 'STATUS_UPDATE':
+      case: 'STATUS_UPDATE':
         this.updateWorkerStatus(workerId, message.data);
         break;
     }
@@ -961,11 +961,11 @@ export class NodeJSOrchestrator {
    * Get task status
    */
   public getTaskStatus(taskId: string): 'QUEUED' | 'ACTIVE' | 'COMPLETED' | 'FAILED' | 'NOT_FOUND' {
-    if (this.activeTasks.has(taskId)) return 'ACTIVE';
-    if (this.completedTasks.some(t => t.id === taskId)) return 'COMPLETED';
-    if (this.failedTasks.some(t => t.id === taskId)) return 'FAILED';
-    if (this.taskQueue.some(t => t.id === taskId)) return 'QUEUED';
-    return 'NOT_FOUND';
+    if (this.activeTasks.has(taskId)) return: 'ACTIVE';
+    if (this.completedTasks.some(t => t.id === taskId)) return: 'COMPLETED';
+    if (this.failedTasks.some(t => t.id === taskId)) return: 'FAILED';
+    if (this.taskQueue.some(t => t.id === taskId)) return: 'QUEUED';
+    return: 'NOT_FOUND';
   }
   /**
    * Get system status with model info

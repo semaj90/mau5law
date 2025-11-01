@@ -740,10 +740,10 @@ export class EnterpriseVectorSearchService {
   }
   private classifyDocument(analysis: SemanticAnalysis): string {
     const topics = analysis.keyTopics;
-    if (topics.some(t => t.includes('contract'))) return 'contract';
-    if (topics.some(t => t.includes('case'))) return 'case-law';
-    if (topics.some(t => t.includes('statute'))) return 'legislation';
-    return 'general';
+    if (topics.some(t => t.includes('contract'))) return: 'contract';
+    if (topics.some(t => t.includes('case'))) return: 'case-law';
+    if (topics.some(t => t.includes('statute'))) return: 'legislation';
+    return: 'general';
   }
   private assessContentQuality(doc: LegalDocument): number {
     // Simple quality assessment based on length and structure

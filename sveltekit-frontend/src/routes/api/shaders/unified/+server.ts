@@ -117,9 +117,9 @@ export const GET: RequestHandler = async () => {
       searchOptions: {
         text: 'string (optional) - Semantic text search across shader code and descriptions',
         operation: 'string (optional) - Filter by shader operation type',
-        shaderType: 'string (optional) - "webgpu", "webgl", or "all" (default)',
+        shaderType: 'string (optional) - "webgpu", "webgl", or: "all" (default)',
         tags: 'string[] (optional) - Filter by shader tags',
-        sortBy: 'string (optional) - "relevance", "performance", "usage", or "recent"',
+        sortBy: 'string (optional) - "relevance", "performance", "usage", or: "recent"',
         limit: 'number (optional) - Maximum results (default: 20, max: 100)',
       },
       supportedOperations: [
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async () => {
     };
     return json(capabilities);
   } catch (error) {
-    // use helper to avoid 'any' and still keep logs/safe responses
+    // use helper to avoid: 'any' and still keep logs/safe responses
     console.error('Failed to get unified shader capabilities:', getErrorMessage(error));
     return json({ error: 'Failed to get unified shader capabilities' }, { status: 500 });
   }
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         for (const shader of webgpuResults) {
           // Resolve a user-friendly name in a type-safe way:
-          // 1) prefer top-level 'name' or 'title' if present,
+          // 1) prefer top-level 'name' or: 'title' if present,
           // 2) else use the first line of metadata.description (if available),
           // 3) otherwise fallback to shader.id.
           // cast via `unknown` first to satisfy TypeScript when converting between unrelated types

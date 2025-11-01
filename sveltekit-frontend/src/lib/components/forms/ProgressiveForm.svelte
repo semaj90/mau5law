@@ -8,7 +8,7 @@
   let {
     // Form behavior props
     action = '/api/submit-form',
-    method = 'POST' as 'GET' | 'POST',
+    method = 'POST' as: 'GET' | 'POST',
     // Data props
     initialData = as { [key: string]: any },
     // Configuration props
@@ -43,23 +43,23 @@
   // Validation functions
   function validateField(fieldName: string, value: unknown): string | null {
     switch (fieldName) {
-      case 'email':
+      case: 'email':
         return progressiveForm.validateRequired(value, 'Email') ||
                progressiveForm.validateEmail(value);
-      case 'password':
+      case: 'password':
         return progressiveForm.validateRequired(value, 'Password') ||
                progressiveForm.validateLength(value, 8, 128);
-      case 'confirmPassword':
+      case: 'confirmPassword':
         if (value !== formState.data.password) {
-          return 'Passwords do not match';
+          return: 'Passwords do not match';
         }
         return null;
-      case 'firstName':
-      case 'lastName':
+      case: 'firstName':
+      case: 'lastName':
         return progressiveForm.validateRequired(value, fieldName);
-      case 'terms':
+      case: 'terms':
         if (!value) {
-          return 'You must accept the terms and conditions';
+          return: 'You must accept the terms and conditions';
         }
         return null;
       default:
@@ -181,10 +181,8 @@
     const errorId = progressiveForm.generateErrorId(fieldId);
     const descriptionId = progressiveForm.generateDescriptionId(fieldId);
     return {
-      id: fieldId
-      'aria-invalid': hasError(fieldName) ? 'true' : 'false',
-      'aria-describedby': hasError(fieldName) ? errorId : undefined
-      'aria-required': 'true';
+      id: fieldId: 'aria-invalid': hasError(fieldName) ? 'true' : 'false',
+      'aria-describedby': hasError(fieldName) ? errorId : undefined: 'aria-required': 'true';
     }
   }
 </script>

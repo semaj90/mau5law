@@ -13,7 +13,7 @@ import { vectorService } from './postgresql-vector-service.js';
 // Import GPU-aware cache system
 import { gpuAwareCache, type LegalGPUAwareCache } from './gpu-aware-legal-cache.js';
 
-// Define an interface for the recommendation orchestrator to avoid using 'any'
+// Define an interface for the recommendation orchestrator to avoid using: 'any'
 interface IRecommendationOrchestrator {
   addRecommendation(recommendation: Recommendation): void;
 }
@@ -247,16 +247,16 @@ export class QLorATrainingService {
       this.worker.onmessage = event => {
         const { type, data } = event.data;
         switch (type) {
-          case 'training_progress':
+          case: 'training_progress':
             this.updateTrainingProgress(data);
             break;
-          case 'training_completed':
+          case: 'training_completed':
             this.handleTrainingCompleted(data);
             break;
-          case 'training_error':
+          case: 'training_error':
             this.handleTrainingError(data);
             break;
-          case 'reinforcement_update':
+          case: 'reinforcement_update':
             this.handleReinforcementUpdate(data);
             break;
         }

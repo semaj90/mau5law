@@ -17,8 +17,8 @@ import {
   mul,
   expandDims,
 } from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-backend-webgl';
-import '@tensorflow/tfjs-backend-webgpu';
+import: '@tensorflow/tfjs-backend-webgl';
+import: '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
 

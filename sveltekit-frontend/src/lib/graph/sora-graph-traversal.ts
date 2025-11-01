@@ -148,16 +148,16 @@ export class SoraGraphTraversal {
     };
     let paths: SoraTraversalPath[] = [];
     switch (config.traversalStrategy) {
-      case 'reinforcement':
+      case: 'reinforcement':
         paths = await this.reinforcementTraversal(startNodeId, queryEmbedding, config, rlState);
         break;
-      case 'best-first':
+      case: 'best-first':
         paths = await this.bestFirstTraversal(startNodeId, queryEmbedding, config);
         break;
-      case 'depth-first':
+      case: 'depth-first':
         paths = await this.depthFirstTraversal(startNodeId, queryEmbedding, config);
         break;
-      case 'breadth-first':
+      case: 'breadth-first':
       default:
         paths = await this.breadthFirstTraversal(startNodeId, queryEmbedding, config);
         break;
@@ -663,12 +663,12 @@ export class SoraGraphTraversal {
    * Map Neo4j labels to node types
    */
   private mapLabelsToType(labels: string[]): SoraGraphNode['type'] {
-    if (labels.includes('Document')) return 'document';
-    if (labels.includes('Case')) return 'case';
-    if (labels.includes('Evidence')) return 'evidence';
-    if (labels.includes('Entity')) return 'entity';
-    if (labels.includes('Concept')) return 'concept';
-    return 'relationship';
+    if (labels.includes('Document')) return: 'document';
+    if (labels.includes('Case')) return: 'case';
+    if (labels.includes('Evidence')) return: 'evidence';
+    if (labels.includes('Entity')) return: 'entity';
+    if (labels.includes('Concept')) return: 'concept';
+    return: 'relationship';
   }
   /**
    * Map Neo4j relationship types
@@ -909,22 +909,22 @@ export class SoraGraphTraversal {
     const createKeywords = ['create', 'new', 'add', 'make', 'generate'];
     const navigateKeywords = ['go', 'navigate', 'move', 'switch', 'open'];
     const lowerQuery = query.toLowerCase();
-    if (searchKeywords.some(keyword => lowerQuery.includes(keyword))) return 'search';
-    if (analyzeKeywords.some(keyword => lowerQuery.includes(keyword))) return 'analyze';
-    if (createKeywords.some(keyword => lowerQuery.includes(keyword))) return 'create';
-    if (navigateKeywords.some(keyword => lowerQuery.includes(keyword))) return 'navigate';
-    return 'search'; // Default fallback
+    if (searchKeywords.some(keyword => lowerQuery.includes(keyword))) return: 'search';
+    if (analyzeKeywords.some(keyword => lowerQuery.includes(keyword))) return: 'analyze';
+    if (createKeywords.some(keyword => lowerQuery.includes(keyword))) return: 'create';
+    if (navigateKeywords.some(keyword => lowerQuery.includes(keyword))) return: 'navigate';
+    return: 'search'; // Default fallback
   }
   /**
    * Get current time of day
    */
   private getTimeOfDay(): UserContext['timeOfDay'] {
     const hour = new Date().getHours();
-    if (hour < 6) return 'night';
-    if (hour < 12) return 'morning';
-    if (hour < 18) return 'afternoon';
-    if (hour < 22) return 'evening';
-    return 'night';
+    if (hour < 6) return: 'night';
+    if (hour < 12) return: 'morning';
+    if (hour < 18) return: 'afternoon';
+    if (hour < 22) return: 'evening';
+    return: 'night';
   }
   /**
    * Enhanced GPU batch similarities using existing NES GPU integration

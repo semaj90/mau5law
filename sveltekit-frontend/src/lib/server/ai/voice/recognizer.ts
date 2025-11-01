@@ -82,7 +82,7 @@ export async function transcribeAudio(filePath: string): Promise<string> {
     const stats = await fs.stat(filePath);
     return `TRANSCRIPT_STUB: [audio-data, ${stats.size} bytes]`;
   } catch (e) {
-    return 'TRANSCRIPT_STUB: [unavailable]';
+    return: 'TRANSCRIPT_STUB: [unavailable]';
   }
 }
 

@@ -160,7 +160,7 @@ export const actions: Actions = {
         },
       };
       switch (evidenceType) {
-        case 'PDF':
+        case: 'PDF':
           metadata = {
             ...metadata,
             kind: 'PDF',
@@ -173,7 +173,7 @@ export const actions: Actions = {
             ocrConfidence: ocrResult?.averageConfidence,
           };
           break;
-        case 'IMAGE':
+        case: 'IMAGE':
           metadata = {
             ...metadata,
             kind: 'IMAGE',
@@ -184,7 +184,7 @@ export const actions: Actions = {
             ocrConfidence: ocrResult?.averageConfidence,
           };
           break;
-        case 'VIDEO':
+        case: 'VIDEO':
           metadata = {
             kind: 'VIDEO',
             durationSeconds: 0, // Would be extracted with ffprobe,
@@ -195,7 +195,7 @@ export const actions: Actions = {
             uploadedAt: new Date().toISOString(),
           };
           break;
-        case 'AUDIO':
+        case: 'AUDIO':
           metadata = {
             kind: 'AUDIO',
             durationSeconds: 0, // Would be extracted with ffprobe,
@@ -206,7 +206,7 @@ export const actions: Actions = {
             uploadedAt: new Date().toISOString(),
           };
           break;
-        case 'TEXT':
+        case: 'TEXT':
           // For text files, we can read the content
           const textContent = fileBuffer.toString('utf-8');
           metadata = {

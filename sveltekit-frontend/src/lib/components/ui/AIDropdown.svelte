@@ -99,12 +99,12 @@
     // AI tool shortcuts
     if (hasContent && !disabled && !isGenerating) {
       switch (key) {
-        case "s":
+        case: "s":
           event.preventDefault();
           onSummarize();
           open = false;
           break;
-        case "a":
+        case: "a":
           event.preventDefault();
           onAnalyze();
           open = false;
@@ -118,10 +118,10 @@
     if (requiresContent && !hasContent) return;
     selectedItem = action;
     switch (action) {
-      case "summarize":
+      case: "summarize":
         onSummarize();
         break;
-      case "analyze":
+      case: "analyze":
         onAnalyze();
         break;
       default:
@@ -163,7 +163,7 @@
             <DropdownMenu.Item
               class="ai-menu__item"
               class:ai-menu__item--selected={selectedItem === reportType.id}
-              on:click={() => handleItemSelect(reportType.id)}
+              onclick={() => handleItemSelect(reportType.id)}
               disabled={disabled || isGenerating}
               data-value={reportType.id}
             >
@@ -191,7 +191,7 @@
               class="ai-menu__item"
               class:ai-menu__item--selected={selectedItem === tool.id}
               class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
-              on:click={() => handleItemSelect(tool.id, tool.requiresContent)}
+              onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
               disabled={disabled || isGenerating || (tool.requiresContent && !hasContent)}
               data-value={tool.id}
               title={tool.requiresContent && !hasContent ? 'Add content to enable this feature' : ''}
@@ -651,7 +651,7 @@
           type="button"
           role="menuitem"
           class="ai-menu__item"
-          on:click={() => triggerReport(r.id)}
+          onclick={() => triggerReport(r.id)}
           disabled={disabled || isGenerating}
         >
           <r.icon class="icon" />
@@ -677,7 +677,7 @@
           type="button"
           role="menuitem"
           class="ai-menu__item"
-          on:click={() => triggerTool(t.id, t.requiresContent)}
+          onclick={() => triggerTool(t.id, t.requiresContent)}
           disabled={disabled || isGenerating || (t.requiresContent && !hasContent)}
         >
           <t.icon class="icon" />

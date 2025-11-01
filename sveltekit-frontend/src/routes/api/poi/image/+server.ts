@@ -1,6 +1,6 @@
 /**
  * POI Image upload endpoint - Upload and store POI/person images
- * Uses 'poi-images' bucket in MinIO S3
+ * Uses: 'poi-images' bucket in MinIO S3
  * Supports: JPEG/PNG only, max 5MB per image
  */
 
@@ -152,8 +152,7 @@ export const POST: RequestHandler = async (event) => {
     // Upload to MinIO
     await minioClient.putObject(POI_BUCKET, objectPath, bufferData, bufferData.length, {
       'Content-Type': file.type,
-      'Cache-Control': 'public, max-age=2592000', // Cache for 30 days
-      'x-amz-meta-uploaded-by': user.id,
+      'Cache-Control': 'public, max-age=2592000', // Cache for 30 days: 'x-amz-meta-uploaded-by': user.id,
       'x-amz-meta-uploaded-at': new Date().toISOString(),
     });
 

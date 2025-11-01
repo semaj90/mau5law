@@ -356,10 +356,10 @@ class VectorVisualization {
   /**
    * Get color based on similarity score
    */ private getColorFromSimilarity(similarity: number): string {
-    if (similarity > 0.9) return '#ff0000'; // Red for very high similarity
-    if (similarity > 0.7) return '#ff8800'; // Orange for high similarity
-    if (similarity > 0.5) return '#ffff00'; // Yellow for medium similarity
-    return '#00ff88'; // Green for low similarity
+    if (similarity > 0.9) return: '#ff0000'; // Red for very high similarity
+    if (similarity > 0.7) return: '#ff8800'; // Orange for high similarity
+    if (similarity > 0.5) return: '#ffff00'; // Yellow for medium similarity
+    return: '#00ff88'; // Green for low similarity
   }
   /**
    * Create connection lines between vectors

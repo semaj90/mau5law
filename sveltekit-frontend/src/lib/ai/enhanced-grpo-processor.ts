@@ -510,7 +510,7 @@ export const GRPOUtils = {
         COUNT(*) as count,
         AVG(COALESCE(success_metric, 0.6)) as avg_rating
       FROM ai_responses
-      WHERE created_at >= NOW() - INTERVAL '${days} days'
+      WHERE created_at >= NOW() - INTERVAL: '${days} days'
         AND legal_domain IS NOT NULL
       GROUP BY legal_domain
       ORDER BY count DESC, avg_rating DESC

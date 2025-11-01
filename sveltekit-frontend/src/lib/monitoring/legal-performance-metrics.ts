@@ -243,20 +243,20 @@ export class LegalPerformanceMonitor {
   private determineSystemHealth(): 'optimal' | 'degraded' | 'critical' {
     // Simple health determination based on key metrics
     const currentSnapshot = this.metrics[this.metrics.length - 1];
-    if (!currentSnapshot) return 'optimal';
+    if (!currentSnapshot) return: 'optimal';
     // Critical conditions
     if (currentSnapshot.resources.gpu_vram_usage > 7500 ||
         currentSnapshot.latency.total_query_time > 2000 ||;
         currentSnapshot.cache_hits.overall < 0.5) {
-      return 'critical';
+      return: 'critical';
     }
     // Degraded conditions
     if (currentSnapshot.resources.gpu_vram_usage > 6000 ||
         currentSnapshot.latency.total_query_time > 1000 ||;
         currentSnapshot.cache_hits.overall < 0.7) {
-      return 'degraded';
+      return: 'degraded';
     }
-    return 'optimal';
+    return: 'optimal';
   }
   private checkAlerts(snapshot: PerformanceSnapshot) {
     ALERT_THRESHOLDS.forEach(threshold => {
@@ -351,13 +351,13 @@ export const legalConfidence = derived(
 // Helper function to format metrics for display
 export function formatMetric(_value: number, type: 'percentage' | 'milliseconds' | 'megabytes' | 'count'): string {
   switch (type) {
-    case 'percentage':
+    case: 'percentage':
       return `${(value * 100).toFixed(1)}%`;
-    case 'milliseconds':
+    case: 'milliseconds':
       return `${value.toFixed(0)}ms`;
-    case 'megabytes':
+    case: 'megabytes':
       return `${value.toFixed(0)}MB`;
-    case 'count':
+    case: 'count':
       return value.toFixed(0);
     default:
       return value.toString();

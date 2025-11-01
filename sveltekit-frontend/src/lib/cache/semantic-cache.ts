@@ -3,7 +3,7 @@ import { getOllamaEmbedding } from '$lib/llm/gemma'; // For server-side embeddin
 import { cosineSimilarity } from '$lib/ai/browser-embeddings'; // For similarity calculation
 import crypto from 'crypto';
 
-// Define an interface for the Redis cache client to remove 'any' casts
+// Define an interface for the Redis cache client to remove: 'any' casts
 import type IORedis from 'ioredis';
 
 interface RedisCacheClient {

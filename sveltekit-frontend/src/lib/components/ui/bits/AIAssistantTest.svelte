@@ -2,7 +2,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Card, CardContent, CardHeader, CardTitle, Button, Alert } from './index.js';
-  import { Bot, CheckCircle } from 'lucide-svelte';
+  import Bot from 'lucide-svelte/icons/bot.svelte';
+  import CheckCircle from 'lucide-svelte/icons/check-circle.svelte';
   // Test data
   let testMessages = $state([
     {
@@ -33,14 +34,21 @@
   // Local replacement state for the search bar
   let aiSearchTerm = $state('');
   function handleAISearch(query: string) {
-    searchQuery = query;
+    const q = (query ?? '').trim();
+    if (!q) {
+      // ignore empty searches
+      return;
+    }
+    searchQuery = q;
     testStatus = 'searching';
+    // clear local input while searching
+    aiSearchTerm = '';
     // Simulate AI search
     setTimeout(() => {
       testStatus = 'completed';
       testMessages.push({
         role: 'assistant',
-        content: `Based on your query "${query}", I found relevant legal precedents and can provide detailed analysis. This appears to be related to ${query.includes('contract') ? 'contract law' : 'general legal matters'}.`,
+        content: `Based on your query: "${q}", I found relevant legal precedents and can provide detailed analysis. This appears to be related to ${q.includes('contract') ? 'contract law' : 'general legal matters'}.`,
         timestamp: new Date().toLocaleTimeString(),
         references: [{ id: 'search-result-001', score: 0.92 }],
       });
@@ -100,9 +108,16 @@
       <!-- AI Search Bar Test (local replacement) -->
       <div class="space-y-2">
         <h3 class="font-semibold text-sm">AI Search Bar Component</h3>
-        <form onsubmit={() => handleAISearch(aiSearchTerm)}>
+        <!-- prevent default full-page submit -->
+        <form on:submit|preventDefault={() => handleAISearch(aiSearchTerm)}>
           <div class="flex gap-2">
-            <input class="form-control" placeholder="Test AI search functionality..." bind:value={aiSearchTerm} />
+            <input
+              class="form-control"
+              name="ai-search"
+              aria-label="AI search"
+              placeholder="Test AI search functionality..."
+              bind:value={aiSearchTerm}
+            />
             <Button type="submit">Search</Button>
           </div>
         </form>

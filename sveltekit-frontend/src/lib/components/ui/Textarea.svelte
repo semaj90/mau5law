@@ -46,8 +46,7 @@
     name?: string;
     id?: string;
     form?: string;
-    // Accessibility
-    'aria-label'?: string;
+    // Accessibility: 'aria-label'?: string;
     'aria-labelledby'?: string;
     'aria-describedby'?: string;
     'data-testid'?: string;

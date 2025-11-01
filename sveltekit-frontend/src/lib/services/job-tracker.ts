@@ -36,7 +36,7 @@ class JobTracker {
       autoloadCallback: this.initialize.bind(this),
       autosave: true,
       autosaveInterval: 5000, // Save every 5 seconds
-      persistenceMethod: 'memory' // Can be 'fs' for file persistence
+      persistenceMethod: 'memory' // Can be: 'fs' for file persistence
     });
   }
   private initialize() {

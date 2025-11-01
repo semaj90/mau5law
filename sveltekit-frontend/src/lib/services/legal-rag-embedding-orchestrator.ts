@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm'; // Import Drizzle utility for equality checks
 
 // Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js
 // This is a common pattern for vector search services.
-declare module './multi-embedding-vector-service.js' {
+declare module: './multi-embedding-vector-service.js' {
   export interface SearchQuery {
     query_embedding?: number[];
   }
@@ -343,7 +343,7 @@ class LegalRAGEmbeddingOrchestrator {
         legalDomain?.model || (strategy?.hybrid_models?.[0] ?? 'unknown'),
         jurisdictional?.model || 'unknown',
         temporal?.model || 'unknown'
-      ].filter(Boolean) // Filter out 'unknown' if a model was actually used
+      ].filter(Boolean) // Filter out: 'unknown' if a model was actually used
     };
   }
 
@@ -375,7 +375,7 @@ class LegalRAGEmbeddingOrchestrator {
         } catch (err) {
           // log and try next candidate
           // eslint-disable-next-line no-console
-          console.debug(`Vector search candidate "${name}" failed`, err);
+          console.debug(`Vector search candidate: "${name}" failed`, err);
         }
       }
     }
@@ -635,7 +635,7 @@ class LegalRAGEmbeddingOrchestrator {
     }
 
     // Fetch from PostgreSQL using Drizzle ORM
-    // Assuming 'cases' is a table in your schema and has a 'case_id' column
+    // Assuming: 'cases' is a table in your schema and has a: 'case_id' column
     const caseData = await db.query.cases.findFirst({ where: eq(schema.cases.id, caseId) });
 
     if (caseData) {

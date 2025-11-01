@@ -69,7 +69,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description 'Comprehensive TypeScript error analysis and resolution',
+      description: 'Comprehensive TypeScript error analysis and resolution',
     },
     {
       id: 'performance-optimization',
@@ -78,7 +78,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'critical' as const,
-      description 'Full-stack performance analysis with autonomous engineering',
+      description: 'Full-stack performance analysis with autonomous engineering',
     },
     {
       id: 'security-audit',
@@ -87,7 +87,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description 'Multi-agent security analysis',
+      description: 'Multi-agent security analysis',
     },
     {
       id: 'deployment-pipeline',
@@ -96,7 +96,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'medium' as const,
-      description 'DevOps automation and pipeline optimization',
+      description: 'DevOps automation and pipeline optimization',
     },
     {
       id: 'api-integration',
@@ -105,7 +105,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'quick' as const,
       platform: 'webapp' as const,
       urgency: 'medium' as const,
-      description 'Quick semantic search for integration patterns',
+      description: 'Quick semantic search for integration patterns',
     }
   ];
   $effect(() => {
@@ -242,22 +242,22 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   }
   function getActionIcon(type: NextAction['type']) {
     switch (type) {
-      case 'code': return Code;
-      case 'test': return TestTube;
-      case 'debug': return Bug;
-      case 'deploy': return Rocket;
-      case 'monitor': return Monitor;
-      case 'research': return Search;
+      case: 'code': return Code;
+      case: 'test': return TestTube;
+      case: 'debug': return Bug;
+      case: 'deploy': return Rocket;
+      case: 'monitor': return Monitor;
+      case: 'research': return Search;
       default: return Setting;
     }
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'critical': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case: 'critical': return: 'text-red-600 bg-red-100';
+      case: 'high': return: 'text-orange-600 bg-orange-100';
+      case: 'medium': return: 'text-yellow-600 bg-yellow-100';
+      case: 'low': return: 'text-green-600 bg-green-100';
+      default: return: 'text-gray-600 bg-gray-100';
     }
   }
 </script>

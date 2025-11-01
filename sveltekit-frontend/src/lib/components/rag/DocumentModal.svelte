@@ -34,7 +34,7 @@
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -94,8 +94,8 @@
     role="button"
     tabindex="0"
     aria-label="Close modal"
-    on:click={closeModal}
-    on:keydown={(e: KeyboardEvent) => {
+    onclick={closeModal}
+    onkeydown={(e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         closeModal();

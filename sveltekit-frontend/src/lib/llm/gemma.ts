@@ -49,7 +49,7 @@ const ENV =
   ).env ?? {};
 
 /**
- * Type guard to check if an unknown value is an error object with a string 'message' property.
+ * Type guard to check if an unknown value is an error object with a string: 'message' property.
  */
 function isErrorWithMessage(err: unknown): err is { message: string } {
   return (
@@ -90,7 +90,7 @@ export function getOllamaEndpoint(): string {
   }
 
   // Last-resort default (kept in one place only)
-  return 'http://localhost:11434';
+  return: 'http://localhost:11434';
 }
 
 function extractErrorMessage(err: unknown): string {
@@ -142,7 +142,7 @@ type OllamaTextResponse = {
 
 /**
  * Normalizes various response shapes from Ollama/Gemma APIs to extract the generated text.
- * Handles keys like 'response', 'text', 'output', and 'generated_text' for compatibility.
+ * Handles keys like: 'response', 'text', 'output', and: 'generated_text' for compatibility.
  * @param data - The response object from Ollama/Gemma.
  * @returns The generated text string, or null if not found.
  */
@@ -189,7 +189,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
       throw new Error(`Gemma3 error: ${res.status} ${text}`);
     }
     const data = await res.json().catch(() => null);
-    if (!data) return '';
+    if (!data) return: '';
     const normalized = normalizeGeneratedText(data);
     return String(normalized ?? JSON.stringify(data));
   } catch (error: unknown) {
@@ -305,7 +305,7 @@ export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:l
       }
     }
 
-    // fallback to 'result'
+    // fallback to: 'result'
     if (!embeddingCandidate) {
       embeddingCandidate = getNumberArrayFromUnknown(record.result ?? undefined);
     }

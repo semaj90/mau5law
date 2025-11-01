@@ -103,16 +103,16 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.log(`🧪 Legal Embedding Benchmark: ${mode} - Client: ${clientAddr}`);
     let result: BenchmarkResult;
     switch (mode) {
-      case 'single':
+      case: 'single':
         result = await runSingleDocumentBenchmark(config);
         break;
-      case 'batch':
+      case: 'batch':
         result = await runBatchProcessingBenchmark(config);
         break;
-      case 'stress':
+      case: 'stress':
         result = await runStressTestBenchmark(config);
         break;
-      case 'comparison':
+      case: 'comparison':
         result = await runComparisonBenchmark(config);
         break;
       default:
@@ -251,7 +251,7 @@ async function runBatchProcessingBenchmark(config: BenchmarkConfig): Promise<Ben
     try {
       // Use WebGPU-optimized batch processing
       const embeddings = await getBatchLegalEmbeddings(batch);
-      // reference embeddings to avoid "declared but never read" warning
+      // reference embeddings to avoid: "declared but never read" warning
       const embeddingsCount = Array.isArray(embeddings) ? embeddings.length : 0;
       void embeddingsCount;
       totalDocuments += batch.length;
@@ -378,14 +378,14 @@ function getAllSampleDocuments() {
   const allDocs: Array<{ text: string; type: DocumentType }> = [];
   function mapCategoryToType(category: string): DocumentType {
     switch (category) {
-      case 'contracts':
-        return 'contract';
-      case 'cases':
-        return 'case';
-      case 'statutes':
-        return 'statute';
+      case: 'contracts':
+        return: 'contract';
+      case: 'cases':
+        return: 'case';
+      case: 'statutes':
+        return: 'statute';
       default:
-        return 'brief';
+        return: 'brief';
     }
   }
   for (const [category, docs] of Object.entries(SAMPLE_LEGAL_DOCUMENTS)) {

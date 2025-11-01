@@ -267,13 +267,13 @@
     message?: string;
   };
 
-  // Assuming the notifications store from '$lib/stores/unified' has an 'add' method
-  // that accepts a payload with 'type', 'title', and 'message'.
+  // Assuming the notifications store from '$lib/stores/unified' has an: 'add' method
+  // that accepts a payload with: 'type', 'title', and: 'message'.
   // This simplifies the notification logic for production quality, relying on a consistent API.
   function pushNotificationPayload(payload: NotificationPayload) {
-    // Define a local type for the notifications store that includes the 'add' method.
+    // Define a local type for the notifications store that includes the: 'add' method.
     // This is a local type definition to satisfy TypeScript in this file.
-    // The ideal fix would be to correctly type the 'notifications' store in '$lib/stores/unified.ts'.
+    // The ideal fix would be to correctly type the: 'notifications' store in: '$lib/stores/unified.ts'.
     interface NotificationStoreWithAdd {
       subscribe: (run: (value: any) => void, invalidate?: () => void) => () => void;
       add: (payload: NotificationPayload) => void;
@@ -281,7 +281,7 @@
       // toggleDesktopNotification () => void;
     }
 
-    // Cast notifications to the interface that includes 'add'
+    // Cast notifications to the interface that includes: 'add'
     (notifications as unknown as NotificationStoreWithAdd).add({
       type: payload.type,
       title: payload.title,
@@ -339,7 +339,7 @@
                   </ButtonComponent>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <ButtonComponent variant="ghost" size="sm" on:click={() => clearImport()}>
+                  <ButtonComponent variant="ghost" size="sm" onclick={() => clearImport()}>
                     <X class="h-4 w-4" />
                     Remove
                   </ButtonComponent>
@@ -353,7 +353,7 @@
                 <p class="text-lg font-medium">Drop your file here</p>
                 <p class="text-sm text-gray-500">or click to browse</p>
               </div>
-              <ButtonComponent variant="ghost" on:click={() => fileInput?.click()}>Select File</ButtonComponent>
+              <ButtonComponent variant="ghost" onclick={() => fileInput?.click()}>Select File</ButtonComponent>
             </div>
           {/if}
         </div>
@@ -362,7 +362,7 @@
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          on:change={handleFileInput}
+          onchange={handleFileInput}
           class="hidden"
           aria-label="Select import file"
         />
@@ -482,7 +482,7 @@
       <!-- Action Buttons -->
       {#if importFile}
         <div class="flex gap-2 justify-end">
-          <ButtonComponent on:click={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
+          <ButtonComponent onclick={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
             {#if isImporting}
               <div class="i-lucide-loader-2 animate-spin mr-2"></div>
               Importing...
@@ -492,7 +492,7 @@
             {/if}
           </ButtonComponent>
           <Tooltip content="Clear current import and start over">
-            <ButtonComponent variant="ghost" on:click={() => clearImport()}>
+            <ButtonComponent variant="ghost" onclick={() => clearImport()}>
               <X class="h-4 w-4 mr-2" />
               Cancel
             </ButtonComponent>
@@ -516,7 +516,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('cases', 'json')}
+                  onclick={() => downloadExampleTemplate('cases', 'json')}
                 >
                   JSON
                 </ButtonComponent>
@@ -526,7 +526,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('cases', 'csv')}
+                  onclick={() => downloadExampleTemplate('cases', 'csv')}
                 >
                   CSV
                 </ButtonComponent>
@@ -540,7 +540,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('evidence', 'json')}
+                  onclick={() => downloadExampleTemplate('evidence', 'json')}
                 >
                   JSON
                 </ButtonComponent>
@@ -550,7 +550,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('evidence', 'csv')}
+                  onclick={() => downloadExampleTemplate('evidence', 'csv')}
                 >
                   CSV
                 </ButtonComponent>

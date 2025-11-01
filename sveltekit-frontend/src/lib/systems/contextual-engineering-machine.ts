@@ -368,12 +368,9 @@ export class ContextualEngineeringMachine {
     const startTime = performance.now();
     const errors: string[] = [];
     try {
-      console.log('💡 Testing "did you mean" suggestions...');
+      console.log('💡 Testing: "did you mean" suggestions...');
       const testInputs = [
-        "I need help with a contrct review", // Typo: contrct -> contract
-        "Can you analayze this agreement?", // Typo: analayze -> analyze
-        "Help me drraft a legal document", // Typo: drraft -> draft
-        "I want to reserch case law" // Typo: reserch -> research
+        "I need help with a contrct review", // Typo: contrct -> contract: "Can you analayze this agreement?", // Typo: analayze -> analyze: "Help me drraft a legal document", // Typo: drraft -> draft: "I want to reserch case law" // Typo: reserch -> research
       ];
       let suggestionsGenerated = 0;
       for (const input of testInputs) {

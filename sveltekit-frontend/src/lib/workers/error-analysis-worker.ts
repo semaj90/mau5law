@@ -37,13 +37,13 @@ class ErrorAnalysisWorkerEngine {
   private initializePatterns() {
     // Common TypeScript error patterns
     this.errorPatterns.set('1434', /Unexpected keyword or identifier/);
-    this.errorPatterns.set('2304', /Cannot find name '([^']+)'/);
-    this.errorPatterns.set('2307', /Cannot find module '([^']+)'/);
-    this.errorPatterns.set('2457', /Type alias name cannot be '([^']+)'/);
+    this.errorPatterns.set('2304', /Cannot find name: '([^']+)'/);
+    this.errorPatterns.set('2307', /Cannot find module: '([^']+)'/);
+    this.errorPatterns.set('2457', /Type alias name cannot be: '([^']+)'/);
     this.errorPatterns.set('1005', /';' expected/);
     this.errorPatterns.set('1128', /Declaration or statement expected/);
     this.errorPatterns.set('2339', /Property '([^']+)' does not exist/);
-    this.errorPatterns.set('2322', /Type '([^']+)' is not assignable to type '([^']+)'/);
+    this.errorPatterns.set('2322', /Type '([^']+)' is not assignable to type: '([^']+)'/);
   }
   private initializeStrategies() {
     // Fix strategies for common errors
@@ -90,14 +90,7 @@ class ErrorAnalysisWorkerEngine {
   }
   private isErrorFixable(code: string): boolean {
     const fixableCodes = new Set([
-      '1434', // Unexpected keyword
-      '2304', // Cannot find name
-      '2307', // Cannot find module
-      '2457', // Type alias name cannot be
-      '1005', // Semicolon expected
-      '1128', // Declaration expected
-      '1109', // Expression expected
-      '1003', // Identifier expected
+      '1434', // Unexpected keyword: '2304', // Cannot find name: '2307', // Cannot find module: '2457', // Type alias name cannot be: '1005', // Semicolon expected: '1128', // Declaration expected: '1109', // Expression expected: '1003', // Identifier expected
     ]);
     return fixableCodes.has(code);
   }
@@ -105,16 +98,16 @@ class ErrorAnalysisWorkerEngine {
     let complexity = 1;
     // Base complexity by category
     switch (error.category) {
-      case 'syntax':
+      case: 'syntax':
         complexity = 1;
         break;
-      case 'import':
+      case: 'import':
         complexity = 1.5;
         break;
-      case 'type':
+      case: 'type':
         complexity = 2;
         break;
-      case 'semantic':
+      case: 'semantic':
         complexity = 3;
         break;
     }
@@ -180,7 +173,7 @@ self.addEventListener('message', (_event: MessageEvent) => {
   const { type, errors, id } = event.data;
   try {
     switch (type) {
-      case 'analyze_errors':
+      case: 'analyze_errors':
         const results = analysisEngine.analyzeErrors(errors);
         self.postMessage({
           type: 'analysis_complete',
@@ -189,7 +182,7 @@ self.addEventListener('message', (_event: MessageEvent) => {
           timestamp: Date.now()
         });
         break;
-      case 'ping':
+      case: 'ping':
         self.postMessage({
           type: 'pong',
           timestamp: Date.now()

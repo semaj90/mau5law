@@ -175,8 +175,8 @@ function generateMockFallbackData(errorCode: string): unknown {
   };
   // Context-aware mock data generation
   switch (errorCode) {
-    case 'DATABASE_ERROR':
-    case 'INTERNAL_ERROR':
+    case: 'DATABASE_ERROR':
+    case: 'INTERNAL_ERROR':
       return {
         ...baseData,
         cases: [
@@ -210,7 +210,7 @@ function generateMockFallbackData(errorCode: string): unknown {
           hasPrev: false,
         },
       };
-    case 'NOT_FOUND':
+    case: 'NOT_FOUND':
       return {
         ...baseData,
         suggested: [
@@ -222,8 +222,8 @@ function generateMockFallbackData(errorCode: string): unknown {
           },
         ],
       };
-    case 'UNAUTHORIZED':
-    case 'FORBIDDEN':
+    case: 'UNAUTHORIZED':
+    case: 'FORBIDDEN':
       return {
         ...baseData,
         demoMode: true,
@@ -309,7 +309,7 @@ export const CommonErrors = {
       details as Record<string, unknown>
     ),
   ValidationFailed: (field: string, reason: string) =>
-    new ApiErrorClass(`Validation failed for field '${field}': ${reason}`, 'VALIDATION_ERROR', 400, { field, reason }),
+    new ApiErrorClass(`Validation failed for field: '${field}': ${reason}`, 'VALIDATION_ERROR', 400, { field, reason }),
 } as const;
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(request: Request, schema: z.ZodSchema<T>): Promise<T> {

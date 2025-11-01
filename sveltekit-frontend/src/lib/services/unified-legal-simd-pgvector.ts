@@ -136,7 +136,7 @@ class WindowsRedisClient implements RedisConnection {
 
   async get(key: string): Promise<string | null> {
     try {
-      const cmd = `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} GET "${key}"`;
+      const cmd = `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} GET: "${key}"`;
       const { stdout } = await this.execCmd(cmd);
       const trimmed = stdout.trim();
       return trimmed === '(nil)' || trimmed === '' ? null : trimmed;
@@ -150,8 +150,8 @@ class WindowsRedisClient implements RedisConnection {
     try {
       const escaped = value.replace(/"/g, '\\"');
       const cmd = ex
-        ? `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} SETEX "${key}" ${ex} "${escaped}"`
-        : `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} SET "${key}" "${escaped}"`;
+        ? `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} SETEX: "${key}" ${ex} "${escaped}"`
+        : `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} SET: "${key}" "${escaped}"`;
       await this.execCmd(cmd);
     } catch (err) {
       console.warn('Redis SET failed:', err);
@@ -160,7 +160,7 @@ class WindowsRedisClient implements RedisConnection {
 
   async del(key: string): Promise<void> {
     try {
-      const cmd = `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} DEL "${key}"`;
+      const cmd = `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} DEL: "${key}"`;
       await this.execCmd(cmd);
     } catch (err) {
       console.warn('Redis DEL failed:', err);
@@ -169,7 +169,7 @@ class WindowsRedisClient implements RedisConnection {
 
   async exists(key: string): Promise<boolean> {
     try {
-      const cmd = `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} EXISTS "${key}"`;
+      const cmd = `./redis-latest/redis-cli.exe -h ${this.host} -p ${this.port} EXISTS: "${key}"`;
       const { stdout } = await this.execCmd(cmd);
       return stdout.trim() === '1';
     } catch {
@@ -412,18 +412,18 @@ export class UnifiedLegalSIMDPGVector {
 					content TEXT NOT NULL,
 					document_type VARCHAR(20) NOT NULL,
 					jurisdiction VARCHAR(100),
-					practice_areas TEXT[] DEFAULT '{}',
+					practice_areas TEXT[] DEFAULT: '{}',
 					-- Vector embeddings (768-dimensional for BERT-like models)
 					content_embedding vector(768),
 					entity_embeddings vector(768)[],
 					legal_term_embeddings vector(768)[],
 					-- SIMD-parsed metadata (JSONB for complex queries)
-					extracted_entities JSONB DEFAULT '[]',
-					suggestions JSONB DEFAULT '[]',
+					extracted_entities JSONB DEFAULT: '[]',
+					suggestions JSONB DEFAULT: '[]',
 					confidence_score FLOAT DEFAULT 0.0,
 					processing_time_ms INTEGER DEFAULT 0,
 					-- pgvector indexing metadata
-					vector_index_version VARCHAR(20) DEFAULT 'v1.0',
+					vector_index_version VARCHAR(20) DEFAULT: 'v1.0',
 					last_indexed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					similarity_threshold FLOAT DEFAULT 0.7,
 					created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -616,7 +616,7 @@ export class UnifiedLegalSIMDPGVector {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ model: OLLAMA_MODEL, input: allInputs }),
-              // Only add 'signal' if supported in this environment
+              // Only add: 'signal' if supported in this environment
               ...(signal ? { signal } : {}),
             } as RequestInit);
 
@@ -747,7 +747,7 @@ export class UnifiedLegalSIMDPGVector {
       if (options.practiceAreas?.length)
         whereClauses.push(`practice_areas && ARRAY[${options.practiceAreas.map(p => `'${p}'`).join(',')}]::text[]`);
 
-      const sqlQuery = `SELECT id,title,content,document_type,jurisdiction,practice_areas,extracted_entities,suggestions,confidence_score,processing_time_ms,created_at,updated_at FROM legal_documents_vectorized WHERE ${whereClauses.join(' AND ')} LIMIT ${limit};`;
+      const sqlQuery = `SELECT id,title,content,document_type,jurisdiction,practice_areas,extracted_entities,suggestions,confidence_score,processing_time_ms,created_at,updated_at FROM legal_documents_vectorized WHERE ${whereClauses.join(' AND: ')} LIMIT ${limit};`;
 
       const { db: _db } = await this.getDB();
       const results = await _db.execute(sqlQuery);
@@ -836,7 +836,7 @@ export class UnifiedLegalSIMDPGVector {
 
       const gpuStats = physicsAwareGPUOrchestrator.getGPUStats?.() ?? { totalUtilization: 0 };
       const simdStats = this.simdParser.getSIMDStats?.() ?? { processed: 0, avgTime: 0 };
-      // use simdStats in a debug log to avoid "assigned but never used"
+      // use simdStats in a debug log to avoid: "assigned but never used"
       console.debug('SIMD stats:', simdStats);
       const cacheStats = cognitiveCache.getCacheStats?.() ?? { averageAccessCount: 0 };
 

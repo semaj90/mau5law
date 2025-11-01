@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier 'Props' has already been declared -->
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'Props' has already been declared -->
 <!--
 Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
@@ -776,7 +776,7 @@ if (browser) {
       const responseLength = research.response?.length || 0;
       const confidenceScore = Math.min(95, Math.max(60, responseLength / 50));
       const keywordMatches = (research.response?.match.join('|'), 'gi')) || []).length;
-      await addSystemMessage(`📚 **Legal Research Results for "${topic}"**
+      await addSystemMessage(`📚 **Legal Research Results for: "${topic}"**
   **Research Quality:** ${Math.round(confidenceScore)}%
   **Keyword Relevance:** ${keywordMatches} matches found
   **Response Length:** ${responseLength} characters
@@ -858,15 +858,15 @@ if (browser) {
     return new Date(timestamp).toLocaleTimeString();
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 0.8) return: 'text-green-600';
+    if (confidence >= 0.6) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'active':
+      case: 'active':
         return CheckCircl;
-      case 'inactive':
+      case: 'inactive':
         return AlertTriangl;
       default:
         return Loader2;

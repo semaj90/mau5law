@@ -194,7 +194,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <button
         type="button"
-        on:click={runSemanticAuditTest}
+        onclick={runSemanticAuditTest}
         disabled={$isRunning}
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -206,7 +206,7 @@
       </button>
       <button
         type="button"
-        on:click={runSemanticSearchTest}
+        onclick={runSemanticSearchTest}
         disabled={$isRunning}
         class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -218,7 +218,7 @@
       </button>
       <button
         type="button"
-        on:click={runAgentOrchestrationTest}
+        onclick={runAgentOrchestrationTest}
         disabled={$isRunning}
         class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -230,7 +230,7 @@
       </button>
       <button
         type="button"
-        on:click={runAllTests}
+        onclick={runAllTests}
         disabled={$isRunning}
         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -244,7 +244,7 @@
     <div class="mt-4">
       <button
         type="button"
-        on:click={clearResults}
+        onclick={clearResults}
         class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
       >
         Clear Results

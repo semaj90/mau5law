@@ -299,15 +299,15 @@ function generateResearchRecommendations(_topic: string, results: LegalResearchR
   }
   // Role-specific recommendations
   switch (userRole) {
-    case 'prosecutor':
+    case: 'prosecutor':
       recommendations.push('Prepare for potential constitutional challenges');
       recommendations.push('Review charging precedents and sentencing guidelines');
       break;
-    case 'defense':
+    case: 'defense':
       recommendations.push('Identify favorable precedents for motion practice');
       recommendations.push('Research potential grounds for appeal');
       break;
-    case 'judge':
+    case: 'judge':
       recommendations.push('Review conflicting interpretations for consistent application');
       recommendations.push('Consider scheduling briefing on complex legal issues');
       break;
@@ -333,12 +333,12 @@ function calculateResearchConfidence(results: LegalResearchResult[], _topic: str
 }
 function generateResearchSummary(results: LegalResearchResult[], topic: string): string {
   if (results.length === 0) {
-    return `No specific results found for "${topic}". Consider broadening search terms or consulting additional legal databases.`;
+    return `No specific results found for: "${topic}". Consider broadening search terms or consulting additional legal databases.`;
   }
   const caseCount = results.filter(r => r.type === 'case').length;
   const statuteCount = results.filter(r => r.type === 'statute').length;
   const regulationCount = results.filter(r => r.type === 'regulation').length;
-  const summary = [`Research on "${topic}" yielded ${results.length} relevant sources:`];
+  const summary = [`Research on: "${topic}" yielded ${results.length} relevant sources:`];
   if (caseCount > 0) summary.push(`${caseCount} cases`);
   if (statuteCount > 0) summary.push(`${statuteCount} statutes`);
   if (regulationCount > 0) summary.push(`${regulationCount} regulations`);

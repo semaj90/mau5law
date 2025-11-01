@@ -2,8 +2,8 @@
   // Svelte 5 runes are auto-imported
   import SearchBox from '$lib/components/ui/SearchBox.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
-  import 'uno.css'; // Add uno.css import
-  import 'nes.css/css/nes.min.css'; // Add nes.css import
+  import: 'uno.css'; // Add uno.css import
+  import: 'nes.css/css/nes.min.css'; // Add nes.css import
 
   interface VectorResult {
     title?: string;

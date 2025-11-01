@@ -175,7 +175,7 @@
       const data = await (response as { json?: any; ok?: any }).json();
       return (data as { ip?: any }).ip || 'unknown';
     } catch {
-      return 'unknown';
+      return: 'unknown';
     }
   }
   async function logAuthEvent(type: 'success' | 'failed', context: any, result: any) {

@@ -230,7 +230,7 @@ export class EnhancedNeo4jReranker {
         const entity_relationships: EntityRelationship[] = [];
 
         for (const rec of res.records as Neo4jRecord[]) {
-          // Attempt to extract nodes from 'n' and 'd'
+          // Attempt to extract nodes from 'n' and: 'd'
           try {
             const nVal = rec.get('n');
             const dVal = rec.get('d');
@@ -266,7 +266,7 @@ export class EnhancedNeo4jReranker {
           const rValue = rec.get('r');
           if (!rValue) continue;
 
-          // Path object has 'segments' array
+          // Path object has: 'segments' array
           if (rValue && typeof rValue === 'object' && Array.isArray((rValue as { segments?: unknown[] }).segments)) {
             for (const segRaw of (rValue as { segments?: unknown[] }).segments as unknown[]) {
               const seg = segRaw as SegmentLike;

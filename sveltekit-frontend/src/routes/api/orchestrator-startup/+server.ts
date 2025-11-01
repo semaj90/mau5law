@@ -69,22 +69,22 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action, configuration } = await request.json();
     let result: any;
     switch (action) {
-      case 'start':
+      case: 'start':
         result = await startOrchestrator(configuration);
         break;
-      case 'stop':
+      case: 'stop':
         result = await stopOrchestrator();
         break;
-      case 'restart':
+      case: 'restart':
         result = await restartOrchestrator(configuration);
         break;
-      case 'initialize_system':
+      case: 'initialize_system':
         result = await initializeFullSystem(configuration);
         break;
-      case 'health_check':
+      case: 'health_check':
         result = await performSystemHealthCheck();
         break;
-      case 'configure':
+      case: 'configure':
         result = await configureOrchestrator(configuration);
         break;
       default:

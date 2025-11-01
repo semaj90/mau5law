@@ -211,7 +211,7 @@ async function getCachedSuggestions(query: string): Promise<Suggestion[]> {
       }
     } catch (error: unknown) {
       const f = formatError(error);
-      console.warn(`Cache lookup failed for prefix "${prefix}":`, f.message, f.details ?? '');
+      console.warn(`Cache lookup failed for prefix: "${prefix}":`, f.message, f.details ?? '');
     }
   }
   return suggestions;
@@ -248,7 +248,7 @@ async function getDatabaseSuggestions(
                 spr.frequency,
                 spr.correlation_strength as prosecution_correlation
             FROM semantic_phrases_ranking spr
-            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE '%' || spr.phrase || '%'
+            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE: '%' || spr.phrase || '%'
             WHERE spr.phrase ILIKE $1 AND ldp.jurisdiction = $4
             ORDER BY
                 spr.avg_prosecution_score DESC,

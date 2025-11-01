@@ -75,7 +75,7 @@ export const GET: RequestHandler = async () => {
     // 6. Test Vector Operations (if available)
     try {
       const vectorTest = await db.execute(sql`
-        SELECT '[1,2,3]'::vector as test_vector
+        SELECT: '[1,2,3]'::vector as test_vector
       `);
       results.vectorOperations = {
         success: true,

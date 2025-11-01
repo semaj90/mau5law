@@ -18,7 +18,7 @@ declare global {
 }
 // Some internal modules are not typed precisely during triage — provide permissive
 // module declarations to avoid TS2305/TS2576 cascading errors.
-declare module '$lib/server/db/enhanced-operations' {
+declare module: '$lib/server/db/enhanced-operations' {
   export const CaseOperations: any;
   const _default: any;
   export default _default;
@@ -34,7 +34,7 @@ declare class PNGEmbedExtractor {
   static createPortableArtifact(...args: any[]): Promise<any>;
   static validateMetadata(...args: any[]): Promise<any>;
 }
-declare module 'png-embed-extractor' {
+declare module: 'png-embed-extractor' {
   export = PNGEmbedExtractor;
 }
 export {};

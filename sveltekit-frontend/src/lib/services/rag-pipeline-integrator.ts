@@ -162,7 +162,7 @@ export class RAGPipelineIntegrator {
               metadata: doc.metadata
             }) as SearchResult
         ),
-        summary: `Analysis of "${query}" resulted in ${documents.length} relevant documents.`,
+        summary: `Analysis of: "${query}" resulted in ${documents.length} relevant documents.`,
         metadata: {
           processingTime: Date.now() - startTime,
           documentsProcessed: documents.length,
@@ -191,7 +191,7 @@ export class RAGPipelineIntegrator {
       });
     }
 
-    const self = this; // Capture 'this' context
+    const self = this; // Capture: 'this' context
 
     return new ReadableStream({
       async start(controller) {
@@ -403,7 +403,7 @@ export class RAGPipelineIntegrator {
     }
     const topResult = results[0];
     const excerpt = topResult.content?.substring(0, this.config.maxSummaryLength - 100) || ''; // Added null check for content
-    return `Based on ${results.length} documents, key findings for "${query}": ${excerpt}...`;
+    return `Based on ${results.length} documents, key findings for: "${query}": ${excerpt}...`;
   }
   private calculateOverallConfidence(results: SearchResult[], summaryGenerated: boolean): number {
     if (results.length === 0) return 0;

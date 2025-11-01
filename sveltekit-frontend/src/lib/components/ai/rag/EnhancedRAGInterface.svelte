@@ -175,7 +175,7 @@ await loadDocuments();
     const results = fuseSearch.search(searchQuery);
     searchResults = results.map.score || 0) // Convert distance to similarity
     }));
-    console.log(`🔍 Search "${searchQuery}" returned ${searchResults.length} results`);
+    console.log(`🔍 Search: "${searchQuery}" returned ${searchResults.length} results`);
   }
   // Reactive search
   $effect(() => {
@@ -187,10 +187,10 @@ await loadDocuments();
   });
   // Get score color class
   function getScoreColor(score: number): string {
-    if (score >= 0.9) return 'text-green-600 font-bold';
-    if (score >= 0.7) return 'text-blue-600';
-    if (score >= 0.5) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 0.9) return: 'text-green-600 font-bold';
+    if (score >= 0.7) return: 'text-blue-600';
+    if (score >= 0.5) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   // Get label color class
   function getLabelColor(label: string): string {
@@ -200,7 +200,7 @@ await loadDocuments();
       criminal: 'bg-purple-100 text-purple-800',
       evidence: 'bg-green-100 text-green-800',
       precedent: 'bg-yellow-100 text-yellow-800',
-      motion 'bg-indigo-100 text-indigo-800',
+      motion: 'bg-indigo-100 text-indigo-800',
       brief: 'bg-pink-100 text-pink-800',
     }
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
@@ -312,7 +312,7 @@ await loadDocuments();
         </div>
       </div>
     {:else if searchQuery}
-      <div class="text-gray-500">No results found for "{searchQuery}"</div>
+      <div class="text-gray-500">No results found for: "{searchQuery}"</div>
     {/if}
   </div>
   <!-- Document Library -->

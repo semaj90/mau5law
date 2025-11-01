@@ -349,7 +349,7 @@
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -359,16 +359,16 @@
   // CHANGED: return semantic badge variant names expected by Badge component
   function getStatusColor(status: UploadFile['status']): string {
     switch (status) {
-      case 'completed':
-        return 'success';
-      case 'error':
-        return 'danger';
-      case 'processing':
-        return 'info';
-      case 'uploading':
-        return 'warning';
+      case: 'completed':
+        return: 'success';
+      case: 'error':
+        return: 'danger';
+      case: 'processing':
+        return: 'info';
+      case: 'uploading':
+        return: 'warning';
       default:
-        return 'neutral';
+        return: 'neutral';
     }
   }
 

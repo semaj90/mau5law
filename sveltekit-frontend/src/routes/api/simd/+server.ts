@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     switch (operation) {
-      case 'parse': {
+      case: 'parse': {
         const result = await simdRedisClient.parseJSON(payloadData);
         return json({
           success: true,
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'cache': {
+      case: 'cache': {
         if (!cacheKey) {
           return json({ error: 'cache_key required for cache operation' }, { status: 400 });
         }
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'benchmark': {
+      case: 'benchmark': {
         const result = await simdRedisClient.benchmark(payloadData, iterations);
         return json({
           success: true,

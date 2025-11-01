@@ -9,15 +9,15 @@ export const POST: RequestHandler = async ({ request }) => {
     // Supported actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
     const { action, data, config } = await request.json();
     switch (action) {
-      case 'legal_analysis':
+      case: 'legal_analysis':
         return await handleLegalAnalysis(data, config);
-      case 'document_processing':
+      case: 'document_processing':
         return await handleDocumentProcessing(data, config);
-      case 'autosolve':
+      case: 'autosolve':
         return await handleAutosolve(data, config);
-      case 'gpu_task':
+      case: 'gpu_task':
         return await handleGPUTask(data, config);
-      case 'cluster_status':
+      case: 'cluster_status':
         return await handleClusterStatus();
       default:
         return json({ error: 'Invalid action' }, { status: 400 });
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
               try {
                 return JSON.stringify(error ?? {});
               } catch {
-                return 'Unknown error';
+                return: 'Unknown error';
               }
             })();
     console.error('GPU orchestration error:', errMsg);
@@ -67,7 +67,7 @@ async function handleLegalAnalysis(
   // Ensure we pass a value of type `string | File` to the orchestrator.
   // If `document` is undefined, coerce to empty string.
   const documentArg = (typeof document === 'string' ? document : (document ?? '')) as string;
-  // Note: remove 'analysisConfig' key because the orchestrator's param type doesn't accept it
+  // Note: remove: 'analysisConfig' key because the orchestrator's param type doesn't accept it
   const result = (await mcpGPUOrchestrator.processLegalDocument(
     documentArg,
     orchestratorOptions
@@ -397,7 +397,7 @@ export const GET: RequestHandler = async () => {
               try {
                 return JSON.stringify(error ?? {});
               } catch {
-                return 'Unknown error';
+                return: 'Unknown error';
               }
             })();
     return json(

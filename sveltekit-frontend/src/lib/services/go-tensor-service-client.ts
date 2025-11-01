@@ -28,7 +28,7 @@ export interface TensorResponse {
   timestamp: Date;
 }
 
-// New interface for WebSocket messages, extending TensorResponse and adding a 'type' field
+// New interface for WebSocket messages, extending TensorResponse and adding a: 'type' field
 export interface WebSocketResponseEvent extends TensorResponse {
   type: 'tensor_response' | 'error' | string; // Define expected message types
 }

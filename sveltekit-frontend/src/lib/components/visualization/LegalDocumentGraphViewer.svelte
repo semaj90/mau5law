@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <!--
   Legal Document Graph Viewer - WebGPU Visualization Component
   Advanced 3D graph visualization for legal document networks:
@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   const renderState = writable({
     selectedNode: null as string | null
     highlightedNodes: new Set<string>(),
-    filterType: 'all' as 'all' | 'document' | 'case' | 'entity' | 'precedent',
+    filterType: 'all' as: 'all' | 'document' | 'case' | 'entity' | 'precedent',
     cameraPosition [0, 0, 10] as [number, number, number],
     zoom: 1.0,
     autoRotate: false,
@@ -264,7 +264,7 @@ try {
   // ============================================================================
   /**
    * Handle node clicks - The Hybrid Cache-First Strategy Implementation
-   * This is the core of our "Fast Path / Slow Path" architecture
+   * This is the core of our: "Fast Path / Slow Path" architecture
    */
   async function handleNodeClick(_event: MouseEvent): Promise<void> {
     if (!graphEngine || !$canInteract) return;

@@ -85,24 +85,24 @@ class CognitiveSmartRouter {
     engine: string
   ): 'wasm' | 'worker' | 'cache' | 'fallback' | 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' {
     switch (engine) {
-      case 'ollama':
-      case 'llamacpp':
-      case 'gemma3':
-        return 'ollama';
-      case 'wasm':
-      case 'webasm':
-      case 'webasm-cache':
-        return 'webasm-cache';
-      case 'cache':
-        return 'cache';
-      case 'worker':
-      case 'nes-orchestrator':
-      case 'neural-sprite':
-        return 'nes-orchestrator';
-      case 'llamacpp-cuda':
-        return 'llamacpp-cuda';
+      case: 'ollama':
+      case: 'llamacpp':
+      case: 'gemma3':
+        return: 'ollama';
+      case: 'wasm':
+      case: 'webasm':
+      case: 'webasm-cache':
+        return: 'webasm-cache';
+      case: 'cache':
+        return: 'cache';
+      case: 'worker':
+      case: 'nes-orchestrator':
+      case: 'neural-sprite':
+        return: 'nes-orchestrator';
+      case: 'llamacpp-cuda':
+        return: 'llamacpp-cuda';
       default:
-        return 'fallback';
+        return: 'fallback';
     }
   }
   private metrics: CognitiveMetrics;
@@ -221,14 +221,14 @@ class CognitiveSmartRouter {
    */
   private async executeOnEngine(engine: string, request: RouteRequest): Promise<WebLlamaResponse> {
     switch (engine) {
-      case 'webasm-cache':
+      case: 'webasm-cache':
         return await webLlamaService.generate(request.prompt, {
           maxTokens: 2048,
           useCache: true,
           enableRanking: true,
           temperature: 0.1,
         });
-      case 'nes-orchestrator':
+      case: 'nes-orchestrator':
         // Use NES orchestrator for GPU-accelerated processing
         const nesHealth = nesCacheOrchestrator.getMemoryStats();
         if (nesHealth.utilization < 0.9) {
@@ -237,8 +237,8 @@ class CognitiveSmartRouter {
           return result;
         }
       // Fallthrough to Ollama if NES memory full
-      case 'ollama':
-      case 'llamacpp-cuda':
+      case: 'ollama':
+      case: 'llamacpp-cuda':
       default:
         // Use existing Ollama integration
         return await this.processWithOllama(request);
@@ -352,16 +352,16 @@ class CognitiveSmartRouter {
     }
     let healthy = false;
     switch (engine) {
-      case 'webasm-cache':
+      case: 'webasm-cache':
         healthy = this.isWebGPUAvailable && typeof webLlamaService !== 'undefined';
         break;
-      case 'nes-orchestrator':
+      case: 'nes-orchestrator':
         healthy = this.isWebGPUAvailable && typeof nesCacheOrchestrator !== 'undefined';
         break;
-      case 'ollama':
+      case: 'ollama':
         healthy = this.isOllamaAvailable;
         break;
-      case 'llamacpp-cuda':
+      case: 'llamacpp-cuda':
         // Would check if llama.cpp CUDA is available
         healthy = this.isOllamaAvailable; // Fallback for now
         break;

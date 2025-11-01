@@ -42,10 +42,10 @@
   // Auto-detect optimal layout based on route
   let layoutVariant = $derived(() => {
     const p = currentPath ?? '/';
-    if (p.startsWith('/yorha')) return 'yorha';
-    if (p.startsWith('/demo')) return 'yorha';
-    if (p.startsWith('/admin')) return 'admin';
-    if (p.startsWith('/auth')) return 'minimal';
+    if (p.startsWith('/yorha')) return: 'yorha';
+    if (p.startsWith('/demo')) return: 'yorha';
+    if (p.startsWith('/admin')) return: 'admin';
+    if (p.startsWith('/auth')) return: 'minimal';
     return variant;
   });
 
@@ -75,11 +75,11 @@
       { href: '/admin/performance', label: 'Performance', icon: '📊' },
     ];
     switch (layoutVariant) {
-      case 'yorha':
+      case: 'yorha':
         return [...baseItems, ...yorhaItems];
-      case 'admin':
+      case: 'admin':
         return [...baseItems, ...adminItems];
-      case 'minimal':
+      case: 'minimal':
         return [];
       default:
         return baseItems;

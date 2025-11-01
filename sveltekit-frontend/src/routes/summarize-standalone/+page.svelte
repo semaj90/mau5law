@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   // Sample legal document for demonstration
   const sampleLegalDoc = `MEMORANDUM OF LAW
   TO: Senior Partner
-  FROM: Legal Research Team
+  from Legal Research Team
   DATE: August 25, 2025
   RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
   I. EXECUTIVE SUMMARY

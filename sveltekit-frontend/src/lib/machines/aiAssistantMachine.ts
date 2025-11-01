@@ -565,7 +565,7 @@ class RabbitMQService {
       await channel.assertExchange(exchange, 'topic', { durable: false });
 
       const json = JSON.stringify(payload);
-      const BufferGlobal = (globalThis as unknown as { Buffer?: { from: (s: string, enc?: string) => Uint8Array } }).Buffer;
+      const BufferGlobal = (globalThis as unknown as { Buffer?: { from (s: string, enc?: string) => Uint8Array } }).Buffer;
       const content: Uint8Array = typeof BufferGlobal !== 'undefined' ? BufferGlobal.from(json, 'utf8') : new TextEncoder().encode(json);
 
       channel.publish(exchange, routingKey, content);

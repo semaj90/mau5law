@@ -21,14 +21,14 @@ https://svelte.dev/e/js_parse_error -->
     query: string;
     jurisdiction string;
     court: string
-    yearFrom: number | null;
+    yearfrom number | null;
     yearTo: number | null;
   }
   let searchFilters: SearchFilters = {
     query: '',
-    jurisdiction '',
+    jurisdiction: '',
     court: '',
-    yearFrom: null
+    yearfrom null
     yearTo: null;
   }
   let precedents: LegalPrecedent[] = [];
@@ -88,9 +88,9 @@ https://svelte.dev/e/js_parse_error -->
   function clearFilters() {
     searchFilters = {
       query: '',
-      jurisdiction '',
+      jurisdiction: '',
       court: '',
-      yearFrom: null
+      yearfrom null
       yearTo: null;
     }
     precedents = [];

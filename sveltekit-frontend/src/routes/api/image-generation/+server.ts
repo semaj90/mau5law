@@ -262,13 +262,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate image based on provider
     try {
       switch (provider) {
-        case 'stable-diffusion-webui':
+        case: 'stable-diffusion-webui':
           result = await generateWithStableDiffusion(enhancedRequest);
           break;
-        case 'comfyui':
+        case: 'comfyui':
           result = await generateWithComfyUI(enhancedRequest);
           break;
-        case 'ollama-vision':
+        case: 'ollama-vision':
           result = await generateWithOllama(enhancedRequest);
           break;
         default:

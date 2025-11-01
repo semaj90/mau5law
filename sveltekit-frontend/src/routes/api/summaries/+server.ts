@@ -244,17 +244,17 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
   // Get source content based on type
   let sourceContent = '';
   switch (request.type) {
-    case 'case': {
+    case: 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
       sourceContent = caseData?.[0]?.description || '';
       break;
     }
-    case 'evidence': {
+    case: 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
       sourceContent = evidenceData?.[0]?.description || '';
       break;
     }
-    case 'legal_document': {
+    case: 'legal_document': {
       const docData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, request.targetId)).limit(1);
       sourceContent = docData?.[0]?.content || '';
       break;
@@ -302,12 +302,12 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   // Create search query from target content
   let searchQuery = '';
   switch (request.type) {
-    case 'case': {
+    case: 'case': {
       const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
       searchQuery = `${caseData?.[0]?.title || ''} ${caseData?.[0]?.description || ''}`.substring(0, 200);
       break;
     }
-    case 'evidence': {
+    case: 'evidence': {
       const evidenceData = await db.select().from(evidence).where(eq(evidence.id, request.targetId)).limit(1);
       searchQuery = `${evidenceData?.[0]?.title || ''} ${evidenceData?.[0]?.description || ''}`.substring(0, 200);
       break;
@@ -557,7 +557,7 @@ function generateRecommendations(topics: string[], fuse: Fuse<string>): string[]
       .filter(Boolean)
       .slice(0, 2);
     if (matches.length > 0) {
-      recs.push(`Consider exploring "${topic}" in related cases such as: ${matches.join('; ')}`);
+      recs.push(`Consider exploring: "${topic}" in related cases such as: ${matches.join('; ')}`);
     } else {
       recs.push(`Consider exploring ${topic} in related cases`);
     }

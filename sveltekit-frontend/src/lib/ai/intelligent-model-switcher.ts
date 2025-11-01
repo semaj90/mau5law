@@ -580,16 +580,16 @@ class IntelligentModelSwitcher {
       }
       // Adjust adaptation rate based on learning phase
       switch (profile.learningPhase) {
-        case 'exploration':
+        case: 'exploration':
           profile.adaptationRate = 0.15; // High adaptation
           break;
-        case 'specialization':
+        case: 'specialization':
           profile.adaptationRate = 0.1; // Moderate adaptation
           break;
-        case 'optimization':
+        case: 'optimization':
           profile.adaptationRate = 0.05; // Low adaptation
           break;
-        case 'mastery':
+        case: 'mastery':
           profile.adaptationRate = 0.02; // Very low adaptation
           break;
       }

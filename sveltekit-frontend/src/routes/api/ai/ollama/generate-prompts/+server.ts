@@ -41,9 +41,9 @@ Context:
 - Urgency: ${legalContext?.urgency || 'medium'}
 File Names: ${context.files?.map((f: any) => f.name).join(', ') || 'None'}
 Generate 2-4 relevant prompts based on the timing phase:
-For "before-upload": Focus on preparation, organization, and potential issues
-For "during-upload": Focus on monitoring, insights, and real-time guidance
-For "after-upload": Focus on next steps, analysis results, and recommendations
+For: "before-upload": Focus on preparation, organization, and potential issues
+For: "during-upload": Focus on monitoring, insights, and real-time guidance
+For: "after-upload": Focus on next steps, analysis results, and recommendations
 Each prompt should be actionable and specific to legal workflows.
 Respond in JSON format:
 {
@@ -54,8 +54,7 @@ Respond in JSON format:
       "category": "optimization|guidance|insight|warning|recommendation",
       "confidence": 0.0-1.0,
       "relevance": 0.0-1.0,
-      "actionable": boolean
-      "legalSpecific": boolean
+      "actionable": boolean: "legalSpecific": boolean
     }
   ]
 }`;

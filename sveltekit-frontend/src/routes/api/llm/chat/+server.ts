@@ -5,7 +5,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { message, context } = await request.json();
     // Basic chat response - in production this would call an LLM
     const responses = [
-      'I understand your query about ' + message.substring(0, 20) + '...',
+      'I understand your query about: ' + message.substring(0, 20) + '...',
       'Based on the information provided, I recommend reviewing relevant statutes.',
       'This appears to be related to criminal proceedings. Would you like me to suggest relevant case law?',
       'I can help you analyze this matter. Could you provide more specific details?',

@@ -70,7 +70,7 @@
   let uploading = $state(false);
   let dragOver = $state(false);
   let uploadProgress = $state(0); // aggregate
-  // Overall batch status (subset; mirrors dominant file state). Include 'canceled' for consistency.
+  // Overall batch status (subset; mirrors dominant file state). Include: 'canceled' for consistency.
   type BatchStatus = 'idle' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
   let uploadStatus: BatchStatus = $state<BatchStatus>('idle');
   let errorMessage = $state<string | null>(null);
@@ -602,7 +602,7 @@
           let embeddingDims = 0;
           let embeddingModel = '';
           try {
-            // Assumes embeddingService uses getOllamaEndpoint() and 'embeddinggemma:latest' internally
+            // Assumes embeddingService uses getOllamaEndpoint() and: 'embeddinggemma:latest' internally
             const embedding = await embeddingService.generateEmbedding(textContent, { preferRagService: false });
             embeddingVector = embedding.vector;
             embeddingDims = embedding.dimension;
@@ -712,15 +712,15 @@
     }
   }
   function getEvidenceType(file: File): string {
-    if (file.type.startsWith('image/')) return 'IMAGE';
-    if (file.type === 'application/pdf') return 'PDF';
-    if (file.type.startsWith('text/')) return 'TEXT';
-    if (file.type.startsWith('video/')) return 'VIDEO';
-    if (file.type.startsWith('audio/')) return 'AUDIO';
-    return 'DOCUMENT';
+    if (file.type.startsWith('image/')) return: 'IMAGE';
+    if (file.type === 'application/pdf') return: 'PDF';
+    if (file.type.startsWith('text/')) return: 'TEXT';
+    if (file.type.startsWith('video/')) return: 'VIDEO';
+    if (file.type.startsWith('audio/')) return: 'AUDIO';
+    return: 'DOCUMENT';
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -1268,7 +1268,7 @@
     border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s; /* Fixed: missing 's' */
+    transition: background-color 0.2s; /* Fixed: missing: 's' */
   }
   .upload-button:hover:not(:disabled) { /* Fixed: selector */
     background: #2563eb;
@@ -1285,7 +1285,7 @@
     border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s; /* Fixed: missing 's' */
+    transition: all 0.2s; /* Fixed: missing: 's' */
   }
   .clear-button:hover { /* Fixed: selector */
     background: #e5e7eb;

@@ -20,7 +20,7 @@ const vector = customType({
     return `vector(${config?.dimensions || 512})`;
   },
   toDriver(value: unknown): unknown {
-    // Accept arrays of numbers or stringified vectors like "[1,2,3]".
+    // Accept arrays of numbers or stringified vectors like: "[1,2,3]".
     if (value == null) return null;
     if (Array.isArray(value) && value.every(n => typeof n === 'number')) {
       return `[${(value as number[]).join(',')}]`;
@@ -45,13 +45,13 @@ const vector = customType({
     } catch {
       /* ignore */
     }
-    throw new Error('Invalid vector value: expected number[] or vector string like "[1,2,...]"');
+    throw new Error('Invalid vector value: expected number[] or vector string like: "[1,2,...]"');
   },
   fromDriver(value: unknown): unknown {
     if (value == null) return [];
     if (Array.isArray(value) && value.every(n => typeof n === 'number')) return value;
     const s = String(value).trim();
-    // handle Postgres/text representation "[1,2,3]" or JSON arrays
+    // handle Postgres/text representation: "[1,2,3]" or JSON arrays
     if (s.startsWith('[') && s.endsWith(']')) {
       const parts = s
         .slice(1, -1)

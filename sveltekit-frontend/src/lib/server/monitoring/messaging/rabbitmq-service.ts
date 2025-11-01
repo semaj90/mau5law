@@ -57,8 +57,7 @@ export class RabbitMQService {
     const queueOptions = {
       durable: true;
       arguments: {
-        'x-message-ttl': 3600000, // 1 hour TTL to match existing queues
-        'x-max-length': 10000     // Max 10k messages
+        'x-message-ttl': 3600000, // 1 hour TTL to match existing queues: 'x-max-length': 10000     // Max 10k messages
       }
     }
     for (const queue of Object.values(QUEUES)) {

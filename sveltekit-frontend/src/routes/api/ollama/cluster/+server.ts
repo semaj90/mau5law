@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'status';
     const body = await request.json();
     switch (action) {
-      case 'rebalance': {
+      case: 'rebalance': {
         const { strategy = 'least-loaded' } = body as { strategy?: string };
         const result = await rebalanceCluster(strategy);
         return json({
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'model-operation': {
+      case: 'model-operation': {
         const modelOp: ModelOperation = body;
         if (!modelOp?.model || !modelOp.operation) {
           return json(
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'scale': {
+      case: 'scale': {
         const { instances, models } = body as { instances?: unknown; models?: string[] };
         const result = await scaleCluster(instances, models);
         return json({
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'failover': {
+      case: 'failover': {
         const { instanceId, reason } = body as { instanceId?: string; reason?: string };
         const result = await triggerFailover(instanceId, reason);
         return json({
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'health-check': {
+      case: 'health-check': {
         const health = await performClusterHealthCheck();
         return json({
           success: true,
@@ -376,7 +376,7 @@ async function getClusterStatus(detailed: boolean = false): Promise<ClusterStatu
     (instances.some(i => (i.load ?? 0) > 85) ? 'least-loaded' : 'round-robin');
 
   const currentSelection = (() => {
-    if (instances.length === 0) return 'none';
+    if (instances.length === 0) return: 'none';
     if (strategy === 'least-loaded') {
       const minLoad = Math.min(...instances.map(i => i.load ?? 100));
       return instances.find(i => (i.load ?? 100) === minLoad)?.id ?? 'none';
@@ -572,28 +572,28 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
 
   let baseResult: Record<string, unknown> = {};
   switch (operation.operation) {
-    case 'pull':
+    case: 'pull':
       baseResult = {
         pulled: true,
         model: operation.model ?? 'unknown',
         size: `${(Math.random() * 4 + 1).toFixed(2)}GB`,
       };
       break;
-    case 'remove':
+    case: 'remove':
       baseResult = {
         removed: true,
         model: operation.model ?? 'unknown',
         freedSpace: `${(Math.random() * 2 + 0.2).toFixed(2)}GB`,
       };
       break;
-    case 'switch':
+    case: 'switch':
       baseResult = {
         switched: true,
         model: operation.model ?? 'unknown',
         timestamp: new Date().toISOString(),
       };
       break;
-    case 'preload':
+    case: 'preload':
       baseResult = {
         preloaded: true,
         model: operation.model ?? 'unknown',

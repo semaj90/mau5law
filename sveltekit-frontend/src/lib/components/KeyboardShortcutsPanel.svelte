@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function getCategoryIcon(category: string): string {
     const icons: Record<string, string> = {
-      navigation '🧭',
+      navigation: '🧭',
       ai: '🤖',
       cases: '📁',
       evidence: '📋',
@@ -199,7 +199,8 @@ https://svelte.dev/e/js_parse_error -->
                           </div>
                         </div>
                         <div class="flex items-center gap-2">
-                          <Switch checked={shortcut.enabled} onchange={() => toggleShortcut(shortcut)} />
+                          <!-- replaced deprecated <svelte:component> with direct component and runes event attribute -->
+                          <Switch bind:checked={shortcut.enabled} onchange={() => toggleShortcut(shortcut)} />
                           <button type="button" class="bits-btn sm ghost" onclick={() => executeShortcut(shortcut)}>
                             Test
                           </button>
@@ -309,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  /* Replaced empty/comment-only ruleset to avoid "Do not use empty rulesets" error.
+  /* Replaced empty/comment-only ruleset to avoid: "Do not use empty rulesets" error.
      Explicit properties mirror the original @apply intent (inline-block, padding,
      small monospace font, gray background, border, rounded corners). */
   kbd {

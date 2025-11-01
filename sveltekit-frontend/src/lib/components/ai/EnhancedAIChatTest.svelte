@@ -201,7 +201,7 @@
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n'); // Fixed 'lines' variable
+          const lines = chunk.split('\n'); // Fixed: 'lines' variable
           for (const line of lines) {
             if (line.trim() && line.startsWith('data: ')) {
               try {
@@ -293,11 +293,11 @@
   // Connection status component
   function getStatusIcon() {
     switch (connectionStatus) {
-      case 'checking':
+      case: 'checking':
         return Loader2;
-      case 'connected':
+      case: 'connected':
         return CheckCircle; // Fixed typo
-      case 'error':
+      case: 'error':
         return XCircle; // Fixed typo
       default:
         return XCircle; // Fixed typo
@@ -306,14 +306,14 @@
 
   function getStatusColor() {
     switch (connectionStatus) {
-      case 'checking':
-        return 'text-yellow-500';
-      case 'connected':
-        return 'text-green-500';
-      case 'error':
-        return 'text-red-500';
+      case: 'checking':
+        return: 'text-yellow-500';
+      case: 'connected':
+        return: 'text-green-500';
+      case: 'error':
+        return: 'text-red-500';
       default:
-        return 'text-gray-500';
+        return: 'text-gray-500';
     }
   }
 </script>

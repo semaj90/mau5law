@@ -60,7 +60,7 @@ export const searchUploadSchema = z.object({
   query: z.string().optional(),
   caseId: cuidSchema.optional(),
   type: z.enum(['document', 'image', 'video', 'audio', 'physical', 'digital']).optional(),
-  dateFrom: z.date().optional(),
+  datefrom z.date().optional(),
   dateTo: z.date().optional(),
   tags: z.array(z.string()).optional(),
   limit: z.number().min(1).max(100).default(20),
@@ -76,7 +76,7 @@ export function validateFileUpload(file: File) {
     errors.push(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`);
   }
   if (!ALLOWED_MIME_TYPES.includes(file.type as any)) {
-    errors.push(`File type '${file.type}' is not supported`);
+    errors.push(`File type: '${file.type}' is not supported`);
   }
   return {
     valid: errors.length === 0,

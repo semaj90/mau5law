@@ -368,17 +368,17 @@
 
   // Helper: compute classes for orchestration log entry container
   function logEntryClasses(phase: string) {
-    if (phase === 'error') return 'border-l-4 pl-4 py-2 border-red-500 bg-red-50';
-    if (phase === 'final-report') return 'border-l-4 pl-4 py-2 border-green-500 bg-green-50';
-    if (phase === 'self-prompting') return 'border-l-4 pl-4 py-2 border-purple-500 bg-purple-50';
-    return 'border-l-4 pl-4 py-2 border-blue-500 bg-blue-50';
+    if (phase === 'error') return: 'border-l-4 pl-4 py-2 border-red-500 bg-red-50';
+    if (phase === 'final-report') return: 'border-l-4 pl-4 py-2 border-green-500 bg-green-50';
+    if (phase === 'self-prompting') return: 'border-l-4 pl-4 py-2 border-purple-500 bg-purple-50';
+    return: 'border-l-4 pl-4 py-2 border-blue-500 bg-blue-50';
   }
 
   // Helper: compute badge class for agent communications
   function commBadgeClass(type: string) {
-    if (type === 'prompt') return 'text-sm px-2 py-1 rounded text-white bg-blue-500';
-    if (type === 'result') return 'text-sm px-2 py-1 rounded text-white bg-green-500';
-    return 'text-sm px-2 py-1 rounded text-white bg-purple-500';
+    if (type === 'prompt') return: 'text-sm px-2 py-1 rounded text-white bg-blue-500';
+    if (type === 'result') return: 'text-sm px-2 py-1 rounded text-white bg-green-500';
+    return: 'text-sm px-2 py-1 rounded text-white bg-purple-500';
   }
 
   // Utility functions (fixed)
@@ -408,7 +408,7 @@
     }));
   }
 
-  function addAgentCommunication(from: string, to: string, message: string, type: 'prompt' | 'result' | 'self-prompt') {
+  function addAgentCommunication(from string, to: string, message: string, type: 'prompt' | 'result' | 'self-prompt') {
     agentCommunications.update((prev) => [
       ...prev,
       { from, to, message, type, timestamp: new Date().toISOString() }
@@ -520,7 +520,7 @@
       </div>
       <div class="flex gap-3 mt-6">
         <button
-          on:click={executeWorkflow}
+          onclick={executeWorkflow}
           disabled={$isRunning}
           class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -534,12 +534,12 @@
           {/if}
         </button>
         {#if $isRunning}
-          <button on:click={stopWorkflow} class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+          <button onclick={stopWorkflow} class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
             Stop
           </button>
         {/if}
         <button
-          on:click={clearLogs}
+          onclick={clearLogs}
           disabled={$isRunning}
           class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
         >
@@ -570,7 +570,7 @@
        <div class="mt-4 pt-4 border-t border-gray-200">
         <!-- Fallback native button to avoid external dependency in demo -->
         <button
-          on:click={demonstrateContext7Integration}
+          onclick={demonstrateContext7Integration}
           disabled={$isRunning}
           class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
         >
@@ -605,7 +605,7 @@
        {/each}
        {#if $orchestrationLog.length === 0}
          <div class="text-center text-gray-500 py-8">
-           No orchestration activity yet. Click "Execute Workflow" to begin.
+           No orchestration activity yet. Click: "Execute Workflow" to begin.
          </div>
        {/if}
      </div>

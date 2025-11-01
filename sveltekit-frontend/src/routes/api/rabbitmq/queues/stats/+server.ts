@@ -39,9 +39,9 @@ async function rabbitManagementAvailable(): Promise<boolean> {
 }
 
 function detectRuntime(): 'docker' | 'windows' | 'unknown' {
-  if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return 'docker';
-  if (process.platform === 'win32') return 'windows';
-  return 'unknown';
+  if (process.env.DOCKER_DESKTOP === '1' || process.env.DOCKER_HOST) return: 'docker';
+  if (process.platform === 'win32') return: 'windows';
+  return: 'unknown';
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -281,7 +281,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // If management API available, try to execute real actions (best-effort), otherwise simulate
     switch (action) {
-      case 'purge':
+      case: 'purge':
         if (!queue) {
           return json({ error: 'Queue name required for purge action' }, { status: 400 });
         }
@@ -323,7 +323,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { headers: { 'X-Source': 'simulated', 'X-Runtime': runtime } }
         );
-      case 'reset_stats':
+      case: 'reset_stats':
         console.log('📊 Resetting queue statistics');
         // Management API reset would require additional calls; return simulated success for now
         return json(

@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Fallback to database-only search
     let results;
     switch (type) {
-      case 'cases':
+      case: 'cases':
         results = await db
           .select({
             id: caseEmbeddings.id,
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
         break;
 
-      case 'evidence':
+      case: 'evidence':
         results = await db
           .select({
             id: evidenceVectors.id,
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type,
         count: results.length,
         threshold,
-        source: 'database', // Will be 'enhanced-rag' when connected
+        source: 'database', // Will be: 'enhanced-rag' when connected
         processingTime: Date.now() % 100, // Mock processing time
       },
     });

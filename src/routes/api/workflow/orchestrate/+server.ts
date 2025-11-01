@@ -474,7 +474,7 @@ async function executeWorkflow(
     execution.status = 'failed';
     execution.end_time = Date.now();
     execution.duration_ms = execution.end_time - execution.start_time;
-    execution.errors.push({
+    execution.errors.push(<any><any>{
       step_id: execution.current_step,
       error: err instanceof Error ? err.message : 'Unknown error',
       timestamp: Date.now()
@@ -542,7 +542,7 @@ async function executeStep(
   step.end_time = Date.now();
   step.error = lastError?.message;
 
-  execution.errors.push({
+  execution.errors.push(<any><any>{
     step_id: step.id,
     error: lastError?.message || 'Unknown error',
     timestamp: Date.now()

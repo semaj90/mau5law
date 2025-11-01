@@ -128,13 +128,13 @@ export class MultiLayerCacheSystem {
     if (!layer || !config || layer.size === 0) return false;
     let keyToEvict: string | null = null;
     switch (config.evictionPolicy) {
-      case 'lru':
+      case: 'lru':
         keyToEvict = this.findLRU(layer);
         break;
-      case 'lfu':
+      case: 'lfu':
         keyToEvict = this.findLFU(layer);
         break;
-      case 'fifo':
+      case: 'fifo':
         keyToEvict = this.findFIFO(layer);
         break;
     }
@@ -198,11 +198,11 @@ export class MultiLayerCacheSystem {
   }
   private getPriorityValue(priority: CacheLayer['priority']): number {
     switch (priority) {
-      case 'high':
+      case: 'high':
         return 3;
-      case 'medium':
+      case: 'medium':
         return 2;
-      case 'low':
+      case: 'low':
         return 1;
       default:
         return 0;

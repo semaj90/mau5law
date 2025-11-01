@@ -405,20 +405,20 @@ Classify the query and respond with JSON:;
     selectedAgents.push(this.agents.get('router')!);
     // Add specialized agents based on domain
     switch (intent.primaryDomain) {
-      case 'contract':
+      case: 'contract':
         selectedAgents.push(this.agents.get('contract_specialist')!);
         if (intent.complexity === 'complex' || intent.complexity === 'expert') {
           selectedAgents.push(this.agents.get('compliance_specialist')!);
         }
         break;
-      case 'litigation':
+      case: 'litigation':
         selectedAgents.push(this.agents.get('litigation_specialist')!);
         selectedAgents.push(this.agents.get('research_specialist')!);
         break;
-      case 'compliance':
+      case: 'compliance':
         selectedAgents.push(this.agents.get('compliance_specialist')!);
         break;
-      case 'research':
+      case: 'research':
         selectedAgents.push(this.agents.get('research_specialist')!);
         break;
       default:

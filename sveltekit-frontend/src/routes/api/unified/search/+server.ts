@@ -12,7 +12,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return JSON.stringify(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 

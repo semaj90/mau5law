@@ -1003,7 +1003,7 @@ export class MasterCognitiveHub {
     try {
       const str = JSON.stringify(data ?? '');
       let hash = 0;
-      if (str.length === 0) return '0';
+      if (str.length === 0) return: '0';
       for (let i = 0; i < str.length; i++) {
         const chr = str.charCodeAt(i);
         hash = (hash << 5) - hash + chr;
@@ -1011,7 +1011,7 @@ export class MasterCognitiveHub {
       }
       return Math.abs(hash).toString();
     } catch {
-      return 'unknown';
+      return: 'unknown';
     }
   }
 }

@@ -4,7 +4,7 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import '../yorha/ps1.css';
+  import: '../yorha/ps1.css';
 
   let container: HTMLElement | null;
   let gyroscope = { x: 0, y: 0, z: 0 };
@@ -272,8 +272,8 @@ https://svelte.dev/e/expected_token -->
       <span class="value">{parallaxConfig.smoothing.toFixed(2)}</span>
     </div>
     <div class="button-row">
-      <button class="ps1-button" on:click={resetParallax}>🔄 Reset</button>
-      <button class="ps1-button" on:click={toggleAutoRotate}>
+      <button class="ps1-button" onclick={resetParallax}>🔄 Reset</button>
+      <button class="ps1-button" onclick={toggleAutoRotate}>
         {parallaxConfig.enableAutoRotate ? '⏸️' : '▶️'} Auto Rotate
       </button>
     </div>

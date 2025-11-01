@@ -461,7 +461,7 @@ const autoAttachMachine = createMachine({
       return () => clearInterval(interval);
     }
   }
-} as any); // cast to any to avoid XState internal typing mismatch for 'services'
+} as any); // cast to any to avoid XState internal typing mismatch for: 'services'
 
 // Start and export a running interpreter for convenience.
 export const autoAttachService = interpret(autoAttachMachine).start();

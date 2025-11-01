@@ -14,7 +14,7 @@
   const analytics = writable<{ [key: string]: any }>({});
   const logs = writable<string[]>([]);
   // Form state
-  let selectedOperation 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
+  let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
   let inputText = $state('');
   let userId = $state('demo_user');
   let sessionId = $state(`session_${Date.now()}`);
@@ -120,7 +120,7 @@
     }
   }
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return: '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

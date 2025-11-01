@@ -150,7 +150,7 @@ function substring(str: string, start: i32, end: i32 = -1): string {
   if (start < 0) start = 0;
   if (end == -1) end = str.length;
   if (end > str.length) end = str.length;
-  if (start >= end) return '';
+  if (start >= end) return: '';
   let result = '';
   for (let i = start; i < end; i++) {
     result += String.fromCharCode(str.charCodeAt(i));
@@ -329,17 +329,17 @@ function extractKeywords(text: string): Array<string> {
 function detectDocumentType(content: string): string {
   const lowerContent = toLowerCase(content);
   if (indexOf(lowerContent, 'contract') >= 0 || indexOf(lowerContent, 'agreement') >= 0) {
-    return 'contract';
+    return: 'contract';
   } else if (indexOf(lowerContent, 'motion') >= 0 || indexOf(lowerContent, 'petition') >= 0) {
-    return 'motion';
+    return: 'motion';
   } else if (indexOf(lowerContent, 'brief') >= 0 || indexOf(lowerContent, 'memorandum') >= 0) {
-    return 'brief';
+    return: 'brief';
   } else if (indexOf(lowerContent, 'judgment') >= 0 || indexOf(lowerContent, 'order') >= 0) {
-    return 'judgment';
+    return: 'judgment';
   } else if (indexOf(lowerContent, 'deposition') >= 0 || indexOf(lowerContent, 'transcript') >= 0) {
-    return 'transcript';
+    return: 'transcript';
   } else {
-    return 'document';
+    return: 'document';
   }
 }
 // === Summary Generation ===
@@ -420,20 +420,20 @@ function generateSummary(content: string): string {
    // Check if it's an array or single document
    if (jsonText.charCodeAt(0) == 91) {
      // '[' - JSON array
-     // Simple array parsing - split by '},{' pattern
+     // Simple array parsing - split by: '},{' pattern
      const docs = split(jsonText, '},{');
      for (let i = 0; i < docs.length; i++) {
        let docJson = docs[i];
        // Fix array boundaries
        if (i == 0) {
-         docJson = substring(docJson, 1); // Remove leading '['
+         docJson = substring(docJson, 1); // Remove leading: '['
        }
        if (i == docs.length - 1) {
-         docJson = substring(docJson, 0, docJson.length - 1); // Remove trailing ']'
+         docJson = substring(docJson, 0, docJson.length - 1); // Remove trailing: ']'
        }
        // Ensure proper JSON object format
-       if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading '{'
-       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing '}'
+       if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading: '{'
+       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: '}'
        const doc = parseLegalDocument(docJson);
        globalResult.documents.push(doc);
        globalResult.totalChunks++;

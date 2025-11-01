@@ -192,19 +192,19 @@ async function processCPUVectorOperation(params: {
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
   switch (operation) {
-    case 'cosine':
+    case: 'cosine':
       if (!vectorB) throw new Error('vectorB required for cosine similarity');
       return cosineSimilarity(vectorA, vectorB);
-    case 'euclidean':
+    case: 'euclidean':
       if (!vectorB) throw new Error('vectorB required for euclidean distance');
       return euclideanDistance(vectorA, vectorB);
-    case 'dot':
+    case: 'dot':
       if (!vectorB) throw new Error('vectorB required for dot product');
       return dotProduct(vectorA, vectorB);
-    case 'manhattan':
+    case: 'manhattan':
       if (!vectorB) throw new Error('vectorB required for manhattan distance');
       return manhattanDistance(vectorA, vectorB);
-    case 'batch':
+    case: 'batch':
       if (!vectors) throw new Error('vectors required for batch operation');
       return vectors.map(vector => {
         switch (algorithm) {
@@ -268,11 +268,7 @@ function calculateComplexityScore(operation: string, dataSize: number, vectorCou
   const baseScore = Math.log2(dataSize + 1) * 10;
   // Operation complexity multipliers
   const operationMultipliers = {
-    'cosine': 1.5, // Requires normalization
-    'euclidean': 1.2, // Square root operation
-    'dot': 0.8, // Simple multiplication
-    'manhattan': 1.0, // Absolute value operations
-    'batch': 2.0, // Multiple vector processing
+    'cosine': 1.5, // Requires normalization: 'euclidean': 1.2, // Square root operation: 'dot': 0.8, // Simple multiplication: 'manhattan': 1.0, // Absolute value operations: 'batch': 2.0, // Multiple vector processing
   };
   const multiplier = operationMultipliers[operation as keyof typeof operationMultipliers] || 1.0;
   // Vector count impact (batch operations)

@@ -36,9 +36,9 @@
   let newCase = $state({
     caseNumber: `CASE-${Date.now()}`,
     title: 'Authenticated Test Case',
-    description 'Testing CRUD operations with authenticated user and PostgreSQL integration',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical',
-    status: 'draft' as 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
+    description: 'Testing CRUD operations with authenticated user and PostgreSQL integration',
+    priority: 'medium' as: 'low' | 'medium' | 'high' | 'critical',
+    status: 'draft' as: 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
     category: 'testing',
     tags: ['test', 'authenticated', 'crud'],
     metadata: {
@@ -283,7 +283,7 @@
     try {
       const updateData = {
         title: 'Updated Authenticated Test Case',
-        description 'Updated via authenticated API test with new embeddings',
+        description: 'Updated via authenticated API test with new embeddings',
         status: 'in_progress',
         priority: 'high',
         tags: ['updated', 'authenticated', 'pgvector'],

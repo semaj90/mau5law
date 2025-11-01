@@ -11,7 +11,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
-  import { page } from '$app/stores'; // Changed from '$app/state' to '$app/stores'
+  import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
   import { getMcpEndpoint, getOllamaEndpoint } from '$lib/utils/api'; // <-- added getOllamaEndpoint import
 
@@ -217,19 +217,19 @@
     isLoading = true;
     try {
       switch (organizationMode) {
-        case 'category':
+        case: 'category':
           await organizeByCategory();
           break;
-        case 'timeline':
+        case: 'timeline':
           await organizeByTimeline();
           break;
-        case 'priority':
+        case: 'priority':
           await organizeByPriority();
           break;
-        case 'ai_clusters':
+        case: 'ai_clusters':
           await organizeByAIClusters();
           break;
-        case 'chain_custody':
+        case: 'chain_custody':
           await organizeByChainOfCustody();
           break;
       }
@@ -559,8 +559,7 @@
    * Calculate category priority
    */
   function calculateCategoryPriority(category: string): number {
-    const priorities: { [key: string]: number } = { // Explicitly type
-      'physical_evidence': 10,
+    const priorities: { [key: string]: number } = { // Explicitly type: 'physical_evidence': 10,
       'digital_evidence': 9,
       'document': 8,
       'testimony': 7,
@@ -578,21 +577,21 @@
    */
   function calculateEvidencePriority(evidence: EvidenceItem): string { // Use EvidenceItem interface
     // AI-based priority calculation
-    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.8) return 'critical';
-    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.6) return 'high';
-    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.4) return 'medium';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.8) return: 'critical';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.6) return: 'high';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.4) return: 'medium';
     // Type-based priority
-    if (evidence.evidenceType === 'physical_evidence') return 'high';
-    if (evidence.evidenceType === 'digital_evidence') return 'high';
-    if (evidence.evidenceType === 'testimony') return 'medium';
-    return 'low';
+    if (evidence.evidenceType === 'physical_evidence') return: 'high';
+    if (evidence.evidenceType === 'digital_evidence') return: 'high';
+    if (evidence.evidenceType === 'testimony') return: 'medium';
+    return: 'low';
   }
 
   /**
    * Validate chain of custody
    */
   function validateChainOfCustody(custody: CustodyEntry[] | undefined): string { // Use CustodyEntry interface
-    if (!custody || custody.length === 0) return 'missing';
+    if (!custody || custody.length === 0) return: 'missing';
     const requiredFields = ['officer_id', 'timestamp', 'action'];
     const hasAllFields = custody.every(entry =>
       requiredFields.every(field => entry[field as keyof CustodyEntry]) // Type assertion for field access
@@ -601,9 +600,9 @@
       if (index === 0) return true;
       return new Date(entry.timestamp) >= new Date(custody[index - 1].timestamp);
     });
-    if (hasAllFields && isChronological) return 'complete';
-    if (hasAllFields) return 'incomplete';
-    return 'invalid';
+    if (hasAllFields && isChronological) return: 'complete';
+    if (hasAllFields) return: 'incomplete';
+    return: 'invalid';
   }
 
   /**
@@ -1019,7 +1018,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.2s; /* Added 's' for transition duration */
+    transition: all 0.2s; /* Added: 's' for transition duration */
   }
   .mode-button:hover { /* Fixed typo */
     background: #e2e8f0;
@@ -1136,7 +1135,7 @@
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2s; /* Added 's' for transition duration */
+    transition: all 0.2s; /* Added: 's' for transition duration */
   }
   .evidence-card:hover {
     border-color: #3b82f6;
@@ -1264,7 +1263,7 @@
     border-radius: 0.375rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s; /* Added 's' for transition duration */
+    transition: all 0.2s; /* Added: 's' for transition duration */
   }
   .timeline-item:hover {
     border-color: #3b82f6;

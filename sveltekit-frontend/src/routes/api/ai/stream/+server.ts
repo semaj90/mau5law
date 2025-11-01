@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 
 /**
  * Simple SSE streaming endpoint that accepts a JSON body { prompt }
- * and streams lines of text as the LLM 'progresses'.
+ * and streams lines of text as the LLM: 'progresses'.
  *
  * This is a development-friendly implementation which simulates streaming
  * and is safe to run without a real streaming LLM.

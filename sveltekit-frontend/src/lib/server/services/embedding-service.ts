@@ -27,11 +27,11 @@ function getBackendSafe(name?: string): string {
   if (_getBackend) return _getBackend(name);
   // default local fallback
   switch (name) {
-    case 'tensorrt':
-      return 'http://localhost:8001';
-    case 'webgpu':
-      return 'http://localhost:3002';
-    case 'ollama':
+    case: 'tensorrt':
+      return: 'http://localhost:8001';
+    case: 'webgpu':
+      return: 'http://localhost:3002';
+    case: 'ollama':
     default:
       return (process.env.PUBLIC_OLLAMA_URL as string) || 'http://localhost:11434';
   }
@@ -58,11 +58,11 @@ const CACHE_TTL_SECONDS = 3600;
 
 function resolveBackend(mode?: EmbeddingMode): string {
   switch (mode) {
-    case 'tensorrt':
+    case: 'tensorrt':
       return getBackendSafe('tensorrt');
-    case 'webgpu':
+    case: 'webgpu':
       return getBackendSafe('webgpu');
-    case 'ollama':
+    case: 'ollama':
     default:
       return getBackendSafe('ollama');
   }

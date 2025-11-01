@@ -104,7 +104,7 @@ class QdrantVectorService {
       }
 
       console.log(
-        `✅ Qdrant collection "${collectionConfig.name}" created with ${collectionConfig.quantizationType} quantization`
+        `✅ Qdrant collection: "${collectionConfig.name}" created with ${collectionConfig.quantizationType} quantization`
       );
       return true;
     } catch (error) {

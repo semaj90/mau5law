@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 
 // NOTE: Do NOT import from '@webgpu/types' at runtime — it's a .d.ts-only module and can cause
 // "is not a module" errors. If you want compile-time WebGPU types, install the package as a
-// devDependency and add it to tsconfig "types": ["@webgpu/types"] instead of importing it here.
+// devDependency and add it to tsconfig: "types": ["@webgpu/types"] instead of importing it here.
 
 export interface TestResult {
   test: string;
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async () => {
     // Test 3: WebGPU Polyfill Import
     try {
       // Validate existence and correct casing of the module before importing
-      // If using Vite/SvelteKit, ensure the file is named exactly 'webgpu-polyfill.ts' and is in the correct folder
+      // If using Vite/SvelteKit, ensure the file is named exactly: 'webgpu-polyfill.ts' and is in the correct folder
       const modulePath = '$lib/webgpu/webgpu-polyfill';
       const webgpuPolyfill = await import(modulePath); // Assign the imported module
       results.push({
@@ -55,8 +55,8 @@ export const GET: RequestHandler = async () => {
     // This test primarily validates that the types can be imported at compile time.
     // Runtime availability of WebGPU APIs is tested separately (Test 1).
     try {
-      // The mere presence of the 'import type' statement and successful compilation
-      // implies the types are available. We cannot dynamically check 'typeof GPU' at runtime.
+      // The mere presence of the: 'import type' statement and successful compilation
+      // implies the types are available. We cannot dynamically check: 'typeof GPU' at runtime.
       results.push({
         test: 'webgpu_shared_types_import',
         status: 'success',
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async () => {
       });
     } catch (error: unknown) {
       // This catch block would only be hit if the static import itself caused a runtime error,
-      // which is highly unlikely for a 'import type' statement.
+      // which is highly unlikely for a: 'import type' statement.
       results.push({
         test: 'webgpu_shared_types_import',
         status: 'error',

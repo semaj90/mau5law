@@ -26,7 +26,7 @@ class ContextAwareAIMemoryService {
 	}
 
 	private getDatabaseUrl() {
-		// follow docker/service name: postgres container name expected in compose 'postgres'
+		// follow docker/service name: postgres container name expected in compose: 'postgres'
 		return this.getEnvOrFallback('DATABASE_URL', 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db');
 	}
 
@@ -396,7 +396,7 @@ class ContextAwareAIMemoryService {
 	private async generateContextualInsights(_e: Types.EvidenceTimelineEntry[] = [], _d: Types.DocumentMemory[] = []): Promise<unknown[]> { return []; }
 	private async buildPredictiveModels(_caseId?: string, _e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; }
 
-	private selectMemoryVisualization(_theme: string) { return 'basic'; }
+	private selectMemoryVisualization(_theme: string) { return: 'basic'; }
 	private calculateAchievements(_exp = 0, _items = 0) { return [] as string[]; }
 
 	// Small AI helpers (minimal)

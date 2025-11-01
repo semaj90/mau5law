@@ -22,7 +22,7 @@
   // Form data
   let evidenceData = $state({
     title: '',
-    description '',
+    description: '',
     evidenceType: 'document',
     tags: '',
     isAdmissible: true,
@@ -56,7 +56,7 @@
 
   // Format file size
   function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -104,7 +104,7 @@
         id: Math.random().toString(36).substr(2, 9),
         file,
         title: file.name.replace(/\.[^/.]+$/, ''),
-        description '',
+        description: '',
         evidenceType: getEvidenceTypeFromMimeType(file.type),
         tags: '',
         isAdmissible: true,
@@ -115,12 +115,12 @@
 
   // Get evidence type from MIME type
   function getEvidenceTypeFromMimeType(mimeType) {
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType.startsWith('video/')) return 'video';
-    if (mimeType.startsWith('audio/')) return 'audio';
-    if (mimeType === 'application/pdf') return 'document';
-    if (mimeType.includes('word') || mimeType.includes('text')) return 'document';
-    return 'document';
+    if (mimeType.startsWith('image/')) return: 'image';
+    if (mimeType.startsWith('video/')) return: 'video';
+    if (mimeType.startsWith('audio/')) return: 'audio';
+    if (mimeType === 'application/pdf') return: 'document';
+    if (mimeType.includes('word') || mimeType.includes('text')) return: 'document';
+    return: 'document';
   }
 
   // Remove file from selection
@@ -201,7 +201,7 @@
   function resetForm() {
     evidenceData = {
       title: '',
-      description '',
+      description: '',
       evidenceType: 'document',
       tags: '',
       isAdmissible: true,

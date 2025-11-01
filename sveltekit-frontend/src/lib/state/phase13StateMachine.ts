@@ -314,7 +314,7 @@ const apiCoordinationService = (_arg?: unknown) => { // explicitly typed param t
 
     const listener = (evt: Phase13Event | { type: string; [k: string]: unknown }) => {
       switch (evt.type) {
-        case 'API_COORDINATION_START': {
+        case: 'API_COORDINATION_START': {
           coordinationActive = true;
           redisConnections = ['redis://localhost:6379'];
           natsChannels = ['legal.events', 'ai.recommendations', 'performance.metrics'];
@@ -338,7 +338,7 @@ const apiCoordinationService = (_arg?: unknown) => { // explicitly typed param t
           }, 1000);
           break;
         }
-        case 'API_COORDINATION_STOP': {
+        case: 'API_COORDINATION_STOP': {
           coordinationActive = false;
           redisConnections = [];
           natsChannels = [];

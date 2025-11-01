@@ -290,18 +290,18 @@ export const GET: RequestHandler = async ({ url }) => {
   const timeRange = url.searchParams.get('timeRange') || '1h';
   try {
     switch (action) {
-      case 'dashboard':
+      case: 'dashboard':
         return json(await getDashboardMetrics(timeRange));
-      case 'keys': {
+      case: 'keys': {
         const pattern = url.searchParams.get('pattern') || '*';
         const limit = parseInt(url.searchParams.get('limit') || '100');
         return json(await getCacheKeys(pattern, limit));
       }
-      case 'memory':
+      case: 'memory':
         return json(await getMemoryAnalysis());
-      case 'performance':
+      case: 'performance':
         return json(await getPerformanceMetrics(timeRange));
-      case 'health':
+      case: 'health':
         return json(await getSystemHealth());
       default:
         return json(
@@ -330,17 +330,17 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, params = {} } = await request.json();
     switch (action) {
-      case 'clear-cache':
+      case: 'clear-cache':
         return json(await clearCacheByPattern(params.pattern || '*'));
-      case 'clear-vector-cache':
+      case: 'clear-vector-cache':
         // Use the previously-unused import to clear vector cache
         await clearVectorCache();
         return json({ success: true, message: 'Vector cache cleared', timestamp: new Date().toISOString() });
-      case 'warm-cache':
+      case: 'warm-cache':
         return json(await warmPopularCache(params.queries || []));
-      case 'analyze-keys':
+      case: 'analyze-keys':
         return json(await analyzeKeyPatterns());
-      case 'optimize-memory':
+      case: 'optimize-memory':
         return json(await optimizeMemoryUsage());
       default:
         return json(
@@ -721,7 +721,7 @@ async function clearCacheByPattern(
 
 async function warmPopularCache(_queries: string[] = []): Promise<{ success: boolean; timestamp: string }> {
   // Placeholder: accepts query list but doesn't use it yet.
-  // Parameter intentionally prefixed with "_" to satisfy linting rules for unused args.
+  // Parameter intentionally prefixed with: "_" to satisfy linting rules for unused args.
   // Future implementation: iterate _queries to pre-populate caches, call relevant services, etc.
   return { success: true, timestamp: new Date().toISOString() };
 }

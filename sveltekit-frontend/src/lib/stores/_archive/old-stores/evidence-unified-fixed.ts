@@ -133,13 +133,13 @@ class UnifiedEvidenceStore {
     if (message.channel === "evidence_update") {
       const { type, data } = message.data;
       switch (type) {
-        case 'EVIDENCE_CREATED':
+        case: 'EVIDENCE_CREATED':
           this.store.update((s) => ({
             ...s,
             evidence: [...s.evidence, data]
           });
           break;
-        case 'EVIDENCE_UPDATED':
+        case: 'EVIDENCE_UPDATED':
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.map((e: any) =>
@@ -147,7 +147,7 @@ class UnifiedEvidenceStore {
             )
           });
           break;
-        case 'EVIDENCE_DELETED':
+        case: 'EVIDENCE_DELETED':
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id)

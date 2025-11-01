@@ -9,7 +9,7 @@ import {
 } from '$lib/server/api/standard-response';
 import type { RequestEvent } from '@sveltejs/kit'; // Import RequestEvent for getRequestId typing
 
-// Define specific types for the 'data' payload based on the 'channel'
+// Define specific types for the: 'data' payload based on the: 'channel'
 interface EvidenceUpdatePayload {
   evidenceId: string;
   fileName: string;
@@ -47,7 +47,7 @@ const postHandler: RequestHandler = async ({ request, locals }) => {
     return apiError(validationError, 400, 'VALIDATION_ERROR', undefined, requestId);
   }
 
-  // Use the union type for 'data' instead of 'any'
+  // Use the union type for: 'data' instead of: 'any'
   const { channel, data } = body as { channel: string; data: RedisPublishData };
 
   const redisService = getRedisService();
@@ -57,7 +57,7 @@ const postHandler: RequestHandler = async ({ request, locals }) => {
 
   // Publish event based on channel type
   switch (channel) {
-    case 'evidence_update': {
+    case: 'evidence_update': {
       // Type assertion for specific channel data
       const evidenceData = data as EvidenceUpdatePayload;
       await redisService.publishEvidenceCreated(
@@ -67,13 +67,13 @@ const postHandler: RequestHandler = async ({ request, locals }) => {
       );
       break;
     }
-    case 'case_update': {
+    case: 'case_update': {
       // Type assertion for specific channel data
       const caseData = data as CaseUpdatePayload;
       await redisService.publishCaseUpdated(caseData.caseId, caseData.changes || {}, caseData.userId);
       break;
     }
-    case 'canvas_update': {
+    case: 'canvas_update': {
       // Type assertion for specific channel data
       const canvasData = data as CanvasUpdatePayload;
       if (canvasData.type === 'CANVAS_NODE_ADDED') {

@@ -192,16 +192,16 @@ export class LegalAIJobQueue {
       await this.updateJobStatus(job.id, 'processing');
       let result: ProcessingResult;
       switch (job.type) {
-        case 'evidence_analysis':
+        case: 'evidence_analysis':
           result = await this.processEvidenceAnalysis(job);
           break;
-        case 'case_synthesis':
+        case: 'case_synthesis':
           result = await this.processCaseSynthesis(job);
           break;
-        case 'report_generation':
+        case: 'report_generation':
           result = await this.processReportGeneration(job);
           break;
-        case 'vector_embedding':
+        case: 'vector_embedding':
           result = await this.processVectorEmbedding(job);
           break;
         default:
@@ -470,7 +470,7 @@ export class LegalAIJobQueue {
    */
   private async performCaseSynthesis(caseData: CaseRow, evidenceList: EvidenceRow[]): Promise<CaseSynthesisResult> {
     return {
-      summary: `Comprehensive analysis of case "${caseData.title ?? ''}" with ${evidenceList.length} pieces of evidence`,
+      summary: `Comprehensive analysis of case: "${caseData.title ?? ''}" with ${evidenceList.length} pieces of evidence`,
       timeline: evidenceList.map((e, i) => ({
         event: `Evidence ${i + 1}: ${e.title ?? 'untitled'}`,
         timestamp: e.createdAt,
@@ -534,27 +534,27 @@ ${reportData.description || 'Case analysis and findings'}
     try {
       let content = '';
       switch (entityType) {
-        case 'evidence': {
+        case: 'evidence': {
           const rows = await db.select().from(evidence).where(eq(evidence.id, entityId)).limit(1);
           const evidenceData = rows[0] as EvidenceRow | undefined;
           content = `${evidenceData?.title || ''} ${evidenceData?.description || ''} ${evidenceData?.aiSummary || ''}`;
           break;
         }
-        case 'case': {
+        case: 'case': {
           const rows = await db.select().from(cases).where(eq(cases.id, entityId)).limit(1);
           const caseData = rows[0] as CaseRow | undefined;
           content = `${caseData?.title || ''} ${caseData?.description || ''}`;
           break;
         }
-        case 'report': {
+        case: 'report': {
           const rows = await db.select().from(reports).where(eq(reports.id, entityId)).limit(1);
           const reportData = rows[0] as ReportRow | undefined;
           content = `${reportData?.title || ''} ${reportData?.description || ''} ${reportData?.content || ''}`;
           break;
         }
-        case 'person':
-        case 'person_of_interest':
-        case 'personsOfInterest': {
+        case: 'person':
+        case: 'person_of_interest':
+        case: 'personsOfInterest': {
           const rows = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, entityId)).limit(1);
           const person = rows[0] as PersonRow | undefined;
           content = `${person?.name || ''} ${person?.notes || ''} ${person?.biography || ''}`;
@@ -591,13 +591,13 @@ ${reportData.description || 'Case analysis and findings'}
     // Keep queue sorted by priority + scheduledAt (urgent -> low)
     const priorityRank = (p: Job['priority']) => {
       switch (p) {
-        case 'urgent':
+        case: 'urgent':
           return 0;
-        case 'high':
+        case: 'high':
           return 1;
-        case 'medium':
+        case: 'medium':
           return 2;
-        case 'low':
+        case: 'low':
           return 3;
         default:
           return 4;
@@ -702,13 +702,13 @@ ${reportData.description || 'Case analysis and findings'}
       this.jobQueue.sort((a, b) => {
         const priorityRank = (p: Job['priority']) => {
           switch (p) {
-            case 'urgent':
+            case: 'urgent':
               return 0;
-            case 'high':
+            case: 'high':
               return 1;
-            case 'medium':
+            case: 'medium':
               return 2;
-            case 'low':
+            case: 'low':
               return 3;
             default:
               return 4;

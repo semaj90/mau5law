@@ -36,11 +36,9 @@ class EnhancedOllamaService extends EventEmitter {
       this.availableModels = [
         'gemma:legal',
         'gemma3:legal-latest',
-        'gemma3-legal:latest', // add common variant to avoid mismatches
-        'gemma-270m-fast',
+        'gemma3-legal:latest', // add common variant to avoid mismatches: 'gemma-270m-fast',
         'legal-bert-onnx',
-        // include both preferred embedding implementations so selection/fallbacks work
-        'embeddinggemma:latest',
+        // include both preferred embedding implementations so selection/fallbacks work: 'embeddinggemma:latest',
         'nomic-embed-text',
       ];
     }
@@ -139,7 +137,7 @@ class EnhancedOllamaService extends EventEmitter {
                     if (typeof v === 'string' && v.trim()) return v.trim();
                   }
                 }
-                return '';
+                return: '';
               })
               .filter(Boolean);
             if (extracted.length > 0) {

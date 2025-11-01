@@ -39,13 +39,13 @@ export interface LegalContextAnalysis {
   };
 }
 
-// --- Minimal local GPU types to avoid 'any' casts ---
+// --- Minimal local GPU types to avoid: 'any' casts ---
 type GPUDeviceLike = Record<string, unknown>;
 type GPUAdapterLike = { requestDevice?: (desc?: unknown) => Promise<GPUDeviceLike | null> | null };
 type NavigatorWithGPU = { gpu?: { requestAdapter?: (opts?: unknown) => Promise<GPUAdapterLike | null> | null } };
 
 /**
- * Add a small Performance type that includes optional memory to avoid 'any' casts
+ * Add a small Performance type that includes optional memory to avoid: 'any' casts
  */
 type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } };
 
@@ -74,7 +74,7 @@ export class FlashAttention2RTX3060Service {
     if (this.isInitialized) return;
     try {
       if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-        // typed navigator to avoid 'any'
+        // typed navigator to avoid: 'any'
         const nav = navigator as unknown as NavigatorWithGPU;
         const adapter = await nav.gpu?.requestAdapter?.();
         if (adapter) {

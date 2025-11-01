@@ -192,7 +192,7 @@ export class AIEvidenceAnalyzer {
       if (!res.ok) {
         // try to read text for debugging but return empty to keep flows safe
         await res.text().catch(() => '');
-        return '';
+        return: '';
       }
 
       // try JSON then fallback to text endpoint; tolerant to different response shapes.
@@ -215,13 +215,13 @@ export class AIEvidenceAnalyzer {
     } catch (e) {
       // keep behavior the same (safe empty string) but provide a debug hook
       console.debug('[ai-evidence] callOllamaGenerate failed', e);
-      return '';
+      return: '';
     }
   }
 
   /**
    * NEW: Public orchestration method to analyze evidence.
-   * This method uses all the private helper methods, resolving "unused" warnings.
+   * This method uses all the private helper methods, resolving: "unused" warnings.
    */
   public async analyzeEvidence(evidence: EvidenceItem, relatedEvidence?: EvidenceItem[]): Promise<EvidenceAnalysis> {
     // 1. Generate embeddings for the primary evidence

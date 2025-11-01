@@ -91,19 +91,19 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
     switch (action) {
-      case 'health':
+      case: 'health':
         const healthStatus = await tensorrtLLMService.getHealthStatus();
         return json({
           success: true,
           data: healthStatus,
         });
-      case 'models':
+      case: 'models':
         const models = await tensorrtLLMService.getAvailableModels();
         return json({
           success: true,
           data: models,
         });
-      case 'warmup':
+      case: 'warmup':
         await tensorrtLLMService.warmupModels();
         return json({
           success: true,

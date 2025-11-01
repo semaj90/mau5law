@@ -84,7 +84,7 @@ type PredictiveTypingEvent =
   | { type: 'RETRY' }
   | { type: 'RESET' };
 
-// Accept DoneInvokeEvent shapes too so actions can receive actor onDone events without 'any'
+// Accept DoneInvokeEvent shapes too so actions can receive actor onDone events without: 'any'
 type MachineEvent = PredictiveTypingEvent | DoneInvokeEvent<unknown>;
 
 // --- Add these small, conservative types to avoid `any` ---
@@ -819,8 +819,7 @@ export const predictiveTypingMachine = setup({
             }),
             onDone: {
               actions: [
-                // when actor finishes, onDone provides DoneInvokeEvent -> use recordAnalyticsSuccess/action will handle the DoneInvokeEvent union
-                'recordAnalyticsSuccess',
+                // when actor finishes, onDone provides DoneInvokeEvent -> use recordAnalyticsSuccess/action will handle the DoneInvokeEvent union: 'recordAnalyticsSuccess',
                 'updateSuggestions',
               ],
               target: 'suggestionsReady',

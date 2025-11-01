@@ -113,19 +113,19 @@
   }
   function enhanceByComponentType(element: HTMLElement) {
     switch (component) {
-      case 'button':
+      case: 'button':
         enhanceButton(element);
         break;
-      case 'input':
+      case: 'input':
         enhanceInput(element);
         break;
-      case 'dialog':
+      case: 'dialog':
         enhanceDialog(element);
         break;
-      case 'select':
+      case: 'select':
         enhanceSelect(element);
         break;
-      case 'tabs':
+      case: 'tabs':
         enhanceTabs(element);
         break;
       default:

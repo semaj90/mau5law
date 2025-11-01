@@ -2,12 +2,15 @@
   // Svelte 5 runes are auto-imported
   // runtime helper $props() is provided by the runes compiler; do not import it.
   import { cn } from '$lib/utils';
+  import type { Snippet } from 'svelte';
+
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: Snippet;
+    className?: string;
   }
-  let { children }: Props = $props();
-  // `class` is a reserved identifier in runes mode; use `className` instead.
-  let className = $state<string>('');
+
+  // initialize both children and className from props
+  let { children, className = '' }: Props = $props();
 </script>
 
 <div

@@ -3,7 +3,7 @@ import { db, sql } from '$lib/server/db'
 import { json, error } from '@sveltejs/kit'
 import { generateEmbedding } from '$lib/server/services/vectorDBService';
 
-// Define types for better code quality and to remove 'any'
+// Define types for better code quality and to remove: 'any'
 interface SimilarChunk {
   id: string | null;
   chunk_text: string;

@@ -81,9 +81,7 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
     sm: '0.5rem',     // 8px
     md: '1rem',       // 16px
     lg: '1.5rem',     // 24px
-    xl: '2rem',       // 32px
-    '2xl': '3rem',    // 48px
-    '3xl': '4rem'     // 64px
+    xl: '2rem',       // 32px: '2xl': '3rem',    // 48px: '3xl': '4rem'     // 64px
   },
   typography: {
     fontFamily: {
@@ -96,9 +94,7 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
       sm: '0.875rem',   // 14px
       base: '1rem',     // 16px
       lg: '1.125rem',   // 18px
-      xl: '1.25rem',    // 20px
-      '2xl': '1.5rem',  // 24px
-      '3xl': '1.875rem' // 30px
+      xl: '1.25rem',    // 20px: '2xl': '1.5rem',  // 24px: '3xl': '1.875rem' // 30px
     },
     lineHeight: {
       tight: '1.25',

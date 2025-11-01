@@ -29,7 +29,7 @@ interface Logger {
   child: (bindings: LoggerBindings) => Logger;
 }
 
-// Helper function to create child loggers, avoiding 'this' aliasing in the main logger object
+// Helper function to create child loggers, avoiding: 'this' aliasing in the main logger object
 function createChildLoggerInstance(parentLogger: Logger, bindings: LoggerBindings): Logger {
   return {
     info: (message: string, component: string, metadata?: LoggerBindings) =>
@@ -252,17 +252,17 @@ interface ChatStreamChunk {
 type AllowedThinking = 'analysis' | 'synthesis' | 'evaluation' | 'application';
 function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
   switch (t) {
-    case 'analysis':
-      return 'analysis';
-    case 'synthesis':
-      return 'synthesis';
-    case 'evaluation':
-    case 'verification':
-      return 'evaluation';
-    case 'application':
-    case 'citation':
-    case 'planning':
-      return 'application';
+    case: 'analysis':
+      return: 'analysis';
+    case: 'synthesis':
+      return: 'synthesis';
+    case: 'evaluation':
+    case: 'verification':
+      return: 'evaluation';
+    case: 'application':
+    case: 'citation':
+    case: 'planning':
+      return: 'application';
     default:
       return undefined;
   }
@@ -320,7 +320,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           return json(
             {
               success: false,
-              error: 'Query parameter "q" is required and must be at least 3 characters long',
+              error: 'Query parameter: "q" is required and must be at least 3 characters long',
               requestId,
             },
             { status: 400 }
@@ -464,7 +464,7 @@ export const POST: RequestHandler = async ({ request }) => {
               let sources: VectorSearchResult[] = [];
               for await (const chunk of streamGenerator) {
                 if (chunk.metadata?.type === 'sources') {
-                  sources = chunk.metadata.sources || []; // Removed 'as any'
+                  sources = chunk.metadata.sources || []; // Removed: 'as any'
                   const sourcesChunk = {
                     type: 'sources',
                     sources,
@@ -473,7 +473,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
                 } else if (chunk.metadata?.type === 'recommendations') {
-                  const recommendations = chunk.metadata.recommendations || []; // Removed 'as any'
+                  const recommendations = chunk.metadata.recommendations || []; // Removed: 'as any'
                   const recommendationsChunk = {
                     type: 'grpo-recommendations',
                     recommendations,
@@ -559,7 +559,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }) as AsyncGenerator<ChatStreamChunk>; // Cast to the defined chunk type
       for await (const chunk of streamGenerator) {
         if (chunk.metadata?.type === 'sources') {
-          sources = chunk.metadata.sources || []; // Removed 'as any'
+          sources = chunk.metadata.sources || []; // Removed: 'as any'
           vectorSearchUsed = sources.length > 0;
         } else if (chunk.metadata?.type === 'text') {
           fullResponse += chunk.text;

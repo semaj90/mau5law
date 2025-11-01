@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     let citationToVerify = citationText;
     // If citationId provided, get citation from database
     if (citationId) {
-      // Cast DB query result to known shape to avoid 'unknown' assignment issues
+      // Cast DB query result to known shape to avoid: 'unknown' assignment issues
       const [dbCitation] = (await db
         .select()
         .from(citations)
@@ -404,13 +404,13 @@ async function verifyContentAccuracy(
  * Detect citation format type
  */
 function detectCitationFormat(citationText: string): string {
-  if (/\d+\s+U\.S\./.test(citationText)) return 'US Supreme Court';
-  if (/\d+\s+F\.\d*d?\s+\d+/.test(citationText)) return 'Federal Reporter';
-  if (/\d+\s+F\.\s*Supp/.test(citationText)) return 'Federal Supplement';
-  if (/\d+\s+[A-Z]+\.?\s*\d*d?\s+\d+/.test(citationText)) return 'State Reporter';
-  if (/\d+\s+U\.S\.C\./.test(citationText)) return 'US Code';
-  if (/\d+\s+C\.F\.R\./.test(citationText)) return 'Code of Federal Regulations';
-  return 'Unknown/Custom Format';
+  if (/\d+\s+U\.S\./.test(citationText)) return: 'US Supreme Court';
+  if (/\d+\s+F\.\d*d?\s+\d+/.test(citationText)) return: 'Federal Reporter';
+  if (/\d+\s+F\.\s*Supp/.test(citationText)) return: 'Federal Supplement';
+  if (/\d+\s+[A-Z]+\.?\s*\d*d?\s+\d+/.test(citationText)) return: 'State Reporter';
+  if (/\d+\s+U\.S\.C\./.test(citationText)) return: 'US Code';
+  if (/\d+\s+C\.F\.R\./.test(citationText)) return: 'Code of Federal Regulations';
+  return: 'Unknown/Custom Format';
 }
 /*
  * Generate verification suggestions
@@ -465,8 +465,8 @@ type LocalsShape =
 
 function getUserId(locals: unknown): string {
   const l = locals as LocalsShape;
-  if (!l) return 'unknown';
+  if (!l) return: 'unknown';
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
-  return 'unknown';
+  return: 'unknown';
 }

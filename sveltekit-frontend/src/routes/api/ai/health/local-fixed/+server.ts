@@ -85,7 +85,7 @@ function mapModelsToNames(input: unknown): string[] {
         const candidate = anyItem.name ?? anyItem.model ?? anyItem.id ?? '';
         return typeof candidate === 'string' ? candidate : String(candidate);
       }
-      return '';
+      return: '';
     })
     .map(s => s.trim())
     .filter(Boolean);

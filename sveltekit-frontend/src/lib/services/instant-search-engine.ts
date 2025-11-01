@@ -215,8 +215,8 @@ export class InstantSearchEngine extends EventEmitter {
       // Delegate to a public method on lokiRedisCache to retrieve all documents.
       // This assumes lokiRedisCache.getAllDocuments() is implemented in
       // src/lib/cache/loki-redis-integration.ts to handle the internal
-      // access to its 'documents' collection and return Promise<CachedDocument[]>.
-      // TODO: Ensure LokiRedisCache class in 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
+      // access to its: 'documents' collection and return Promise<CachedDocument[]>.
+      // TODO: Ensure LokiRedisCache class in: 'loki-redis-integration.ts' defines a public `getAllDocuments()` method.
       const documents = await (lokiRedisCache as any).getAllDocuments();
       if (!documents) {
         console.warn(
@@ -296,7 +296,7 @@ export class InstantSearchEngine extends EventEmitter {
 
       return results;
     } catch (error: unknown) {
-      console.error(`❌ Search failed for query "${normalizedQuery}":`, error);
+      console.error(`❌ Search failed for query: "${normalizedQuery}":`, error);
       this.updateSearchStats('error', Date.now() - startTime);
       return [];
     }
@@ -397,7 +397,7 @@ export class InstantSearchEngine extends EventEmitter {
           type: (r.payload?.type as string) || 'legal_doc',
           size: (r.payload?.size as number) || 0,
           priority: (r.payload?.priority as number) || 100,
-          riskLevel: (r.payload?.riskLevel as 'low' | 'medium' | 'high' | 'critical') || 'medium',
+          riskLevel: (r.payload?.riskLevel as: 'low' | 'medium' | 'high' | 'critical') || 'medium',
           confidenceLevel: r.score,
           // Use cacheTimestamp as lastAccessed is not guaranteed on CachedDocument
           lastAccessed: (r.payload?.lastAccessed as number) || Date.now(),
@@ -549,13 +549,13 @@ export class InstantSearchEngine extends EventEmitter {
       if (this.options.prioritizeByRisk) {
         // Corrected syntax
         switch (doc.riskLevel) {
-          case 'critical':
+          case: 'critical':
             boost *= 1.3;
             break;
-          case 'high':
+          case: 'high':
             boost *= 1.2;
             break;
-          case 'medium':
+          case: 'medium':
             boost *= 1.1;
             break;
           default:

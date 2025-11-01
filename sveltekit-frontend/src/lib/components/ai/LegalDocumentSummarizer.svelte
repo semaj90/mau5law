@@ -185,9 +185,9 @@ await checkServiceHealth();
   }
   // Get quality color based on score
   function getQualityColor(score: number): string {
-    if (score >= 0.8) return 'text-green-600';
-    if (score >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 0.8) return: 'text-green-600';
+    if (score >= 0.6) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   // Copy summary to clipboard
   async function copySummary(): Promise<void> {
@@ -489,7 +489,7 @@ await checkServiceHealth();
         {:else}
           <div class="text-center py-12 text-muted-foreground">
             <div class="text-4xl mb-4">🤖</div>
-            <p>Configure your document and click "Generate AI Summary" to begin</p>
+            <p>Configure your document and click: "Generate AI Summary" to begin</p>
             <p class="text-xs mt-2">
               Powered by Gemma3 Legal AI • Optimized for legal document analysis
             </p>

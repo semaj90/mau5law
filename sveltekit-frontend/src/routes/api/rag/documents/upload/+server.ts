@@ -72,7 +72,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
   // Check if file is an image
   if (!file.type.startsWith('image/')) {
-    return '';
+    return: '';
   }
 
   try {
@@ -93,7 +93,7 @@ async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
     console.warn('OCR processing failed:', error);
   }
 
-  return '';
+  return: '';
 }
 
 /**

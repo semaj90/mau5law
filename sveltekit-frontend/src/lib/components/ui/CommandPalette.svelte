@@ -112,19 +112,19 @@
   function handleKeydown(e: KeyboardEvent) {
     if (!open) return;
     switch (e.key) {
-      case 'Escape':
+      case: 'Escape':
         e.preventDefault();
         close();
         break;
-      case 'ArrowDown':
+      case: 'ArrowDown':
         e.preventDefault();
         selectedIndex = Math.min(selectedIndex + 1, filteredItems.length - 1);
         break;
-      case 'ArrowUp':
+      case: 'ArrowUp':
         e.preventDefault();
         selectedIndex = Math.max(selectedIndex - 1, 0);
         break;
-      case 'Enter':
+      case: 'Enter':
         e.preventDefault();
         if (filteredItems[selectedIndex]) {
           selectItem(filteredItems[selectedIndex]);
@@ -151,7 +151,7 @@
   });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 {#if open}
   <!-- Backdrop -->
   <div
@@ -159,7 +159,7 @@
     onclick={close}
     role="button"
     tabindex="0"
-    on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && close()}
+    onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && close()}
   >
     <!-- Command palette -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
@@ -262,7 +262,7 @@
           {:else}
             <div class="px-4 py-8 text-center nes-text is-disabled">
               <Search class="h-8 w-8 mx-auto mb-3 opacity-50" />
-              <p class="text-sm">No results found for "{searchQuery}"</p>
+              <p class="text-sm">No results found for: "{searchQuery}"</p>
               <p class="text-xs mt-1">Try searching for cases, evidence, or commands</p>
             </div>
           {/if}

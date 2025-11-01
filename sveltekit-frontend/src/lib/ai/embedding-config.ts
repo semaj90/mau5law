@@ -51,8 +51,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     specialized: false,
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text'],
   },
-  // Specialized legal embedding
-  'legal-bert-embeddings': {
+  // Specialized legal embedding: 'legal-bert-embeddings': {
     id: 'legal-bert-embeddings',
     name: 'Legal-BERT Embeddings',
     provider: 'local',

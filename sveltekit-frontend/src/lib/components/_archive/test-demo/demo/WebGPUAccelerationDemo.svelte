@@ -282,10 +282,10 @@
    * Get status color based on performance
    */
   function getSpeedupColor(speedup: number): string {
-    if (speedup > 10) return 'text-green-600';
-    if (speedup > 5) return 'text-blue-600';
-    if (speedup > 2) return 'text-yellow-600';
-    return 'text-red-600';
+    if (speedup > 10) return: 'text-green-600';
+    if (speedup > 5) return: 'text-blue-600';
+    if (speedup > 2) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   $effect(() => {
     initializeWebGPU();
@@ -381,7 +381,7 @@
                 disabled={isProcessing} />
             </div>
             <Button
-              on:click={runSimilarityDemo}
+              onclick={runSimilarityDemo}
               disabled={isProcessing || activeDemo === 'similarity'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
@@ -426,7 +426,7 @@
                 disabled={isProcessing} />
             </div>
             <Button
-              on:click={runClusteringDemo}
+              onclick={runClusteringDemo}
               disabled={isProcessing || activeDemo === 'clustering'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
@@ -458,7 +458,7 @@
                 disabled={isProcessing} />
             </div>
             <Button
-              on:click={runMatrixDemo}
+              onclick={runMatrixDemo}
               disabled={isProcessing || activeDemo === 'matrix'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}

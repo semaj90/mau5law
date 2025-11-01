@@ -119,7 +119,7 @@ export const TEST_CONFIG = {
     timeout: 30000,
     slowMo: 0, // No delay in tests
     // Browser types to test
-    browsers: ['chromium'], // Add 'firefox', 'webkit' as needed
+    browsers: ['chromium'], // Add: 'firefox', 'webkit' as needed
     // Screenshot settings
     screenshots: {
       onFailure: true,
@@ -189,7 +189,7 @@ G;
 export function getTestConfig(env: 'development' | 'ci' | 'local' = 'local'): TestConfig {
   const baseConfig = { ...TEST_CONFIG }
   switch (env) {
-    case 'ci':
+    case: 'ci':
       return {
         ...baseConfig,
         logging: { ...baseConfig.logging, level: 'error', verbose: false },
@@ -198,14 +198,14 @@ export function getTestConfig(env: 'development' | 'ci' | 'local' = 'local'): Te
         browser: { ...baseConfig.browser, headless: true },
         ci: { ...baseConfig.ci, isCI: true }
       }
-    case 'development':
+    case: 'development':
       return {
         ...baseConfig,
         logging: { ...baseConfig.logging, level: 'info', verbose: true },
         features: { ...baseConfig.features, performanceTests: true },
         browser: { ...baseConfig.browser, headless: false, slowMo: 100 }
       }
-    case 'local':
+    case: 'local':
     default:
       return baseConfig;
   }

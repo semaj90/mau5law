@@ -44,7 +44,7 @@ const RABBITMQ_PORT = parseInt(process.env.RABBITMQ_PORT || '5672');
 const RABBITMQ_USERNAME = process.env.RABBITMQ_USERNAME || 'legal_ai';
 const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD || 'legal_ai_2024';
 const RABBITMQ_VHOST = process.env.RABBITMQ_VHOST || '/';
-const RABBITMQ_PROTOCOL = (process.env.RABBITMQ_PROTOCOL as 'amqp' | 'amqps') || 'amqp';
+const RABBITMQ_PROTOCOL = (process.env.RABBITMQ_PROTOCOL as: 'amqp' | 'amqps') || 'amqp';
 // Queue and exchange names
 export const EXCHANGES = {
   LEGAL_AI_MAIN: 'legal_ai.main',

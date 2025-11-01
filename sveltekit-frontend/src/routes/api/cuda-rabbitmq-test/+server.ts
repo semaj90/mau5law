@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'status': {
+      case: 'status': {
         const status = getBridgeStatus();
         return json({
           success: true,
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'health': {
+      case: 'health': {
         const healthStatus = getBridgeStatus();
         const isHealthy = healthStatus.connected && healthStatus.cudaHealthy;
         return json({
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'capabilities': {
+      case: 'capabilities': {
         const caps = getBridgeStatus();
         return json({
           success: true,
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, ...payload } = body;
     switch (action) {
-      case 'initialize': {
+      case: 'initialize': {
         console.log('🔗 Initializing Enhanced RabbitMQ-CUDA Bridge...');
         const initialized = await initializeBridge();
         return json({
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'tensor_job': {
+      case: 'tensor_job': {
         const { tensorData, priority = 5 } = payload;
         if (!tensorData) {
           return json(
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'similarity_job': {
+      case: 'similarity_job': {
         const { queryVector, candidateVectors, algorithm = 'cosine', priority: simPriority = 7 } = payload;
         if (!queryVector || !candidateVectors) {
           return json(
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'normalize_job': {
+      case: 'normalize_job': {
         const { embeddings, batchSize = 100, priority: normPriority = 6 } = payload;
         if (!embeddings || !Array.isArray(embeddings)) {
           return json(
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'benchmark': {
+      case: 'benchmark': {
         console.log('🚀 Running RabbitMQ-CUDA benchmark...');
         // Generate test data optimized for RTX 3060 Ti
         const benchmarkQuery = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'stress_test': {
+      case: 'stress_test': {
         console.log('💥 Running RabbitMQ-CUDA stress test...');
         // Generate larger datasets for stress testing
         const stressQuery = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
@@ -309,7 +309,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'shutdown':
+      case: 'shutdown':
         await rabbitMQCudaBridge.shutdown();
         return json({
           success: true,
@@ -318,7 +318,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
             shutdown_at: new Date().toISOString(),
           },
         });
-      case 'reset':
+      case: 'reset':
         // Future implementation: Reset bridge state
         return json({
           success: true,

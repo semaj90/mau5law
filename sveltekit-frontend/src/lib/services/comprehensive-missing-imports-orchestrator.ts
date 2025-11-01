@@ -313,8 +313,8 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
    async testComprehensiveSystem(): Promise<void> {
      console.log('🧪 Testing comprehensive missing imports system...');
 
-     const mockErrorOutput = `../rag/enhanced-rag-service.ts:715:20: error TS2339: Property 'QDRANT_URL' does not exist on type '{}'.
-../rag/enhanced-rag-service.ts:716:20: error TS2339: Property 'OLLAMA_URL' does not exist on type '{}'`;
+     const mockErrorOutput = `../rag/enhanced-rag-service.ts:715:20: error TS2339: Property: 'QDRANT_URL' does not exist on type: '{}'.
+../rag/enhanced-rag-service.ts:716:20: error TS2339: Property: 'OLLAMA_URL' does not exist on type: '{}'`;
 
      // Run a dry execution with generation disabled to validate analysis and guards
      try {

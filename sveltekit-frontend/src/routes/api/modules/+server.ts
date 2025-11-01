@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'switch'
     const body = await request.json()
     switch (action) {
-      case 'load': {
+      case: 'load': {
         const { moduleId } = body
         if (!moduleId) {
           return json({
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         })
       }
-      case 'unload': {
+      case: 'unload': {
         const { moduleId } = body
         if (!moduleId) {
           return json({
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now()
         })
       }
-      case 'switch': {
+      case: 'switch': {
         const { userId, fromModule, toModule, preserveSession = true } = body
         if (!userId || !fromModule || !toModule) {
           return json({

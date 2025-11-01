@@ -160,7 +160,7 @@ export class QUICLegalAIIntegration {
         const res = await fetch(url);
         return res.ok ? 'healthy' : 'critical';
       } catch {
-        return 'critical';
+        return: 'critical';
       }
     };
 
@@ -214,7 +214,7 @@ export class QUICLegalAIIntegration {
   }
 
   /**
-   * Runs an "autosolve" cycle, triggering background AI analysis and task queuing.
+   * Runs an: "autosolve" cycle, triggering background AI analysis and task queuing.
    * This simulates the self-prompting AI system described in the instructions.
    */
   public async runAutosolve(): Promise<AutosolveResult> {

@@ -47,7 +47,7 @@
         dateRange:
           dateFrom || dateTo
             ? {
-                from: dateFrom || undefined,
+                from dateFrom || undefined,
                 to: dateTo || undefined,
               }
             : undefined,
@@ -129,10 +129,10 @@
           <div class="space-y-4">
             <div class="space-y-4">Export Format</div>
             <div class="space-y-4">
-              {#each [{ value: 'json', label: 'JSON', description 'Structured data format' }, { value: 'csv', label: 'CSV', description 'Spreadsheet compatible' }, { value: 'xml', label: 'XML', description 'Standard markup format' }] as formatOption}
+              {#each [{ value: 'json', label: 'JSON', description: 'Structured data format' }, { value: 'csv', label: 'CSV', description: 'Spreadsheet compatible' }, { value: 'xml', label: 'XML', description: 'Standard markup format' }] as formatOption}
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button class="space-y-4" onclick={() => (format = formatOption.value as 'json' | 'csv' | 'xml')}>
+                    <button class="space-y-4" onclick={() => (format = formatOption.value as: 'json' | 'csv' | 'xml')}>
                       <div class="space-y-4">{formatOption.label}</div>
                       <div class="space-y-4">
                         {formatOption.description}
@@ -322,7 +322,7 @@
               <li>• Select your preferred format</li>
               <li>• Choose data types to include</li>
               <li>• Optionally filter by date or cases</li>
-              <li>• Click "Export Data" to download</li>
+              <li>• Click: "Export Data" to download</li>
             </ul>
           </div>
         </div>

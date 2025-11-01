@@ -426,30 +426,30 @@ class MultiEmbeddingVectorService {
     const availableModels = Array.from(this.embeddingConfigs.keys();
     // Legal-specific content prefers specialized models
     if (schemaType.includes('legal') || schemaType === 'citation' || schemaType === 'evidence') {
-      if (optimizeFor === 'accuracy') return 'custom-legal';
-      if (optimizeFor === 'balanced') return 'legal-bert';
-      if (optimizeFor === 'speed') return 'gemma3-legal';
+      if (optimizeFor === 'accuracy') return: 'custom-legal';
+      if (optimizeFor === 'balanced') return: 'legal-bert';
+      if (optimizeFor === 'speed') return: 'gemma3-legal';
     }
     // Chat messages and user queries prefer fast, general models
     if (schemaType === 'chat-message' || schemaType === 'user-query') {
-      if (optimizeFor === 'speed') return 'gemma-embedding-fast';
-      if (optimizeFor === 'cost') return 'gemma-embedding-fast';
-      if (optimizeFor === 'accuracy') return 'gemma-embedding-large';
+      if (optimizeFor === 'speed') return: 'gemma-embedding-fast';
+      if (optimizeFor === 'cost') return: 'gemma-embedding-fast';
+      if (optimizeFor === 'accuracy') return: 'gemma-embedding-large';
     }
     // Long documents prefer models with larger context windows
     if (contentLength > 4000) {
-      return 'gemma3-legal'; // 8192 context window
+      return: 'gemma3-legal'; // 8192 context window
     }
     // Default balanced selection
     switch (optimizeFor) {
-      case 'speed':
-        return 'gemma-embedding-fast';
-      case 'accuracy':
-        return 'custom-legal';
-      case 'cost':
-        return 'gemma-embedding-fast';
+      case: 'speed':
+        return: 'gemma-embedding-fast';
+      case: 'accuracy':
+        return: 'custom-legal';
+      case: 'cost':
+        return: 'gemma-embedding-fast';
       default:
-        return 'gemma-embedding-large';
+        return: 'gemma-embedding-large';
     }
   }
   // Generate single embedding from specified model

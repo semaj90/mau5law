@@ -69,8 +69,7 @@ https://svelte.dev/e/js_parse_error -->
       bind:value
       id={inputId}
       className={cn(
-        // Base styles
-        'flex w-full rounded-md border bg-transparent font-mono ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50',
+        // Base styles: 'flex w-full rounded-md border bg-transparent font-mono ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50',
         // Size classes
         sizeClasses[size],
         // Variant classes

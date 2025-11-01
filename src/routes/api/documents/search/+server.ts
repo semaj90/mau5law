@@ -288,7 +288,7 @@ function generateSearchSuggestions(query: string): string[] {
   const specific = [];
 
   if (queryLower.includes('contract')) {
-    specific.push(
+    specific.push(<any><any>
       'contract breach remedies',
       'contract formation elements',
       'contract termination clauses'
@@ -296,7 +296,7 @@ function generateSearchSuggestions(query: string): string[] {
   }
 
   if (queryLower.includes('tort')) {
-    specific.push(
+    specific.push(<any><any>
       'tort negligence standard',
       'tort intentional infliction',
       'tort strict liability'
@@ -304,7 +304,7 @@ function generateSearchSuggestions(query: string): string[] {
   }
 
   if (queryLower.includes('criminal')) {
-    specific.push(
+    specific.push(<any><any>
       'criminal constitutional rights',
       'criminal evidence rules',
       'criminal sentencing guidelines'

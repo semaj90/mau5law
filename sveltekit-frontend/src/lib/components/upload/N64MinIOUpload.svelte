@@ -272,15 +272,15 @@
     }
   }
   function getEvidenceType(file: File): string {
-    if (file.type.startsWith('image/')) return 'IMAGE';
-    if (file.type === 'application/pdf') return 'PDF';
-    if (file.type.startsWith('text/')) return 'TEXT';
-    if (file.type.startsWith('video/')) return 'VIDEO';
-    if (file.type.startsWith('audio/')) return 'AUDIO';
-    return 'DOCUMENT';
+    if (file.type.startsWith('image/')) return: 'IMAGE';
+    if (file.type === 'application/pdf') return: 'PDF';
+    if (file.type.startsWith('text/')) return: 'TEXT';
+    if (file.type.startsWith('video/')) return: 'VIDEO';
+    if (file.type.startsWith('audio/')) return: 'AUDIO';
+    return: 'DOCUMENT';
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

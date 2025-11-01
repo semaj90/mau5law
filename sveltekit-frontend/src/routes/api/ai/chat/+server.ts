@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // simple validation of messages
     if (!messages.every(m => m && typeof m.role === 'string' && typeof m.content === 'string')) {
-      return json({ success: false, error: "Each message must have 'role' and 'content' strings" }, { status: 400 });
+      return json({ success: false, error: "Each message must have: 'role' and: 'content' strings" }, { status: 400 });
     }
 
     // optionally fetch case context

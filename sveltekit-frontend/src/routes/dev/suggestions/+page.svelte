@@ -25,7 +25,7 @@ try {
     </li>
   {/each}
   {#if items.length === 0}
-    <li>No suggestions file found yet. Run the VS Code task "Svelte: Generate Error Suggestions".</li>
+    <li>No suggestions file found yet. Run the VS Code task: "Svelte: Generate Error Suggestions".</li>
   {/if}
 </ul>
 

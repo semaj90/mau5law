@@ -15,7 +15,7 @@ import redisConnection from '$lib/server/redis'; // <-- fixed: default import fo
 let client: RedisType | null = null;
 try {
   // Prefer a lazy singleton so module load doesn't try to connect during SSR build steps
-  // Use the already existing singleton 'redis' client
+  // Use the already existing singleton: 'redis' client
   client = redis as unknown as RedisType;
 } catch (err) {
   // Fallback: leave client null and error will be thrown when functions try to use it
@@ -279,7 +279,7 @@ export class QdrantIndexer {
 
 /**
  * Postgres JSONB Persistence Helper (requires a Drizzle instance)
- * Example: assumes a 'documents' table with 'id' and 'data' (jsonb) columns.
+ * Example: assumes a: 'documents' table with: 'id' and: 'data' (jsonb) columns.
  */
 export class PostgresJsonbPersistence {
   // NOTE: `db` would be your imported Drizzle instance.

@@ -179,7 +179,7 @@ async function buildEvidenceChain(
       );
       child.score = item.score;
       child.title = child.title ?? item.title;
-      node.related!.push(child);
+      node.related!.push(<any><any>child);
     } catch (err) {
       if ((err as any)?.name === 'AbortError' || String(err) === 'aborted') {
         throw err;

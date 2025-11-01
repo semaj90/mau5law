@@ -122,7 +122,7 @@ export class SIMDJSONParser {
     
     for (let i = 0; i < bytes.length; i += chunkSize) {
       const chunk = bytes.slice(i, i + chunkSize);
-      chunks.push(this.processSIMDChunk(chunk));
+      chunks.push(<any><any>this.processSIMDChunk(chunk));
     }
     
     // Reconstruct and parse

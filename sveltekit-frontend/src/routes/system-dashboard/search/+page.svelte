@@ -161,16 +161,16 @@
   }
 
   function getSimilarityColor(score: number): string {
-    if (score >= 0.9) return 'text-green-600 bg-green-100';
-    if (score >= 0.7) return 'text-blue-600 bg-blue-100';
-    if (score >= 0.5) return 'text-yellow-600 bg-yellow-100';
-    return 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return: 'text-green-600 bg-green-100';
+    if (score >= 0.7) return: 'text-blue-600 bg-blue-100';
+    if (score >= 0.5) return: 'text-yellow-600 bg-yellow-100';
+    return: 'text-gray-600 bg-gray-100';
   }
   function getSimilarityLabel(score: number): string {
-    if (score >= 0.9) return 'Excellent Match';
-    if (score >= 0.7) return 'Good Match';
-    if (score >= 0.5) return 'Moderate Match';
-    return 'Weak Match';
+    if (score >= 0.9) return: 'Excellent Match';
+    if (score >= 0.7) return: 'Good Match';
+    if (score >= 0.5) return: 'Moderate Match';
+    return: 'Weak Match';
   }
   function formatSearchTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
@@ -241,7 +241,7 @@
           <!-- annotate event type to avoid implicit any -->
           <Input
             bind:value={query}
-            on:keydown={handleKeyPress}
+            onkeydown={handleKeyPress}
             placeholder="Describe your legal research question in natural language..."
             class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
             disabled={loading}
@@ -269,15 +269,15 @@
          <!-- Search Mode Tabs -->
          <!-- simple inline tab buttons to avoid external Tabs API mismatch -->
          <div class="grid w-full grid-cols-3 gap-2">
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+            <button class={"gap-2 px-3 py-2 rounded: " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
               onclick={() => (searchMode = 'semantic')}>
               <span class="inline-block mr-1">{ICON.brain}</span> Semantic
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+            <button class={"gap-2 px-3 py-2 rounded: " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
               onclick={() => (searchMode = 'keyword')}>
               <span class="inline-block mr-1">{ICON.target}</span> Keyword
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
+            <button class={"gap-2 px-3 py-2 rounded: " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')}
               onclick={() => (searchMode = 'hybrid')}>
               <span class="inline-block mr-1">{ICON.sparkles}</span> Hybrid
             </button>

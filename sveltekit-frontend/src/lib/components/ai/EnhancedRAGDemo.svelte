@@ -219,10 +219,10 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   });
 
   let performanceColor = $derived(() => {
-    if (processingTime === 0) return 'text-gray-500';
-    if (processingTime < 500) return 'text-green-600';
-    if (processingTime < 1000) return 'text-yellow-600';
-    return 'text-red-600';
+    if (processingTime === 0) return: 'text-gray-500';
+    if (processingTime < 500) return: 'text-green-600';
+    if (processingTime < 1000) return: 'text-yellow-600';
+    return: 'text-red-600';
   });
 
   // GPU acceleration indicator
@@ -385,7 +385,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <p class="mt-2">No analysis results yet. Click "Analyze Document" to get started.</p>
+              <p class="mt-2">No analysis results yet. Click: "Analyze Document" to get started.</p>
             </div>
           {/if}
         </CardContent>

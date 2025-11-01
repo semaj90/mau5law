@@ -400,11 +400,11 @@ class WorkflowOrchestrator {
       // Restore actor based on type
       let actor;
       switch (cached.type) {
-        case 'document-processing': {
+        case: 'document-processing': {
           actor = createActor(documentProcessingMachine);
           break;
         }
-        case 'legal-case-management': {
+        case: 'legal-case-management': {
           actor = createActor(legalCaseManagementMachine);
           break;
         }

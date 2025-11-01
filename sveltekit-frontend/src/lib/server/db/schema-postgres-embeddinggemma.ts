@@ -60,7 +60,7 @@ export const documentsRelations = relations(documents, ({ one }) => ({
   user: one(users, { fields: [documents.userId], references: [users.id] }),
 }));
 
-// Replaced Drizzle $infer-based types (which caused 'unknown' errors in this environment)
+// Replaced Drizzle $infer-based types (which caused: 'unknown' errors in this environment)
 // with explicit, minimal TypeScript interfaces for compile stability.
 
 export type User = {

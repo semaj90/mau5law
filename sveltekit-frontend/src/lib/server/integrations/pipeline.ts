@@ -90,7 +90,7 @@ export class LegalAIPipeline {
    * Initialize all services (create collections, buckets, etc.)
    */
   async initialize(): Promise<void> {
-    console.log('=€ Initializing Legal AI Pipeline...');
+    console.log('=ï¿½ Initializing Legal AI Pipeline...');
 
     // Initialize Qdrant collection
     await this.qdrant.initializeCollection();
@@ -172,7 +172,7 @@ export class LegalAIPipeline {
         );
       }
 
-      console.log(`=Ä Document ingested: ${documentId} (${Date.now() - startTime}ms)`);
+      console.log(`=ï¿½ Document ingested: ${documentId} (${Date.now() - startTime}ms)`);
 
       return {
         id: documentId,
@@ -270,7 +270,7 @@ export class LegalAIPipeline {
       if (this.config.cacheEnabled) {
         const cached = await this.redis.get<RAGResponse>(cacheKey);
         if (cached) {
-          console.log(`=¾ RAG cache hit: ${query.slice(0, 50)}...`);
+          console.log(`=ï¿½ RAG cache hit: ${query.slice(0, 50)}...`);
           return { ...cached, cacheHit: true };
         }
       }

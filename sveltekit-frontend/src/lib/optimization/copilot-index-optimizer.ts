@@ -421,7 +421,7 @@ export class CopilotIndexOptimizer {
       });
     }
     const booleanClusters = somRAG.getClusters();
-    // Define a small cluster type to avoid 'any'
+    // Define a small cluster type to avoid: 'any'
     type BooleanCluster = { members?: Array<{ id: string }>; terms?: string[] };
     return (booleanClusters as BooleanCluster[]).map((cluster: BooleanCluster, index: number) => ({
       id: `cluster_${index}`,
@@ -512,9 +512,9 @@ export class CopilotIndexOptimizer {
   private findRelevantPatterns(context: CodeContext): Context7Pattern[] {
     const languagePatterns = CONTEXT7_PATTERNS.filter((pattern) => {
       switch (context.language) {
-        case 'svelte':
+        case: 'svelte':
           return pattern.category === 'svelte5' || pattern.category === 'ui';
-        case 'typescript':
+        case: 'typescript':
           return pattern.category === 'typescript' || pattern.category === 'sveltekit';
         default:
           return false;
@@ -531,19 +531,19 @@ export class CopilotIndexOptimizer {
     for (const pattern of patterns) {
       // Generate suggestions based on pattern category
       switch (pattern.category) {
-        case 'svelte5':
+        case: 'svelte5':
           suggestions.push(...this.generateSvelte5Suggestions(context, pattern));
           break;
-        case 'sveltekit':
+        case: 'sveltekit':
           suggestions.push(...this.generateSvelteKitSuggestions(context, pattern));
           break;
-        case 'drizzle':
+        case: 'drizzle':
           suggestions.push(...this.generateDrizzleSuggestions(context, pattern));
           break;
-        case 'ai':
+        case: 'ai':
           suggestions.push(...this.generateAISuggestions(context, pattern));
           break;
-        case 'ui':
+        case: 'ui':
           suggestions.push(...this.generateUISuggestions(context, pattern));
           break;
       }
@@ -616,28 +616,28 @@ export class CopilotIndexOptimizer {
         (keyword: string) => titleLower.includes(keyword) || contentLower.includes(keyword)
       )
     ) {
-      return 'high';
+      return: 'high';
     }
     if (
       mediumPriorityKeywords.some(
         (keyword: string) => titleLower.includes(keyword) || contentLower.includes(keyword)
       )
     ) {
-      return 'medium';
+      return: 'medium';
     }
-    return 'low';
+    return: 'low';
   }
 
   private determineCodePriority(language: string, code: string): 'high' | 'medium' | 'low' {
     const highPriorityLanguages = ['svelte', 'typescript'];
     const highPriorityPatterns = ['$props', '$state', '$derived', 'PageServerLoad'];
     if (highPriorityLanguages.includes(language)) {
-      return 'high';
+      return: 'high';
     }
     if (highPriorityPatterns.some((pattern: string) => code.includes(pattern))) {
-      return 'high';
+      return: 'high';
     }
-    return 'medium';
+    return: 'medium';
   }
 
   private calculateIndexSize(entries: CopilotIndexEntry[]): number {

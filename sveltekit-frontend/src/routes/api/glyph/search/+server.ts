@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!query) {
       return json({
         success: false,
-        error: 'Query parameter "q" is required'
+        error: 'Query parameter: "q" is required'
       }, { status: 400 })
     }
     // Generate embedding for search query

@@ -1,6 +1,6 @@
 import { analytics } from '../server/database/connection.js';
 import { qdrant } from '../server/vector/qdrant-manager.js';
-// removed static rabbitmq import to avoid "not a module" TS errors
+// removed static rabbitmq import to avoid: "not a module" TS errors
 import { cacheManager } from './cache-layer-manager.js';
 
 // Case-Based Temporal Memory System for Local LLM Learning
@@ -87,7 +87,7 @@ interface AnalyticsExtensions {
 
 // Self-learning model for continuous improvement
 class LLMSelfLearningModel {
-  // now accepts context so callers' context parameter is used and no 'unused variable' warnings occur
+  // now accepts context so callers' context parameter is used and no: 'unused variable' warnings occur
   async updateFromInteractions(
     context: CaseMemoryContext,
     interactions: Interaction[],
@@ -291,7 +291,7 @@ export class CaseMemoryEngine {
         type: 'next_action',
         confidence: 0.8,
         reasoning: 'User performed multiple searches; deeper analysis may be useful',
-        prompt_template: `Based on your recent searches about "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
+        prompt_template: `Based on your recent searches about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
         context_variables: {
           search_query: interaction.content,
           search_count: interactionTypes.filter(t => t === 'search').length,
@@ -410,7 +410,7 @@ export class CaseMemoryEngine {
         type: 'document_analysis',
         confidence: 0.7,
         reasoning: 'Unanalyzed documents may contain important evidence',
-        prompt_template: `I see "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,
+        prompt_template: `I see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,
         context_variables: {
           document_id: topDoc.id,
           document_title: topDoc.title,

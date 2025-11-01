@@ -1,6 +1,6 @@
 import { SvelteComponentTyped } from 'svelte';
 
-declare module 'bits-ui' {
+declare module: 'bits-ui' {
   // ...existing code...
   export interface ButtonProps {
     variant?: string;
@@ -32,7 +32,7 @@ declare module 'bits-ui' {
   // ...existing code...
 }
 
-declare module '$lib/components/ui/*' {
+declare module: '$lib/components/ui/*' {
   // Provide both named and default exports so imports like:
   // import { Card, CardContent } from '$lib/components/ui/card';
   // and

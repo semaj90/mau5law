@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
     lastName: '',
     role: 'prosecutor',
     department: '',
-    jurisdiction '',
+    jurisdiction: '',
     badgeNumber: '',
     agreeToTerms: false,
     agreeToPrivacy: false,

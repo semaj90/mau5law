@@ -171,13 +171,13 @@ class OllamaIntegrationLayer {
       // Process based on strategy
       let response: Integratedany;
       switch (strategy) {
-        case 'comprehensive-with-summary':
+        case: 'comprehensive-with-summary':
           response = await this.processComprehensiveWithSummary(request);
           break;
-        case 'langchain-rag':
+        case: 'langchain-rag':
           response = await this.processLangChainRAG(request);
           break;
-        case 'streaming-enhanced':
+        case: 'streaming-enhanced':
           response = await this.processStreamingEnhanced(request);
           break;
         default:
@@ -201,15 +201,15 @@ class OllamaIntegrationLayer {
   private determineProcessingStrategy(request: Integratedany): string {
     // Determine best processing strategy based on request
     if (request.documentContext && request.summaryOptions?.includeSummary) {
-      return 'comprehensive-with-summary';
+      return: 'comprehensive-with-summary';
     }
     if (request.useRAG && request.message.length > 100) {
-      return 'langchain-rag';
+      return: 'langchain-rag';
     }
     if (request.stream && request.advancedOptions?.enableStreaming) {
-      return 'streaming-enhanced';
+      return: 'streaming-enhanced';
     }
-    return 'standard-chat';
+    return: 'standard-chat';
   }
   private async processComprehensiveWithSummary()
     request: Integratedany;

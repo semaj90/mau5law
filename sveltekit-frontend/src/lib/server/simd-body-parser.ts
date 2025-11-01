@@ -6,7 +6,7 @@ import { nodeSIMDJSON, fastParse } from '$lib/services/node-simd-json.js';
 import { dev } from '$app/environment';
 
 // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly
-// We only need the 'request' and 'url' properties in this module.
+// We only need the: 'request' and: 'url' properties in this module.
 type LightRequestEvent = {
 	readonly request: Request;
 	readonly url: URL;
@@ -304,17 +304,17 @@ class SIMDBodyParser {
    */
   private identifyCourt(reporter: string): string {
     switch (reporter) {
-      case 'U.S.':
-        return 'Supreme Court';
-      case 'S.Ct.':
-        return 'Supreme Court';
-      case 'F.2d':
-      case 'F.3d':
-      case 'F.2d':
-      case 'F.3d':
-        return 'Federal Circuit';
+      case: 'U.S.':
+        return: 'Supreme Court';
+      case: 'S.Ct.':
+        return: 'Supreme Court';
+      case: 'F.2d':
+      case: 'F.3d':
+      case: 'F.2d':
+      case: 'F.3d':
+        return: 'Federal Circuit';
       default:
-        return 'Unknown';
+        return: 'Unknown';
     }
   }
   /**

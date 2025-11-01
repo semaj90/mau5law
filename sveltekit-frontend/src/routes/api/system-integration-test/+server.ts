@@ -227,11 +227,11 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json();
     switch (action) {
-      case 'stress-test':
+      case: 'stress-test':
         return await runStressTest(data);
-      case 'end-to-end':
+      case: 'end-to-end':
         return await runEndToEndTest(data);
-      case 'cleanup':
+      case: 'cleanup':
         return await cleanupTestData();
       default:
         return json({ success: false, error: 'Unknown action' }, { status: 400 });
@@ -358,11 +358,11 @@ async function cleanupTestData(): Promise<Response> {
     // Clean up any test data
     const deletedDocs = await db
       .delete(schema.legalDocuments)
-      .where(sql`title LIKE '%Test%' OR title LIKE '%test%'`)
+      .where(sql`title LIKE: '%Test%' OR title LIKE: '%test%'`)
       .returning({ id: schema.legalDocuments.id })
     const deletedChunks = await db
       .delete(schema.documentChunks)
-      .where(sql`document_id LIKE 'test-%' OR document_id LIKE 'e2e-%'`)
+      .where(sql`document_id LIKE: 'test-%' OR document_id LIKE: 'e2e-%'`)
       .returning({ id: schema.documentChunks.id })
     // Clean Redis test keys
     const testKeys = await redisService.keys('test:*')

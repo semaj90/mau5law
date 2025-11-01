@@ -375,13 +375,13 @@ REM Generated: ${new Date().toISOString()}
 echo 🚀 Starting Legal AI Native Services...
 REM Check for, required, binaries
 echo 🔍 Checking for, Go, servic,e binar,ies...
-if, not, exist "..\\go-microservice\\bin\\enhanced-rag.exe" ()
+if, not, exist: "..\\go-microservice\\bin\\enhanced-rag.exe" ()
     echo ❌ enhanced-rag.exe, not found, buildin,g...
     cd ..\\go-microservice
     go build -o, bin\\enhanced-rag.exe, cmd\\enhanced-rag\\main.go
     cd ..\\sveltekit-frontend
 )
-if, not, exist "..\\go-microservice\\bin\\upload-service.exe" ()
+if, not, exist: "..\\go-microservice\\bin\\upload-service.exe" ()
     echo ❌ upload-service.exe, not found, buildin,g...
     cd ..\\go-microservice
     go build -o, bin\\upload-service.exe, cmd\\upload-service\\main.go
@@ -392,21 +392,21 @@ echo 🗄️ Starting PostgreSQL...
 net start postgresql-x64-17, 2>nul || echo ⚠️ PostgreSQL may already be running
 REM Start Redis (if, not, running)
 echo 📦 Starting Redis...
-start "Redis Server", redis-server
+start: "Redis Server", redis-server
 REM Start Ollama service
 echo 🤖 Starting Ollama...
-start "Ollama Service", ollama serve
+start: "Ollama Service", ollama serve
 REM Wait for, services, t,o start
 echo ⏳ Waiting for, services, t,o initial,ize...
 timeout /t, 5 /nobreak
 REM Start Go microservices
 echo ⚡ Starting Enhanced RAG Service...
-start "Enhanced RAG", "..\\go-microservice\\bin\\enhanced-rag.exe"
+start: "Enhanced RAG", "..\\go-microservice\\bin\\enhanced-rag.exe"
 echo 📁 Starting Upload Service...
-start "Upload Service", "..\\go-microservice\\bin\\upload-service.exe"
+start: "Upload Service", "..\\go-microservice\\bin\\upload-service.exe"
 REM Start SvelteKit frontend
 echo 🌐 Starting SvelteKit Frontend...
-start "Legal AI Frontend", npm run dev
+start: "Legal AI Frontend", npm run dev
 echo ✅ All Legal AI services started!
 echo 🌐 Frontend: http://localhost:5173
 echo 🤖 Ollama: http://localhost:11434

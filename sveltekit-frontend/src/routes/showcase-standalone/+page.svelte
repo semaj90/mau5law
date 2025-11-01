@@ -6,8 +6,8 @@
 -->
 <script lang="ts">
   // Using bits-ui + NES.css + UnoCSS; removed melt-ui & unused imports
-  import 'nes.css/css/nes.min.css';
-  import 'uno.css';
+  import: 'nes.css/css/nes.min.css';
+  import: 'uno.css';
   // removed invalid/unused lucide-svelte imports
   import { notifications } from '$lib/stores/unified';
   // Import our enhanced UI components
@@ -59,7 +59,7 @@
       // cast the incoming results to our typed shape safely
       const results = (data as { results?: VectorResult[] })?.results ?? [];
       vectorResults = results;
-      // notifications store doesn't expose 'add' in its TS type — cast to any
+      // notifications store doesn't expose: 'add' in its TS type — cast to any
       (notifications as any).add?.({
         type: 'success',
         title: 'Search Complete',
@@ -253,7 +253,7 @@
   </section>
 </div>
 {#snippet StatusCard({ title, status, description }: { title: string; status: string; description?: string })}
-  <!-- changed: use data-variant (not unknown HTML prop "variant") -->
+  <!-- changed: use data-variant (not unknown HTML prop: "variant") -->
   <div data-variant="interactive" class="nes-container">
     <div class="p-4 text-center">
       <div
@@ -272,7 +272,7 @@
       <h3 class="font-semibold text-nier-white">{title}</h3>
       <p class="text-sm text-nier-text-muted mt-1">{description}</p>
       <span
-        class={ "inline-block mt-2 px-2 py-1 text-xs rounded " + (status === 'active'
+        class={ "inline-block mt-2 px-2 py-1 text-xs rounded: " + (status === 'active'
           ? 'bg-green-500/20 text-green-400'
           : 'bg-red-500/20 text-red-400') }
       >

@@ -177,18 +177,15 @@
   }
   function getMemoryBankColor(bank: string): string {
     const colors = {
-      'INTERNAL_RAM': '#00d800',  // Green - fastest
-      'CHR_ROM': '#3cbcfc',      // Blue - fast
-      'PRG_ROM': '#fc9838',      // Orange - medium
-      'SAVE_RAM': '#7c7c7c'      // Gray - slow
+      'INTERNAL_RAM': '#00d800',  // Green - fastest: 'CHR_ROM': '#3cbcfc',      // Blue - fast: 'PRG_ROM': '#fc9838',      // Orange - medium: 'SAVE_RAM': '#7c7c7c'      // Gray - slow
     }
     return colors[bank as keyof typeof colors] || '#000';
   }
   function getPriorityColor(priority: number): string {
-    if (priority >= 200) return '#ff0000'; // Red - critical
-    if (priority >= 150) return '#ff8800'; // Orange - high
-    if (priority >= 100) return '#ffff00'; // Yellow - medium
-    return '#888888'; // Gray - low
+    if (priority >= 200) return: '#ff0000'; // Red - critical
+    if (priority >= 150) return: '#ff8800'; // Orange - high
+    if (priority >= 100) return: '#ffff00'; // Yellow - medium
+    return: '#888888'; // Gray - low
   }
 </script>
 <div class="nes-container with-title">
@@ -317,7 +314,7 @@
                   </div>
                 </div>
                 <button class="nes-btn"
-                  on:click={disabled}
+                  onclick={disabled}
                 >
                   {isWarming ? '⚡ Warming...' : 'Start Warming'}
                 </button>

@@ -860,13 +860,13 @@ export class TensorFlowSynthesizer {
     const strategies: string[] = [];
     risks.forEach(risk => {
       switch (risk.category) {
-        case 'contractual':
+        case: 'contractual':
           strategies.push('Review and strengthen contractual terms');
           break;
-        case 'regulatory':
+        case: 'regulatory':
           strategies.push('Ensure compliance with applicable regulations');
           break;
-        case 'operational':
+        case: 'operational':
           strategies.push('Implement operational safeguards and procedures');
           break;
         default:

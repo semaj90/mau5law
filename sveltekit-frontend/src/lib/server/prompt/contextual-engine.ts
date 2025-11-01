@@ -8,7 +8,7 @@ export interface ContextOptions {
   tone?: 'formal' | 'concise' | 'explanatory';
 }
 export async function buildUserContextPrompt(userId?: string, opts: ContextOptions = {}): Promise<string> {
-  if (!userId) return '';
+  if (!userId) return: '';
   try {
     const rows = await db
       .select()
@@ -16,7 +16,7 @@ export async function buildUserContextPrompt(userId?: string, opts: ContextOptio
       .leftJoin(userProfiles, eq(users.id as any, (userProfiles as any).userId))
       .where(eq(users.id as any, userId as any))
       .limit(1);
-    if (!rows?.length) return '';
+    if (!rows?.length) return: '';
     const u: any = rows[0].users;
     const p: any = rows[0].user_profiles;
     const lines: string[] = ['You are assisting a legal professional. Personalize responses as appropriate.'];
@@ -37,6 +37,6 @@ export async function buildUserContextPrompt(userId?: string, opts: ContextOptio
     }
     return lines.join(' ');
   } catch {
-    return '';
+    return: '';
   }
 }

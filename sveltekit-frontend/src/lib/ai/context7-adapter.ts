@@ -26,7 +26,7 @@ export async function performContext7Search(_options: {
     // mock fallback: do a trivial in-memory search stub
     const results = [] as { id: string; content: string; score: number }[];
     for (let i = 0; i < (options.maxResults || 5); i++) {
-      results.push({ id: `mock-${i}`, content: `Mock search result for '${options.query}' (#${i})`, score: 0.5 });
+      results.push({ id: `mock-${i}`, content: `Mock search result for: '${options.query}' (#${i})`, score: 0.5 });
     }
     return results;
   }

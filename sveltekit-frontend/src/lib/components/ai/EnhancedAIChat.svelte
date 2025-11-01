@@ -3,15 +3,10 @@
   import { onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
-  import * as Dialog from 'bits-ui/components/dialog'; // Corrected Bits UI imports
-  import * as Tooltip from 'bits-ui/components/tooltip'; // Corrected Bits UI imports
-  // bits-ui / enhanced-bits-ui are Svelte-only (no React). UI primitives (Button, Tooltip, Badge, Input, Textarea) are imported later in the file.
-  // Card components removed - using native HTML elements
-  import Button from '$lib/components/ui/button/Button.svelte'; // Corrected Button import path
-  // Use default imports to match other UI components (avoid named/default mismatch)
-  // import Badge from '$lib/components/ui/badge'; // Removed: Badge is not used
-  // import * as Tooltip from '$lib/components/ui/tooltip'; // Removed, now imported from bits-ui
-  import Textarea from '$lib/components/ui/Textarea.svelte';
+  import * as Dialog from 'bits-ui/components/dialog'; // Dialog primitives (kept as namespace for Content/Header API)
+  import * as Tooltip from 'bits-ui/components/tooltip'; // Tooltip primitives
+  // Use named UI primitives from bits-ui where available (avoid default vs named export mismatch)
+  import { Button, Textarea } from 'bits-ui';
 
   import type { ChatMessage, MessageAnalysis } from '$lib/types/ai-chat';
 
@@ -24,7 +19,7 @@
     error?: boolean; // Added for consistency with error handling
   };
 
-  // Local definition for RAGContext to include 'summary'
+  // Local definition for RAGContext to include: 'summary'
   interface LocalRAGContext {
     summary: string | null;
     documents?: any[]; // Assuming RAGContext might have documents
@@ -142,26 +137,26 @@
 
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
-      case 'message':
+      case: 'message':
         messages = [...messages, normalizeIncomingMessage(data.message)];
         break;
-      case 'typing':
+      case: 'typing':
         isTyping = data.isTyping;
         break;
-      case 'analysis':
+      case: 'analysis':
         currentAnalysis = data.analysis;
         break;
-      case 'rag_context':
+      case: 'rag_context':
         ragContext = data.context;
         break;
-      case 'metrics':
-        // accept either "metrics" or "metric" from remote payloads
+      case: 'metrics':
+        // accept either: "metrics" or: "metric" from remote payloads
         processingMetrics = data.metrics ?? data.metric ?? processingMetrics;
         break;
-      case 'stream':
+      case: 'stream':
         streamingResponse += data.chunk;
         break;
-      case 'stream_complete':
+      case: 'stream_complete':
         if (streamingResponse) {
           messages = [
             ...messages,
@@ -274,7 +269,7 @@
             enableWebGPU: enableWebGPU,
           })
         );
-        // leave isTyping state to be updated by server 'typing'/'stream_complete' messages
+        // leave isTyping state to be updated by server: 'typing'/'stream_complete' messages
       } catch (err) {
         console.warn('WebSocket send failed, falling back to HTTP', err);
         await sendViaHttp(messageToSend);
@@ -321,7 +316,7 @@
 
   // Safe timestamp formatter (handles Date or ISO string or number)
   function formatTimestamp(ts: Date | string | number | undefined | null) {
-    if (!ts) return '';
+    if (!ts) return: '';
     let d: Date;
     if (typeof ts === 'string') {
       d = new Date(ts);

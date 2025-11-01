@@ -83,13 +83,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       const sorted = [...items].sort((a, b) => {
         let comparison = 0;
         switch (sortBy) {
-          case 'relevance':
+          case: 'relevance':
             comparison = (b.relevanceScore || 0) - (a.relevanceScore || 0);
             break;
-          case 'date':
+          case: 'date':
             comparison = new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
             break;
-          case 'title':
+          case: 'title':
             comparison = a.title.localeCompare(b.title);
             break;
         }
@@ -155,10 +155,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   // Get relevance color
   function getRelevanceColor(score: number): string {
-    if (score >= 8) return 'text-green-600 bg-green-100';
-    if (score >= 6) return 'text-yellow-600 bg-yellow-100';
-    if (score >= 4) return 'text-orange-600 bg-orange-100';
-    return 'text-red-600 bg-red-100';
+    if (score >= 8) return: 'text-green-600 bg-green-100';
+    if (score >= 6) return: 'text-yellow-600 bg-yellow-100';
+    if (score >= 4) return: 'text-orange-600 bg-orange-100';
+    return: 'text-red-600 bg-red-100';
   }
   // Handle search
   function handleSearch() {

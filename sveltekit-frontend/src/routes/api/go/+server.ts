@@ -179,8 +179,7 @@ const GO_SERVICES: Record<
     protocols: ['quic'],
     capabilities: ['go1.25', 'quic-rag'],
   },
-  // Protocol-specific services
-  'http-gateway': {
+  // Protocol-specific services: 'http-gateway': {
     baseUrl: 'http://localhost:8119',
     healthPath: '/health',
     protocols: ['http'],
@@ -198,8 +197,7 @@ const GO_SERVICES: Record<
     protocols: ['websocket'],
     capabilities: ['real-time', 'events'],
   },
-  // AI/ML specialized services
-  't5-transformer': {
+  // AI/ML specialized services: 't5-transformer': {
     baseUrl: 'http://localhost:8122',
     healthPath: '/health',
     protocols: ['http'],
@@ -223,8 +221,7 @@ const GO_SERVICES: Record<
     protocols: ['http'],
     capabilities: ['ollama-cluster', 'load-balancing'],
   },
-  // Storage and data services
-  'minio-proxy': {
+  // Storage and data services: 'minio-proxy': {
     baseUrl: 'http://localhost:8126',
     healthPath: '/health',
     protocols: ['http'],
@@ -248,8 +245,7 @@ const GO_SERVICES: Record<
     protocols: ['http'],
     capabilities: ['vector-database', 'similarity-search'],
   },
-  // Monitoring and observability
-  'metrics-collector': {
+  // Monitoring and observability: 'metrics-collector': {
     baseUrl: 'http://localhost:8130',
     healthPath: '/health',
     protocols: ['http'],
@@ -273,8 +269,7 @@ const GO_SERVICES: Record<
     protocols: ['http'],
     capabilities: ['alerting', 'notifications'],
   },
-  // Security and auth
-  'auth-service': {
+  // Security and auth: 'auth-service': {
     baseUrl: 'http://localhost:8134',
     healthPath: '/health',
     protocols: ['http'],
@@ -437,8 +432,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           ...(dev && { 'Access-Control-Allow-Origin': '*' }),
           // Forward relevant headers from Go service
           ...(result.headers['content-encoding'] && {
-            // Removed redundant cast
-            'Content-Encoding': result.headers['content-encoding'], // Removed redundant cast
+            // Removed redundant cast: 'Content-Encoding': result.headers['content-encoding'], // Removed redundant cast
           }),
         },
       }
@@ -491,7 +485,7 @@ export const GET: RequestHandler = async () => {
             undefined,
             {},
             5000
-          ); // Fixed: Removed extra ')'
+          ); // Fixed: Removed extra: ')'
           return {
             name,
             status: healthCheck.success ? 'healthy' : 'unhealthy',

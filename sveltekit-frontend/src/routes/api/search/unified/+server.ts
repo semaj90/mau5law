@@ -40,7 +40,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       id: 'case-001',
       title: `Legal Case: ${query}`,
       type: 'case',
-      content: `Legal case related to "${query}" with relevant precedents and statutes.`,
+      content: `Legal case related to: "${query}" with relevant precedents and statutes.`,
       score: 0.95,
       metadata: {
         source: 'legal_database',
@@ -53,7 +53,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       id: 'evidence-001',
       title: `Evidence: ${query}`,
       type: 'evidence',
-      content: `Evidence documentation for "${query}" including forensic analysis and chain of custody.`,
+      content: `Evidence documentation for: "${query}" including forensic analysis and chain of custody.`,
       score: 0.87,
       metadata: {
         source: 'evidence_vault',
@@ -65,7 +65,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       id: 'precedent-001',
       title: `Legal Precedent: ${query}`,
       type: 'precedent',
-      content: `Legal precedent case similar to "${query}" with applicable rulings and citations.`,
+      content: `Legal precedent case similar to: "${query}" with applicable rulings and citations.`,
       score: 0.82,
       metadata: {
         source: 'precedent_database',
@@ -83,7 +83,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
         id: 'vector-001',
         title: `Vector Match: ${query}`,
         type: 'document',
-        content: `Document found through semantic vector search for "${query}".`,
+        content: `Document found through semantic vector search for: "${query}".`,
         score: 0.78,
         similarity: 0.78,
         metadata: {
@@ -150,8 +150,8 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       results,
       metadata: searchMetadata,
       suggestions: [
-        `Try searching for "${query} case law"`,
-        `Look up "${query} precedents"`,
+        `Try searching for: "${query} case law"`,
+        `Look up: "${query} precedents"`,
         `Find "${query} statutes"`,
       ],
     },

@@ -317,7 +317,7 @@ export class LegalAIWorkflowOrchestrator {
   }
   // Workflow management methods
   private createWorkflow(
-    type: WorkflowType, // Use a more specific type for 'type'
+    type: WorkflowType, // Use a more specific type for: 'type'
     request: LegalResearchWorkflowRequest | DocumentProcessingWorkflowRequest | CaseCreationWorkflowRequest // Specific request types
   ): string {
     const workflowId = `${type}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`; // Fixed substr deprecation
@@ -364,7 +364,7 @@ export class LegalAIWorkflowOrchestrator {
         title: 'Case Created',
         date: now,
         type: 'milestone',
-        description: `${request.caseType} case "${request.title}" created`,
+        description: `${request.caseType} case: "${request.title}" created`,
       },
       {
         id: '2',
@@ -491,21 +491,21 @@ export function formatWorkflowDuration(startTime: number, endTime?: number): str
 }
 export function getWorkflowStatusIcon(status: WorkflowStatus): string {
   switch (status) {
-    case 'initialized': return '⏳';
-    case 'processing': return '🔄';
-    case 'completed': return '✅';
-    case 'failed': return '❌';
-    case 'paused': return '⏸️';
-    default: return '❓';
+    case: 'initialized': return: '⏳';
+    case: 'processing': return: '🔄';
+    case: 'completed': return: '✅';
+    case: 'failed': return: '❌';
+    case: 'paused': return: '⏸️';
+    default: return: '❓';
   }
 }
 export function getWorkflowStatusColor(status: WorkflowStatus): string {
   switch (status) {
-    case 'initialized': return 'text-blue-500';
-    case 'processing': return 'text-yellow-500';
-    case 'completed': return 'text-green-500';
-    case 'failed': return 'text-red-500';
-    case 'paused': return 'text-gray-500';
-    default: return 'text-gray-400';
+    case: 'initialized': return: 'text-blue-500';
+    case: 'processing': return: 'text-yellow-500';
+    case: 'completed': return: 'text-green-500';
+    case: 'failed': return: 'text-red-500';
+    case: 'paused': return: 'text-gray-500';
+    default: return: 'text-gray-400';
   }
 }

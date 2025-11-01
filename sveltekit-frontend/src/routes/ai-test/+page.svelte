@@ -65,10 +65,10 @@
   }
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'connected':
+      case: 'connected':
         return CheckCircl;
-      case 'error':
-      case 'disconnected':
+      case: 'error':
+      case: 'disconnected':
         return XCircl;
       default:
         return Loader2;
@@ -76,25 +76,25 @@
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'connected':
-        return 'text-green-500';
-      case 'error':
-      case 'disconnected':
-        return 'text-red-500';
+      case: 'connected':
+        return: 'text-green-500';
+      case: 'error':
+      case: 'disconnected':
+        return: 'text-red-500';
       default:
-        return 'text-yellow-500';
+        return: 'text-yellow-500';
     }
   }
   function getStatusText(status: string) {
     switch (status) {
-      case 'connected':
-        return 'Connected';
-      case 'error':
-        return 'Error';
-      case 'disconnected':
-        return 'Disconnected';
+      case: 'connected':
+        return: 'Connected';
+      case: 'error':
+        return: 'Error';
+      case: 'disconnected':
+        return: 'Disconnected';
       default:
-        return 'Checking...';
+        return: 'Checking...';
     }
   }
 </script>

@@ -49,11 +49,11 @@ https://svelte.dev/e/attribute_duplicate -->
   const hasResults = derived(ingestResults, $results => $results.length > 0);
   // Document types following your legal AI patterns
   const documentTypes = [
-    { value: 'legal', label: 'Legal Document', icon '⚖️' },
-    { value: 'evidence', label: 'Evidence', icon '🔍' },
-    { value: 'case', label: 'Case File', icon '📁' },
-    { value: 'contract', label: 'Contract', icon '📜' },
-    { value: 'precedent', label: 'Legal Precedent', icon '📚' },
+    { value: 'legal', label: 'Legal Document', icon: '⚖️' },
+    { value: 'evidence', label: 'Evidence', icon: '🔍' },
+    { value: 'case', label: 'Case File', icon: '📁' },
+    { value: 'contract', label: 'Contract', icon: '📜' },
+    { value: 'precedent', label: 'Legal Precedent', icon: '📚' },
   ];
   // Enhanced ingest function with AI integration
   async function ingestDocument() {

@@ -57,7 +57,7 @@
     qloraTraining: true
     minChunkSize: 1000,
     maxChunkSize: 5000,
-    analysisDepth: 'comprehensive' as 'quick' | 'standard' | 'comprehensive'
+    analysisDepth: 'comprehensive' as: 'quick' | 'standard' | 'comprehensive'
   });
   let analysisState = $state({
     currentStep: '',

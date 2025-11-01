@@ -734,22 +734,22 @@ export class AIAssistantInputSynthesizer {
   private async extractIntent(query: string, analysis: SynthesizerAnalysisResult): Promise<string> {
     const queryLower = query.toLowerCase();
     if (queryLower.includes('how to') || queryLower.includes('how do')) {
-      return 'procedural_guidance';
+      return: 'procedural_guidance';
     } else if (queryLower.includes('what is') || queryLower.includes('define')) {
-      return 'definition_request';
+      return: 'definition_request';
     } else if (queryLower.includes('case') || (analysis.entities ?? []).some(e => e.type === 'CASE_CITATION')) {
-      return 'case_analysis';
+      return: 'case_analysis';
     } else if (
       queryLower.includes('contract') ||
       (analysis.concepts ?? []).some(c => (typeof c === 'string' ? c === 'contract' : c.concept === 'contract'))
     ) {
-      return 'contract_analysis';
+      return: 'contract_analysis';
     } else if (queryLower.includes('statute') || (analysis.entities ?? []).some(e => e.type === 'STATUTE')) {
-      return 'statute_interpretation';
+      return: 'statute_interpretation';
     } else if (queryLower.includes('precedent') || queryLower.includes('ruling')) {
-      return 'precedent_search';
+      return: 'precedent_search';
     } else {
-      return 'general_legal_query';
+      return: 'general_legal_query';
     }
   }
 
@@ -814,7 +814,7 @@ export class AIAssistantInputSynthesizer {
     const extractiveSummary = topSentences.join(' ');
 
     // Simulate an abstractive summary by creating a structured overview.
-    const abstractive = `Based on the retrieved documents regarding "${
+    const abstractive = `Based on the retrieved documents regarding: "${
       processedQuery.original
     }", the key points are: ${keyPoints.map(p => `\n- ${p}`).join('')}`;
 
@@ -883,7 +883,7 @@ export class AIAssistantInputSynthesizer {
 
   private assessSourceAuthority(retrievedContext: SynthesizedOutput['retrievedContext']): number {
     if (!retrievedContext?.sources?.length) return 0.0;
-    // heuristic: if titles contain "Report" or "Opinion" or "Statute" bump authority
+    // heuristic: if titles contain: "Report" or: "Opinion" or: "Statute" bump authority
     const score =
       retrievedContext.sources.reduce((acc, s) => {
         const t = (s.title ?? '').toLowerCase();
@@ -921,7 +921,7 @@ export class AIAssistantInputSynthesizer {
   }
 
   private getUsedStrategies(options: Partial<RetrievalOptions>): string[] {
-    // Fixed 'any' type
+    // Fixed: 'any' type
     const s: string[] = [];
     if (options.enableRAG) s.push('rag_hybrid');
     if (options.enableLegalBERT) s.push('legal_bert');

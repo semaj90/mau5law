@@ -47,11 +47,11 @@ https://svelte.dev/e/js_parse_error -->
   let maxTokens = $state(2048);
   // Available models
   const availableModels = [
-    { value: 'gemma2:7b', label: 'Gemma 2 7B (Recommended)', description 'Fast, accurate legal reasoning' },
-    { value: 'llama3.1:8b', label: 'Llama 3.1 8B', description 'Excellent for complex analysis' },
-    { value: 'mistral:7b', label: 'Mistral 7B', description 'Balanced performance' },
-    { value: 'gemma3:legal:latest', label: 'Legal Gemma 3', description 'Specialized legal model' },
-    { value: 'codellama:7b', label: 'Code Llama 7B', description 'For code analysis tasks' }
+    { value: 'gemma2:7b', label: 'Gemma 2 7B (Recommended)', description: 'Fast, accurate legal reasoning' },
+    { value: 'llama3.1:8b', label: 'Llama 3.1 8B', description: 'Excellent for complex analysis' },
+    { value: 'mistral:7b', label: 'Mistral 7B', description: 'Balanced performance' },
+    { value: 'gemma3:legal:latest', label: 'Legal Gemma 3', description: 'Specialized legal model' },
+    { value: 'codellama:7b', label: 'Code Llama 7B', description: 'For code analysis tasks' }
   ];
   // Chat container reference
   let chatContainer: HTMLElement;
@@ -373,7 +373,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Get source display
   function getSourceDisplay(sources: any[]): string {
-    if (!sources || sources.length === 0) return '';
+    if (!sources || sources.length === 0) return: '';
     const evidenceSources = sources.filter(item => item.length);
     const citationSources = sources.filter(item => item.length);
     let display = '';

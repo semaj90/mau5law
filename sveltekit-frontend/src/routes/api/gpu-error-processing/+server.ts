@@ -119,12 +119,12 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
 };
 
 function detectErrorCategory(code: string, message: string): string {
-  if (message.includes('export let') || message.includes('$props')) return 'svelte5';
-  if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
-  if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
-  if (message.includes('syntax') || message.includes('Unexpected')) return 'syntax';
-  if (message.includes('bind:') || message.includes('on:')) return 'binding';
-  return 'unknown';
+  if (message.includes('export let') || message.includes('$props')) return: 'svelte5';
+  if (code.startsWith('TS2307') || message.includes('Cannot find module')) return: 'import';
+  if (code.startsWith('TS2322') || message.includes('Type')) return: 'type';
+  if (message.includes('syntax') || message.includes('Unexpected')) return: 'syntax';
+  if (message.includes('bind:') || message.includes('on:')) return: 'binding';
+  return: 'unknown';
 }
 
 function categorizeErrorsForGPU(errors: ParsedError[]): Record<string, ParsedError[]> {

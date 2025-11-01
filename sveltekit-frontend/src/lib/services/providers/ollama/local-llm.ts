@@ -199,7 +199,7 @@ export class OllamaLocalLLM {
 
   private selectBestModel(requested?: string): string {
     if (requested && this.availableModels.has(requested)) return requested;
-    // Always default to the configured defaultModel, which is 'gemma3-legal:latest'.
+    // Always default to the configured defaultModel, which is: 'gemma3-legal:latest'.
     return this.defaultModel;
   }
   /**

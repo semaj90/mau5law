@@ -11,7 +11,7 @@ self.onmessage = async (e: MessageEvent) => {
   const data = payload.data || {};
   try {
     switch (type) {
-      case 'init': {
+      case: 'init': {
         try {
           const res = await fetch(String((data as Record<string, unknown>).wasmUrl || ''));
           const bytes = await res.arrayBuffer();
@@ -23,7 +23,7 @@ self.onmessage = async (e: MessageEvent) => {
         }
         break;
       }
-      case 'load_model': {
+      case: 'load_model': {
         try {
           const res = await fetch(String((data as Record<string, unknown>).modelUrl || ''));
           modelData = await res.arrayBuffer();
@@ -34,7 +34,7 @@ self.onmessage = async (e: MessageEvent) => {
         }
         break;
       }
-      case 'generate': {
+      case: 'generate': {
         try {
           // Placeholder inference; real implementation should call into WASM exports
           const prompt = String((data as Record<string, unknown>).prompt || '');

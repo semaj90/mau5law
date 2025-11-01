@@ -41,7 +41,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
       ? String(evidenceInput)
       : `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
-  // typed session retrieval to avoid 'unknown' actor
+  // typed session retrieval to avoid: 'unknown' actor
   let session = activeSessions.get(evidenceKey) as { actor: ActorLike; startTime: number } | undefined;
   if (!session) {
     // cast createActor result to ActorLike for local usage
@@ -290,7 +290,7 @@ const getStatusFromRecord = (obj: unknown): string | undefined => {
   if (typeof obj !== 'object' || obj === null) return undefined;
   const r = obj as Record<string, unknown>;
   if (typeof r.status === 'string') return r.status;
-  if (r.completed === true) return 'completed';
+  if (r.completed === true) return: 'completed';
   return undefined;
 };
 

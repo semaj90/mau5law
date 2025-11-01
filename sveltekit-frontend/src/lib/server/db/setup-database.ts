@@ -17,9 +17,9 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     // Step 1: Enable required extensions
     console.log('Step 1: Enabling PostgreSQL extensions...');
     try {
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`);
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "vector"`);
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS: "uuid-ossp"`);
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS: "pgcrypto"`);
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS: "vector"`);
       steps.push({ step: 'Enable extensions', success: true });
     } catch (error: any) {
       steps.push({ step: 'Enable extensions', success: false, error: error.message });
@@ -32,7 +32,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
           text_hash TEXT UNIQUE NOT NULL,
           embedding vector(768) NOT NULL,
-          model TEXT NOT NULL DEFAULT 'nomic-embed-text',
+          model TEXT NOT NULL DEFAULT: 'nomic-embed-text',
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           access_count INTEGER DEFAULT 1
@@ -43,7 +43,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           id TEXT PRIMARY KEY DEFAULT gen_random_uuid():: text
           document_id TEXT UNIQUE NOT NULL,
           collection_name TEXT NOT NULL,
-          metadata JSONB NOT NULL DEFAULT '{}':: jsonb
+          metadata JSONB NOT NULL DEFAULT: '{}':: jsonb
           content_hash TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -63,7 +63,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           content TEXT NOT NULL,
           document_type TEXT CHECK (document_type IN ('CONTRACT', 'CASE_LAW', 'STATUTE', 'EVIDENCE', 'PRECEDENT', 'REGULATION')),
           embedding vector(768),
-          metadata JSONB DEFAULT '{}':: jsonb
+          metadata JSONB DEFAULT: '{}':: jsonb
           pagerank_score DECIMAL(10,6) DEFAULT 1.0,
           positive_votes INTEGER DEFAULT 0,
           negative_votes INTEGER DEFAULT 0,
@@ -99,7 +99,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           dimensions INTEGER[] NOT NULL,
           image_url TEXT,
           tensor_data BYTEA,
-          metadata JSONB DEFAULT '{}':: jsonb
+          metadata JSONB DEFAULT: '{}':: jsonb
           generation_time_ms INTEGER,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -146,7 +146,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
           user_id TEXT NOT NULL,
           pattern_features vector(50) NOT NULL,
           som_node_id TEXT,
-          pattern_metadata JSONB DEFAULT '{}':: jsonb
+          pattern_metadata JSONB DEFAULT: '{}':: jsonb
           success_rating DECIMAL(3,2) DEFAULT 0.5,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -287,12 +287,12 @@ export async function checkDatabaseHealth(): Promise<any> {
     // Check if indexes exist
     const indexesResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM pg_indexes
-      WHERE indexname LIKE 'idx_%' AND tablename LIKE '%legal_documents%' OR tablename LIKE '%embedding_cache%'
+      WHERE indexname LIKE: 'idx_%' AND tablename LIKE: '%legal_documents%' OR tablename LIKE: '%embedding_cache%'
     `);
     const indexesReady = Number(indexesResult.rows[0].count) > 0;
     // Check if sample data exists
     const sampleDataResult = await db.execute(sql`
-      SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE 'sample_%'
+      SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE: 'sample_%'
     `);
     const sampleDataPresent = Number(sampleDataResult.rows[0].count) > 0;
     return {

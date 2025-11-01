@@ -54,7 +54,7 @@ export class GlyphCacheSystem {
   private readonly GLYPH_SIZE = 8; // 8x8 NES standard
   private readonly MAX_CACHE_SIZE = 50 * 1024 * 1024; // 50MB max cache
   private readonly CACHE_CLEANUP_INTERVAL = 300000; // 5 minutes
-  // LLM Integration for "did you mean" suggestions
+  // LLM Integration for: "did you mean" suggestions
   private llmCache = new Map<string, string[]>();
   private ollamaUrl: string = 'http://localhost:11437';
   // Performance metrics
@@ -200,13 +200,13 @@ export class GlyphCacheSystem {
     const charCode = char.charCodeAt(0);
     // Style-specific pattern generation
     switch (fontStyle) {
-      case 'classic':
+      case: 'classic':
         return this.generateClassicNESPattern(char, charCode);
-      case 'modern':
+      case: 'modern':
         return this.generateModernPattern(char, charCode);
-      case 'legal':
+      case: 'legal':
         return this.generateLegalPattern(char, charCode);
-      case 'retro':
+      case: 'retro':
         return this.generateRetroPattern(char, charCode);
       default:
         return this.generateClassicNESPattern(char, charCode);
@@ -353,7 +353,7 @@ export class GlyphCacheSystem {
       });
       return quantizationResult.quantizedData as Float32Array;
     } catch (error) {
-      console.error(`❌ Glyph quantization failed for '${char}':`, error);
+      console.error(`❌ Glyph quantization failed for: '${char}':`, error);
       return new Float32Array(64);
     }
   }
@@ -381,9 +381,9 @@ export class GlyphCacheSystem {
         colorScheme: 'default',
         animated: false
       });
-      console.log(`🎮 Stored glyph '${glyph.char}' to CHR-ROM bank ${glyph.chrRomBankId}`);
+      console.log(`🎮 Stored glyph: '${glyph.char}' to CHR-ROM bank ${glyph.chrRomBankId}`);
     } catch (error) {
-      console.warn(`⚠️ CHR-ROM storage failed for '${glyph.char}':`, error);
+      console.warn(`⚠️ CHR-ROM storage failed for: '${glyph.char}':`, error);
     }
   }
   private updateMetrics(renderTime: number, _cacheHit: boolean): void {
@@ -517,7 +517,7 @@ export class GlyphCacheSystem {
     return canvas.toDataURL();
   }
   /**
-   * LLM Integration - Get "did you mean" suggestions from gemma3:legal-latest
+   * LLM Integration - Get: "did you mean" suggestions from gemma3:legal-latest
    */
   async getLLMSuggestions(inputText: string): Promise<string[]> {
     const cacheKey = `suggestions_${inputText}`;
@@ -527,7 +527,7 @@ export class GlyphCacheSystem {
     try {
       const payload = {
         model: 'gemma3:legal-latest',
-        prompt: `Given the text "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
+        prompt: `Given the text: "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
         stream: false,
         options: {
           temperature: 0.3,
@@ -551,7 +551,7 @@ export class GlyphCacheSystem {
         .filter((s: string) => s.length > 0)
         .slice(0, 5);
       this.llmCache.set(cacheKey, suggestions);
-      console.log(`🤖 Generated ${suggestions.length} LLM suggestions for "${inputText}"`);
+      console.log(`🤖 Generated ${suggestions.length} LLM suggestions for: "${inputText}"`);
       return suggestions;
     } catch (error) {
       console.error('❌ LLM suggestion generation failed:', error);

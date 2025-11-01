@@ -1,4 +1,4 @@
-// Hybrid "Did You Mean" suggestion endpoint with AI intent prediction
+// Hybrid: "Did You Mean" suggestion endpoint with AI intent prediction
 // Returns lexical (pg_trgm), semantic (pgvector), and AI-enhanced suggestions merged & ranked.
 import type { RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/database'; // drizzle instance
@@ -10,7 +10,7 @@ import { userIntentPredictionSystem } from '$lib/ai/user-intent-prediction-syste
 const sql = (db as any).session?.client as ReturnType<typeof postgres> | undefined
 const REDIS_TTL_SECONDS = 600
 
-// Add a concise typed shape for AI "did you mean" suggestions
+// Add a concise typed shape for AI: "did you mean" suggestions
 type DidYouMeanSuggestion = {
   term?: string;
   suggestion?: string;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import './N64Theme.css';
+  import: './N64Theme.css';
   interface Props {
     width?: string;
     height?: string;
@@ -9,7 +9,7 @@
     children?: Snippet;
   }
   let { width = '560px', height = '420px', variant = 'info', ariaLabel = 'N64 Screen', children }: Props = $props();
-  // Dimensions can be strings like "320px" or "100%"
+  // Dimensions can be strings like: "320px" or: "100%"
   // variant: "info" | "success" | "warning" | "error"
 <div
   class="n64-screen {variant}"

@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({ suggestions });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     if (error instanceof Error) {
       console.error('Title suggestion error:', error.message);
     } else {

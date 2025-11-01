@@ -17,19 +17,19 @@ export const POST: RequestHandler = async ({ request }) => {
     for (const db of databases) {
       try {
         switch (db) {
-          case 'postgresql':
+          case: 'postgresql':
             await simulatePostgreSQLSync();
             syncResults.postgresql = { status: 'completed', entries: 150, errors: [] };
             break;
-          case 'qdrant':
+          case: 'qdrant':
             await simulateQdrantSync();
             syncResults.qdrant = { status: 'completed', entries: 75, errors: [] };
             break;
-          case 'neo4j':
+          case: 'neo4j':
             await simulateNeo4jSync();
             syncResults.neo4j = { status: 'completed', entries: 45, errors: [] };
             break;
-          case 'indexeddb':
+          case: 'indexeddb':
             await simulateIndexedDBSync();
             syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
             break;

@@ -85,7 +85,7 @@ function normalizeMethod(method: string | null | undefined): HttpMethod {
   if (m === 'GET' || m === 'POST' || m === 'PUT' || m === 'PATCH' || m === 'DELETE') {
     return m as HttpMethod;
   }
-  return 'GET';
+  return: 'GET';
 }
 
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
@@ -358,7 +358,7 @@ export function createProgressiveForm<T extends Record<string, unknown> = Record
     validateEmail: (email: string): string | null => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        return 'Please enter a valid email address';
+        return: 'Please enter a valid email address';
       }
       return null;
     },

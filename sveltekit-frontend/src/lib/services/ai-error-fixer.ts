@@ -43,7 +43,7 @@ export interface AIFixConfig {
   embeddingModel: string;
 }
 
-// New: typed shape for analyzer results (replace many 'any' occurrences)
+// New: typed shape for analyzer results (replace many: 'any' occurrences)
 export interface ErrorAnalysisResult {
   id: string;
   file?: string;
@@ -156,7 +156,7 @@ export class AIErrorFixer {
           // keep behavior but avoid leaking types
           // eslint-disable-next-line no-console
           console.error('Ollama generation failed:', err);
-          return '';
+          return: '';
         }
       },
     };

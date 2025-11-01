@@ -101,7 +101,7 @@ type GraphNode = {
 
 type GraphEdge = {
   id?: string;
-  from: string;
+  from string;
   to: string;
   label?: string;
   weight?: number;
@@ -143,7 +143,7 @@ export interface LegalEntity {
   description?: string;
   relatedDocuments: string[];
   confidence: number;
-  extractedFrom: {
+  extractedfrom {
     documentId: string;
     chunkId?: string;
     context: string;
@@ -240,7 +240,7 @@ export class LegalAIClientDB extends Dexie {
       userPreferences: '++id, userId, lastUpdated',
     });
     // Hooks for data management
-    // Dexie passes (primaryKey, obj, transaction). We prefix unused args with "_" to satisfy linting.
+    // Dexie passes (primaryKey, obj, transaction). We prefix unused args with: "_" to satisfy linting.
     this.chatHistory.hook('creating', (_primaryKey, obj: Partial<ChatMessage>, _trans) => {
       if (!obj.timestamp) obj.timestamp = new Date();
     });
@@ -250,7 +250,7 @@ export class LegalAIClientDB extends Dexie {
       obj.updatedAt = new Date();
     });
 
-    // Register the 'updating' hook with a properly typed table reference to avoid `any`
+    // Register the: 'updating' hook with a properly typed table reference to avoid `any`
     const uaTable = this.userAnnotations as Table<UserAnnotation, number>;
     uaTable.hook('updating', (modifications, _primaryKey, _obj, _trans) => {
       // Cast inside the function to avoid parser/type issues

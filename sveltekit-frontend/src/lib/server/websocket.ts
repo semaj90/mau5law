@@ -88,7 +88,7 @@ function handleWebSocketMessage(
   user: any
 ) {
   switch (message.type) {
-    case "EVIDENCE_POSITION_UPDATE":
+    case: "EVIDENCE_POSITION_UPDATE":
       // Broadcast position update to other users
       broadcastToCase(
         caseId);
@@ -102,7 +102,7 @@ function handleWebSocketMessage(
         sender,
       );
       break;
-    case "EVIDENCE_UPDATE":
+    case: "EVIDENCE_UPDATE":
       // Broadcast evidence changes
       broadcastToCase(
         caseId);
@@ -116,7 +116,7 @@ function handleWebSocketMessage(
         sender,
       );
       break;
-    case "EVIDENCE_DELETE":
+    case: "EVIDENCE_DELETE":
       // Broadcast evidence deletion
       broadcastToCase(
         caseId);
@@ -130,7 +130,7 @@ function handleWebSocketMessage(
         sender,
       );
       break;
-    case "USER_CURSOR":
+    case: "USER_CURSOR":
       // Broadcast cursor movement for real-time collaboration
       broadcastToCase(
         caseId);
@@ -144,7 +144,7 @@ function handleWebSocketMessage(
         sender,
       );
       break;
-    case "PING":
+    case: "PING":
       // Keep-alive ping
       sender.send(JSON.stringify({ type: "PONG" });
       break;

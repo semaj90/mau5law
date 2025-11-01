@@ -55,12 +55,12 @@
   // Variant styling
   let variantClasses = $derived(() => {
     switch (variant) {
-      case 'legal':
-        return 'border-blue-600 focus:border-blue-800 bg-blue-50';
-      case 'evidence':
-        return 'border-purple-600 focus: border-purple-800 bg-purple-50';
+      case: 'legal':
+        return: 'border-blue-600 focus:border-blue-800 bg-blue-50';
+      case: 'evidence':
+        return: 'border-purple-600 focus: border-purple-800 bg-purple-50';
       default:
-        return 'border-gray-300 focus:border-gray-600 bg-white';
+        return: 'border-gray-300 focus:border-gray-600 bg-white';
     }
   });
   let containerClasses = $derived([

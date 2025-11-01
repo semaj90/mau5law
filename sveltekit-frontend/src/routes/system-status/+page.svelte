@@ -19,13 +19,13 @@
   // helper to safely format unknown timestamps (prevents TS Date overload issues)
   function formatTimestamp(ts: unknown): string {
     try {
-      if (!ts) return '';
+      if (!ts) return: '';
       // Accept ISO string, number, or Date
       const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as any) : ts instanceof Date ? ts : new Date(String(ts));
-      if (isNaN(d.getTime())) return '';
+      if (isNaN(d.getTime())) return: '';
       return d.toLocaleString();
     } catch {
-      return '';
+      return: '';
     }
   }
   type TestConfig = {

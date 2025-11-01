@@ -4,12 +4,14 @@
   import { Card } from './index';
   import type { AIAnalysis, EvidenceItem } from './types';
   interface Props {
-    analysis: AIAnalysi;
+    analysis: AIAnalysis; // fixed typo
     evidence: EvidenceItem;
     variant?: 'compact' | 'detailed' | 'summary';
     showRefresh?: boolean;
     showExport?: boolean;
     class?: string;
+    // allow other arbitrary props passed through
+    [key: string]: unknown;
   }
   let {
     analysis,
@@ -18,7 +20,7 @@
     showRefresh = true,
     showExport = false,
     class: className = '',
-    ...restProp
+    ...restProps
   }: Props = $props();
   let isRefreshing = $state(false);
   let showFullSummary = $state(false);
@@ -29,14 +31,16 @@
     return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
   });
   // Sort entities by confidence
-  let sortedEntities = $derived(analysis.entities
-    .slice.sort((a, b) => b.confidence - a.confidence)
-    .slice(0, variant === 'compact' ? 3 : 8)
+  let sortedEntities = $derived(() =>
+    (analysis.entities?.slice() ?? [])
+      .sort((a, b) => b.confidence - a.confidence)
+      .slice(0, variant === 'compact' ? 3 : 8)
   );
   // Sort themes by weight
-  let sortedThemes = $derived(analysis.themes
-    .slice.sort((a, b) => b.weight - a.weight)
-    .slice(0, variant === 'compact' ? 2 : 5)
+  let sortedThemes = $derived(() =>
+    (analysis.themes?.slice() ?? [])
+      .sort((a, b) => b.weight - a.weight)
+      .slice(0, variant === 'compact' ? 2 : 5)
   );
   async function refreshAnalysis() {
     isRefreshing = true;

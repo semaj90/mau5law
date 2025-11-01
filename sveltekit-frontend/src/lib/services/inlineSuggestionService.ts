@@ -194,7 +194,7 @@ export class InlineSuggestionService {
       return { success: false, error: 'ai actor not initialized' };
     }
 
-    // Minimal promise that resolves with "not-implemented" after timeout or when aborted
+    // Minimal promise that resolves with: "not-implemented" after timeout or when aborted
     return await new Promise<AITaskResult>((resolve) => {
       const onAbort = () => {
         resolve({ success: false, taskId: task?.id, error: 'aborted' });

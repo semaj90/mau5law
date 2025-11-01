@@ -170,7 +170,7 @@
             {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size}
               <p class="text-sm text-gray-600 mb-1">
                 Size: {(
-                  // ensure 'size' is numeric for the division to satisfy TypeScript
+                  // ensure: 'size' is numeric for the division to satisfy TypeScript
                   (Number((result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size) / 1024)
                 ).toFixed(1)} KB
               </p>
@@ -212,8 +212,8 @@
 </div>
 <!-- Replaced raw CSS with UnoCSS utilities (no <style> needed).
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
-  Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
+  Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
-  Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
+  Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->

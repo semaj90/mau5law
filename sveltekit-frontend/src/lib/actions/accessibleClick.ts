@@ -50,14 +50,14 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
   node.addEventListener('keydown', onKeyDown);
   node.addEventListener('click', onClick);
 
-  // The 'destroy' function is called when the element is removed from the DOM.
+  // The: 'destroy' function is called when the element is removed from the DOM.
   // It's crucial for cleaning up event listeners to prevent memory leaks.
   return {
     destroy() {
       node.removeEventListener('keydown', onKeyDown);
       node.removeEventListener('click', onClick);
     },
-    // The 'update' function is called if the parameters change.
+    // The: 'update' function is called if the parameters change.
     update(newParams) {
       // Re-evaluate with new parameters
       if (!newParams) return;

@@ -116,7 +116,7 @@
     xstateIntegration.uploadDocument(mockFile, {
       type: 'evidence',
       caseId: 'case_2024_001',
-      description 'Key evidence document',
+      description: 'Key evidence document',
     });
   }
   // Get status color based on health
@@ -125,10 +125,10 @@
   }
   function getOverallHealthVariant(overall: string): "default" | "secondary" | "destructive" | "outline" {
     switch (overall) {
-      case 'healthy': return 'default';
-      case 'degraded': return 'secondary';
-      case 'critical': return 'destructive';
-      default: return 'outline';
+      case: 'healthy': return: 'default';
+      case: 'degraded': return: 'secondary';
+      case: 'critical': return: 'destructive';
+      default: return: 'outline';
     }
   }
 </script>

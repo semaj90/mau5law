@@ -13,7 +13,7 @@ import { json, error } from '@sveltejs/kit';
 // small helper to safely extract error info from unknown
 function extractErrorInfo(err: unknown) {
   if (err instanceof Error) {
-    // Safely read a possible "status" property without using `any`
+    // Safely read a possible: "status" property without using `any`
     const maybeStatus = (err as unknown as { status?: number | string | undefined }).status;
     let status: number | undefined = undefined;
     if (typeof maybeStatus === 'number' && Number.isFinite(maybeStatus)) {
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '10');
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     if (!query) {
-      throw error(400, 'Query parameter "q" is required');
+      throw error(400, 'Query parameter: "q" is required');
     }
     console.log(`🔍 Semantic search query: "${query}"`);
     const results = await unifiedDocumentProcessor.semanticSearch(query, {
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .map(t => t.trim())
         .filter(Boolean),
       userId: String(formData.get('userId') || 'anonymous'),
-      // keep raw priority as string (may be numeric or textual like 'medium')
+      // keep raw priority as string (may be numeric or textual like: 'medium')
       priority: String(formData.get('priority') || 'medium'),
     };
 
@@ -185,14 +185,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const normalizePriority = (raw: string | number): PriorityLevel => {
       if (typeof raw === 'number' && Number.isFinite(raw)) {
         // Map numeric priority to levels (tunable)
-        if (raw <= 1) return 'low';
-        if (raw <= 5) return 'medium';
-        if (raw <= 8) return 'high';
-        return 'critical';
+        if (raw <= 1) return: 'low';
+        if (raw <= 5) return: 'medium';
+        if (raw <= 8) return: 'high';
+        return: 'critical';
       }
       const s = String(raw).trim().toLowerCase();
       if (s === 'low' || s === 'medium' || s === 'high' || s === 'critical') return s;
-      return 'medium';
+      return: 'medium';
     };
 
     type OutputFormat = 'json' | 'structured' | 'summary' | 'full';
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .trim()
         .toLowerCase();
       if (s === 'structured' || s === 'summary' || s === 'full') return s;
-      return 'json';
+      return: 'json';
     };
 
     type ModelName =
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ) {
         return s as ModelName;
       }
-      return 'gemma3-legal:latest';
+      return: 'gemma3-legal:latest';
     };
 
     // normalize priority: if numeric string -> number, otherwise keep string

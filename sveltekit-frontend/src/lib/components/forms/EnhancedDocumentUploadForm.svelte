@@ -153,7 +153,7 @@
     selectedFile = null;
     $formData = {
       title: "",
-      description "",
+      description: "",
       documentType: "other",
       jurisdiction undefined;
       tags: [],

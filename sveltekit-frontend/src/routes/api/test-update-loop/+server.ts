@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types'; // changed from './$types.js' to './$types'
+import type { RequestHandler } from './$types'; // changed from './$types.js' to: './$types'
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/db';
 import { eq, sql } from 'drizzle-orm';
@@ -39,7 +39,7 @@ type TestResults = {
   error?: string;
 };
 
-// New: explicit insert shapes to avoid 'any' casts and match required fields
+// New: explicit insert shapes to avoid: 'any' casts and match required fields
 type DocumentInsert = {
   title: string;
   case_id?: string | null; // match DB column type (e.g. UUID/string) — numbers cause Drizzle overload mismatch
@@ -247,7 +247,7 @@ class UpdateLoopTester {
         resultCount: 1,
         clickedResults: [{ id: document.id, score: 0.8 }],
       };
-      await db.insert(queryVectors).values(qvInsert); // <-- removed 'as Insert<typeof queryVectors>'
+      await db.insert(queryVectors).values(qvInsert); // <-- removed: 'as Insert<typeof queryVectors>'
       // NOW TEST THE UPDATE LOOP
       const changeDetection = await DUL.detectDocumentChanges(document.id, scenario.modifiedContent);
       let updateResult;

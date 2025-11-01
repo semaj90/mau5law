@@ -19,9 +19,19 @@
     database: 'healthy' | 'warning' | 'error';
     storage: number;
   }
+
+  // --- NEW: strongly-typed logs ---
+  interface LogEntry {
+    id?: string | number;
+    timestamp?: string | number;
+    level?: string;
+    message?: string;
+    metadata?: Record<string, any>;
+  }
+
   const metrics = writable<PerformanceMetrics | null>(null);
   const health = writable<SystemHealth | null>(null);
-  const logs = writable<unknown[]>([]);
+  const logs = writable<LogEntry[]>([]); // changed from unknown[]
   let refreshInterval: NodeJS.Timeout;
   let autoRefresh = $state(true);
   $effect(() => {
@@ -71,14 +81,14 @@
   }
   function getHealthColor(status: string): string {
     switch (status) {
-      case 'healthy':
-        return 'text-green-600';
-      case 'warning':
-        return 'text-yellow-600';
-      case 'error':
-        return 'text-red-600';
+      case: 'healthy':
+        return: 'text-green-600';
+      case: 'warning':
+        return: 'text-yellow-600';
+      case: 'error':
+        return: 'text-red-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
   function formatHour(hour: number): string {
@@ -144,7 +154,7 @@
       </div>
       <div class="space-y-4">
         <h3>Error Rate</h3>
-        <div class="space-y-4">
+        <div class="space-y-4>
           {($metrics.errorRate * 100).toFixed(2)}%
         </div>
       </div>
@@ -184,14 +194,14 @@
   <!-- Recent Logs -->
   <div class="space-y-4">
     <h2>Recent System Logs</h2>
-    <div class="space-y-4">
+    <div class="space-y-4 logs-container">
       {#each $logs as log}
-        <div class="space-y-4">
-          <div class="space-y-4">{new Date(log.timestamp).toLocaleString()}</div>
-          <div class="space-y-4">{log.level.toUpperCase()}</div>
-          <div class="space-y-4">{log.message}</div>
+        <div class="log-entry {log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'info'}">
+          <div class="log-timestamp">{log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}</div>
+          <div class="log-level">{(log.level || '').toUpperCase()}</div>
+          <div class="log-message">{log.message ?? ''}</div>
           {#if log.metadata}
-            <div class="space-y-4">
+            <div class="log-metadata">
               {JSON.stringify(log.metadata, null, 2)}
             </div>
           {/if}
@@ -229,7 +239,7 @@
     border-radius: 0.375rem;
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2;
+    transition: all 0.2s ease; /* added unit + easing */
   }
   .btn-primary {
     background: var(--primary-color);
@@ -260,7 +270,7 @@
   .health-status {
     font-size: 1.25rem;
     font-weight: bold;
-    text-transform: capitaliz;
+    text-transform: capitalize; /* fixed typo */
   }
   .metrics-grid {
     display: grid;
@@ -318,7 +328,9 @@
     color: var(--text-color);
   }
   .endpoints-list {
-    space-y: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* replaced invalid space-y */
   }
   .endpoint-item {
     display: flex;
@@ -347,7 +359,7 @@
     padding: 1rem 0;
   }
   .peak-hour-bar {
-    flex: 1,
+    flex: 1; /* fixed comma -> semicolon */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -364,7 +376,7 @@
     color: var(--text-secondary);
     margin-top: 0.5rem;
     writing-mode: vertical-rl;
-    text-orientation mixed;
+    text-orientation: mixed; /* fixed syntax */
   }
   .bar-count {
     font-size: 0.75rem;

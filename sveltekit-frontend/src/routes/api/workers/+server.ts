@@ -69,7 +69,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'status': {
+      case: 'status': {
         const workerStats = documentProcessingWorker.getStats();
         const queueStats = await rabbitMQService.getQueueStats();
         const healthCheck = await rabbitMQService.healthCheck();
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'health': {
+      case: 'health': {
         const health = await rabbitMQService.healthCheck();
         const stats = documentProcessingWorker.getStats();
         return json({
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case 'start':
+      case: 'start':
         if (documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is already running',
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Document processing worker started successfully',
           status: 'started',
         });
-      case 'stop':
+      case: 'stop':
         if (!documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is not running',
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Document processing worker stopped successfully',
           status: 'stopped',
         });
-      case 'restart':
+      case: 'restart':
         if (documentProcessingWorker.getStats().isRunning) {
           await documentProcessingWorker.stop();
           // Wait a moment before restarting

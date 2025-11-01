@@ -114,7 +114,7 @@ async function callOllama(model: string, prompt: string): Promise<string> {
     return text || '';
   } catch (err) {
     console.warn('Ollama call failed, falling back to mock response:', err);
-    return '';
+    return: '';
   }
 }
 
@@ -125,15 +125,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const { action, data } = await request.json();
     switch (action) {
-      case 'create_case':
+      case: 'create_case':
         return await createLegalCase(data);
-      case 'upload_evidence':
+      case: 'upload_evidence':
         return await uploadEvidenceToCase(data);
-      case 'update_canvas_positions':
+      case: 'update_canvas_positions':
         return await updateCanvasPositions(data);
-      case 'generate_timeline':
+      case: 'generate_timeline':
         return await generateTimeline(data);
-      case 'chat_with_case':
+      case: 'chat_with_case':
         return await chatWithCase(data);
       default:
         throw new Error('Unknown action');
@@ -205,7 +205,7 @@ async function createLegalCase(data: any) {
     step: 1,
     action: 'case_created',
     case: newCase,
-    message: `Legal case "${data.title}" created successfully!`,
+    message: `Legal case: "${data.title}" created successfully!`,
     nextStep: 'Upload evidence files using the drag-drop canvas',
   });
 }
@@ -272,7 +272,7 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload) {
   // Ensure the documents table is available before proceeding
   if (!userDocuments) {
     throw new Error(
-      'Missing DB schema export "documents" / "userDocuments" required for updateCanvasPositions. Please export it from $lib/server/db/schema.'
+      'Missing DB schema export: "documents" / "userDocuments" required for updateCanvasPositions. Please export it from $lib/server/db/schema.'
     );
   }
 
@@ -362,7 +362,7 @@ async function generateTimeline(data: any) {
   // Ensure documents table exists before attempting to read processed evidence
   if (!userDocuments) {
     throw new Error(
-      'Missing DB schema export "documents" / "userDocuments" required for generateTimeline. Please export it from $lib/server/db/schema.'
+      'Missing DB schema export: "documents" / "userDocuments" required for generateTimeline. Please export it from $lib/server/db/schema.'
     );
   }
 
@@ -456,7 +456,7 @@ async function chatWithCase(data: ChatWithCasePayload) {
   // Ensure the documents table exists before attempting similarity search
   if (!userDocuments) {
     throw new Error(
-      'Missing DB schema export "documents" / "userDocuments" required for chatWithCase. Please export it from $lib/server/db/schema.'
+      'Missing DB schema export: "documents" / "userDocuments" required for chatWithCase. Please export it from $lib/server/db/schema.'
     );
   }
 
@@ -629,11 +629,11 @@ async function chatWithCase(data: ChatWithCasePayload) {
   });
 }
 function detectEvidenceType(mimeType: string): string {
-  if (mimeType.startsWith('image/')) return 'photograph';
-  if (mimeType.startsWith('video/')) return 'video_recording';
-  if (mimeType.startsWith('audio/')) return 'audio_recording';
-  if (mimeType.includes('pdf')) return 'document';
-  return 'digital_evidence';
+  if (mimeType.startsWith('image/')) return: 'photograph';
+  if (mimeType.startsWith('video/')) return: 'video_recording';
+  if (mimeType.startsWith('audio/')) return: 'audio_recording';
+  if (mimeType.includes('pdf')) return: 'document';
+  return: 'digital_evidence';
 }
 function getTimelineCategory(activityType: string): string {
   const categories: Record<string, string> = {
@@ -664,7 +664,7 @@ Legal Recommendations:
 2. Use timeline visualization for courtroom presentation
 3. Prioritize high-relevance evidence for expert review
 Query Response:
-Regarding "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown'} priority.
+Regarding: "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status || 'unknown'} case with ${caseData.priority || 'unknown'} priority.
 `;
 }
 export const GET: RequestHandler = async ({ url }) => {

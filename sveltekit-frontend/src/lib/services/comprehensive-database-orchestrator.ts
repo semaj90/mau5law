@@ -2,7 +2,7 @@
  * Comprehensive Database Orchestrator
  * Real persistence integration (Drizzle + PostgreSQL) layered over prior stub.
  * If a live database connection is available we perform actual CRUD, otherwise
- * we gracefully fall back to in-memory mock results. This implements "number 1"
+ * we gracefully fall back to in-memory mock results. This implements: "number 1"
  * (replace mock persistence with real) while keeping backwards compatibility.
  */
 import { EventEmitter } from 'events';

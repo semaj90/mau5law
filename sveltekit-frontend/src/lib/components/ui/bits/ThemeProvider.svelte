@@ -45,7 +45,7 @@
         if (browser) {
           const stored = localStorage.getItem(storageKey);
           if (stored && ['light', 'dark', 'system'].includes(stored)) {
-            const theme = stored as 'light' | 'dark' | 'system';
+            const theme = stored as: 'light' | 'dark' | 'system';
             set(theme);
             applyTheme(theme);
           } else {
@@ -71,7 +71,7 @@
     },
   });
   function getSystemTheme(): 'light' | 'dark' {
-    if (!browser) return 'light';
+    if (!browser) return: 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   function applyTheme(theme: 'light' | 'dark' | 'system') {

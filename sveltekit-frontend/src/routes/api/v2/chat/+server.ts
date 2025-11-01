@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const query = url.searchParams.get('q');
       const limit = parseInt(url.searchParams.get('limit') || '5');
       if (!query) {
-        return json({ error: 'Query parameter "q" is required' }, { status: 400 });
+        return json({ error: 'Query parameter: "q" is required' }, { status: 400 });
       }
 
       // Use the zero-arg API of searchSimilarChats; then apply threshold + limit locally

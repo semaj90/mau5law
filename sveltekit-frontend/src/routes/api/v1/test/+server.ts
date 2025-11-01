@@ -85,11 +85,11 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   try {
     switch (action) {
-      case 'health':
+      case: 'health':
         return await handleTestSystemHealth();
-      case 'suites':
+      case: 'suites':
         return await handleTestSuites();
-      case 'history':
+      case: 'history':
         return await handleTestHistory();
       default:
         return json({
@@ -186,7 +186,7 @@ function getTestsForSuite(testSuite: string): string[] {
     'ai_model_availability',
   ];
   switch (testSuite) {
-    case 'core':
+    case: 'core':
       return [
         'system_health_check',
         'core_service_connectivity',
@@ -194,7 +194,7 @@ function getTestsForSuite(testSuite: string): string[] {
         'upload_api_functionality',
         'database_connections',
       ];
-    case 'api':
+    case: 'api':
       return [
         'api_orchestrator_initialization',
         'rag_api_functionality',
@@ -202,9 +202,9 @@ function getTestsForSuite(testSuite: string): string[] {
         'multi_protocol_routing',
         'error_handling_validation',
       ];
-    case 'services':
+    case: 'services':
       return ['system_health_check', 'core_service_connectivity', 'database_connections', 'windows_process_validation'];
-    case 'full':
+    case: 'full':
     default:
       return allTests;
   }
@@ -217,49 +217,49 @@ async function runSingleTest(testName: string, _context: APIRequestContext): Pro
   try {
     let result: unknown;
     switch (testName) {
-      case 'system_health_check':
+      case: 'system_health_check':
         result = await testSystemHealth();
         break;
-      case 'api_orchestrator_initialization':
+      case: 'api_orchestrator_initialization':
         result = await testAPIOrchestrator();
         break;
-      case 'core_service_connectivity':
+      case: 'core_service_connectivity':
         result = await testCoreServices();
         break;
-      case 'rag_api_functionality':
+      case: 'rag_api_functionality':
         result = await testRAGAPI();
         break;
-      case 'upload_api_functionality':
+      case: 'upload_api_functionality':
         result = await testUploadAPI();
         break;
-      case 'database_connections':
+      case: 'database_connections':
         result = await testDatabaseConnections();
         break;
-      case 'embedding_service_integration':
+      case: 'embedding_service_integration':
         result = await testEmbeddingService();
         break;
-      case 'multi_protocol_routing':
+      case: 'multi_protocol_routing':
         result = await testMultiProtocolRouting();
         break;
-      case 'error_handling_validation':
+      case: 'error_handling_validation':
         result = await testErrorHandling();
         break;
-      case 'performance_benchmarks':
+      case: 'performance_benchmarks':
         result = await testPerformanceBenchmarks();
         break;
-      case 'windows_process_validation':
+      case: 'windows_process_validation':
         result = await testWindowsProcesses();
         break;
-      case 'cache_functionality':
+      case: 'cache_functionality':
         result = await testCacheFunctionality();
         break;
-      case 'websocket_connections':
+      case: 'websocket_connections':
         result = await testWebSocketConnections();
         break;
-      case 'file_processing_pipeline':
+      case: 'file_processing_pipeline':
         result = await testFileProcessingPipeline();
         break;
-      case 'ai_model_availability':
+      case: 'ai_model_availability':
         result = await testAIModelAvailability();
         break;
       default:

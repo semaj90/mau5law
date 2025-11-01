@@ -56,16 +56,16 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       try {
         let result: any;
         switch (type) {
-          case 'embeddings':
+          case: 'embeddings':
             result = await this.processEmbeddings(data as EmbeddingTask, id);
             break;
-          case 'chunking':
+          case: 'chunking':
             result = await this.processChunking(data as ChunkingTask, id);
             break;
-          case 'similarity':
+          case: 'similarity':
             result = await this.processSimilarity(data as SimilarityTask, id);
             break;
-          case 'processing':
+          case: 'processing':
             result = await this.processGeneral(data, options, id);
             break;
           default:
@@ -187,11 +187,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       // General purpose processing for other tasks
       const { operation } = options;
       switch (operation) {
-        case 'text-analysis':
+        case: 'text-analysis':
           return await this.analyzeText(data.text);
-        case 'vector-operations':
+        case: 'vector-operations':
           return await this.performVectorOperations(data);
-        case 'data-transformation':
+        case: 'data-transformation':
           return await this.transformData(data);
         default:
           throw new Error(`Unknown operation: ${operation}`);
@@ -265,11 +265,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     private async performVectorOperations(data: any): Promise<any> {
       const { operation, vectors } = data;
       switch (operation) {
-        case 'normalize':
+        case: 'normalize':
           return vectors.map((v: number[]) => this.normalizeVector(v));
-        case 'average':
+        case: 'average':
           return this.averageVectors(vectors);
-        case 'distance':
+        case: 'distance':
           return this.calculateDistances(vectors);
         default:
           throw new Error(`Unknown vector operation: ${operation}`);
@@ -279,11 +279,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       // Data transformation utilities
       const { transformation, input } = data;
       switch (transformation) {
-        case 'flatten':
+        case: 'flatten':
           return this.flattenObject(input);
-        case 'group':
+        case: 'group':
           return this.groupData(input);
-        case 'filter':
+        case: 'filter':
           return this.filterData(input, data.criteria);
         default:
           throw new Error(`Unknown transformation: ${transformation}`);

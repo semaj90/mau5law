@@ -42,7 +42,7 @@ export class QdrantPostgreSQLService {
       types: {
         vector: {
           to: 1184,
-          from: [1184],
+          from [1184],
           serialize: (x: number[]) => {
             if (Array.isArray(x)) {
               return `[${x.join(',')}]`;

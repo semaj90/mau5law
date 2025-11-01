@@ -34,10 +34,10 @@
     theme = 'default',
     globalDuration = 300,
     globalEasing = quintOut,
-    reduceMotion = false,
-    children
+    reduceMotion = false
   }: EnhancedAnimationLibraryProps = $props();
-  const dispatch = createEventDispatcher();
+  // Typed dispatcher avoids deprecated createEventDispatcher signature
+  const dispatch = createEventDispatcher<{ motionPreferenceChange: { reduced: boolean } }>();
   // Check for user's motion preferences
   let prefersReducedMotion = $state(false);
   $effect(() => {
@@ -235,26 +235,26 @@
   export function getThemeAnimation(animationType: string, themeOverride?: string): any {
     const currentTheme = themeOverride || theme; // Fixed typo: them -> theme
     switch (currentTheme) {
-      case 'gaming':
+      case: 'gaming':
         switch (animationType) {
-          case 'enter': return animations.glitchIn();
-          case 'hover': return animations.neonGlow();
-          case 'focus': return animations.pixelate();
+          case: 'enter': return animations.glitchIn();
+          case: 'hover': return animations.neonGlow();
+          case: 'focus': return animations.pixelate();
           default: return animations.fadeIn();
         }
-      case 'legal':
+      case: 'legal':
         switch (animationType) {
-          case 'enter': return animations.professionalFade();
-          case 'slide': return animations.documentSlide();
-          case 'scale': return animations.subtleScale();
+          case: 'enter': return animations.professionalFade();
+          case: 'slide': return animations.documentSlide();
+          case: 'scale': return animations.subtleScale();
           default: return animations.fadeIn();
         }
       default:
         switch (animationType) {
-          case 'enter': return animations.fadeIn();
-          case 'slide': return animations.slideUp();
-          case 'scale': return animations.scaleIn();
-          case 'elastic': return animations.elastic();
+          case: 'enter': return animations.fadeIn();
+          case: 'slide': return animations.slideUp();
+          case: 'scale': return animations.scaleIn();
+          case: 'elastic': return animations.elastic();
           default: return animations.fadeIn();
         }
     }
@@ -264,9 +264,9 @@
 </script>
 
 <!-- Animation library doesn't render anything, it's a utility component -->
-{#if children}
-  {@render children()}
-{/if}
+<!-- Use a slot for children content instead of expecting a `children` prop -->
+<!-- Replaced Svelte 5 {@render} (caused parse error) with standard slot for compatibility -->
+<slot />
 
 <style>
 /* CSS-only animations for better performance */
@@ -319,33 +319,53 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
     }
   }
   @keyframes enhanced-gaming-glitch {
-0% /* Removed {} */,
+    0% {
+      opacity: 0.95;
+      transform: translateX(-1px) scale(0.995);
+      filter: hue-rotate(-20deg) contrast(0.95);
+      text-shadow: none;
+    }
+    20% {
+      opacity: 0.9;
+      transform: translateX(-2px) scale(0.99);
+      filter: hue-rotate(-90deg) contrast(0.8);
+      text-shadow:
+        -2px 0 #00ff41,
+        2px 0 #ff0040,
+        0 0 5px #00ff41;
+    }
+    40% {
+      opacity: 0.85;
+      transform: translateX(1px) scale(1.005);
+      filter: hue-rotate(60deg) contrast(1.1);
+      text-shadow:
+        2px 0 #00ff41,
+        -2px 0 #ff0040,
+        0 0 8px #00ff41;
+    }
+    60% {
+      opacity: 0.9;
+      transform: translateX(-1px) scale(1.0);
+      filter: hue-rotate(-30deg) contrast(1.05);
+      text-shadow:
+        -1px 0 #00ff41,
+        1px 0 #ff0040,
+        0 0 6px #00ff41;
+    }
+    80% {
+      opacity: 0.95;
+      transform: translateX(2px) scale(1.01);
+      filter: hue-rotate(30deg) contrast(1.15);
+      text-shadow:
+        2px 0 #00ff41,
+        -2px 0 #ff0040,
+        0 0 10px #00ff41;
+    }
     100% {
       opacity: 1;
       transform: translateX(0) scale(1);
       filter: hue-rotate(0deg) contrast(1);
       text-shadow: none;
-    }
-10% /* Removed {} */,
-30% /* Removed {} */,
-    50% {
-      opacity: 0.8;
-      transform: translateX(2px) scale(1.01);
-      filter: hue-rotate(90deg) contrast(1.2);
-text-shadow:
-2px 0 #00ff41,
--2px 0 #ff0040,
-        0 0 10px #00ff41;
-    }
-20% /* Removed {} */,
-    40% {
-      opacity: 0.9;
-      transform: translateX(-2px) scale(0.99);
-      filter: hue-rotate(-90deg) contrast(0.8);
-text-shadow:
--2px 0 #00ff41,
-2px 0 #ff0040,
-        0 0 5px #00ff41;
     }
   }
   @keyframes enhanced-legal-professional {
@@ -375,14 +395,3 @@ text-shadow:
     animation-delay: calc(var(--stagger-delay, 0ms) + var(--animation-delay, 0ms));
   }
 </style>
-:global(.enhanced-bits-animate-gaming), {}
-    :global(.enhanced-bits-animate-legal) {
-      animation: none !important;
-    }
-  }
-/* Stagger animation: support */ {}
-  :global([data-stagger-delay]) {
-    animation-delay: calc(var(--stagger-delay, 0ms) + var(--animation-delay, 0ms));
-  }
-</style>
-

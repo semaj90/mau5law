@@ -13,7 +13,7 @@
   let selectedCase = $state<CaseScore | null>(null);
   let isLoading = $state(false);
   let errorMessage = $state('');
-  let scoringInProgress = $state(false);
+  let scoringInProgressIds = $state(new Set<string>());
   let showScoreDetails = $state(false);
   let useMockData = $state(true); // Toggle for demo mode
   // Filters and sorting
@@ -343,7 +343,8 @@
   }
 
   async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
-    scoringInProgress = true;
+    // mark this case as in-progress
+    scoringInProgressIds.add(caseId);
     try {
       if (useMockData) {
         // Simulate scoring with mock data
@@ -396,28 +397,29 @@
       errorMessage = error instanceof Error ? error.message : 'An error occurred';
       return { success: false, error: String(error) };
     } finally {
-      scoringInProgress = false;
+      // remove in-progress mark for this case
+      scoringInProgressIds.delete(caseId);
     }
   }
 
   function getScoreColor(score: number): string {
-    if (score >= 85) return 'text-red-600';
-    if (score >= 70) return 'text-orange-600';
-    if (score >= 50) return 'text-yellow-600';
-    return 'text-green-600';
+    if (score >= 85) return: 'text-red-600';
+    if (score >= 70) return: 'text-orange-600';
+    if (score >= 50) return: 'text-yellow-600';
+    return: 'text-green-600';
   }
   function getPriorityBadgeClass(priority: string): string {
     switch (priority) {
-      case 'critical':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'high':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low':
-        return 'bg-green-100 text-green-800 border-green-200';
+      case: 'critical':
+        return: 'bg-red-100 text-red-800 border-red-200';
+      case: 'high':
+        return: 'bg-orange-100 text-orange-800 border-orange-200';
+      case: 'medium':
+        return: 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case: 'low':
+        return: 'bg-green-100 text-green-800 border-green-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return: 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   // Derived filtered list (Svelte 5 $derived returns a callable)
@@ -438,13 +440,13 @@
     filtered = [...filtered]; // copy before sort
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'score':
+        case: 'score':
           return b.score - a.score;
-        case 'priority': {
+        case: 'priority': {
           const priorityOrder: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         }
-        case 'date':
+        case: 'date':
           return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
         default:
           return 0;
@@ -470,7 +472,7 @@
     </div>
     <div class="header-actions">
       <label class="demo-toggle">
-        <input type="checkbox" bind:checked={useMockData} onchange={() => loadCaseScores()} />
+        <input type="checkbox" bind:checked={useMockData} />
         <span>Demo Mode</span>
       </label>
       <button
@@ -588,10 +590,10 @@
                 aria-label="Action button"
                 type="button"
                 onclick={() => scoreCase(caseItem.id)}
-                disabled={scoringInProgress}
+                disabled={scoringInProgressIds.has(caseItem.id)}
                 class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
               >
-                {scoringInProgress ? 'Rescoring...' : 'Rescore'}
+                {scoringInProgressIds.has(caseItem.id) ? 'Rescoring...' : 'Rescore'}
               </button>
             </div>
           </div>
@@ -602,17 +604,23 @@
 </div>
 <!-- Score Details Modal -->
 {#if showScoreDetails && selectedCase}
-  <div class="modal-overlay" role="dialog" aria-modal="true" tabindex="0">
-    <!-- Visually hidden close button for keyboard users -->
+  <div
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    tabindex="0"
+    onkeydown={e => {
+      // close modal on Escape
+      if (e.key === 'Escape') showScoreDetails = false;
+    }}
+  >
+    <!-- Visually hidden close button for keyboard users (simple, no duplicated handlers) -->
     <button
       type="button"
       aria-label="Close dialog"
       class="visually-hidden"
       onclick={() => (showScoreDetails = false)}
-      onkeydown={e => {
-        if (e.key === 'Escape') showScoreDetails = false;
-      }}>Close</button
-    >
+    >Close</button>
     <div class="modal-content score-details-dialog" role="document">
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>

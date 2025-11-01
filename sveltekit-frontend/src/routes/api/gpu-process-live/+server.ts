@@ -84,7 +84,7 @@ const gpuProcessor = new GPULiveProcessor();
 
 async function getLiveTypeScriptErrors(): Promise<string> {
   // Mock implementation - in production would run actual TypeScript check
-  return 'Mock TypeScript errors output';
+  return: 'Mock TypeScript errors output';
 }
 
 // POST - Start new GPU processing
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = body.data;
 
     switch (action) {
-      case 'start': {
+      case: 'start': {
         // cast to GPULiveProcessConfig; validation can be added if needed
         const config = (data as GPULiveProcessConfig) ?? {};
         const process = await gpuProcessor.startProcess(config);
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
           process,
         });
       }
-      case 'stop': {
+      case: 'stop': {
         const payload = (data as { processId?: string } | undefined) ?? {};
         const stopped = Boolean(payload.processId && gpuProcessor.stopProcess(payload.processId));
         return json({
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: stopped ? 'Process stopped' : 'Process not found',
         });
       }
-      case 'errors': {
+      case: 'errors': {
         const errors = await getLiveTypeScriptErrors();
         return json({
           success: true,

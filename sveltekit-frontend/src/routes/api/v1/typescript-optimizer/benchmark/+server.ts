@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid strategy: must be "speed", "quality", or "comparison"',
+          error: 'Invalid strategy: must be: "speed", "quality", or: "comparison"',
         },
         { status: 400 }
       );
@@ -34,13 +34,13 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     let results: BenchmarkResult[];
     switch (body.strategy) {
-      case 'speed':
+      case: 'speed':
         results = await runSpeedBenchmark(errorCount, iterations);
         break;
-      case 'quality':
+      case: 'quality':
         results = await runQualityBenchmark(errorCount, iterations);
         break;
-      case 'comparison':
+      case: 'comparison':
         results = await runComparisonBenchmark(errorCount, iterations);
         break;
       default:
@@ -322,7 +322,7 @@ function generateSampleErrors(count: number) {
     file: 'src/lib/components/TestComponent.svelte',
     line: 42,
     column: 12,
-    message: 'Property "handleClick" does not exist on type "EventTarget"',
+    message: 'Property "handleClick" does not exist on type: "EventTarget"',
     code: 'event.target.handleClick()',
     context: 'Event handler in Svelte component',
   };

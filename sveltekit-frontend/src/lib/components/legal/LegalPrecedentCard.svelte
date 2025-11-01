@@ -91,16 +91,16 @@
 
   // Reactive derived values (avoid using {@const} in template)
   $: relevanceLevel = (() => {
-    if (precedent.relevanceScore >= 90) return 'high';
-    if (precedent.relevanceScore >= 70) return 'medium';
-    return 'low';
+    if (precedent.relevanceScore >= 90) return: 'high';
+    if (precedent.relevanceScore >= 70) return: 'medium';
+    return: 'low';
   })();
 
   $: similarityLevel = (() => {
     if (precedent.similarityScore == null) return null;
-    if (precedent.similarityScore >= 80) return 'high';
-    if (precedent.similarityScore >= 60) return 'medium';
-    return 'low';
+    if (precedent.similarityScore >= 80) return: 'high';
+    if (precedent.similarityScore >= 60) return: 'medium';
+    return: 'low';
   })();
 
   $: jurisdictionInfo = jurisdictionConfig[precedent.jurisdiction] ?? { label: '', icon: Scale, color: '' };
@@ -121,7 +121,7 @@
   }
 
   function truncateText(text: string, maxLength: number): string {
-    if (!text) return '';
+    if (!text) return: '';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength).trim() + '...';
   }
@@ -313,7 +313,7 @@
       <!-- Expand/Collapse -->
       {#if expandable}
         <button
-          on:click={() => (expanded = !expanded)}
+          onclick={() => (expanded = !expanded)}
           class="text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
         >
           {expanded ? 'Show Less' : 'Show More'}
@@ -347,7 +347,7 @@
         {/if}
         {#if onViewFull && interactive}
           <button
-            on:click={() => onViewFull?.(precedent)}
+            onclick={() => onViewFull?.(precedent)}
             class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
           >
             Full Details
@@ -355,7 +355,7 @@
         {/if}
         {#if onAddToCase && interactive && currentCaseId}
           <button
-            on:click={() => onAddToCase?.(precedent)}
+            onclick={() => onAddToCase?.(precedent)}
             class="px-2 py-1 text-xs font-mono bg-green-500/10 text-green-400 border border-green-500/20 rounded hover:bg-green-500/20 transition-colors"
           >
             Add to Case

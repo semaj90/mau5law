@@ -421,7 +421,7 @@ export const evidenceProcessingMachine = setup({
                 graphRelationships: ({ event }) => event.output.nodes || [],
                 connectionStrength: ({ event }) => {
                   const strengthMap = new Map();
-                  (event.output.connections || []).forEach((conn: GraphConnection & { from: string }) => {
+                  (event.output.connections || []).forEach((conn: GraphConnection & { from string }) => {
                     strengthMap.set(`${conn.from}-${conn.to}`, conn.strength);
                   });
                   return strengthMap;
@@ -485,7 +485,7 @@ export const evidenceProcessingMachine = setup({
         onDone: {
           target: 'idle',
           actions: assign({
-            systemHealth: ({ event }) => event.output.health as 'healthy' | 'degraded' | 'critical',
+            systemHealth: ({ event }) => event.output.health as: 'healthy' | 'degraded' | 'critical',
           }),
         },
         onError: {

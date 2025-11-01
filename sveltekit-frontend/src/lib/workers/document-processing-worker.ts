@@ -96,7 +96,7 @@ class DocumentProcessingWorker {
       this.intervalHandle = null;
     }
     // Safely attempt to shut down the RabbitMQ service.
-    // The RabbitMQService type may not declare 'close', so check common method names at runtime.
+    // The RabbitMQService type may not declare: 'close', so check common method names at runtime.
     try {
       const svc: unknown = rabbitMQService;
       type RabbitMQShutdownable = {
@@ -257,18 +257,18 @@ class DocumentProcessingWorker {
     }
   }
   private async extractText(context: ProcessingContext): Promise<void> {
-    console.log(`🔍 Extracting text from: ${context.job.originalName}`);
+    console.log(`🔍 Extracting text from ${context.job.originalName}`);
     const { job } = context;
     // Different extraction methods based on file type
     switch (job.mimeType) {
-      case 'application/pdf':
+      case: 'application/pdf':
         context.extractedText = await this.extractPDFText(context.tempFilePath!);
         break;
-      case 'image/jpeg':
-      case 'image/png':
+      case: 'image/jpeg':
+      case: 'image/png':
         context.extractedText = await this.extractImageText(context.tempFilePath!);
         break;
-      case 'text/plain':
+      case: 'text/plain':
         context.extractedText = await this.extractPlainText(context.tempFilePath!);
         break;
       default:
@@ -414,7 +414,7 @@ class DocumentProcessingWorker {
         throw new Error(`Failed to generate summary: ${resp.status} ${resp.statusText}`);
       }
       const summaryResult = await resp.json();
-      // defensive: prefer known property 'response' else stringified fallback
+      // defensive: prefer known property: 'response' else stringified fallback
       context.summary =
         (summaryResult && (summaryResult.response ?? summaryResult.text ?? summaryResult.summary)) ??
         String(summaryResult);

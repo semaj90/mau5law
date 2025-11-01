@@ -2,49 +2,51 @@
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';
-  import { onMount  } from "svelte";
+  // Use only icons that are known-exported and replace a few that caused module errors with emoji/fallbacks
+  import { Search, FileText, Users, Zap, Brain } from 'lucide-svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintInOut, elasticOut } from 'svelte/easing';
   import {
-    generateMCPPrompt,
+    // only import what we use; types from external helpers caused mismatches so relax local typing below
     commonMCPQueries,
     copilotOrchestrator,
-    type MCPContextAnalysis,
-    type AutoMCPSuggestion
-  } from '$lib/utils/mcp-helpers';
+    } from '$lib/utils/mcp-helpers';
   import { phase13Integration, getSystemHealth } from '$lib/integrations/phase13-full-integration';
-  // Svelte 5 reactive state
-  let isOpen = $state(false);
-  let searchQuery = $state('');
-  let searchResults = $state<unknown[]>([]);
-  let isSearching = $state(false);
-  let selectedType = $state<'all' | 'cases' | 'evidence' | 'documents' | 'ai'>('all');
-  let showAdvanced = $state(false);
-  let aiConfidenceThreshold = $state(0.7);
-  let useSemanticSearch = $state(true);
-  let useMCPAnalysis = $state(true);
-  let searchHistory = $state<string[]>([]);
-  let suggestions = $state<string[]>([]);
-  let mcpContext = $state<MCPContextAnalysis | null>(null);
-  let autoSuggestions = $state<AutoMCPSuggestion[]>([]);
-  let phase13Status = $state<any>(null);
-  let systemHealth = $state<any>(null);
+
+  export let ondispatch: (result: any) => void = () => {};
+
+   // Svelte 5 reactive state
+   let isOpen = $state(false);
+   let searchQuery = $state('');
+   let searchResults = $state<unknown[]>([]);
+   let isSearching = $state(false);
+   let selectedType = $state<'all' | 'cases' | 'evidence' | 'documents' | 'ai'>('all');
+   let showAdvanced = $state(false);
+   let aiConfidenceThreshold = $state(0.7);
+   let useSemanticSearch = $state(true);
+   let useMCPAnalysis = $state(true);
+   let searchHistory = $state<string[]>([]);
+   let suggestions = $state<string[]>([]);
+   // relax types to avoid strict mismatches from external definitions
+   let mcpContext = $state<any>(null);
+   let autoSuggestions = $state<any[]>([]);
+   let phase13Status = $state<any>(null);
+   let systemHealth = $state<any>(null);
+
   // Load search history from localStorage and initialize Phase 13
   $effect(() => {
     (async () => {
-const saved = localStorage.getItem('ai-search-history');
-    if (saved) {
-      searchHistory = JSON.parse(saved);
-    }
-    // Initialize Phase 13 integration status
-    await updatePhase13Status();
-    // Generate auto-suggestions on mount
-    generateAutoSuggestions();
+      const saved = localStorage.getItem('ai-search-history');
+      if (saved) {
+        searchHistory = JSON.parse(saved);
+      }
+      // Initialize Phase 13 integration status
+      await updatePhase13Status();
+      // Generate auto-suggestions on mount
+      generateAutoSuggestions();
     })();
   });
+
   // AI-powered search with MCP integration
   async function performAISearch() {
     if (!searchQuery.trim()) return;
@@ -55,43 +57,47 @@ const saved = localStorage.getItem('ai-search-history');
         searchHistory = [searchQuery, ...searchHistory.slice(0, 9)];
         localStorage.setItem('ai-search-history', JSON.stringify(searchHistory));
       }
+
       const response = await fetch('/api/ai/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query: searchQuery;
-          type: selectedType
-          useAI: true
-          mcpAnalysis: useMCPAnalysis
-          semanticSearch: useSemanticSearch
+        body: JSON.stringify({
+          query: searchQuery,
+          type: selectedType,
+          useAI: true,
+          mcpAnalysis: useMCPAnalysis,
+          semanticSearch: useSemanticSearch,
           maxResults: 20,
-          confidenceThreshold: aiConfidenceThreshold;
+          confidenceThreshold: aiConfidenceThreshold
         })
       });
-      const data = await (response as { json?: any; ok?: any }).json();
-      if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
-        searchResults = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).result;
-        mcpContext = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).mcpContext;
+
+      const data = await response.json();
+      if (data?.success) {
+        searchResults = data.results ?? data.result ?? [];
+        mcpContext = data.mcpContext ?? null;
+
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
-          query: searchQuery;
-          results: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results.length,
-          aiModel: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.model,
-          confidence: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.confidence,
-          processingTime: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.processingTime
+          query: searchQuery,
+          results: Array.isArray(data.results) ? data.results.length : (data.results ?? 0),
+          aiModel: data.metadata?.model,
+          confidence: data.metadata?.confidence,
+          processingTime: data.metadata?.processingTime
         });
       } else {
-        console.error(error);
+        console.error('AI search returned error:', data?.error ?? data);
         searchResults = [];
       }
-    } catch (error) {
-      console.error('AI search failed:', error);
+    } catch (err) {
+      console.error('AI search failed:', err);
       searchResults = [];
     } finally {
       isSearching = false;
     }
   }
+
   // Get search suggestions as user types
   async function getSuggestions() {
     if (searchQuery.length < 3) {
@@ -99,87 +105,77 @@ const saved = localStorage.getItem('ai-search-history');
       return;
     }
     try {
-      // removed unused response assignment
-      const data = await (response as { json?: any; ok?: any }).json();
-      if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
-        suggestions = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).suggestion;
-      }
+      const res = await fetch('/api/ai/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: searchQuery })
+      });
+      const data = await res.json();
+      suggestions = data?.suggestions ?? data?.suggestion ?? [];
     } catch (error) {
       console.error('Failed to get suggestions:', error);
     }
   }
+
   // Generate MCP auto-suggestions
   async function generateAutoSuggestions() {
     try {
       const context = await copilotOrchestrator(
         "Analyze current legal AI workflow and suggest improvements",
         {
-          useSemanticSearch: true
-          useMemory: true
+          useSemanticSearch: true,
+          useMemory: true,
           synthesizeOutputs: true
         }
       );
+      // simplified suggestions (typed as any to avoid shape/type mismatch)
       autoSuggestions = [
-        {
-          type: 'ai-integration',
-          priority: 'high',
-          suggestion 'Implement semantic case clustering',
-          implementation 'Group similar cases using AI embeddings',
-          mcpQuery: commonMCPQueries.aiChatIntegration();
-        },
-        {
-          type: 'performance',
-          priority: 'medium',
-          suggestion 'Cache frequent searches',
-          implementation 'Store common queries in Redis for faster responses',
-          mcpQuery: commonMCPQueries.performanceBestPractices();
-        },
-        {
-          type: 'ui-enhancement',
-          priority: 'low',
-          suggestion 'Add voice search capability',
-          implementation 'Integrate speech-to-text for hands-free search',
-          mcpQuery: commonMCPQueries.uiUxBestPractices();
-        }
+        { type: 'enhancement', priority: 'high', suggestion: 'Implement semantic case clustering', implementation: 'Group similar cases using AI embeddings', mcpQuery: commonMCPQueries.aiChatIntegration() },
+        { type: 'enhancement', priority: 'medium', suggestion: 'Cache frequent searches', implementation: 'Store common queries in Redis for faster responses', mcpQuery: commonMCPQueries.performanceBestPractices() },
+        { type: 'enhancement', priority: 'low', suggestion: 'Add voice search capability', implementation: 'Integrate speech-to-text for hands-free search', mcpQuery: commonMCPQueries.uiUxBestPractices() }
       ];
     } catch (error) {
       console.error('Failed to generate auto-suggestions:', error);
     }
   }
+
   // Update memory graph with AI context
-  async function updateMemoryWithAIContext(interaction any) {
+  async function updateMemoryWithAIContext(interaction: any) {
     try {
       await fetch('/api/mcp/memory/create-relations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(toISOString)(),
-            resultsCount: interaction.results,
-            model: interaction.aiModel,
-            confidence: interaction.confidence,
-            processingTime: interaction.processingTim;
-          }
+        body: JSON.stringify({
+          userId: interaction.userId,
+          query: interaction.query,
+          resultsCount: interaction.results,
+          model: interaction.aiModel,
+          confidence: interaction.confidence,
+          processingTime: interaction.processingTime
         })
       });
     } catch (error) {
       console.error('Failed to update memory graph:', error);
     }
   }
+
   // Keyboard shortcuts and event handlers
-  function handleKeydown(_event: KeyboardEvent) {
-    switch (event.key) {
-      case 'Enter':
+  function handleKeydown(e: KeyboardEvent) {
+    switch (e.key) {
+      case: 'Enter':
         if (!isSearching) {
           performAISearch();
         }
         break;
-      case 'Escape':
+      case: 'Escape':
         close();
         break;
-      case 'ArrowDown':
+      case: 'ArrowDown':
         // Navigate suggestions (implementation would go here)
         break;
     }
   }
+
   // Reactive search suggestions
   $effect(() => {
     if (searchQuery.length >= 3) {
@@ -187,6 +183,7 @@ const saved = localStorage.getItem('ai-search-history');
       return () => clearTimeout(debounce);
     }
   });
+
   // Public API
   export function open() {
     isOpen = true;
@@ -203,115 +200,124 @@ const saved = localStorage.getItem('ai-search-history');
     suggestions = [];
     showAdvanced = false;
   }
+
   // Handle result selection
   function selectResult(result: any) {
-    ondispatch?.(result);
+    // keep existing integration hook if provided
+    ondispatch(result);
     close();
   }
+
   // Handle suggestion selection
-  function selectSuggestion(suggestion string) {
-    searchQuery = suggestio;
+  function selectSuggestion(suggestion: string) {
+    searchQuery = suggestion;
     suggestions = [];
     performAISearch();
   }
+
   // Handle history selection
   function selectHistory(query: string) {
     searchQuery = query;
     performAISearch();
   }
+
   // Update Phase 13 integration status
   async function updatePhase13Status() {
     try {
-      // removed unused response assignment
-      if ((response as { json?: any; ok?: any }).ok) {
-        const data = await (response as { json?: any; ok?: any }).json();
-        systemHealth = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).data;
-        phase13Status = systemHealth.phase13;
+      const res = await fetch('/api/phase13/status');
+      if (res.ok) {
+        const data = await res.json();
+        systemHealth = data?.data ?? data;
+        phase13Status = systemHealth?.phase13 ?? null;
       }
     } catch (error) {
       console.error('Failed to get Phase 13 status:', error);
     }
   }
+
   // Apply MCP auto-suggestion with Phase 13 integration
-  async function applyAutoSuggestion(suggestion AutoMCPSuggestion) {
+  async function applyAutoSuggestion(suggestion: any) {
     try {
-      // Use Phase 13 integration manager to apply suggestion
       const response = await fetch('/api/phase13/integration', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          action 'apply-suggestion',
-          suggestio;
+        body: JSON.stringify({
+          action: 'apply-suggestion',
+          suggestion
         })
       });
-      if ((response as { json?: any; ok?: any }).ok) {
-        const result = await (response as { json?: any; ok?: any }).json();
+      if (response.ok) {
+        const result = await response.json();
         console.log('✅ Suggestion applied via Phase 13:', result);
         // Update system status after applying suggestion
         await updatePhase13Status();
         // Show success message with Phase 13 integration info
-        alert(`✅ Applied suggestion ${suggestion.suggestion}\n🔧 Implementation ${suggestion.implementation}\n📊 Phase 13 Status: ${phase13Status?.status || 'Updated'}`);
+        alert(`✅ Applied suggestion ${suggestion.suggestion || suggestion}\n🔧 Implementation ${suggestion.implementation || ''}\n📊 Phase 13 Status: ${phase13Status?.status || 'Updated'}`);
       } else {
         throw new Error('Failed to apply suggestion via Phase 13');
       }
     } catch (error) {
       console.error('❌ Failed to apply suggestion', error);
-      alert(`❌ Failed to apply suggestion ${error instanceof Error ? error.message: 'Unknown error'}`);
+      alert(`❌ Failed to apply suggestion ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 </script>
-<Dialog.Root bind:open={isOpen}>
-  <Dialog.Portal>
-    <Dialog.Overlay
-      class="nier-overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-      in:fade={{ duration 200 }}
-      out:fade={{ duration 150 }}
-    />
-    <Dialog.Content
-      class="nier-modal fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2"
-      in:fly={{ y: -20, duration 300, easing: quintInOut }}
-      out:fly={{ y: -10, duration 200 }}
-      data-testid="find-modal"
-    >
-      <div class="nier-container bg-gray-900 border-2 border-yellow-400 shadow-2xl overflow-hidden">
+{#if isOpen}
+  <!-- Overlay -->
+  <div
+    class="nier-overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+    in:fade={{ duration: 200 }}
+    out:fade={{ duration: 150 }}
+    onclick={() => close()}
+  />
+  <!-- Modal Content -->
+  <div
+    class="nier-modal fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2"
+    in:fly={{ y: -20, duration: 300, easing: quintInOut }}
+    out:fly={{ y: -10, duration: 200 }}
+    data-testid="find-modal"
+  >
+    <div class="nier-container bg-gray-900 border-2 border-yellow-400 shadow-2xl overflow-hidden">
         <!-- Animated Border Effect -->
         <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 via-transparent to-yellow-400 opacity-20 animate-pulse pointer-events-none"></div>
-        <!-- Header -->
-        <div class="nier-header border-b border-yellow-400/30 p-4 relative">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="nier-icon-container">
-                <Sparkles class="w-6 h-6 text-yellow-400 animate-pulse" />
-              </div>
-              <h2 class="nier-title text-xl font-mono text-yellow-400 tracking-wider">
-                AI-POWERED SEARCH SYSTEM
-              </h2>
-            </div>
-            <!-- Status Indicators -->
-            <div class="flex items-center gap-2">
-              {#if useMCPAnalysis}
-                <div class="nier-status-badge bg-green-500/20 border border-green-500/50 text-green-400">
-                  <Brain class="w-3 h-3" />
-                  MCP
-                </div>
-              {/if}
-              {#if useSemanticSearch}
-                <div class="nier-status-badge bg-blue-500/20 border border-blue-500/50 text-blue-400">
-                  <Target class="w-3 h-3" />
-                  SEMANTIC
-                </div>
-              {/if}
-            </div>
-          </div>
-        </div>
-        <!-- Main Search Area -->
-        <div class="p-6 space-y-4">
+         <!-- Header -->
+         <div class="nier-header border-b border-yellow-400/30 p-4 relative">
+           <div class="flex items-center justify-between">
+             <div class="flex items-center gap-3">
+               <div class="nier-icon-container">
+-                <Sparkles class="w-6 h-6 text-yellow-400 animate-pulse" />
++                <span class="w-6 h-6 text-yellow-400 animate-pulse" aria-hidden>✨</span>
+               </div>
+               <h2 class="nier-title text-xl font-mono text-yellow-400 tracking-wider">
+                 AI-POWERED SEARCH SYSTEM
+               </h2>
+             </div>
+             <!-- Status Indicators -->
+             <div class="flex items-center gap-2">
+               {#if useMCPAnalysis}
+                 <div class="nier-status-badge bg-green-500/20 border border-green-500/50 text-green-400">
+                   <Brain class="w-3 h-3" />
+                   MCP
+                 </div>
+               {/if}
+               {#if useSemanticSearch}
+                 <div class="nier-status-badge bg-blue-500/20 border border-blue-500/50 text-blue-400">
+-                  <Target class="w-3 h-3" />
++                  <span class="w-3 h-3" aria-hidden>🎯</span>
+                   SEMANTIC
+                 </div>
+               {/if}
+             </div>
+           </div>
+         </div>
+         <!-- Main Search Area -->
+         <div class="p-6 space-y-4">
           <!-- Search Input with Suggestions -->
           <div class="nier-search-container relative">
             <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
             <input
               bind:value={searchQuery}
-              keydown={handleKeydown}
+              onkeydown={handleKeydown}
               placeholder="Search cases, evidence, documents with AI..."
               class="nier-input w-full pl-12 pr-16 py-4 bg-black border border-yellow-400/50 text-white font-mono placeholder-gray-500 focus:outline-none focus:border-yellow-400 focus:shadow-lg focus:shadow-yellow-400/20 transition-all duration-300"
               disabled={isSearching}
@@ -329,12 +335,12 @@ const saved = localStorage.getItem('ai-search-history');
             {#if suggestions.length > 0 && searchQuery.length >= 3}
               <div
                 class="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-600 max-h-40 overflow-y-auto z-20"
-                in:fly={{ y: -10, duration 200 }}
+                in:fly={{ y: -10, duration: 200 }}
               >
                 {#each suggestions as suggestion}
                   <button type="button"
-                    class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
                     onclick={() => selectSuggestion(suggestion)}
+                    class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
                   >
                     <Search class="w-4 h-4 inline mr-2" />
                     {suggestion}
@@ -345,79 +351,89 @@ const saved = localStorage.getItem('ai-search-history');
           </div>
           <!-- Search Type Filters -->
           <div class="flex flex-wrap gap-2">
-            {#each [
-              { value: 'all', label: 'ALL TYPES', icon Search, color: 'yellow' },
-              { value: 'cases', label: 'CASES', icon FileText, color: 'blue' },
-              { value: 'evidence', label: 'EVIDENCE', icon Users, color: 'green' },
-              { value: 'documents', label: 'DOCUMENTS', icon Calendar, color: 'purple' }
-            ] as filter}
-              <button type="button"
-                onclick={() => selectedType = filter.value}
-                class="nier-filter-btn {selectedType === filter.value ? 'active' : ''} {filter.color}"
-                in:scale={{ duration 200, start: 0.9 }}
-              >
-                <svelte:component this={filter.icon} class="w-4 h-4" />
-                {filter.label}
-              </button>
-            {/each}
-            <!-- Advanced Options Toggle -->
-            <button type="button"
-              onclick={() => showAdvanced = !showAdvanced}
-              class="nier-filter-btn advanced {showAdvanced ? 'active' : ''}"
-            >
-              <Zap class="w-4 h-4" />
-              ADVANCED
-            </button>
-          </div>
-          <!-- Advanced Options Panel -->
-          {#if showAdvanced}
-            <div
-              class="nier-advanced-panel bg-gray-800/50 border border-gray-600 p-4 space-y-3";
-              in:fly={{ y: -20, duration 300, easing: elasticOut }}
-            >
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- AI Confidence Threshold -->
-                <div class="space-y-2">
-                  <label class="text-yellow-400 font-mono text-sm" for="ai-confidence-mathro">AI CONFIDENCE: {Math.round(aiConfidenceThreshold * 100)}%</label><input id="ai-confidence-mathro"
-                    type="range";
-                    bind:value={aiConfidenceThreshold}
-                    min="0.1"
-                    max="1"
-                    step="0.1"
-                    class="nier-slider w-full"
-                  />
-                </div>
-                <!-- Feature Toggles -->
-                <div class="space-y-2">
-                  <label class="text-yellow-400 font-mono text-sm">FEATURES</label>
-                  <div class="space-y-1">
-                    <label class="flex items-center gap-2 text-gray-300 font-mono text-sm cursor-pointer">
-                      <input type="checkbox" bind:checked={useSemanticSearch} class="nier-checkbox" />
-                      Semantic Search
-                    </label>
-                    <label class="flex items-center gap-2 text-gray-300 font-mono text-sm cursor-pointer">
-                      <input type="checkbox" bind:checked={useMCPAnalysis} class="nier-checkbox" />
-                      MCP Analysis
-                    </label>
-                  </div>
-                </div>
-                <!-- Search History -->
-                <div class="space-y-2">
-                  <label class="text-yellow-400 font-mono text-sm">RECENT SEARCHES</label>
-                  <div class="space-y-1 max-h-20 overflow-y-auto">
-                    {#each searchHistory.slice(0, 3) as query}
-                      <button type="button"
-                        class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
-                        onclick={() => selectHistory(query)}
-                      >
-                        {query}
-                      </button>
-                    {/each}
-                  </div>
-                </div>
-              </div>
-            </div>
-          {/if}
+-            {#each [
+-              { value: 'all', label: 'ALL TYPES', icon: Search, color: 'yellow' },
+-              { value: 'cases', label: 'CASES', icon: FileText, color: 'blue' },
+-              { value: 'evidence', label: 'EVIDENCE', icon: Users, color: 'green' },
+-              { value: 'documents', label: 'DOCUMENTS', icon: FileText, color: 'purple' }
+-            ] as filter}
++            {#each [
++              { value: 'all', label: 'ALL TYPES', icon: Search, color: 'yellow' },
++              { value: 'cases', label: 'CASES', icon: FileText, color: 'blue' },
++              { value: 'evidence', label: 'EVIDENCE', icon: Users, color: 'green' },
++              { value: 'documents', label: 'DOCUMENTS', icon: FileText, color: 'purple' }
++            ] as filter}
+               <button type="button"
+                 onclick={() => selectedType = filter.value}
+                 class={"nier-filter-btn " + (selectedType === filter.value ? 'active ' : '') + filter.color}
+                 in:scale={{ duration: 200, start: 0.9 }}
+               >
+                 <svelte:component this={filter.icon} class="w-4 h-4" />
+                 {filter.label}
+               </button>
+             {/each}
+             <!-- Advanced Options Toggle -->
+             <button type="button"
+               onclick={() => showAdvanced = !showAdvanced}
+-              class="nier-filter-btn advanced {showAdvanced ? 'active' : ''}"
++              class={"nier-filter-btn advanced: " + (showAdvanced ? 'active' : '')}
+             >
+               <Zap class="w-4 h-4" />
+               ADVANCED
+             </button>
+         </div>
+         <!-- Advanced Options Panel -->
+         {#if showAdvanced}
+           <div
+             class="nier-advanced-panel bg-gray-800/50 border border-gray-600 p-4 space-y-3"
+-              in:fly={{ y: -20, duration: 300, easing: elasticOut }}
++              in:fly={{ y: -20, duration: 300, easing: elasticOut }}
+           >
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+               <!-- AI Confidence Threshold -->
+               <div class="space-y-2">
+                 <label class="text-yellow-400 font-mono text-sm" for="ai-confidence-threshold">AI CONFIDENCE: {Math.round(aiConfidenceThreshold * 100)}%</label>
+                 <input
+                   id="ai-confidence-threshold"
+                   type="range"
+                   bind:value={aiConfidenceThreshold}
+                   min="0.1"
+                   max="1"
+                   step="0.1"
+                   class="nier-slider w-full"
+                 />
+               </div>
+               <!-- Feature Toggles -->
+               <div class="space-y-2">
+                 <label class="text-yellow-400 font-mono text-sm">FEATURES</label>
+                 <div class="space-y-1">
+                   <label class="flex items-center gap-2 text-gray-300 font-mono text-sm cursor-pointer">
+                     <input type="checkbox" bind:checked={useSemanticSearch} class="nier-checkbox" />
+                     Semantic Search
+                   </label>
+                   <label class="flex items-center gap-2 text-gray-300 font-mono text-sm cursor-pointer">
+                     <input type="checkbox" bind:checked={useMCPAnalysis} class="nier-checkbox" />
+                     MCP Analysis
+                   </label>
+                 </div>
+               </div>
+               <!-- Search History -->
+               <div class="space-y-2">
+                 <label class="text-yellow-400 font-mono text-sm">RECENT SEARCHES</label>
+                 <div class="space-y-1 max-h-20 overflow-y-auto">
+                   {#each searchHistory.slice(0, 3) as query}
+                     <button type="button"
+                       class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
+                       onclick={() => selectHistory(query)}
+                     >
+                       {query}
+                     </button>
+                   {/each}
+                 </div>
+               </div>
+             </div>
+           </div>
+         {/if}
           <!-- AI Search Button -->
           <button type="button"
             onclick={performAISearch}
@@ -443,7 +459,7 @@ const saved = localStorage.getItem('ai-search-history');
               <div
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
                 onclick={() => selectResult(result)}
-                in:fly={{ x: -20, duration 300, delay: index * 50 }}
+                in:fly={{ x: -20, duration: 300, delay: index * 50 }}
                 data-testid="result-item"
               >
                 <div class="flex items-start gap-4">
@@ -458,10 +474,10 @@ const saved = localStorage.getItem('ai-search-history');
                         {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).title}
                       </h3>
                       <!-- AI Confidence Badge -->
-                      {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).aiConfidence}
+                      {#if (result as any).aiConfidence}
                         <div class="nier-confidence-badge flex-shrink-0" data-testid="ai-confidence">
                           <Brain class="w-3 h-3" />
-                          {Math.round.aiConfidence * 100)}%
+                          {Math.round(((result as any).aiConfidence ?? 0) * 100)}%
                         </div>
                       {/if}
                     </div>
@@ -473,111 +489,119 @@ const saved = localStorage.getItem('ai-search-history');
                       <span class="nier-type-badge bg-gray-800 border border-gray-600 px-2 py-1">
                         {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).type?.toUpperCase()}
                       </span>
-                      {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).relevanceScore}
+                      {#if (result as any).relevanceScore}
                         <span class="text-blue-400 flex items-center gap-1">
-                          <Target class="w-3 h-3" />
-                          {Math.round.relevanceScore * 100)}% relevant
+                          <span class="w-3 h-3" aria-hidden>🎯</span>
+                          {Math.round(((result as any).relevanceScore ?? 0) * 100)}% relevant
                         </span>
                       {/if}
                       <span class="text-gray-500">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).lastModified}</span>
                       <!-- Highlights -->
                       {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights && (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length > 0}
                         <div class="flex items-center gap-1">
-                          <Sparkles class="w-3 h-3 text-yellow-400" />
-                          <span class="text-yellow-400">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length} highlights</span>
-                        </div>
-                      {/if}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/each}
-          </div>
-        {:else if searchQuery && !isSearching}
-          <!-- No Results -->
-          <div class="nier-no-results border-t border-yellow-400/30 p-8 text-center">
-            <div
-              class="w-20 h-20 mx-auto mb-4 bg-gray-800 border border-gray-600 flex items-center justify-center"
-              in:scale={{ duration 400, easing: elasticOut }}
-            >
-              <Search class="w-10 h-10 text-gray-500" />
-            </div>
-            <h3 class="text-white font-mono text-lg mb-2">NO RESULTS FOUND</h3>
-            <p class="text-gray-400 text-sm mb-4">Try adjusting your search terms, filters, or AI confidence threshold</p>
-            <!-- MCP Suggestions -->
-            {#if mcpContext?.recommendations && mcpContext.recommendations.length > 0}
-              <div class="text-left max-w-md mx-auto">
-                <h4 class="text-yellow-400 font-mono text-sm mb-2">🤖 AI SUGGESTIONS:</h4>
-                <ul class="space-y-1">
-                  {#each mcpContext.recommendations.slice(0, 3) as suggestion}
-                    <li class="text-gray-300 text-sm">• {suggestion}</li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-          </div>
-        {:else if !searchQuery}
-          <!-- Auto-Suggestions Panel -->
-          <div class="border-t border-yellow-400/30 p-6">
-            <h3 class="text-yellow-400 font-mono text-lg mb-4 flex items-center gap-2">
-              <Sparkles class="w-5 h-5" />
-              INTELLIGENT SUGGESTIONS
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {#each autoSuggestions as suggestion}
-                <div class="nier-suggestion-nier-bits-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
-                     onclick={() => applyAutoSuggestion(suggestion)}>
-                  <div class="flex items-start gap-3">
-                    <div class="nier-priority-indicator {suggestion.priority} w-3 h-3 rounded-full flex-shrink-0 mt-1"></div>
-                    <div class="flex-1">
-                      <h4 class="text-white font-mono font-bold text-sm mb-1 group-hover:text-yellow-400 transition-colors">
-                        {suggestion.suggestion}
-                      </h4>
-                      <p class="text-gray-400 text-xs mb-2 leading-relaxed">
-                        {suggestion.implementation}
-                      </p>
-                      <div class="flex items-center gap-2">
-                        <span class="nier-type-badge bg-gray-900 border border-gray-700 px-2 py-1 text-xs">
-                          {suggestion.type.replace.toUpperCase()}
-                        </span>
-                        <span class="text-{suggestion.priority === 'high' ? 'red' : suggestion.priority === 'medium' ? 'yellow' : 'green'}-400 text-xs font-mono">
-                          {suggestion.priority.toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          </div>
-        {/if}
-        <!-- Footer -->
-        <div class="nier-footer border-t border-yellow-400/30 p-4 flex justify-between items-center text-xs text-gray-500 font-mono bg-gray-900/50">
-          <div class="flex items-center gap-4">
-            <span>POWERED BY AI + CONTEXT7 MCP</span>
-            {#if mcpContext}
-              <span class="text-green-400">• MCP ACTIVE</span>
-            {/if}
-          </div>
-          <div class="flex items-center gap-4">
-            <span>CTRL+K TO OPEN</span>
-            <span>ESC TO CLOSE</span>
-          </div>
-        </div>
-      </div>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+-                          <Sparkles class="w-3 h-3 text-yellow-400" />
++                          <span class="w-3 h-3 text-yellow-400" aria-hidden>✨</span>
+                           <span class="text-yellow-400">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length} highlights</span>
+                         </div>
+                       {/if}
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             {/each}
+           </div>
+         {:else if searchQuery && !isSearching}
+           <!-- No Results -->
+           <div class="nier-no-results border-t border-yellow-400/30 p-8 text-center">
+             <div
+               class="w-20 h-20 mx-auto mb-4 bg-gray-800 border border-gray-600 flex items-center justify-center"
+               in:scale={{ duration: 400, easing: elasticOut }}
+             >
+               <Search class="w-10 h-10 text-gray-500" />
+             </div>
+             <h3 class="text-white font-mono text-lg mb-2">NO RESULTS FOUND</h3>
+             <p class="text-gray-400 text-sm mb-4">Try adjusting your search terms, filters, or AI confidence threshold</p>
+             <!-- MCP Suggestions -->
+             {#if mcpContext?.recommendations && mcpContext.recommendations.length > 0}
+               <div class="text-left max-w-md mx-auto">
+                 <h4 class="text-yellow-400 font-mono text-sm mb-2">🤖 AI SUGGESTIONS:</h4>
+                 <ul class="space-y-1">
+                   {#each mcpContext.recommendations.slice(0, 3) as suggestion}
+                     <li class="text-gray-300 text-sm">• {suggestion}</li>
+                   {/each}
+                 </ul>
+               </div>
+             {/if}
+           </div>
+         {:else if !searchQuery}
+           <!-- Auto-Suggestions Panel -->
+           <div class="border-t border-yellow-400/30 p-6">
+             <h3 class="text-yellow-400 font-mono text-lg mb-4 flex items-center gap-2">
+-              <Sparkles class="w-5 h-5" />
++              <span class="w-5 h-5" aria-hidden>✨</span>
+               INTELLIGENT SUGGESTIONS
+             </h3>
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+               {#each autoSuggestions as suggestion}
+                 <div class="nier-suggestion-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
+                      onclick={() => applyAutoSuggestion(suggestion)}>
+                   <div class="flex items-start gap-3">
+-                    <div class="nier-priority-indicator {suggestion.priority} w-3 h-3 rounded-full flex-shrink-0 mt-1"></div>
++                    <div class={"nier-priority-indicator " + (suggestion.priority || '') + " w-3 h-3 rounded-full flex-shrink-0 mt-1"}></div>
+                     <div class="flex-1">
+                       <h4 class="text-white font-mono font-bold text-sm mb-1 group-hover:text-yellow-400 transition-colors">
+-                        {suggestion.suggestion}
++                        {suggestion.suggestion}
+                       </h4>
+                       <p class="text-gray-400 text-xs mb-2 leading-relaxed">
+-                        {suggestion.implementation}
++                        {suggestion.implementation}
+                       </p>
+                       <div class="flex items-center gap-2">
+                         <span class="nier-type-badge bg-gray-900 border border-gray-700 px-2 py-1 text-xs">
+-                          {suggestion.type?.toUpperCase()}
++                          {String(suggestion.type ?? '').toUpperCase()}
+                         </span>
+                         <span class={ suggestion.priority === 'high' ? 'text-red-400 text-xs font-mono' : suggestion.priority === 'medium' ? 'text-yellow-400 text-xs font-mono' : 'text-green-400 text-xs font-mono' }>
+                           { (suggestion.priority || '').toUpperCase() }
+                         </span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               {/each}
+             </div>
+           </div>
+         {/if}
+         <!-- Footer -->
+         <div class="nier-footer border-t border-yellow-400/30 p-4 flex justify-between items-center text-xs text-gray-500 font-mono bg-gray-900/50">
+           <div class="flex items-center gap-4">
+             <span>POWERED BY AI + CONTEXT7 MCP</span>
+             {#if mcpContext}
+               <span class="text-green-400">• MCP ACTIVE</span>
+             {/if}
+           </div>
+           <div class="flex items-center gap-4">
+             <span>CTRL+K TO OPEN</span>
+             <span>ESC TO CLOSE</span>
+           </div>
+         </div>
+       </div>
+-    </Dialog.Content>
+-  </Dialog.Portal>
+-</Dialog.Root>
++  </div>
+{/if}
 <style>
   /* NieR Automata Theme Enhancements */
   .nier-container {
     clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 25px 100%, 0 calc(100% - 25px));
-    position relative;
+    position: relative;
     max-height: 90vh;
   }
   .nier-container::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -596,47 +620,61 @@ const saved = localStorage.getItem('ai-search-history');
     transform: translateY(-1px);
   }
   .nier-filter-btn {
-/* @apply px-4 py-2 bg-gray-800 border border-gray-600 text-gray-300 font-mono text-xs hover:bg-gray-700 transition-all duration-200 flex items-center gap-2; */
+    padding: 0.5rem 1rem;
+    background-color: #1f2937;
+    border: 1px solid #4b5563;
+    color: #d1d5db;
+    font-family: monospace;
+    font-size: 0.75rem;
+    transition: all 200ms;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
   }
+  .nier-filter-btn:hover {
+    background-color: #374151;
+  }
   .nier-filter-btn.active {
-/* @apply bg-yellow-400 text-black border-yellow-400 shadow-lg; */
+    background-color: #fbbf24;
+    color: black;
+    border-color: #fbbf24;
     box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
   }
   .nier-filter-btn.blue.active {
-/* @apply bg-blue-500 border-blue-500; */
+    background-color: #3b82f6;
+    border-color: #3b82f6;
   }
   .nier-filter-btn.green.active {
-/* @apply bg-green-500 border-green-500; */
+    background-color: #22c55e;
+    border-color: #22c55e;
   }
   .nier-filter-btn.purple.active {
-/* @apply bg-purple-500 border-purple-500; */
+    background-color: #a855f7;
+    border-color: #a855f7;
   }
   .nier-search-btn {
     clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .nier-search-btn::before {
     content: '';
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5;
-  }
-  .nier-search-btn:hover::before {
-    left: 100%;
+    transition: left 0.5s;
   }
   .nier-result-item {
-    position relative;
+    position: relative;
   }
   .nier-result-item::before {
     content: '';
-    position absolute;
-    left: 0,
+    position: absolute;
+    left: 0;
     top: 0;
     width: 2px;
     height: 100%;
@@ -652,29 +690,52 @@ const saved = localStorage.getItem('ai-search-history');
   .nier-type-badge,
   .nier-confidence-badge {
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-/* @apply px-2 py-1 font-mono text-x; */
+    padding: 0.25rem 0.5rem;
+    font-family: monospace;
+    font-size: 0.75rem;
   }
   .nier-confidence-badge {
-/* @apply bg-yellow-400/20 border border-yellow-400/50 text-yellow-400 flex items-center gap-1; */
+    background-color: rgba(251, 191, 36, 0.2);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
   .nier-advanced-panel {
     clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
   }
   .nier-slider {
-/* @apply bg-gray-700 rounded-none h-2 cursor-pointer; */
+    background-color: #374151;
+    border-radius: 0;
+    height: 0.5rem;
+    cursor: pointer;
     -webkit-appearance: none;
+    appearance: none;
   }
   .nier-slider::-webkit-slider-thumb {
-/* @apply bg-yellow-400 rounded-none w-4 h-4 cursor-pointer; */
+    background-color: #fbbf24;
+    border-radius: 0;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
     -webkit-appearance: none;
     clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
   }
   .nier-checkbox {
-/* @apply bg-gray-700 border border-gray-600 text-yellow-400 rounded-none; */
+    background-color: #374151;
+    border: 1px solid #4b5563;
+    color: #fbbf24;
+    border-radius: 0;
     clip-path: polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
   }
   .nier-status-badge {
-/* @apply px-2 py-1 font-mono text-xs flex items-center gap-1; */
+    padding: 0.25rem 0.5rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
   .nier-suggestion-card {
@@ -686,19 +747,25 @@ const saved = localStorage.getItem('ai-search-history');
     box-shadow: 0 8px 25px rgba(251, 191, 36, 0.15);
   }
   .nier-priority-indicator.high {
-/* @apply bg-red-500; */
+    background-color: #ef4444;
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
   }
   .nier-priority-indicator.medium {
-/* @apply bg-yellow-500; */
+    background-color: #eab308;
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
   }
   .nier-priority-indicator.low {
-/* @apply bg-green-500; */
+    background-color: #22c55e;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
   }
   .nier-icon-container {
-/* @apply w-8 h-8 bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center; */
+    width: 2rem;
+    height: 2rem;
+    background-color: rgba(251, 191, 36, 0.2);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
   .line-clamp-2 {
@@ -734,8 +801,8 @@ const saved = localStorage.getItem('ai-search-history');
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg), }
-    to { transform: rotate(360deg), }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   /* Responsive Design */
   @media (max-width: 768px) {
@@ -749,16 +816,16 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
   /* Accessibility */
-  @media (prefers-reduced-motion reduce) {
+  @media (prefers-reduced-motion: reduce) {
     * {
-      animation-duration 0.01ms !important;
+      animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
-      transition-duration 0.01ms !important;
+      transition-duration: 0.01ms !important;
     }
   }
   /* Focus Management */
-  .nier-input: focus
-  .nier-search-btn: focus
+  .nier-input:focus,
+  .nier-search-btn:focus,
   .nier-filter-btn:focus {
     outline: 2px solid #fbbf24;
     outline-offset: 2px;

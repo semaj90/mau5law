@@ -1,47 +1,47 @@
 // Minimal triage shims for local typechecking during Phase H integration
-declare module '$lib/server/redis' {
+declare module: '$lib/server/redis' {
   export const redis: any;
   export function getFromCache(key: string): Promise<any>;
   export function setCache(key: string, value: any, ttl?: number): Promise<void>;
   export default redis;
 }
 
-declare module '$lib/services/xstate-integration' {
+declare module: '$lib/services/xstate-integration' {
   const xstateIntegration: any;
   export default xstateIntegration;
 }
 
-declare module '$lib/services/mcp-registry' {
+declare module: '$lib/services/mcp-registry' {
   export type McpServerRecord = any;
   const registry: any;
   export default registry;
 }
 
-declare module '$lib/server/graph-service' {
+declare module: '$lib/server/graph-service' {
   const graphService: any;
   export default graphService;
 }
 
-declare module '$lib/wasm/autoencoder-wasm' {
+declare module: '$lib/wasm/autoencoder-wasm' {
   const wasmModule: any;
   export default wasmModule;
 }
 
-declare module '$lib/services/redis-orchestrator' {
+declare module: '$lib/services/redis-orchestrator' {
   const redisOrchestrator: any;
   export default redisOrchestrator;
 }
 
-declare module '$lib/server/queue/rabbitmq-workers' {
+declare module: '$lib/server/queue/rabbitmq-workers' {
   const rabbitWorkers: any;
   export default rabbitWorkers;
 }
 
-declare module '$lib/server/redis-service' {
+declare module: '$lib/server/redis-service' {
   export const redisService: any;
 }
 
-declare module '$lib/server/services/analytics-bridge' {
+declare module: '$lib/server/services/analytics-bridge' {
   export function postAnalytics(event: { user_id: string; event_type: string; payload?: any; timestamp?: number }): Promise<any>;
   export function fetchIntent(userId: string): Promise<any | null>;
 }

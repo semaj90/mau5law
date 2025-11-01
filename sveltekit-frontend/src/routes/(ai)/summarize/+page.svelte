@@ -11,7 +11,7 @@ AI Document Summarization - Generate summaries of legal documents
 	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
 
 	// Fallback summary template
-	const FALLBACK_SUMMARY = `This legal document "{filename}" outlines key provisions, procedural requirements, and compliance standards. Main points: statutory obligations, evidence handling rules, timelines, and recommended next steps.`;
+	const FALLBACK_SUMMARY = `This legal document: "{filename}" outlines key provisions, procedural requirements, and compliance standards. Main points: statutory obligations, evidence handling rules, timelines, and recommended next steps.`;
 
 	// Types
 	type FileMetadata = { id: string; name: string; size: number; uploadedAt?: string };
@@ -132,7 +132,7 @@ AI Document Summarization - Generate summaries of legal documents
 							<input
 								type="file"
 								accept=".pdf,.doc,.docx,.txt"
-								on:change={handleFileUpload}
+								onchange={handleFileUpload}
 								class="nes-input"
 								disabled={isUploading || isSummarizing}
 							/>
@@ -174,7 +174,7 @@ AI Document Summarization - Generate summaries of legal documents
 						{/each}
 
 						<div class="pt-4 border-t border-gray-600">
-							<EnhancedButton class="nes-btn is-primary w-full" on:click={generateSummary} disabled={!selectedFile || isUploading || isSummarizing}>
+							<EnhancedButton class="nes-btn is-primary w-full" onclick={generateSummary} disabled={!selectedFile || isUploading || isSummarizing}>
 								{#if isSummarizing}
 									<Brain class="w-4 h-4 mr-2 animate-pulse" />
 									Generating Summary...
@@ -194,7 +194,7 @@ AI Document Summarization - Generate summaries of legal documents
 					<div class="flex justify-between items-center mb-3">
 						<div class="nes-text is-primary">AI Summary</div>
 						{#if summary}
-							<EnhancedButton size="sm" class="nes-btn" on:click={exportSummary}>
+							<EnhancedButton size="sm" class="nes-btn" onclick={exportSummary}>
 								<Download class="w-3 h-3 mr-1" />
 								Export
 							</EnhancedButton>

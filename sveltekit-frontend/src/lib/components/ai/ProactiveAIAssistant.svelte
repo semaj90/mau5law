@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
 	let caseDescription = $state('');
 	let priority = $state('medium');
 	let category = $state('criminal');
-	// Quick input for "what's wrong"
+	// Quick input for: "what's wrong"
 	let quickInput = $state('');
 	let timestamp = $state('');
 	// Prosecution workflow state
@@ -54,25 +54,25 @@ https://svelte.dev/e/js_parse_error -->
 	const quickCaseTemplates = [
 		{
 			title: "Fraud Investigation Case",
-			description "Financial fraud investigation involving suspicious transactions and potential money laundering activities.",
+			description: "Financial fraud investigation involving suspicious transactions and potential money laundering activities.",
 			category: "financial",
 			priority: "high",
 		},
 		{
 			title: "Criminal Evidence Analysis",
-			description "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
+			description: "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
 			category: "criminal",
 			priority: "urgent",
 		},
 		{
 			title: "Civil Rights Violation",
-			description "Investigation of potential constitutional violations and civil rights infractions.",
+			description: "Investigation of potential constitutional violations and civil rights infractions.",
 			category: "civil",
 			priority: "high",
 		},
 		{
 			title: "Corporate Compliance Review",
-			description "Corporate compliance investigation with regulatory violations and documentation review.",
+			description: "Corporate compliance investigation with regulatory violations and documentation review.",
 			category: "corporate",
 			priority: "medium",
 		}
@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
 			});
 			if ((response as { ok?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; json?: any }).json();
-				startTypewriter(`✅ Case "${template.title}" created successfully! Case ID: ${(result as { data?: any }).data.id}`);
+				startTypewriter(`✅ Case: "${template.title}" created successfully! Case ID: ${(result as { data?: any }).data.id}`);
 				onCaseCreated((result as { data?: any }).data.id);
 				// Reset form
 				setTimeout(() => {
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
 			});
 			if ((response as { ok?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; json?: any }).json();
-				startTypewriter(`✅ Case "${caseTitle}" created successfully! Ready to assist with evidence collection and analysis.`);
+				startTypewriter(`✅ Case: "${caseTitle}" created successfully! Ready to assist with evidence collection and analysis.`);
 				onCaseCreated((result as { data?: any }).data.id);
 				// Reset form
 				caseTitle = '';

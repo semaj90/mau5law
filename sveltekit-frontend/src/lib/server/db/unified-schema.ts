@@ -312,7 +312,7 @@ export const personsOfInterest = pgTable('persons_of_interest', {
   name: varchar('name', { length: 256 }).notNull(),
   aliases: jsonb('aliases').default([]).notNull(),
   profileImageUrl: text('profile_image_url'),
-  // The structured "Who, What, Why, How" profile data
+  // The structured: "Who, What, Why, How" profile data
   profileData: jsonb('profile_data')
     .default({
       who: '',
@@ -885,7 +885,7 @@ export const userDocuments = pgTable(
   {
     id: serial('id').primaryKey(),
     userId: text('user_id').notNull(),
-    source: text('source'), // e.g. "minio://bucket/key" or "note", etc.
+    source: text('source'), // e.g. "minio://bucket/key" or: "note", etc.
     content: text('content').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),

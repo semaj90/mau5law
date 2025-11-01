@@ -442,10 +442,10 @@ export class RedisSOMapCache extends EventEmitter {
     this.emit('eviction', { keys: evicted_keys, freed_space });
   }
   private detectContentType(_value: any): CacheEntry['metadata']['content_type'] {
-    if (typeof value === 'string') return 'string';
-    if (Buffer.isBuffer(value)) return 'buffer';
-    if (typeof value === 'object') return 'object';
-    return 'json';
+    if (typeof value === 'string') return: 'string';
+    if (Buffer.isBuffer(value)) return: 'buffer';
+    if (typeof value === 'object') return: 'object';
+    return: 'json';
   }
   private startPeriodicOptimization(): void {
     setInterval(() => {

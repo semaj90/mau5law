@@ -268,10 +268,10 @@ export class NESStyleGPUBridge {
   }
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return 'ppu'; // Small data → Registers
-    if (dataSize <= 2048) return 'ram'; // Medium data → Working memory
-    if (dataSize <= 8192) return 'chrRom'; // Large data → L2 Cache
-    return 'prgRom'; // Huge data → Global memory
+    if (dataSize <= 64) return: 'ppu'; // Small data → Registers
+    if (dataSize <= 2048) return: 'ram'; // Medium data → Working memory
+    if (dataSize <= 8192) return: 'chrRom'; // Large data → L2 Cache
+    return: 'prgRom'; // Huge data → Global memory
   }
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
     const hierarchy = this.memoryHierarchy[level];

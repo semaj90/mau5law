@@ -3,7 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import '../yorha/ps1.css';
+  import: '../yorha/ps1.css';
 
   // Consolidated script and fixes
   let canva: HTMLCanvasElement | null = null;
@@ -289,19 +289,19 @@ https://svelte.dev/e/expected_token -->
     const root = document.documentElement;
     // Apply LOD-specific settings
     switch (lodLevel) {
-      case 'high':
+      case: 'high':
         featureFlags.ps1FX = true;
         featureFlags.subsampleAA = true;
         featureFlags.dynamicParallax = true;
         featureFlags.anisotropicSim = true;
         break;
-      case 'medium':
+      case: 'medium':
         featureFlags.ps1FX = true;
         featureFlags.subsampleAA = true;
         featureFlags.dynamicParallax = true;
         featureFlags.anisotropicSim = false;
         break;
-      case 'low':
+      case: 'low':
         featureFlags.ps1FX = true;
         featureFlags.subsampleAA = false;
         featureFlags.dynamicParallax = false;

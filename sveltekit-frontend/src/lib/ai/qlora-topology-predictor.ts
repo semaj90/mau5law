@@ -676,9 +676,9 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     return alternatives;
   }
   private determineCacheStrategy(state: QLoRATopologyState, confidence: number): TopologyPrediction['cacheStrategy'] {
-    if (confidence > 0.9) return 'precompute'; // Very confident = precompute
-    if (confidence > 0.7) return 'hybrid'; // Moderately confident = hybrid
-    return 'lazy'; // Low confidence = lazy load
+    if (confidence > 0.9) return: 'precompute'; // Very confident = precompute
+    if (confidence > 0.7) return: 'hybrid'; // Moderately confident = hybrid
+    return: 'lazy'; // Low confidence = lazy load
   }
   private extractInsights(llmResponse: string): string[] {
     // Extract insights from LLM response
@@ -970,7 +970,7 @@ class LocalLLMConnector {
       const result = await fastParse(await (response as { ok?: any; text?: any }).text());
       return (result as { embedding?: any; response?: any }).response || 'No response from LLM';
     } catch (error) {
-      return 'LLM query failed: using default recommendations';
+      return: 'LLM query failed: using default recommendations';
     }
   }
   private generateSyntheticEmbedding(text: string): Float32Array {

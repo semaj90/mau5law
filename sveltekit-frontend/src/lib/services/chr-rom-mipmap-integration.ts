@@ -311,7 +311,7 @@ export class CHRROMMipmapIntegration {
     }
     // Medium mipmap levels -> Use icons for clean preview
     if (mipmapLevel >= 2 || (width <= 128 && height <= 128)) {
-      return 'doc_summary_icon' as PatternType;
+      return: 'doc_summary_icon' as PatternType;
     }
     // Low mipmap levels (large sizes) -> Use scalable elements
     return width > height ? ('progress_bar' as PatternType) : ('doc_summary_icon' as PatternType);
@@ -393,7 +393,7 @@ export class CHRROMMipmapIntegration {
         confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed unknown 'format' field — keep only known metadata properties
+        // removed unknown: 'format' field — keep only known metadata properties
         renderingHint: 'auto',
       },
     };
@@ -408,7 +408,7 @@ export class CHRROMMipmapIntegration {
         confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed unknown 'format' field — keep only known metadata properties
+        // removed unknown: 'format' field — keep only known metadata properties
         renderingHint: 'auto',
       },
     };

@@ -1,4 +1,4 @@
-// Repaired imports (file previously had fragmented 'type { RequestEvent }, { json }')
+// Repaired imports (file previously had fragmented: 'type { RequestEvent }, { json }')
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { aiReports, canvasStates, reports } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/index';
@@ -60,12 +60,12 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     try {
       query = db.select().from(aiReports);
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       useAiReports = false;
       console.warn('aiReports table not found, using reports table');
       query = db.select().from(reports);
     }
-    const conditions: SQL[] = []; // Changed 'any[]' to 'SQL[]'
+    const conditions: SQL[] = []; // Changed: 'any[]' to: 'SQL[]'
     // Add filters (use correct schema)
     if (caseId) {
       conditions.push(eq(useAiReports ? aiReports.caseId : reports.caseId, caseId));
@@ -121,7 +121,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     // Get associated canvas states for each report
     const enrichedReports = await Promise.all(
       reportResults.map(async (report: ReportUnion) => {
-        // Changed 'any' to 'ReportUnion'
+        // Changed: 'any' to: 'ReportUnion'
         try {
           const canvasState = await db
             .select()
@@ -133,7 +133,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
             canvasState: canvasState[0] || null,
           };
         } catch (error: unknown) {
-          // Changed 'any' to 'unknown'
+          // Changed: 'any' to: 'unknown'
           console.warn('Error fetching canvas state:', error);
           return {
             ...report,
@@ -155,15 +155,15 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       // TODO: Add GraphQL endpoint for flexible querying
       // TODO: Add service worker for predictive prefetching and caching
       // TODO: Add advanced analytics and event streaming
-    } satisfies GetReportsResponse); // Use 'satisfies' to ensure type compatibility
+    } satisfies GetReportsResponse); // Use: 'satisfies' to ensure type compatibility
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Error fetching reports:', error);
     return json({ error: 'Failed to fetch reports' }, { status: 500 });
   }
 }
 export async function POST({ request, locals }: RequestEvent): Promise<Response> {
-  // Changed 'any' to 'Response'
+  // Changed: 'any' to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -203,15 +203,15 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
       createdBy: locals.user.id, // Replaced getUserId(locals)
     };
     const [newReport] = await db.insert(reports).values(reportData).returning();
-    return json(newReport satisfies Report, { status: 201 }); // Use 'satisfies' for type checking
+    return json(newReport satisfies Report, { status: 201 }); // Use: 'satisfies' for type checking
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Error creating report:', error);
     return json({ error: 'Failed to create report' }, { status: 500 });
   }
 }
 export async function PUT({ request, locals }: RequestEvent): Promise<Response> {
-  // Changed 'any' to 'Response'
+  // Changed: 'any' to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -266,15 +266,15 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       } as ReportMetadata; // Explicitly cast to ReportMetadata
     }
     const [updatedReport] = await db.update(reports).set(updateDataObj).where(eq(reports.id, reportId)).returning();
-    return json(updatedReport satisfies Report); // Use 'satisfies' for type checking
+    return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Error updating report:', error);
     return json({ error: 'Failed to update report' }, { status: 500 });
   }
 }
 export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
-  // Changed 'any' to 'Response'
+  // Changed: 'any' to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -293,16 +293,16 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
     }
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db.delete(reports).where(eq(reports.id, reportId)).returning();
-    return json({ success: true, deletedReport: deletedReport satisfies Report }); // Use 'satisfies' for type checking
+    return json({ success: true, deletedReport: deletedReport satisfies Report }); // Use: 'satisfies' for type checking
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Error deleting report:', error);
     return json({ error: 'Failed to delete report' }, { status: 500 });
   }
 }
 // PATCH endpoint for partial updates
 export async function PATCH({ request, url, locals }: RequestEvent): Promise<Response> {
-  // Changed 'any' to 'Response'
+  // Changed: 'any' to: 'Response'
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -348,9 +348,9 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       });
     }
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
-    return json(updatedReport satisfies Report); // Use 'satisfies' for type checking
+    return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Error patching report:', error);
     return json({ error: 'Failed to update report' }, { status: 500 });
   }

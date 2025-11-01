@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
         text: 'string (optional) - Semantic text search',
         operation: 'string (optional) - Filter by shader operation',
         tags: 'string[] (optional) - Filter by tags',
-        sortBy: 'string (optional) - "relevance", "performance", "usage", or "recent"',
+        sortBy: 'string (optional) - "relevance", "performance", "usage", or: "recent"',
         limit: 'number (optional) - Maximum results to return (default: 20)',
       },
       responseFormat: {

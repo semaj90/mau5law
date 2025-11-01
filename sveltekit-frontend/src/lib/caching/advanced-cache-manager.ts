@@ -73,7 +73,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       btoa?: (input: string) => string;
       atob?: (input: string) => string;
       Buffer?: {
-        from: (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
+        from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
       };
     };
 
@@ -86,7 +86,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const g = globalThis as unknown as {
       btoa?: (input: string) => string;
       Buffer?: {
-        from: (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
+        from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
       };
     };
 
@@ -105,7 +105,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const g = globalThis as unknown as {
       atob?: (input: string) => string;
       Buffer?: {
-        from: (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
+        from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
       };
     };
 
@@ -244,7 +244,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const effectiveTTL = ttl ?? this.config.ttl;
     const expiresAt = effectiveTTL > 0 ? this.now() + effectiveTTL : null;
 
-    // optionally "compress" (placeholder) - real compression would use a library
+    // optionally: "compress" (placeholder) - real compression would use a library
     let storedValue: T | string;
     if (this.config.compression) {
       if (!this.canUseBase64()) {

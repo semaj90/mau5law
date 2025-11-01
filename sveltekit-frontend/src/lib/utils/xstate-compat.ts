@@ -1,41 +1,60 @@
 // Compatibility helpers for XState v4/v5 actor APIs
 // Provides safe wrappers around actor.start/stop and a readActorSnapshot utility
-export function readActorSnapshot(actor: any): any {
-  try {
-    if (!actor) return undefined;
-    if (typeof actor.getSnapshot === 'function') return actor.getSnapshot();
-    if (typeof actor.getState === 'function') return actor.getState();
-    if (actor.state) return actor.state; // fallback
-    return undefined;
-  } catch (err) {
-    console.warn('readActorSnapshot failed', err);
-    return undefined;
-  }
+
+// Narrow, generic shape for actors we interact with — avoids `any` and supports both v4/v5 shapes.
+type ActorLike<S = unknown> = {
+	// optional snapshot/state getters used by v4/v5 actors
+	getSnapshot?: () => S;
+	getState?: () => S;
+	// some implementations expose a `.state` property
+	state?: S;
+	// lifecycle methods (optional). start may return a cleanup function in some runtimes.
+	start?: () => void | (() => void);
+	stop?: () => void;
+};
+
+export function readActorSnapshot<S = unknown>(actor: ActorLike<S> | undefined): S | undefined {
+	try {
+		if (!actor) return undefined;
+		if (typeof actor.getSnapshot === 'function') return actor.getSnapshot();
+		if (typeof actor.getState === 'function') return actor.getState();
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		if ((actor as any).state !== undefined) return (actor as any).state as S; // fallback
+		return undefined;
+	} catch (err: unknown) {
+		// keep this lightweight and safe for both server and browser
+		// eslint-disable-next-line no-console
+		console.warn('readActorSnapshot failed', err);
+		return undefined;
+	}
 }
 
-export function safeStart(actor: any) {
-  try {
-    if (!actor) return;
-    if (typeof actor.start === 'function') actor.start();
-    // Some v5 Actors expose start as optional or return a cleanup
-    return;
-  } catch (err) {
-    console.warn('safeStart failed', err);
-  }
+export function safeStart(actor: ActorLike | undefined): void {
+	try {
+		if (!actor) return;
+		if (typeof actor.start === 'function') {
+			// Some actor.start implementations return a cleanup; ignore return value here.
+			void actor.start();
+		}
+	} catch (err: unknown) {
+		// eslint-disable-next-line no-console
+		console.warn('safeStart failed', err);
+	}
 }
 
-export function safeStop(actor: any) {
-  try {
-    if (!actor) return;
-    if (typeof actor.stop === 'function') actor.stop();
-    // v5 Actors may use unsubscribe handles; best-effort only
-  } catch (err) {
-    console.warn('safeStop failed', err);
-  }
+export function safeStop(actor: ActorLike | undefined): void {
+	try {
+		if (!actor) return;
+		if (typeof actor.stop === 'function') actor.stop();
+	} catch (err: unknown) {
+		// eslint-disable-next-line no-console
+		console.warn('safeStop failed', err);
+	}
 }
 
+// Keep default export for call-sites that import the module as default.
 export default {
-  readActorSnapshot,
-  safeStart,
-  safeStop,
+	readActorSnapshot,
+	safeStart,
+	safeStop,
 };

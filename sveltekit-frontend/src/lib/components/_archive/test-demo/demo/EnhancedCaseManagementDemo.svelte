@@ -145,7 +145,7 @@
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Database Health</h3>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={refreshHealth}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshHealth}>
 Refresh
       </div>
       <divContent>
@@ -173,7 +173,7 @@ Refresh
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Cache Metrics</h3>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={refreshMetrics}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshMetrics}>
 Refresh
       </div>
       <divContent>
@@ -249,7 +249,7 @@ Refresh
             </div>
           </div>
           <Button
-            on:click={createCase}
+            onclick={createCase}
             disabled={isLoading || !newCaseData.title || !newCaseData.description}
             class="w-full bits-btn bits-btn"
           >
@@ -274,7 +274,7 @@ Refresh
             />
           </div>
           <Button
-            on:click={searchCases}
+            onclick={searchCases}
             disabled={isLoading || !searchQuery.trim()}
             class="w-full bits-btn bits-btn"
           >
@@ -309,21 +309,21 @@ Refresh
         <div class="flex flex-wrap gap-2">
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 loadCase('demo-case-001')}
             disabled={isLoading}
           >
             Load Case (Standard)
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 loadCase('demo-case-002', true)}
             disabled={isLoading}
           >
             Load Case (With Prediction)
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 loadCase('demo-case-003')}
             disabled={isLoading}
           >

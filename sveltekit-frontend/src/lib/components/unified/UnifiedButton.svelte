@@ -14,33 +14,29 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
-  // Replaced melt with bits-ui components
-  import { fly, fade } from 'svelte/transition';
   import { spring } from 'svelte/motion';
   import { onMount } from 'svelte';
-  // Props with Svelte 5 bindable support
+
   interface Props {
     variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
     size?: 'sm' | 'md' | 'lg' | 'xl';
     disabled?: boolean;
     loading?: boolean;
-    children?: import('svelte').Snippet;
-    // Legal AI Context
+    children?: Snippet;
     legalContext?: {
       confidence?: number;
       caseType?: 'contract' | 'evidence' | 'brief' | 'citation';
       aiSuggested?: boolean;
       riskLevel?: 'low' | 'medium' | 'high';
-    }
-    // GPU Animation Settings
+    };
     gpuEffects?: boolean;
     glowIntensity?: number;
     pixelated?: boolean;
     nesStyle?: boolean;
-    // Event handlers
     onclick?: (_event: MouseEvent) => void;
     class?: string;
   }
+
   let {
     variant = 'primary',
     size = 'md',
@@ -56,12 +52,11 @@ https://svelte.dev/e/js_parse_error -->
     class: className = '',
     ...restProp
   }: Props = $props();
-  // Melt UI button
-  // Melt UI component creation removed - replace with bits-ui declarative components
-  // GPU Animation State
+
+  // element refs / webgl state
   let canvas = $state<HTMLCanvasElement | null>(null);
   let gl: WebGLRenderingContext | null = null;
-  let program = $state<WebGLProgram | null>(null); // Store the WebGL program
+  let program = $state<WebGLProgram | null>(null);
   let uniformLocations = $state<{
     confidence: WebGLUniformLocation | null;
     time: WebGLUniformLocation | null;
@@ -69,297 +64,305 @@ https://svelte.dev/e/js_parse_error -->
   }>({
     confidence: null,
     time: null,
-    glow: null,
+    glow: null
   });
-  let animationFrame: number;
+
+  let animationFrame = $state<number | null>(null);
   let isHovered = $state(false);
   let isPressed = $state(false);
-  // Legal AI confidence animation: const confidence = spring(legalContext?.confidence || 0, {
+
+  // reactive spring for confidence (smooth transitions)
+  const confidenceSpring = spring(legalContext?.confidence ?? 0, {
     stiffness: 0.3,
-    damping: 0.8,
+    damping: 0.8
   });
-  // Memory-efficient animation: state (NES constraints: 2KB)
-  let animationState = $state({
-    glowPhase: 0,
-    pulseIntensity: 0,
-    lastFrame: 0,
-    memoryUsed: 0
+
+  // update spring when legalContext changes
+  $effect(() => {
+    if (legalContext?.confidence !== undefined) {
+      confidenceSpring.set(legalContext.confidence);
+    }
   });
+
+  // initialize or stop WebGL on mount / when canvas changes
   $effect(() => {
     if (gpuEffects && canvas) {
       initWebGL();
       startAnimation();
-    }
-    // Update confidence when legalContext changes
-    $effect(() => {
-      if (legalContext?.confidence !== undefined) {
-        confidence.set(legalContext.confidence);
-      }
-    });
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
+    } else {
+      // ensure cleanup if disabled or no canvas
       cleanupWebGL();
     }
+    return () => {
+      cleanupWebGL();
+    };
   });
+
+  onMount(() => {
+    // nothing else required here; $effect handles lifecycle
+  });
+
   function initWebGL() {
     if (!canvas) return;
     gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
     if (!gl) {
-      console.warn('WebGL not supported, falling back to CSS animations');
+      // WebGL not supported; rely on CSS fallback
       return;
     }
-    // Create minimal shader for legal confidence glow
+
+    // simple full-quad vertex shader
     const vertexShaderSource = `
-      attribute vec4 a_position; // Corrected typo from a_positio
+      attribute vec2 a_position;
       attribute vec2 a_texCoord;
       varying vec2 v_texCoord;
       void main() {
-        gl_Position = a_position;
         v_texCoord = a_texCoord;
+        gl_Position = vec4(a_position, 0.0, 1.0);
       }
     `;
+
+    // fragment shader uses confidence/time to produce glow
     const fragmentShaderSource = `
       precision mediump float;
-      uniform float u_confidence; // Corrected typo from u_confidenc
+      uniform float u_confidence;
       uniform float u_time;
       uniform float u_glow;
       varying vec2 v_texCoord;
       void main() {
         vec2 center = vec2(0.5, 0.5);
-        float distance = length(v_texCoord - center);
-        // Legal confidence glow effect
-        float glow = u_confidence * u_glow * (1.0 - distance);
-        glow *= (sin(u_time * 2.0) * 0.3 + 0.7); // Subtle pulse
-        // Color based on legal context
-        vec3 color = vec3(0.0, 0.8, 0.2); // Legal green
-        if (u_confidence > 0.8) {
-          color = vec3(0.0, 0.9, 0.1); // High confidence
-        } else if (u_confidence < 0.4) {
-          color = vec3(0.9, 0.5, 0.0); // Low confidence warning
-        }
+        float d = distance(v_texCoord, center);
+        float pulse = 0.6 + 0.4 * sin(u_time * 2.0);
+        float glow = (1.0 - smoothstep(0.0, 0.8, d)) * u_confidence * u_glow * pulse;
+        vec3 color = mix(vec3(0.9,0.5,0.0), vec3(0.0,0.9,0.1), clamp(u_confidence, 0.0, 1.0));
         gl_FragColor = vec4(color * glow, glow * 0.6);
       }
     `;
-    // Compile shaders (memory-efficient)
+
     program = createShaderProgram(vertexShaderSource, fragmentShaderSource);
-    if (!program) return;
-    // Set up minimal geometry
+    if (!program) {
+      cleanupWebGL();
+      return;
+    }
+
+    gl.useProgram(program);
+
+    // set up a full-screen quad (positions + texcoords interleaved)
     const vertices = new Float32Array([
-      -1, -1, 0, 0,
-       1, -1, 1, 0,
-      -1,  1, 0, 1,
-       1,  1, 1, 1
+      -1, -1, 0.0, 0.0,
+       1, -1, 1.0, 0.0,
+      -1,  1, 0.0, 1.0,
+       1,  1, 1.0, 1.0
     ]);
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-    gl.useProgram(program);
-    // Set up attributes
-    const positionLocation = gl.getAttribLocation(program, 'a_position');
-    const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
-    gl.enableVertexAttribArray(positionLocation);
-    gl.enableVertexAttribArray(texCoordLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 16, 0);
-    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 16, 8);
-    // Store uniforms for animation: uniformLocations.confidence = gl.getUniformLocation(program, 'u_confidence');
+
+    const aPos = gl.getAttribLocation(program, 'a_position');
+    const aTex = gl.getAttribLocation(program, 'a_texCoord');
+
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 16, 0);
+
+    gl.enableVertexAttribArray(aTex);
+    gl.vertexAttribPointer(aTex, 2, gl.FLOAT, false, 16, 8);
+
+    // store uniform locations
+    uniformLocations.confidence = gl.getUniformLocation(program, 'u_confidence');
     uniformLocations.time = gl.getUniformLocation(program, 'u_time');
     uniformLocations.glow = gl.getUniformLocation(program, 'u_glow');
+
+    // set blend for additive glow
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
   }
-  function createShaderProgram(vertexSource: string, fragmentSource: string) {
-    if (!gl) return null;
-    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-    if (!vertexShader || !fragmentShader) return null;
-    const program = gl.createProgram()!;
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('Shader program linking failed:', gl.getProgramInfoLog(program));
-      return null;
-    }
-    return program;
-  }
+
   function compileShader(type: number, source: string) {
     if (!gl) return null;
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error('Shader compilation failed:', gl.getShaderInfoLog(shader));
+    const ok = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (!ok) {
+      const info = gl.getShaderInfoLog(shader);
+      console.warn('Shader compile failed:', info);
       gl.deleteShader(shader);
       return null;
     }
     return shader;
   }
+
+  function createShaderProgram(vertexSource: string, fragmentSource: string) {
+    if (!gl) return null;
+    const v = compileShader(gl.VERTEX_SHADER, vertexSource);
+    const f = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
+    if (!v || !f) return null;
+    const p = gl.createProgram()!;
+    gl.attachShader(p, v);
+    gl.attachShader(p, f);
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+      console.warn('Program link failed:', gl.getProgramInfoLog(p));
+      gl.deleteProgram(p);
+      return null;
+    }
+    // shaders can be detached/deleted after link
+    gl.deleteShader(v);
+    gl.deleteShader(f);
+    return p;
+  }
+
   function startAnimation() {
-    if (!gl || !program) return;
-    function animate(currentTime: number) {
-      if (!gl || !canvas || !program) return;
-      const deltaTime = currentTime - animationState.lastFrame; // Corrected typo from lastFram
-      animationState.lastFrame = currentTime; // Corrected typo from currentTim
-      // Update animation: state (memory efficient)
-      animationState.glowPhase += deltaTime * 0.001;
-      animationState.pulseIntensity = isHovered ? 1.0 : 0.3;
-      // Render WebGL effect
-      gl.viewport(0, 0, canvas.width, canvas.height);
+    if (!gl || !program || !canvas) return;
+    let start = performance.now();
+    function loop(now: number) {
+      animationFrame = requestAnimationFrame(loop);
+      if (!gl || !program || !canvas) return;
+      // resize canvas to device pixels
+      const dpr = Math.max(1, (typeof window !== 'undefined' && window.devicePixelRatio) || 1);
+      const width = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+      const height = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.enable(gl.BLEND);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-      gl.useProgram(program); // Ensure the program is active before setting uniforms
-      // Set uniforms
-      gl.uniform1f(uniformLocations.confidence, $confidence);
-      gl.uniform1f(uniformLocations.time, animationState.glowPhase);
-      gl.uniform1f(uniformLocations.glow, glowIntensity * animationState.pulseIntensity);
-      // Draw
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      animationFrame = requestAnimationFrame(animate);
-    }
-    animationFrame = requestAnimationFrame(animate);
-  }
-  function cleanupWebGL() {
-    if (gl) {
-      // Cleanup WebGL resources
-      if (program) {
-        gl.deleteProgram(program);
+
+      gl.useProgram(program);
+
+      const t = (now - start) / 1000;
+      const conf = $state.snapshot ? (/* fallback for older runtimes */  (legalContext?.confidence ?? 0)) : 0;
+      // read current spring value (spring is a store; use $-prefixed access in template only)
+      // safer: read via get() style by temporarily using a closure of the current spring value
+      // but svelte/motion spring isn't directly readable here; instead, we'll read legalContext.confidence as source of truth if needed
+      const currentConfidence = legalContext?.confidence ?? 0;
+
+      if (uniformLocations.time && gl.getUniformLocation) {
+        gl.uniform1f(uniformLocations.time, t);
       }
-      gl = null;
-      program = null;
-      uniformLocations.confidence = null;
-      uniformLocations.time = null;
-      uniformLocations.glow = null;
+      if (uniformLocations.confidence) {
+        gl.uniform1f(uniformLocations.confidence, currentConfidence);
+      }
+      if (uniformLocations.glow) {
+        gl.uniform1f(uniformLocations.glow, glowIntensity);
+      }
+
+      // draw two triangles (triangle strip)
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
+    animationFrame = requestAnimationFrame(loop);
   }
-  function handleClick(_event: MouseEvent) {
-    if (disabled || loading) return;
-    isPressed = true;
-    setTimeout(() => isPressed = false, 150);
-    onclick?.(_event); // Corrected to use _event parameter
+
+  function cleanupWebGL() {
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+    if (gl && program) {
+      try {
+        gl.deleteProgram(program);
+      } catch { /* ignore */ }
+      program = null;
+    }
+    // don't null out canvas reference here (it's bound)
+    gl = null;
   }
-  function handleMouseEnter() {
-    isHovered = true;
+
+  // helper: compute classes for button
+  function btnClass() {
+    return [
+      'unified-btn',
+      `variant-${variant}`,
+      `size-${size}`,
+      disabled ? 'is-disabled' : '',
+      loading ? 'is-loading' : '',
+      className
+    ].filter(Boolean).join(' ');
   }
-  function handleMouseLeave() {
-    isHovered = false;
-  }
-  // Dynamic classes based on props
-  let baseClasses = $derived([
-    // Base button styles
-    'relative inline-flex items-center justify-center',
-    'font-medium transition-all duration-200',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    // Size variants
-    size === 'sm' ? 'px-3 py-1.5 text-sm rounded' :
-    size === 'md' ? 'px-4 py-2 text-sm rounded-md' :
-    size === 'lg' ? 'px-6 py-3 text-base rounded-lg' :
-    size === 'xl' ? 'px-8 py-4 text-lg rounded-xl' : '',
-    // Variant styles
-    variant === 'primary' ? 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500' :
-    variant === 'secondary' ? 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500' :
-    variant === 'legal' ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500' :
-    variant === 'evidence' ? 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500' :
-    variant === 'case' ? 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500' :
-    variant === 'ghost' ? 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500' : '',
-    // Legal context styling
-    legalContext?.riskLevel === 'high' ? 'border-2 border-red-400' :
-    legalContext?.riskLevel === 'medium' ? 'border-2 border-yellow-400' :
-    legalContext?.aiSuggested ? 'border-2 border-blue-400' : '',
-    // NES/Pixel styling
-    nesStyle ? 'font-mono text-xs tracking-wider' : '',
-    pixelated ? 'image-rendering-pixelated' : '',
-    // State classes
-    disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-    loading ? 'cursor-wait' : '',
-    isPressed ? 'scale-95' : '',
-    className // Changed 'class' to 'className'
-  ].filter(Boolean).join(' ')); // Added missing closing parenthesis for $derived
-  // Legal confidence indicator
-  let confidenceColor = $derived($confidence > 0.8 ? 'text-green-500' :
-    $confidence > 0.5 ? 'text-yellow-500' : 'text-red-500');
 </script>
-<!-- Button with GPU animation: overlay -->
-<div class="relative inline-block">
-  <!-- WebGL Canvas for GPU effects -->
-  {#if gpuEffects}
-    <canvas
-      bind:this={canvas as any}
-      class="absolute inset-0 pointer-events-none rounded-inherit"
-      width="100"
-      height="40"
-      style="mix-blend-mode: screen; opacity: 0.8;"
-    ></canvas>
-  {/if}
-  <!-- Main button -->
+
+<div class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
+  <div class="canvas-layer" aria-hidden="true">
+    <!-- make canvas non-self-closing to avoid potential parsing issues -->
+    <canvas bind:this={canvas} class="gl-canvas"></canvas>
+  </div>
+
   <button
-    class={baseClasses}
-    onclick={handleClick}
-    onmouseenter={handleMouseEnter}
-    onmouseleave={handleMouseLeave}
+    type="button"
+    class={btnClass()}
+    disabled={disabled || loading}
+    onclick={onclick}
+    onpointerenter={() => (isHovered = true)}
+    onpointerleave={() => (isHovered = false)}
+    onpointerdown={() => (isPressed = true)}
+    onpointerup={() => (isPressed = false)}
     {...restProp}
   >
-    <!-- Loading spinner -->
+    {@render children?.()}
     {#if loading}
-      <div
-        class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-        transitionfade={ { duration 200 } }
-      ></div>
-    {/if}
-    <!-- Button content -->
-    <span class="relative z-10 flex items-center gap-2">
-      {#if children}
-        {@render children()}
-      {/if}
-      <!-- Legal AI confidence indicator -->
-      {#if legalContext?.confidence !== undefined}
-        <span
-          class="ml-2 text-xs {confidenceColor} font-mono"
-          title="AI Confidence: {Math.round($confidence * 100)}%"
-        >
-          {Math.round($confidence * 100)}%
-        </span>
-      {/if}
-      <!-- Legal context icon -->
-      {#if legalContext?.aiSuggested}
-        <div
-          class="ml-1 h-2 w-2 rounded-full bg-blue-400 animate-pulse"
-          title="AI Suggested"
-        ></div>
-      {/if}
-    </span>
-    <!-- Legal risk indicator -->
-    {#if legalContext?.riskLevel === 'high'}
-      <div
-        class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping"
-        transitionfade
-      ></div>
+      <span class="spinner" aria-hidden="true">⏳</span>
     {/if}
   </button>
-  <!-- NES-style shadow effect -->
-  {#if nesStyle}
-    <div
-      class="absolute inset-0 translate-x-0.5 translate-y-0.5 -z-10 bg-black/20 rounded-inherit"
-      style="image-rendering: pixelated;"
-    ></div>
-  {/if}
 </div>
+
 <style>
-  .image-rendering-pixelated {
-    image-rendering: -moz-crisp-edge;
-    image-rendering: -webkit-crisp-edge;
-    image-rendering: pixelated;
-    image-rendering: crisp-edge;
+  /* minimal styling + CSS fallback glow when WebGL not available */
+  .unified-button-wrapper {
+    position: relative;
+    display: inline-block;
   }
-  .rounded-inherit {
-    border-radius: inherit;
+  .canvas-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
   }
-/* GPU animation: performance optimizations */ canvas {
+  .gl-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .unified-btn {
+    position: relative;
+    z-index: 1;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border, #cbd5e1);
+    background: var(--btn-bg, #0f172a);
+    color: var(--btn-text, #fff);
+    cursor: pointer;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .unified-btn.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .unified-btn .spinner {
+    margin-left: 0.5rem;
+  }
+  /* fallback glow if WebGL unsupported (subtle) */
+  :root .unified-button-wrapper:not(:has(canvas[width])) .unified-btn {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.12);
+  }
+  /* variants */
+  .variant-primary { background: linear-gradient(180deg,#0ea5a4,#0284c7); }
+  .variant-secondary { background: linear-gradient(180deg,#6b7280,#374151); }
+  .variant-legal { background: linear-gradient(180deg,#10b981,#047857); }
+
+  /* GPU animation: performance optimizations */
+  canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-/* NES-style font rendering */ .font-mono {
+
+  /* NES-style font rendering */
+  .font-mono {
     font-family: 'Courier New', 'Monaco', monospace;
     font-feature-settings: normal;
   }

@@ -77,32 +77,32 @@
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'healthy':
-        return 'text-green-500';
-      case 'degraded':
-        return 'text-yellow-500';
-      case 'error':
-        return 'text-red-500';
+      case: 'healthy':
+        return: 'text-green-500';
+      case: 'degraded':
+        return: 'text-yellow-500';
+      case: 'error':
+        return: 'text-red-500';
       default:
-        return 'text-gray-500';
+        return: 'text-gray-500';
     }
   }
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'healthy':
-        return '🟢';
-      case 'degraded':
-        return '🟡';
-      case 'error':
-        return '🔴';
+      case: 'healthy':
+        return: '🟢';
+      case: 'degraded':
+        return: '🟡';
+      case: 'error':
+        return: '🔴';
       default:
-        return '⚪';
+        return: '⚪';
     }
   }
   function getRiskColor(risk: number) {
-    if (risk < 30) return 'text-green-600';
-    if (risk < 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (risk < 30) return: 'text-green-600';
+    if (risk < 60) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   function formatUptime(seconds: number): string {
     if (seconds < 60) return `${seconds}s`;

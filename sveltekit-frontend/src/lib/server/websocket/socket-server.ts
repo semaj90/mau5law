@@ -92,22 +92,22 @@ class RealTimeServer {
     const client = this.clients.get(clientId);
     if (!client) return;
     switch (message.type) {
-      case 'auth':
+      case: 'auth':
         client.userId = message.userId;
         break;
-      case 'subscribe':
+      case: 'subscribe':
         const { channels } = message;
         if (Array.isArray(channels)) {
           channels.forEach((channel) => client.subscriptions.add(channel);
         }
         break;
-      case 'unsubscribe':
+      case: 'unsubscribe':
         const { channels: unsubChannels } = message;
         if (Array.isArray(unsubChannels)) {
           unsubChannels.forEach((channel) => client.subscriptions.delete(channel);
         }
         break;
-      case 'publish':
+      case: 'publish':
         // Allow clients to publish updates
         this.publishUpdate(message.channel, message.data, message.userId);
         break;

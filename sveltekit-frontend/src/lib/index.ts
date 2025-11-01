@@ -6,11 +6,11 @@
  * "Wire it up" - TypeScript polyfills and WebAssembly/WebGPU fallbacks
  */
 // SvelteKit 2 Polyfills - Import first to ensure module availability
-import './polyfills.js';
+import: './polyfills.js';
 import { barrelStore } from './stores/barrel-functions.js';
 // Enhanced Type Definitions - Import to register module augmentations
-// import './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
-// import './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
+// import: './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
+// import: './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
 // ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====
 export * from './types/index.js';
 // ===== TYPE GUARDS & UTILITIES =====

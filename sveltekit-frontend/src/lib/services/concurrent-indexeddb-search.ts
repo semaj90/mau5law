@@ -207,16 +207,16 @@ export class ConcurrentIndexedDBSearch {
   private handleWorkerMessage(event: MessageEvent): void {
     const msg = event.data as unknown as WorkerMessage;
     switch (msg.type) {
-      case 'searchResult':
+      case: 'searchResult':
         this.handleSearchResult(msg.workerId, msg.data);
         break;
-      case 'indexUpdated':
+      case: 'indexUpdated':
         console.log(`✅ Worker ${msg.workerId} indexed ${msg.data?.documentsIndexed ?? 0} documents`);
         break;
-      case 'cacheCleared':
+      case: 'cacheCleared':
         console.log(`✅ Worker ${msg.workerId} cleared cache`);
         break;
-      case 'error':
+      case: 'error':
         console.error(`❌ Worker ${msg.workerId} error:`, msg.data?.error);
         break;
       default:

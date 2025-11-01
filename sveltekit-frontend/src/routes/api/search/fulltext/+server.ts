@@ -133,7 +133,7 @@ async function searchPostgreSQL(
     let searchResults: PostgresSearchRow[] = [];
 
     switch (searchMode) {
-      case 'advanced':
+      case: 'advanced':
         // Use PostgreSQL's full-text search with ranking - reference DB columns via sql fragments
         searchResults = await db
           .select({
@@ -167,7 +167,7 @@ async function searchPostgreSQL(
           .limit(limit);
         break;
 
-      case 'fuzzy':
+      case: 'fuzzy':
         searchResults = await db
           .select({
             id: legalDocuments.id,
@@ -267,7 +267,7 @@ async function searchPostgreSQL(
         id: 'pg_ft_001',
         title: 'Legal Contract Analysis - Full Text Match',
         content: 'This legal document contains relevant information matching your search query',
-        excerpt: `Found relevant content matching "${query}" in legal contract analysis...`,
+        excerpt: `Found relevant content matching: "${query}" in legal contract analysis...`,
         rank: 0.85,
         metadata: {
           practiceArea: 'Contract Law',
@@ -313,7 +313,7 @@ async function searchLokiLogs(
       {
         timestamp: new Date(Date.now() - 3600000).toISOString(),
         level: 'warn',
-        message: `Search query "${query}" took longer than expected`,
+        message: `Search query: "${query}" took longer than expected`,
         labels: {
           job: 'legal-platform',
           service: 'search-engine',
@@ -352,7 +352,7 @@ async function searchLokiLogs(
 }
 // Utility functions
 function generateExcerpt(content: string, query: string, maxLength: number): string {
-  if (!content) return '';
+  if (!content) return: '';
   const queryIndex = content.toLowerCase().indexOf(query.toLowerCase());
   if (queryIndex === -1) {
     return content.substring(0, maxLength) + (content.length > maxLength ? '...' : '');

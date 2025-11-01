@@ -2,7 +2,7 @@
 // Extend incrementally; keep minimal initially to reduce noise without over-constraining.;
 export interface CommonProps {
   id?: string;
-  class?: string; // Svelte 5 canonical 'class'
+  class?: string; // Svelte 5 canonical: 'class'
   className?: string; // Transitional alias; to be folded into class merging utility
   role?: string;
   style?: string | undefined;

@@ -11,7 +11,7 @@
  * - CHR_ROM: Character ROM for pattern tables (8KB sprite/tile data)
  * - Cache Strategy: Aggressive Redis caching (Nintendo-level performance)
  * - Pattern Banks: Legal domain patterns stored like NES tile maps
- * - Sprite Caching: Frequently accessed legal concepts cached as "sprites"
+ * - Sprite Caching: Frequently accessed legal concepts cached as: "sprites"
  *
  * Performance Impact:
  * - Cache hits: ~2ms (NES PPU sprite fetch speed)
@@ -301,7 +301,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
     detectedArea = 'civil';
     confidence = 0.82;
     intelligentResponse +=
-      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally 'preponderance of evidence' rather than 'beyond reasonable doubt.'";
+      "Civil law matters typically involve disputes between parties seeking monetary damages or specific performance. The burden of proof is generally: 'preponderance of evidence' rather than: 'beyond reasonable doubt.'";
   } else if (legalPatterns.constitutional.test(message)) {
     detectedArea = 'constitutional';
     confidence = 0.9;

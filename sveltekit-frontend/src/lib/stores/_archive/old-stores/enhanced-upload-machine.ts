@@ -601,7 +601,7 @@ export const enhancedUploadMachine = createMachine(
         formData.append('file', files[0]);
         formData.append('uploadId', uploadId);
         formData.append('language', 'eng+fra'); // Legal documents often multilingual
-        formData.append('ocrEngine', 'tesseract'); // or 'paddleocr'
+        formData.append('ocrEngine', 'tesseract'); // or: 'paddleocr'
         formData.append('confidenceThreshold', '0.8');
         const response = await fetch('/api/processing/ocr', {
           method: 'POST',

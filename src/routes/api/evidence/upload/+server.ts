@@ -404,7 +404,7 @@ function extractTags(title: string, description: string): string[] {
 
   for (const [tag, pattern] of Object.entries(docTypes)) {
     if (pattern.test(text)) {
-      tags.push(tag);
+      tags.push(<any><any>tag);
     }
   }
 
@@ -412,7 +412,7 @@ function extractTags(title: string, description: string): string[] {
   const words = text.split(/\s+/);
   for (const word of words) {
     if (word.length > 3 && /^[A-Z][a-z]+$/.test(word)) {
-      tags.push(word.toLowerCase());
+      tags.push(<any><any>word.toLowerCase());
     }
   }
 

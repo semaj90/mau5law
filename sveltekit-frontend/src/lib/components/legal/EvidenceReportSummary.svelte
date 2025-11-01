@@ -112,50 +112,50 @@
 
   function getStatusColor(status: string) {
     switch (status) {
-      case "completed":
-        return "text-green-600 bg-green-100";
-      case "reviewed":
-        return "text-blue-600 bg-blue-100";
-      case "in_progress":
-        return "text-yellow-600 bg-yellow-100";
-      case "challenged":
-        return "text-red-600 bg-red-100";
-      case "pending":
-        return "text-gray-600 bg-gray-100";
+      case: "completed":
+        return: "text-green-600 bg-green-100";
+      case: "reviewed":
+        return: "text-blue-600 bg-blue-100";
+      case: "in_progress":
+        return: "text-yellow-600 bg-yellow-100";
+      case: "challenged":
+        return: "text-red-600 bg-red-100";
+      case: "pending":
+        return: "text-gray-600 bg-gray-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return: "text-gray-600 bg-gray-100";
     }
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case "critical":
-        return "text-red-600 bg-red-100 border-red-200";
-      case "high":
-        return "text-orange-600 bg-orange-100 border-orange-200";
-      case "medium":
-        return "text-yellow-600 bg-yellow-100 border-yellow-200";
-      case "low":
-        return "text-gray-600 bg-gray-100 border-gray-200";
+      case: "critical":
+        return: "text-red-600 bg-red-100 border-red-200";
+      case: "high":
+        return: "text-orange-600 bg-orange-100 border-orange-200";
+      case: "medium":
+        return: "text-yellow-600 bg-yellow-100 border-yellow-200";
+      case: "low":
+        return: "text-gray-600 bg-gray-100 border-gray-200";
       default:
-        return "text-gray-600 bg-gray-100 border-gray-200";
+        return: "text-gray-600 bg-gray-100 border-gray-200";
     }
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case "digital_forensics":
-        return "💻";
-      case "dna_analysis":
-        return "🧬";
-      case "ballistics":
-        return "🔫";
-      case "financial":
-        return "💰";
-      case "document_analysis":
-        return "📄";
-      case "witness_statement":
-        return "👤";
+      case: "digital_forensics":
+        return: "💻";
+      case: "dna_analysis":
+        return: "🧬";
+      case: "ballistics":
+        return: "🔫";
+      case: "financial":
+        return: "💰";
+      case: "document_analysis":
+        return: "📄";
+      case: "witness_statement":
+        return: "👤";
       default:
-        return "📋";
+        return: "📋";
     }
   }
 
@@ -203,7 +203,7 @@
         </div>
         {#if allowExport}
           <button
-            on:click={exportReport}
+            onclick={exportReport}
             class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
             title="Export Report"
           >

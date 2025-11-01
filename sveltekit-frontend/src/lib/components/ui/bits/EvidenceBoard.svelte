@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { fade, fly, scale } from 'svelte/transition';
+  import { scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   interface EvidenceItem {
     id: string;
@@ -14,6 +14,12 @@
     connections?: string[];
     metadata?: { [key: string]: any };
   }
+  // typed events for createEventDispatcher to avoid deprecated untyped signature
+  type EvidenceBoardEvents = {
+    connectionCreated: { from string; to: string };
+    itemsDeleted: { deletedIds: string[] };
+    itemAdded: { item: EvidenceItem };
+  };
   interface EvidenceBoardProps {
     theme?: 'default' | 'legal' | 'gaming' | 'yorha';
     items?: EvidenceItem[];
@@ -34,7 +40,7 @@
     showConnections = true,
     readonly = false
   }: EvidenceBoardProps = $props();
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<EvidenceBoardEvents>();
   let boardElement: HTMLDivElement;
   let draggedItem: EvidenceItem | null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
@@ -188,7 +194,7 @@
       if (!sourceItem.connections.includes(targetId)) {
         sourceItem.connections.push(targetId);
         items = [...items]; // Trigger reactivity
-        dispatch('connectionCreated', { from: connectionStart, to: targetId });
+        dispatch('connectionCreated', { from connectionStart, to: targetId });
       }
     }
     connectionStart = null;
@@ -218,7 +224,7 @@
   function getConnectionPath(fromId: string, toId: string): string {
     const fromItem = items.find(item => item.id === fromId);
     const toItem = items.find(item => item.id === toId);
-    if (!fromItem || !toItem) return '';
+    if (!fromItem || !toItem) return: '';
     const fromCenter = {
       x: fromItem.position.x + fromItem.size.width / 2,
       y: fromItem.position.y + fromItem.size.height / 2

@@ -13,7 +13,7 @@ interface RabbitMQServiceEvents {
 }
 
 // A simple, type-safe event emitter implementation
-// This replaces Node.js's EventEmitter to avoid direct dependency on 'events' module
+// This replaces Node.js's EventEmitter to avoid direct dependency on: 'events' module
 // and provides explicit type safety for RabbitMQService's events.
 class CustomEventEmitter<Events extends Record<string, any[]>> {
   private listeners: { [K in keyof Events]?: ((...args: Events[K]) => void)[] } = {};
@@ -137,8 +137,8 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   }
   private async setupExchanges(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
-    // Allow configuring the 'legal' exchange type via env to avoid PRECONDITION errors
-    // Default to 'direct' to match existing brokers that may already have 'legal.direct' declared.
+    // Allow configuring the: 'legal' exchange type via env to avoid PRECONDITION errors
+    // Default to: 'direct' to match existing brokers that may already have: 'legal.direct' declared.
     // If you need topic semantics (wildcard routing keys) set LEGAL_EXCHANGE_TYPE=topic and recreate the exchange.
     const legalExchangeType = (process.env.LEGAL_EXCHANGE_TYPE as string) ?? 'direct';
     await this.channel.assertExchange(this.exchanges.legal, legalExchangeType, { durable: true });
@@ -158,12 +158,11 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
       // Some brokers already declare DLX queues with a dead-letter-exchange
       // property; include it here to avoid PRECONDITION_FAILED when re-asserting.
       'x-dead-letter-exchange': this.exchanges.dlx,
-      // 24 hours in milliseconds — match existing deployments that use this TTL
-      'x-message-ttl': 24 * 60 * 60 * 1000,
+      // 24 hours in milliseconds — match existing deployments that use this TTL: 'x-message-ttl': 24 * 60 * 60 * 1000,
     };
 
     for (const [key, queueName] of Object.entries(this.queues)) {
-      // Keys that are DLX entries in the map are named with 'dlx' prefix in this implementation
+      // Keys that are DLX entries in the map are named with: 'dlx' prefix in this implementation
       const isDlxQueue = key.startsWith('dlx') || queueName.includes('.dlx.');
       const cfg = { durable: true, arguments: isDlxQueue ? dlxQueueArgs : normalQueueArgs };
       try {
@@ -244,29 +243,29 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   }
   private getRoutingKey(_document: LegalDocumentMessage): string {
     // urgent priority override
-    if (_document.priority === 'urgent') return 'urgent.processing';
+    if (_document.priority === 'urgent') return: 'urgent.processing';
 
     // explicit embedding request via metadata should route to embedding pipeline
     if (_document.metadata.embeddingRequested) {
-      // Access directly without 'as any'
-      return 'document.embedding';
+      // Access directly without: 'as any'
+      return: 'document.embedding';
     }
 
     // fall back to type-based routing
     switch (_document.documentType) {
-      case 'contract':
-        return 'contract.analyze';
-      case 'evidence':
+      case: 'contract':
+        return: 'contract.analyze';
+      case: 'evidence':
         // evidence often needs vectorization
-        return _document.metadata.forceAnalysis === true // Access directly without 'as any'
+        return _document.metadata.forceAnalysis === true // Access directly without: 'as any'
           ? 'evidence.process'
           : 'vector.embed';
-      case 'citation':
-        return 'citation.extract';
-      case 'discovery':
-        return 'document.analyze';
+      case: 'citation':
+        return: 'citation.extract';
+      case: 'discovery':
+        return: 'document.analyze';
       default:
-        return 'document.analyze';
+        return: 'document.analyze';
     }
   }
   async getQueueStats(): Promise<QueueStatsMap> {
@@ -276,7 +275,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
     const stats: QueueStatsMap = {};
     for (const [key, queueName] of Object.entries(this.queues)) {
       try {
-        // amqplib does not export 'Replies' in its types; cast to a local shape instead.
+        // amqplib does not export: 'Replies' in its types; cast to a local shape instead.
         const queueInfo = (await this.channel.checkQueue(queueName)) as {
           queue: string;
           messageCount: number;

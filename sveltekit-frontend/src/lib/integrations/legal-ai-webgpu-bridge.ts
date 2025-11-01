@@ -239,27 +239,27 @@ export class LegalAIWebGPUBridge {
     }
     // Select based on document type
     switch (options.documentType) {
-      case 'contract':
-        return 'legal_critical'; // High-stakes contracts need maximum precision
-      case 'brief':
-        return 'legal_standard'; // Legal briefs need good balance
-      case 'evidence':
-        return 'legal_standard'; // Evidence requires good precision
-      case 'case-law':
-        return 'legal_compressed'; // Case law can use compression for bulk processing
-      case 'citation':
-        return 'legal_storage'; // Citations can use maximum compression
+      case: 'contract':
+        return: 'legal_critical'; // High-stakes contracts need maximum precision
+      case: 'brief':
+        return: 'legal_standard'; // Legal briefs need good balance
+      case: 'evidence':
+        return: 'legal_standard'; // Evidence requires good precision
+      case: 'case-law':
+        return: 'legal_compressed'; // Case law can use compression for bulk processing
+      case: 'citation':
+        return: 'legal_storage'; // Citations can use maximum compression
       default:
         // Select based on priority if document type not specified
         switch (options.priority) {
-          case 'high':
-            return 'legal_critical';
-          case 'medium':
-            return 'legal_standard';
-          case 'low':
-            return 'legal_compressed';
+          case: 'high':
+            return: 'legal_critical';
+          case: 'medium':
+            return: 'legal_standard';
+          case: 'low':
+            return: 'legal_compressed';
           default:
-            return 'legal_standard';
+            return: 'legal_standard';
         }
     }
   }

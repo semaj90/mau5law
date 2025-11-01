@@ -1,4 +1,4 @@
-// Temporary runtime globals shim to reduce TS "Cannot find name" noise.
+// Temporary runtime globals shim to reduce TS: "Cannot find name" noise.
 // These are intentionally typed as `any` and will be replaced with proper
 // interfaces as we stabilize the runtime wiring.
 declare const cachingLayer: any;
@@ -44,11 +44,11 @@ declare const db: any;
 declare const desc: any;
 declare const asc: any;
 // Allow access to $env/static/private keys referenced in files
-declare module '$env/static/private' {
+declare module: '$env/static/private' {
   const env: { [k: string]: string | undefined };
   export = env;
 }
-declare module '$env/static/public' {
+declare module: '$env/static/public' {
   const env: { [k: string]: string | undefined };
   export = env;
 }

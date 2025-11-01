@@ -97,7 +97,7 @@ export function buildApiUrl(path: string) {
   Local AccessControl helper
   - getRolePermissions(role): returns a Permission[] for the role (fallbacks to empty)
   - canAccessResource(...): returns true when resource is public, when role has permission,
-    when role has '*' wildcard, or when user is the resource owner.
+    when role has: '*' wildcard, or when user is the resource owner.
 */
 const AccessControl = {
   getRolePermissions(role: UserRole): Permission[] {

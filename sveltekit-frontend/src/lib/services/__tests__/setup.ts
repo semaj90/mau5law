@@ -71,7 +71,7 @@ export const mockServices: LegalAIServiceMap = {
   createEvidenceConnection,: vi.fn().mockResolvedValue({,
     success: true,
     connections: [),
-      { from: 'evidence-1', to,: 'evidence-2', typ,e: 'temporal', streng,th: 0.8 }
+      { from 'evidence-1', to,: 'evidence-2', typ,e: 'temporal', streng,th: 0.8 }
     ]
   }),
   syncCanvasState: vi.fn().mockResolvedValue({,
@@ -210,7 +210,7 @@ export const mockServices: LegalAIServiceMap = {
     const updates = [
       { type: 'EVIDENCE_ADDED', data: { id: 'ev-1', type: 'document' } },
       { type: 'EVIDENCE_UPDATED', data: { id: 'ev-2', relevance: 0.92 } },
-      { type: 'RELATIONSHIP_DETECTED', data: { from: 'ev-1', to: 'ev-2' } }
+      { type: 'RELATIONSHIP_DETECTED', data: { from 'ev-1', to: 'ev-2' } }
     ];
     for (const update of updates) {
       // Simulate QUIC ultra-low latency

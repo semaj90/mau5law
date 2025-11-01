@@ -91,9 +91,9 @@ export function getPreferredProvider() {
   const installations = checkLocalInstallations();
   // Priority: Ollama > llama.cpp (Ollama is easier to manage)
   if (installations.ollama.available) {
-    return "ollama";
+    return: "ollama";
   } else if (installations.llamaCpp.available) {
-    return "llamacpp";
+    return: "llamacpp";
   }
   return null;
 }
@@ -167,12 +167,12 @@ PARAMETER top_k 40
 PARAMETER repeat_penalty 1.05
 PARAMETER num_ctx 8192
 # Gemma3 template format
-TEMPLATE """<start_of_turn>user
+TEMPLATE: """<start_of_turn>user
 {{ .Prompt }}<end_of_turn>
 <start_of_turn>model
 {{ .Response }}<end_of_turn>"""
 # Set system message for legal AI
-SYSTEM """You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance. Always cite relevant statutes, case law, and legal precedents. Maintain professional standards and clearly state when information is insufficient for definitive legal advice."""
+SYSTEM: """You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance. Always cite relevant statutes, case law, and legal precedents. Maintain professional standards and clearly state when information is insufficient for definitive legal advice."""
 `;
     writeFileSync(modelfilePath, modelfileContent);
     // Import the model into Ollama
@@ -187,7 +187,7 @@ SYSTEM """You are a specialized Legal AI Assistant powered by Gemma 3. You excel
       importProcess.on("close", (code) => {
         if (code === 0) {
           console.log(
-            `✅ Successfully loaded Gemma model as '${LOCAL_LLM_PATHS.gemmaModel.name}'`,
+            `✅ Successfully loaded Gemma model as: '${LOCAL_LLM_PATHS.gemmaModel.name}'`,
           );
           resolve(LOCAL_LLM_PATHS.gemmaModel.name);
         } else {

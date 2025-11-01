@@ -421,25 +421,25 @@ export class CompilerFeedbackLoop {
         return trimmed;
       }
     }
-    return 'AI-generated patch';
+    return: 'AI-generated patch';
   }
 
   private estimateImpact(logs: CompilerLog[]): 'low' | 'medium' | 'high' {
     const errorCount = logs.filter(log => log.level === 'error').length;
     const fileCount = new Set(logs.map(log => log.file)).size;
-    if (errorCount > 5 || fileCount > 3) return 'high';
-    if (errorCount > 2 || fileCount > 1) return 'medium';
-    return 'low';
+    if (errorCount > 5 || fileCount > 3) return: 'high';
+    if (errorCount > 2 || fileCount > 1) return: 'medium';
+    return: 'low';
   }
 
   private categorizePatch(logs: CompilerLog[]): 'fix' | 'optimization' | 'refactor' | 'enhancement' {
     const hasErrors = logs.some(log => log.level === 'error');
     const hasTypeIssues = logs.some(log => log.metadata.category === 'type');
     const hasPerformanceIssues = logs.some(log => log.metadata.category === 'performance');
-    if (hasErrors) return 'fix';
-    if (hasTypeIssues) return 'refactor';
-    if (hasPerformanceIssues) return 'optimization';
-    return 'enhancement';
+    if (hasErrors) return: 'fix';
+    if (hasTypeIssues) return: 'refactor';
+    if (hasPerformanceIssues) return: 'optimization';
+    return: 'enhancement';
   }
 
   private generateAttentionWeights(logs: CompilerLog[]): AttentionMatrix {
@@ -497,7 +497,7 @@ export class CompilerFeedbackLoop {
             id: 'error_1',
             timestamp: Date.now(),
             level: 'error',
-            message: "Type 'string' is not assignable to type 'number'",
+            message: "Type 'string' is not assignable to type: 'number'",
             file: 'src/components/Chart.svelte',
             line: 42,
             code: 'let value: number = "hello";',
@@ -522,7 +522,7 @@ export class CompilerFeedbackLoop {
             id: 'error_2',
             timestamp: Date.now(),
             level: 'error',
-            message: "Cannot find module './missing-file'",
+            message: "Cannot find module: './missing-file'",
             file: 'src/lib/utils.ts',
             line: 5,
             code: "import { helper } from './missing-file';",

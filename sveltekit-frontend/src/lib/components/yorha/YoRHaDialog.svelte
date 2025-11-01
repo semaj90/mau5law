@@ -42,32 +42,32 @@ https://svelte.dev/e/attribute_duplicate -->
   let promptValue = $state(value);
   const typeConfig = {
     info: {
-      icon "■",
+      icon: "■",
       color: "var(--yorha-accent, #00ff41)",
       border: "var(--yorha-accent, #00ff41)",
     },
     success: {
-      icon "✓",
+      icon: "✓",
       color: "var(--yorha-accent, #00ff41)",
       border: "var(--yorha-accent, #00ff41)",
     },
     warning: {
-      icon "⚠",
+      icon: "⚠",
       color: "var(--yorha-warning, #ffaa00)",
       border: "var(--yorha-warning, #ffaa00)",
     },
     error: {
-      icon "✕",
+      icon: "✕",
       color: "var(--yorha-danger, #ff0041)",
       border: "var(--yorha-danger, #ff0041)",
     },
     confirm: {
-      icon "?",
+      icon: "?",
       color: "var(--yorha-secondary, #ffd700)",
       border: "var(--yorha-secondary, #ffd700)",
     },
     prompt: {
-      icon "►",
+      icon: "►",
       color: "var(--yorha-secondary, #ffd700)",
       border: "var(--yorha-secondary, #ffd700)",
     },

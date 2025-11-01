@@ -19,6 +19,8 @@
   let searchOpen = $state(false);
   let searchQuery = $state('');
 
+  let searchInput: HTMLInputElement | null = null;
+
   function toggleSearch() {
     searchOpen = !searchOpen;
   }
@@ -26,6 +28,20 @@
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && searchOpen) {
       toggleSearch();
+    }
+  }
+
+  // Overlay pointer/keyboard handlers (typed)
+  function overlayClick(e: Event) {
+    // close only when clicking on the overlay itself (not the dialog)
+    if (e.currentTarget === e.target) toggleSearch();
+  }
+
+  function overlayKeydown(e: KeyboardEvent) {
+    // Allow Enter to confirm/close and Escape is handled globally
+    if (e.key === 'Enter') {
+      // When Enter is pressed on the overlay, close modal
+      if (e.currentTarget === (e.target as EventTarget)) toggleSearch();
     }
   }
 
@@ -37,6 +53,14 @@
       return () => {
         window.removeEventListener('keydown', handleKeydown);
       };
+    }
+  });
+
+  // Focus the input when modal opens
+  $effect(() => {
+    if (searchOpen && browser) {
+      // small delay to ensure the element is in DOM
+      setTimeout(() => searchInput?.focus(), 0);
     }
   });
 </script>
@@ -52,7 +76,7 @@
 
   <!-- Search -->
   <div class="relative">
-    <button class="nes-btn is-warning" onclick={toggleSearch}>Search</button>
+    <button class="nes-btn is-warning" onclick={toggleSearch} aria-expanded={searchOpen}>Search</button>
   </div>
 </nav>
 
@@ -60,22 +84,25 @@
 {#if searchOpen}
   <div
     class="search-modal-overlay"
-    onclick={e => {
-      if (e.currentTarget === e.target) toggleSearch();
-    }}
-    onkeydown={e => {
-      if (e.currentTarget === e.target && e.key === 'Enter') toggleSearch();
-    }}
     role="dialog"
     aria-modal="true"
-    tabindex="-1"
+    tabindex="0"
+    onclick={overlayClick}
+    onkeydown={overlayKeydown}
   >
     <div class="search-modal">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">Search</h2>
         <button class="nes-btn is-error" onclick={toggleSearch} aria-label="Close">X</button>
       </div>
-      <input type="text" class="nes-input" placeholder="Search..." bind:value={searchQuery} />
+      <input
+        bind:this={searchInput}
+        type="text"
+        class="nes-input"
+        placeholder="Search..."
+        bind:value={searchQuery}
+        aria-label="Search"
+      />
     </div>
   </div>
 {/if}

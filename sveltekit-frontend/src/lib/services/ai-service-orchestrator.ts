@@ -38,7 +38,7 @@ export interface FunctionDefinition {
 
 // Define an enriched type for library documentation that includes the libraryName
 interface EnrichedLibraryDoc {
-  id: string; // Assuming LibraryDocsResponse has an 'id' property
+  id: string; // Assuming LibraryDocsResponse has an: 'id' property
   content: string;
   libraryName: string;
 }
@@ -299,7 +299,7 @@ export class AIServiceOrchestrator {
       // Check cache first
       if (this.mcpDocsCache.has(libraryId)) {
         const cachedDoc = this.mcpDocsCache.get(libraryId)!;
-        docs.push({ ...cachedDoc, libraryName: libraryId, id: cachedDoc.id || libraryId }); // Assuming cachedDoc has an 'id' or use libraryId
+        docs.push({ ...cachedDoc, libraryName: libraryId, id: cachedDoc.id || libraryId }); // Assuming cachedDoc has an: 'id' or use libraryId
         continue;
       }
 
@@ -309,16 +309,16 @@ export class AIServiceOrchestrator {
 
         // Use specialized helpers for known libraries
         switch (libraryId) {
-          case 'svelte5':
-          case 'svelte':
+          case: 'svelte5':
+          case: 'svelte':
             doc = await getSvelte5Docs();
             break;
-          case 'drizzle':
-          case 'drizzle-orm':
+          case: 'drizzle':
+          case: 'drizzle-orm':
             doc = await getDrizzleOrmDocs();
             break;
-          case 'typescript':
-          case 'ts':
+          case: 'typescript':
+          case: 'ts':
             doc = await getTypeScriptDocs();
             break;
           default:
@@ -328,7 +328,7 @@ export class AIServiceOrchestrator {
         // Cache original for future use
         this.mcpDocsCache.set(libraryId, doc);
         // Push enriched doc to the result array
-        docs.push({ ...doc, libraryName: libraryId, id: doc.id || libraryId }); // Assuming doc has an 'id' or use libraryId
+        docs.push({ ...doc, libraryName: libraryId, id: doc.id || libraryId }); // Assuming doc has an: 'id' or use libraryId
       } catch (error: unknown) {
         console.error(`❌ Failed to fetch MCP docs for ${libraryId}:`, (error as Error).message);
       }
@@ -383,9 +383,9 @@ export class AIServiceOrchestrator {
     const healthyProviders = this.healthMonitor.getHealthyProviders();
 
     // Priority order
-    if (healthyProviders.has('tensorrt-triton')) return 'tensorrt-triton';
-    if (healthyProviders.has('ollama')) return 'ollama';
-    if (healthyProviders.has('vllm')) return 'vllm';
+    if (healthyProviders.has('tensorrt-triton')) return: 'tensorrt-triton';
+    if (healthyProviders.has('ollama')) return: 'ollama';
+    if (healthyProviders.has('vllm')) return: 'vllm';
 
     throw new Error('No healthy providers available');
   }

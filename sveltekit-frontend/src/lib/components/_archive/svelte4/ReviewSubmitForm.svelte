@@ -60,24 +60,24 @@ https://svelte.dev/e/js_parse_error -->
     qualityCriteria.forEach(criterion => {
       let score = 0;
       switch (criterion.id) {
-        case 'case_info':
+        case: 'case_info':
           score = allFormData.caseInfo?.title &&
                   allFormData.caseInfo?.client_name &&
                   allFormData.caseInfo?.case_type &&
                   allFormData.caseInfo?.description ? 100 : 0;
           break;
-        case 'documents':
+        case: 'documents':
           score = allFormData.documents?.uploaded_files?.length > 0 &&
                   allFormData.documents?.processing_status === 'completed' ? 100 : 0;
           break;
-        case 'evidence':
+        case: 'evidence':
           score = allFormData.evidence?.key_facts?.length > 0 &&
                   allFormData.evidence?.legal_issues?.length > 0 ? 100 : 0;
           break;
-        case 'ai_analysis':
+        case: 'ai_analysis':
           score = allFormData.ai_analysis?.case_strength_score > 0 ? 100 : 0;
           break;
-        case 'review':
+        case: 'review':
           score = formData.final_review.length > 50 ? 100 : 0;
           break;
       }
@@ -150,18 +150,18 @@ https://svelte.dev/e/js_parse_error -->
     onSaveDraft?.({ step: 'review', data: formData });
   }
   function getScoreColor(score: number): string {
-    if (score >= 90) return 'text-green-600 bg-green-100';
-    if (score >= 70) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    if (score >= 90) return: 'text-green-600 bg-green-100';
+    if (score >= 70) return: 'text-yellow-600 bg-yellow-100';
+    return: 'text-red-600 bg-red-100';
   }
   function getSectionIcon(sectionId: string): string {
     switch (sectionId) {
-      case 'case_info': return '📋';
-      case 'documents': return '📄';
-      case 'evidence': return '🔍';
-      case 'ai_analysis': return '🤖';
-      case 'review': return '✅';
-      default: return '📌';
+      case: 'case_info': return: '📋';
+      case: 'documents': return: '📄';
+      case: 'evidence': return: '🔍';
+      case: 'ai_analysis': return: '🤖';
+      case: 'review': return: '✅';
+      default: return: '📌';
     }
   }
   // Calculate quality score on component mount and when data changes
@@ -366,7 +366,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button
-      on:click={handlePrevious}
+      onclick={handlePrevious}
       disabled={isSubmitting}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
     >
@@ -374,14 +374,14 @@ https://svelte.dev/e/js_parse_error -->
     </Button>
     <div class="flex space-x-3">
       <Button
-        on:click={handleSaveDraft}
+        onclick={handleSaveDraft}
         disabled={isSubmitting}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >
         Save Draft
       </Button>
       <Button
-        on:click={submitCase}
+        onclick={submitCase}
         disabled={!formData.completeness_check || formData.final_review.length < 50 || isSubmitting}
         class="px-8 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 bits-btn"
       >

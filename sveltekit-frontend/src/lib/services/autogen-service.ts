@@ -295,15 +295,15 @@ export class AutoGenService {
     let initialPrompt = '';
 
     switch (workflowType) {
-      case 'case_analysis':
+      case: 'case_analysis':
         agents = [team.prosecutor, team.legalResearcher, team.coordinator];
         initialPrompt = `Please analyze the following case for prosecutorial merit and legal strategy:\n\n${input}`;
         break;
-      case 'evidence_review':
+      case: 'evidence_review':
         agents = [team.evidenceAnalyst, team.prosecutor, team.coordinator];
         initialPrompt = `Please review and analyze the following evidence:\n\n${input}`;
         break;
-      case 'legal_research':
+      case: 'legal_research':
         agents = [team.legalResearcher, team.prosecutor, team.coordinator];
         initialPrompt = `Please research legal precedents and applicable law for:\n\n${input}`;
         break;
@@ -408,7 +408,7 @@ export class AutoGenService {
       },
       humanInputMode: 'NEVER',
       maxConsecutiveAutoReply: 3,
-      tools: tools, // Explicitly assign the 'tools' parameter to the 'tools' property
+      tools: tools, // Explicitly assign the: 'tools' parameter to the: 'tools' property
     };
   }
 
@@ -835,7 +835,7 @@ export const DefaultWasmClusteringService: WasmClusteringService = {
 
 export const DefaultNesGPUBridge: NesGPUBridge = {
   async submitTensor(tensor: Float32Array) {
-    // reference tensor to avoid "declared but never read" lint warnings
+    // reference tensor to avoid: "declared but never read" lint warnings
     const len = tensor?.length ?? 0;
     return { jobId: `gpu_${Date.now()}_len${len}`, status: 'queued' };
   },

@@ -14,17 +14,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
   import { goto } from '$app/navigation';
   import { z } from 'zod';
   import type { SuperForm, ValidationErrors } from 'sveltekit-superforms'; // Import SuperForm type
-  import { get } from 'svelte/store'; // Import the 'get' function
+  import { get } from 'svelte/store'; // Import the: 'get' function
 
   // Enhanced Zod schema for case creation with legal AI context
   const CaseCreationSchema = z.object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
     description z.string().min(10, 'Description must be at least 10 characters'),
-    priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'), // Added 'critical'
+    priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'), // Added: 'critical'
     status: z.enum(['open', 'active', 'closed']).default('open'),
     location z.string().optional(),
     jurisdiction z.string().optional(),
-    caseType: z.enum(['civil', 'criminal', 'family', 'corporate', 'intellectual_property']).default('civil'), // Added 'intellectual_property'
+    caseType: z.enum(['civil', 'criminal', 'family', 'corporate', 'intellectual_property']).default('civil'), // Added: 'intellectual_property'
     assignedTo: z.string().optional(),
     clientName: z.string().optional(),
     tags: z.array(z.string()).default([]),
@@ -49,7 +49,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Svelte 5 runes: use $props() instead of `export let`
   const { onDispatch } = $props<{ onDispatch?: (payload: Record<string, unknown>) => void }>();
 
-  // --- Move declaration of formIntegration before derived usages to avoid "used before its declaration" ---
+  // --- Move declaration of formIntegration before derived usages to avoid: "used before its declaration" ---
   // Minimal typing for the form integration used by the template
   type Subscriber<T = unknown> = (value: T) => void;
 
@@ -105,11 +105,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
     const savedData = formStatePersistence.load();
     const initialData = savedData || {
       title: '',
-      description '',
+      description: '',
       priority: 'medium',
       status: 'open',
-      location '',
-      jurisdiction '',
+      location: '',
+      jurisdiction: '',
       caseType: 'civil',
       assignedTo: '',
       clientName: '',
@@ -579,7 +579,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               <strong>Errors:</strong>
               {Object.keys(formErrors).length > 0 ? JSON.stringify(formErrors, null, 2) : 'None'}
             </p>
-            <!-- use formContext so it's not "declared but never read" -->
+            <!-- use formContext so it's not: "declared but never read" -->
             <p><strong>Form Context:</strong> {JSON.stringify(formContext ?? {}, null, 2)}</p>
           </div>
         </details>

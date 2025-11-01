@@ -3,7 +3,7 @@
   import { LegalAILogic } from '$lib/core/logic/legal-ai-logic';
   import type { LegalDocument } from '$lib/core/logic/legal-ai-logic';
 
-  // Local lightweight EvidenceItem type to avoid "Cannot use namespace ... as a type"
+  // Local lightweight EvidenceItem type to avoid: "Cannot use namespace ... as a type"
   // Keeps the minimal shape used by this component and allows extra fields.
   type EvidenceItemType = {
     id?: string;
@@ -20,7 +20,7 @@
 
   // Import hybrid theme as a global stylesheet to fix unused selector warnings
   // Use $lib alias so Vite/SvelteKit resolves the shared stylesheet reliably
-  import '$lib/styles/hybrid-theme.css';
+  import: '$lib/styles/hybrid-theme.css';
 
   // Safer constructor extraction with runtime fallback & warning
   const CardComponent: any = (Card as any).Root ?? (Card as any).default;

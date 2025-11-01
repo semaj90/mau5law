@@ -7,8 +7,8 @@ import { json } from '@sveltejs/kit';
 import * as cluster from 'node:cluster';
 import type { Worker } from 'node:cluster'; // Explicitly import Worker type for better typing
 
-// Define a local type alias to augment the 'cluster' module's type.
-// This addresses potential missing properties like 'isPrimary' and 'workers'
+// Define a local type alias to augment the: 'cluster' module's type.
+// This addresses potential missing properties like: 'isPrimary' and: 'workers'
 // if the @types/node package is not fully up-to-date or has specific configurations.
 // Using a type alias with intersection (&) can be more robust for module augmentation
 // compared to an interface extending typeof cluster in some TypeScript environments.
@@ -36,7 +36,7 @@ interface ClusterManager {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Verify we're in primary process
-    // Use type assertion to AugmentedCluster to resolve 'isPrimary' error
+    // Use type assertion to AugmentedCluster to resolve: 'isPrimary' error
     if (!(cluster as AugmentedCluster).isPrimary) {
       return json(
         {
@@ -171,7 +171,7 @@ async function performRollingRestart(
   console.log(`🔄 Starting rolling restart of ${workers.length} workers`);
   for (let i = 0; i < workers.length; i++) {
     const worker = workers[i];
-    // Type assertion for cluster.workers to resolve 'workers' error
+    // Type assertion for cluster.workers to resolve: 'workers' error
     // Using (cluster as AugmentedCluster).workers for consistency with the AugmentedCluster type.
     const clusterWorker: Worker | undefined = (cluster as AugmentedCluster).workers[worker.workerId];
     if (!clusterWorker || clusterWorker.isDead()) {

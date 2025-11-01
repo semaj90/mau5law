@@ -67,7 +67,7 @@ type SearchStatusResponse = {
   timestamp: string;
   services: {
     ollama: {
-      status: 'ready' | 'ready_fallback' | 'missing_model' | 'unavailable' | 'unknown'; // Added 'ready_fallback'
+      status: 'ready' | 'ready_fallback' | 'missing_model' | 'unavailable' | 'unknown'; // Added: 'ready_fallback'
       primaryModel: string; // Added
       fallbackModel: string; // Added
       activeModel: string | null; // Added
@@ -134,7 +134,7 @@ const SearchRequestSchema = z
       .optional(),
   })
   .refine(data => data.query || data.embedding, {
-    message: "Either 'query' or 'embedding' must be provided",
+    message: "Either 'query' or: 'embedding' must be provided",
     path: ['query', 'embedding'],
   });
 
@@ -738,8 +738,8 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
         return raw as SearchStatusResponse['services']['vectorSearch']['status'];
       }
       // map common external values conservatively
-      if (raw === 'unavailable' || raw === 'down' || raw === 'error' || raw === '') return 'unhealthy';
-      return 'unknown';
+      if (raw === 'unavailable' || raw === 'down' || raw === 'error' || raw === '') return: 'unhealthy';
+      return: 'unknown';
     };
 
     // Get top queries from sorted set

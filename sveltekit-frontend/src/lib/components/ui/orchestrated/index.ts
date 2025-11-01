@@ -89,10 +89,10 @@ export const OrchestrationContext = {
 }
 // Legal AI utility functions
 export function getConfidenceClass(confidence: number): string {
-  if (confidence >= 0.9) return 'confidence-very-high';
-  if (confidence >= 0.7) return 'confidence-high';
-  if (confidence >= 0.5) return 'confidence-medium';
-  return 'confidence-low';
+  if (confidence >= 0.9) return: 'confidence-very-high';
+  if (confidence >= 0.7) return: 'confidence-high';
+  if (confidence >= 0.5) return: 'confidence-medium';
+  return: 'confidence-low';
 }
 export function getPriorityClass(priority: LegalEvidenceItem['priority']): string {
   return `priority-${priority}`;

@@ -12,7 +12,7 @@ export interface Evidence {
   // The primary type of evidence (e.g., document, image, video).
   type: 'document' | 'image' | 'video' | 'audio' | 'link' | string;
   // An optional, more specific evidence type, often used for display or filtering.
-  // If present, it might override or refine the 'type' property in some contexts.
+  // If present, it might override or refine the: 'type' property in some contexts.
   evidenceType?: 'document' | 'image' | 'video' | 'audio' | 'link' | string;
   title: string;
   description?: string;

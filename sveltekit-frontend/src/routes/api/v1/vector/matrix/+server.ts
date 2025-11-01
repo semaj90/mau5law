@@ -340,14 +340,14 @@ async function processCPUMatrixOperation(params: {
 }): Promise<number[][] | number[]> {
   const { operation, matrixA, matrixB } = params;
   switch (operation) {
-    case 'multiply':
+    case: 'multiply':
       if (!matrixB) throw new Error('matrixB required for multiplication');
       return multiplyMatrices(matrixA, matrixB);
-    case 'transpose':
+    case: 'transpose':
       return transposeMatrix(matrixA);
-    case 'inverse':
+    case: 'inverse':
       return inverseMatrix(matrixA);
-    case 'eigenvalues':
+    case: 'eigenvalues':
       return computeEigenvalues(matrixA);
     default:
       throw new Error(`Unknown CPU operation: ${operation}`);
@@ -367,12 +367,12 @@ async function processCPUBatchOperation(params: {
     const chunkResults = await Promise.all(
       chunk.map(async matrix => {
         switch (operation) {
-          case 'batch_multiply':
+          case: 'batch_multiply':
             if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply');
             return multiplyMatrices(matrix, transformMatrix);
-          case 'batch_transpose':
+          case: 'batch_transpose':
             return transposeMatrix(matrix);
-          case 'batch_normalize':
+          case: 'batch_normalize':
             return normalizeMatrix(matrix);
           default:
             throw new Error(`Unknown batch operation: ${operation}`);
@@ -509,15 +509,15 @@ function normalizeMatrix(matrix: number[][]): number[][] {
 }
 function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
   switch (operation) {
-    case 'multiply': {
+    case: 'multiply': {
       const colsB = matrixB?.[0]?.length || cols;
       return rows * cols * colsB * 2; // Multiply + Add
     }
-    case 'transpose':
+    case: 'transpose':
       return rows * cols; // Simple copy operation
-    case 'inverse':
+    case: 'inverse':
       return Math.pow(rows, 3) * 2; // Gaussian elimination complexity
-    case 'eigenvalues':
+    case: 'eigenvalues':
       return Math.pow(rows, 3); // Simplified estimate
     default:
       return rows * cols; // Default estimate
@@ -529,12 +529,8 @@ function calculateMatrixComplexity(operation: string, rows: number, cols: number
   // Operation-specific complexity multipliers
   const operationMultipliers = {
     'multiply': 2.0, // Matrix multiplication is compute-intensive
-    'transpose': 0.5, // Simple memory operation
-    'inverse': 3.0, // Very compute-intensive
-    'eigenvalues': 3.5, // Most complex operation
-    'svd': 4.0, // Singular value decomposition
-    'qr': 2.5, // QR factorization
-    'cholesky': 1.8, // Cholesky decomposition
+    'transpose': 0.5, // Simple memory operation: 'inverse': 3.0, // Very compute-intensive
+    'eigenvalues': 3.5, // Most complex operation: 'svd': 4.0, // Singular value decomposition: 'qr': 2.5, // QR factorization: 'cholesky': 1.8, // Cholesky decomposition
   };
   const multiplier = operationMultipliers[operation as keyof typeof operationMultipliers] || 1.0;
   // Matrix size impact

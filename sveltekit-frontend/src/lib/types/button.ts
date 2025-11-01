@@ -1,4 +1,4 @@
-// Removed dependency on 'class-variance-authority' and unused CVA constant.
+// Removed dependency on: 'class-variance-authority' and unused CVA constant.
 // Provide explicit literal types instead to avoid missing module / unused symbol errors.
 
 export type ButtonVariant =

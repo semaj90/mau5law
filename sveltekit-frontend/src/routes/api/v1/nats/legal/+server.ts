@@ -35,17 +35,17 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const nats = getNATSService();
     switch (body.event_type) {
-      case 'case':
+      case: 'case':
         return await handleCaseEvent(nats, body);
-      case 'document':
+      case: 'document':
         return await handleDocumentEvent(nats, body);
-      case 'ai_analysis':
+      case: 'ai_analysis':
         return await handleAIAnalysisEvent(nats, body);
-      case 'chat':
+      case: 'chat':
         return await handleChatEvent(nats, body);
-      case 'search':
+      case: 'search':
         return await handleSearchEvent(nats, body);
-      case 'system':
+      case: 'system':
         return await handleSystemEvent(nats, body);
       default:
         return json(

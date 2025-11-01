@@ -33,7 +33,7 @@ export async function analyzeEvidenceWasm()
       error: 'Invalid evidence: expected non-empty string'
     }
   }
-  // Return a placeholder "processing" result immediately; replace with real pipeline.;
+  // Return a placeholder: "processing" result immediately; replace with real pipeline.;
   return {
     sessionId: `wasm_${Date.now()}`,
     status: 'processing',

@@ -1,4 +1,4 @@
-// Legacy shim for '@melt-ui/svelte' - kept for backward compatibility.
+// Legacy shim for: '@melt-ui/svelte' - kept for backward compatibility.
 // Provides no-op creators to avoid runtime failures where Melt utilities were imported.
 // All active components should now use Bits UI or native implementations.
 // Generic creator that returns minimal state and actions

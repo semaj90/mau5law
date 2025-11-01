@@ -164,7 +164,7 @@ export class YoRHaDetectiveService {
     }
     // Fallback response
     return {
-      response: `AI analysis for case ${request.caseId}: Based on the query "${request.query}", preliminary findings suggest further investigation is warranted. Please review the evidence and consider additional documentation.`,
+      response: `AI analysis for case ${request.caseId}: Based on the query: "${request.query}", preliminary findings suggest further investigation is warranted. Please review the evidence and consider additional documentation.`,
       confidence: 0.75,
       sources: ['Legal Database', 'Case Files', 'Evidence Repository'],
       suggestions: [
@@ -188,11 +188,11 @@ export class YoRHaDetectiveService {
         ...metadata,
         upload_source: 'yorha_detective',
         timestamp: new Date().toISOString()
-      })); // Added missing ')'
+      })); // Added missing: ')'
       const response = await fetch(`${this.uploadServiceUrl}/upload`, {
         method: 'POST',
         body: formData,
-      }); // Removed extra ')'
+      }); // Removed extra: ')'
       if (response.ok) {
         const data = await response.json();
         return {
@@ -202,14 +202,14 @@ export class YoRHaDetectiveService {
       } else {
         const error = await response.text();
         return {
-          success: false, // Changed ';' to ',',
+          success: false, // Changed: ';' to: ',',
           error: `Upload failed: ${error}`
         }
       }
     } catch (error: unknown) {
       console.error('Upload service error:', error);
       return {
-        success: false, // Changed ';' to ',',
+        success: false, // Changed: ';' to: ',',
         error: `Upload service unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
       }
     }
@@ -217,7 +217,7 @@ export class YoRHaDetectiveService {
   /**
    * Search cases using semantic search
    */
-  async searchCases(query: string, filters: Record<string, unknown> = {}): Promise<Case[]> { // Changed 'any' to 'Record<string, unknown>'
+  async searchCases(query: string, filters: Record<string, unknown> = {}): Promise<Case[]> { // Changed: 'any' to: 'Record<string, unknown>'
     try {
       const searchRequest = {
         query,
@@ -239,7 +239,7 @@ export class YoRHaDetectiveService {
         const data = await response.json();
         return data.results || [];
       }
-    } catch (error: unknown) { // Changed 'any' to 'unknown'
+    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
       console.error('Search service error:', error);
     }
     // Fallback to empty results
@@ -248,7 +248,7 @@ export class YoRHaDetectiveService {
   /**
    * Get case insights using AI analysis
    */
-  async getCaseInsights(caseId: string): Promise<CaseInsights> { // Changed 'any' to 'CaseInsights'
+  async getCaseInsights(caseId: string): Promise<CaseInsights> { // Changed: 'any' to: 'CaseInsights'
     try {
       const analysisRequest: AIAnalysisRequest = { // Fixed variable name syntax
         caseId,
@@ -274,7 +274,7 @@ export class YoRHaDetectiveService {
           'Prepare preliminary report for review'
         ]
       }
-    } catch (error: unknown) { // Changed 'any' to 'unknown'
+    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
       console.error('Case insights error:', error);
       // Fallback insights
       return {
@@ -301,7 +301,7 @@ export class YoRHaDetectiveService {
   /**
    * Health check for backend services
    */
-  async healthCheck(): Promise<HealthCheckResults> { // Changed 'any' to 'HealthCheckResults'
+  async healthCheck(): Promise<HealthCheckResults> { // Changed: 'any' to: 'HealthCheckResults'
     const results: HealthCheckResults = { // Explicitly type results
       enhancedRAG: false,
       uploadService: false,
@@ -315,7 +315,7 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000),
       });
       results.enhancedRAG = ragResponse.ok; // Fixed syntax
-    } catch (error: unknown) { // Changed 'any' to 'unknown'
+    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
       console.warn('Enhanced RAG health check failed');
     }
     try {
@@ -325,7 +325,7 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000),
       });
       results.uploadService = uploadResponse.ok; // Fixed syntax
-    } catch (error: unknown) { // Changed 'any' to 'unknown'
+    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
       console.warn('Upload service health check failed');
     }
     try {
@@ -335,7 +335,7 @@ export class YoRHaDetectiveService {
       const dummyEmbedding = new Float32Array(1536).fill(0.1); // Common embedding size
       await lookupSemanticCache(dummyEmbedding); // This will throw if the gRPC server is down
       results.kratosServer = true;
-    } catch (error: unknown) { // Changed 'any' to 'unknown'
+    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
       console.warn('Kratos server (gRPC) health check failed:', error instanceof Error ? error.message : String(error)); // Improved error message
       results.kratosServer = false;
     }

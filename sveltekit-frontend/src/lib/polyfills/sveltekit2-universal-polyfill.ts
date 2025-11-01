@@ -364,13 +364,13 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       navigator.serviceWorker.addEventListener('message', (_event: any) => {
         const { type, data } = event.data;
         switch (type) {
-          case 'wasm-cache-ready':
+          case: 'wasm-cache-ready':
             console.log('✅ WASM cache initialized in service worker');
             break;
-          case 'legal-document-processed':
+          case: 'legal-document-processed':
             console.log('📄 Legal document processed:', data);
             break;
-          case 'embedding-computed':
+          case: 'embedding-computed':
             console.log('🧮 Embedding computed in background:', data);
             break;
         }

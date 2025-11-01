@@ -170,7 +170,7 @@ export class OptimizationTestSuite {
     large_json: JSON.stringify({
       data: Array(1000).fill({
         id: Math.random().toString(36),
-        content: 'large test data '.repeat(10),
+        content: 'large test data: '.repeat(10),
         nested: { deep: { value: Math.random() } },
       }),
     }),
@@ -640,7 +640,7 @@ export class OptimizationTestSuite {
         const test_object = JSON.parse(this.test_data.large_json);
         const { stats } = (await json.compressJSON(test_object)) || {
           // Used local variable
-          compressed: {}, // Still need to provide a default for 'compressed' in the fallback object
+          compressed: {}, // Still need to provide a default for: 'compressed' in the fallback object
           stats: { compression_ratio: 0, compressed_size: 0, original_size: 0, wasm_acceleration: false },
         };
         const compression_effective = (stats.compression_ratio || 0) > 1.2; // Added nullish coalescing
@@ -844,7 +844,7 @@ export class OptimizationTestSuite {
     };
     // Benchmark VS Code commands
     {
-      // Removed 'const start = performance.now();' as it was unused for this benchmark's metric
+      // Removed: 'const start = performance.now();' as it was unused for this benchmark's metric
       let successful_commands = 0;
       const commands = ['cache.optimize', 'docker.checkHealth', 'typescript.checkTypes'];
       const vscode = this.suite.vscode;

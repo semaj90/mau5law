@@ -15,7 +15,8 @@
   const systemHealth = writable<any | null>(null);
   const activeOperations = writable<any[]>([]);
   const results = writable<any[]>([]);
-  const metrics = writable<any>({ metrics: [], count: 0, latstMetric: null });
+  // fixed typo: latestMetric
+  const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
 
   let isLoading: boolean = false;
   let selectedOperation: string = 'processDocument';
@@ -26,7 +27,7 @@
   function generateCanvasRGBA(width = 8, height = 8) {
     const len = width * height * 4;
     const pixels = Array.from({ length: len }, (_, i) => {
-      const piexel = Math.floor(i / 4);
+      const pixel = Math.floor(i / 4);
       const component = i % 4;
       if (component === 3) return 255; // alpha
       return pixel % 256;
@@ -105,7 +106,7 @@ Both parties acknowledge they have read and agree to these terms.`,
     try {
       let requestData: any = null;
       switch (selectedOperation) {
-        case 'processDocument':
+        case: 'processDocument':
           requestData = {
             operation: 'processDocument',
             data: {
@@ -118,7 +119,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-        case 'performInference':
+        case: 'performInference':
           requestData = {
             operation: 'performInference',
             data: {
@@ -130,7 +131,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-        case 'processCanvas': {
+        case: 'processCanvas': {
           const canvasData = JSON.parse(testInput);
           requestData = {
             operation: 'processCanvas',
@@ -139,12 +140,12 @@ Both parties acknowledge they have read and agree to these terms.`,
           };
           break;
         }
-        case 'matmul': {
+        case: 'matmul': {
           const matrixData = JSON.parse(testInput);
           requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
           break;
         }
-        case 'attention': {
+        case: 'attention': {
           const attentionData = JSON.parse(testInput);
           requestData = { operation: 'attention', data: attentionData, options: { priority: 'HIGH' } };
           break;
@@ -192,27 +193,27 @@ Both parties acknowledge they have read and agree to these terms.`,
 
   function getHealthColor(status: string) {
     switch (status) {
-      case 'healthy':
-        return 'text-green-600';
-      case 'degraded':
-        return 'text-yellow-600';
-      case 'critical':
-        return 'text-red-600';
+      case: 'healthy':
+        return: 'text-green-600';
+      case: 'degraded':
+        return: 'text-yellow-600';
+      case: 'critical':
+        return: 'text-red-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
 
   function getServiceColor(status: string) {
     switch (status) {
-      case 'online':
-        return 'text-green-600';
-      case 'degraded':
-        return 'text-yellow-600';
-      case 'offline':
-        return 'text-red-600';
+      case: 'online':
+        return: 'text-green-600';
+      case: 'degraded':
+        return: 'text-yellow-600';
+      case: 'offline':
+        return: 'text-red-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
 </script>
@@ -237,17 +238,17 @@ Both parties acknowledge they have read and agree to these terms.`,
           <div class="space-y-3">
             <div class="flex justify-between items-center">
               <span class="text-sm font-medium">Overall Status:</span>
-              <span class={`text-sm font-semibold ${getHealthColor($systemHealth.overall)}`}>
-                {$systemHealth.overall.toUpperCase()}
+              <span class={`text-sm font-semibold ${getHealthColor($systemHealth.overall ?? '')}`}>
+                {($systemHealth.overall ?? 'unknown').toString().toUpperCase()}
               </span>
             </div>
             <div class="border-t pt-3">
               <h4 class="text-xs font-semibold text-gray-700 mb-2">Services</h4>
               <div class="space-y-1">
-                {#each Object.entries($systemHealth.services) as [service, status]}
+                {#each Object.entries($systemHealth.services ?? {}) as [service, status]}
                   <div class="flex justify-between items-center text-xs">
                     <span class="capitalize">{service}:</span>
-                    <span class={getServiceColor(status)}>{status}</span>
+                    <span class={getServiceColor((status as string) ?? '')}>{status}</span>
                   </div>
                 {/each}
               </div>
@@ -257,11 +258,11 @@ Both parties acknowledge they have read and agree to these terms.`,
               <div class="space-y-1 text-xs">
                 <div class="flex justify-between">
                   <span>Avg Latency:</span>
-                  <span>{$systemHealth.performance.averageLatency.toFixed(0)}ms</span>
+                  <span>{($systemHealth.performance?.averageLatency ?? 0).toFixed(0)}ms</span>
                 </div>
                 <div class="flex justify-between">
                   <span>Throughput:</span>
-                  <span>{$systemHealth.performance.throughput.toFixed(1)}/s</span>
+                  <span>{($systemHealth.performance?.throughput ?? 0).toFixed(1)}/s</span>
                 </div>
               </div>
             </div>
@@ -286,7 +287,7 @@ Both parties acknowledge they have read and agree to these terms.`,
             <select
               id="-operation-type-"
               bind:value={selectedOperation}
-              on:change={onOperationChange}
+              onchange={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="processDocument">Legal Document Processing</option>
@@ -319,7 +320,7 @@ Both parties acknowledge they have read and agree to these terms.`,
           {/if}
           <!-- Execute Button -->
           <Button
-            on:click={executeOperation}
+            onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >
@@ -415,7 +416,7 @@ Both parties acknowledge they have read and agree to these terms.`,
                 <div class="bg-green-50 rounded-lg p-3">
                   <h4 class="text-sm font-medium text-green-800">Latest Latency</h4>
                   <p class="text-2xl font-bold text-green-600">
-                    {$metrics.latestMetric.latency}ms
+                    {$metrics.latestMetric.latency ?? 'N/A'}ms
                   </p>
                 </div>
               {/if}
@@ -432,10 +433,10 @@ Both parties acknowledge they have read and agree to these terms.`,
                     <div class="flex-1 bg-gray-200 rounded-full h-2">
                       <div
                         class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                        style="width: {Math.min(100, (metric.latency / 1000) * 100)}%"
+                        style="width: {Math.min(100, ((metric.latency ?? 0) / 1000) * 100)}%"
                       ></div>
                     </div>
-                    <span class="w-12 text-right">{metric.latency}ms</span>
+                    <span class="w-12 text-right">{metric.latency ?? 'N/A'}ms</span>
                   </div>
                 {/each}
               </div>

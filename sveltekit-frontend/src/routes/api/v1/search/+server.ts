@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10');
   try {
     switch (action) {
-      case 'history':
+      case: 'history':
         if (!user_id) {
           return json({ error: 'user_id required for search history' }, { status: 400 });
         }
@@ -133,14 +133,14 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: { history },
         });
-      case 'suggestions':
+      case: 'suggestions':
         const query = url.searchParams.get('query') || '';
         const suggestions = await getSearchSuggestions(query);
         return json({
           success: true,
           data: { suggestions },
         });
-      case 'trending':
+      case: 'trending':
         const trending = await getTrendingSearches(limit);
         return json({
           success: true,

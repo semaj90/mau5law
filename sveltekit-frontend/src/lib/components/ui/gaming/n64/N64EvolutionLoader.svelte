@@ -29,21 +29,21 @@
     nes: {
       pixelSize: 8,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00'],
-      dimension '2D',
+      dimension: '2D',
       shading: false,
       particles: 0,
     },
     snes: {
       pixelSize: 4,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-      dimension '2.5D',
+      dimension: '2.5D',
       shading: true,
       particles: 10,
     },
     n64: {
       pixelSize: 1,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF'],
-      dimension '3D',
+      dimension: '3D',
       shading: true
       particles: 50,
       fog: true
@@ -52,7 +52,7 @@
     modern: {
       pixelSize: 0,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'],
-      dimension '3D',
+      dimension: '3D',
       shading: true,
       particles: 100,
       fog: true
@@ -148,19 +148,19 @@
         canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)
       );
       switch (currentStage) {
-        case 'nes':
+        case: 'nes':
           bgGradient.addColorStop(0, '#000000');
           bgGradient.addColorStop(1, '#222222');
           break;
-        case 'snes':
+        case: 'snes':
           bgGradient.addColorStop(0, '#001122');
           bgGradient.addColorStop(1, '#003366');
           break;
-        case 'n64':
+        case: 'n64':
           bgGradient.addColorStop(0, '#001a4d');
           bgGradient.addColorStop(1, '#004080');
           break;
-        case 'modern':
+        case: 'modern':
           bgGradient.addColorStop(0, '#0a0a2e');
           bgGradient.addColorStop(1, '#16213e');
           break;

@@ -7,70 +7,79 @@
     color?: 'blue' | 'green' | 'purple' | 'gray';
   }
   let { size = 'md', message = 'Loading...', showMessage = true, color = 'blue' }: Props = $props();
-  function getSpinnerSize(sizeValue: string): string {
+
+  // tighten parameter types to Props unions
+  function getSpinnerSize(sizeValue: Props['size']): string {
     switch (sizeValue) {
-      case 'sm':
-        return 'h-4 w-4';
-      case 'md':
-        return 'h-8 w-8';
-      case 'lg':
-        return 'h-12 w-12';
+      case: 'sm':
+        return: 'h-4 w-4';
+      case: 'md':
+        return: 'h-8 w-8';
+      case: 'lg':
+        return: 'h-12 w-12';
       default:
-        return 'h-8 w-8';
+        return: 'h-8 w-8';
     }
   }
-  function getSpinnerColor(colorValue: string): string {
+  function getSpinnerColor(colorValue: Props['color']): string {
     switch (colorValue) {
-      case 'blue':
-        return 'border-blue-600';
-      case 'green':
-        return 'border-green-600';
-      case 'purple':
-        return 'border-purple-600';
-      case 'gray':
-        return 'border-gray-600';
+      case: 'blue':
+        return: 'border-blue-600';
+      case: 'green':
+        return: 'border-green-600';
+      case: 'purple':
+        return: 'border-purple-600';
+      case: 'gray':
+        return: 'border-gray-600';
       default:
-        return 'border-blue-600';
+        return: 'border-blue-600';
     }
   }
-  function getTextSize(sizeValue: string): string {
+  function getTextSize(sizeValue: Props['size']): string {
     switch (sizeValue) {
-      case 'sm':
-        return 'text-sm';
-      case 'md':
-        return 'text-base';
-      case 'lg':
-        return 'text-lg';
+      case: 'sm':
+        return: 'text-sm';
+      case: 'md':
+        return: 'text-base';
+      case: 'lg':
+        return: 'text-lg';
       default:
-        return 'text-base';
+        return: 'text-base';
     }
   }
-  function getTextColor(colorValue: string): string {
+  function getTextColor(colorValue: Props['color']): string {
     switch (colorValue) {
-      case 'blue':
-        return 'text-blue-600';
-      case 'green':
-        return 'text-green-600';
-      case 'purple':
-        return 'text-purple-600';
-      case 'gray':
-        return 'text-gray-600';
+      case: 'blue':
+        return: 'text-blue-600';
+      case: 'green':
+        return: 'text-green-600';
+      case: 'purple':
+        return: 'text-purple-600';
+      case: 'gray':
+        return: 'text-gray-600';
       default:
-        return 'text-blue-600';
+        return: 'text-blue-600';
     }
   }
 </script>
 
 <div class="flex items-center justify-center space-x-3">
-  <!-- Spinner -->
+  <!-- Spinner: use explicit class expression and ring-style spinner (top border transparent) -->
   <div
-    class="animate-spin rounded-full border-b-2 {getSpinnerSize(size)} {getSpinnerColor(color)}"
+    class={
+      `animate-spin rounded-full border-4 ${getSpinnerSize(size)} ${getSpinnerColor(color)} border-t-transparent`
+    }
     role="status"
+    aria-live="polite"
     aria-label="Loading"
-  ></div>
+  >
+    <!-- screen-reader only text -->
+    <span class="sr-only">{message}</span>
+  </div>
+
   <!-- Loading Message -->
   {#if showMessage}
-    <div class="{getTextSize(size)} font-medium {getTextColor(color)}">
+    <div class={ `${getTextSize(size)} font-medium ${getTextColor(color)}` }>
       {message}
     </div>
   {/if}
@@ -88,6 +97,19 @@
   }
   .animate-spin {
     animation: spin 1s linear infinite;
+  }
+
+  /* visually-hidden helper for screen readers */
+  .sr-only {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+    margin: -1px;
   }
 </style>
 

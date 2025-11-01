@@ -109,7 +109,7 @@ AGREED TO AND ACCEPTED:
         description: 'Comprehensive discovery request for criminal cases',
         content: `DISCOVERY REQUEST,
 TO: {{PROSECUTOR_NAME}}
-FROM: {{DEFENSE_ATTORNEY}}
+from {{DEFENSE_ATTORNEY}}
 RE: {{CASE_TITLE}}
 DATE: {{DATE}}
 Pursuant to Federal Rule of Criminal Procedure 16 and Brady v. Maryland, the defense hereby requests the following discovery:

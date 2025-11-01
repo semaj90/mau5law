@@ -48,7 +48,7 @@
     }
   }
 
-  // Strongly-typed menu item shapes to avoid 'unknown' in templates
+  // Strongly-typed menu item shapes to avoid: 'unknown' in templates
   type MenuSubItem = {
     label: string;
     value?: any;

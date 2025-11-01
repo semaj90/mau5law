@@ -96,15 +96,15 @@ export const GET: RequestHandler = async ({ url }) => {
     const agentType = url.searchParams.get("agentType") || undefined
     const timeWindow = parseInt(url.searchParams.get("timeWindow") || "24")
     switch (action) {
-      case "metrics": {
+      case: "metrics": {
         const metrics = await determinismEvaluationService.calculateMetrics()
         return json({ success: true, metrics, agentType, timeWindow })
       }
-      case "benchmarks": {
+      case: "benchmarks": {
         const benchmarks = await determinismEvaluationService.getBenchmarkResults()
         return json({ success: true, ...benchmarks, agentType })
       }
-      case "config": {
+      case: "config": {
         const config = determinismEvaluationService.getDeterministicConfig()
         return json({ success: true, config })
       }
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
     const { action, ...data } = await request.json();
     switch (action) {
-      case 'feedback': {
+      case: 'feedback': {
         const payload = data as FeedbackPayload
         const feedbackId = await determinismEvaluationService.recordUserFeedback({
           sessionId: payload.sessionId || crypto.randomUUID(),
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         return json({ success: true, feedbackId, message: 'User feedback recorded successfully' });
       }
-      case 'test_result': {
+      case: 'test_result': {
         const payload = data as TestResultPayload
         const testId = await determinismEvaluationService.recordTestResult({
           testType: payload.testType,
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         return json({ success: true, testId, message: 'Test result recorded successfully' });
       }
-      case 'rl_features': {
+      case: 'rl_features': {
         const payload = data as RLFeaturesPayload
         const features = await determinismEvaluationService.extractRLFeatures({
           query: payload.query,

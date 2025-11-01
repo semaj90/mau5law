@@ -407,7 +407,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       summary = segmented.map(s => (s.startsWith('- ') ? s : `- ${s}`)).join('\n');
     }
 
-    // Use OllamaResponse typing instead of loose "any" casts
+    // Use OllamaResponse typing instead of loose: "any" casts
     const ollamaRes = result as OllamaResponse;
     const tokensNumber = typeof ollamaRes.eval_count === 'number' ? ollamaRes.eval_count : 0;
     const promptTokensNumber = typeof ollamaRes.prompt_eval_count === 'number' ? ollamaRes.prompt_eval_count : 0;

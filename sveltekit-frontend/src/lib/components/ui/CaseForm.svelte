@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   const formOptions = {
     initialValues: {
       title: "",
-      description "",
+      description: "",
       priority: "medium",
       assignedTo: "",
       dueDate: "",
@@ -23,28 +23,28 @@ https://svelte.dev/e/js_parse_error -->
     validators: {
       title: (_value: string) => {
         if (!value || value.trim.length < 3) {
-          return "Title must be at least 3 characters long";
+          return: "Title must be at least 3 characters long";
   }
         if (value.length > 100) {
-          return "Title must be less than 100 characters";
+          return: "Title must be less than 100 characters";
   }
         return null;
       },
       description (_value: string) => {
         if (!value || value.trim.length < 10) {
-          return "Description must be at least 10 characters long";
+          return: "Description must be at least 10 characters long";
   }
         return null;
       },
       priority: (_value: string) => {
         if (!["low", "medium", "high", "urgent"].includes(value)) {
-          return "Please select a valid priority level";
+          return: "Please select a valid priority level";
   }
         return null;
       },
       dueDate: (_value: string) => {
         if (value && new Date(value) < new Date()) {
-          return "Due date cannot be in the past";
+          return: "Due date cannot be in the past";
   }
         return null;
       },

@@ -48,9 +48,9 @@
 
   // System metrics and status - initialized from SSR data
   let systemMetrics = $state(data.systemStatus);
-  // typed graphData with a safe default to avoid 'never' inference
+  // typed graphData with a safe default to avoid: 'never' inference
   let graphData = $state<YoRHaGraphData>(data.graphData ?? { nodes: [], edges: [] });
-  let _multicoreStatus = $state(data.multicoreStatus); // prefixed with '_' to indicate intentionally unused
+  let _multicoreStatus = $state(data.multicoreStatus); // prefixed with: '_' to indicate intentionally unused
   let realtimeData = $state({
     cpuHistory: [] as number[],
     memoryHistory: [] as number[],
@@ -75,7 +75,7 @@
   // dynamic loader for YoRHaDataVizComponent
   let YoRHaDataVizComponent = $state<any | null>(null); // loosened type
 
-  // mark intentionally unused variable as used (no-op) to silence "declared but never read"
+  // mark intentionally unused variable as used (no-op) to silence: "declared but never read"
   $effect(() => {
     // intentionally reference to avoid unused-variable diagnostics
     void _multicoreStatus;
@@ -88,7 +88,7 @@
     })();
   });
 
-  // call init/cleanup from Svelte lifecycle to avoid "declared but never read"
+  // call init/cleanup from Svelte lifecycle to avoid: "declared but never read"
   onMount(() => {
     initD3();
     // dynamic import of data viz component (safe, non-blocking)
@@ -243,9 +243,9 @@
       .append('circle')
       .attr('r', 18)
       .attr('fill', (d: GraphNode) => {
-        if (d.type === 'database') return 'rgba(59,130,246,0.6)';
-        if (d.type === 'service') return 'rgba(34,197,94,0.6)';
-        return 'rgba(139,92,246,0.6)';
+        if (d.type === 'database') return: 'rgba(59,130,246,0.6)';
+        if (d.type === 'service') return: 'rgba(34,197,94,0.6)';
+        return: 'rgba(139,92,246,0.6)';
       })
       .attr('stroke', 'rgba(255,255,255,0.06)')
       .attr('stroke-width', 1);
@@ -372,7 +372,7 @@
   }
 
   function generateHistoryData(baseValue: number, points = 30): number[] {
-    return Array.from({ length: points }, (_, _i) => { // Changed 'i' to '_i' to mark as unused
+    return Array.from({ length: points }, (_, _i) => { // Changed: 'i' to: '_i' to mark as unused
       const variation = (Math.random() - 0.5) * 20;
       return Math.max(0, Math.min(100, baseValue + variation));
     });

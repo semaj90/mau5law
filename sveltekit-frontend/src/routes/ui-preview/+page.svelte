@@ -173,10 +173,10 @@
   $effect(() => {
     focusReady = true;
   });
-  // TEMPORARY WORKAROUND: The following alias casts QuickActionButton as 'any' to bypass TypeScript event typing errors in this demo.
+  // TEMPORARY WORKAROUND: The following alias casts QuickActionButton as: 'any' to bypass TypeScript event typing errors in this demo.
   // This should NOT be used in production code, as it disables type safety for component props and events.
   // Properly type the component or update its event typings for production use.
-  // DEMO/PROTOTYPE ONLY: The following alias casts Dialog as 'any' to bypass strict event typing (e.g., for onclose).
+  // DEMO/PROTOTYPE ONLY: The following alias casts Dialog as: 'any' to bypass strict event typing (e.g., for onclose).
   // This is a workaround for Svelte/TypeScript event typing issues and should NOT be used in production code.
   const DialogAny = (Dialog as unknown) as any;
   // add QuickActionButtonAny alias so template demo buttons can use onclick without TS errors
@@ -267,7 +267,7 @@
 
       <!-- Modal Trigger Buttons -->
       <div class="grid buttons" style="margin-bottom: 1.5rem;">
-        <!-- Use any-typed alias to avoid TS 'never' event typing -->
+        <!-- Use any-typed alias to avoid TS: 'never' event typing -->
         <QuickActionButtonAny onclick={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButtonAny>
 
         <QuickActionButtonAny onclick={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButtonAny>

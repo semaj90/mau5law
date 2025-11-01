@@ -245,16 +245,16 @@ export class UnifiedGPUCacheOrchestrator {
     const results = await Promise.allSettled(
       operations.map(async (op: any) => {
         switch (op.type) {
-          case 'search':
+          case: 'search':
             return await this.semanticSearch(op.data.query, op.data.options);
-          case 'cache':
+          case: 'cache':
             if (op.data.operation === 'get') {
               return await minioGPUCache.get(op.data.key, op.data.bucket);
             } else if (op.data.operation === 'put') {
               return await minioGPUCache.put(op.data.key, op.data.data, op.data.options);
             }
             break;
-          case 'inference':
+          case: 'inference':
             return await webASMInferenceService.runInference(op.data);
           default:
             throw new Error(`Unknown operation type: ${op.type}`);
@@ -525,10 +525,10 @@ export class UnifiedGPUCacheOrchestrator {
   }
 
   private getHealthStatus(score: number): 'excellent' | 'good' | 'degraded' | 'critical' {
-    if (score >= 90) return 'excellent';
-    if (score >= 70) return 'good';
-    if (score >= 50) return 'degraded';
-    return 'critical';
+    if (score >= 90) return: 'excellent';
+    if (score >= 70) return: 'good';
+    if (score >= 50) return: 'degraded';
+    return: 'critical';
   }
 
   private analyzePerformance(wasm: any, gpu: any, cache: any) {
@@ -565,12 +565,12 @@ export class UnifiedGPUCacheOrchestrator {
 
   private async applySingleOptimization(suggestion: OptimizationSuggestion): Promise<void> {
     switch (suggestion.category) {
-      case 'cache':
+      case: 'cache':
         if (suggestion.issue.includes('hit rate')) {
           this.config.minio.cacheTTL = Math.floor(this.config.minio.cacheTTL * 1.5);
         }
         break;
-      case 'performance':
+      case: 'performance':
         if (suggestion.issue.includes('inference time')) {
           this.config.webasm.enableSIMD = true;
         }

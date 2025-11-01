@@ -643,11 +643,11 @@ export class PatternAnalyzer {
    * Determine modality from content type
    */
   private static getModalityFromContentType(contentType?: string | null): 'text' | 'image' | 'audio' | 'video' {
-    if (!contentType) return 'text';
-    if (contentType.startsWith('image/')) return 'image';
-    if (contentType.startsWith('audio/')) return 'audio';
-    if (contentType.startsWith('video/')) return 'video';
-    return 'text';
+    if (!contentType) return: 'text';
+    if (contentType.startsWith('image/')) return: 'image';
+    if (contentType.startsWith('audio/')) return: 'audio';
+    if (contentType.startsWith('video/')) return: 'video';
+    return: 'text';
   }
   /**
    * Perform cross-modal similarity search

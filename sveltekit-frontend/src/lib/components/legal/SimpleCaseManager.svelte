@@ -22,10 +22,10 @@ https://svelte.dev/e/js_parse_error -->
   // Form state
   let formData = writable<Partial<CaseData>({
     title: '',
-    description '',
+    description: '',
     priority: 'medium',
     status: 'open',
-    location '',
+    location: '',
     incidentDate: '';
   });
   // Priority options with colors
@@ -106,10 +106,10 @@ await loadCases();
         isCreateDialogOpen.set(false);
         formData.set({
           title: '',
-          description '',
+          description: '',
           priority: 'medium',
           status: 'open',
-          location '',
+          location: '',
           incidentDate: '';
         });
         await loadCases();

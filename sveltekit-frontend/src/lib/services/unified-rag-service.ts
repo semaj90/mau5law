@@ -1,8 +1,7 @@
 /**
  * Unified Legal RAG Service
  *
- * Consolidates functionality from:
- * - enhanced-rag-semantic-analyzer.ts (semantic analysis, entity extraction)
+ * Consolidates functionality from * - enhanced-rag-semantic-analyzer.ts (semantic analysis, entity extraction)
  * - legalRAGEngine.ts (legal domain reranking, risk assessment)
  * - vector-search-service.ts (hybrid pgvector + Qdrant search)
  *

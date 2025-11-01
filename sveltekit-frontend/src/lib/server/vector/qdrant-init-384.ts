@@ -86,7 +86,7 @@ export async function createCollection(
     const exists = collections.collections.some(c => c.name === config.name);
 
     if (exists) {
-      console.log(`✅ Collection "${config.name}" already exists`);
+      console.log(`✅ Collection: "${config.name}" already exists`);
 
       // Verify dimension configuration
       const collectionInfo = await client.getCollection(config.name);
@@ -95,7 +95,7 @@ export async function createCollection(
       if (vectorConfig && 'size' in vectorConfig) {
         if (vectorConfig.size !== VECTOR_CONFIG.DIMENSIONS) {
           console.warn(
-            `⚠️  Collection "${config.name}" has dimension ${vectorConfig.size}, expected ${VECTOR_CONFIG.DIMENSIONS}`
+            `⚠️  Collection: "${config.name}" has dimension ${vectorConfig.size}, expected ${VECTOR_CONFIG.DIMENSIONS}`
           );
           console.warn('   Consider recreating the collection with correct dimensions');
         } else {
@@ -107,7 +107,7 @@ export async function createCollection(
     }
 
     // Create new collection with 384 dimensions
-    console.log(`📦 Creating collection "${config.name}"...`);
+    console.log(`📦 Creating collection: "${config.name}"...`);
 
     await client.createCollection(config.name, {
       vectors: {
@@ -125,7 +125,7 @@ export async function createCollection(
       replication_factor: config.replicationFactor
     });
 
-    console.log(`✅ Collection "${config.name}" created successfully`);
+    console.log(`✅ Collection: "${config.name}" created successfully`);
     console.log(`   • Dimensions: ${VECTOR_CONFIG.DIMENSIONS}`);
     console.log(`   • Distance: ${VECTOR_CONFIG.DISTANCE_METRIC.QDRANT}`);
     console.log(`   • HNSW M: ${VECTOR_CONFIG.INDEX.QDRANT_HNSW_M}`);
@@ -133,7 +133,7 @@ export async function createCollection(
 
     return true;
   } catch (error) {
-    console.error(`❌ Failed to create collection "${config.name}":`, error);
+    console.error(`❌ Failed to create collection: "${config.name}":`, error);
     return false;
   }
 }
@@ -197,7 +197,7 @@ export async function deleteCollection(collectionName: string): Promise<boolean>
     console.log(`🗑️  Deleted collection: ${collectionName}`);
     return true;
   } catch (error) {
-    console.error(`Failed to delete collection "${collectionName}":`, error);
+    console.error(`Failed to delete collection: "${collectionName}":`, error);
     return false;
   }
 }
@@ -225,7 +225,7 @@ export async function getCollectionStats(collectionName: string): Promise<{
       dimensions
     };
   } catch (error) {
-    console.error(`Failed to get stats for "${collectionName}":`, error);
+    console.error(`Failed to get stats for: "${collectionName}":`, error);
     return null;
   }
 }
@@ -257,7 +257,7 @@ export async function verifyCollectionDimensions(): Promise<{
         }
       }
     } catch (error) {
-      console.warn(`Could not verify collection "${config.name}":`, error);
+      console.warn(`Could not verify collection: "${config.name}":`, error);
     }
   }
 

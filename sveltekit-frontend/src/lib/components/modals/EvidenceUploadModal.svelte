@@ -83,8 +83,8 @@
         on:drop={handleDrop}
         on:dragover={handleDragOver}
         on:dragleave={handleDragLeave}
-        on:click={() => fileInput?.click()}
-        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInput?.click()}
+        onclick={() => fileInput?.click()}
+        onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInput?.click()}
       >
         <Upload class="h-12 w-12 text-gray-400" />
         <h3 class="mt-4 text-lg font-medium">Drop files here or click to browse</h3>
@@ -105,7 +105,7 @@
           multiple
           class="hidden"
           accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls"
-          on:change={handleFileSelect}
+          onchange={handleFileSelect}
         />
       </div>
 

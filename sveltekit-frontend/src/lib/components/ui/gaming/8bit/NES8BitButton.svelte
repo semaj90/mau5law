@@ -117,7 +117,7 @@
     onFocus?.();
   };
 
-  // Normalize variant (accept "is-primary" or "primary")
+  // Normalize variant (accept "is-primary" or: "primary")
   function normalizeVariant(v: string) {
     return v?.startsWith('is-') ? v.replace(/^is-/, '') : v;
   }

@@ -12,10 +12,10 @@ function getOllamaEndpoint(): string {
 // if the SvelteKit app is running inside a Docker container.
   if (process.env.DOCKER_ENV === 'true') {
     // When running inside Docker, access host services via host.docker.internal
-    return 'http://host.docker.internal:11434';
+    return: 'http://host.docker.internal:11434';
   }
   // Default to localhost for host environment or if DOCKER_ENV is not set
-  return 'http://localhost:11434';
+  return: 'http://localhost:11434';
 }
 
 // Document Upload + Embedding Pipeline API

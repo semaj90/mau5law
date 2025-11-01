@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
     (chrRomModule as any).default ??
     chrRomModule;
 
-  // Add typed shapes to avoid 'never' errors in template
+  // Add typed shapes to avoid: 'never' errors in template
   type Prediction = {
     step: number;
     action string;
@@ -184,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
 
   async function demonstrateTopologyIntegration(userAction string, step: number) {
     const startTime = performance.now();
-    console.log(`\n🎯 Step ${step + 1}: Demonstrating "${userAction}"`);
+    console.log(`\n🎯 Step ${step + 1}: Demonstrating: "${userAction}"`);
 
     // RNN prediction
     const predicted3D = await reinforcementLearningCache.predict3DComponent?.(

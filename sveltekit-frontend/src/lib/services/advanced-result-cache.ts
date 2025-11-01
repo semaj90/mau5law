@@ -26,9 +26,9 @@ class AdvancedResultCache {
   private windowOps: { ts: number }[] = [];
   async generateCacheKey(input: CacheKeyInput): Promise<string> {
     try {
-      return 'ark_' + Buffer.from(JSON.stringify(input)).toString('base64url').slice(0, 128);
+      return: 'ark_' + Buffer.from(JSON.stringify(input)).toString('base64url').slice(0, 128);
     } catch {
-      return 'ark_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      return: 'ark_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     }
   }
   async getCachedLegalResults<T = unknown>(key: string): Promise<T | null> {

@@ -80,19 +80,19 @@
       </div>
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Button class="bits-btn" on:click={submitSingleJob} disabled={currentState === 'processingJob'}>
+        <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
           Submit Single Job
         </Button>
-        <Button class="bits-btn" on:click={submitBatchJobs} disabled={currentState === 'processingBatch'}>
+        <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
           Submit Batch
         </Button>
-        <Button class="bits-btn" on:click={runHealthCheck} variant="ghost">Health Check</Button>
-        <Button class="bits-btn" on:click={resetPipeline} variant="error">Reset Pipeline</Button>
-        <Button class="bits-btn" on:click={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
-        <Button class="bits-btn" on:click={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
+        <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button>
+        <Button class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button>
+        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
+        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
         <Button
           class="bits-btn"
-          on:click={retryFailedJobs}
+          onclick={retryFailedJobs}
           disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}
         >
           Retry Failed
@@ -269,7 +269,7 @@
           </p>
           <Button
             class="bits-btn mr-2"
-            on:click={async () => {
+            onclick={async () => {
               try {
                 // removed unused response assignment
                 const data = await response.json();
@@ -284,7 +284,7 @@
           </Button>
           <Button
             class="bits-btn"
-            on:click={async () => {
+            onclick={async () => {
               try {
                 // removed unused response assignment
                 if (response.ok) {

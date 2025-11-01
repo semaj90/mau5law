@@ -131,7 +131,7 @@
                 <span>Document: <strong>{activity.document}</strong></span>
                 <span class="pages">{activity.pages} pages processed</span>
               {:else if activity.type === 'comparison'}
-                <span>Compared: <strong>{activity.documents.join(' vs ')}</strong></span>
+                <span>Compared: <strong>{activity.documents.join(' vs: ')}</strong></span>
                 <span class="similarity">Similarity: {(activity.similarity * 100).toFixed(1)}%</span>
               {/if}
             </div>

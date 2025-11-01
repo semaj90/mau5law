@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     // Simple mock responses based on type
     switch (type) {
-      case 'search':
+      case: 'search':
         response.data = [
           {
             id: 'doc-1',
@@ -54,13 +54,13 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         ].slice(0, limit);
         break;
-      case 'similarity':
+      case: 'similarity':
         response.data = [
           { source: 'doc-1', target: 'doc-2', score: 0.85 },
           { source: 'doc-1', target: 'doc-3', score: 0.79 },
         ];
         break;
-      case 'cluster':
+      case: 'cluster':
         response.data = [
           { cluster: 1, documents: ['doc-1', 'doc-2'], centroid: 'Legal Documents' },
           { cluster: 2, documents: ['doc-3', 'doc-4'], centroid: 'Evidence Files' },

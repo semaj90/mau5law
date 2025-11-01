@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   interface Props {
     class?: string;
   }
-  // read typed props first, then safely rename the reserved "class" prop
+  // read typed props first, then safely rename the reserved: "class" prop
   const props = $props<Props>();
   const className = props.class ?? '';
   // Phase 8 system components
@@ -212,18 +212,18 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Apply demo-specific styling
     switch (demo) {
-      case 'reranker':
+      case: 'reranker':
         document.getElementById('evidence-card-1')?.classList.add('demo-highlight');
         break;
-      case 'matrix':
+      case: 'matrix':
         document.getElementById('analyze-btn-1')?.classList.add('ai-enhanced');
         break;
-      case 'lod':
+      case: 'lod':
         demoContainer?.querySelectorAll('*').forEach((el: Element) => {
           (el as HTMLElement).classList.add('lod-demo');
         });
         break;
-      case 'prefetch':
+      case: 'prefetch':
         // Show prefetch indicators
         break;
     }

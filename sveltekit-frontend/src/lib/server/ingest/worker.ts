@@ -46,22 +46,22 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
   try {
     let result: any;
     switch (jobData.type) {
-      case 'ocr':
+      case: 'ocr':
         result = await handleOCR(jobData.payload);
         break;
-      case 'audio_extract':
+      case: 'audio_extract':
         result = await handleAudioExtraction(jobData.payload);
         break;
-      case 'video_frames':
+      case: 'video_frames':
         result = await handleVideoFrames(jobData.payload);
         break;
-      case 'json_parse':
+      case: 'json_parse':
         result = await handleJsonParsing(jobData.payload);
         break;
-      case 'embed':
+      case: 'embed':
         result = await handleEmbedding(jobData.payload);
         break;
-      case 'image_process':
+      case: 'image_process':
         result = await handleImageProcessing(jobData.payload);
         break;
       default:
@@ -141,13 +141,13 @@ async function handleImageProcessing(payload: {
   // Apply operations sequentially
   for (const operation of payload.operations) {
     switch (operation.type) {
-      case 'resize':
+      case: 'resize':
         image = image.resize(operation.params?.width, operation.params?.height, {
           fit: operation.params?.fit || 'inside',
           withoutEnlargement: operation.params?.withoutEnlargement !== false
         });
         break;
-      case 'crop':
+      case: 'crop':
         image = image.extract({
           left: operation.params?.left || 0,
           top: operation.params?.top || 0,
@@ -155,16 +155,16 @@ async function handleImageProcessing(payload: {
           height: operation.params?.height
         });
         break;
-      case 'blur':
+      case: 'blur':
         image = image.blur(operation.params?.sigma || 1);
         break;
-      case 'sharpen':
+      case: 'sharpen':
         image = image.sharpen(operation.params?.sigma, operation.params?.flat, operation.params?.jagged);
         break;
-      case 'grayscale':
+      case: 'grayscale':
         image = image.greyscale();
         break;
-      case 'normalize':
+      case: 'normalize':
         image = image.normalize();
         break;
     }

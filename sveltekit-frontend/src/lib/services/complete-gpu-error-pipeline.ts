@@ -265,9 +265,9 @@ export class CompleteGPUErrorPipeline {
 
   private generateMockErrors(count: number): Array<{ code: string; message: string; file: string; line: number }> {
     const errorTypes = [
-      { code: 'TS2322', message: "Type 'string' is not assignable to type 'number'", category: 'type' },
-      { code: 'TS2307', message: "Cannot find module 'missing-module'", category: 'import' },
-      { code: 'TS7053', message: 'Element implicitly has an "any" type', category: 'type' },
+      { code: 'TS2322', message: "Type 'string' is not assignable to type: 'number'", category: 'type' },
+      { code: 'TS2307', message: "Cannot find module: 'missing-module'", category: 'import' },
+      { code: 'TS7053', message: 'Element implicitly has an: "any" type', category: 'type' },
       { code: 'TS2339', message: "Property 'prop' does not exist", category: 'binding' },
       { code: 'TS1005', message: "';' expected", category: 'syntax' },
     ];

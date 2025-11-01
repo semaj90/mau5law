@@ -67,7 +67,7 @@ export class Pool {
     });
   }
 
-  // explicit return types; avoid 'any' by using unknown and runtime checks
+  // explicit return types; avoid: 'any' by using unknown and runtime checks
   async connect(): Promise<PgClient> {
     const client = this.ensureClient();
 

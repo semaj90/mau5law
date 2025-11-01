@@ -37,8 +37,8 @@
       x: 230,
       y: 350,
       connections: ['witness-statement'],
-      description 'CCTV footage from the main entrance',
-      icon '📹',
+      description: 'CCTV footage from the main entrance',
+      icon: '📹',
     },
     {
       id: 'witness-statement',
@@ -48,8 +48,8 @@
       x: 490,
       y: 410,
       connections: ['security-camera'],
-      description 'Detailed written statement from key witness',
-      icon '📄',
+      description: 'Detailed written statement from key witness',
+      icon: '📄',
     }
   ]);
   let caseInfo = $state<CaseInfo>({
@@ -119,8 +119,8 @@
       x: Math.random() * 600 + 200,
       y: Math.random() * 400 + 300,
       connections: [],
-      description 'Newly added evidence item',
-      icon '📋',
+      description: 'Newly added evidence item',
+      icon: '📋',
     }
     evidenceItems.push(newEvidence);
     drawConnections();

@@ -9,15 +9,15 @@ export const GET: RequestHandler = async ({ url }) => {
   const documentCount = parseInt(url.searchParams.get('count') || '100000');
   try {
     switch (action) {
-      case 'scaling-analysis':
+      case: 'scaling-analysis':
         return json(await performScalingAnalysis(documentCount));
-      case 'performance-comparison':
+      case: 'performance-comparison':
         return json(await comparePerformanceAtScale(documentCount));
-      case 'faiss-training-demo':
+      case: 'faiss-training-demo':
         return json(await demonstrateFAISSTraining(documentCount));
-      case 'enterprise-readiness':
+      case: 'enterprise-readiness':
         return json(await assessEnterpriseReadiness(documentCount));
-      case 'overview':
+      case: 'overview':
         return json(await getScalingOverview()); // explicitly handle overview
       default:
         return json(await getScalingOverview());
@@ -389,7 +389,7 @@ function generateFAISSTrainingConfig(documentCount: number) {
   };
 }
 function simulateFAISSTraining(documentCount: number) {
-  // Use documentCount to avoid "defined but never used" lint errors and
+  // Use documentCount to avoid: "defined but never used" lint errors and
   // to make step durations scale with dataset size.
   const multiplier = Math.max(1, Math.round(documentCount / 100000)); // 1x for <=100k, grows for larger datasets
   return [

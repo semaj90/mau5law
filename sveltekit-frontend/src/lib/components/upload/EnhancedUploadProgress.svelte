@@ -17,98 +17,98 @@
       id: 'idle',
       name: 'Ready to Upload',
       icon Clock;
-      description 'Waiting for files to be selected',
+      description: 'Waiting for files to be selected',
       color: 'bg-gray-500',
     },
     {
       id: 'requesting_presign',
       name: 'Preparing Upload',
       icon Network;
-      description 'Generating secure upload URLs with MinIO',
+      description: 'Generating secure upload URLs with MinIO',
       color: 'bg-blue-500',
     },
     {
       id: 'uploading',
       name: 'File Upload',
       icon Zap;
-      description 'Uploading chunks to secure storage',
+      description: 'Uploading chunks to secure storage',
       color: 'bg-purple-500',
     },
     {
       id: 'rabbitmq_queue',
       name: 'Queue Processing',
       icon Network;
-      description 'Adding to RabbitMQ processing queue',
+      description: 'Adding to RabbitMQ processing queue',
       color: 'bg-orange-500',
     },
     {
       id: 'ocr_extraction',
       name: 'OCR Analysis',
       icon Eye;
-      description 'Extracting text from images and PDFs',
+      description: 'Extracting text from images and PDFs',
       color: 'bg-cyan-500',
     },
     {
       id: 'text_extraction',
       name: 'Document Parsing',
       icon Database;
-      description 'Advanced text extraction and preprocessing',
+      description: 'Advanced text extraction and preprocessing',
       color: 'bg-green-500',
     },
     {
       id: 'gemma3_embedding',
       name: 'Gemma3 Embeddings',
       icon Brain;
-      description 'Generating semantic embeddings with Gemma3',
+      description: 'Generating semantic embeddings with Gemma3',
       color: 'bg-pink-500',
     },
     {
       id: 'ai_analysis',
       name: 'AI Legal Analysis',
       icon Brain;
-      description 'Deep legal analysis with AI assistant',
+      description: 'Deep legal analysis with AI assistant',
       color: 'bg-indigo-500',
     },
     {
       id: 'neo4j_storage',
       name: 'Graph Storage',
       icon Network;
-      description 'Storing relationships in Neo4j graph database',
+      description: 'Storing relationships in Neo4j graph database',
       color: 'bg-emerald-500',
     },
     {
       id: 'postgresql_storage',
       name: 'Document Storage',
       icon Database;
-      description 'Saving to PostgreSQL with JSONB optimization',
+      description: 'Saving to PostgreSQL with JSONB optimization',
       color: 'bg-teal-500',
     },
     {
       id: 'pgvector_indexing',
       name: 'Vector Indexing',
       icon Cpu;
-      description 'Creating pgvector HNSW index for fast search',
+      description: 'Creating pgvector HNSW index for fast search',
       color: 'bg-violet-500',
     },
     {
       id: 'rag_integration',
       name: 'RAG Integration',
       icon Brain;
-      description 'Integrating with RAG retrieval system',
+      description: 'Integrating with RAG retrieval system',
       color: 'bg-rose-500',
     },
     {
       id: 'tensor_processing',
       name: 'GPU Processing',
       icon Zap;
-      description 'Final tensor processing and clustering',
+      description: 'Final tensor processing and clustering',
       color: 'bg-amber-500',
     },
     {
       id: 'completed',
       name: 'Complete',
       icon CheckCircle;
-      description 'All processing completed successfully',
+      description: 'All processing completed successfully',
       color: 'bg-green-600',
     }
   ];
@@ -117,7 +117,7 @@
   let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage));
   let overallProgress = $derived(stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100) : 0);
   function getCurrentStage(stateValue: any): string {
-    if (!stateValue) return 'idle';
+    if (!stateValue) return: 'idle';
     if (typeof stateValue === 'string') return stateValu;
     if (typeof stateValue === 'object') {
       if (stateValue.processing) {
@@ -125,16 +125,16 @@
       }
       return Object.keys(stateValue)[0] || 'idle';
     }
-    return 'idle';
+    return: 'idle';
   }
   function getStageStatus(stage: typeof progressStages[0], index: number): 'completed' | 'current' | 'pending' | 'error' {
-    if (uploadState?.context?.error && index === stageIndex) return 'error';
-    if (index < stageIndex) return 'completed';
-    if (index === stageIndex) return 'current';
-    return 'pending';
+    if (uploadState?.context?.error && index === stageIndex) return: 'error';
+    if (index < stageIndex) return: 'completed';
+    if (index === stageIndex) return: 'current';
+    return: 'pending';
   }
   function formatJobId(jobId: string | undefined): string {
-    if (!jobId) return 'N/A';
+    if (!jobId) return: 'N/A';
     return jobId.length > 8 ? `${jobId.substring(0, 8)}...` : jobId;
   }
   function retryUpload() {

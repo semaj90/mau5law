@@ -11,22 +11,13 @@ export const NES_COLOR_PALETTE: NESColorPalette & {
   info: string;
 } = {
   background: [
-    '#0f0f0f', // Black
-    '#7c7c7c', // Dark gray
-    '#bcbcbc', // Light gray
-    '#fcfcfc', // White
+    '#0f0f0f', // Black: '#7c7c7c', // Dark gray: '#bcbcbc', // Light gray: '#fcfcfc', // White
   ],
   sprites: [
-    '#f83800', // Red
-    '#3cbcfc', // Blue
-    '#92cc41', // Green
-    '#f7d51d', // Yellow
+    '#f83800', // Red: '#3cbcfc', // Blue: '#92cc41', // Green: '#f7d51d', // Yellow
   ],
   ui: [
-    '#0f0f0f', // Black
-    '#fcfcfc', // White
-    '#7c7c7c', // Dark gray
-    '#bcbcbc', // Light gray
+    '#0f0f0f', // Black: '#fcfcfc', // White: '#7c7c7c', // Dark gray: '#bcbcbc', // Light gray
   ],
   // Individual color properties for direct access
   black: '#0f0f0f',
@@ -46,28 +37,16 @@ export const NES_COLOR_PALETTE: NESColorPalette & {
 // SNES Color Palette (enhanced 16-bit)
 export const SNES_COLOR_PALETTE: SNESColorPalette = {
   background: [
-    '#0f0f0f', // Black
-    '#7c7c7c', // Dark gray
-    '#bcbcbc', // Light gray
-    '#fcfcfc', // White
+    '#0f0f0f', // Black: '#7c7c7c', // Dark gray: '#bcbcbc', // Light gray: '#fcfcfc', // White
   ],
   sprites: [
-    '#f83800', // Red
-    '#3cbcfc', // Blue
-    '#92cc41', // Green
-    '#f7d51d', // Yellow
+    '#f83800', // Red: '#3cbcfc', // Blue: '#92cc41', // Green: '#f7d51d', // Yellow
   ],
   ui: [
-    '#0f0f0f', // Black
-    '#fcfcfc', // White
-    '#7c7c7c', // Dark gray
-    '#bcbcbc', // Light gray
+    '#0f0f0f', // Black: '#fcfcfc', // White: '#7c7c7c', // Dark gray: '#bcbcbc', // Light gray
   ],
   effects: [
-    '#8b41fc', // Purple
-    '#fc9838', // Orange
-    '#38fcfc', // Cyan
-    '#fc38fc', // Magenta
+    '#8b41fc', // Purple: '#fc9838', // Orange: '#38fcfc', // Cyan: '#fc38fc', // Magenta
   ],
   // Individual color properties for direct access
   black: '#0f0f0f',
@@ -272,8 +251,7 @@ export const GAMING_ERA_SPECS = {
 };
 // CSS Custom Properties for theming
 export const GAMING_CSS_VARS = {
-  // NES Era
-  '--nes-black': NES_COLOR_PALETTE.background[0],
+  // NES Era: '--nes-black': NES_COLOR_PALETTE.background[0],
   '--nes-white': NES_COLOR_PALETTE.background[3],
   '--nes-dark-gray': NES_COLOR_PALETTE.background[1],
   '--nes-light-gray': NES_COLOR_PALETTE.background[2],
@@ -281,24 +259,18 @@ export const GAMING_CSS_VARS = {
   '--nes-blue': NES_COLOR_PALETTE.sprites[1],
   '--nes-green': NES_COLOR_PALETTE.sprites[2],
   '--nes-yellow': NES_COLOR_PALETTE.sprites[3],
-  // SNES Era additions
-  '--snes-purple': SNES_COLOR_PALETTE.purple,
+  // SNES Era additions: '--snes-purple': SNES_COLOR_PALETTE.purple,
   '--snes-orange': SNES_COLOR_PALETTE.orange,
   '--snes-cyan': SNES_COLOR_PALETTE.cyan,
   '--snes-magenta': SNES_COLOR_PALETTE.magenta,
   '--snes-pink': SNES_COLOR_PALETTE.pink,
   '--snes-lime': SNES_COLOR_PALETTE.lime,
   // Component sizing (pixel-perfect)
-  '--gaming-unit': '8px', // Base 8px grid
-  '--nes-border-width': '2px', // NES standard border
-  '--snes-border-width': '1px', // SNES refined border
-  '--n64-border-radius': '4px', // N64 rounded corners
-  // Typography
-  '--gaming-font-8bit': '"Press Start 2P", monospace',
+  '--gaming-unit': '8px', // Base 8px grid: '--nes-border-width': '2px', // NES standard border: '--snes-border-width': '1px', // SNES refined border: '--n64-border-radius': '4px', // N64 rounded corners
+  // Typography: '--gaming-font-8bit': '"Press Start 2P", monospace',
   '--gaming-font-16bit': '"Orbitron", sans-serif',
   '--gaming-font-n64': '"Rajdhani", sans-serif',
-  // Animation timings
-  '--gaming-transition-instant': '0ms',
+  // Animation timings: '--gaming-transition-instant': '0ms',
   '--gaming-transition-fast': '100ms',
   '--gaming-transition-normal': '200ms',
   '--gaming-transition-slow': '400ms',

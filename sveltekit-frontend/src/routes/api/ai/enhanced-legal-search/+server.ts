@@ -42,7 +42,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
   const query = url.searchParams.get('q') || url.searchParams.get('query') || '';
   if (!query || query.trim().length < 2) {
     return json(
-      { success: false, error: 'Query parameter "q" is required and must be at least 2 characters' },
+      { success: false, error: 'Query parameter: "q" is required and must be at least 2 characters' },
       { status: 400 }
     );
   }
@@ -254,11 +254,11 @@ async function generateAIEnhancement(
   try {
     const resultsSummary = topResults.map(r => `${r.title} (${r.category}, ${r.jurisdiction})`).join('; ');
     return {
-      summary: `Found ${topResults.length} highly relevant legal documents related to "${query}". Top results: ${resultsSummary}`,
+      summary: `Found ${topResults.length} highly relevant legal documents related to: "${query}". Top results: ${resultsSummary}`,
       topCategories: Array.from(new Set(topResults.map(r => r.category))),
       topJurisdictions: Array.from(new Set(topResults.map(r => r.jurisdiction))),
       suggestions: [
-        `Try refining your search with terms from: ${topResults[0]?.category}`,
+        `Try refining your search with terms from ${topResults[0]?.category}`,
         `Consider exploring related ${topResults[0]?.jurisdiction} laws`,
         `Look for specific sections: ${topResults[0]?.sections?.join(', ') || 'N/A'}`,
       ].filter(s => !s.includes('N/A')),

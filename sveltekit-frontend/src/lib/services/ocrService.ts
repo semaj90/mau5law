@@ -320,9 +320,9 @@ Return only one of: legal_document, contract, form`;
     }
     // Heuristic fallback
     const lower = text.toLowerCase();
-    if (/\b(plaintiff|defendant|court|filed|motion)\b/.test(lower)) return 'legal_document';
-    if (/\b(contract|agreement|party of the first part|term of service)\b/.test(lower)) return 'contract';
-    return 'form';
+    if (/\b(plaintiff|defendant|court|filed|motion)\b/.test(lower)) return: 'legal_document';
+    if (/\b(contract|agreement|party of the first part|term of service)\b/.test(lower)) return: 'contract';
+    return: 'form';
   }
 
   private async extractFields(
@@ -356,14 +356,14 @@ Return only one of: legal_document, contract, form`;
   }
 
   private determineFieldType(fieldName: string, value: string): FieldType {
-    if (fieldName.includes('email') || /@/.test(value)) return 'email';
-    if (fieldName.includes('phone') || /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/.test(value)) return 'phone';
-    if (fieldName.includes('date') || /\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}/.test(value)) return 'date';
-    if (fieldName.includes('amount') || /^\$?[\d]+\.?\d*$/.test(value)) return 'monetary_amount';
-    if (fieldName.includes('case') || fieldName.includes('number')) return 'case_number';
-    if (fieldName.includes('name') || fieldName.includes('plaintiff') || fieldName.includes('defendant')) return 'name';
-    if (fieldName.includes('address') || fieldName.includes('street')) return 'address';
-    return 'text_block';
+    if (fieldName.includes('email') || /@/.test(value)) return: 'email';
+    if (fieldName.includes('phone') || /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/.test(value)) return: 'phone';
+    if (fieldName.includes('date') || /\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}/.test(value)) return: 'date';
+    if (fieldName.includes('amount') || /^\$?[\d]+\.?\d*$/.test(value)) return: 'monetary_amount';
+    if (fieldName.includes('case') || fieldName.includes('number')) return: 'case_number';
+    if (fieldName.includes('name') || fieldName.includes('plaintiff') || fieldName.includes('defendant')) return: 'name';
+    if (fieldName.includes('address') || fieldName.includes('street')) return: 'address';
+    return: 'text_block';
   }
 
   private findBoundingBox(text: string, boundingBoxes: BoundingBox[]): BoundingBox | null {
@@ -379,12 +379,12 @@ Return only one of: legal_document, contract, form`;
 
   private validateField(fieldType: FieldType, value: string): 'valid' | 'invalid' | 'needs_review' {
     const schema = fieldValidationSchemas[fieldType];
-    if (!schema) return 'needs_review';
+    if (!schema) return: 'needs_review';
     try {
       schema.parse(String(value));
-      return 'valid';
+      return: 'valid';
     } catch {
-      return 'invalid';
+      return: 'invalid';
     }
   }
 
@@ -493,7 +493,7 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
 
   public async getSuggestions(fieldName: string, fieldType: FieldType, context: string): Promise<string[]> {
     try {
-      const prompt = `Based on this document context, suggest possible values for the field "${fieldName}" of type "${fieldType}":
+      const prompt = `Based on this document context, suggest possible values for the field: "${fieldName}" of type: "${fieldType}":
 Context: "${context.substring(0, 500)}..."
 Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", "suggestion3"]`;
       const { getOllamaEndpoint } = await import('$lib/services/get-ollama-endpoint');

@@ -1,412 +1,439 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  	import { toolbarStore } from "../stores/canvas";
-  	import {
-  		Bold,
-  		Italic,
-  		Underline,
-  		Strikethrough,
-  		AlignLeft,
-  		AlignCenter,
-  		AlignRight,
-  		Palette,
-  		MousePointer2,
-  		Hand,
-  		Square,
-  		Circle,
-  		RotateCcw,
-  		RotateCw,
-  		Copy,
-  		Trash2,
-  		ZoomIn,
-  		ZoomOut
-  	} from 'lucide-svelte';
-  	// Tool categories
-  	const tools = [
-  		{ id: 'select', icon MousePointer2, label: 'Select', category: 'selection' },
-  		{ id: 'pan', icon Hand, label: 'Pan', category: 'navigation' },
-  		{ id: 'text', icon Bold, label: 'Text', category: 'content' },
-  		{ id: 'rectangle', icon Square, label: 'Rectangle', category: 'shapes' },
-  		{ id: 'circle', icon Circle, label: 'Circle', category: 'shapes' },
-  		{ id: 'draw', icon Palette, label: 'Draw', category: 'drawing' }
-  	];
-  	const formatActions = [
-  		{ id: 'bold', icon Bold, label: 'Bold' },
-  		{ id: 'italic', icon Italic, label: 'Italic' },
-  		{ id: 'underline', label: 'Underline' },
-  		{ id: 'strikethrough', icon Strikethrough, label: 'Strikethrough' }
-  	];
-  	const alignActions = [
-  		{ id: 'left', icon AlignLeft, label: 'Align Left' },
-  		{ id: 'center', icon AlignCenter, label: 'Align Center' },
-  		{ id: 'right', icon AlignRight, label: 'Align Right' }
-  	];
-  	// Reactive toolbar state
-  	let selectedTool = $derived($toolbarStore.selectedTool);
-  	let formatting = $derived($toolbarStore.formatting);
-  	let drawing = $derived($toolbarStore.drawing);
-  	let canUndo = $derived($toolbarStore.canUndo);
-  	let canRedo = $derived($toolbarStore.canRedo);
-  	let zoom = $derived($toolbarStore.zoom);
-  	function selectTool(toolId: string) {
-  		toolbarStore.update(state => ({
-  			...state,
-  			selectedTool: toolId
-  		}));
-  		ondispatch?.({ tool: toolId });
-  }
-  	function toggleFormatting(formatType: string) {
-  		toolbarStore.update(state => ({
-  			...state,
-  			formatting: {
-  				...state.formatting,
-  				[formatType]: !(state.formatting as any)[formatType]
-  }
-  		}));
-  		ondispatch?.({ type: formatType, value: !(formatting as any)[formatType] });
-  }
-  	function setAlignment(alignment: string) {
-  		toolbarStore.update(state => ({
-  			...state,
-  			formatting: {
-  				...state.formatting,
-  				textAlign: alignment
-  }
-  		}));
-  		ondispatch?.({ alignment });
-  }
-  	function handleColorChange(_event: Event, type: 'color' | 'backgroundColor') {
-  		// removed unused target assignment
-  		const color = target.valu;
-  		toolbarStore.update(state => ({
-  			...state,
-  			formatting: {
-  				...state.formatting,
-  				[type]: color
-  }
-  		}));
-  		ondispatch?.({ type, color });
-  }
-  	function handleFontSizeChange(_event: Event) {
-  		// removed unused target assignment
-  		const fontSize = parseInt(target.value, 10);
-  		toolbarStore.update(state => ({
-  			...state,
-  			formatting: {
-  				...state.formatting,
-  				fontSize
-  }
-  		}));
-  		ondispatch?.({ fontSize });
-  }
-  	function handleStrokeWidthChange(_event: Event) {
-  		// removed unused target assignment
-  		const strokeWidth = parseInt(target.value, 10);
-  		toolbarStore.update(state => ({
-  			...state,
-  			drawing: {
-  				...state.drawing,
-  				strokeWidth
-  }
-  		}));
-  		ondispatch?.({ strokeWidth });
-  }
-  	function handleAction(action string) {
-  		ondispatch?.({ action });
-  }
-  	function handleZoom(delta: number) {
-  		const newZoom = Math.max(10, Math.min(500, zoom + delta));
-  		toolbarStore.update(state => ({
-  			...state,
-  			zoom: newZoom;
-  		}));
-  		ondispatch?.({ zoom: newZoom });
-  }
+	import { createEventDispatcher, onMount } from 'svelte';
+	// defensive import of the canvas module (works whether it's named or default)
+	import * as canvasModule from "../stores/canvas";
+
+	const toolbarStore = (canvasModule as any).toolbarStore ?? (canvasModule as any).default ?? null;
+
+	const dispatch = createEventDispatcher();
+
+	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)
+	const tools = [
+		{ id: 'select', icon: '🖱️', label: 'Select', category: 'selection' },
+		{ id: 'pan', icon: '✋', label: 'Pan', category: 'navigation' },
+		{ id: 'text', icon: '🅰️', label: 'Text', category: 'content' },
+		{ id: 'rectangle', icon: '▭', label: 'Rectangle', category: 'shapes' },
+		{ id: 'circle', icon: '◯', label: 'Circle', category: 'shapes' },
+		{ id: 'draw', icon: '🎨', label: 'Draw', category: 'drawing' }
+	];
+
+	const formatActions = [
+		{ id: 'bold', icon: 'B', label: 'Bold' },
+		{ id: 'italic', icon: 'I', label: 'Italic' },
+		{ id: 'underline', icon: 'U', label: 'Underline' },
+		{ id: 'strikethrough', icon: 'S', label: 'Strikethrough' }
+	];
+
+	const alignActions = [
+		{ id: 'left', icon: '⟵', label: 'Align Left' },
+		{ id: 'center', icon: '↔', label: 'Align Center' },
+		{ id: 'right', icon: '⟶', label: 'Align Right' }
+	];
+
+	// sensible defaults so component compiles standalone
+	let selectedTool = 'select';
+	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
+	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
+	let canUndo = false;
+	let canRedo = false;
+	let zoom = 100;
+
+	// subscribe to toolbarStore if available
+	onMount(() => {
+		if (toolbarStore && typeof toolbarStore.subscribe === 'function') {
+			const unsub = toolbarStore.subscribe((state: any) => {
+				selectedTool = state?.selectedTool ?? selectedTool;
+				formatting = state?.formatting ?? formatting;
+				drawing = state?.drawing ?? drawing;
+				canUndo = state?.canUndo ?? canUndo;
+				canRedo = state?.canRedo ?? canRedo;
+				zoom = state?.zoom ?? zoom;
+			});
+			return unsub;
+		}
+	});
+
+	function selectTool(toolId: string) {
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({ ...state, selectedTool: toolId }));
+		}
+		dispatch('change', { tool: toolId });
+	}
+
+	function toggleFormatting(formatType: string) {
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({
+				...state,
+				formatting: {
+					...state.formatting,
+					[formatType]: !(state.formatting as any)?.[formatType]
+				}
+			}));
+		}
+		dispatch('change', { type: formatType, value: !(formatting as any)[formatType] });
+	}
+
+	function setAlignment(alignment: string) {
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({
+				...state,
+				formatting: {
+					...state.formatting,
+					textAlign: alignment
+				}
+			}));
+		}
+		dispatch('change', { alignment });
+	}
+
+	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
+		const target = event.target as HTMLInputElement | null;
+		const color = target?.value ?? (type === 'color' ? '#000000' : '#ffffff');
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({
+				...state,
+				formatting: {
+					...state.formatting,
+					[type]: color
+				}
+			}));
+			// for drawing color (stroke) also update drawing when appropriate
+			if (type === 'color' && ['draw', 'rectangle', 'circle'].includes(selectedTool)) {
+				toolbarStore.update((state: any) => ({
+					...state,
+					drawing: { ...state.drawing, strokeColor: color }
+				}));
+			}
+		}
+		dispatch('change', { type, color });
+	}
+
+	function handleFontSizeChange(event: Event) {
+		const target = event.target as HTMLInputElement | null;
+		const fontSize = target ? parseInt(target.value, 10) || formatting.fontSize : formatting.fontSize;
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({
+				...state,
+				formatting: {
+					...state.formatting,
+					fontSize
+				}
+			}));
+		}
+		dispatch('change', { fontSize });
+	}
+
+	function handleStrokeWidthChange(event: Event) {
+		const target = event.target as HTMLInputElement | null;
+		const strokeWidth = target ? parseInt(target.value, 10) || drawing.strokeWidth : drawing.strokeWidth;
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({
+				...state,
+				drawing: {
+					...state.drawing,
+					strokeWidth
+				}
+			}));
+		}
+		dispatch('change', { strokeWidth });
+	}
+
+	function handleAction(action: string) {
+		dispatch('change', { action });
+	}
+
+	function handleZoom(delta: number) {
+		const newZoom = Math.max(10, Math.min(500, zoom + delta));
+		if (toolbarStore?.update) {
+			toolbarStore.update((state: any) => ({ ...state, zoom: newZoom }));
+		}
+		dispatch('change', { zoom: newZoom });
+	}
 </script>
 
-<div class="container mx-auto px-4" role="toolbar" aria-label="Canvas tools">
-  <!-- Tool Selection -->
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      {#each tools as tool}
-        <button
-          class="container mx-auto px-4"
-          class:active={selectedTool === tool.id}
-          onclick={() => selectTool(tool.id)}
-          aria-label={tool.label}
-          title={tool.label}
-        >
-          <tool.icon size={18} />
-        </button>
-      {/each}
-    </div>
-  </div>
-  <div class="container mx-auto px-4"></div>
-  <!-- Text Formatting -->
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      {#each formatActions as action}
-        <button
-          class="container mx-auto px-4"
-          class:active={(formatting as any)[action.id]}
-          onclick={() => toggleFormatting(action.id)}
-          aria-label={action.label}
-          title={action.label}
-          disabled={selectedTool !== 'text'}
-        >
-          <action.icon size={16} />
-        </button>
-      {/each}
-    </div>
-    <div class="container mx-auto px-4">
-      {#each alignActions as action}
-        <button
-          class="container mx-auto px-4"
-          class:active={formatting.textAlign === action.id}
-          onclick={() => setAlignment(action.id)}
-          aria-label={action.label}
-          title={action.label}
-          disabled={selectedTool !== 'text'}
-        >
-          <action.icon size={16} />
-        </button>
-      {/each}
-    </div>
-    <div class="container mx-auto px-4">
-      <label class="container mx-auto px-4">
-        <input
-          type="color"
-          value={formatting.color}
-          onchange={e => handleColorChange(e, 'color')}
-          title="Text Color"
-          disabled={selectedTool !== 'text'}
-        />
-        <span class="container mx-auto px-4" style="background-color: {formatting.color}"></span>
-      </label>
-      <label class="container mx-auto px-4">
-        <input
-          type="range"
-          min="8"
-          max="72"
-          value={formatting.fontSize}
-          oninput={handleFontSizeChange}
-          title="Font Size: {formatting.fontSize}px"
-          disabled={selectedTool !== 'text'}
-        />
-        <span class="container mx-auto px-4">{formatting.fontSize}px</span>
-      </label>
-    </div>
-  </div>
-  <div class="container mx-auto px-4"></div>
-  <!-- Drawing Tools -->
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      <label class="container mx-auto px-4">
-        <input
-          type="color"
-          value={drawing.strokeColor}
-          onchange={e => handleColorChange(e, 'color')}
-          title="Stroke Color"
-          disabled={!['draw', 'rectangle', 'circle'].includes(selectedTool)}
-        />
-        <span class="container mx-auto px-4" style="background-color: {drawing.strokeColor}"></span>
-      </label>
-      <label class="container mx-auto px-4">
-        <input
-          type="range"
-          min="1"
-          max="20"
-          value={drawing.strokeWidth}
-          oninput={handleStrokeWidthChange}
-          title="Stroke Width: {drawing.strokeWidth}px"
-          disabled={!['draw', 'rectangle', 'circle'].includes(selectedTool)}
-        />
-        <span class="container mx-auto px-4">{drawing.strokeWidth}px</span>
-      </label>
-    </div>
-  </div>
-  <div class="container mx-auto px-4"></div>
-  <!-- Actions -->
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      <button
-        class="container mx-auto px-4"
-        onclick={() => handleAction('undo')}
-        disabled={!canUndo}
-        aria-label="Undo"
-        title="Undo"
-      >
-        <RotateCcw size={18} />
-      </button>
-      <button
-        class="container mx-auto px-4"
-        onclick={() => handleAction('redo')}
-        disabled={!canRedo}
-        aria-label="Redo"
-        title="Redo"
-      >
-        <RotateCw size={18} />
-      </button>
-    </div>
-    <div class="container mx-auto px-4">
-      <button class="container mx-auto px-4" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
-        <Copy size={18} />
-      </button>
-      <button class="container mx-auto px-4" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
-        <Trash2 size={18} />
-      </button>
-    </div>
-  </div>
-  <div class="container mx-auto px-4"></div>
-  <!-- Zoom Controls -->
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      <button class="container mx-auto px-4" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
-        <ZoomOut size={18} />
-      </button>
-      <span class="container mx-auto px-4">{zoom}%</span>
-      <button class="container mx-auto px-4" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
-        <ZoomIn size={18} />
-      </button>
-    </div>
-  </div>
+<div class="toolbar-container container mx-auto px-4" role="toolbar" aria-label="Canvas tools">
+	<!-- Tool Selection -->
+	<div class="toolbar-section container mx-auto px-4">
+		<div class="tool-group container mx-auto px-4">
+			{#each tools as tool}
+				<button
+					class="tool-button container mx-auto px-4"
+					class:active={selectedTool === tool.id}
+					onclick={() => selectTool(tool.id)}
+					aria-label={tool.label}
+					title={tool.label}
+				>
+					<span class="icon">{tool.icon}</span>
+				</button>
+			{/each}
+		</div>
+	</div>
+	<div class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Text Formatting -->
+	<div class="toolbar-section container mx-auto px-4">
+		<div class="tool-group container mx-auto px-4">
+			{#each formatActions as action}
+				<button
+					class="format-button container mx-auto px-4"
+					class:active={(formatting as any)[action.id]}
+					onclick={() => toggleFormatting(action.id)}
+					aria-label={action.label}
+					title={action.label}
+					disabled={selectedTool !== 'text'}
+				>
+					<span class="icon">{action.icon}</span>
+				</button>
+			{/each}
+		</div>
+		<div class="tool-group container mx-auto px-4">
+			{#each alignActions as action}
+				<button
+					class="align-button container mx-auto px-4"
+					class:active={formatting.textAlign === action.id}
+					onclick={() => setAlignment(action.id)}
+					aria-label={action.label}
+					title={action.label}
+					disabled={selectedTool !== 'text'}
+				>
+					<span class="icon">{action.icon}</span>
+				</button>
+			{/each}
+		</div>
+		<div class="tool-group container mx-auto px-4">
+			<label class="color-input container mx-auto px-4">
+				<input
+					type="color"
+					value={formatting.color}
+					onchange={e => handleColorChange(e, 'color')}
+					title="Text Color"
+					disabled={selectedTool !== 'text'}
+				/>
+				<span class="color-preview container mx-auto px-4" style="background-color: {formatting.color}"></span>
+			</label>
+			<label class="size-input container mx-auto px-4">
+				<input
+					type="range"
+					min="8"
+					max="72"
+					value={formatting.fontSize}
+					oninput={handleFontSizeChange}
+					title="Font Size: {formatting.fontSize}px"
+					disabled={selectedTool !== 'text'}
+				/>
+				<span class="size-label container mx-auto px-4">{formatting.fontSize}px</span>
+			</label>
+		</div>
+	</div>
+	<div class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Drawing Tools -->
+	<div class="toolbar-section container mx-auto px-4">
+		<div class="tool-group container mx-auto px-4">
+			<label class="color-input container mx-auto px-4">
+				<input
+					type="color"
+					value={drawing.strokeColor}
+					onchange={e => handleColorChange(e, 'color')}
+					title="Stroke Color"
+					disabled={!['draw', 'rectangle', 'circle'].includes(selectedTool)}
+				/>
+				<span class="color-preview container mx-auto px-4" style="background-color: {drawing.strokeColor}"></span>
+			</label>
+			<label class="size-input container mx-auto px-4">
+				<input
+					type="range"
+					min="1"
+					max="20"
+					value={drawing.strokeWidth}
+					oninput={handleStrokeWidthChange}
+					title="Stroke Width: {drawing.strokeWidth}px"
+					disabled={!['draw', 'rectangle', 'circle'].includes(selectedTool)}
+				/>
+				<span class="size-label container mx-auto px-4">{drawing.strokeWidth}px</span>
+			</label>
+		</div>
+	</div>
+	<div class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Actions -->
+	<div class="toolbar-section container mx-auto px-4">
+		<div class="tool-group container mx-auto px-4">
+			<button
+				class="action-button container mx-auto px-4"
+				onclick={() => handleAction('undo')}
+				disabled={!canUndo}
+				aria-label="Undo"
+				title="Undo"
+			>
+				<span class="icon">↺</span>
+			</button>
+			<button
+				class="action-button container mx-auto px-4"
+				onclick={() => handleAction('redo')}
+				disabled={!canRedo}
+				aria-label="Redo"
+				title="Redo"
+			>
+				<span class="icon">↻</span>
+			</button>
+		</div>
+		<div class="tool-group container mx-auto px-4">
+			<button class="action-button container mx-auto px-4" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
+				<span class="icon">⧉</span>
+			</button>
+			<button class="action-button container mx-auto px-4" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
+				<span class="icon">🗑️</span>
+			</button>
+		</div>
+	</div>
+	<div class="toolbar-separator" aria-hidden="true"></div>
+	<!-- Zoom Controls -->
+	<div class="toolbar-section container mx-auto px-4">
+		<div class="tool-group container mx-auto px-4">
+			<button class="action-button container mx-auto px-4" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
+				<span class="icon">➖</span>
+			</button>
+			<span class="zoom-level container mx-auto px-4">{zoom}%</span>
+			<button class="action-button container mx-auto px-4" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
+				<span class="icon">➕</span>
+			</button>
+		</div>
+	</div>
 </div>
 
 <style>
-  /* @unocss-include */
-  .toolbar-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-light);
-    overflow-x: auto;
-    min-height: 60px;
-  }
-  .toolbar-section {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0,
-  }
-  .tool-group {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    background: var(--bg-primary);
-    border-radius: 6px;
-    border: 1px solid var(--border-light);
-  }
-  .tool-button,
-  .format-button,
-  .align-button,
-  .action-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    color: var(--text-primary);
-  }
-  .tool-button hover
-	.format-button hover
-	.align-button hover
-	.action-buttonhover {
-    background: var(--bg-tertiary);
-  }
-  .tool-button.active,
-  .format-button.active,
-  .align-button.active {
-    background: var(--harvard-crimson);
-    color: var(--text-inverse);
-  }
-  .tool-button disabled
-	.format-button disabled
-	.align-button disabled
-	.action-buttondisabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .color-input {
-    position relative;
-    cursor: pointer;
-  }
-  .color-input input[type='color'] {
-    position absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-  .color-preview {
-    display: block;
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    border: 2px solid var(--border-light);
-    cursor: pointer;
-  }
-  .size-input {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
-  .size-input input[type='range'] {
-    width: 80px;
-    height: 4px;
-    background: var(--muted-background);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-  }
-  .size-input input[type='range']::-webkit-slider-thumb {
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    background: var(--harvard-crimson);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  .size-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    min-width: 35px;
-    text-align: center;
-  }
-  .zoom-level {
-    font-size: 0.875rem;
-    color: var(--text-primary);
-    min-width: 45px;
-    text-align: center;
-    font-weight: 500;
-  }
-  .toolbar-separator {
-    width: 1px;
-    height: 32px;
-    background: var(--border-light);
-    margin: 0 0.5rem;
-    flex-shrink: 0,
-  }
-  /* Responsive */
-  @media (max-width: 768px) {
-    .toolbar-container {
-      padding: 0.5rem;
-      gap: 0.25rem;
-    }
-    .size-input input[type='range'] {
-      width: 60px;
-    }
-    .size-label {
-      display: none;
-    }
-  }
+	/* @unocss-include */
+	.toolbar-container {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1rem;
+		background: var(--bg-secondary);
+		border-bottom: 1px solid var(--border-light);
+		overflow-x: auto;
+		min-height: 60px;
+	}
+	.toolbar-section {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-shrink: 0;
+	}
+	.tool-group {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.25rem;
+		background: var(--bg-primary);
+		border-radius: 6px;
+		border: 1px solid var(--border-light);
+	}
+	.tool-button,
+	.format-button,
+	.align-button,
+	.action-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		border-radius: 4px;
+		transition: all 0.2s ease;
+		color: var(--text-primary);
+	}
+	.tool-button:hover,
+	.format-button:hover,
+	.align-button:hover,
+	.action-button:hover {
+		background: var(--bg-tertiary);
+	}
+	.tool-button.active,
+	.format-button.active,
+	.align-button.active {
+		background: var(--harvard-crimson);
+		color: var(--text-inverse);
+	}
+	.tool-button:disabled,
+	.format-button:disabled,
+	.align-button:disabled,
+	.action-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.color-input {
+		position: relative;
+		cursor: pointer;
+	}
+	.color-input input[type='color'] {
+		position: absolute;
+		opacity: 0;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+	}
+	.color-preview {
+		display: block;
+		width: 24px;
+		height: 24px;
+		border-radius: 4px;
+		border: 2px solid var(--border-light);
+		cursor: pointer;
+	}
+	.size-input {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem;
+	}
+	.size-input input[type='range'] {
+		width: 80px;
+		height: 4px;
+		background: var(--muted-background);
+		border-radius: 2px;
+		outline: none;
+		cursor: pointer;
+	}
+	.size-input input[type='range']::-webkit-slider-thumb {
+		appearance: none;
+		width: 16px;
+		height: 16px;
+		background: var(--harvard-crimson);
+		border-radius: 50%;
+		cursor: pointer;
+	}
+	.size-label {
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		min-width: 35px;
+		text-align: center;
+	}
+	.zoom-level {
+		font-size: 0.875rem;
+		color: var(--text-primary);
+		min-width: 45px;
+		text-align: center;
+		font-weight: 500;
+	}
+	.toolbar-separator {
+		width: 1px;
+		height: 32px;
+		background: var(--border-light);
+		margin: 0 0.5rem;
+		flex-shrink: 0;
+	}
+	/* Responsive */
+	@media (max-width: 768px) {
+		.toolbar-container {
+			padding: 0.5rem;
+			gap: 0.25rem;
+		}
+		.size-input input[type='range'] {
+			width: 60px;
+		}
+		.size-label {
+			display: none;
+		}
+	}
 </style>
 

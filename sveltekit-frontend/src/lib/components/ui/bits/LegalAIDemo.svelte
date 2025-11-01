@@ -24,7 +24,7 @@
       confidence: 0.92,
       thumbnailUrl: '/api/placeholder/150/100',
       hash: 'sha256:abc123...',
-      metadata: { duration '5:30', location 'Main Entrance' },
+      metadata: { duration: '5:30', location: 'Main Entrance' },
       createdAt: new Date('2024-01-15'),
       updatedAt: new Date('2024-01-15')
     },
@@ -46,7 +46,7 @@
       priority: 'medium',
       confidence: 0.76,
       thumbnailUrl: '/api/placeholder/150/100',
-      metadata: { resolution '1920x1080', timestamp: '2024-01-13 14:30' },
+      metadata: { resolution: '1920x1080', timestamp: '2024-01-13 14:30' },
       createdAt: new Date('2024-01-13'),
       updatedAt: new Date('2024-01-13')
     }

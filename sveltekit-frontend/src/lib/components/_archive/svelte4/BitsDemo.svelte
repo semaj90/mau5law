@@ -1,6 +1,6 @@
 <!-- Component exported by default -->
 <script lang="ts">
-  // Avoid "Cannot use namespace 'BitsDemoProps' as a type" by declaring a local prop type
+  // Avoid: "Cannot use namespace: 'BitsDemoProps' as a type" by declaring a local prop type
   // that matches the shape used by this component.
   interface BitsDemoProps {
     caseTypes?: Array<{ value: string; label: string }>;
@@ -15,13 +15,13 @@
   import { fly } from 'svelte/transition';
   // Correctly define props using $props() rune with the BitsDemoProps type.
   // Destructure directly from $props<BitsDemoProps>() and apply defaults.
-  // Rename 'class' to 'className' and 'data-testid' to 'testId' during destructuring.
+  // Rename: 'class' to: 'className' and: 'data-testid' to: 'testId' during destructuring.
   let {
-    caseTypes: propCaseTypes, // Renamed to avoid conflict with derived 'caseTypes'
-    useLibrary = 'bits-ui', // Apply default directly, remove 'prop' prefix
-    class: className = '', // Rename 'class' to 'className' and apply default
+    caseTypes: propCaseTypes, // Renamed to avoid conflict with derived: 'caseTypes'
+    useLibrary = 'bits-ui', // Apply default directly, remove: 'prop' prefix
+    class: className = '', // Rename: 'class' to: 'className' and apply default
     id,
-    'data-testid': testId, // Directly destructure and rename 'data-testid'
+    'data-testid': testId, // Directly destructure and rename: 'data-testid'
   } = $props<BitsDemoProps>();
 
   const _defaultCaseTypes = [
@@ -73,7 +73,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: 'Demo Case ' + Date.now(),
+          title: 'Demo Case: ' + Date.now(),
           description: 'Demonstration case created from BitsDemo component',
           priority: 'medium',
           status: 'open',
@@ -194,18 +194,18 @@
   <div class="mx-auto px-4 max-w-7xl">
     <h3 class="mx-auto px-4 max-w-7xl">Bits-UI Notifications Demo</h3>
     <div class="mx-auto px-4 max-w-7xl">
-      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showSuccessNotification}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showSuccessNotification}>
         Success Notification
       </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showWarningNotification}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showWarningNotification}>
         Warning Notification
       </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showErrorNotification}> Error Notification </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showInfoNotification}> Info Notification </button>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}> Error Notification </button>
+      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showInfoNotification}> Info Notification </button>
     </div>
   </div>
   <!-- Bits UI Button (replaced Button.Root with native button) -->
-  <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" on:click={showSuccessNotification}>
+  <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={showSuccessNotification}>
     Create New Case
   </button>
   <!-- Bits UI Select (replaced Select.* with native select/options) -->
@@ -224,7 +224,7 @@
     </select>
   </div>
   <!-- Bits UI Dialog (replaced Dialog.* with simple conditional modal) -->
-  <button type="button" class="mx-auto px-4 max-w-7xl" on:click={() => (dialogOpen = true)}>
+  <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = true)}>
     Case Management Options
   </button>
   {#if dialogOpen}
@@ -250,8 +250,8 @@
           </div>
         </div>
         <div class="dialog-actions mx-auto px-4 max-w-7xl">
-          <button type="button" class="mx-auto px-4 max-w-7xl" on:click={() => (dialogOpen = false)}>Close</button>
-          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" on:click={() => (dialogOpen = false)}
+          <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = false)}>Close</button>
+          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={() => (dialogOpen = false)}
             >Get Started</button
           >
         </div>
@@ -259,7 +259,7 @@
     </div>
   {/if}
   <!-- Bits UI Alert Dialog (replaced with native confirm-style modal) -->
-  <button type="button" class="mx-auto px-4 max-w-7xl" on:click={() => (alertOpen = true)}>Delete Case</button>
+  <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (alertOpen = true)}>Delete Case</button>
   {#if alertOpen}
     <div class="dialog-overlay" role="alertdialog" aria-modal="true" aria-labelledby="delete-case-title">
       <div class="dialog-content">
@@ -269,11 +269,11 @@
           data, evidence, and related documents.
         </p>
         <div class="alert-actions">
-          <button type="button" on:click={() => (alertOpen = false)}>Cancel</button>
+          <button type="button" onclick={() => (alertOpen = false)}>Cancel</button>
           <button
             type="button"
             class="text-danger"
-            on:click={() => {
+            onclick={() => {
               showErrorNotification();
               alertOpen = false;
             }}
@@ -306,7 +306,7 @@
             {(data as { color?: any; title?: any; description?: any }).title}
           </div>
         {/if}
-        <button class="toast-close" on:click={() => removeToast(id)} aria-label="Close notification"> ✕ </button>
+        <button class="toast-close" onclick={() => removeToast(id)} aria-label="Close notification"> ✕ </button>
       </div>
       {#if (data as { color?: any; title?: any; description?: any }).description}
         <div class="toast-description">

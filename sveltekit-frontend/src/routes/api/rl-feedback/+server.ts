@@ -421,10 +421,10 @@ function determinePrefererenceType(feedback: RLFeedbackData): 'accuracy' | 'comp
     const sortedScores = Object.entries(scores).sort(([, a], [, b]) =>
       feedback.feedback === 'thumbs_up' ? b - a : a - b
     );
-    return sortedScores[0][0] as 'accuracy' | 'completeness' | 'clarity' | 'relevance';
+    return sortedScores[0][0] as: 'accuracy' | 'completeness' | 'clarity' | 'relevance';
   }
   // Default to accuracy for legal domain
-  return 'accuracy';
+  return: 'accuracy';
 }
 /**
  * Calculate confidence delta from feedback

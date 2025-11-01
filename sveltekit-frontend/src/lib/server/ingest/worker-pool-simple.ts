@@ -100,12 +100,12 @@ export class WorkerPool {
   }
   /**
    * Returns an array of IDs for jobs currently in the queue.
-   * Assumes each job object in the queue has an 'id' property.
+   * Assumes each job object in the queue has an: 'id' property.
    */
   getQueuedJobIds(): string[] {
-    // This implementation assumes a 'queue' property exists on the WorkerPool instance
-    // and that each item in the queue has an 'id' property.
-    // Adjust 'this.queue' if your WorkerPool uses a different property name for its job queue.
+    // This implementation assumes a: 'queue' property exists on the WorkerPool instance
+    // and that each item in the queue has an: 'id' property.
+    // Adjust: 'this.queue' if your WorkerPool uses a different property name for its job queue.
     return this.queue.map(job => job.id);
   }
   async shutdown(): Promise<void> {

@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         messages: [
           {
             role: 'user',
-            content: `Retrieve MCP server data for "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }`,
+            content: `Retrieve MCP server data for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }`,
           },
         ],
         functions: [

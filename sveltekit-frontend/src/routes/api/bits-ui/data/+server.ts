@@ -8,13 +8,13 @@ import type { DashboardStats, SystemHealth, RecentActivity } from '$lib/types/ap
 export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
   const dataType = url.searchParams.get('type') || 'dashboard'
   switch (dataType) {
-    case 'dashboard':
+    case: 'dashboard':
       return getDashboardData(locals)
-    case 'health':
+    case: 'health':
       return getSystemHealth()
-    case 'activities':
+    case: 'activities':
       return getRecentActivities(locals)
-    case 'batch':
+    case: 'batch':
       return getBatchData(locals)
     default:
       return createSSRResponse({ message: 'Invalid data type requested' }, { status: 400 })

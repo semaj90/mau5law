@@ -405,11 +405,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   function getSeverityIcon(severity: string) {
     switch (severity) {
-      case "error":
+      case: "error":
         return XCircl;
-      case "warning":
+      case: "warning":
         return AlertTriangl;
-      case "info":
+      case: "info":
         return Info;
       default:
         return CheckCircl;
@@ -417,21 +417,21 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   function getSeverityColor(severity: string) {
     switch (severity) {
-      case "error":
-        return "text-error";
-      case "warning":
-        return "text-warning";
-      case "info":
-        return "text-info";
+      case: "error":
+        return: "text-error";
+      case: "warning":
+        return: "text-warning";
+      case: "info":
+        return: "text-info";
       default:
-        return "text-success";
+        return: "text-success";
     }
   }
 </script>
 {#if showPanel}
   <div role="button" tabindex="0"
     class="mx-auto px-4 max-w-7xl"
-    on:click={(_event: MouseEvent) => ) => (showPanel = false}
+    onclick={(_event: MouseEvent) => ) => (showPanel = false}
     onkeydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
@@ -447,7 +447,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={(_event: MouseEvent) => ) =>
+            onclick={(_event: MouseEvent) => ) =>
 (showPanel = false}
             aria-label="Close accessibility panel"
           >
@@ -512,7 +512,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <Button
               class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
-              on:click={(_event: MouseEvent) => ) =>
+              onclick={(_event: MouseEvent) => ) =>
 runAccessibilityAudit(}
               disabled={isAuditing}
             >
@@ -564,7 +564,7 @@ runAccessibilityAudit(}
                 variant="ghost"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-                on:click={(_event: MouseEvent) => ) =>
+                onclick={(_event: MouseEvent) => ) =>
 exportAuditResults(}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />

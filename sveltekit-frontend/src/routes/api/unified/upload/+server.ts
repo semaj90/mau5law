@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { legalAI } from '$lib/server/unified/legal-ai-service'
 
-// Define a type for the upload result to avoid using 'any'
+// Define a type for the upload result to avoid using: 'any'
 type LegalAIUploadResult = {
   id?: string;
   fileUrl?: string;
@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
     const caseId = formData.get('caseId') as string
-    const documentType = (formData.get('documentType') as 'evidence' | 'legal_document' | 'contract' | 'brief') || 'evidence'
+    const documentType = (formData.get('documentType') as: 'evidence' | 'legal_document' | 'contract' | 'brief') || 'evidence'
     // Parse metadata
     const metadataStr = formData.get('metadata') as string
     let metadata = {}

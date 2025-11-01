@@ -10,7 +10,7 @@ export class WebGPUPolyfillService {
   private webglFallback: WebGL2RenderingContext | null = null;
   private canvas: HTMLCanvasElement | null = null;
 
-  // Safe logging helpers to avoid "object possibly undefined" diagnostics in some runtimes
+  // Safe logging helpers to avoid: "object possibly undefined" diagnostics in some runtimes
   private safeLog = (...args: unknown[]) => {
     if (typeof console !== 'undefined' && typeof console.log === 'function') console.log(...args);
   };

@@ -9,7 +9,7 @@ interface QueryParams {
 }
 function parseParams(url: URL): QueryParams {
   const max = Number(url.searchParams.get('max') ?? '100000')
-  const mode = (url.searchParams.get('mode') as 'count' | 'list') || 'count'
+  const mode = (url.searchParams.get('mode') as: 'count' | 'list') || 'count'
   const workers = url.searchParams.get('workers')
   return {
     max: Number.isFinite(max) && max > 0 ? max : 100000,

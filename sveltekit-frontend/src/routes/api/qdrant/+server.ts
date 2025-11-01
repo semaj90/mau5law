@@ -5,10 +5,10 @@ import { productionLogger as logger } from '$lib/server/production-logger';
 import { dev } from '$app/environment';
 import type { RequestHandler } from './$types.js';
 import { getUserId } from '$lib/server/auth/utils';
-import os from 'os'; // Import the 'os' module
+import os from 'os'; // Import the: 'os' module
 
 // Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.
-// Define a minimal local type for collection info to avoid the "Cannot use namespace as a type" error.
+// Define a minimal local type for collection info to avoid the: "Cannot use namespace as a type" error.
 type QdrantCollectionInfo = {
   name: string;
   // allow other fields from the Qdrant response without strict typing here
@@ -209,7 +209,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       }
       let syncResults: QdrantSyncResult; // typed syncResults
       switch (source) {
-        case 'postgres': {
+        case: 'postgres': {
           // Check if collection exists (typed using local QdrantCollectionInfo)
           const collections: QdrantCollectionInfo[] = await qdrant.getCollections();
           const collectionExists = collections.some((c: QdrantCollectionInfo) => c.name === collection);
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       );
     }
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     logger.error('Qdrant sync error:', normalizeError(error));
     if (error instanceof QdrantAPIError) {
       return json(
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     const collection = url.searchParams.get('collection') || 'legal_documents';
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'search': {
+      case: 'search': {
         const query = url.searchParams.get('query');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100);
         const offset = parseInt(url.searchParams.get('offset') || '0');
@@ -365,7 +365,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      case 'status':
+      case: 'status':
       default: {
         let collections: QdrantCollectionInfo[]; // Explicitly typed collections
         let collectionInfo: QdrantCollectionInfo; // Explicitly typed collectionInfo (permissive)
@@ -373,7 +373,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           collections = await qdrant.getCollections();
           collectionInfo = await qdrant.getCollection(collection);
         } catch (err: unknown) {
-          // Changed 'any' to 'unknown'
+          // Changed: 'any' to: 'unknown'
           logger.error('Failed to get Qdrant collections/info:', err instanceof Error ? err : new Error(String(err)));
           throw new QdrantAPIError(
             'Failed to get Qdrant collections/info',
@@ -533,7 +533,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
       },
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     logger.error('Qdrant collection creation error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
       return json(
@@ -603,7 +603,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: `Cannot delete protected collection '${collection}'. Use forceDelete=true with confirmationToken to override.`,
+          error: `Cannot delete protected collection: '${collection}'. Use forceDelete=true with confirmationToken to override.`,
           hint: 'Protected collections require explicit confirmation',
         },
         { status: 400 } // Corrected json syntax
@@ -657,7 +657,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       },
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     logger.error('Qdrant collection deletion error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
       return json(

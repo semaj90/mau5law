@@ -31,7 +31,7 @@ export function validateLocalLLMAccess(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
     return LOCAL_LLM_CONFIG.ALLOWED_HOSTS.includes(
-      parsedUrl.hostname as "localhost" | "127.0.0.1"
+      parsedUrl.hostname as: "localhost" | "127.0.0.1"
     );
   } catch {
     return false;

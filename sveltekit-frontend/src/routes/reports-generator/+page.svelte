@@ -168,8 +168,8 @@
       <h1>📝 Report Builder</h1>
       <p class="space-y-4">AI-powered case analysis and report generation</p>
       <div class="space-y-4">
-        <button class="space-y-4" on:click={createNewReport}> 📄 New Report </button>
-        <button class="space-y-4" on:click={createNewCanvas}> 🎨 New Canvas </button>
+        <button class="space-y-4" onclick={createNewReport}> 📄 New Report </button>
+        <button class="space-y-4" onclick={createNewCanvas}> 🎨 New Canvas </button>
       </div>
     </div>
   </header>
@@ -189,10 +189,10 @@
   {:else}
     <!-- Tab Navigation -->
     <div class="space-y-4">
-      <button class="space-y-4" class:active={activeTab === 'editor'} on:click={() => (activeTab = 'editor')}>
+      <button class="space-y-4" class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}>
         📝 Report Editor
       </button>
-      <button class="space-y-4" class:active={activeTab === 'canvas'} on:click={() => (activeTab = 'canvas')}>
+      <button class="space-y-4" class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
     </div>

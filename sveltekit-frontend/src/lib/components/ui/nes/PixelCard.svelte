@@ -91,15 +91,15 @@
   // Rarity-based styling
   let rarityStyles = $derived(() => {
     switch (rarity) {
-      case 'common':
+      case: 'common':
         return { color: '#8B8B8B', glow: '#CCCCCC' };
-      case 'uncommon':
+      case: 'uncommon':
         return { color: '#1E90FF', glow: '#87CEEB' };
-      case 'rare':
+      case: 'rare':
         return { color: '#9932CC', glow: '#DDA0DD' };
-      case 'epic':
+      case: 'epic':
         return { color: '#FF6347', glow: '#FFA07A' };
-      case 'legendary':
+      case: 'legendary':
         return { color: '#FFD700', glow: '#FFFFE0' };
       default:
         return { color: '#8B8B8B', glow: '#CCCCCC' };

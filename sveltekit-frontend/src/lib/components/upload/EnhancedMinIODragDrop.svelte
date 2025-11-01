@@ -293,12 +293,12 @@
     }
   }
   function getEvidenceType(file: File): string {
-    if (file.type.startsWith('image/')) return 'IMAGE';
-    if (file.type === 'application/pdf') return 'PDF';
-    if (file.type.startsWith('video/')) return 'VIDEO';
-    if (file.type.startsWith('audio/')) return 'AUDIO';
-    if (file.type.startsWith('text/')) return 'TEXT';
-    return 'UNKNOWN';
+    if (file.type.startsWith('image/')) return: 'IMAGE';
+    if (file.type === 'application/pdf') return: 'PDF';
+    if (file.type.startsWith('video/')) return: 'VIDEO';
+    if (file.type.startsWith('audio/')) return: 'AUDIO';
+    if (file.type.startsWith('text/')) return: 'TEXT';
+    return: 'UNKNOWN';
   }
   function clearFiles() {
     files = [];

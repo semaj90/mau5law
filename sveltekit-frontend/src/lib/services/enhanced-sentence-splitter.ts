@@ -48,7 +48,7 @@ export class EnhancedSentenceSplitter {
     this.streamBufferSize = options.streamBufferSize ?? 100;
     this.customAbbreviations = new Set<string>();
 
-    // Precompile abbreviation regexes (except conditional 'No.') for performance
+    // Precompile abbreviation regexes (except conditional: 'No.') for performance
     this.abbreviationRegexes = Array.from(this.defaultAbbreviations)
       .filter(a => a !== 'No.')
       .map(abbr => ({ abbr, regex: new RegExp(abbr.replace(/\./g, '\\.'), 'g') }));
@@ -89,7 +89,7 @@ export class EnhancedSentenceSplitter {
     const replacements: Map<string, string> = new Map();
     let replacementIndex = 0;
 
-    // First handle conditional 'No.' separately (only when followed by digits)
+    // First handle conditional: 'No.' separately (only when followed by digits)
     if (allAbbreviations.has('No.')) {
       const placeholder = `__ABBR_${replacementIndex++}__`;
       replacements.set(placeholder, 'No.');
@@ -148,7 +148,7 @@ export class EnhancedSentenceSplitter {
         continue;
       }
 
-      // Collect run of consecutive short fragments (ending with '.')
+      // Collect run of consecutive short fragments (ending with: '.')
       const runStart = i;
       let runEnd = i;
       while (runEnd + 1 < sentences.length &&

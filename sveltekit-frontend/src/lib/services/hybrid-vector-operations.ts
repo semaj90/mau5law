@@ -6,7 +6,7 @@ import type { SQL } from 'drizzle-orm';
 import { db } from '$lib/server/db'; // assume an exported db object
 import { sql } from 'drizzle-orm';
 
-// Replace very broad 'any' aliases with minimal typed shapes
+// Replace very broad: 'any' aliases with minimal typed shapes
 type DBClient = {
 	// execute/query return array of rows represented as records
 	execute?: (q: SQL) => Promise<Record<string, unknown>[]>;

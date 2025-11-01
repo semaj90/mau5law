@@ -1,115 +1,152 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import CommandMenu from "./CommandMenu.svelte";
+
   interface Props {
     value?: string;
     placeholder?: string;
     rows?: number;
     disabled?: boolean;
     readonly?: boolean;
-    class?: string;
+    className?: string; // renamed from `class`
     triggerChar?: string;
-    onCommandSelect?: (command: string) => void;
+    // onCommandSelect was unused — removed
     onInput?: (data: { value: string; target: HTMLTextAreaElement }) => void;
-    onKeydown?: (e: CustomEvent<any>) => void;
+    onKeydown?: (e: KeyboardEvent) => void;
     onCommandInsert?: (data: { text: string }) => void;
     onBlur?: (e: FocusEvent) => void;
     onFocus?: (e: FocusEvent) => void;
   }
+
+  // use $props() and give sensible defaults
   let {
     value = $bindable(""),
     placeholder = "Type here... Use # for commands",
     rows = 4,
     disabled = false,
     readonly = false,
-    class = "",
+    className = "",
     triggerChar = "#",
-    onCommandSelect,
     onInput,
     onKeydown,
     onCommandInsert,
     onBlur,
     onFocus
   }: Props = $props();
-  let textarea: HTMLTextAreaElement;
-  let commandMenu: CommandMenu;
+
+  // make DOM refs reactive using Svelte 5 $state to avoid non-reactive update errors
+  let textarea = $state<HTMLTextAreaElement | null>(null);
+  let commandMenu = $state<any>(null);
   let showCommandMenu = $state(false);
   let commandMenuPosition = $state({ x: 0, y: 0 });
   let lastCursorPosition = $state(0);
+
   function handleInput(e: Event) {
-    // removed unused target assignment
-    value = target.valu;
+    const target = e.target as HTMLTextAreaElement;
+    if (!target) return;
+    value = target.value;
+
     // Check if user typed trigger character
-    const cursorPosition = target.selectionStart;
+    const cursorPosition = target.selectionStart ?? target.value.length;
     const textBeforeCursor = target.value.substring(0, cursorPosition);
     if (textBeforeCursor.endsWith(triggerChar)) {
       openCommandMenu();
-  }
+    }
+
     onInput?.({ value, target });
   }
+
   function handleKeydown(e: KeyboardEvent) {
     // Don't interfere with command menu navigation
     if (
       showCommandMenu &&
       ["ArrowUp", "ArrowDown", "Enter", "Escape"].includes(e.key)
     ) {
+      // allow CommandMenu consumer to handle navigation if it needs to
       return;
-  }
+    }
+
     // Ctrl/Cmd + K to open command menu
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
       e.preventDefault();
       openCommandMenu();
       return;
-  }
+    }
+
     onKeydown?.(e);
   }
+
   function openCommandMenu() {
-    if (!textarea) return;
+    if (!textarea || typeof window === "undefined") return;
     // Get cursor position
-    const cursorPosition = textarea.selectionStart;
-    lastCursorPosition = cursorPositio;
-    // Calculate menu position relative to cursor
+    const cursorPosition = textarea.selectionStart ?? textarea.value.length;
+    lastCursorPosition = cursorPosition;
+
+    // Calculate menu position relative to cursor (simple approximation)
     const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-    // removed unused lines assignment
-    const currentLine = lines.length - 1;
-    const currentColumn = lines[lines.length - 1].length;
-    // Simple approximation of cursor position
+    const lines = textBeforeCursor.split("\n");
+    const currentLineIndex = Math.max(0, lines.length - 1);
+    const currentColumn = lines[currentLineIndex]?.length ?? 0;
+
     const rect = textarea.getBoundingClientRect();
-    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight) || 20;
-    commandMenuPosition = {
-      x: rect.left + currentColumn * 8, // Approximate character width;
-      y: rect.top + currentLine * lineHeight + lineHeight,
-    }
+    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight || "20", 10) || 20;
+
+    // approximate x using character width (monospace assumption fallback)
+    const approxCharWidth = parseFloat(getComputedStyle(textarea).fontSize || "14") * 0.55;
+    const x = Math.round(rect.left + currentColumn * approxCharWidth + window.scrollX);
+    const y = Math.round(rect.top + (currentLineIndex + 1) * lineHeight + window.scrollY);
+
+    commandMenuPosition = { x, y };
     showCommandMenu = true;
-    commandMenu?.openCommandMenu();
   }
-  function handleCommandInsert(text: string) {
-    // The CommandMenu component handles text insertion
+
+  function insertCommandText(text: string) {
+    if (!textarea) return;
+    const before = textarea.value.slice(0, lastCursorPosition);
+    const after = textarea.value.slice(lastCursorPosition);
+    // replace trigger character if present at end of before
+    const trimmedBefore = before.endsWith(triggerChar) ? before.slice(0, -triggerChar.length) : before;
+    const newValue = `${trimmedBefore}${text}${after}`;
+    value = newValue;
+    // update textarea and restore focus/cursor
+    $nextTick?.(() => {
+      textarea.focus();
+      const pos = trimmedBefore.length + text.length;
+      textarea.setSelectionRange(pos, pos);
+    });
     showCommandMenu = false;
-    textarea.focus();
     onCommandInsert?.({ text });
   }
+
+  function closeCommandMenu() {
+    showCommandMenu = false;
+  }
+
   function handleBlur(e: FocusEvent) {
     // Don't close command menu immediately to allow clicking on it
     setTimeout(() => {
       if (!document.activeElement?.closest(".command-menu")) {
         showCommandMenu = false;
-  }
+      }
     }, 150);
     onBlur?.(e);
   }
+
   function handleFocus(e: FocusEvent) {
     onFocus?.(e);
   }
+
   // Auto-resize textarea
   function autoResize() {
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = textarea.scrollHeight + "px";
-  }}
+    }
+  }
+
   // Watch for value changes to auto-resize
   $effect(() => {
     if (value !== undefined) {
@@ -118,32 +155,29 @@ https://svelte.dev/e/js_parse_error -->
   });
 </script>
 
-<div class="space-y-4">
+<div class={className}>
   <textarea
     bind:this={textarea}
-    bind:value
-    {placeholder}
-    {rows}
+    bind:value={value}
+    placeholder={placeholder}
+    rows={rows}
     {disabled}
     {readonly}
-    class="space-y-4"
+    class="smart-textarea"
     oninput={handleInput}
-    keydown={handleKeydown}
-    onblur={handleBlur}
-    onfocus={handleFocus}
-  ></textarea>
+    onkeydown={handleKeydown}
+    onblur={(e) => { onBlur?.(e); closeCommandMenu(); }}
+    onfocus={(e) => { onFocus?.(e); }}
+    aria-label="Smart textarea"
+  />
   {#if showCommandMenu}
     <div
-      class="space-y-4"
-      style="position fixed;
-d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 1000;"
+      class="command-menu"
+      style="position: absolute; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index:9999;"
+      role="listbox"
     >
-      <CommandMenu
-        bind:this={commandMenu}
-        textareaElement={textarea}
-        insert={handleCommandInsert}
-        close={() => (showCommandMenu = false)}
-      />
+      <!-- CommandMenu API may vary; provide a callback prop that CommandMenu can call -->
+      <CommandMenu {triggerChar} on:select={(e) => insertCommandText(e.detail?.text ?? e.detail ?? '')} onclose={closeCommandMenu} />
     </div>
   {/if}
 </div>
@@ -151,7 +185,7 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
 <style>
   /* @unocss-include */
   .smart-textarea-container {
-    position relative;
+    position: relative;
   }
   .smart-textarea {
     width: 100%;
@@ -165,8 +199,7 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     line-height: 1.5;
     background: var(--pico-card-background-color, #ffffff);
     color: var(--pico-color, #111827);
-    transition: border-color 0.15s ease,
-      box-shadow 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .smart-textarea:focus {
     outline: none;
@@ -178,7 +211,7 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     cursor: not-allowed;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
   }
-  .smart-textarea:read-only {
+  .smart-textarea[readonly] {
     background: var(--pico-card-sectioning-background-color, #f8fafc);
   }
   .smart-textarea::placeholder {
@@ -189,8 +222,8 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
   }
   /* Help text styling */
   .smart-textarea-container::after {
-    content: 'Tip: Use # for commands or Ctrl/Cmd + K',
-    position absolute;
+    content: 'Tip: Use # for commands or Ctrl/Cmd + K';
+    position: absolute;
     bottom: -1.5rem;
     right: 0;
     font-size: 0.75rem;
@@ -201,5 +234,6 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
   .smart-textarea-container:hover::after {
     opacity: 1;
   }
+  .command-menu { background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px; }
 </style>
 

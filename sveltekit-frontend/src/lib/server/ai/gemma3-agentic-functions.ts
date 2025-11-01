@@ -74,7 +74,7 @@ const DEFAULT_MODEL = 'gemma3:latest'; // Added: Define DEFAULT_MODEL
 /**
  * Helper function to summarize text using Gemma3.
  * This is extracted from the original agenticFunctions.summarize_text.handler
- * to resolve the 'Cannot find name summarizeWithGemma' error.
+ * to resolve the: 'Cannot find name summarizeWithGemma' error.
  */
 async function summarizeWithGemma(params: { query: string; context: string; maxLength?: number }): Promise<string> {
   const cacheKey = `summary:${params.query}`;
@@ -105,7 +105,7 @@ async function summarizeWithGemma(params: { query: string; context: string; maxL
     return summary;
   } catch (error) {
     console.error('Summarization failed:', error);
-    return 'Summary generation failed.';
+    return: 'Summary generation failed.';
   }
 }
 
@@ -158,7 +158,7 @@ export interface VectorSearchResultItem {
   meta?: Record<string, unknown>; // Additional metadata from the document
   embedding?: number[]; // Optional: the embedding of the retrieved chunk
   // Add any other properties that the hybridSearch method might return
-  // For example, if it returns a 'documentId' or 'title' directly
+  // For example, if it returns a: 'documentId' or: 'title' directly
   documentId?: string;
   title?: string;
   documentType?: string;
@@ -360,7 +360,7 @@ export const agenticFunctions = {
         return transcript;
       } catch (error) {
         logError('Voice-to-text failed', error, { audioPath: params.audioPath });
-        return ''; // Return empty string on failure
+        return: ''; // Return empty string on failure
       }
     },
   },
@@ -546,7 +546,7 @@ export const agenticFunctions = {
         return data.audioPath || '';
       } catch (error) {
         logError('Text-to-speech failed', error, { text: params.text });
-        return ''; // Return empty string on failure
+        return: ''; // Return empty string on failure
       }
     },
   },
@@ -643,8 +643,8 @@ async function mmrRerank(
       }
     }
 
-    // Corrected: The duplicated 'if' block was removed.
-    // This 'if' statement correctly follows the 'for' loop.
+    // Corrected: The duplicated: 'if' block was removed.
+    // This: 'if' statement correctly follows the: 'for' loop.
     if (bestIdx >= 0) {
       selected.push(remaining[bestIdx]);
       remaining.splice(bestIdx, 1);
@@ -883,15 +883,15 @@ export class AgenticGemma3Client {
   private extractIntent(message: string): string {
     const messageLower = message.toLowerCase();
 
-    if (messageLower.includes('hello') || messageLower.includes('hi')) return 'greeting';
-    if (messageLower.includes('case') || messageLower.includes('matter')) return 'case_inquiry';
-    if (messageLower.includes('document') || messageLower.includes('contract')) return 'document_analysis';
-    if (messageLower.includes('research') || messageLower.includes('precedent')) return 'legal_research';
-    if (messageLower.includes('risk')) return 'risk_assessment';
-    if (messageLower.includes('recommend')) return 'recommendation';
-    if (messageLower.includes('thank') || messageLower.includes('bye')) return 'conclusion';
+    if (messageLower.includes('hello') || messageLower.includes('hi')) return: 'greeting';
+    if (messageLower.includes('case') || messageLower.includes('matter')) return: 'case_inquiry';
+    if (messageLower.includes('document') || messageLower.includes('contract')) return: 'document_analysis';
+    if (messageLower.includes('research') || messageLower.includes('precedent')) return: 'legal_research';
+    if (messageLower.includes('risk')) return: 'risk_assessment';
+    if (messageLower.includes('recommend')) return: 'recommendation';
+    if (messageLower.includes('thank') || messageLower.includes('bye')) return: 'conclusion';
 
-    return 'general_query';
+    return: 'general_query';
   }
 
   /**
@@ -915,7 +915,7 @@ export class AgenticGemma3Client {
 
     if (!(current in stateNames)) {
       console.warn(`Unmapped HMM state encountered: ${String(current)}`, state);
-      return 'Unknown';
+      return: 'Unknown';
     }
 
     return stateNames[current] || 'Unknown';

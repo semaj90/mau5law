@@ -29,13 +29,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case 'status':
+      case: 'status':
         const status = completeErrorPipeline.getPipelineStatus();
         return json({ success: true, status });
-      case 'report':
+      case: 'report':
         const report = await completeErrorPipeline.generateStatusReport();
         return json({ success: true, report });
-      case 'run':
+      case: 'run':
         const result = await completeErrorPipeline.runCompleteErrorProcessing();
         return json({ success: true, result });
       default:

@@ -121,7 +121,7 @@ export function hashEmbedding(textPtr: usize, textLen: i32, embeddingPtr: usize,
 }
 
 // Add lightweight aliases so TypeScript tooling recognizes AssemblyScript primitive names
-// These aliases keep the file compatible with AS intent while avoiding TS "Cannot find name" errors
+// These aliases keep the file compatible with AS intent while avoiding TS: "Cannot find name" errors
 type u32 = number;
 type u8 = number;
 type i32 = number;

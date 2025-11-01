@@ -1,7 +1,7 @@
-// Lightweight shim for "$lib/server/db/schema-postgres" to reduce TypeScript
+// Lightweight shim for: "$lib/server/db/schema-postgres" to reduce TypeScript
 // noise while migrating. Exports are intentionally typed as `any` and are
 // temporary until the canonical schema types are reconciled.
-declare module '$lib/server/db/schema-postgres' {
+declare module: '$lib/server/db/schema-postgres' {
   // Common tables / aliases
   export const users: any;
   export const sessions: any;
@@ -52,7 +52,7 @@ declare module '$lib/server/db/schema-postgres' {
   export const __any: any;
 }
 // Also support importing from the JS-extended path
-declare module '$lib/server/db/schema-postgres.js' {
+declare module: '$lib/server/db/schema-postgres.js' {
   const shim: any;
   export = shim;
 }

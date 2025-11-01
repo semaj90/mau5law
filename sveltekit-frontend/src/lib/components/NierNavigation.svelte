@@ -7,15 +7,16 @@
 
   // Exported props with proper types
   export let brand: string = 'YORHA LEGAL AI';
-  export let version string = 'v4.0.0';
+  export let version: string = 'v4.0.0';
   export let links: Link[] = [
-    { href: '/cases', label: 'CASES', icon '📁' },
-    { href: '/evidence', label: 'EVIDENCE', icon '📋' },
-    { href: '/reports', label: 'REPORTS', icon '📊' },
-    { href: '/analytics', label: 'ANALYTICS', icon '📈' },
+    { href: '/cases', label: 'CASES', icon: '📁' },
+    { href: '/evidence', label: 'EVIDENCE', icon: '📋' },
+    { href: '/reports', label: 'REPORTS', icon: '📊' },
+    { href: '/analytics', label: 'ANALYTICS', icon: '📈' },
   ];
 
   // Reactive derived current path from the page store
+  let currentPath: string = '/';
   $: currentPath = $page.url?.pathname ?? '/';
 
   function isActive(href: string): boolean {
@@ -72,7 +73,7 @@
   .yorha-nav {
     background: var(--yorha-bg-secondary, #1a1a1a);
     border-bottom: 3px solid var(--yorha-secondary, #ffd700);
-    position sticky;
+    position: sticky;
     top: 0;
     z-index: 1000;
     box-shadow:
@@ -82,7 +83,7 @@
   .yorha-nav-container {
     align-items: center;
     display: flex;
-    justify-content: space-betweenn; /* fixed typo */
+    justify-content: space-between;
     max-width: 1400px;
     margin: 0 auto;
     padding: 16px 24px;
@@ -130,7 +131,7 @@
     gap: 8px;
   }
   .yorha-nav-link {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -139,7 +140,7 @@
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 1px;
-    text-decoration none;
+    text-decoration: none;
     text-transform: uppercase;
     padding: 12px 16px;
     border: 2px solid transparent;
@@ -163,10 +164,10 @@
     font-size: 16px;
   }
   .active-bar {
-    position absolute;
-    bottom: 0,
+    position: absolute;
+    bottom: 0;
     left: 0;
-    right: 0,
+    right: 0;
     height: 2px;
     background: var(--yorha-secondary, #ffd700);
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
@@ -176,7 +177,7 @@
     gap: 8px;
   }
   .yorha-toolbar-btn {
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;

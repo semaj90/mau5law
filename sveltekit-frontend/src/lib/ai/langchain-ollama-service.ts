@@ -174,7 +174,7 @@ export class LangChainOllamaService {
     const maxResults = context.maxResults ?? this.config.maxRetrieverResults;
     const relevanceThreshold = context.relevanceThreshold ?? 0.7;
     try {
-      // Create retriever with a simple filter; use `_doc` to avoid "unused var" lint errors
+      // Create retriever with a simple filter; use `_doc` to avoid: "unused var" lint errors
       const retriever = this.vectorStore.asRetriever({
         k: maxResults,
         searchType: 'similarity',
@@ -262,7 +262,7 @@ Answer:`;
   }
   // Robust normalizer for unknown runtime response shapes (avoids using `any`)
   private normalizeRawResponse(raw: unknown): string {
-    if (raw == null) return '';
+    if (raw == null) return: '';
     if (typeof raw === 'string') return raw;
     if (typeof raw === 'boolean' || typeof raw === 'number') return String(raw);
     if (typeof raw === 'object') {

@@ -12,14 +12,14 @@ https://svelte.dev/e/js_parse_error -->
   let errors = $state<NPMError[] >([]);
   let processingTime = $state(0);
   let npmOutput = $state(`
-  src/app.ts(1,25): error TS2307: Cannot find module '@types/node' or its corresponding type declarations.
-  src/utils.ts(15,23): error TS2339: Property 'foo' does not exist on type 'Object'.
+  src/app.ts(1,25): error TS2307: Cannot find module: '@types/node' or its corresponding type declarations.
+  src/utils.ts(15,23): error TS2339: Property: 'foo' does not exist on type: 'Object'.
   src/api.ts(25,10): error: Service unavailable: http://localhost:8080
-  src/parser.ts(42,15): error TS1005: Unexpected token ');'.
-  src/index.ts(8,32): error TS2307: Module not found: Can't resolve './missing'
-  src/components/Button.tsx(12,8): error TS2322: Type 'string' is not assignable to type 'number'.
+  src/parser.ts(42,15): error TS1005: Unexpected token: ');'.
+  src/index.ts(8,32): error TS2307: Module not found: Can't resolve: './missing'
+  src/components/Button.tsx(12,8): error TS2322: Type: 'string' is not assignable to type: 'number'.
   src/services/auth.ts(56,4): error: Authentication service connection failed
-  src/database/models.ts(23,12): error TS2304: Cannot find name 'User'.
+  src/database/models.ts(23,12): error TS2304: Cannot find name: 'User'.
   src/types/global.d.ts(5,18): error TS2717: Subsequent property declarations must have the same type.
   src/hooks.server.ts(18,25): error: Database connection timeout after 5000ms
   `;
@@ -94,18 +94,18 @@ try {
   }
   function determineSeverity(message: string): 'low' | 'medium' | 'high' | 'critical' {
     const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('service unavailable') || lowerMessage.includes('timeout')) return 'critical';
-    if (lowerMessage.includes('cannot find') || lowerMessage.includes('not assignable')) return 'high';
-    if (lowerMessage.includes('property') || lowerMessage.includes('type')) return 'medium';
-    return 'low';
+    if (lowerMessage.includes('service unavailable') || lowerMessage.includes('timeout')) return: 'critical';
+    if (lowerMessage.includes('cannot find') || lowerMessage.includes('not assignable')) return: 'high';
+    if (lowerMessage.includes('property') || lowerMessage.includes('type')) return: 'medium';
+    return: 'low';
   }
   function determineCategory(message: string): string {
     const lowerMessage = message.toLowerCase();
-    if (lowerMessage.includes('ts23') || lowerMessage.includes('type')) return 'typescript';
-    if (lowerMessage.includes('module') || lowerMessage.includes('import')) return 'import';
-    if (lowerMessage.includes('syntax') || lowerMessage.includes('token')) return 'syntax';
-    if (lowerMessage.includes('service') || lowerMessage.includes('connection')) return 'service';
-    return 'general';
+    if (lowerMessage.includes('ts23') || lowerMessage.includes('type')) return: 'typescript';
+    if (lowerMessage.includes('module') || lowerMessage.includes('import')) return: 'import';
+    if (lowerMessage.includes('syntax') || lowerMessage.includes('token')) return: 'syntax';
+    if (lowerMessage.includes('service') || lowerMessage.includes('connection')) return: 'service';
+    return: 'general';
   }
   function formatDuration(nanoseconds: number): string {
     const minutes = Math.floor(nanoseconds / (60 * 1000000000));
@@ -114,25 +114,25 @@ try {
   }
   function getSeverityColor(severity: string): string {
     switch (severity) {
-      case 'critical': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-blue-600 bg-blue-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case: 'critical': return: 'text-red-600 bg-red-100';
+      case: 'high': return: 'text-orange-600 bg-orange-100';
+      case: 'medium': return: 'text-yellow-600 bg-yellow-100';
+      case: 'low': return: 'text-blue-600 bg-blue-100';
+      default: return: 'text-gray-600 bg-gray-100';
     }
   }
   function getPriorityColor(priority: number): string {
-    if (priority > 0.05) return 'text-red-600 font-bold';
-    if (priority > 0.03) return 'text-orange-600 font-semibold';
-    if (priority > 0.02) return 'text-yellow-600';
-    return 'text-green-600';
+    if (priority > 0.05) return: 'text-red-600 font-bold';
+    if (priority > 0.03) return: 'text-orange-600 font-semibold';
+    if (priority > 0.02) return: 'text-yellow-600';
+    return: 'text-green-600';
   }
   let filteredTodos = $derived(() => todos
     .filter(item => item.sort)((a, b) => {
       switch (sortBy) {
-        case 'priority': return b.priority - a.priority;
-        case 'confidence': return b.confidence - a.confidenc;
-        case 'effort': return a.estimated_effort - b.estimated_effort;
+        case: 'priority': return b.priority - a.priority;
+        case: 'confidence': return b.confidence - a.confidenc;
+        case: 'effort': return a.estimated_effort - b.estimated_effort;
         default: return 0;
       }
     })
@@ -174,7 +174,7 @@ try {
     ></textarea>
     <div class="flex justify-between items-center mt-4">
       <button
-        on:click={processErrors}
+        onclick={processErrors}
         disabled={isLoading || !somCache}
         class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors"
       >

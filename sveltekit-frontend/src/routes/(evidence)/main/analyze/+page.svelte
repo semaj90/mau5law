@@ -25,9 +25,9 @@
     name: string;
     key: string;
     status: 'pending' | 'processing' | 'completed';
-    description string;
-    icon string;
-    duration string;
+    description: string;
+    icon: string;
+    duration: string;
   }
 
   interface EvidenceType {
@@ -62,44 +62,44 @@
   // Form data
   let caseId = $state('');
   let evidenceContent = $state('');
-  let evidenceFile = $state<File | null>(null);
+  let evidenceFile = $state(null as File | null);
   let evidenceType = $state('police_report');
   let priority = $state('medium');
   let sessionId = $state('');
 
   // Analysis pipeline steps with enhanced metadata
-  let steps = $state<AnalysisStep[]>([
+  let steps = $state([
     {
       name: 'Evidence Analysis',
       key: 'evidence_analysis',
-      status: 'pending',
-      description 'Structuring document and extracting key facts',
-      icon '📋',
-      duration '30-45s',
+      status: 'pending' as const,
+      description: 'Structuring document and extracting key facts',
+      icon: '📋',
+      duration: '30-45s',
     },
     {
       name: 'Person Extraction',
       key: 'persons_extracted',
-      status: 'pending',
-      description 'Identifying persons of interest and roles',
-      icon '👥',
-      duration '20-30s',
+      status: 'pending' as const,
+      description: 'Identifying persons of interest and roles',
+      icon: '👥',
+      duration: '20-30s',
     },
     {
       name: 'Relationship Mapping',
       key: 'neo4j_updates',
-      status: 'pending',
-      description 'Building knowledge graph connections',
-      icon '🔗',
-      duration '15-25s',
+      status: 'pending' as const,
+      description: 'Building knowledge graph connections',
+      icon: '🔗',
+      duration: '15-25s',
     },
     {
       name: 'Case Synthesis',
       key: 'case_synthesis',
-      status: 'pending',
-      description 'Generating prosecutorial analysis',
-      icon '⚖️',
-      duration '25-35s',
+      status: 'pending' as const,
+      description: 'Generating prosecutorial analysis',
+      icon: '⚖️',
+      duration: '25-35s',
     },
   ]);
 

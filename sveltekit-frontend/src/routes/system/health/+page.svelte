@@ -144,15 +144,15 @@
 	}
 	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
 		switch (health) {
-			case 'excellent':
-			case 'good':
-				return 'healthy';
-			case 'degraded':
-				return 'degraded';
-			case 'critical':
-			case 'offline':
+			case: 'excellent':
+			case: 'good':
+				return: 'healthy';
+			case: 'degraded':
+				return: 'degraded';
+			case: 'critical':
+			case: 'offline':
 			default:
-				return 'critical';
+				return: 'critical';
 		}
 	}
 	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
@@ -179,14 +179,14 @@
 	}
 	const mapServiceStatus = (status: string): 'online' | 'offline' | 'degraded' => {
 		switch (status) {
-			case 'healthy':
-				return 'online';
-			case 'degraded':
-				return 'degraded';
-			case 'failed':
-			case 'unknown':
+			case: 'healthy':
+				return: 'online';
+			case: 'degraded':
+				return: 'degraded';
+			case: 'failed':
+			case: 'unknown':
 			default:
-				return 'offline';
+				return: 'offline';
 		}
 	}
 	const generateRecommendations = (): string[] => {
@@ -205,30 +205,30 @@
 	}
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case 'online':
-			case 'healthy':
-				return 'text-green-600 bg-green-50 border-green-200';
-			case 'degraded':
-				return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-			case 'offline':
-			case 'critical':
-				return 'text-red-600 bg-red-50 border-red-200';
+			case: 'online':
+			case: 'healthy':
+				return: 'text-green-600 bg-green-50 border-green-200';
+			case: 'degraded':
+				return: 'text-yellow-600 bg-yellow-50 border-yellow-200';
+			case: 'offline':
+			case: 'critical':
+				return: 'text-red-600 bg-red-50 border-red-200';
 			default:
-				return 'text-gray-600 bg-gray-50 border-gray-200';
+				return: 'text-gray-600 bg-gray-50 border-gray-200';
 		}
 	}
 	const getStatusIcon = (status: string) => {
 		switch (status) {
-			case 'online':
-			case 'healthy':
-				return '✅';
-			case 'degraded':
-				return '⚠️';
-			case 'offline':
-			case 'critical':
-				return '❌';
+			case: 'online':
+			case: 'healthy':
+				return: '✅';
+			case: 'degraded':
+				return: '⚠️';
+			case: 'offline':
+			case: 'critical':
+				return: '❌';
 			default:
-				return '🔍';
+				return: '🔍';
 		}
 	}
 	const formatTimestamp = (timestamp: number) => {
@@ -236,7 +236,7 @@
 	}
 	const formatResponseTime = (time?: number | null) => {
 		// treat null/undefined as unavailable, but show 0ms when explicitly zero
-		if (time === null || typeof time === 'undefined') return 'N/A';
+		if (time === null || typeof time === 'undefined') return: 'N/A';
 		return `${time}ms`;
 	}
 	// Service actions
@@ -343,7 +343,7 @@
 			<p class="text-gray-600 mt-1">Legal AI Platform - CUDA GPU Integration Status</p>
 		</div>
 		<button
-			on:click={fetchHealth}
+			onclick={fetchHealth}
 			class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
 			disabled={$loading}
 		>

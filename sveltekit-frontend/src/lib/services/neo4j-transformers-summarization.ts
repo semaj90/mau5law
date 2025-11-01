@@ -52,7 +52,7 @@ export interface LegalEntity {
 }
 
 export interface Relationship {
-  from: string;
+  from string;
   to: string;
   type: string;
   strength: number;
@@ -231,7 +231,7 @@ export class Neo4jTransformersSummarization {
       return resp?.answer ?? 'Summary could not be generated';
     } catch (error: unknown) {
       console.error('❌ Summary generation failed:', error instanceof Error ? error.message : String(error));
-      return 'Summary generation failed due to processing error';
+      return: 'Summary generation failed due to processing error';
     }
   }
 
@@ -331,7 +331,7 @@ export class Neo4jTransformersSummarization {
           const relType = typeof obj.type === 'string' ? obj.type : 'related_to';
           const strength = typeof obj.strength === 'number' ? obj.strength : 0.5;
           relationships.push({
-            from: from.id,
+            from from.id,
             to: to.id,
             type: relType,
             strength,
@@ -363,9 +363,9 @@ export class Neo4jTransformersSummarization {
             let type = 'mentioned_together';
             let strength = Math.max(0.3, 1 - distance / 500);
             const snippet = content.slice(Math.min(posA, posB), Math.max(posA, posB) + Math.max(a.name.length, b.name.length));
-            if (snippet.includes(' v. ') || snippet.includes(' vs ')) { type = 'legal_opposition'; strength = 0.9; }
+            if (snippet.includes(' v. ') || snippet.includes(' vs: ')) { type = 'legal_opposition'; strength = 0.9; }
             else if (/represent|attorney|counsel/.test(snippet)) { type = 'legal_representation'; strength = 0.8; }
-            rels.push({ from: a.id, to: b.id, type, strength, metadata: { extractionMethod: 'heuristic', distance, snippet: snippet.slice(0, 200) } });
+            rels.push({ from a.id, to: b.id, type, strength, metadata: { extractionMethod: 'heuristic', distance, snippet: snippet.slice(0, 200) } });
           }
         }
       }
@@ -610,7 +610,7 @@ export class Neo4jTransformersSummarization {
             return { answer: answer ?? undefined, confidence: confidence ?? undefined, raw: res };
           }
         } catch (err: unknown) {
-          console.warn(`⚠️ RAG candidate "${name}" failed:`, err instanceof Error ? err.message : String(err));
+          console.warn(`⚠️ RAG candidate: "${name}" failed:`, err instanceof Error ? err.message : String(err));
           // try next candidate
           continue;
         }

@@ -2,39 +2,71 @@
  * Drizzle ORM Compatibility Fix - PostgreSQL + pgvector Integration
  * Systematic resolution of database type mismatches and missing methods
  */
-import { barrelStore } from '../stores/barrel-functions.js';
+
+import type { Sql } from 'postgres';
 
 // Lightweight DB types to avoid `any`
-type DBRow = Record<string, unknown>;
-type QueryResult<T = DBRow> = { rows?: T[]; rowCount?: number; command?: string } & Record<string, unknown>;
-type DBClient = {
+export type DBRow = Record<string, unknown>;
+export interface QueryResult<T = DBRow> {
+  rows?: T[];
+  rowCount?: number;
+  command?: string;
+  [key: string]: unknown;
+}
+
+export interface DBClient {
   query?: (...args: unknown[]) => Promise<QueryResult>;
   execute?: (...args: unknown[]) => Promise<QueryResult>;
+  connect?: () => Promise<unknown>;
+  end?: () => Promise<void>;
   [key: string]: unknown;
+}
+
+// Fallback ensureProperties in case barrelStore.database.ensureProperties is not present.
+// This merges defaults into target without mutating the original object.
+const fallbackEnsureProperties = <T extends DBRow>(target: unknown, defaults: T): T => {
+  const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } : {};
+  for (const [k, v] of Object.entries(defaults)) {
+    if (!(k in base) || base[k] === undefined || base[k] === null) {
+      (base as Record<string, unknown>)[k] = v;
+    }
+  }
+  return base as T;
 };
 
-// ===== DRIZZLE ORM TYPE COMPATIBILITY =====
-export interface DrizzleCompatibilityLayer {
-  handleQueryResult: <T extends DBRow = DBRow>(result: unknown) => T[];
-  ensureConnection: (client: DBClient | unknown) => Promise<DBClient>;
-  safePropertyAccess: <T>(obj: unknown, property: string, defaultValue: T) => T;
-  vectorOperations: {
-    similarity: (vector1: number[], vector2: number[]) => number;
-    distance: (vector1: number[], vector2: number[]) => number;
-    normalize: (vector: number[]) => number[];
-  };
-}
+// runtime barrelStore accessor (safe)
+export const getBarrelStore = (): any => {
+  try {
+    const g = (globalThis as any);
+    return g?.barrelStore ?? undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+// Safe accessor for optional runtime-provided ensureProperties
+export const safeEnsureProperties = <T extends DBRow>(obj: unknown, defaults: T): T => {
+  try {
+    const barrelStore = getBarrelStore();
+    const fn = barrelStore?.database?.ensureProperties;
+    if (typeof fn === 'function') {
+      return fn(obj, defaults) as T;
+    }
+  } catch {
+    // ignore and fall back
+  }
+  return fallbackEnsureProperties(obj, defaults);
+};
 
 // Type guard for QueryResult
 const isQueryResult = (v: unknown): v is QueryResult => {
-  return (
-    typeof v === 'object' &&
-    v !== null &&
-    ('rows' in (v as Record<string, unknown>) || 'rowCount' in (v as Record<string, unknown>))
-  );
+  if (typeof v !== 'object' || v === null) return false;
+  const candidate = v as Record<string, unknown>;
+  if ('rows' in candidate) return Array.isArray(candidate.rows);
+  return typeof candidate.rowCount === 'number';
 };
 
-// Common default shape used when enhancing rows
+// Default row shape used to ensure consistent properties
 const defaultRowShape: DBRow = {
   id: null,
   created_at: new Date().toISOString(),
@@ -45,157 +77,102 @@ const defaultRowShape: DBRow = {
   message: '',
   content: '',
   metadata: {},
-  sources: [],
+  sources: []
 };
 
-// ===== ENHANCED QUERY RESULT HANDLER =====
+// Robust handler that normalizes many driver result shapes into an array of rows
 export const handleQueryResult = <T extends DBRow = DBRow>(result: unknown): T[] => {
   if (result == null) return [];
 
-  // If result is array of rows
   if (Array.isArray(result)) {
-    return result.map(row => {
-      const r = barrelStore.database.ensureProperties(row as DBRow, defaultRowShape) as T;
-      return r;
-    });
+    return result.map((r) => safeEnsureProperties(r, defaultRowShape) as T);
   }
 
-  // If result follows QueryResult shape (e.g., { rows: [...] })
   if (isQueryResult(result)) {
     const rows = Array.isArray(result.rows) ? result.rows : [];
-    return rows.map(row => barrelStore.database.ensureProperties(row as DBRow, defaultRowShape) as T);
+    return rows.map((r) => safeEnsureProperties(r, defaultRowShape) as T);
   }
 
-  // If single object row
-  if (typeof result === 'object') {
-    const enhanced = barrelStore.database.ensureProperties(result as DBRow, defaultRowShape) as T;
-    return [enhanced];
+  if (typeof result === 'object' && result !== null) {
+    return [safeEnsureProperties(result as DBRow, defaultRowShape) as T];
   }
 
   console.warn('Unexpected query result format:', typeof result, result);
   return [];
 };
 
-// ===== SAFE PROPERTY ACCESS =====
-export const safePropertyAccess = <T>(obj: unknown, property: string, defaultValue: T): T => {
-  if (typeof obj !== 'object' || obj === null) return defaultValue;
-  const keys = property.split('.');
-  let current: unknown = obj as Record<string, unknown>;
+// Safe nested property access helper
+export const safePropertyAccess = <T>(obj: unknown, path: string, fallback: T): T => {
+  if (typeof obj !== 'object' || obj === null) return fallback;
+  const keys = path.split('.');
+  let current: any = obj;
   for (const key of keys) {
-    if (typeof current === 'object' && current !== null && key in (current as Record<string, unknown>)) {
-      current = (current as Record<string, unknown>)[key];
+    if (current && typeof current === 'object' && key in current) {
+      current = current[key];
     } else {
-      return defaultValue;
+      return fallback;
     }
   }
-  return (current as T) ?? defaultValue;
+  return (current as T) ?? fallback;
 };
 
-// ===== VECTOR OPERATIONS COMPATIBILITY =====
+// Vector utilities (cosine similarity, euclidean distance, normalize)
 export const vectorOperations = {
-  similarity: (vector1: number[], vector2: number[]): number => {
-    if (!vector1 || !vector2 || vector1.length !== vector2.length) {
-      return 0;
-    }
-    let dotProduct = 0;
-    let magnitude1 = 0;
-    let magnitude2 = 0;
-    for (let i = 0; i < vector1.length; i++) {
-      dotProduct += vector1[i] * vector2[i];
-      magnitude1 += vector1[i] * vector1[i];
-      magnitude2 += vector2[i] * vector2[i];
-    }
-    const magnitude = Math.sqrt(magnitude1) * Math.sqrt(magnitude2);
-    return magnitude === 0 ? 0 : dotProduct / magnitude;
+  similarity: (a: number[], b: number[]): number => {
+    if (!a?.length || !b?.length || a.length !== b.length) return 0;
+    const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+    const magA = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
+    const magB = Math.sqrt(b.reduce((s, v) => s + v * v, 0));
+    const denom = magA * magB;
+    return denom ? dot / denom : 0;
   },
-  distance: (vector1: number[], vector2: number[]): number => {
-    if (!vector1 || !vector2 || vector1.length !== vector2.length) {
-      return Infinity;
-    }
-    let sum = 0;
-    for (let i = 0; i < vector1.length; i++) {
-      const diff = vector1[i] - vector2[i];
-      sum += diff * diff;
-    }
-    return Math.sqrt(sum);
+  distance: (a: number[], b: number[]): number => {
+    if (!a?.length || !b?.length || a.length !== b.length) return Infinity;
+    return Math.sqrt(a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0));
   },
-  normalize: (vector: number[]): number[] => {
-    if (!vector || vector.length === 0) {
-      return [];
-    }
-    let magnitude = 0;
-    for (const component of vector) {
-      magnitude += component * component;
-    }
-    magnitude = Math.sqrt(magnitude);
-    if (magnitude === 0) {
-      return new Array(vector.length).fill(0);
-    }
-    return vector.map(component => component / magnitude);
+  normalize: (a: number[]): number[] => {
+    const mag = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
+    return mag ? a.map((v) => v / mag) : Array(a.length).fill(0);
   }
-}
+};
 
-// ===== CONNECTION MANAGEMENT =====
-export const ensureConnection = async (client: DBClient | unknown): Promise<DBClient> => {
-  if (!client || typeof client !== 'object') {
-    throw new Error('Database client is null, undefined, or not an object');
+// Defensive connection ensurer that accepts a client or tries runtime-injected client
+export const ensureConnection = async (client: DBClient | Sql | unknown): Promise<DBClient> => {
+  let dbClient: DBClient | undefined;
+
+  if (client && typeof client === 'object') dbClient = client as DBClient;
+  else {
+    const barrelStore = getBarrelStore();
+    dbClient = barrelStore?.database?.client as DBClient;
   }
-  const dbClient = client as DBClient;
 
-  const requiredMethods: Array<keyof DBClient> = ['query', 'execute'];
-  for (const method of requiredMethods) {
-    if (typeof dbClient[method] !== 'function') {
-      console.warn(`Database client missing method: ${String(method)} - injecting no-op`);
-      (dbClient as Record<string, unknown>)[method] = async (..._args: unknown[]) => {
-        return { rows: [], rowCount: 0 } as QueryResult;
-      };
-    }
+  if (!dbClient) {
+    console.warn('ensureConnection: No DB client found — returning empty stub.');
+    return {} as DBClient;
   }
 
   try {
-    if (typeof dbClient.query === 'function') {
-      // best-effort connection test
-      await dbClient.query('SELECT 1');
-    }
-  } catch (err: unknown) {
-    console.warn('Database connection test failed:', err);
+    if (typeof dbClient.connect === 'function') await (dbClient.connect() as Promise<unknown>).catch(() => {});
+  } catch (e) {
+    console.warn('ensureConnection: connect() failed', e);
+  }
+
+  try {
+    const fn = (dbClient as any).query ?? (dbClient as any).execute;
+    if (typeof fn === 'function') await Promise.resolve(fn('SELECT 1')).catch(() => {});
+  } catch (e) {
+    console.warn('ensureConnection: ping failed', e);
   }
 
   return dbClient;
 };
 
-// ===== ENHANCED DRIZZLE COMPATIBILITY LAYER =====
-export const drizzleCompatibilityLayer: DrizzleCompatibilityLayer = {
-  handleQueryResult,
-  ensureConnection,
-  safePropertyAccess,
-  vectorOperations,
-};
+// Small helper to enforce result typing by merging defaults
+export const enhanceResultWithTypes = <T extends DBRow>(result: unknown, defaults: T): T =>
+  safeEnsureProperties(result, defaults);
 
-// ===== TYPE-SAFE RESULT ENHANCER =====
-export const enhanceResultWithTypes = <T extends Record<string, unknown>>(
-  result: unknown,
-  typeMap: Record<string, unknown>
-): T => {
-  if (!result || typeof result !== 'object') {
-    const defaultObject = {} as T;
-    for (const [key, defaultValue] of Object.entries(typeMap)) {
-      (defaultObject as Record<string, unknown>)[key] = defaultValue;
-    }
-    return defaultObject;
-  }
-  const enhancedResult = { ...(result as Record<string, unknown>) } as T;
-  for (const [key, defaultValue] of Object.entries(typeMap)) {
-    if (!(key in enhancedResult) || enhancedResult[key as keyof T] === undefined) {
-      (enhancedResult as Record<string, unknown>)[key] = defaultValue;
-    }
-  }
-  return enhancedResult;
-};
-
-// ===== COMMON DATABASE ENTITY ENHANCERS =====
+// Common entity enhancers with sensible defaults
 export const entityEnhancers = {
-  // Legal document entity enhancer
   legalDocument: (doc: unknown) =>
     enhanceResultWithTypes(doc, {
       id: null,
@@ -205,15 +182,14 @@ export const entityEnhancers = {
       content: '',
       document_type: 'document',
       file_path: null,
-      metadata: {} as Record<string, unknown>,
+      metadata: {},
       user_id: null,
       status: 'pending',
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }),
-  // Chat message entity enhancer
-  chatMessage: (message: unknown) =>
-    enhanceResultWithTypes(message, {
+  chatMessage: (msg: unknown) =>
+    enhanceResultWithTypes(msg, {
       id: null,
       message: '',
       role: 'user',
@@ -221,86 +197,87 @@ export const entityEnhancers = {
       user_id: null,
       timestamp: new Date().toISOString(),
       sources: [],
-      metadata: {} as Record<string, unknown>,
-      created_at: new Date().toISOString(),
+      metadata: {},
+      created_at: new Date().toISOString()
     }),
-  // Cache entry entity enhancer
   cacheEntry: (entry: unknown) =>
     enhanceResultWithTypes(entry, {
       key: '',
       value: null,
       createdAt: Date.now(),
-      expiresAt: Date.now() + 3600000,
+      expiresAt: Date.now() + 3_600_000,
       lastAccessed: Date.now(),
       accessCount: 0,
       size: 0,
-      version: 1,
+      version: 1
     }),
-  // Vector operation entity enhancer
-  vectorOperation: (operation: unknown) =>
-    enhanceResultWithTypes(operation, {
+  vectorOperation: (op: unknown) =>
+    enhanceResultWithTypes(op, {
       id: null,
       operation_type: 'embedding',
       input_data: null,
       output_data: null,
-      parameters: {} as Record<string, unknown>,
+      parameters: {},
       status: 'pending',
       started_at: null,
       completed_at: null,
       error_message: null,
-      metadata: {} as Record<string, unknown>,
-    }),
+      metadata: {}
+    })
 };
 
-// ===== QUERY INTERCEPTOR FOR TYPE SAFETY =====
-export const createTypeSafeQuery = (baseQuery: Record<string, unknown>) => {
-  return {
-    ...baseQuery,
-    // Enhanced execute method with type safety
-    execute: async (...args: unknown[]) => {
-      try {
-        const exec = baseQuery.execute as (...a: unknown[]) => Promise<unknown> | undefined;
-        const result = exec ? await exec(...args) : undefined;
-        return handleQueryResult(result) as unknown;
-      } catch (error: unknown) {
-        console.error('Query execution error:', error);
-        return [];
-      }
-    },
-    // Enhanced all() method with type safety
-    all: async (...args: unknown[]) => {
-      try {
-        const allFn = (baseQuery.all || baseQuery.execute) as (...a: unknown[]) => Promise<unknown> | undefined;
-        const result = allFn ? await allFn(...args) : undefined;
-        return handleQueryResult(result);
-      } catch (error: unknown) {
-        console.error('Query all() error:', error);
-        return [];
-      }
-    },
-    // Enhanced get() method with type safety
-    get: async (...args: unknown[]) => {
-      try {
-        const getFn = (baseQuery.get || baseQuery.execute) as (...a: unknown[]) => Promise<unknown> | undefined;
-        const result = getFn ? await getFn(...args) : undefined;
-        const results = handleQueryResult(result);
-        return results.length > 0 ? results[0] : null;
-      } catch (error: unknown) {
-        console.error('Query get() error:', error);
-        return null;
-      }
-    },
-  };
+// Lightweight query wrapper that normalizes execute/all/get to return typed rows
+export const createTypeSafeQuery = <Q extends Record<string, unknown>>(base: Q) => ({
+  ...base,
+  async execute(...args: unknown[]): Promise<DBRow[]> {
+    try {
+      const fn = (base as any).execute as ((...a: unknown[]) => Promise<unknown>) | undefined;
+      const res = fn ? await fn.apply(base, args) : undefined;
+      return handleQueryResult(res);
+    } catch (e) {
+      console.error('Query execute() error:', e);
+      return [];
+    }
+  },
+  async all(...args: unknown[]): Promise<DBRow[]> {
+    try {
+      const fn = (base as any).all ?? (base as any).execute;
+      const res = fn ? await fn.apply(base, args) : undefined;
+      return handleQueryResult(res);
+    } catch (e) {
+      console.error('Query all() error:', e);
+      return [];
+    }
+  },
+  async get(...args: unknown[]): Promise<DBRow | null> {
+    try {
+      const fn = (base as any).get ?? (base as any).execute;
+      const res = fn ? await fn.apply(base, args) : undefined;
+      const rows = handleQueryResult(res);
+      return rows[0] ?? null;
+    } catch (e) {
+      console.error('Query get() error:', e);
+      return null;
+    }
+  }
+});
+
+// Export main compatibility object and convenience defaults
+export const drizzleCompatibilityLayer = {
+  handleQueryResult,
+  ensureConnection,
+  safePropertyAccess,
+  vectorOperations
 };
 
-// ===== EXPORT MAIN COMPATIBILITY LAYER =====
 export default {
   drizzleCompatibilityLayer,
   handleQueryResult,
   safePropertyAccess,
+  safeEnsureProperties,
   vectorOperations,
   ensureConnection,
   enhanceResultWithTypes,
   entityEnhancers,
   createTypeSafeQuery
-}
+};

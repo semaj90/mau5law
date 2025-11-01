@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { content, title, documentType, metadata, action } = await request.json();
     console.log(`📝 Processing legal document via SIMD + PGVector API: ${action}`);
     switch (action) {
-      case 'process': {
+      case: 'process': {
         if (!content || !title || !documentType) {
           return json(
             {
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
             .vectorized,
         });
       }
-      case 'search': {
+      case: 'search': {
         const { query, options = {} } = await request.json();
         if (!query) {
           return json(
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingMethod: 'pgvector_similarity',
         });
       }
-      case 'stats': {
+      case: 'stats': {
         const systemStats = await unifiedLegalProcessor.getSystemStats();
         return json({
           success: true,

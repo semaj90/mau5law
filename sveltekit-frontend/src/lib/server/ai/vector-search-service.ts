@@ -220,7 +220,7 @@ export class VectorSearchService {
     }
 
     // Mark results with source
-    results = results.map(r => ({ ...r, source: usedProvider as 'pgvector' | 'qdrant' }));
+    results = results.map(r => ({ ...r, source: usedProvider as: 'pgvector' | 'qdrant' }));
 
     // Cache results
     await this.redis.set(cacheKey, JSON.stringify(results), 'EX', this.cacheTtl);

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import AIChat from './AIChat.svelte.js';
-const meta = {
+import AIChat from './AIChat.svelte';
+const meta: Meta<any> = {
   title: 'Business/AIChat',
   component: AIChat,
   parameters: {
@@ -29,9 +29,9 @@ const meta = {
     streaming: {
       control: { type: 'boolean' },
     },
-  },
+  } as Record<string, any>, // keep argTypes flexible
   tags: ['autodocs'],
-} satisfies Meta<AIChat>;
+};
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {

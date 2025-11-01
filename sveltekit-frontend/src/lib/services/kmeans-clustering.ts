@@ -386,10 +386,10 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       0,
     );
     if (riskCount > metadata.length * 0.3 || silhouetteScore < 0.3)
-      return "high";
+      return: "high";
     if (riskCount > metadata.length * 0.1 || silhouetteScore < 0.5)
-      return "medium";
-    return "low";
+      return: "medium";
+    return: "low";
   }
   private generateRecommendations()
     topics: string[];

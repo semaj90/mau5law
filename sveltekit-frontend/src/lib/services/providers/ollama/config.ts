@@ -163,8 +163,7 @@ export const FALLBACK_CHAIN = {
     'gemma3-legal:latest', // Only gemma3-legal
   ],
   embeddings: [
-    'embeddinggemma', // Primary: Google's EmbeddingGemma
-    'nomic-embed-text', // Fallback: Nomic embedding model
+    'embeddinggemma', // Primary: Google's EmbeddingGemma: 'nomic-embed-text', // Fallback: Nomic embedding model
   ]
 }
 export const OLLAMA_CONFIG: OllamaConfig = {

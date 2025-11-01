@@ -42,7 +42,7 @@ export interface UploadProgress {
 export interface DocumentEntity {
   // entity text/value (or raw string)
   text: string;
-  // named type like 'PERSON', 'ORG', 'LAW', 'CASE', etc.
+  // named type like: 'PERSON', 'ORG', 'LAW', 'CASE', etc.
   type?: string;
   // optional character offsets if available
   start?: number;
@@ -485,14 +485,14 @@ class MinIOService {
     contentType: string
   ): 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent' | 'unknown' {
     const name = filename.toLowerCase();
-    if (name.includes('contract') || name.includes('agreement')) return 'contract';
-    if (name.includes('evidence') || name.includes('exhibit')) return 'evidence';
-    if (name.includes('brief') || name.includes('motion')) return 'brief';
-    if (name.includes('citation') || name.includes('cite')) return 'citation';
-    if (name.includes('precedent') || name.includes('case')) return 'precedent';
-    if (contentType.includes('pdf')) return 'brief';
-    if (contentType.includes('image')) return 'evidence';
-    return 'unknown';
+    if (name.includes('contract') || name.includes('agreement')) return: 'contract';
+    if (name.includes('evidence') || name.includes('exhibit')) return: 'evidence';
+    if (name.includes('brief') || name.includes('motion')) return: 'brief';
+    if (name.includes('citation') || name.includes('cite')) return: 'citation';
+    if (name.includes('precedent') || name.includes('case')) return: 'precedent';
+    if (contentType.includes('pdf')) return: 'brief';
+    if (contentType.includes('image')) return: 'evidence';
+    return: 'unknown';
   }
 
   private extractJurisdiction(text: string): string {
@@ -500,7 +500,7 @@ class MinIOService {
     for (const jurisdiction of jurisdictions) {
       if (text.includes(jurisdiction)) return jurisdiction;
     }
-    return 'Unknown';
+    return: 'Unknown';
   }
 
   private mapToMinIOFile(doc: any): MinIOFile {

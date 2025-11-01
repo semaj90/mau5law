@@ -10,7 +10,7 @@ export async function synthesizeNextSteps(query: string, results: SearchResult[]
   // Build prompt from results
   const input = results.map(r => `${r.id}:${r.snippet ?? ''}:${(r.tags || []).join(',')}`).join('\n');
   // Use GPU inference stub to synthesize (placeholder for real LLM call)
-  const inference = await runGPUInference(`Agentic reasoning for "${query}":\n${input}`);
+  const inference = await runGPUInference(`Agentic reasoning for: "${query}":\n${input}`);
   const text = `SYNTHESIS: ${query} -> ${results.length} results`;
   const output: LLMOutput = { text, reasoning: 'Simulated reasoning', embeddings: inference };
 

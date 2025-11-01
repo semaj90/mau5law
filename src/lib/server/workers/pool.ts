@@ -15,7 +15,7 @@ export class ThreadPool {
 
   runTask<T = unknown>(data: any): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.queue.push({ data, resolve, reject });
+      this.queue.push(<any><any>{ data, resolve, reject });
       this.tryRun();
     });
   }

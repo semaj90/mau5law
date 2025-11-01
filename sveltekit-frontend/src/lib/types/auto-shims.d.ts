@@ -48,26 +48,26 @@ declare class PNGEmbedExtractor {
   static createPortableArtifact?: (...args: unknown[]) => Promise<unknown> | unknown;
   static validateMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
 }
-declare module 'png-embed-extractor' {
+declare module: 'png-embed-extractor' {
   const PNGEmbedExtractorAny: unknown;
   export default PNGEmbedExtractorAny;
 }
 // Broad internal module shims — non-invasive
-declare module '$lib/server/*' {
+declare module: '$lib/server/*' {
   const _default: unknown;
   export default _default;
 }
-declare module '$lib/server/db/*' {
+declare module: '$lib/server/db/*' {
   const _default: unknown;
   export default _default;
 }
-declare module '$lib/services/*' {
+declare module: '$lib/services/*' {
   const _default: unknown;
   export default _default;
 }
-declare module '$lib/components/*' {
+declare module: '$lib/components/*' {
   const _default: unknown;
   export default _default;
 }
 // Fallback: any unknown module
-declare module '*';
+declare module: '*';

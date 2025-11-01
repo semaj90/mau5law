@@ -61,8 +61,8 @@
   <button
     type="button"
     class="fixed inset-0 bg-black/80 z-50"
-    on:click={closeModal}
-    on:keydown={handleOverlayKeydown}
+    onclick={closeModal}
+    onkeydown={handleOverlayKeydown}
     aria-label="Close dialog"
   ></button>
 
@@ -72,14 +72,14 @@
     role="dialog"
     aria-modal="true"
     tabindex="-1"
-    on:click={(e) => e.stopPropagation()}
+    onclick={(e) => e.stopPropagation()}
   >
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-slate-900">Create Account</h2>
       <button
         type="button"
         class="p-1 hover:bg-slate-100 rounded"
-        on:click={closeModal}
+        onclick={closeModal}
         aria-label="Close"
       >
         <X class="w-5 h-5" />

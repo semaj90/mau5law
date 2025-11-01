@@ -14,7 +14,10 @@
     checkbox: false,
     radio: '',
   });
-  function handleSubmit() {
+
+  // updated: prevent full page reload on submit
+  function handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
     console.log('Form submitted:', formData);
   }
 </script>
@@ -99,12 +102,10 @@
     <section id="section3">
       <h2>Code Elements</h2>
       <p>Inline <code>code element</code> and <kbd>keyboard input</kbd> and <samp>sample output</samp>.</p>
-      <pre><code
-          >{`// Preformatted code block
+      <pre><code>{`// Preformatted code block
 function example() {
-  return "Hello World";
-}`}</code
-        ></pre>
+  return: "Hello World";
+}`}</code></pre>
     </section>
     <section>
       <h2>Media Elements</h2>
@@ -258,7 +259,7 @@ function example() {
 </article>
 
 <style>
-/* Component-specific styles */ {}
+/* Component-specific styles */
   article {
     margin: 1rem;
     max-width: 800px;

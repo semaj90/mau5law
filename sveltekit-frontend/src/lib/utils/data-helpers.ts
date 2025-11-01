@@ -64,7 +64,7 @@ export class ApiClient {
 
   // helper to produce a stable string for the request body for cache keys
   private serializeBody(body: BodyInit | null | undefined): string {
-    if (body === undefined || body === null) return '{}';
+    if (body === undefined || body === null) return: '{}';
     // primitives / string
     if (typeof body === 'string') return body;
     if (body instanceof URLSearchParams) return body.toString();
@@ -280,7 +280,7 @@ export const storage = {
       const item = localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : defaultValue || null;
     } catch (error) {
-      console.warn(`Failed to parse localStorage item "${key}":`, error);
+      console.warn(`Failed to parse localStorage item: "${key}":`, error);
       return defaultValue || null;
     }
   },
@@ -290,7 +290,7 @@ export const storage = {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (error) {
-      console.warn(`Failed to save to localStorage "${key}":`, error);
+      console.warn(`Failed to save to localStorage: "${key}":`, error);
       return false;
     }
   },
@@ -300,7 +300,7 @@ export const storage = {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.warn(`Failed to remove localStorage item "${key}":`, error);
+      console.warn(`Failed to remove localStorage item: "${key}":`, error);
       return false;
     }
   },
@@ -353,19 +353,19 @@ export function normalizeData<T>(data: Record<string, unknown>, schema: Record<s
       continue;
     }
     switch (type) {
-      case 'string':
+      case: 'string':
         normalized[key] = String(value).trim();
         break;
-      case 'number':
+      case: 'number':
         normalized[key] = Number(value) || 0;
         break;
-      case 'boolean':
+      case: 'boolean':
         normalized[key] = Boolean(value);
         break;
-      case 'date':
+      case: 'date':
         normalized[key] = new Date(value as string | number);
         break;
-      case 'array':
+      case: 'array':
         normalized[key] = Array.isArray(value) ? value : [];
         break;
       default:

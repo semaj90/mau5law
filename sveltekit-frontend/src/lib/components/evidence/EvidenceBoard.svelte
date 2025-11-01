@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
         {
           id: 'mock-evidence-1',
           title: 'Mock Contract Document',
-          description 'Mock evidence document for fallback demonstration',
+          description: 'Mock evidence document for fallback demonstration',
           evidenceType: 'document',
           fileName: 'mock_contract.pdf',
           fileSize: 245760,
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
         {
           id: 'mock-evidence-2',
           title: 'Mock Email Evidence',
-          description 'Mock email communication evidence',
+          description: 'Mock email communication evidence',
           evidenceType: 'communication',
           fileName: 'mock_email.eml',
           fileSize: 32768,
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
         suspiciousPatterns: [
           {
             type: 'time_anomaly',
-            description 'Mock suspicious pattern: Unusual timing in document creation',
+            description: 'Mock suspicious pattern: Unusual timing in document creation',
             severity: 'medium',
             evidence: ['mock-evidence-1'],
             confidence: 0.72,
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
             {
               timestamp: new Date(Date.now() - 86400000).toISOString(),
               evidenceId: 'mock-evidence-1',
-              description 'Mock contract document created',
+              description: 'Mock contract document created',
             },
           ],
         },
@@ -395,15 +395,15 @@ https://svelte.dev/e/js_parse_error -->
   // Get evidence type icon
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case 'document':
+      case: 'document':
         return FileText;
-      case 'photo':
+      case: 'photo':
         return Image;
-      case 'video':
+      case: 'video':
         return Video;
-      case 'audio':
+      case: 'audio':
         return Music;
-      case 'digital':
+      case: 'digital':
         return Archive;
       default:
         return FileText;
@@ -412,15 +412,15 @@ https://svelte.dev/e/js_parse_error -->
   // Get analysis status color
   function getAnalysisStatusColor(evidence: any) {
     // runtime-guard evidence shape to avoid TS/runtime errors
-    if (evidence && (evidence as any).analyzed) return 'text-green-600';
+    if (evidence && (evidence as any).analyzed) return: 'text-green-600';
     if (
       loadingAnalysis &&
       evidence &&
       typeof (evidence as any).id === 'string' &&
       selectedEvidence.includes((evidence as any).id)
     )
-      return 'text-yellow-600';
-    return 'text-gray-400';
+      return: 'text-yellow-600';
+    return: 'text-gray-400';
   }
   // Render network view
   function renderNetworkView() {
@@ -959,7 +959,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #64748b;
     transition: all 0.2s;
   }
-  /* Replaced empty ruleset with a minimal non-empty hover style to avoid "Do not use empty rulesets" error */
+  /* Replaced empty ruleset with a minimal non-empty hover style to avoid: "Do not use empty rulesets" error */
   .filter-toggle:hover {
     background: rgba(59, 130, 246, 0.04); /* subtle tint */
     color: #1e40af;

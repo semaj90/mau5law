@@ -157,8 +157,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
     description: 'GPU-powered document indexing',
     startupOrder: 11
   },
-  // AI/RAG Extended Services
-  'enhanced-rag-service': {
+  // AI/RAG Extended Services: 'enhanced-rag-service': {
     name: 'Enhanced RAG Alternative',
     binary: 'enhanced-rag-service.exe',
     port: 8195,
@@ -257,8 +256,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
     description: 'Multi-core AI processing engine',
     startupOrder: 20
   },
-  // File & Upload Services
-  'gin-upload': {
+  // File & Upload Services: 'gin-upload': {
     name: 'Gin Upload Handler',
     binary: 'gin-upload.exe',
     port: 8207,
@@ -313,8 +311,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
     description: 'AI-powered document summaries',
     startupOrder: 25
   },
-  // XState & Orchestration
-  'modular-cluster-service': {
+  // XState & Orchestration: 'modular-cluster-service': {
     name: 'Modular Cluster Service',
     binary: 'modular-cluster-service.exe',
     port: 8214,
@@ -336,8 +333,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
     description: 'Production-grade cluster service',
     startupOrder: 27
   },
-  // Protocol Services
-  'rag-kratos': {
+  // Protocol Services: 'rag-kratos': {
     name: 'Kratos gRPC Service',
     binary: 'rag-kratos.exe',
     port: 50052,
@@ -348,8 +344,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
     description: 'Kratos-based gRPC service',
     startupOrder: 28
   },
-  // Infrastructure Services
-  'simd-health': {
+  // Infrastructure Services: 'simd-health': {
     name: 'SIMD Health Monitor',
     binary: 'simd-health.exe',
     port: 8217,
@@ -404,8 +399,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
     description: 'Machine learning recommendation engine',
     startupOrder: 33
   },
-  // Development & Testing
-  'simple-server': {
+  // Development & Testing: 'simple-server': {
     name: 'Simple HTTP Server',
     binary: 'simple-server.exe',
     port: 8224,
@@ -440,8 +434,7 @@ export const GO_SERVICES_REGISTRY: Record<string, ServiceDefinition> = {
   }
 }
 export const API_ROUTE_MAPPING = {
-  // Core RAG & AI endpoints
-  '/api/v1/rag/query': {
+  // Core RAG & AI endpoints: '/api/v1/rag/query': {
     services: ['enhanced-rag'],
     preferredProtocol: 'quic',
     fallback: ['grpc', 'http'],
@@ -459,8 +452,7 @@ export const API_ROUTE_MAPPING = {
     fallback: [],
     tier: PROTOCOL_TIERS.STANDARD
   },
-  // Upload & File Processing
-  '/api/v1/upload/file': {
+  // Upload & File Processing: '/api/v1/upload/file': {
     services: ['upload-service'],
     preferredProtocol: 'http',
     fallback: ['gin-upload', 'simple-upload'],
@@ -478,8 +470,7 @@ export const API_ROUTE_MAPPING = {
     fallback: [],
     tier: PROTOCOL_TIERS.STANDARD
   },
-  // AI Processing
-  '/api/v1/ai/summary': {
+  // AI Processing: '/api/v1/ai/summary': {
     services: ['ai-enhanced', 'ai-summary'],
     preferredProtocol: 'grpc',
     fallback: ['http'],
@@ -497,8 +488,7 @@ export const API_ROUTE_MAPPING = {
     fallback: ['http'],
     tier: PROTOCOL_TIERS.REALTIME
   },
-  // Cluster & Orchestration
-  '/api/v1/cluster/health': {
+  // Cluster & Orchestration: '/api/v1/cluster/health': {
     services: ['cluster-http', 'modular-cluster-service-production'],
     preferredProtocol: 'http',
     fallback: [],
@@ -516,8 +506,7 @@ export const API_ROUTE_MAPPING = {
     fallback: [],
     tier: PROTOCOL_TIERS.STANDARD
   },
-  // XState Management
-  '/api/v1/xstate/events': {
+  // XState Management: '/api/v1/xstate/events': {
     services: ['xstate-manager'],
     preferredProtocol: 'quic',
     fallback: ['http'],

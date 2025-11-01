@@ -309,7 +309,7 @@ export class BrowserGemma {
     caseDescription: string
   ): Promise<{ riskLevel: 'low' | 'medium' | 'high'; analysis: string }> {
     const response = await this.generate(
-      `Analyze the legal risk for this case. Return JSON with "riskLevel" (low/medium/high) and "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
+      `Analyze the legal risk for this case. Return JSON with: "riskLevel" (low/medium/high) and: "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
       {
         maxTokens: 150,
         temperature: 0.2,

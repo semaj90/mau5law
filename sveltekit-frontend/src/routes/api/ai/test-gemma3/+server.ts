@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Gemma3 test failed:', error);
     return json(
       {
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async () => {
       message: status.available ? 'Gemma3 local LLM is ready' : 'Local LLM not available - running in web mode',
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     return json({
       success: false,
       status: {

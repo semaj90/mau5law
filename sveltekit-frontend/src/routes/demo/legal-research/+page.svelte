@@ -184,7 +184,7 @@
             {#if selectedFeature === feature.id}
               <div class="mt-4 pt-4 border-t border-gray-200 dark:border-dark-border">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
-                  This feature is available in the full version. Click "Try Demo" to explore sample functionality.
+                  This feature is available in the full version. Click: "Try Demo" to explore sample functionality.
                 </p>
                 <button class="btn-primary mt-3" type="button">
                   <i class="i-carbon-launch mr-2"></i>

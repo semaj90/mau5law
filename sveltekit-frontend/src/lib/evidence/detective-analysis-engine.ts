@@ -2,13 +2,13 @@
  * Detective Evidence Analysis Engine
  * Complete AI-powered evidence analysis with screenshot enhancement, pattern matching,
  * and conflict detection using NES memory architecture, reinforcement learning cache,
- * and multi-dimensional tensor search with "did you mean" suggestions.
+ * and multi-dimensional tensor search with: "did you mean" suggestions.
  */
-import { intelligentWebAnalyzer } from '$lib/ai/intelligent-web-analyzer.js';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { cache, cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis.js';
-import { extractTextFromImage } from '$lib/ocr/ocr-client.js';
-import { simdGPUTilingEngine, calculateOptimalTileSize, estimateProcessingTime } from './simd-gpu-tiling-engine.js';
+import intelligentWebAnalyzer from '$lib/ai/intelligent-web-analyzer';
+import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
+import { cache, cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis';
+import { extractTextFromImage } from '$lib/ocr/ocr-client';
+import { simdGPUTilingEngine, calculateOptimalTileSize, estimateProcessingTime } from './simd-gpu-tiling-engine';
 import { browser } from '$app/environment';
 // Types for evidence analysis
 export interface EvidenceItem {
@@ -211,21 +211,27 @@ export class DetectiveAnalysisEngine {
         this.generateEnhancementWGSL(),
         { type: 'compute', entryPoint: 'main', workgroupSize: [8, 8, 1] }
       );
-      // Create texture from canvas
+      // Create texture from canvas and upload using copyExternalImageToTexture (avoids bytesPerRow alignment issues)
       const sourceTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING,
+        usage:
+          GPUTextureUsage.TEXTURE_BINDING |
+          GPUTextureUsage.COPY_DST |
+          GPUTextureUsage.STORAGE_BINDING |
+          GPUTextureUsage.COPY_SRC,
       });
-      // Upload canvas data to GPU
-      const ctx = canvas.getContext('2d')!;
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      this.webGPUDevice.queue.writeTexture(
-        { texture: sourceTexture },
-        imageData.data,
-        { bytesPerRow: canvas.width * 4 },
-        { width: canvas.width, height: canvas.height }
-      );
+      // Use the browser-friendly path to copy the canvas directly into the GPU texture.
+      // If not supported, fall back to leaving the original canvas unchanged.
+      try {
+        // @ts-ignore - copyExternalImageToTexture may be present in the environment
+        this.webGPUDevice.queue.copyExternalImageToTexture({ source: canvas }, { texture: sourceTexture }, [
+          canvas.width,
+          canvas.height,
+        ]);
+      } catch (e) {
+        console.warn('copyExternalImageToTexture not available or failed, skipping GPU upload:', e);
+      }
       // Create output texture
       const outputTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
@@ -247,12 +253,12 @@ export class DetectiveAnalysisEngine {
       computePass.dispatchWorkgroups(Math.ceil(canvas.width / 8), Math.ceil(canvas.height / 8));
       computePass.end();
       // Copy result back to canvas
-      const outputCanvas = document.createElement('canvas');
-      outputCanvas.width = canvas.width;
-      outputCanvas.height = canvas.height;
-      // Read back from GPU (simplified - would need actual GPU->Canvas pipeline)
+      // Submit GPU work. Reading back GPU texture -> canvas requires a buffer copy and mapping
+      // which is platform-specific and non-trivial. For now, submit work and return the original canvas
+      // so the pipeline continues. GPU-enhanced readback can be added later when required.
       this.webGPUDevice.queue.submit([commandEncoder.finish()]);
-      return outputCanvas;
+      console.debug('WebGPU enhancement submitted; returning original canvas as fallback (readback not implemented).');
+      return canvas;
     } catch (error) {
       console.warn('WebGPU enhancement failed:', error);
       return null;
@@ -452,8 +458,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           { x: 50, y: 100, width: 150, height: 40 },
         ],
       };
-      // Cache result
-      await cache.set(cacheKey, result, 60 * 60 * 1000); // 1 hour
+      // Cache result (TTL in seconds)
+      await cache.set(cacheKey, result, 3600); // 1 hour
       return result;
     } catch (error) {
       console.warn('Handwriting detection failed:', error);
@@ -697,11 +703,11 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     }
   }
   /**
-   * Generate "Did you mean?" suggestions using multi-dimensional search
+   * Generate: "Did you mean?" suggestions using multi-dimensional search
    */
   async generateSearchSuggestions(query: string, maxSuggestions = 5): Promise<SearchSuggestion[]> {
     try {
-      console.log(`💡 Generating "did you mean" suggestions for: ${query}`);
+      console.log(`💡 Generating: "did you mean" suggestions for: ${query}`);
       const suggestions: SearchSuggestion[] = [];
       // 1. Spelling corrections
       const spellingCorrections = await this.getSpellingCorrections(query);
@@ -809,7 +815,9 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       norm1 += embedding1[i] * embedding1[i];
       norm2 += embedding2[i] * embedding2[i];
     }
-    return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
+    const denom = Math.sqrt(norm1) * Math.sqrt(norm2);
+    if (denom === 0) return 0;
+    return dotProduct / denom;
   }
   private hasConflictingInfo(text1: string, text2: string): boolean {
     // Simplified conflict detection - would use more sophisticated NLP

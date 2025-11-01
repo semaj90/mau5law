@@ -1,9 +1,9 @@
 /**
  * Enhanced Environment Variables Type Definitions
- * Fixes "$env/dynamic/private" module resolution issues
+ * Fixes: "$env/dynamic/private" module resolution issues
  */
 // SvelteKit environment modules
-declare module '$env/dynamic/private' {
+declare module: '$env/dynamic/private' {
   export const env: {
     QDRANT_URL?: string;
     OLLAMA_URL?: string;
@@ -35,10 +35,10 @@ declare module '$env/dynamic/private' {
     [key: string]: string | undefined;
   };
 }
-declare module '$env/dynamic/public' {
+declare module: '$env/dynamic/public' {
   export const env: Record<string, string | undefined>;
 }
-declare module '$env/static/private' {
+declare module: '$env/static/private' {
   export const DATABASE_URL: string;
   export const POSTGRES_URL: string;
   export const REDIS_URL: string;
@@ -56,7 +56,7 @@ declare module '$env/static/private' {
   export const GOOGLE_API_KEY: string;
   export const NODE_ENV: string;
 }
-declare module '$env/static/public' {
+declare module: '$env/static/public' {
   export const PUBLIC_API_BASE_URL: string;
   export const PUBLIC_OLLAMA_URL: string;
   export const PUBLIC_QDRANT_URL: string;

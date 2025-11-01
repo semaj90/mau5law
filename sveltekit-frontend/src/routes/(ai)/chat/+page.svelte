@@ -166,7 +166,7 @@
     const interval = setInterval(checkServiceHealth, 30000);
     return () => clearInterval(interval);
   });
-  // touch otherwise-unused state vars to avoid "declared but never read" warnings
+  // touch otherwise-unused state vars to avoid: "declared but never read" warnings
   $effect(() => {
     // intentionally read for lint/TS (no-op)
     // eslint-disable-next-line no-console

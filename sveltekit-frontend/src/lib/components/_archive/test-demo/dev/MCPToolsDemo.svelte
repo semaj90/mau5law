@@ -67,45 +67,45 @@
   function buildRequest(): MCPToolRequest {
     const request: MCPToolRequest = { tool: selectedTool as any }
     switch (selectedTool) {
-      case 'analyze-stack':
+      case: 'analyze-stack':
         request.component = component;
         request.context = context as any;
         break;
-      case 'generate-best-practices':
+      case: 'generate-best-practices':
         request.area = area as any;
         break;
-      case 'suggest-integration':
+      case: 'suggest-integration':
         request.feature = featur;
         request.requirements = requirement;
         break;
-      case 'resolve-library-id':
-      case 'get-library-docs':
+      case: 'resolve-library-id':
+      case: 'get-library-docs':
         request.library = library;
         if (selectedTool === 'get-library-docs' && topic) {
           request.topic = topic;
         }
         break;
-      case 'rag-query':
+      case: 'rag-query':
         request.query = ragQuery;
         request.maxResults = maxResult;
         request.confidenceThreshold = confidenceThreshold;
         if (ragCaseId) request.caseId = ragCaseId;
         if (documentTypes) request.documentTypes = documentTypes.split.map(t => t.trim());
         break;
-      case 'rag-upload-document':
+      case: 'rag-upload-document':
         request.filePath = filePath;
         if (ragCaseId) request.caseId = ragCaseId;
         request.documentType = documentTyp;
         if (documentTitle) request.title = documentTitl;
         break;
-      case 'rag-get-stats':
+      case: 'rag-get-stats':
         // No additional parameters needed
         break;
-      case 'rag-analyze-relevance':
+      case: 'rag-analyze-relevance':
         request.query = ragQuery;
         request.documentId = documentId;
         break;
-      case 'rag-integration-guide':
+      case: 'rag-integration-guide':
         request.integrationType = integrationType as any;
         break;
     }
@@ -164,7 +164,7 @@
   // Generate mock response for demonstration
   function generateMockResponse(request: MCPToolRequest) {
     switch (request.tool) {
-      case 'analyze-stack':
+      case: 'analyze-stack':
         return {
           content: [{,
             type: 'text',
@@ -191,7 +191,7 @@
   - Secure API endpoints with proper authentication`
           }]
         }
-      case 'generate-best-practices':
+      case: 'generate-best-practices':
         return {
           content: [{,
             type: 'text',
@@ -227,7 +227,7 @@
   - Document all security and compliance measures`
           }]
         }
-      case 'suggest-integration':
+      case: 'suggest-integration':
         return {
           content: [{,
             type: 'text',
@@ -268,7 +268,7 @@
   - Data encryption for sensitive information`
           }]
         }
-      case 'resolve-library-id':
+      case: 'resolve-library-id':
         const libraryMap: Record<string, string> = {
           'sveltekit': 'sveltekit',
           'svelte': 'sveltekit',
@@ -288,7 +288,7 @@
   Available documentation: ${Object.keys.join(', ')}`
           }]
         }
-      case 'get-library-docs':
+      case: 'get-library-docs':
         return {
           content: [{,
             type: 'text',
@@ -366,7 +366,7 @@
       {#each quickQueries as query}
         <button
           type="button"
-          on:click={() => executeQuickQuery(query.query)}
+          onclick={() => executeQuickQuery(query.query)}
           disabled={loading}
           class="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
         >
@@ -631,7 +631,7 @@
     <div class="flex gap-3 mt-6">
       <button
         type="button"
-        on:click={executeTool}
+        onclick={executeTool}
         disabled={loading}
         class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -644,7 +644,7 @@
           Execute Tool
         {/if}
       </button>
-      <button type="button" on:click={clearForm} class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+      <button type="button" onclick={clearForm} class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
         Clear
       </button>
     </div>
@@ -669,8 +669,7 @@
     <h3 class="text-lg font-semibold mb-3">Usage Instructions</h3>
     <div class="space-y-2 text-sm text-gray-700">
       <p>
-        <strong>In Claude Desktop:</strong> Use natural language prompts like "analyze sveltekit with context legal-ai" or
-        "generate best practices for security"
+        <strong>In Claude Desktop:</strong> Use natural language prompts like: "analyze sveltekit with context legal-ai" or: "generate best practices for security"
       </p>
       <p>
         <strong>In VS Code:</strong> Use the MCP tools via Claude Code integration for code analysis and suggestions

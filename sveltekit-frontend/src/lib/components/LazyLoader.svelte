@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaratio;
-https://svelte.dev/e/bindable_invalid_location -->
-<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyLoader.svelte - Universal lazy loading wrapper component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -9,110 +6,106 @@ https://svelte.dev/e/bindable_invalid_location -->
     lazyLoad,
     createLazyStore,
     LAZY_LOAD_PRESETS,
-    lazyLoadProfiler,
-    type LazyLoadOptions,
-    type LazyLoadPreset,
-    type LazyComponentState
+    lazyLoadProfiler
+    // removed: type imports from a .js module to avoid svelte-preprocess / TS issues
   } from '$lib/utils/intersection-observer.js';
-  // Component props
-  let {
-    // Lazy loading configuration
-    preset = 'NORMAL' as LazyLoadPreset,
-    customOptions = as LazyLoadOptions,
-    // Loading states
-    showPlaceholder = true,
-    placeholderHeight = '200px',
-    placeholderClass = '',
-    // Content
-    loadingText = 'Loading...',
-    errorText = 'Failed to load content',
-    // Behavior
-    unloadWhenHidden = false,
-    enableProfiling = false,
-    // Callbacks
-    onLoad = undefined as (() => void) | undefined,
-    onError = undefined as ((error: Error) => void) | undefined,
-    // Style
-    class: className = '',
-    style = '',
-    // Accessibility
-    'aria-label': ariaLabel = 'Lazy loaded content',
-    // Component state binding
-    lazyState = $bindable() as LazyComponentState | undefined;
-  } = $props();
+
+  // Lightweight local types to avoid importing types from .js
+  type LazyLoadOptions = Record<string, any>;
+  type LazyLoadPreset = string;
+  type LazyComponentState = Record<string, any>;
+
+  // Props (Svelte 5)
+  export let preset: LazyLoadPreset = 'NORMAL';
+  export let customOptions: LazyLoadOptions = {};
+  export let showPlaceholder: boolean = true;
+  export let placeholderHeight: string = '200px';
+  export let placeholderClass: string = '';
+  export let loadingText: string = 'Loading...';
+  export let errorText: string = 'Failed to load content';
+  export let unloadWhenHidden: boolean = false;
+  export let enableProfiling: boolean = false;
+  export let onLoad: (() => void) | undefined;
+  export let onError: ((error: Error) => void) | undefined;
+
+  // Renamed prop: class -> className to avoid TS/reserved-word issues
+  export let className: string = '';
+  export let style: string = '';
+  export let ariaLabel: string = 'Lazy loaded content';
+  // optional bound state object (mutated if parent passed an object reference)
+  export let lazyState: LazyComponentState | undefined;
+
   // Internal state
-  let containerElement: HTMLElement;
-  let loadError: Error | null = $state(null);
-  let isLoading = $state(false);
-  // Create lazy loading store
+  let containerElement: HTMLElement | null = null;
+  let loadError: Error | null = null;
+  let isLoading = false;
+
+  // Create lazy loading store (assume API: { isVisible, hasBeenVisible, intersectionRatio, setVisible, reset })
   const lazyStore = createLazyStore();
-  // Update bound state when internal state changes
-  $effect(() => {
-    if (lazyState !== undefined) {
-      lazyState = $lazyStor;
-    }
-  });
-  // Derived states
-  const shouldRender = $derived($lazyStore.hasBeenVisible && !loadError);
-  const shouldShowPlaceholder = $derived(showPlaceholder && (!$lazyStore.isVisible || isLoading));
-  // Determine options from preset or custom
-  const options = $derived.by(() => {
-    const baseOptions = LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL;
-    return { ...baseOptions, ...customOptions }
-  });
-  // Handle intersection
-  function handleIntersection(entry: unknown) {
-    lazyStore.setVisible(entry.isIntersecting, entry.intersectionRatio);
-    if (entry.isIntersecting && !$lazyStore.hasBeenVisible) {
-      if (enableProfiling) {
-        lazyLoadProfiler.recordLoad(entry.target);
+
+  // Local mirrors for slot props / template rendering
+  let isVisible = false;
+  let hasBeenVisible = false;
+  let intersectionRatio = 0;
+
+  // Reactive propagation from lazyStore to local mirrors and optional parent-provided object
+  $: {
+    isVisible = (lazyStore as any).isVisible ?? false;
+    hasBeenVisible = (lazyStore as any).hasBeenVisible ?? false;
+    intersectionRatio = (lazyStore as any).intersectionRatio ?? 0;
+
+    // If parent passed an object reference as lazyState, mutate it so the parent sees updates.
+    if (lazyState && typeof lazyState === 'object') {
+      try {
+        Object.assign(lazyState as any, { isVisible, hasBeenVisible, intersectionRatio });
+      } catch {
+        // no-op if cannot assign
       }
-      // Trigger loading callback
-      if (onLoad) {
-        try {
-          onLoad();
-        } catch (error) {
-          handleError(error instanceof Error ? error : new Error('Loading callback failed'));
-        }
-      }
-    }
-    // Handle unloading if configured
-    if (unloadWhenHidden && !entry.isIntersecting && $lazyStore.hasBeenVisible) {
-      lazyStore.reset();
     }
   }
+
+  // Compute options from preset/custom
+  $: options = { ...(LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL), ...(customOptions || {}) };
+
+  function handleIntersection(entry: any) {
+    // call store setter if present
+    try { lazyStore.setVisible?.(entry.isIntersecting, entry.intersectionRatio); } catch {}
+    if (entry.isIntersecting && !hasBeenVisible) {
+      if (enableProfiling) {
+        lazyLoadProfiler?.recordLoad?.(entry.target);
+      }
+      if (onLoad) {
+        try { onLoad(); } catch (err) { handleError(err instanceof Error ? err : new Error(String(err))); }
+      }
+    }
+    if (unloadWhenHidden && !entry.isIntersecting && hasBeenVisible) {
+      lazyStore.reset?.();
+    }
+  }
+
   function handleError(error: Error) {
     loadError = error;
-    if (onError) {
-      onError(error);
-    }
+    if (onError) onError(error);
     console.error('LazyLoader error:', error);
   }
-  // Setup intersection observer
-  $effect(() => {
-    if (containerElement) {
-      if (enableProfiling) {
-        lazyLoadProfiler.startObserving(containerElement);
-      }
+
+  onMount(() => {
+    if (containerElement && enableProfiling) {
+      lazyLoadProfiler?.startObserving?.(containerElement);
     }
   });
-  // Cleanup
+
   onDestroy(() => {
-    lazyStore.reset();
+    lazyStore.reset?.();
   });
 </script>
-<!--
-  Container element with intersection observer
-  The use:lazyLoad action handles all the intersection logic
--->
-<div;
+
+<!-- Container element with intersection observer -->
+<div
   bind:this={containerElement}
-  use:lazyLoad={{
-    ...options,
-    onIntersect: handleIntersection
-  }}
-  class="lazy-loader-container {className}"
-  {style}
+  use:lazyLoad={{ ...options, onIntersect: handleIntersection }}
+  class={"lazy-loader-container " + className}
+  style={style}
   aria-label={ariaLabel}
   role="region"
 >
@@ -125,42 +118,41 @@ https://svelte.dev/e/bindable_invalid_location -->
         class="retry-button"
         onclick={() => {
           loadError = null;
-          lazyStore.reset();
+          lazyStore.reset?.();
         }}
       >
         Retry
       </button>
     </div>
-  {:else if shouldShowPlaceholder}
+  {:else if showPlaceholder && (!isVisible || isLoading)}
     <!-- Loading placeholder -->
     <div
-      class="lazy-loader-placeholder {placeholderClass}"
-      style="min-height: {placeholderHeight}"
+      class={"lazy-loader-placeholder " + placeholderClass}
+      style={"min-height: " + placeholderHeight}
       aria-label="Loading content"
     >
       <div class="placeholder-content">
         <div class="loading-spinner" aria-hidden="true"></div>
         <p class="loading-text">{loadingText}</p>
-        {#if enableProfiling && $lazyStore.intersectionRatio > 0}
+        {#if enableProfiling && intersectionRatio > 0}
           <div class="debug-info">
-            Intersection {Math.round($lazyStore.intersectionRatio * 100)}%
+            Intersection {Math.round(intersectionRatio * 100)}%
           </div>
         {/if}
       </div>
     </div>
-  {:else if shouldRender}
-    <!-- Actual content - only render when visible -->
+  {:else if hasBeenVisible && !loadError}
+    <!-- Actual content - only render when visible/seen -->
     <div class="lazy-loader-content" data-lazy-loaded="true">
-      {#snippet children(isVisible={$lazyStore.isVisible}
-        hasBeenVisible={$lazyStore.hasBeenVisible}
-        intersectionRatio={$lazyStore.intersectionRatio}
-      /)}
+      <!-- expose useful props to parent via slot let:... -->
+      <slot {isVisible} {hasBeenVisible} {intersectionRatio}></slot>
     </div>
   {/if}
 </div>
+
 <style>
   .lazy-loader-container {
-    position relative;
+    position: relative;
     width: 100%;
   }
   /* Placeholder styles */
@@ -235,7 +227,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     font-size: 12px;
     transition: background 0.2s ease;
   }
-  .retry-buttonhover {
+  .retry-button:hover {
     background: rgba(255, 255, 255, 0.2);
   }
   /* Content styles */
@@ -245,10 +237,10 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* Animations */
   @keyframes loading-shimmer {
     0% {
-      background-position -200% 0;
+      background-position: -200% 0;
     }
     100% {
-      background-position 200% 0;
+      background-position: 200% 0;
     }
   }
   @keyframes spin {
@@ -295,7 +287,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     }
   }
   /* Reduced motion */
-  @media (prefers-reduced-motion reduce) {
+  @media (prefers-reduced-motion: reduce) {
     .loading-spinner {
       animation: none;
     }

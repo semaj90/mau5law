@@ -32,7 +32,7 @@ export const ensureBufferCompatibility = (data: BufferCompatible): ArrayBuffer =
 };
 /**
  * Ensures data is a Float32Array for WebGPU operations
- * Fixes: Type 'number[]' is missing properties from Float32Array
+ * Fixes: Type: 'number[]' is missing properties from Float32Array
  */
 export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
   if (data instanceof Float32Array) {
@@ -68,7 +68,7 @@ export const createWebGPUBuffer = (
 };
 /**
  * Safe WebGPU buffer write operation with null checking
- * Fixes: Object is possibly 'null' errors
+ * Fixes: Object is possibly: 'null' errors
  */
 export const safeWriteBuffer = (
   device: GPUDevice,

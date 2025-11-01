@@ -1053,7 +1053,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <h3 class="text-xl font-bold text-gray-800 mb-2">No Routes Found</h3>
         <p class="text-gray-500 mb-4">
           {#if searchTerm}
-            No routes found matching "<strong>{searchTerm}</strong>"
+            No routes found matching: "<strong>{searchTerm}</strong>"
           {:else}
             No routes found in the selected category
           {/if}

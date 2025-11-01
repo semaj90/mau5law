@@ -2,254 +2,197 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { browser } from '$app/environment';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { onMount, onDestroy } from 'svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
-  import { Accessibility, Keyboard, Maximize2, Minimize2 } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import Accessibility from 'lucide-svelte/icons/accessibility.svelte';
+  import Keyboard from 'lucide-svelte/icons/keyboard.svelte';
+  import Maximize2 from 'lucide-svelte/icons/maximize-2.svelte';
+  import Minimize2 from 'lucide-svelte/icons/minimize-2.svelte';
   import AccessibilityPanel from './AccessibilityPanel.svelte';
-  // Keyboard shortcuts state
-  let showShortcuts = $state(false);
-  let showAccessibilityPanel = $state(false);
-  let isFullscreen = $state(false);
-  // Keyboard shortcuts map
+
+  // local state (simple, compatible with Svelte 5 migration)
+  let showShortcuts = false;
+  let showAccessibilityPanel = false;
+  let isFullscreen = false;
+
+  // keyboard shortcuts map (fixed object syntax)
   const shortcuts = [
-    { key: 'Ctrl + K', description 'Quick search', action 'search' },
-    { key: 'Ctrl + N', description 'New evidence', action 'new' },
-    { key: 'Ctrl + S', description 'Save current work', action 'save' },
-    { key: 'Ctrl + E', description 'Export data', action 'export' },
-    { key: 'Ctrl + F', description 'Toggle filters', action 'filter' },
-    { key: 'Ctrl + H', description 'Show/hide shortcuts', action 'help' },
-    {
-      key: 'Ctrl + Alt + A',
-      description 'Accessibility panel',
-      action 'accessibility',
-    },
-    { key: 'F11', description 'Toggle fullscreen', action 'fullscreen' },
-    { key: 'Escape', description 'Close modals/exit', action 'escape' },
+    { key: 'Ctrl+K', description: 'Quick search', action: 'search' },
+    { key: 'Ctrl+N', description: 'New evidence', action: 'new' },
+    { key: 'Ctrl+S', description: 'Save current work', action: 'save' },
+    { key: 'Ctrl+E', description: 'Export data', action: 'export' },
+    { key: 'Ctrl+F', description: 'Toggle filters', action: 'filter' },
+    { key: 'Ctrl+H', description: 'Show/hide shortcuts', action: 'help' },
+    { key: 'Ctrl+Alt+A', description: 'Accessibility panel', action: 'accessibility' },
+    { key: 'F11', description: 'Toggle fullscreen', action: 'fullscreen' },
+    { key: 'Escape', description: 'Close modals/exit', action: 'escape' }
   ];
-  $effect(() => {
-    if (browser) {
-      // Add keyboard event listeners
-      document.addEventListener('keydown', handleKeyboardShortcut);
-      document.addEventListener('fullscreenchange', handleFullscreenChange);
-      return () => {
-        document.removeEventListener('keydown', handleKeyboardShortcut);
-        document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      };
-    }
-  });
-  function handleKeyboardShortcut(_event: KeyboardEvent) {
-    // Ignore if user is typing in an input/textarea
+
+  function handleKeyboardShortcut(event: KeyboardEvent) {
+    // ignore input-like elements
+    const target = event.target as Element | null;
     if (
-      event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLTextAreaElement ||
-      event.target instanceof HTMLSelectElement
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement ||
+      (target && (target.getAttribute?.('contenteditable') === 'true'))
     ) {
       return;
     }
-    const { ctrlKey, metaKey, altKey, key } = event;
-    const cmdOrCtrl = ctrlKey || metaKey;
-    switch (true) {
-      case cmdOrCtrl && key.toLowerCase() === 'k':
-        event.preventDefault();
-        triggerSearch();
-        break;
-      case cmdOrCtrl && key.toLowerCase() === 'n':
-        event.preventDefault();
-        triggerNewEvidence();
-        break;
-      case cmdOrCtrl && key.toLowerCase() === 's':
-        event.preventDefault();
-        triggerSave();
-        break;
-      case cmdOrCtrl && key.toLowerCase() === 'e':
-        event.preventDefault();
-        triggerExport();
-        break;
-      case cmdOrCtrl && key.toLowerCase() === 'f':
-        event.preventDefault();
-        triggerFilter();
-        break;
-      case cmdOrCtrl && key.toLowerCase() === 'h':
-        event.preventDefault();
-        showShortcuts = !showShortcut;
-        break;
-      case cmdOrCtrl && altKey && key.toLowerCase() === 'a':
-        event.preventDefault();
-        showAccessibilityPanel = !showAccessibilityPanel;
-        break;
-      case key === 'F11':
-        event.preventDefault();
-        toggleFullscreen();
-        break;
-      case key === 'Escape':
-        handleEscape();
-        break;
+
+    const key = event.key.toLowerCase();
+    const ctrl = event.ctrlKey || event.metaKey;
+
+    // simple mapping for a few shortcuts
+    if (ctrl && key === 'h') {
+      event.preventDefault();
+      showShortcuts = !showShortcuts;
+      return;
+    }
+    if (ctrl && key === 'k') {
+      event.preventDefault();
+      // trigger search - placeholder
+      // dispatch or focus search input
+      return;
+    }
+    if (key === 'f11') {
+      event.preventDefault();
+      toggleFullscreen();
+      return;
+    }
+    if (key === 'escape') {
+      showShortcuts = false;
+      showAccessibilityPanel = false;
+      return;
     }
   }
+
   function handleFullscreenChange() {
     isFullscreen = !!document.fullscreenElement;
   }
-  function triggerSearch() {
-    // Focus search input if it exists
-    const searchInput = document.querySelector(
-      'input[type="search"], input[placeholder*="search" i]'
-    ) as HTMLInputElement;
-    if (searchInput) {
-      searchInput.focus();
-      searchInput.select();
-    }
-    console.log('🔍 Search triggered');
-  }
-  function triggerNewEvidence() {
-    // Trigger new evidence creation
-    console.log('➕ New evidence triggered');
-    // You would dispatch an event or call a function here
-    window.dispatchEvent(new CustomEvent('new-evidence'));
-  }
-  function triggerSave() {
-    // Save current work
-    console.log('💾 Save triggered');
-    window.dispatchEvent(new CustomEvent('save-work'));
-  }
-  function triggerExport() {
-    // Navigate to export or trigger export
-    console.log('📤 Export triggered');
-    window.location.href = '/export';
-  }
-  function triggerFilter() {
-    // Toggle filter panel
-    console.log('🔧 Filter toggle triggered');
-    window.dispatchEvent(new CustomEvent('toggle-filters'));
-  }
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
+
+  async function toggleFullscreen() {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+      // isFullscreen updated by fullscreenchange listener
+    } catch (err) {
+      // silent fallback
+      console.error('Fullscreen toggle failed', err);
     }
   }
-  function handleEscape() {
-    // Close modals, exit fullscreen, etc.
-    if (showShortcuts) {
-      showShortcuts = false;
-    } else if (showAccessibilityPanel) {
-      showAccessibilityPanel = false;
-    } else if (document.fullscreenElement) {
-      document.exitFullscreen();
-    }
-    console.log('⚡ Escape triggered');
+
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyboardShortcut);
+    window.addEventListener('fullscreenchange', handleFullscreenChange);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('keydown', handleKeyboardShortcut);
+    window.removeEventListener('fullscreenchange', handleFullscreenChange);
+  });
+
+  // helper for UI test action
+  function toggleAccessibilityPanel() {
+    showAccessibilityPanel = !showAccessibilityPanel;
   }
-  export { showShortcuts, toggleFullscreen, isFullscreen };
 </script>
 
-<!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
-  <div
-    class="mx-auto px-4 max-w-7xl"
-    onclick={() => (showShortcuts = false)}
-    keydown={e => e.key === 'Escape' && (showShortcuts = false)}
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="shortcuts-title"
-  >
-    <div class="mx-auto px-4 max-w-7xl" onclick role="document">
-      <div class="mx-auto px-4 max-w-7xl">
-        <h3 id="shortcuts-title" class="mx-auto px-4 max-w-7xl">
-          <Keyboard class="mx-auto px-4 max-w-7xl" />
-          Keyboard Shortcuts
-        </h3>
-        <button
-          class="mx-auto px-4 max-w-7xl"
-          onclick={() => (showShortcuts = false)}
-          aria-label="Close shortcuts dialog"
-        >
-          <svg class="mx-auto px-4 max-w-7xl" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-      <div class="mx-auto px-4 max-w-7xl">
-        {#each shortcuts as shortcut}
-          <div class="mx-auto px-4 max-w-7xl">
-            <span class="mx-auto px-4 max-w-7xl">{shortcut.description}</span>
-            <kbd class="mx-auto px-4 max-w-7xl">
-              {shortcut.key}
-            </kbd>
-          </div>
+  <div class="mx-auto px-4 max-w-7xl" role="dialog" aria-modal="true">
+    <div class="mx-auto px-4 max-w-7xl">
+      <p class="mx-auto px-4 max-w-7xl">
+        💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
+      </p>
+      <ul class="mt-4 space-y-2">
+        {#each shortcuts as s}
+          <li class="flex items-center justify-between p-2 bg-gray-800 rounded">
+            <div>
+              <div class="font-medium text-white">{s.description}</div>
+              <div class="text-sm text-gray-400">
+                <kbd class="shortcut-key">{s.key}</kbd>
+              </div>
+            </div>
+            <div>
+              <Button size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
+                Test
+              </Button>
+            </div>
+          </li>
         {/each}
-      </div>
-      <div class="mx-auto px-4 max-w-7xl">
-        <p class="mx-auto px-4 max-w-7xl">
-          💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
-        </p>
-      </div>
+      </ul>
     </div>
   </div>
 {/if}
+
 <!-- Floating Action Buttons -->
-<div class="mx-auto px-4 max-w-7xl">
+<div class="mx-auto px-4 max-w-7xl floating-actions">
   <!-- Accessibility Panel Toggle -->
   <Tooltip content="Accessibility panel (Ctrl+Alt+A)" placement="left">
     <Button
       variant="ghost"
       size="sm"
-      class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      onclick={() => (showAccessibilityPanel = !showAccessibilityPanel)}
+      class="bits-btn"
+      onclick={() => toggleAccessibilityPanel()}
       aria-label="Toggle accessibility panel"
     >
-      <Accessibility class="mx-auto px-4 max-w-7xl" />
+      <Accessibility />
     </Button>
   </Tooltip>
+
   <!-- Keyboard Shortcuts Toggle -->
   <Tooltip content="Keyboard shortcuts (Ctrl+H)" placement="left">
     <Button
       variant="ghost"
       size="sm"
-      class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+      class="bits-btn"
       onclick={() => (showShortcuts = !showShortcuts)}
       aria-label="Show keyboard shortcuts"
     >
-      <Keyboard class="mx-auto px-4 max-w-7xl" />
+      <Keyboard />
     </Button>
   </Tooltip>
+
   <!-- Fullscreen Toggle -->
-  <Tooltip content="{isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'} (F11)" placement="left">
+  <Tooltip content={isFullscreen ? 'Exit fullscreen (F11)' : 'Enter fullscreen (F11)'} placement="left">
     <Button
       variant="ghost"
       size="sm"
-      class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+      class="bits-btn"
       onclick={() => toggleFullscreen()}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
     >
       {#if isFullscreen}
-        <Minimize2 class="mx-auto px-4 max-w-7xl" />
+        <Minimize2 />
       {:else}
-        <Maximize2 class="mx-auto px-4 max-w-7xl" />
+        <Maximize2 />
       {/if}
     </Button>
   </Tooltip>
 </div>
+
 <!-- Accessibility Panel -->
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
 
 <style>
   :global(.floating-actions) {
     transition: all 0.3s ease;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
   }
-  :global($1) {
-    transform: scale(1.05);
-  }
-  kbd {
+  /* scope styling to the in-component shortcut kbd elements */
+  kbd.shortcut-key {
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.24);
+    padding: 0.08rem 0.4rem;
+    border-radius: 0.25rem;
+    background: rgba(255,255,255,0.03);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
   }
 </style>
-

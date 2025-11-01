@@ -196,22 +196,22 @@
 
   // Function to get save status
   function getSaveStatus() {
-    if (isSaving) return "Saving...";
-    if (saveError) return "Save failed";
-    if (hasUnsavedChanges) return "Unsaved changes";
+    if (isSaving) return: "Saving...";
+    if (saveError) return: "Save failed";
+    if (hasUnsavedChanges) return: "Unsaved changes";
     if (lastSaved) return `Last saved ${lastSaved}`;
-    return "All changes saved";
+    return: "All changes saved";
   }
 
   function getDocumentTypeIcon() {
     switch (documentType) {
-      case "brief":
+      case: "brief":
         return FileText;
-      case "contract":
+      case: "contract":
         return BookOpen; // Corrected icon name
-      case "motion":
+      case: "motion":
         return Scale; // Corrected icon name
-      case "evidence":
+      case: "evidence":
         return Search;
       default:
         return FileText;
@@ -362,16 +362,16 @@
           </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content class="w-56">
-          <DropdownMenu.Item on:click={() => console.log('Preview')}>
+          <DropdownMenu.Item onclick={() => console.log('Preview')}>
             <Eye class="mr-2 h-4 w-4" />
             Preview
           </DropdownMenu.Item>
-          <DropdownMenu.Item on:click={() => console.log('Share')}>
+          <DropdownMenu.Item onclick={() => console.log('Share')}>
             <Share2 class="mr-2 h-4 w-4" />
             Share
           </DropdownMenu.Item>
           <DropdownMenu.Separator />
-          <DropdownMenu.Item on:click={() => console.log('Delete')} class="text-red-500">
+          <DropdownMenu.Item onclick={() => console.log('Delete')} class="text-red-500">
             <X class="mr-2 h-4 w-4" />
             Delete
           </DropdownMenu.Item>
@@ -379,7 +379,7 @@
       </DropdownMenu.Root>
 
       <Button
-        on:click={() => manualSaveDocument()}
+        onclick={() => manualSaveDocument()}
         disabled={readonly || loadingDocument || isSaving}
         class="flex items-center gap-2"
       >
@@ -411,7 +411,7 @@
               <u>U</u>
             </Button>
             <span class="toolbar-separator">|</span>
-            <Button variant="ghost" size="icon" title="Insert Citation" on:click={() =>
+            <Button variant="ghost" size="icon" title="Insert Citation" onclick={() =>
               insertCitation({
                 id: Math.random().toString(),
                 text: 'Sample Citation',
@@ -456,7 +456,7 @@
                     <Button builders={[builder]} variant="outline" disabled={isProcessingAI}> Cancel </Button>
                   </Dialog.Close>
                   <Button
-                    on:click={() => handleAIRequest()}
+                    onclick={() => handleAIRequest()}
                     disabled={!query.trim() || isProcessingAI}
                   >
                     {#if isProcessingAI}
@@ -487,7 +487,7 @@
               <AlertCircle class="h-8 w-8" />
               <p class="mt-2 text-lg">Failed to load document</p>
               <p class="text-sm text-nier-gray-light">{documentLoadError}</p>
-              <Button on:click={() => loadDocument()} class="mt-4"> Try Again </Button>
+              <Button onclick={() => loadDocument()} class="mt-4"> Try Again </Button>
             </div>
           {/if}
           <Textarea
@@ -524,7 +524,7 @@
           <Button
             variant="outline"
             class="w-full"
-            on:click={() =>
+            onclick={() =>
               insertCitation({
                 id: Math.random().toString(),
                 text: 'Sample Citation',

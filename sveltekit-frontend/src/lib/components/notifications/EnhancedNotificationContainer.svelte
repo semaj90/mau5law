@@ -19,7 +19,7 @@ mcp<script lang="ts">
     | "bottom-left"
     | "top-center"
     | "bottom-center" >("top-right");
-  let stackDirection = $state<"up" | "down" >("down" as "up" | "down");
+  let stackDirection = $state<"up" | "down" >("down" as: "up" | "down");
   let pauseOnHover = $state(true);
   let groupSimilar = $state(true);
   let enableSounds = $state(true);
@@ -99,27 +99,27 @@ mcp<script lang="ts">
   }
   function getNotificationIcon(type: Notification["type"]) {
     switch (type) {
-      case "success":
+      case: "success":
         return Check;
-      case "error":
+      case: "error":
         return AlertCircl;
-      case "warning":
+      case: "warning":
         return AlertTriangl;
-      case "info":
+      case: "info":
       default:
         return Info;
   }}
   function getNotificationColor(type: Notification["type"]) {
     switch (type) {
-      case "success":
-        return "bg-green-50 border-green-200 text-green-800";
-      case "error":
-        return "bg-red-50 border-red-200 text-red-800";
-      case "warning":
-        return "bg-yellow-50 border-yellow-200 text-yellow-800";
-      case "info":
+      case: "success":
+        return: "bg-green-50 border-green-200 text-green-800";
+      case: "error":
+        return: "bg-red-50 border-red-200 text-red-800";
+      case: "warning":
+        return: "bg-yellow-50 border-yellow-200 text-yellow-800";
+      case: "info":
       default:
-        return "bg-blue-50 border-blue-200 text-blue-800";
+        return: "bg-blue-50 border-blue-200 text-blue-800";
   }}
   function handleNotificationAction(notification Notification, action unknown) {
     if (action.callback) {
@@ -139,17 +139,17 @@ mcp<script lang="ts">
   function getContainerClasses() {
     const baseClasses = "fixed z-50 pointer-events-none";
     switch (position) {
-      case "top-right":
+      case: "top-right":
         return `${baseClasses} top-4 right-4`;
-      case "top-left":
+      case: "top-left":
         return `${baseClasses} top-4 left-4`;
-      case "bottom-right":
+      case: "bottom-right":
         return `${baseClasses} bottom-4 right-4`;
-      case "bottom-left":
+      case: "bottom-left":
         return `${baseClasses} bottom-4 left-4`;
-      case "top-center":
+      case: "top-center":
         return `${baseClasses} top-4 left-1/2 transform -translate-x-1/2`;
-      case "bottom-center":
+      case: "bottom-center":
         return `${baseClasses} bottom-4 left-1/2 transform -translate-x-1/2`;
       default:
         return `${baseClasses} top-4 right-4`;

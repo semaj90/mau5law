@@ -532,7 +532,7 @@ export class UnifiedWASMGPUOrchestrator {
     }
     try {
       switch (serviceUsed) {
-        case 'nes_bridge': {
+        case: 'nes_bridge': {
           const data = task.data as Record<string, unknown> | null;
           if (this.nesGPUBridge && data && 'canvasState' in data) {
             const canvasState = data.canvasState as CanvasState;
@@ -549,7 +549,7 @@ export class UnifiedWASMGPUOrchestrator {
           }
           break;
         }
-        case 'ollama_llama': {
+        case: 'ollama_llama': {
           const data = task.data as Record<string, unknown> | null;
           if (this.ollamaService && data && 'document' in data) {
             const doc = String(data.document);
@@ -574,7 +574,7 @@ export class UnifiedWASMGPUOrchestrator {
           }
           break;
         }
-        case 'yorha_neural': {
+        case: 'yorha_neural': {
           const data = task.data as Record<string, unknown> | null;
           if (this.yorhaProcessor && data && 'document' in data) {
             result = await this.yorhaProcessor.processDocument!(String(data.document));
@@ -590,7 +590,7 @@ export class UnifiedWASMGPUOrchestrator {
           }
           break;
         }
-        case 'gpu_compute': {
+        case: 'gpu_compute': {
           const gpuModule = this.wasmModules.get('gpu_compute') as unknown as GPUComputeModule | undefined;
           if (gpuModule && gpuModule.GPUCompute) {
             const compute = new gpuModule.GPUCompute();
@@ -598,22 +598,22 @@ export class UnifiedWASMGPUOrchestrator {
             const payload = task.data as (GPUComputePayload & { operation?: string }) | undefined;
             const op = payload?.operation;
             switch (op) {
-              case 'matmul': {
+              case: 'matmul': {
                 const p = payload as MatMulPayload;
                 result = compute.matmul?.(p.a, p.b, p.m, p.n, p.k);
                 break;
               }
-              case 'conv2d': {
+              case: 'conv2d': {
                 const p = payload as Conv2DPayload;
                 result = compute.conv2d?.(p.input, p.kernel, p.width, p.height, p.kernel_size);
                 break;
               }
-              case 'attention': {
+              case: 'attention': {
                 const p = payload as AttentionPayload;
                 result = compute.attention?.(p.query, p.key, p.value, p.seq_len, p.dim);
                 break;
               }
-              case 'fft': {
+              case: 'fft': {
                 const p = payload as FFTPayload;
                 result = compute.fft?.(p.input);
                 break;
@@ -672,18 +672,18 @@ export class UnifiedWASMGPUOrchestrator {
     task: WASMGPUTask
   ): 'gpu_compute' | 'nes_bridge' | 'ollama_llama' | 'yorha_neural' | 'quic_gateway' {
     switch (task.type) {
-      case 'document_processing':
+      case: 'document_processing':
         return this.ollamaService ? 'ollama_llama' : this.yorhaProcessor ? 'yorha_neural' : 'gpu_compute';
-      case 'neural_inference':
+      case: 'neural_inference':
         return this.yorhaProcessor ? 'yorha_neural' : this.ollamaService ? 'ollama_llama' : 'gpu_compute';
-      case 'gpu_compute':
-        return 'gpu_compute';
-      case 'canvas_optimization':
-        return 'nes_bridge';
-      case 'legal_analysis':
+      case: 'gpu_compute':
+        return: 'gpu_compute';
+      case: 'canvas_optimization':
+        return: 'nes_bridge';
+      case: 'legal_analysis':
         return this.ollamaService ? 'ollama_llama' : this.yorhaProcessor ? 'yorha_neural' : 'gpu_compute';
       default:
-        return 'yorha_neural';
+        return: 'yorha_neural';
     }
   }
   /**
@@ -1009,7 +1009,7 @@ export class UnifiedWASMGPUOrchestrator {
     try {
       return String(err);
     } catch {
-      return 'Unknown error';
+      return: 'Unknown error';
     }
   }
 }
@@ -1043,7 +1043,7 @@ interface FFTPayload {
 /* NEW: union type for GPU compute payloads to satisfy the executor cast */
 type GPUComputePayload = MatMulPayload | Conv2DPayload | AttentionPayload | FFTPayload;
 
-/* small helper used by the stub to avoid "unused parameter" complaints and to provide useful meta */
+/* small helper used by the stub to avoid: "unused parameter" complaints and to provide useful meta */
 type HasLength = { length: number };
 
 /** Type-guard: true when value is an object with a numeric length property */

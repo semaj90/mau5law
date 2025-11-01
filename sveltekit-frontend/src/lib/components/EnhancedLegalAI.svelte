@@ -2,14 +2,12 @@
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
   import { Button } from '$lib/components/ui/button';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/select'; // Corrected import for bits-ui Select components
-  import { Input } from '$lib/components/ui/input'; // Added import
-  import { Label } from '$lib/components/ui/label'; // Added import
-  import { Textarea } from '$lib/components/ui/textarea'; // Added import
-  import * as Card from '$lib/components/ui/card'; // Added import
-  import { Loader2 } from 'lucide-svelte'; // Added import for Loader2 icon
-  import { onMount } from "svelte";
+  import { Label } from '$lib/components/ui/label';
+  import { Textarea } from '$lib/components/ui/textarea';
+  // lucide-svelte exports some icons as default; import Loader2 as the default export
+  import Loader2 from 'lucide-svelte';
+  import { onMount } from 'svelte';
+
   // Enhanced AI Types
   interface DocumentRequest {
     content: string;
@@ -68,26 +66,26 @@
   }
 
   // Component state
-  let serviceStatus: ServiceStatus = $state({ // Explicitly type serviceStatus
+  let serviceStatus = $state<ServiceStatus>({
     healthy: false,
     loading: true,
     services: {},
     version: "",
     config: {},
   });
-  let documentContent = $state("");
-  let selectedDocumentType = $state("contract");
-  let selectedJurisdiction = $state("US");
-  let selectedPracticeArea = $state("commercial");
-  let useGPU = $state(true);
-  let processing = $state(false);
-  let processResult: DocumentResponse | null = $state(null);
-  let searchQuery = $state("");
-  let searchLimit = $state(10);
-  let searching = $state(false);
-  let searchResults: VectorSearchResponse | null = $state(null);
-  let showProcessDialog = $state(false);
-  let showSearchDialog = $state(false);
+  let documentContent = $state<string>("");
+  let selectedDocumentType = $state<string>("contract");
+  let selectedJurisdiction = $state<string>("US");
+  let selectedPracticeArea = $state<string>("commercial");
+  let useGPU = $state<boolean>(true);
+  let processing = $state<boolean>(false);
+  let processResult = $state<DocumentResponse | null>(null);
+  let searchQuery = $state<string>("");
+  let searchLimit = $state<number>(10);
+  let searching = $state<boolean>(false);
+  let searchResults = $state<VectorSearchResponse | null>(null);
+  let showProcessDialog = $state<boolean>(false);
+  let showSearchDialog = $state<boolean>(false);
   // Enhanced configuration
   // Enhanced configuration
   const API_BASE = "/api"; // Use SvelteKit API routes
@@ -112,6 +110,11 @@
     { value: "criminal", label: "Criminal Law" },
     { value: "corporate", label: "Corporate Law" },
     { value: "employment", label: "Employment Law" },
+  ];
+  const models = [
+    { value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
+    { value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
+    { value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
   ];
   // Enhanced service functions
   async function checkServiceHealth() {
@@ -179,61 +182,66 @@
     showProcessDialog = true;
   }
   async function performVectorSearch() {
-    if (!searchQuery.trim()) {
+    if (!searchQuery || !searchQuery.trim()) {
       alert("Please enter a search query");
       return;
     }
     try {
       searching = true;
       searchResults = null;
+
       const request: VectorSearchRequest = {
-        query: searchQuery, // Added comma
-        limit: searchLimit, // Added comma
-        use_gpu: useGPU,
-        model: "gemma3-legal",
-        filters: {
-          jurisdiction: selectedJurisdiction, // Added comma
-          practice_area: selectedPracticeArea,
-        },
-      }
+        query: searchQuery.trim(),
+        limit: Number(searchLimit) || 10,
+        model: 'embeddinggemma:latest',
+        use_gpu: Boolean(useGPU),
+        filters: {}
+      };
+
       const response = await fetch(`${API_BASE}/vector-search`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
       });
-      if (!response.ok) { // Simplified type assertion
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+      if (!response.ok) {
+        throw new Error(`Vector search failed (${response.status})`);
       }
-      searchResults = await response.json(); // Simplified type assertion
-      showSearchDialog = true;
+
+      const body = await response.json();
+      // cast to expected shape; caller should validate as needed
+      searchResults = body as VectorSearchResponse;
     } catch (error) {
-      console.error("Vector search failed:", error);
-      alert(`Search failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+      console.error('Vector search error:', error);
+      alert(`Search failed: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       searching = false;
+      showSearchDialog = true;
     }
   }
   function getSentimentColor(sentiment: number): string {
-    if (sentiment > 0.7) return "text-green-600";
-    if (sentiment > 0.5) return "text-blue-600";
-    if (sentiment > 0.3) return "text-yellow-600";
-    return "text-red-600";
+    if (sentiment == null || Number.isNaN(sentiment)) return: "text-gray-500";
+    if (sentiment > 0.7) return: "text-green-600";
+    if (sentiment > 0.5) return: "text-blue-600";
+    if (sentiment > 0.3) return: "text-yellow-600";
+    return: "text-red-600";
   }
   function getSentimentLabel(sentiment: number): string {
-    if (sentiment > 0.7) return "Positive";
-    if (sentiment > 0.5) return "Neutral-Positive";
-    if (sentiment > 0.3) return "Neutral-Negative";
-    return "Negative";
+    if (sentiment == null || Number.isNaN(sentiment)) return: "Unknown";
+    if (sentiment > 0.7) return: "Positive";
+    if (sentiment > 0.5) return: "Somewhat Positive";
+    if (sentiment > 0.3) return: "Neutral";
+    return: "Negative";
   }
-  $effect(() => {
-    checkServiceHealth();
-    // Refresh health status every 30 seconds
-    const interval = setInterval(checkServiceHealth, 30000);
+  onMount(() => {
+    checkServiceHealth().catch((e) => console.warn('initial health check failed', e));
+    const interval = setInterval(() => {
+      checkServiceHealth().catch((e) => console.warn('periodic health check failed', e));
+    }, 60_000);
     return () => clearInterval(interval);
   });
 </script>
+
 <!-- Enhanced Legal AI Interface -->
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
   <div class="max-w-6xl mx-auto">
@@ -247,21 +255,23 @@
       </p>
       <!-- Service Status -->
       <div
-        class="mt-4 p-4 rounded-lg border-2 {serviceStatus.healthy
-          ? 'bg-green-50 border-green-200'
-          : 'bg-red-50 border-red-200'}"
+        class="mt-4 p-4 rounded-lg border-2"
+        class:bg-green-50={serviceStatus.healthy}
+        class:border-green-200={serviceStatus.healthy}
+        class:bg-red-50={!serviceStatus.healthy}
+        class:border-red-200={!serviceStatus.healthy}
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div
-              class="w-3 h-3 rounded-full {serviceStatus.healthy
-                ? 'bg-green-500'
-                : 'bg-red-500'}"
+              class="w-3 h-3 rounded-full"
+              class:bg-green-500={serviceStatus.healthy}
+              class:bg-red-500={!serviceStatus.healthy}
             ></div>
             <span
-              class="font-semibold {serviceStatus.healthy
-                ? 'text-green-800'
-                : 'text-red-800'}"
+              class="font-semibold"
+              class:text-green-800={serviceStatus.healthy}
+              class:text-red-800={!serviceStatus.healthy}
             >
               {serviceStatus.healthy ? "System Online" : "System Offline"}
             </span>
@@ -275,18 +285,18 @@
             <div class="flex gap-4 text-sm">
               <span class="text-slate-600">
                 Redis: <span
-                  class="font-mono {serviceStatus.services.redis === 'connected'
-                    ? 'text-green-600'
-                    : 'text-red-600'}"
+                  class="font-mono"
+                  class:text-green-600={serviceStatus.services.redis === 'connected'}
+                  class:text-red-600={serviceStatus.services.redis !== 'connected'}
                 >
                   {serviceStatus.services.redis || "unknown"}
                 </span>
               </span>
               <span class="text-slate-600">
                 GPU: <span
-                  class="font-mono {serviceStatus.services.gpu === 'true'
-                    ? 'text-green-600'
-                    : 'text-blue-600'}"
+                  class="font-mono"
+                  class:text-green-600={serviceStatus.services.gpu === 'true'}
+                  class:text-blue-600={serviceStatus.services.gpu !== 'true'}
                 >
                   {serviceStatus.services.gpu === "true"
                     ? "enabled"
@@ -309,38 +319,32 @@
         </h2>
         <!-- Configuration -->
         <div class="grid grid-cols-2 gap-4 mb-4">
-          <Select.Root bind:value={selectedDocumentType}>
-            <Select.Trigger class="w-full mt-1">
-              <Select.Value placeholder="Select a document type" />
-            </Select.Trigger>
-            <Select.Content>
+          <div>
+            <Label for="document-type">Document Type</Label>
+            <select id="document-type" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedDocumentType}>
               {#each documentTypes as type}
-                <Select.Item value={type.value}>{type.label}</Select.Item>
+                <option value={type.value}>{type.label}</option>
               {/each}
-            </Select.Content>
-          </Select.Root>
-          <Select.Root bind:value={selectedJurisdiction}>
-            <Select.Trigger class="w-full mt-1">
-              <Select.Value placeholder="Select jurisdiction" />
-            </Select.Trigger>
-            <Select.Content>
+            </select>
+          </div>
+          <div>
+            <Label for="jurisdiction">Jurisdiction</Label>
+            <select id="jurisdiction" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedJurisdiction}>
               {#each jurisdictions as jurisdiction}
-                <Select.Item value={jurisdiction.value}>{jurisdiction.label}</Select.Item>
+                <option value={jurisdiction.value}>{jurisdiction.label}</option>
               {/each}
-            </Select.Content>
-          </Select.Root>
+            </select>
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-4 mb-4">
-          <Select.Root bind:value={selectedPracticeArea}>
-            <Select.Trigger class="w-full mt-1">
-              <Select.Value placeholder="Select practice area" />
-            </Select.Trigger>
-            <Select.Content>
+          <div>
+            <Label for="practice-area">Practice Area</Label>
+            <select id="practice-area" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedPracticeArea}>
               {#each practiceAreas as area}
-                <Select.Item value={area.value}>{area.label}</Select.Item>
+                <option value={area.value}>{area.label}</option>
               {/each}
-            </Select.Content>
-          </Select.Root>
+            </select>
+          </div>
           <div class="flex items-center gap-2">
             <input type="checkbox" id="use-gpu" bind:checked={useGPU} class="h-4 w-4" />
             <Label for="use-gpu">Use GPU Acceleration</Label>
@@ -382,22 +386,22 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <Label for="search-query">Search Query</Label>
-            <Input
+            <input
               id="search-query"
-              bind:value={searchQuery}
+              class="mt-1 w-full border rounded px-2 py-2"
               placeholder="e.g., 'breach of contract in software licensing'"
-              class="mt-1"
+              bind:value={searchQuery}
             />
           </div>
           <div>
             <Label for="search-limit">Result Limit</Label>
-            <Input
+            <input
               id="search-limit"
               type="number"
+              class="mt-1 w-full border rounded px-2 py-2"
               bind:value={searchLimit}
               min={1}
               max={50}
-              class="mt-1"
             />
           </div>
         </div>
@@ -418,195 +422,172 @@
     </div>
   </div>
 </div>
-<!-- Process Results Dialog -->
-<Dialog.Root bind:open={showProcessDialog}>
-  <Dialog.Content class="sm:max-w-[600px]">
-    <Dialog.Header>
-      <Dialog.Title>Document Processing Results</Dialog.Title>
-      <Dialog.Description>
-        Detailed analysis of your legal document.
-      </Dialog.Description>
-    </Dialog.Header>
-    {#if processResult}
-      <div class="grid gap-4 py-4">
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label class="text-right">Success:</Label>
-          <span class="col-span-3">{processResult.success ? 'Yes' : 'No'}</span>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label class="text-right">Message:</Label>
-          <span class="col-span-3">{processResult.message}</span>
-        </div>
-        {#if processResult.summary}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Summary:</Label>
-            <span class="col-span-3 text-sm">{processResult.summary}</span>
-          </div>
-        {/if}
-        {#if processResult.keywords && processResult.keywords.length > 0}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Keywords:</Label>
-            <span class="col-span-3">{processResult.keywords.join(', ')}</span>
-          </div>
-        {/if}
-        {#if processResult.legal_entities && processResult.legal_entities.length > 0}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Entities:</Label>
-            <div class="col-span-3">
-              {#each processResult.legal_entities as entity}
-                <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1">
-                  {entity.name} ({entity.type})
-                </span>
-              {/each}
-            </div>
-          </div>
-        {/if}
-        {#if processResult.sentiment !== undefined}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Sentiment:</Label>
-            <span class="col-span-3">{getSentimentLabel(processResult.sentiment)} ({processResult.sentiment.toFixed(2)})</span>
-          </div>
-        {/if}
-        {#if processResult.confidence !== undefined}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Confidence:</Label>
-            <span class="col-span-3">{(processResult.confidence * 100).toFixed(2)}%</span>
-          </div>
-        {/if}
-        {#if processResult.processing_time}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Time:</Label>
-            <span class="col-span-3">{processResult.processing_time}</span>
-          </div>
-        {/if}
-        {#if processResult.cached_result !== undefined}
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="text-right">Cached:</Label>
-            <span class="col-span-3">{processResult.cached_result ? 'Yes' : 'No'}</span>
-          </div>
-        {/if}
-      </div>
-    {:else}
-      <p>No results to display.</p>
-    {/if}
-    <Dialog.Footer>
-      <Button on:click={() => (showProcessDialog = false)}>Close</Button>
-    </Dialog.Footer>
-  </Dialog.Content>
-</Dialog.Root>
-<!-- Search Results Dialog -->
-<Dialog.Root bind:open={showSearchDialog}>
-  <Dialog.Content class="sm:max-w-[700px]">
-    <Dialog.Header>
-      <Dialog.Title>Vector Search Results</Dialog.Title>
-      <Dialog.Description>
-        Documents and cases semantically similar to your query.
-      </Dialog.Description>
-    </Dialog.Header>
-    {#if searchResults && searchResults.results.length > 0}
-      <div class="grid gap-4 py-4 max-h-[400px] overflow-y-auto">
-        <p class="text-sm text-muted-foreground">
-          Found {searchResults.total} results for "{searchResults.query}" in {searchResults.took}.
-        </p>
-        {#each searchResults.results as result}
-          <Card.Root class="border-l-4 border-blue-500 p-3">
-            <Card.Title class="text-lg">{result.metadata.title || 'Untitled Document'}</Card.Title>
-            <Card.Description class="text-sm text-muted-foreground">
-              Score: {(result.score * 100).toFixed(2)}% | ID: {result.id}
-            </Card.Description>
-            <p class="mt-2 text-sm line-clamp-3">{result.content}</p>
-            {#if result.metadata.source}
-              <p class="text-xs text-gray-500 mt-1">Source: {result.metadata.source}</p>
-            {/if}
-            <div class="flex flex-wrap gap-2 text-xs mt-2">
-              {#each Object.entries(result.metadata) as [key, value]}
-                <span class="px-2 py-1 bg-slate-100 text-slate-700 rounded">
-                  {key}: {value}
-                </span>
-              {/each}
-            </div>
-          </Card.Root>
-        {/each}
-      </div>
-    {:else if searchResults && searchResults.results.length === 0}
-      <p class="py-4 text-center text-muted-foreground">No similar documents found for "{searchResults.query}".</p>
-    {:else}
-      <p class="py-4 text-center text-muted-foreground">Enter a query to see search results.</p>
-    {/if}
-    <Dialog.Footer>
-      <Button on:click={() => (showSearchDialog = false)}>Close</Button>
-    </Dialog.Footer>
-  </Dialog.Content>
-</Dialog.Root>
-<style>
-  /* UnoCSS will handle most styling, but we can add custom styles here if needed */
-  .animate-spin {
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-</style>
-<Dialog.Root open={showSearchDialog} openchange={(open) => showSearchDialog = open}>
-  <Dialog.Portal>
-    <Dialog.Overlay class="fixed inset-0 bg-black/50 z-40" />
-    <Dialog.Content
-      class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto z-50"
+
+<!-- Process Results Dialog (replaced DialogRoot/DialogContent with a plain Svelte modal) -->
+{#if showProcessDialog}
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <!-- overlay -->
+    <div class="fixed inset-0 bg-black/40" onclick={() => (showProcessDialog = false)} aria-hidden="true"></div>
+
+    <!-- dialog panel -->
+    <div
+      role="dialog"
+      aria-modal="true"
+      class="relative bg-white rounded-lg shadow-lg max-w-[600px] w-full z-10 p-6 mx-4"
     >
-      {#if searchResults}
-        <Dialog.Title class="text-2xl font-bold text-slate-800 mb-4">
-          🔍 Vector Search Results
-        </Dialog.Title>
-        <div class="mb-4 text-sm text-slate-600">
-          Found {searchResults.total} results for "{searchResults.query}" in {searchResults.took}
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="text-lg font-semibold">Document Processing Results</h3>
+          <p class="text-sm text-slate-600">Detailed analysis of your legal document.</p>
         </div>
-        <div class="space-y-4">
-          {#each searchResults.results as result}
-            <div
-              class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors"
-            >
-              <div class="flex justify-between items-start mb-2">
-                <span class="font-medium text-slate-800">{(result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).id}</span>
-                <span class="text-sm font-semibold text-green-600">
-                  {((result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).score * 100).toFixed(1)}% match
-                </span>
-              </div>
-              <p class="text-slate-600 mb-3">{(result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).content}</p>
-              <div class="flex flex-wrap gap-2 text-xs">
-                {#each Object.entries(result.metadata) as [key, value]} <!-- Corrected syntax: Object.entries(result.metadata) -->
-                  <span class="px-2 py-1 bg-slate-100 text-slate-700 rounded">
-                    {key}: {value}
+        <button
+          type="button"
+          class="text-slate-500 hover:text-slate-700 ml-4"
+          aria-label="Close"
+          onclick={() => (showProcessDialog = false)}
+        >
+          ✕
+        </button>
+      </div>
+
+      {#if processResult}
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="text-right">Success:</Label>
+            <span class="col-span-3">{processResult.success ? 'Yes' : 'No'}</span>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="text-right">Message:</Label>
+            <span class="col-span-3">{processResult.message}</span>
+          </div>
+          {#if processResult.summary}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Summary:</Label>
+              <span class="col-span-3 text-sm">{processResult.summary}</span>
+            </div>
+          {/if}
+          {#if processResult.keywords && processResult.keywords.length > 0}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Keywords:</Label>
+              <span class="col-span-3">{processResult.keywords.join(', ')}</span>
+            </div>
+          {/if}
+          {#if processResult.legal_entities && processResult.legal_entities.length > 0}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Entities:</Label>
+              <div class="col-span-3">
+                {#each processResult.legal_entities as entity}
+                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1">
+                    {entity.name} ({entity.type})
                   </span>
                 {/each}
               </div>
             </div>
+          {/if}
+          {#if processResult.sentiment !== undefined}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Sentiment:</Label>
+              <span class="col-span-3">{getSentimentLabel(processResult.sentiment)} ({processResult.sentiment.toFixed(2)})</span>
+            </div>
+          {/if}
+          {#if processResult.confidence !== undefined}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Confidence:</Label>
+              <span class="col-span-3">{(processResult.confidence * 100).toFixed(2)}%</span>
+            </div>
+          {/if}
+          {#if processResult.processing_time}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Time:</Label>
+              <span class="col-span-3">{processResult.processing_time}</span>
+            </div>
+          {/if}
+          {#if processResult.cached_result !== undefined}
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label class="text-right">Cached:</Label>
+              <span class="col-span-3">{processResult.cached_result ? 'Yes' : 'No'}</span>
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <p>No results to display.</p>
+      {/if}
+
+      <div class="mt-4 flex justify-end">
+        <Button onclick={() => (showProcessDialog = false)}>Close</Button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+<!-- Search Results Dialog (replaced DialogRoot/DialogContent with a plain Svelte modal) -->
+{#if showSearchDialog}
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <!-- overlay -->
+    <div class="fixed inset-0 bg-black/40" onclick={() => (showSearchDialog = false)} aria-hidden="true"></div>
+
+    <!-- dialog panel -->
+    <div
+      role="dialog"
+      aria-modal="true"
+      class="relative bg-white rounded-lg shadow-lg max-w-[700px] w-full z-10 p-6 mx-4"
+    >
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="text-lg font-semibold">Vector Search Results</h3>
+          <p class="text-sm text-slate-600">Documents and cases semantically similar to your query.</p>
+        </div>
+        <button
+          type="button"
+          class="text-slate-500 hover:text-slate-700 ml-4"
+          aria-label="Close"
+          onclick={() => (showSearchDialog = false)}
+        >
+          ✕
+        </button>
+      </div>
+
+      {#if searchResults && searchResults.results.length > 0}
+        <div class="grid gap-4 py-4 max-h-[400px] overflow-y-auto">
+          <p class="text-sm text-muted-foreground">
+            Found {searchResults.total} results for: "{searchResults.query}" in {searchResults.took}.
+          </p>
+          {#each searchResults.results as result}
+            <div class="bg-white rounded-md shadow-sm overflow-hidden">
+              <div class="border-l-4 border-blue-500 p-3">
+                <h4 class="font-semibold">{result.metadata.title || 'Untitled Document'}</h4>
+                <p class="text-sm text-muted-foreground">
+                  Score: {result.score !== undefined ? (result.score * 100).toFixed(1) : 'N/A'}% | ID: {result.id}
+                </p>
+                <p class="mt-2 text-sm line-clamp-3">{result.content}</p>
+                {#if result.metadata.source}
+                  <p class="text-xs text-gray-500 mt-1">Source: {result.metadata.source}</p>
+                {/if}
+                <div class="flex flex-wrap gap-2 text-xs mt-2">
+                  {#each Object.entries(result.metadata) as [key, value]}
+                    <span class="px-2 py-1 bg-slate-100 text-slate-700 rounded">
+                      {key}: {value}
+                    </span>
+                  {/each}
+                </div>
+              </div>
+            </div>
           {/each}
         </div>
+      {:else if searchResults && searchResults.results.length === 0}
+        <p class="py-4 text-center text-muted-foreground">No similar documents found for: "{searchResults.query}".</p>
+      {:else}
+        <p class="py-4 text-center text-muted-foreground">Enter a query to see search results.</p>
       {/if}
-      <Dialog.Close
-        class="mt-6 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors"
-      >
-        Close
-      </Dialog.Close>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+
+      <div class="mt-4 flex justify-end">
+        <Button onclick={() => (showSearchDialog = false)}>Close</Button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
+  /* Consolidated custom styles (single top-level <style> only) */
   /* UnoCSS will handle most styling, but we can add custom styles here if needed */
-  .animate-spin {
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
 </style>

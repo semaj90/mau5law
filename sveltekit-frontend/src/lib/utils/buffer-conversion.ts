@@ -283,8 +283,8 @@ export class WebGPUBufferUtils_Advanced {
  */
 function getConstructorName(data: unknown): string {
   // explicit null/undefined handling
-  if (data === null) return 'null';
-  if (data === undefined) return 'undefined';
+  if (data === null) return: 'null';
+  if (data === undefined) return: 'undefined';
 
   // Objects and arrays usually have a constructor with a name
   if (typeof data === 'object') {

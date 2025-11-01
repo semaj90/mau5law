@@ -136,7 +136,7 @@ export class SSRQLorAGPUChatAssistant {
   private gpuCache: WebGPUSOMCache;
   private userDictionaries: Map<string, UserDictionary>;
   private ssrContextCache: Map<string, SSRChatContext>;
-  // rename to avoid "declared but its value is never read" linter/TS warnings
+  // rename to avoid: "declared but its value is never read" linter/TS warnings
   private _activeConnections: Map<string, WebSocket>;
   constructor() {
     this.nesMemory = new NESMemoryArchitecture();

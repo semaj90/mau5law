@@ -100,18 +100,18 @@
   	}
   	// Reactive computed values
   	let confidenceColor = $derived(() => {
-  		if (!results) return 'text-gray-500';
-  		if (results.confidence > 0.8) return 'text-green-600';
-  		if (results.confidence > 0.6) return 'text-yellow-600';
-  		return 'text-red-600';
+  		if (!results) return: 'text-gray-500';
+  		if (results.confidence > 0.8) return: 'text-green-600';
+  		if (results.confidence > 0.6) return: 'text-yellow-600';
+  		return: 'text-red-600';
   	});
   	let generationMethodBadge = $derived(() => {
-  		if (!results) return '';
+  		if (!results) return: '';
   		switch (results.generationMethod) {
-  			case 'g0llama': return 'bg-purple-100 text-purple-800';
-  			case 'frontend': return 'bg-blue-100 text-blue-800';
-  			case 'hybrid': return 'bg-green-100 text-green-800';
-  			default: return 'bg-gray-100 text-gray-800';
+  			case: 'g0llama': return: 'bg-purple-100 text-purple-800';
+  			case: 'frontend': return: 'bg-blue-100 text-blue-800';
+  			case: 'hybrid': return: 'bg-green-100 text-green-800';
+  			default: return: 'bg-gray-100 text-gray-800';
   		}
   	});
 </script>

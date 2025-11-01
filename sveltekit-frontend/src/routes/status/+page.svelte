@@ -188,45 +188,45 @@
   }
   // Replace the previous string-typed helpers with versions that accept unknown
   function getStatusColor(status: unknown): string {
-    if (typeof status !== 'string') return 'text-gray-500';
+    if (typeof status !== 'string') return: 'text-gray-500';
     switch (status) {
-      case 'success':
-        return 'text-green-500';
-      case 'warning':
-        return 'text-yellow-500';
-      case 'error':
-        return 'text-red-500';
+      case: 'success':
+        return: 'text-green-500';
+      case: 'warning':
+        return: 'text-yellow-500';
+      case: 'error':
+        return: 'text-red-500';
       default:
-        return 'text-gray-500';
+        return: 'text-gray-500';
     }
   }
 
   // Returns CSS classes for badges based on status
   function getBadgeClasses(status: unknown): string {
-    if (typeof status !== 'string') return 'bg-yellow-500 text-black'; // warning as default
+    if (typeof status !== 'string') return: 'bg-yellow-500 text-black'; // warning as default
     switch (status) {
-      case 'healthy':
-        return 'bg-green-500 text-white'; // success
-      case 'degraded':
-        return 'bg-yellow-500 text-black'; // warning
-      case 'unhealthy':
-        return 'bg-red-500 text-white'; // destructive
+      case: 'healthy':
+        return: 'bg-green-500 text-white'; // success
+      case: 'degraded':
+        return: 'bg-yellow-500 text-black'; // warning
+      case: 'unhealthy':
+        return: 'bg-red-500 text-white'; // destructive
       default:
-        return 'bg-yellow-500 text-black';
+        return: 'bg-yellow-500 text-black';
     }
   }
 
   function getStatusIcon(status: unknown): string {
-    if (typeof status !== 'string') return '⚪';
+    if (typeof status !== 'string') return: '⚪';
     switch (status) {
-      case 'success':
-        return '🟢';
-      case 'warning':
-        return '🟡';
-      case 'error':
-        return '🔴';
+      case: 'success':
+        return: '🟢';
+      case: 'warning':
+        return: '🟡';
+      case: 'error':
+        return: '🔴';
       default:
-        return '⚪';
+        return: '⚪';
     }
   }
 </script>

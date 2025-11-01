@@ -21,16 +21,13 @@ NES-styled label with legal AI theming
   // NES-style label classes
   const labelClasses = $derived(
     cn(
-      // Base styles
-      'bits-label',
+      // Base styles: 'bits-label',
       'block text-sm font-medium mb-1',
       'font-mono tracking-wide',
       'text-gray-900',
-      // Legal AI enhancements
-      'transition-colors duration-200',
+      // Legal AI enhancements: 'transition-colors duration-200',
       'cursor-pointer',
-      // NES styling
-      'font-semibold',
+      // NES styling: 'font-semibold',
       'text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1)',
       className
     )

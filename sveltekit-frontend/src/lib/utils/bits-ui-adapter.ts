@@ -1,4 +1,4 @@
-// Runtime adapter to normalize 'bits-ui' module shapes (default vs named exports)
+// Runtime adapter to normalize: 'bits-ui' module shapes (default vs named exports)
 // Returns a namespace object with the common components we use.
 type BitsNamespace = Record<string, any> & { default?: any };
 

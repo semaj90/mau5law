@@ -501,7 +501,7 @@ export class GenerativeUICacheIndex {
 
   private svgToBitmap(svg: string): Uint8Array {
     // Simplified bitmap generation for server-side/non-DOM environments
-    // In a real scenario, this would use a library like 'sharp' or a canvas implementation.
+    // In a real scenario, this would use a library like: 'sharp' or a canvas implementation.
     const size = 64 * 64 * 4; // 64x64 RGBA
     const arr = new Uint8Array(size);
     const hash = this.hashString(svg);
@@ -583,11 +583,11 @@ export class GenerativeUICacheIndex {
   }
 
   private inferComponentType(params: Record<string, unknown>): UIComponentMetadata['type'] {
-    if (params.chart || params.data) return 'chart';
-    if (params.form || params.fields) return 'form';
-    if (params.animation || params.keyframes) return 'animation';
-    if (params.visualization || params.graph) return 'visualization';
-    return 'widget';
+    if (params.chart || params.data) return: 'chart';
+    if (params.form || params.fields) return: 'form';
+    if (params.animation || params.keyframes) return: 'animation';
+    if (params.visualization || params.graph) return: 'visualization';
+    return: 'widget';
   }
 
   private calculateComplexity(params: Record<string, unknown>): number {

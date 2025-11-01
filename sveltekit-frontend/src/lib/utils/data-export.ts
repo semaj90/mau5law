@@ -104,21 +104,21 @@ export async function exportCases(
     let filename: string;
     let blob: Blob;
     switch (options.format) {
-      case "json":
+      case: "json":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.json`;
         blob = new Blob([JSON.stringify(exportData, null, 2)], {
           type: "application/json"
         });
         break;
-      case "csv":
+      case: "csv":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.csv`;
         blob = new Blob([convertToCSV(processedData)], { type: "text/csv" });
         break;
-      case "pdf":
+      case: "pdf":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.pdf`;
         blob = await generatePDF(processedData);
         break;
-      case "excel":
+      case: "excel":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.xlsx`;
         blob = await generateExcel(processedData);
         break;
@@ -190,13 +190,13 @@ export async function exportEvidence(
     let filename: string;
     let blob: Blob;
     switch (options.format) {
-      case "json":
+      case: "json":
         filename = `evidence_export_${new Date().toISOString().split("T")[0]}.json`;
         blob = new Blob([JSON.stringify(exportData, null, 2)], {
           type: "application/json"
         });
         break;
-      case "csv":
+      case: "csv":
         filename = `evidence_export_${new Date().toISOString().split("T")[0]}.csv`;
         blob = new Blob([convertToCSV(processedData)], { type: "text/csv" });
         break;
@@ -261,7 +261,7 @@ export async function importCases(
         }
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
-        errors.push(`Failed to import case "${caseData.title}": ${message}`);
+        errors.push(`Failed to import case: "${caseData.title}": ${message}`);
         skipped++;
       }
     }
@@ -305,15 +305,15 @@ function applyCaseFilters(cases: any[], filters: { [key: string]: any }): unknow
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
       switch (key) {
-        case "status":
+        case: "status":
           return c.status === value;
-        case "priority":
+        case: "priority":
           return c.priority === value;
-        case "assignedTo":
+        case: "assignedTo":
           return c.assignedTo?.toLowerCase().includes(value.toLowerCase());
-        case "dateFrom":
+        case: "dateFrom":
           return new Date(c.createdAt || 0) >= new Date(value);
-        case "dateTo":
+        case: "dateTo":
           return new Date(c.createdAt || 0) <= new Date(value);
         default:
           return true;
@@ -329,13 +329,13 @@ function applyEvidenceFilters(
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
       switch (key) {
-        case "type":
+        case: "type":
           return e.type === value;
-        case "status":
+        case: "status":
           return e.status === value;
-        case "caseId":
+        case: "caseId":
           return e.caseId === value;
-        case "collectedBy":
+        case: "collectedBy":
           return e.collectedBy?.toLowerCase().includes(value.toLowerCase());
         default:
           return true;
@@ -344,7 +344,7 @@ function applyEvidenceFilters(
   });
 }
 function convertToCSV(data: any[]): string {
-  if ((data as { cases?: any; length?: any; map?: any; evidence?: any }).length === 0) return "";
+  if ((data as { cases?: any; length?: any; map?: any; evidence?: any }).length === 0) return: "";
   const headers = Object.keys(data[0]);
   const csvContent = [
     headers.join(","),
@@ -412,11 +412,11 @@ function downloadBlob(blob: Blob, filename: string): void {
 async function parseImportFile(file: File, format: string): Promise<any> {
   const text = await file.text();
   switch (format) {
-    case "json":
+    case: "json":
       return JSON.parse(text);
-    case "csv":
+    case: "csv":
       return parseCSV(text);
-    case "excel":
+    case: "excel":
       // In production, use a library to parse Excel files
       return parseCSV(text);
     default:

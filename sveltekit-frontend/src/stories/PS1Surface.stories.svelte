@@ -1,7 +1,7 @@
 <script lang="ts">
 	// updated imports & typed animation id
 	import { onMount, onDestroy } from 'svelte';
-	import '../lib/components/yorha/ps1.css';
+	import: '../lib/components/yorha/ps1.css';
 	let container;
 	let surfaceType = $state('wireframe');
 	let animationSpeed = $state(1);
@@ -128,7 +128,7 @@
 	function faceStyle(face, i) {
 		const avgZ = face.vertices.reduce((sum, vi) => sum + (vertices[vi]?.z ?? 0), 0) / 3;
 		const zIndex = enableZBuffer ? Math.floor(100 - avgZ * 0.1) : 'auto';
-		// ensure animation-delay has unit 's' and CSS custom properties separated by semicolons
+		// ensure animation-delay has unit: 's' and CSS custom properties separated by semicolons
 		return `--face-index: ${i}; --normal-x: ${face.normal.x}; --normal-y: ${face.normal.y}; --normal-z: ${face.normal.z}; animation-delay: ${i * 0.001}s; z-index: ${zIndex};`;
 	}
 

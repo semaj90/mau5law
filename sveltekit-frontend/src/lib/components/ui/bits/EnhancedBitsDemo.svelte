@@ -22,29 +22,29 @@
   let evidenceUploadProgress = $state(0);
   // Mock data for demos
   const caseTypes: SelectOption[] = [
-    { value: 'criminal', label: 'Criminal Cases', description 'Criminal law proceedings and investigations' },
-    { value: 'civil', label: 'Civil Litigation', description 'Civil disputes and tort claims' },
-    { value: 'family', label: 'Family Law', description 'Divorce, custody, and family matters' },
-    { value: 'corporate', label: 'Corporate Law', description 'Business and corporate legal affairs' },
-    { value: 'contract', label: 'Contract Law', description 'Contract disputes and negotiations' },
-    { value: 'intellectual', label: 'Intellectual Property', description 'Patents, trademarks, and IP disputes' },
+    { value: 'criminal', label: 'Criminal Cases', description: 'Criminal law proceedings and investigations' },
+    { value: 'civil', label: 'Civil Litigation', description: 'Civil disputes and tort claims' },
+    { value: 'family', label: 'Family Law', description: 'Divorce, custody, and family matters' },
+    { value: 'corporate', label: 'Corporate Law', description: 'Business and corporate legal affairs' },
+    { value: 'contract', label: 'Contract Law', description: 'Contract disputes and negotiations' },
+    { value: 'intellectual', label: 'Intellectual Property', description: 'Patents, trademarks, and IP disputes' },
   ];
   const evidenceCategories: SelectOption[] = [
     {
       value: 'critical',
       label: 'Critical Evidence',
-      description 'High-priority evidence for case',
+      description: 'High-priority evidence for case',
       category: 'Priority',
     },
     {
       value: 'supporting',
       label: 'Supporting Evidence',
-      description 'Additional supporting materials',
+      description: 'Additional supporting materials',
       category: 'Priority',
     },
-    { value: 'document', label: 'Legal Documents', description 'Contracts, motions, briefs', category: 'Type' },
-    { value: 'multimedia', label: 'Multimedia Evidence', description 'Audio, video, images', category: 'Type' },
-    { value: 'witness', label: 'Witness Testimony', description 'Depositions and statements', category: 'Type' },
+    { value: 'document', label: 'Legal Documents', description: 'Contracts, motions, briefs', category: 'Type' },
+    { value: 'multimedia', label: 'Multimedia Evidence', description: 'Audio, video, images', category: 'Type' },
+    { value: 'witness', label: 'Witness Testimony', description: 'Depositions and statements', category: 'Type' },
   ];
   const mockEvidenceItems = [
     {
@@ -53,7 +53,7 @@
       type: 'document',
       priority: 'critical' as const,
       confidence: 'high' as const,
-      description 'Modified terms regarding liability clauses',
+      description: 'Modified terms regarding liability clauses',
     },
     {
       id: '2',
@@ -61,7 +61,7 @@
       type: 'video',
       priority: 'high' as const,
       confidence: 'medium' as const,
-      description 'Incident recording from 2024-01-15',
+      description: 'Incident recording from 2024-01-15',
     },
     {
       id: '3',
@@ -69,7 +69,7 @@
       type: 'document',
       priority: 'medium' as const,
       confidence: 'high' as const,
-      description 'Technical analysis by Dr. Smith',
+      description: 'Technical analysis by Dr. Smith',
     },
   ];
   // Demo functions

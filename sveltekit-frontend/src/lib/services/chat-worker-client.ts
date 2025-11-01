@@ -87,31 +87,31 @@ export class ChatWorkerClient {
     const d = (data && typeof data === 'object') ? (data as Record<string, unknown>) : undefined;
 
     switch (type) {
-      case 'QUEUED':
+      case: 'QUEUED':
         request.onProgress?.({ type: 'queued', position: typeof d?.['position'] === 'number' ? (d!['position'] as number) : undefined });
         break;
-      case 'STARTED':
+      case: 'STARTED':
         request.onProgress?.({ type: 'started', timestamp: typeof d?.['timestamp'] === 'string' ? (d!['timestamp'] as string) : undefined });
         break;
-      case 'CACHED_RESPONSE':
+      case: 'CACHED_RESPONSE':
         request.resolve(typeof data === 'object' && data !== null ? (data as ChatResponse) : { success: false, error: 'invalid cached payload' });
         this.clearRequest(requestId);
         break;
-      case 'RESPONSE':
+      case: 'RESPONSE':
         request.resolve(typeof data === 'object' && data !== null ? (data as ChatResponse) : { success: false, error: 'invalid response payload' });
         this.clearRequest(requestId);
         break;
-      case 'STREAM_DATA':
+      case: 'STREAM_DATA':
         request.onProgress?.({ type: 'stream_data', data });
         break;
-      case 'STREAM_END':
+      case: 'STREAM_END':
         request.onProgress?.({ type: 'stream_end' });
         break;
-      case 'STREAM_COMPLETE':
+      case: 'STREAM_COMPLETE':
         request.resolve({ success: true, response: undefined } as ChatResponse);
         this.clearRequest(requestId);
         break;
-      case 'ERROR': {
+      case: 'ERROR': {
         const errMsg = typeof errorObj?.['message'] === 'string' ? (errorObj['message'] as string) : 'Unknown error';
         const errName = typeof errorObj?.['name'] === 'string' ? (errorObj['name'] as string) : 'ChatWorkerError';
         const err = new Error(errMsg);

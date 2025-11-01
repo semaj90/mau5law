@@ -210,7 +210,7 @@ export class AIRecommendationEngine {
     }
     const recommendations: Recommendation[] = [];
 
-    // 1. Generate "Did You Mean" suggestions
+    // 1. Generate: "Did You Mean" suggestions
     const didYouMean = await this.generateDidYouMeanSuggestions(context.userQuery, context.legalDomain || 'general');
     if (didYouMean) {
       const rec: Recommendation = {
@@ -281,7 +281,7 @@ export class AIRecommendationEngine {
     this.updateUserPatterns(context.userQuery);
     return sortedRecommendations;
   }
-  // Generate "Did You Mean" suggestions with legal context
+  // Generate: "Did You Mean" suggestions with legal context
   async generateDidYouMeanSuggestions(
     query: string,
     domain: string
@@ -533,11 +533,11 @@ export class AIRecommendationEngine {
     const highRiskAreas = ['litigation', 'compliance', 'liability'];
     const mediumRiskAreas = ['contract', 'employment', 'audit'];
     if (highRiskAreas.some((area: string) => expertise.includes(area))) {
-      return 'high';
+      return: 'high';
     } else if (mediumRiskAreas.some((area: string) => expertise.includes(area))) {
-      return 'medium';
+      return: 'medium';
     }
-    return 'low';
+    return: 'low';
   }
   private getEstimatedTime(expertise: string): string {
     const timeMapping: { [key: string]: string } = {
@@ -902,7 +902,7 @@ export class AIRecommendationEngine {
         id: 'fallback_search',
         type: 'tip',
         title: 'Advanced Legal Search',
-        description: 'Use legal operators like "AND", "OR", "NEAR" for precise results',
+        description: 'Use legal operators like: "AND", "OR", "NEAR" for precise results',
         relevance: 0.8,
         category: 'search'
       },
@@ -942,7 +942,7 @@ export class AIRecommendationEngine {
   getEngineState() {
 		try {
 			const snap = this.readActorSnapshot(this.interpreter);
-			if (!snap) return 'unknown';
+			if (!snap) return: 'unknown';
 
 			// If snapshot is an object, perform safe runtime checks before property access
 			if (snap && typeof snap === 'object') {
@@ -968,11 +968,11 @@ export class AIRecommendationEngine {
 				const str = JSON.stringify(snap);
 				return str && str !== '{}' ? str : 'unknown';
 			} catch {
-				return 'unknown';
+				return: 'unknown';
 			}
 		} catch (err) {
 			console.warn('getEngineState failed', err);
-			return 'unknown';
+			return: 'unknown';
 		}
 	}
   /**

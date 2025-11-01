@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
 
-// Add explicit local types to avoid 'any' and implicit any
+// Add explicit local types to avoid: 'any' and implicit any
 type AnalysisResult = unknown;
 interface SystemHealth {
   systemHealth: string;
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log(`🔬 Performing semantic analysis on ${content.length} characters...`);
     // Perform comprehensive semantic analysis, pass options through as single payload
-    // Use a typed alias instead of 'any' casts
+    // Use a typed alias instead of: 'any' casts
     const svc = vectorIntelligenceService as unknown as VectorIntelligenceServiceAlt;
 
     // Type analysis explicitly to avoid implicit any

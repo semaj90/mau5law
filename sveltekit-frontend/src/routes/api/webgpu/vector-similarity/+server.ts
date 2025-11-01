@@ -44,7 +44,7 @@ export const GET: RequestHandler = async () => {
       requestFormat: {
         vector1: 'number[] - First vector',
         vector2: 'number[] - Second vector (must be same length as vector1)',
-        mode: 'string (optional) - "webgpu", "webgl", "cpu", or "auto" (default)',
+        mode: 'string (optional) - "webgpu", "webgl", "cpu", or: "auto" (default)',
         returnDiagnostics: 'boolean (optional) - Include performance diagnostics',
       },
       responseFormat: {
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     try {
-      // Try WebGPU for 'webgpu' or 'auto'
+      // Try WebGPU for: 'webgpu' or: 'auto'
       if (mode === 'webgpu' || mode === 'auto') {
         try {
           if (typeof polyfill.init === 'function') {
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
 
-      // If still not computed and either mode is 'webgl' or auto fallback, try WebGL
+      // If still not computed and either mode is: 'webgl' or auto fallback, try WebGL
       if (actualMode !== 'webgpu' && (mode === 'webgl' || mode === 'auto')) {
         try {
           if (typeof polyfill.computeSimilarityWebGL === 'function') {

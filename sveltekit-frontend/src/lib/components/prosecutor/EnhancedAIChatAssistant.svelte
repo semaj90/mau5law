@@ -228,7 +228,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     }
   };
 
-  // Initialize WebGPU processor on mount to both prime GPU and avoid "declared but never read" lint
+  // Initialize WebGPU processor on mount to both prime GPU and avoid: "declared but never read" lint
   onMount(() => {
     (async () => {
       try {

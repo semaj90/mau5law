@@ -45,7 +45,7 @@
     enableAI = true,
     maxResults = 20,
     autoSearch = true,
-    class: className = '', // Renamed 'class' to 'className' to avoid conflict with Svelte's reserved keyword
+    class: className = '', // Renamed: 'class' to: 'className' to avoid conflict with Svelte's reserved keyword
     onselect,
   }: Props = $props();
 
@@ -94,7 +94,7 @@
   // Handle result selection
   function handleSelect(result: unknown) {
     selectedResult = result;
-    inputValue = (result as { title?: string }).title || ''; // Corrected 'titl' to 'title' and added fallback
+    inputValue = (result as { title?: string }).title || ''; // Corrected: 'titl' to: 'title' and added fallback
     open = false;
     // Call the onselect callback if provided (Svelte 5 pattern)
     onselect?.(result as SearchResultEventDetail);
@@ -109,20 +109,20 @@
   // Get result type icon
   function getResultTypeIcon(type: string) {
     switch (type) {
-      case 'case':
-        return '⚖️';
-      case 'evidence':
-        return '🔍';
-      case 'precedent':
-        return '📚';
-      case 'statute':
-        return '📜';
-      case 'criminal':
-        return '👤';
-      case 'document':
-        return '📄';
+      case: 'case':
+        return: '⚖️';
+      case: 'evidence':
+        return: '🔍';
+      case: 'precedent':
+        return: '📚';
+      case: 'statute':
+        return: '📜';
+      case: 'criminal':
+        return: '👤';
+      case: 'document':
+        return: '📄';
       default:
-        return '📋';
+        return: '📋';
     }
   }
   // Component lifecycle
@@ -399,7 +399,7 @@
             <!-- No Results -->
             <div class="p-4 text-center text-sm text-gray-500">
               <Search class="h-8 w-8 mx-auto mb-2 text-gray-300" />
-              <p>No results found for "{inputValue}"</p>
+              <p>No results found for: "{inputValue}"</p>
               <p class="text-xs mt-1">Try adjusting your search terms or categories</p>
             </div>
           {:else if searchHistory.length > 0}

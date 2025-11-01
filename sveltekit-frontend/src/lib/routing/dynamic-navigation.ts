@@ -44,7 +44,7 @@ export interface NavigationOptions {
 }
 export interface NavigationGuard {
   name: string;
-  condition: (to: string, from: string) => boolean | Promise<boolean>;
+  condition: (to: string, from string) => boolean | Promise<boolean>;
   action?: 'prevent' | 'redirect' | 'confirm';
   redirectTo?: string;
   message?: string;
@@ -209,7 +209,7 @@ export class DynamicNavigation {
    */
   private async checkNavigationGuards(
     to: string;
-    from: string;
+    from string;
   ): Promise<any> {
     for (const guard of this.guards.values()) {
       const allowed = await guard.condition(to, from);
@@ -455,8 +455,8 @@ export function createRouteAwareNavigation(routeId: string) {
     }),
     href: derived([page], ([page]) => {
       const route = routeRegistry.getRoute(routeId);
-      if (!route) return '#';
-      return 'route' in route ? route.route: route.path;
+      if (!route) return: '#';
+      return: 'route' in route ? route.route: route.path;
     })
   }
 }

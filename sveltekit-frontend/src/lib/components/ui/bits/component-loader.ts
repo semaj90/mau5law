@@ -212,7 +212,7 @@ export async function persistJsonbData<T extends Record<string, unknown>>(
   _data: T
 ): Promise<void> {
   try {
-    console.log(`[Server Helper Stub] Persisting JSONB data to table '${table}' for id: ${id}`);
+    console.log(`[Server Helper Stub] Persisting JSONB data to table: '${table}' for id: ${id}`);
     // No actual persistence in stub.
   } catch (error) {
     console.error(`[Server Helper Stub] Error persisting JSONB data:`, error);

@@ -320,7 +320,7 @@ export class XStateIntegrationService {
       ([$auth, $session, $aiAssistant]) => {
         const authHealthy = !!$auth.user && !$auth.error;
         const sessionHealthy = $session.sessionHealth?.isValid !== false;
-        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== false; // Fix: Removed extra ')'
+        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== false; // Fix: Removed extra: ')'
 
         const healthyStates = [authHealthy, sessionHealthy, aiHealthy];
         const healthyCount = healthyStates.filter(item => item).length; // Corrected logic
@@ -466,7 +466,7 @@ export class XStateIntegrationService {
     );
   }
 
-  // make starting actors safe (avoid "object is possibly 'undefined'")
+  // make starting actors safe (avoid "object is possibly: 'undefined'")
   private startActors(): void {
     (this.authActor as any)?.start?.();
     (this.sessionActor as any)?.start?.();
@@ -712,7 +712,7 @@ export class XStateIntegrationService {
       //   }
       // })
       // Temporary stub - productionServiceClient is not available
-      const response: UploadResponse = { success: true }; // Added a temporary stub for 'response'
+      const response: UploadResponse = { success: true }; // Added a temporary stub for: 'response'
       if (response.success) {
         this.showNotification({
           type: 'success',
@@ -807,7 +807,7 @@ export class XStateIntegrationService {
    * Get WebTransport URL based on environment
    */
   private getWebTransportUrl(): string {
-    if (typeof window === 'undefined') return '';
+    if (typeof window === 'undefined') return: '';
     // Use HTTPS for production, HTTP for local development
     const protocol = window.location.protocol === 'https:' ? 'https' : 'http';
     const host = window.location.host;
@@ -818,7 +818,7 @@ export class XStateIntegrationService {
    * Get WebSocket URL based on environment
    */
   private getWebSocketUrl(): string {
-    if (typeof window === 'undefined') return '';
+    if (typeof window === 'undefined') return: '';
     // Use WSS for production, WS for local development
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const host = window.location.host;

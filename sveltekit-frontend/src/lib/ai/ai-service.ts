@@ -161,13 +161,13 @@ class AIService {
   private getSystemPrompt(context: string): string {
     const basePrompt = `You are a legal AI assistant specialized in case analysis and evidence evaluation. You help legal professionals analyze evidence, identify connections, and provide insights for investigations.`;
     switch (context) {
-      case 'analysis':
+      case: 'analysis':
         return `${basePrompt} Focus on analyzing the provided evidence and identifying key insights, patterns, or anomalies.`;
-      case 'connection':
+      case: 'connection':
         return `${basePrompt} Focus on identifying relationships and connections between different pieces of evidence.`;
-      case 'annotation':
+      case: 'annotation':
         return `${basePrompt} Focus on providing detailed annotations and explanations for the evidence.`;
-      case 'investigation':
+      case: 'investigation':
         return `${basePrompt} Focus on suggesting investigative directions and additional evidence to collect.`;
       default:
         return basePrompt;
@@ -178,13 +178,13 @@ class AIService {
     for (const suggestion of suggestions) {
       // Auto-execute certain types of suggestions
       switch (suggestion.type) {
-        case 'categorize':
+        case: 'categorize':
           // Auto-categorize evidence if confidence is high
           break;
-        case 'connect':
+        case: 'connect':
           // Auto-suggest connections in the UI
           break;
-        case 'search':
+        case: 'search':
           // Trigger additional searches
           break;
       }
@@ -192,12 +192,12 @@ class AIService {
   }
   private getInsightType(context: string): 'pattern' | 'connection' | 'anomaly' | 'recommendation' {
     switch (context) {
-      case 'connection':
-        return 'connection';
-      case 'analysis':
-        return 'pattern';
+      case: 'connection':
+        return: 'connection';
+      case: 'analysis':
+        return: 'pattern';
       default:
-        return 'recommendation';
+        return: 'recommendation';
     }
   }
   private extractInsightFromResponse(text: string): string {
@@ -237,7 +237,7 @@ class AIService {
   }
   async suggestInvestigation(caseId: string, currentFocus?: string): Promise<AIServiceResponse> {
     const prompt = currentFocus
-      ? `Based on the current focus on "${currentFocus}", suggest next steps for the investigation and additional evidence to collect.`
+      ? `Based on the current focus on: "${currentFocus}", suggest next steps for the investigation and additional evidence to collect.`
       : `Based on the current case evidence, suggest next steps for the investigation and additional evidence to collect.`;
     return this.sendToAI({
       caseId,

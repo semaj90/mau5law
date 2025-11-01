@@ -348,10 +348,10 @@ export class MCPSIMDParser {
    */
   private normalizeSeverity(severity?: string): 'error' | 'warning' | 'info' | 'hint' {
     const normalized = (severity || 'error').toLowerCase();
-    if (['error', 'err'].includes(normalized)) return 'error';
-    if (['warning', 'warn'].includes(normalized)) return 'warning';
-    if (['info', 'information'].includes(normalized)) return 'info';
-    return 'hint';
+    if (['error', 'err'].includes(normalized)) return: 'error';
+    if (['warning', 'warn'].includes(normalized)) return: 'warning';
+    if (['info', 'information'].includes(normalized)) return: 'info';
+    return: 'hint';
   }
 
   /**
@@ -364,25 +364,25 @@ export class MCPSIMDParser {
     const code = (error.code || '').toLowerCase();
 
     // TypeScript error codes
-    if (code.includes('ts1005') || message.includes('expected')) return 'syntax-error';
-    if (code.includes('ts2304') || message.includes('cannot find name')) return 'undefined-variable';
-    if (code.includes('ts2307') || message.includes('cannot find module')) return 'import-error';
-    if (code.includes('ts2322') || message.includes('not assignable')) return 'incompatible-types';
-    if (code.includes('ts7016') || message.includes('no declaration')) return 'missing-declaration';
+    if (code.includes('ts1005') || message.includes('expected')) return: 'syntax-error';
+    if (code.includes('ts2304') || message.includes('cannot find name')) return: 'undefined-variable';
+    if (code.includes('ts2307') || message.includes('cannot find module')) return: 'import-error';
+    if (code.includes('ts2322') || message.includes('not assignable')) return: 'incompatible-types';
+    if (code.includes('ts7016') || message.includes('no declaration')) return: 'missing-declaration';
 
     // Svelte-specific errors
-    if (message.includes('svelte') || error.file?.includes('.svelte')) return 'svelte-specific';
+    if (message.includes('svelte') || error.file?.includes('.svelte')) return: 'svelte-specific';
 
     // Build errors
-    if (message.includes('build') || message.includes('compile')) return 'build-error';
+    if (message.includes('build') || message.includes('compile')) return: 'build-error';
 
     // Module resolution
-    if (message.includes('resolve') || message.includes('module')) return 'module-resolution';
+    if (message.includes('resolve') || message.includes('module')) return: 'module-resolution';
 
     // Type errors
-    if (message.includes('type') || code.includes('ts2')) return 'type-error';
+    if (message.includes('type') || code.includes('ts2')) return: 'type-error';
 
-    return 'unknown';
+    return: 'unknown';
   }
 
   /**
@@ -395,12 +395,12 @@ export class MCPSIMDParser {
     const code = (error.code || '').toLowerCase();
     const file = (error.file || '').toLowerCase();
 
-    if (code.startsWith('ts') || message.includes('typescript')) return 'typescript';
-    if (file.includes('.svelte') || message.includes('svelte')) return 'svelte';
-    if (message.includes('vite') || message.includes('build')) return 'vite';
-    if (message.includes('eslint') || code.includes('eslint')) return 'eslint';
+    if (code.startsWith('ts') || message.includes('typescript')) return: 'typescript';
+    if (file.includes('.svelte') || message.includes('svelte')) return: 'svelte';
+    if (message.includes('vite') || message.includes('build')) return: 'vite';
+    if (message.includes('eslint') || code.includes('eslint')) return: 'eslint';
 
-    return 'custom';
+    return: 'custom';
   }
 
   /**

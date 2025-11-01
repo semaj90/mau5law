@@ -1,14 +1,14 @@
-import adapter from '@sveltejs/adapter-node';
-import sveltePreprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import nodeAdapter from '@sveltejs/adapter-node';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Use svelte-preprocess for safe defaults (TypeScript, PostCSS, scss, etc.)
-  preprocess: sveltePreprocess(),
+  preprocess: vitePreprocess(),
 
   kit: {
-    // Explicit Node adapter (for Docker, Redis, MinIO, SSE, etc.)
-    adapter: adapter({ out: 'build' }),
+    // Ensure we explicitly use the Node adapter (not adapter-auto)
+    adapter: nodeAdapter({ out: 'build', precompress: true }),
 
     // Common path aliases (update to match your repo layout)
     alias: {
@@ -30,6 +30,12 @@ const config = {
       '$lib/cache/proto-serializer': './src/lib/cache/proto-serializer.ts',
       '$lib/components/ui': './src/lib/components/ui',
       '$lib/utils': './src/lib/utils',
+    },
+    // Configure environment variables to expose PUBLIC_OLLAMA_URL to client-side code.
+    // This allows the client to directly access Ollama if needed, or via a proxy.
+    env: {
+      publicPrefix: 'PUBLIC_', // Ensures variables starting with PUBLIC_ are exposed to client
+      privatePrefix: 'PRIVATE_', // Ensures variables starting with PRIVATE_ are server-only
     },
   },
 };

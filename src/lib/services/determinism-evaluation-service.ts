@@ -218,7 +218,7 @@ class DeterminismEvaluationService {
         const passedTests = testResults.filter((t) => t.passed).length;
         const accuracy = passedTests / testResults.length;
 
-        metrics.push({
+        metrics.push(<any><any>{
           id: crypto.randomUUID(),
           name: "Test Accuracy",
           description: "Percentage of tests that passed",
@@ -236,7 +236,7 @@ class DeterminismEvaluationService {
           feedback.reduce((sum, f) => sum + f.rating, 0) / feedback.length;
         const satisfaction = avgRating / 5.0; // Normalize to 0-1
 
-        metrics.push({
+        metrics.push(<any><any>{
           id: crypto.randomUUID(),
           name: "User Satisfaction",
           description: "Average user rating (1-5 scale)",
@@ -256,7 +256,7 @@ class DeterminismEvaluationService {
         const successRate =
           agentLogs.filter((log) => log.success).length / agentLogs.length;
 
-        metrics.push({
+        metrics.push(<any><any>{
           id: crypto.randomUUID(),
           name: "Efficiency",
           description: "Success rate and average response time",
@@ -271,7 +271,7 @@ class DeterminismEvaluationService {
       // Calculate consistency metric
       const consistency = await this.calculateConsistencyScore(agentType);
       if (consistency !== null) {
-        metrics.push({
+        metrics.push(<any><any>{
           id: crypto.randomUUID(),
           name: "Consistency",
           description: "Consistency of responses to similar queries",
@@ -465,20 +465,20 @@ class DeterminismEvaluationService {
       if (metric.value < 0.7) {
         switch (metric.type) {
           case "accuracy":
-            recommendations.push(
+            recommendations.push(<any><any>
               "Consider improving test coverage and validation logic"
             );
             break;
           case "relevance":
-            recommendations.push(
+            recommendations.push(<any><any>
               "Enhance query understanding and response relevance"
             );
             break;
           case "efficiency":
-            recommendations.push("Optimize response times and error handling");
+            recommendations.push(<any><any>"Optimize response times and error handling");
             break;
           case "consistency":
-            recommendations.push(
+            recommendations.push(<any><any>
               "Standardize response formats and improve determinism"
             );
             break;
@@ -487,7 +487,7 @@ class DeterminismEvaluationService {
     }
 
     if (recommendations.length === 0) {
-      recommendations.push("System performance is good - continue monitoring");
+      recommendations.push(<any><any>"System performance is good - continue monitoring");
     }
 
     return recommendations;

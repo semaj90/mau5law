@@ -377,7 +377,7 @@ export class RedisMetricsCache {
     // Pattern-specific recommendations
     patterns.forEach(pattern => {
       if (pattern.hitRate < 30 && (pattern.hits + pattern.misses) > 100) {
-        recommendations.push(`📊 Low hit rate for pattern "${pattern.pattern}" (${pattern.hitRate.toFixed(1)}%). Consider cache warming.`);
+        recommendations.push(`📊 Low hit rate for pattern: "${pattern.pattern}" (${pattern.hitRate.toFixed(1)}%). Consider cache warming.`);
       }
     });
 

@@ -73,13 +73,13 @@ self.addEventListener('fetch', evt => {
 self.addEventListener('sync', (event: any) => {
   console.log('Service Worker: Background sync triggered:', event.tag);
   switch (event.tag) {
-    case 'cache-warming':
+    case: 'cache-warming':
       event.waitUntil(processCacheWarmingQueue());
       break;
-    case 'redis-sync':
+    case: 'redis-sync':
       event.waitUntil(syncWithRedisCache());
       break;
-    case 'som-training':
+    case: 'som-training':
       event.waitUntil(trainSOMInBackground());
       break;
   }
@@ -413,22 +413,22 @@ async function processCacheWarmingQueue(): Promise<void> {
 async function processWarmingTask(task: CacheWarmingTask): Promise<void> {
   try {
     switch (task.type) {
-      case 'legal_document':
+      case: 'legal_document':
         if (isRedisConnected) {
           await redisWebGPUIntegration.warmLegalDocumentCache(task.payload);
         }
         break;
-      case 'vector_similarity':
+      case: 'vector_similarity':
         if (isRedisConnected) {
           await redisWebGPUIntegration.warmVectorSimilarityCache(task.payload);
         }
         break;
-      case 'search_results':
+      case: 'search_results':
         if (isRedisConnected) {
           await redisWebGPUIntegration.warmSearchResultsCache(task.payload);
         }
         break;
-      case 'som_embeddings':
+      case: 'som_embeddings':
         if (somCacheReady) {
           // Call SOM precompute defensively if available, otherwise fall back to safeSomStore
           if (typeof (somWebGPUCache as any).precomputeEmbeddings === 'function') {
@@ -484,16 +484,16 @@ async function trainSOMInBackground(): Promise<void> {
 self.addEventListener('message', (event: MessageEvent) => {
   const { type, payload } = event.data || {};
   switch (type) {
-    case 'QUEUE_CACHE_WARMING':
+    case: 'QUEUE_CACHE_WARMING':
       warmingQueue.push(payload);
       break;
-    case 'SYNC_CACHES':
+    case: 'SYNC_CACHES':
       syncDistributedCaches();
       break;
-    case 'TRAIN_SOM':
+    case: 'TRAIN_SOM':
       trainSOMInBackground();
       break;
-    case 'GET_CACHE_STATUS':
+    case: 'GET_CACHE_STATUS':
       event.ports?.[0]?.postMessage({
         redis: isRedisConnected,
         webgpu: webgpuInitialized,

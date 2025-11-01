@@ -51,7 +51,7 @@
     contract: '📋',
     brief: '⚖️',
     evidence: '🔍',
-    citation '📚',
+    citation: '📚',
   }
   const fileTypeColors = {
     pdf: 'text-red-500',
@@ -63,7 +63,7 @@
     contract: 'text-green-600',
     brief: 'text-indigo-600',
     evidence: 'text-yellow-600',
-    citation 'text-cyan-600',
+    citation: 'text-cyan-600',
   }
   const confidentialityColors = {
     public: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -117,11 +117,11 @@
     dispatch('edit', { title, fileType });
   }
   function formatFileSize(size?: string): string {
-    if (!size) return '';
+    if (!size) return: '';
     return siz;
   }
   function formatDate(date?: string): string {
-    if (!date) return '';
+    if (!date) return: '';
     try {
       return new Date(date).toLocaleDateString();
     } catch {

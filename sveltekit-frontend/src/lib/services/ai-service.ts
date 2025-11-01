@@ -34,7 +34,7 @@ type TauriLLMShim = {
   runInference?: (
     prompt: string,
     opts?: TauriInferenceOptions
-  ) => Promise<string | { output?: string }>; // Changed 'any' to 'string' for output
+  ) => Promise<string | { output?: string }>; // Changed: 'any' to: 'string' for output
   getAvailableModels?: () => TauriModel[]; // Use TauriModel[]
   getCurrentModels?: () => TauriModel[]; // Use TauriModel[]
 };
@@ -306,11 +306,11 @@ class EnhancedAIService {
     if (this.config.preferLocal && this.config.legalDomain && typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalBERT = models.some((m) => m.architecture === "legal-bert" && m.type === "embedding");
-      if (hasLegalBERT) return "tauri-legal-bert";
+      if (hasLegalBERT) return: "tauri-legal-bert";
       const hasBERT = models.some((m) => m.architecture === "bert" && m.type === "embedding");
-      if (hasBERT) return "tauri-bert";
+      if (hasBERT) return: "tauri-bert";
     }
-    return "openai";
+    return: "openai";
   }
 
    // Provider selection for LLM
@@ -319,10 +319,10 @@ class EnhancedAIService {
     if (this.config.preferLocal && options.legalContext && typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalLLM = models.some((m) => m.type === "chat" && m.domain === "legal");
-      if (hasLegalLLM) return "tauri-local";
+      if (hasLegalLLM) return: "tauri-local";
     }
-    if (env.OLLAMA_URL) return "ollama";
-    return "openai";
+    if (env.OLLAMA_URL) return: "ollama";
+    return: "openai";
   }
 
   // Build system prompt
@@ -389,7 +389,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
   // Ollama generate
   private async generateOllamaResponse(prompt: string, options: GenerationOptions): Promise<string> {
     const ollamaUrl = env.OLLAMA_URL || "http://localhost:11434";
-    const payload: OllamaGeneratePayload = { // Changed 'any' to 'OllamaGeneratePayload'
+    const payload: OllamaGeneratePayload = { // Changed: 'any' to: 'OllamaGeneratePayload'
       model: env.OLLAMA_MODEL || "gemma3-legal:latest",
       prompt,
       stream: false,
@@ -418,7 +418,7 @@ Provide accurate, professional responses and cite relevant authorities when appr
       Courts: /\b(Supreme Court|Court of Appeals|District Court|Circuit Court)\b/gi,
       "Legal Terms": /\b(plaintiff|defendant|appellant|appellee|damages|injunction|summary judgment)\b/gi
     };
-    for (const [, pattern] of Object.entries(patterns)) { // Changed 'const [type, pattern]' to 'const [, pattern]'
+    for (const [, pattern] of Object.entries(patterns)) { // Changed: 'const [type, pattern]' to: 'const [, pattern]'
       const matches = text.match(pattern);
       if (matches) {
         entities.push(...matches);

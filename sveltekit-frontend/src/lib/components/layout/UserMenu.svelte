@@ -67,30 +67,30 @@
     {
       id: 'profile',
       name: '👤 Profile',
-      description 'Account settings and preferences',
+      description: 'Account settings and preferences',
       href: '/profile',
-      icon '👤',
+      icon: '👤',
     },
     {
       id: 'dashboard',
       name: '🎮 Dashboard',
-      description 'Return to command center',
+      description: 'Return to command center',
       href: '/dashboard',
-      icon '🎮',
+      icon: '🎮',
     },
     {
       id: 'cases',
       name: '⚖️ My Cases',
-      description 'Your active legal cases',
+      description: 'Your active legal cases',
       href: '/cases',
-      icon '⚖️',
+      icon: '⚖️',
     },
     {
       id: 'settings',
       name: '⚙️ Settings',
-      description 'System preferences',
+      description: 'System preferences',
       href: '/settings',
-      icon '⚙️',
+      icon: '⚙️',
     },
   ]);
 
@@ -98,16 +98,16 @@
     {
       id: 'admin',
       name: '🔧 Admin Panel',
-      description 'System administration',
+      description: 'System administration',
       href: '/admin',
-      icon '🔧',
+      icon: '🔧',
     },
     {
       id: 'users',
       name: '👥 User Management',
-      description 'Manage system users',
+      description: 'Manage system users',
       href: '/admin/users',
-      icon '👥',
+      icon: '👥',
     },
   ]);
 

@@ -40,7 +40,7 @@ export interface RankingWeights {
   jurisdiction_boost: number;
 }
 
-// Add typed processing stats shape to avoid 'any'
+// Add typed processing stats shape to avoid: 'any'
 export interface ProcessingStats {
   total_vectors: number;
   total_documents: number;
@@ -114,7 +114,7 @@ export class EnhancedVectorEmbeddingService {
 
   private async createVectorIndexes(): Promise<void> {
     try {
-      // Use a guarded call wrapper for clients that expose a raw 'call' API.
+      // Use a guarded call wrapper for clients that expose a raw: 'call' API.
       const callFn = (this.redis as unknown as { call?: (...args: unknown[]) => Promise<unknown> }).call;
       let indexExists = false;
       if (typeof callFn === 'function') {
@@ -611,7 +611,7 @@ export class EnhancedVectorEmbeddingService {
     }
   }
 
-  // Use a typed return value instead of 'any'
+  // Use a typed return value instead of: 'any'
   async getProcessingStats(): Promise<ProcessingStats> {
     try {
       const callFn = (this.redis as unknown as { call?: (...args: unknown[]) => Promise<unknown> }).call;

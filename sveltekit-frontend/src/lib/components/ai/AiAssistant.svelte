@@ -13,28 +13,33 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   // Type interfaces for the component
   import { getContext, onMount } from 'svelte';
-  // UI components (Svelte 5 + melt v0.39.0 compatible)
-  // Import the component and cast to a permissive constructor type so TS doesn't treat it as an instance type.
-  import ButtonImport from '$lib/components/ui/Button.svelte';
-  // Cast to any/constructor-safe type to satisfy places expecting a Component constructor.
-  const Button = ButtonImport as unknown as any;
+  import { get, readable } from 'svelte/store';
+
+  // Simplified Button import (avoid casting workaround)
+  import Button from '$lib/components/ui/Button.svelte';
+
   // Import the whole module namespace to avoid named-export mismatch errors
   import * as unified from '$lib/stores/unified';
   // Resolve exports at runtime (supports named or default re-export shapes)
   const _unified: any = unified ?? {};
-  const aiGlobalStore = _unified.aiGlobalStore ?? _unified.default?.aiGlobalStore;
+
+  // Safe readable/writable fallbacks
+  const aiGlobalStore =
+    _unified.aiGlobalStore ?? _unified.default?.aiGlobalStore ?? readable({ context: {} });
+
   const aiGlobalActions =
-    _unified.aiGlobalActions ??
-    _unified.default?.aiGlobalActions ?? {
+    _unified.aiGlobalActions ?? _unified.default?.aiGlobalActions ?? {
       // safe no-op fallbacks to avoid runtime crashes during dev
       summarize: (..._args: any[]) => {
         console.warn('aiGlobalActions.summarize not available');
       }
     };
-  const legalCaseStore = _unified.legalCaseStore ?? _unified.default?.legalCaseStore;
+
+  const legalCaseStore =
+    _unified.legalCaseStore ?? _unified.default?.legalCaseStore ?? readable({ context: {} });
+
   const legalCaseActions =
-    _unified.legalCaseActions ??
-    _unified.default?.legalCaseActions ?? {
+    _unified.legalCaseActions ?? _unified.default?.legalCaseActions ?? {
       generateEmbedding: (..._args: any[]) => {
         console.warn('legalCaseActions.generateEmbedding not available');
       },
@@ -42,46 +47,27 @@ https://svelte.dev/e/js_parse_error -->
         console.warn('legalCaseActions.searchRelatedEvidence not available');
       }
     };
-  import { get } from 'svelte/store';
-  // Since legalCaseStore uses $state, we access it directly without $ prefix
-  // aiGlobalStore is a writable store, so we use $ prefix
-  // Type definition for AI store context
-  interface AIStoreContext {
-    loading?: boolean;
-    error?: string;
-    summary?: string;
-    stream?: string;
-    sources?: Array<any>;
-  }
-  interface AIStore {
-    context: AIStoreContext;
-  }
-  // Get user from context (SSR-safe)
-  const getUser = getContext<unknown>('user');
-  const user = typeof getUser === 'function' ? getUser() : undefined;
-  // Component props using Svelte 5 $props rune
-  let {
-    contextItems = [],
-    caseId = '',
-    evidenceText = '',
-  }: {
-    contextItems?: any[];
-    caseId?: string;
-    evidenceText?: string;
-  } = $props();
-  // Use the global AI store (XState-based, memoized, streaming-ready)
-  // Access store state via $aiGlobalStore, send actions via aiGlobalActions.send
-  // The actorRef is not directly used in the component's script, but can be accessed via aiGlobalStore if needed.
-  // const { snapshot, send, actorRef } = useAIGlobalStore(); // Old usage
-  // Add missing errorMessage variable
+  // --- rune state --- (ensure these runes are at top-level)
   let errorMessage = $state('');
   $effect(() => {
-    // getSummaryCache(); // Uncomment and use this if you need to initialize cache on client
+    // optional init
   });
+
+  // safe getter that guards against undefined / non-store values
+  function safeGet<T = any>(store: { subscribe?: any } | undefined): T {
+    if (!store || typeof (store as any).subscribe !== 'function') {
+      return ({} as unknown) as T;
+    }
+    try {
+      return get(store as any) as T;
+    } catch {
+      return ({} as unknown) as T;
+    }
+  }
 
   // Helper typed context accessor functions to avoid unsafe casts in template
   function getAIContext(): AIStoreContext {
-    return (get(aiGlobalStore) as any)?.context ?? {};
+    return (safeGet<any>(aiGlobalStore)?.context ?? {}) as AIStoreContext;
   }
   function aiLoading(): boolean { return !!getAIContext().loading; }
   function aiError(): string | undefined { return getAIContext().error; }
@@ -90,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
   function aiSources(): Array<any> { return getAIContext().sources ?? []; }
 
   function getLegalCaseContext(): any {
-    return (get(legalCaseStore) as any)?.context ?? {};
+    return safeGet<any>(legalCaseStore)?.context ?? {};
   }
   function lcGeneratingEmbedding(): boolean { return !!getLegalCaseContext().generatingEmbedding; }
   function lcSearchingRelated(): boolean { return !!getLegalCaseContext().searchingRelatedEvidence; }
@@ -158,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="nier-header mb-4">
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
-      <!-- replaced <svelte:component> usages with direct Button component -->
+      <!-- replaced <svelte:component> usages with direct Button component and Svelte 5 event attribute -->
       <Button
         onclick={handleSummarize}
         disabled={!user || aiLoading()}
@@ -198,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-  <main>
+  <main aria-busy={aiLoading()}>
     {#if aiLoading()}
       <div class="nier-loading">
         <span class="nier-text-muted">Summarizing evidence...</span>
@@ -298,6 +284,77 @@ https://svelte.dev/e/js_parse_error -->
   </main>
 </div>
 
+<style>
+  /* Nier.css inspired styles */
+  :global(.nier-card) {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+  :global(.nier-title) {
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  :global(.nier-button) {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  :global(.nier-button\:hover) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  :global(.nier-code) {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+  }
+  :global(.nier-error) {
+    background: rgba(255, 0, 0, 0.05);
+    border: 2px solid #ff0000;
+  }
+  :global(.nier-badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #000;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+  }
+  :global(.nier-text-muted) {
+    color: #666;
+    font-style: italic;
+  }
+  :global(.nier-list-item) {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+  }
+  :global(.nier-evidence-item) {
+    transition: all 0.2s ease;
+  }
+  :global(.nier-evidence-item:hover) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  :global(.nier-similarity-score) {
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+  }
+  :global(.line-clamp-2) {
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
 <style>
   /* Nier.css inspired styles */
   :global(.nier-card) {

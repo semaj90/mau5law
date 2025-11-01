@@ -44,7 +44,7 @@ interface IGoTensorServiceClient {
 }
 
 const goTensorService: IGoTensorServiceClient = {
-  // Removed 'export'
+  // Removed: 'export'
   async init() {
     console.log('Mock goTensorService.init called');
   },
@@ -108,7 +108,7 @@ export function mockTensorData(length: number): Float32Array {
 interface GoTensorProcessingResultRaw {
   processedData?: Float32Array;
   embeddings?: Float32Array;
-  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
   similarity?: number;
   processingTime?: number;
 }
@@ -126,7 +126,7 @@ interface PostRequestBody {
   operation: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed from string
   documentId: string;
   data: number[] | Float32Array; // Explicitly type data to have a length property
-  options?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  options?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
 }
 
 // Define interface for individual batch request items
@@ -134,7 +134,7 @@ interface BatchTensorRequestItem {
   documentId?: string;
   data: number[] | Float32Array;
   operation?: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed from string
-  options?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  options?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
 }
 
 // Define interface for the PUT request body (batch processing)
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
   await ensureInitialized();
   const endpoint = url.searchParams.get('endpoint');
   switch (endpoint) {
-    case 'health':
+    case: 'health':
       try {
         const health = await goTensorService.healthCheck();
         return json({
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-    case 'metrics':
+    case: 'metrics':
       try {
         const metrics = await goTensorService.getMetrics();
         return json({
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-    case 'test': {
+    case: 'test': {
       // Added opening brace
       // Generate test tensor data
       const testData = mockTensorData(768);
@@ -286,13 +286,13 @@ export const POST: RequestHandler = async ({ request }) => {
         id: tensorRequest.id,
         success: true,
         result: {
-          processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined, // Removed 'as { length?: any }'
+          processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined, // Removed: 'as { length?: any }'
           embeddings: ['vectorize', 'analyze'].includes(operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
             operation,
             documentId,
             processedAt: new Date().toISOString(),
-            dataSize: data.length, // Removed 'as { length?: any }'
+            dataSize: data.length, // Removed: 'as { length?: any }'
             mockMode: true,
           },
           similarity: operation === 'similarity' ? Math.random() * 0.3 + 0.7 : undefined,

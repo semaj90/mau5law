@@ -81,9 +81,9 @@
 
   function getDeviceIcon(deviceType: string) {
     switch (deviceType) {
-      case 'mobile':
+      case: 'mobile':
         return Smartphone;
-      case 'tablet':
+      case: 'tablet':
         return Smartphone;
       default:
         return Monitor;
@@ -91,11 +91,11 @@
   }
 
   function parseUserAgent(userAgent: string): string {
-    if (userAgent.includes('Chrome')) return 'Chrome';
-    if (userAgent.includes('Safari')) return 'Safari';
-    if (userAgent.includes('Firefox')) return 'Firefox';
-    if (userAgent.includes('Edge')) return 'Edge';
-    return 'Unknown Browser';
+    if (userAgent.includes('Chrome')) return: 'Chrome';
+    if (userAgent.includes('Safari')) return: 'Safari';
+    if (userAgent.includes('Firefox')) return: 'Firefox';
+    if (userAgent.includes('Edge')) return: 'Edge';
+    return: 'Unknown Browser';
   }
 
   onMount(() => {

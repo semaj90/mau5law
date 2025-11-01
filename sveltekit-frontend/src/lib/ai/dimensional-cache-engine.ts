@@ -174,7 +174,7 @@ export class DimensionalCacheEngine {
       `Switch to related computation?`,
       `Load previous session state?`
     );
-    // Generate "did you mean" suggestions
+    // Generate: "did you mean" suggestions
     didYouMean.push(
       `${currentContext} with attention weights?`,
       `${currentContext} with different kernel size?`,
@@ -276,11 +276,11 @@ export class DimensionalCacheEngine {
       dimensionalArray.kernelSplices.reduce((sum, slice) => sum + slice.attentionScore, 0) /
       dimensionalArray.kernelSplices.length;
     if (avgAttentionScore > 0.8 || userContext.behaviorPattern === 'power_user') {
-      return 'high';
+      return: 'high';
     } else if (avgAttentionScore > 0.5) {
-      return 'medium';
+      return: 'medium';
     }
-    return 'low';
+    return: 'low';
   }
   /**
    * Evict cache entry based on strategy

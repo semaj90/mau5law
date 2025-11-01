@@ -2,7 +2,7 @@
 
 import * as authModule from '../auth';
 
-// Treat the imported module as unknown and narrow at runtime to avoid "any"
+// Treat the imported module as unknown and narrow at runtime to avoid: "any"
 const mod = authModule as unknown;
 
 // Try named export, then default export, then module itself (in case authModule is the instance)

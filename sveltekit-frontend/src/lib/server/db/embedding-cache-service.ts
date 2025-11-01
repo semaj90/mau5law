@@ -18,7 +18,7 @@ async function getDb(): Promise<DbClient> {
 }
 
 // --- CHANGED: add a DB-level row type that matches Drizzle's returned shape ---
-// DB stores the packed embedding as a string (base64 or similar), so the 'embedding' column is string|null.
+// DB stores the packed embedding as a string (base64 or similar), so the: 'embedding' column is string|null.
 export interface EmbeddingCacheDbRow {
   id?: number | string;
   textHash: string;

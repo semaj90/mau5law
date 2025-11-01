@@ -7,7 +7,7 @@ type UpdatePromptEvent = { type: 'UPDATE_PROMPT'; prompt: string };
 type UpdateOptionsEvent = { type: 'UPDATE_OPTIONS'; options: Partial<AIAnalysisContext['options']> };
 type StreamChunkEvent = { type: 'STREAM_CHUNK'; chunk: string };
 
-// Define the output type for the 'performAIAnalysis' actor
+// Define the output type for the: 'performAIAnalysis' actor
 type PerformAIAnalysisOutput = {
   analysisResults: AIAnalysisContext['analysisResults'];
   processingTime: number;
@@ -15,19 +15,19 @@ type PerformAIAnalysisOutput = {
   confidence: number;
 };
 
-// Define the done event for 'performAIAnalysis'
+// Define the done event for: 'performAIAnalysis'
 type PerformAIAnalysisDoneEvent = DoneActorEvent<PerformAIAnalysisOutput, 'performAIAnalysis'>;
 
-// Define the error event for 'validateAnalysisRequest'
+// Define the error event for: 'validateAnalysisRequest'
 type ValidateAnalysisRequestError = ErrorActorEvent<
   { validationErrors: Record<string, string[]> },
   'validateAnalysisRequest'
 >;
 
-// Define the error event for 'performAIAnalysis'
+// Define the error event for: 'performAIAnalysis'
 type PerformAIAnalysisError = ErrorActorEvent<Error, 'performAIAnalysis'>; // Assuming it throws an Error object
 
-// Define specific types for precedents and references to avoid 'any'
+// Define specific types for precedents and references to avoid: 'any'
 interface LegalPrecedent extends Record<string, unknown> {}
 interface LegalReference extends Record<string, unknown> {}
 
@@ -63,7 +63,7 @@ export interface AIAnalysisContext {
 
 // Union of all possible events the machine can receive
 // This type is not explicitly used by createMachine due to the `types` property being commented out.
-// Removing it resolves the "defined but never used" error.
+// Removing it resolves the: "defined but never used" error.
 // type AIAnalysisEvent =
 //   | UpdatePromptEvent
 //   | UpdateOptionsEvent

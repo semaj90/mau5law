@@ -1,63 +1,80 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { speak } from './speak';
+
   let isSupported = $state(false);
   let isListening = $state(false);
   let finalTranscript = $state('');
   let interimTranscript = $state('');
   let currentTranscript = $state('');
-  let recognition unknown = $state();
+  let recognition = $state<any | null>(null);
+
   $effect(() => {
-    // Initialize speech recognition
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognitio;
-    if (SpeechRecognition) {
-      isSupported = true;
-      recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'en-US';
-      recognition.maxAlternatives = 1;
-      recognition.onstart = () => {
-        isListening = true;
-        speak("I'm listening. You can ask me legal questions or give voice commands.");
-      };
-      recognition.onresult = (_event: unknown) => {
-        let interim = $state('');
-        let final = $state('');
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            final += transcript;
-          } else {
-            interim += transcript;
-          }
-        }
-        finalTranscript = final;
-        interimTranscript = interim;
-        currentTranscript = final + interim;
-      };
-      recognition.onend = () => {
-        isListening = false;
-        if (finalTranscript === '') {
-          speak('No speech detected. Please try again.');
-        }
-      };
-      recognition.onerror = (_event: unknown) => {
-        isListening = false;
-        if (event.error === 'no-speech') {
-          speak('No speech detected. Please try again.');
-        } else if (event.error === 'audio-capture') {
-          speak('No microphone access. Please check your microphone settings.');
-        } else if (event.error === 'not-allowed') {
-          speak('Permission to use microphone denied. Please enable microphone access.');
-        } else {
-          speak('Error occurred in recognition ' + event.error);
-        }
-      };
-    } else {
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    if (!SpeechRecognition) {
       isSupported = false;
+      return;
     }
+
+    isSupported = true;
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+    if ('maxAlternatives' in recognition) recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      isListening = true;
+      speak("I'm listening. You can ask me legal questions or give voice commands.");
+    };
+
+    recognition.onresult = (ev: any) => {
+      let interim = '';
+      let final = '';
+      const results = ev?.results ?? [];
+      const startIndex = typeof ev?.resultIndex === 'number' ? ev.resultIndex : 0;
+      for (let i = startIndex; i < results.length; i++) {
+        const r = results[i];
+        const transcript = (r && r[0] && r[0].transcript) ? r[0].transcript : '';
+        if (r?.isFinal) {
+          final += transcript;
+        } else {
+          interim += transcript;
+        }
+      }
+      finalTranscript = final;
+      interimTranscript = interim;
+      currentTranscript = final + interim;
+    };
+
+    recognition.onend = () => {
+      isListening = false;
+      if (!finalTranscript) {
+        speak('No speech detected. Please try again.');
+      }
+    };
+
+    recognition.onerror = (ev: any) => {
+      isListening = false;
+      const err = ev?.error ?? 'unknown';
+      if (err === 'no-speech') {
+        speak('No speech detected. Please try again.');
+      } else if (err === 'audio-capture') {
+        speak('No microphone access. Please check your microphone settings.');
+      } else if (err === 'not-allowed') {
+        speak('Permission to use microphone denied. Please enable microphone access.');
+      } else {
+        speak('Error occurred in recognition: ' + err);
+      }
+    };
+
+    return () => {
+      try {
+        recognition?.stop?.();
+      } catch {
+        /* ignore */
+      }
+      recognition = null;
+    };
   });
 </script>
 
@@ -71,10 +88,14 @@
     <button
       onclick={() => {
         if (isListening) {
-          recognition.stop();
+          recognition?.stop();
           isListening = false;
         } else {
-          recognition.start();
+          try {
+            recognition?.start();
+          } catch (err) {
+            console.error('Speech recognition start failed', err);
+          }
         }
       }}
     >

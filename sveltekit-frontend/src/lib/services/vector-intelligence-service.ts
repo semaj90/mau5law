@@ -157,7 +157,7 @@ export interface SemanticAnalysisResult {
     relevantDocuments: string[];
   }[];
   relationships: {
-    from: string;
+    from string;
     to: string;
     type: string;
     strength: number;
@@ -425,7 +425,7 @@ class VectorIntelligenceService {
       console.warn('Qdrant search failed, falling back to local search:', e);
     }
 
-    // 2) fallback: brute-force cosine over in-memory vectorCache (keys like 'doc_<id>')
+    // 2) fallback: brute-force cosine over in-memory vectorCache (keys like: 'doc_<id>')
     try {
       const results: VectorSearchResult[] = [];
       for (const [key, vec] of this.vectorCache) {

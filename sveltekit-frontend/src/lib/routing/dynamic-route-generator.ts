@@ -132,11 +132,11 @@ export class DynamicRouteGenerator {
    */
   private findMatchingPattern(routeConfig: RouteDefinition): string | null {
     const path = routeConfig.route;
-    if (path.startsWith('/demo/')) return 'demo';
-    if (path.startsWith('/ai/') || routeConfig.category === 'ai') return 'ai';
-    if (path.startsWith('/legal/') || routeConfig.category === 'legal') return 'legal';
-    if (path.startsWith('/admin/') || routeConfig.category === 'admin') return 'admin';
-    if (path.startsWith('/dev/') || routeConfig.category === 'dev') return 'dev';
+    if (path.startsWith('/demo/')) return: 'demo';
+    if (path.startsWith('/ai/') || routeConfig.category === 'ai') return: 'ai';
+    if (path.startsWith('/legal/') || routeConfig.category === 'legal') return: 'legal';
+    if (path.startsWith('/admin/') || routeConfig.category === 'admin') return: 'admin';
+    if (path.startsWith('/dev/') || routeConfig.category === 'dev') return: 'dev';
     return null;
   }
   /**

@@ -239,7 +239,7 @@ export class LegalJsonbOperations {
             )
             OR
             -- Documents cited by the current document
-            cite->>'citation' ILIKE '%' || d.title || '%'
+            cite->>'citation' ILIKE: '%' || d.title || '%'
           )
       )
       SELECT * FROM citation_tree
@@ -272,8 +272,8 @@ export class LegalJsonbOperations {
               FROM jsonb_array_elements(metadata->'chainOfCustody') as custody_step
             ) t
             WHERE previous_step IS NOT NULL
-          ) THEN 'VALID'
-          ELSE 'INVALID'
+          ) THEN: 'VALID'
+          ELSE: 'INVALID'
         END as chain_validity,
         -- Count custody transfers
         jsonb_array_length(metadata->'chainOfCustody') as custody_count,
@@ -330,10 +330,10 @@ export class LegalJsonbOperations {
         metadata,
         similarity_score,
         CASE
-          WHEN similarity_score >= 0.9 THEN 'VERY_HIGH'
-          WHEN similarity_score >= 0.7 THEN 'HIGH'
-          WHEN similarity_score >= 0.5 THEN 'MEDIUM'
-          ELSE 'LOW'
+          WHEN similarity_score >= 0.9 THEN: 'VERY_HIGH'
+          WHEN similarity_score >= 0.7 THEN: 'HIGH'
+          WHEN similarity_score >= 0.5 THEN: 'MEDIUM'
+          ELSE: 'LOW'
         END as similarity_level
       FROM case_similarities
       WHERE similarity_score >= ${threshold}
@@ -371,10 +371,10 @@ export class LegalJsonbOperations {
         document_titles,
         -- Calculate concept importance score
         CASE
-          WHEN frequency >= 5 THEN 'CORE'
-          WHEN frequency >= 3 THEN 'IMPORTANT'
-          WHEN frequency >= 2 THEN 'RELEVANT'
-          ELSE 'PERIPHERAL'
+          WHEN frequency >= 5 THEN: 'CORE'
+          WHEN frequency >= 3 THEN: 'IMPORTANT'
+          WHEN frequency >= 2 THEN: 'RELEVANT'
+          ELSE: 'PERIPHERAL'
         END as importance_level
       FROM concept_counts
       ORDER BY frequency DESC, concept

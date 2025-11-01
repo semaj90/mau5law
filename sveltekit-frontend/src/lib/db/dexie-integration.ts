@@ -183,7 +183,7 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
-      ..._document, // Changed 'document' to '_document'
+      ..._document, // Changed: 'document' to: '_document'
       created: new Date(),
       modified: new Date(),
     });
@@ -223,7 +223,7 @@ export class LegalAIDatabase extends Dexie {
     return await this.graphEdges.add(edge);
   }
   getGraphNodes() {
-    return liveQuery(() => this.graphNodes.toArray()); // Added missing ')'
+    return liveQuery(() => this.graphNodes.toArray()); // Added missing: ')'
   }
   getGraphNodesByRegion(bounds: { x: number; y: number; width: number; height: number }) {
     return liveQuery(() =>

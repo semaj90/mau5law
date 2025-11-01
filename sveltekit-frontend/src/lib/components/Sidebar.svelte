@@ -8,7 +8,11 @@
   import InfiniteScrollList from './InfiniteScrollList.svelte';
   import SearchBar from './SearchBar.svelte';
   import TagList from './TagList.svelte';
-  import { FileText, Folder, Tag, X } from 'lucide-svelte';
+  // FileText and Tag are available as named exports in this environment
+  import { FileText, Tag } from 'lucide-svelte';
+  // Folder and X may be provided as default exports depending on lucide-svelte version
+  import Folder from 'lucide-svelte';
+  import X from 'lucide-svelte';
   let sidebarElement: HTMLElement;
   let isHovered = false;
   let isPinned = $state(false);

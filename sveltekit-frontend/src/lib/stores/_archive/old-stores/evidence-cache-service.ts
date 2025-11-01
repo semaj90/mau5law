@@ -247,13 +247,13 @@ class EvidenceAnalysisCacheService {
   }
   private getTTLForAnalysisType(analysisType: string): number {
     switch (analysisType) {
-      case 'similarity':
-      case 'correlation':
+      case: 'similarity':
+      case: 'correlation':
         return this.SIMILARITY_TTL;
-      case 'summary':
+      case: 'summary':
         return this.SUMMARY_TTL;
-      case 'classification':
-      case 'extraction':
+      case: 'classification':
+      case: 'extraction':
       default:
         return this.DEFAULT_TTL;
     }

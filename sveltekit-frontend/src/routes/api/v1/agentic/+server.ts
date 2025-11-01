@@ -17,13 +17,13 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
     const query = url.searchParams.get('query');
 
     switch (action) {
-      case 'status':
+      case: 'status':
         return await getSystemStatus(startTime, getClientAddress);
 
-      case 'recent-errors':
+      case: 'recent-errors':
         return await getRecentErrors(startTime);
 
-      case 'fix-suggestions':
+      case: 'fix-suggestions':
         if (!query) {
           throw error(400, 'Query parameter required for fix suggestions');
         }
@@ -81,13 +81,13 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
       const { action, data } = requestData;
 
       switch (action) {
-        case 'analyze-error':
+        case: 'analyze-error':
           return await analyzeErrorText(data.errorText, startTime);
 
-        case 'get-contextual-fixes':
+        case: 'get-contextual-fixes':
           return await getContextualFixes(data.errorId, startTime);
 
-        case 'mark-fix-applied':
+        case: 'mark-fix-applied':
           return await markFixApplied(data.fixId, data.success, startTime);
 
         default:
@@ -148,7 +148,7 @@ function getErrorMessage(err: unknown): string {
 // Helper Functions
 async function getSystemStatus(startTime: number, getClientAddress: () => string): Promise<Response> {
   // Check if agentic controller is running by querying Redis
-  // Safe dynamic import with explicit minimal types to avoid 'any'
+  // Safe dynamic import with explicit minimal types to avoid: 'any'
   type RedisClientMinimal = {
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
@@ -157,7 +157,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
   type CreateClientFn = (opts?: { url?: string; password?: string }) => RedisClientMinimal;
 
-  // dynamic import typed as unknown -> narrow to Record to access properties without 'any'
+  // dynamic import typed as unknown -> narrow to Record to access properties without: 'any'
   const redisModule = (await import('redis')) as unknown as Record<string, unknown>;
 
   const createClient = (redisModule.createClient ??
@@ -278,7 +278,7 @@ async function getRecentErrors(startTime: number): Promise<Response> {
       LIMIT 20
     `);
 
-    // ---- changed code: add a typed row and cast result.rows to avoid implicit 'any' ----
+    // ---- changed code: add a typed row and cast result.rows to avoid implicit: 'any' ----
     type ErrorRow = {
       id: number;
       error_text: string;
@@ -402,7 +402,7 @@ async function processScreenshot(
       detached: true,
     });
 
-    // Use the process variable to avoid "assigned but never used" errors and to log failures.
+    // Use the process variable to avoid: "assigned but never used" errors and to log failures.
     analysisProcess.unref();
     analysisProcess.on('error', err => {
       console.error('Agentic analysis process failed to start:', err);

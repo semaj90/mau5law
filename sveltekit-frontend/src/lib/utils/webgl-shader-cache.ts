@@ -1,250 +1,32 @@
-/**
- * WebGL Shader Cache and Optimization System
- * High-performance shader compilation and caching for legal AI visualizations
- */
+/* Clean, consolidated WebGL shader cache with optional server-side embedding hooks. */
 import { writable, type Writable } from 'svelte/store';
-import { cache } from '$lib/server/cache/redis';
+import type { Pool } from 'pg'; // pg-native
+import Redis from 'ioredis';
+// import { cosineSimilarity } from 'scikitjs'; // Removed as per new instructions
 
-// ------- ADDED TYPES (fix for "Cannot find name 'UniformsMap'") -------
-/**
- * Allowed uniform value shapes accepted by setUniforms.
- */
-type UniformValue = number | number[] | Float32Array | Int32Array | Float64Array;
+/* ============================================
+ * Types & Interfaces (consolidated)
+ * ============================================ */
 
-/**
- * Map of uniform names to values passed into shaders.
- */
-export type UniformsMap = Record<string, UniformValue>;
+export type ShaderID = string;
 
-/**
- * Configuration for a single vertex attribute.
- */
-export interface AttributeConfig {
-  buffer: WebGLBuffer;
-  size: number; // number of components (1..4)
-  type?: number; // gl.FLOAT, gl.INT, etc.
-  normalized?: boolean;
-  stride?: number;
-  offset?: number;
-  divisor?: number; // for instanced rendering (optional)
-}
-
-/**
- * Map of attribute names to AttributeConfig.
- */
-export type AttributesMap = Record<string, AttributeConfig>;
-// ------- END ADDED TYPES -------
-
-// Shader definitions for legal AI visualizations
-export const LEGAL_AI_SHADERS = {
-  // Attention weight visualization
-  attentionHeatmap: {
-    vertex: `
-      attribute vec2 a_position;
-      attribute vec2 a_texCoord;
-      attribute float a_attention;
-      uniform mat4 u_matrix;
-      uniform float u_time;
-      uniform float u_scale;
-      varying vec2 v_texCoord;
-      varying float v_attention;
-      varying float v_pulse;
-      void main() {
-        v_texCoord = a_texCoord;
-        v_attention = a_attention;
-        // Pulsing effect for high attention areas
-        v_pulse = sin(u_time * 3.0 + a_attention * 10.0) * 0.1 + 0.9;
-        // Scale vertices based on attention weight
-        vec2 scaledPosition = a_position * (1.0 + a_attention * u_scale);
-        gl_Position = u_matrix * vec4(scaledPosition, 0.0, 1.0);
-      }
-    `,
-    fragment: `
-      precision mediump float;
-      varying vec2 v_texCoord;
-      varying float v_attention;
-      varying float v_pulse;
-      uniform float u_time;
-      uniform vec3 u_lowColor;
-      uniform vec3 u_highColor;
-      uniform float u_intensity;
-      void main() {
-        // Create attention heatmap colors
-        vec3 color = mix(u_lowColor, u_highColor, v_attention);
-        // Add pulsing effect
-        color *= v_pulse;
-        // Add temporal shimmer for active areas
-        float shimmer = sin(u_time * 8.0 + v_texCoord.x * 20.0 + v_texCoord.y * 15.0) * 0.05 + 0.95;
-        color *= shimmer;
-        // Apply intensity
-        color *= u_intensity;
-        // Soft edges for better visual appeal
-        float edge = smoothstep(0.0, 0.1, v_attention) * smoothstep(1.0, 0.9, v_attention);
-        gl_FragColor = vec4(color, v_attention * edge);
-      }
-    `,
-  },
-  // Document similarity network
-  documentNetwork: {
-    vertex: `
-      attribute vec3 a_position;
-      attribute vec3 a_color;
-      attribute float a_similarity;
-      attribute float a_pageRank;
-      uniform mat4 u_matrix;
-      uniform float u_time;
-      uniform float u_nodeSize;
-      varying vec3 v_color;
-      varying float v_similarity;
-      varying float v_pageRank;
-      varying float v_glow;
-      void main() {
-        v_color = a_color;
-        v_similarity = a_similarity;
-        v_pageRank = a_pageRank;
-        // Animate nodes based on PageRank
-        v_glow = sin(u_time + a_pageRank * 5.0) * 0.3 + 0.7;
-        // Scale nodes by PageRank score
-        float nodeScale = u_nodeSize * (1.0 + a_pageRank * 2.0);
-        gl_Position = u_matrix * vec4(a_position, 1.0);
-        gl_PointSize = nodeScale * v_glow;
-      }
-    `,
-    fragment: `
-      precision mediump float;
-      varying vec3 v_color;
-      varying float v_similarity;
-      varying float v_pageRank;
-      varying float v_glow;
-      uniform float u_alpha;
-      void main() {
-        // Create circular points
-        vec2 coord = gl_PointCoord - vec2(0.5);
-        float dist = length(coord);
-        if (dist > 0.5) {
-          discard;
-        }
-        // Soft edges
-        float alpha = smoothstep(0.5, 0.3, dist);
-        // Enhance important nodes
-        vec3 color = v_color * (1.0 + v_pageRank);
-        // Add glow effect
-        color += vec3(v_glow * 0.2);
-        gl_FragColor = vec4(color, alpha * u_alpha * v_glow);
-      }
-    `,
-  },
-  // Legal document text flow
-  textFlow: {
-    vertex: `
-      attribute vec2 a_position;
-      attribute vec2 a_velocity;
-      attribute float a_relevance;
-      attribute float a_age;
-      uniform mat4 u_matrix;
-      uniform float u_time;
-      uniform float u_flowSpeed;
-      varying float v_relevance;
-      varying float v_age;
-      varying vec2 v_velocity;
-      void main() {
-        v_relevance = a_relevance;
-        v_age = a_age;
-        v_velocity = a_velocity;
-        // Animate particles along flow lines
-        vec2 flowOffset = a_velocity * u_time * u_flowSpeed;
-        vec2 position = a_position + flowOffset;
-        // Fade old particles
-        float fade = 1.0 - smoothstep(0.0, 1.0, a_age);
-        gl_Position = u_matrix * vec4(position, 0.0, 1.0);
-        gl_PointSize = 2.0 + a_relevance * 4.0 * fade;
-      }
-    `,
-    fragment: `
-      precision mediump float;
-      varying float v_relevance;
-      varying float v_age;
-      varying vec2 v_velocity;
-      uniform vec3 u_relevantColor;
-      uniform vec3 u_irrelevantColor;
-      void main() {
-        // Create particle shape
-        vec2 coord = gl_PointCoord - vec2(0.5);
-        float dist = length(coord);
-        if (dist > 0.5) {
-          discard;
-        }
-        // Color based on relevance
-        vec3 color = mix(u_irrelevantColor, u_relevantColor, v_relevance);
-        // Fade with age
-        float alpha = (1.0 - v_age) * (1.0 - dist * 2.0);
-        gl_FragColor = vec4(color, alpha);
-      }
-    `,
-  },
-  // Evidence timeline
-  evidenceTimeline: {
-    vertex: `
-      attribute vec2 a_position;
-      attribute float a_timestamp;
-      attribute float a_importance;
-      attribute vec3 a_evidenceColor;
-      uniform mat4 u_matrix;
-      uniform float u_currentTime;
-      uniform float u_timeRange;
-      varying float v_importance;
-      varying vec3 v_evidenceColor;
-      varying float v_timeDistance;
-      void main() {
-        v_importance = a_importance;
-        v_evidenceColor = a_evidenceColor;
-        // Calculate time distance from current time
-        v_timeDistance = abs(a_timestamp - u_currentTime) / u_timeRange;
-        // Scale based on importance and time relevance
-        float scale = 1.0 + a_importance * (1.0 - v_timeDistance);
-        gl_Position = u_matrix * vec4(a_position * scale, 0.0, 1.0);
-      }
-    `,
-    fragment: `
-      precision mediump float;
-      varying float v_importance;
-      varying vec3 v_evidenceColor;
-      varying float v_timeDistance;
-      uniform float u_alpha;
-      void main() {
-        // Fade based on time distance
-        float timeFade = 1.0 - smoothstep(0.0, 1.0, v_timeDistance);
-        // Enhance important evidence
-        vec3 color = v_evidenceColor * (1.0 + v_importance * 0.5);
-        // Add urgency glow for recent important evidence
-        if (v_importance > 0.7 && v_timeDistance < 0.2) {
-          color += vec3(0.3, 0.1, 0.0);
-        }
-        float alpha = u_alpha * timeFade * (0.5 + v_importance * 0.5);
-        gl_FragColor = vec4(color, alpha);
-      }
-    `,
-  },
-};
 export interface ShaderProgram {
-  id: string;
-  name: string;
+  id: ShaderID;
+  name?: string;
   program: WebGLProgram;
-  uniforms: Map<string, WebGLUniformLocation>;
   attributes: Map<string, number>;
+  uniforms: Map<string, WebGLUniformLocation | null>;
+  vertexSource?: string;
+  fragmentSource?: string;
   compilationTime: number;
   lastUsed: number;
   useCount: number;
-  // Enhanced metadata for search
-  vertexSource?: string;
-  fragmentSource?: string;
-  shaderType: 'webgl';
-  operation: string;
-  description: string;
-  tags: string[];
-  embedding?: number[];
-  averageExecutionTime: number;
+  averageExecutionTime?: number;
+  description?: string;
+  tags?: string[];
+  operation?: string;
 }
+
 export interface ShaderCacheMetrics {
   totalShaders: number;
   compiledShaders: number;
@@ -254,329 +36,272 @@ export interface ShaderCacheMetrics {
   averageCompilationTime: number;
   memoryUsage: number;
 }
-/**
- * WebGL Shader Cache Manager
- * Optimized shader compilation and caching for legal AI visualizations
- */
+
+export interface AttributeConfig {
+  buffer: WebGLBuffer;
+  size: number;
+  type?: number;
+  normalized?: boolean;
+  stride?: number;
+  offset?: number;
+  divisor?: number;
+}
+
+export type UniformsMap = Record<string, unknown>;
+export type AttributesMap = Record<string, AttributeConfig | WebGLBuffer>;
+
+export interface ComprehensiveCachingSetOptions {
+  ttl?: number;
+  tags?: string[];
+  layers?: string[];
+}
+
+export interface ComprehensiveCachingArchitecture {
+  set(key: string, value: unknown, options?: ComprehensiveCachingSetOptions): Promise<void>;
+  get<T = unknown>(key: string): Promise<T | null>;
+  delete?(key: string): Promise<void>;
+}
+
+/* ==============================
+   Embedded clients (injected)
+   ============================== */
+
+/* small helper types for external clients used in best-effort calls */
+// Was incorrectly: "extends Redis" which conflicts with Redis' required members.
+// Use a Partial intersection so method presence is optional and we can add setBuffer.
+type RedisWithBuffer = Partial<Redis> & {
+  setBuffer?: (key: string, value: Uint8Array) => Promise<void>;
+  // commonly-used methods — optional to reflect best-effort usage
+  keys?: (pattern: string) => Promise<string[]>;
+  get?: (key: string) => Promise<string | null>;
+  set?: (key: string, value: string, ...args: unknown[]) => Promise<'OK' | null>;
+};
+
+interface QdrantClient {
+  upsert?: (collection: string, payload: unknown) => Promise<unknown>;
+  search?: (collection: string, options: unknown) => Promise<unknown>;
+  query?: (collection: string, options: unknown) => Promise<unknown>;
+}
+
+let redisClient: RedisWithBuffer | null = null;
+let pgPool: Pool | null = null;
+let qdrantClient: QdrantClient | null = null;
+
+// store a base Ollama URL (no path); initCacheClients can override this
+// DO NOT hardcode localhost here; allow getOllamaEndpoint() to provide Docker fallback.
+let ollamaEndpoint = process.env.OLLAMA_URL?.replace(/\/+$/, '') || '';
+
+export function initCacheClients(
+  opts: { redis?: RedisWithBuffer | null; pg?: Pool | null; qdrant?: QdrantClient | null; ollama?: string } = {}
+) {
+  redisClient = opts.redis ?? null;
+  pgPool = opts.pg ?? null;
+  qdrantClient = opts.qdrant ?? null;
+  if (opts.ollama) ollamaEndpoint = opts.ollama.replace(/\/+$/, '');
+}
+
+/* small internal cosine similarity fallback */
+function cosineSimilarityVec(a: number[], b: number[]): number {
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return 0;
+  let dot = 0,
+    na = 0,
+    nb = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += (a[i] || 0) * (b[i] || 0);
+    na += (a[i] || 0) * (a[i] || 0);
+    nb += (b[i] || 0) * (b[i] || 0);
+  }
+  if (na === 0 || nb === 0) return 0;
+  return dot / (Math.sqrt(na) * Math.sqrt(nb));
+}
+
+/* ============================================
+ * WebGLShaderCache
+ * ============================================ */
+
 export class WebGLShaderCache {
-  private shaderPrograms = new Map<string, ShaderProgram>();
-  private compilationQueue: CompilationTask[] = [];
-  private isCompiling = false;
-  // Performance tracking
+  private gl: WebGLRenderingContext | WebGL2RenderingContext;
+  private cacheArchitecture?: ComprehensiveCachingArchitecture;
+  private shaderPrograms: Map<string, ShaderProgram> = new Map();
   private metrics: Writable<ShaderCacheMetrics>;
   private cacheHits = 0;
   private cacheMisses = 0;
-  // Integration with comprehensive caching
-  private cacheArchitecture?: ComprehensiveCachingArchitecture;
+
   constructor(
-    private gl: WebGLRenderingContext | WebGL2RenderingContext,
+    gl: WebGLRenderingContext | WebGL2RenderingContext,
     cacheArchitecture?: ComprehensiveCachingArchitecture
   ) {
+    this.gl = gl;
     this.cacheArchitecture = cacheArchitecture;
     this.metrics = writable(this.getInitialMetrics());
-    // Pre-compile common shaders
-    this.precompileCommonShaders();
   }
-  /**
-   * Get or compile shader program
-   */
-  public async getShaderProgram(id: string): Promise<ShaderProgram> {
-    // Check cache first
-    const cached = this.shaderPrograms.get(id);
-    if (cached) {
-      cached.lastUsed = Date.now();
-      cached.useCount++;
-      this.cacheHits++;
-      this.updateMetrics();
-      return cached;
-    }
-    this.cacheMisses++;
-    // Check if shader definition exists
-    const shaderDef = this.getShaderDefinition(id);
-    if (!shaderDef) {
-      throw new Error(`Shader definition not found: ${id}`);
-    }
-    // Compile shader
-    return this.compileShader(id, shaderDef.vertex, shaderDef.fragment);
+
+  /* ---------- Public Getters ---------- */
+  public getMetrics(): Writable<ShaderCacheMetrics> {
+    return this.metrics;
   }
-  /**
-   * Compile shader program
-   */
-  public async compileShader(
-    id: string,
-    _vertexSource: string, // Marked as unused
-    _fragmentSource: string // Marked as unused
-  ): Promise<ShaderProgram> {
-    // Queue compilation to avoid blocking
-    return new Promise((resolve, reject) => {
-      this.compilationQueue.push({ id, resolve, reject });
-      this.processCompilationQueue();
-    });
+
+  public getCachedShaders(): Map<string, ShaderProgram> {
+    return this.shaderPrograms;
   }
-  /**
-   * Process shader compilation queue
-   */ private async processCompilationQueue(): Promise<void> {
-    if (this.isCompiling || this.compilationQueue.length === 0) {
-      return;
-    }
-    this.isCompiling = true;
-    while (this.compilationQueue.length > 0) {
-      const { id, resolve, reject } = this.compilationQueue.shift()!;
-      try {
-        const shaderDef = this.getShaderDefinition(id);
-        if (!shaderDef) {
-          reject(new Error(`Shader definition not found: ${id}`));
-          continue;
-        }
-        const startTime = Date.now();
-        // Compile vertex shader
-        const vertexShader = this.compileShaderStage(this.gl.VERTEX_SHADER, shaderDef.vertex);
-        // Compile fragment shader
-        const fragmentShader = this.compileShaderStage(this.gl.FRAGMENT_SHADER, shaderDef.fragment);
-        // Create and link program
-        const program = this.gl.createProgram();
-        if (!program) {
-          throw new Error('Failed to create shader program');
-        }
-        this.gl.attachShader(program, vertexShader);
-        this.gl.attachShader(program, fragmentShader);
-        this.gl.linkProgram(program);
-        // Check linking status
-        if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
-          const error = this.gl.getProgramInfoLog(program);
-          this.gl.deleteProgram(program);
-          throw new Error(`Shader program linking failed: ${error}`);
-        }
-        // Clean up individual shaders
-        this.gl.deleteShader(vertexShader);
-        this.gl.deleteShader(fragmentShader);
-        const compilationTime = Date.now() - startTime;
-        // Extract uniforms and attributes
-        const uniforms = this.extractUniforms(program);
-        const attributes = this.extractAttributes(program);
-        // Get shader metadata for enhanced search capabilities
-        const shaderDefinition = this.getShaderDefinition(id);
-        const metadata = this.getShaderMetadata(id);
-        const shaderProgram: ShaderProgram = {
-          id,
-          name: id,
-          program,
-          uniforms,
-          attributes,
-          compilationTime,
-          lastUsed: Date.now(),
-          useCount: 1,
-          vertexSource: shaderDefinition?.vertex,
-          fragmentSource: shaderDefinition?.fragment,
-          shaderType: 'webgl',
-          operation: metadata.operation,
-          description: metadata.description,
-          tags: metadata.tags,
-          averageExecutionTime: 0,
-        };
-        // Cache the compiled shader
-        this.shaderPrograms.set(id, shaderProgram);
-        // Cache in comprehensive caching system
-        if (this.cacheArchitecture) {
-          await this.cacheArchitecture.set(
-            `shader_${id}`,
-            {
-              id,
-              compilationTime,
-              uniforms: Array.from(uniforms.keys()),
-              attributes: Array.from(attributes.keys()),
-            },
-            {
-              ttl: 3600000, // 1 hour
-              tags: ['webgl-shader', 'legal-ai'],
-              layers: ['loki', 'redis'],
-            }
-          );
-        }
-        // Cache with embedding for search system
-        try {
-          await this.cacheWebGLShaderWithEmbedding(shaderProgram);
-        } catch (error) {
-          console.warn(`Failed to cache shader embedding for ${id}:`, error);
-        }
-        console.log(`✨ Compiled shader '${id}' in ${compilationTime}ms`);
-        this.updateMetrics();
-        resolve(shaderProgram);
-      } catch (error: unknown) {
-        // Normalize unknown to Error for safe logging/rejection
-        const err = error instanceof Error ? error : new Error(String(error));
-        console.error(`Shader compilation failed for '${id}':`, err);
-        reject(err);
-      }
-    }
-    this.isCompiling = false;
-  }
-  /**
-   * Compile individual shader stage
-   */ private compileShaderStage(type: number, source: string): WebGLShader {
-    const shader = this.gl.createShader(type);
-    if (!shader) {
-      throw new Error('Failed to create shader');
-    }
-    // Add precision qualifiers for fragment shaders if missing
-    if (type === this.gl.FRAGMENT_SHADER && !source.includes('precision')) {
-      source = 'precision mediump float;\n' + source;
-    }
-    this.gl.shaderSource(shader, source);
-    this.gl.compileShader(shader);
-    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      const error = this.gl.getShaderInfoLog(shader);
-      this.gl.deleteShader(shader);
-      throw new Error(`Shader compilation failed: ${error}`);
-    }
-    return shader;
-  }
-  /**
-   * Extract uniform locations from compiled program
-   */ private extractUniforms(program: WebGLProgram): Map<string, WebGLUniformLocation> {
-    const uniforms = new Map<string, WebGLUniformLocation>();
-    const uniformCount = this.gl.getProgramParameter(program, this.gl.ACTIVE_UNIFORMS);
-    for (let i = 0; i < uniformCount; i++) {
-      const uniform = this.gl.getActiveUniform(program, i);
-      if (uniform) {
-        const location = this.gl.getUniformLocation(program, uniform.name);
-        if (location !== null) {
-          uniforms.set(uniform.name, location);
-        }
-      }
-    }
-    return uniforms;
-  }
-  /**
-   * Extract attribute locations from compiled program
-   */ private extractAttributes(program: WebGLProgram): Map<string, number> {
-    const attributes = new Map<string, number>();
-    const attributeCount = this.gl.getProgramParameter(program, this.gl.ACTIVE_ATTRIBUTES);
-    for (let i = 0; i < attributeCount; i++) {
-      const attribute = this.gl.getActiveAttrib(program, i);
-      if (attribute) {
-        const location = this.gl.getAttribLocation(program, attribute.name);
-        if (location !== -1) {
-          attributes.set(attribute.name, location);
-        }
-      }
-    }
-    return attributes;
-  }
-  /**
-   * Get shader definition by ID
-   */ private getShaderDefinition(id: string): { vertex: string; fragment: string } | null {
-    const shaderName = id.replace('legal-ai-', '') as keyof typeof LEGAL_AI_SHADERS;
-    return LEGAL_AI_SHADERS[shaderName] || null;
-  }
-  /**
-   * Pre-compile commonly used shaders
-   */ private async precompileCommonShaders(): Promise<void> {
-    const commonShaders = ['legal-ai-attentionHeatmap', 'legal-ai-documentNetwork'];
-    console.log('🔄 Pre-compiling common shaders...');
-    for (const shaderId of commonShaders) {
-      try {
-        await this.getShaderProgram(shaderId);
-      } catch (error: unknown) {
-        const err = error instanceof Error ? error : new Error(String(error));
-        console.warn(`Failed to pre-compile shader ${shaderId}:`, err);
-      }
-    }
-    console.log('✅ Common shaders pre-compiled');
-  }
-  /**
-   * Create optimized vertex buffer for legal AI visualizations
-   */ public createVertexBuffer(data: Float32Array, usage: number = this.gl.STATIC_DRAW): WebGLBuffer {
-    const buffer = this.gl.createBuffer();
-    if (!buffer) {
-      throw new Error('Failed to create vertex buffer');
-    }
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, data, usage);
-    return buffer;
-  }
-  /**
-   * Create optimized index buffer
-   */ public createIndexBuffer(data: Uint16Array | Uint32Array): WebGLBuffer {
-    const buffer = this.gl.createBuffer();
-    if (!buffer) {
-      throw new Error('Failed to create index buffer');
-    }
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, data, this.gl.STATIC_DRAW);
-    return buffer;
-  }
-  /**
-   * Optimized uniform setting with caching
-   */ public setUniforms(program: ShaderProgram, uniforms: UniformsMap): void {
-    this.gl.useProgram(program.program);
-    for (const [name, value] of Object.entries(uniforms)) {
-      const location = program.uniforms.get(name);
-      if (location === undefined) {
-        console.warn(`Uniform '${name}' not found in shader '${program.id}'`);
-        continue;
-      }
-      // Set uniform based on type
-      if (typeof value === 'number') {
-        this.gl.uniform1f(location, value);
-      } else if (
-        Array.isArray(value) ||
-        value instanceof Float32Array ||
-        value instanceof Int32Array ||
-        value instanceof Float64Array
-      ) {
-        const arr = Array.isArray(value) ? value : Array.from(value as Iterable<number>);
-        switch (arr.length) {
-          case 2:
-            this.gl.uniform2fv(location, arr);
-            break;
-          case 3:
-            this.gl.uniform3fv(location, arr);
-            break;
-          case 4:
-            this.gl.uniform4fv(location, arr);
-            break;
-          case 9:
-            this.gl.uniformMatrix3fv(location, false, arr);
-            break;
-          case 16:
-            this.gl.uniformMatrix4fv(location, false, arr);
-            break;
-          default:
-            console.warn(`Unsupported uniform array length: ${arr.length}`);
-        }
-      } else {
-        console.warn(`Unsupported uniform type for '${name}' on shader '${program.id}'`);
-      }
-    }
-  }
-  /**
-   * Setup vertex attributes for legal AI visualizations
-   */
+
+  /* ---------- Vertex Attributes ---------- */
   public setupVertexAttributes(program: ShaderProgram, attributes: AttributesMap): void {
-    for (const [name, config] of Object.entries(attributes)) {
+    for (const [name, maybeConfig] of Object.entries(attributes)) {
       const location = program.attributes.get(name);
       if (location === undefined) {
-        console.warn(`Attribute '${name}' not found in shader '${program.id}'`);
+        console.warn(`Attribute '${name}' not found in shader: '${program.id}'`);
         continue;
       }
-      // Explicitly cast config to AttributeConfig to resolve 'Property X does not exist on type unknown'
-      const typedConfig = config as AttributeConfig;
-      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, typedConfig.buffer);
+
+      const cfg = maybeConfig as AttributeConfig;
+      const buffer = 'buffer' in cfg ? cfg.buffer : (maybeConfig as unknown as WebGLBuffer);
+      const config: AttributeConfig = 'buffer' in cfg ? cfg : { buffer: buffer as WebGLBuffer, size: 3 };
+
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, config.buffer);
       this.gl.enableVertexAttribArray(location);
       this.gl.vertexAttribPointer(
         location,
-        typedConfig.size,
-        typedConfig.type || this.gl.FLOAT,
-        typedConfig.normalized || false,
-        typedConfig.stride || 0,
-        typedConfig.offset || 0
+        config.size,
+        (config.type ?? this.gl.FLOAT) as number,
+        Boolean(config.normalized),
+        config.stride ?? 0,
+        config.offset ?? 0
       );
+
+      const divisor = config.divisor ?? 0;
+      if (divisor > 0) {
+        const gl2 = this.gl as WebGL2RenderingContext;
+        if (typeof (gl2 as WebGL2RenderingContext).vertexAttribDivisor === 'function') {
+          try {
+            (gl2 as WebGL2RenderingContext).vertexAttribDivisor(location, divisor);
+          } catch {
+            /* ignore */
+          }
+        } else {
+          // typed ANGLE extension
+          const ext = (this.gl as WebGLRenderingContext).getExtension(
+            'ANGLE_instanced_arrays'
+          ) as ANGLE_instanced_arrays | null;
+          if (ext?.vertexAttribDivisorANGLE) {
+            try {
+              ext.vertexAttribDivisorANGLE(location, divisor);
+            } catch {
+              /* ignore */
+            }
+          } else {
+            console.warn('Instanced arrays not supported on this context');
+          }
+        }
+      }
     }
   }
-  /**
-   * Render legal AI visualization
-   */
+
+  /* ---------- Uniforms ---------- */
+
+  // convert type-guard properties into methods so TS narrows properly
+  private isTextureObj(v: unknown): v is { texture: WebGLTexture; unit?: number; target?: number } {
+    return !!v && typeof v === 'object' && 'texture' in (v as Record<string, unknown>);
+  }
+
+  private isNumericWrapper(v: unknown): v is { value: number } {
+    return (
+      !!v &&
+      typeof v === 'object' &&
+      'value' in (v as Record<string, unknown>) &&
+      typeof (v as { value?: unknown }).value === 'number'
+    );
+  }
+
+  public setUniforms(program: ShaderProgram, uniforms: UniformsMap): void {
+    for (const [name, value] of Object.entries(uniforms || {})) {
+      const loc = program.uniforms.get(name);
+      if (!loc) continue;
+
+      if (typeof value === 'number') {
+        this.gl.uniform1f(loc, value);
+        continue;
+      }
+      if (typeof value === 'boolean') {
+        this.gl.uniform1i(loc, value ? 1 : 0);
+        continue;
+      }
+
+      // call the class methods so TS can narrow the type of `value`
+      if (this.isTextureObj(value)) {
+        try {
+          const texObj = value;
+          const unit = texObj.unit ?? 0;
+          const target = texObj.target ?? this.gl.TEXTURE_2D;
+          // activeTexture and bindTexture are part of WebGLRenderingContext
+          try {
+            this.gl.activeTexture(this.gl.TEXTURE0 + unit);
+            this.gl.bindTexture(target, texObj.texture);
+          } catch {
+            // if either fails, continue gracefully
+          }
+          this.gl.uniform1i(loc, unit);
+        } catch {
+          /* best-effort */
+        }
+        continue;
+      }
+
+      if (value instanceof Float32Array) {
+        const len = value.length;
+        if (len === 16) this.gl.uniformMatrix4fv(loc, false, value);
+        else if (len === 9) this.gl.uniformMatrix3fv(loc, false, value);
+        else if (len === 4) this.gl.uniform4fv(loc, value);
+        else if (len === 3) this.gl.uniform3fv(loc, value);
+        else if (len === 2) this.gl.uniform2fv(loc, value);
+        else this.gl.uniform1fv(loc, value);
+        continue;
+      }
+      if (value instanceof Int32Array) {
+        const len = value.length;
+        if (len === 4) this.gl.uniform4iv(loc, value);
+        else if (len === 3) this.gl.uniform3iv(loc, value);
+        else if (len === 2) this.gl.uniform2iv(loc, value);
+        else this.gl.uniform1iv(loc, value);
+        continue;
+      }
+
+      if (Array.isArray(value)) {
+        switch (value.length) {
+          case 1:
+            this.gl.uniform1fv(loc, new Float32Array(value));
+            break;
+          case 2:
+            this.gl.uniform2fv(loc, new Float32Array(value));
+            break;
+          case 3:
+            this.gl.uniform3fv(loc, new Float32Array(value));
+            break;
+          case 4:
+            this.gl.uniform4fv(loc, new Float32Array(value));
+            break;
+          case 9:
+            this.gl.uniformMatrix3fv(loc, false, new Float32Array(value));
+            break;
+          case 16:
+            this.gl.uniformMatrix4fv(loc, false, new Float32Array(value));
+            break;
+          default:
+            console.warn(`Unsupported uniform array length: ${value.length} for: '${name}' on shader: '${program.id}'`);
+        }
+        continue;
+      }
+
+      if (this.isNumericWrapper(value)) {
+        this.gl.uniform1f(loc, value.value);
+        continue;
+      }
+
+      console.warn(`Unsupported uniform type for: '${name}' on shader: '${program.id}'`);
+    }
+  }
+
+  /* ---------- Render ---------- */
   public render(
     program: ShaderProgram,
     uniforms: UniformsMap,
@@ -585,50 +310,41 @@ export class WebGLShaderCache {
     count?: number,
     indexBuffer?: WebGLBuffer
   ): void {
-    // Use shader program
     this.gl.useProgram(program.program);
-    // Set uniforms
     this.setUniforms(program, uniforms);
-    // Setup vertex attributes
     this.setupVertexAttributes(program, attributes);
-    // Draw
     if (indexBuffer) {
       this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-      this.gl.drawElements(drawMode, count || 0, this.gl.UNSIGNED_SHORT, 0);
+      this.gl.drawElements(drawMode, count ?? 0, this.gl.UNSIGNED_SHORT, 0);
     } else {
-      this.gl.drawArrays(drawMode, 0, count || 0);
+      this.gl.drawArrays(drawMode, 0, count ?? 0);
     }
-    // Update usage stats
     program.lastUsed = Date.now();
     program.useCount++;
+    this.updateMetrics();
   }
-  /**
-   * Update performance metrics
-   */ private updateMetrics(): void {
-    const totalCompilationTime = Array.from(this.shaderPrograms.values()).reduce(
-      (sum, shader) => sum + shader.compilationTime,
-      0
-    );
+
+  /* ---------- Metrics & Cleanup ---------- */
+  private updateMetrics(): void {
+    const totalTime = Array.from(this.shaderPrograms.values()).reduce((s, sh) => s + (sh.compilationTime || 0), 0);
+    const total = this.shaderPrograms.size;
     const metrics: ShaderCacheMetrics = {
-      totalShaders: this.shaderPrograms.size,
-      compiledShaders: this.shaderPrograms.size,
+      totalShaders: total,
+      compiledShaders: total,
       cacheHits: this.cacheHits,
       cacheMisses: this.cacheMisses,
-      totalCompilationTime,
-      averageCompilationTime: this.shaderPrograms.size > 0 ? totalCompilationTime / this.shaderPrograms.size : 0,
+      totalCompilationTime: totalTime,
+      averageCompilationTime: total > 0 ? totalTime / total : 0,
       memoryUsage: this.estimateMemoryUsage(),
     };
     this.metrics.set(metrics);
   }
-  /**
-   * Estimate memory usage of shader cache
-   */ private estimateMemoryUsage(): number {
-    // Rough estimate: each shader program uses ~10KB
-    return this.shaderPrograms.size * 10 * 1024;
+
+  private estimateMemoryUsage(): number {
+    return this.shaderPrograms.size * 10 * 1024; // ~10 KB per shader
   }
-  /**
-   * Get initial metrics
-   */ private getInitialMetrics(): ShaderCacheMetrics {
+
+  private getInitialMetrics(): ShaderCacheMetrics {
     return {
       totalShaders: 0,
       compiledShaders: 0,
@@ -639,91 +355,121 @@ export class WebGLShaderCache {
       memoryUsage: 0,
     };
   }
-  /**
-   * Clean up shader cache
-   */ public cleanup(): void {
+
+  public cleanup(): void {
     for (const shader of this.shaderPrograms.values()) {
-      this.gl.deleteProgram(shader.program);
+      try {
+        this.gl.deleteProgram(shader.program);
+      } catch {
+        /* ignore */
+      }
     }
     this.shaderPrograms.clear();
     this.updateMetrics();
   }
-  /**
-   * Generate semantic embedding for WebGL shader
-   */ private async generateShaderEmbedding(
+
+  /* ---------- Embedding & Searchable Caching ---------- */
+
+  private async generateShaderEmbedding(
     vertexSource: string,
     fragmentSource: string,
     metadata: { description: string; operation: string; tags: string[] }
   ): Promise<number[]> {
+    // Prefer server-side Gemma embedding via Ollama; fallback to nomic-embed-text endpoint; final fallback: heuristic.
+    const text = [vertexSource, fragmentSource, metadata.description, metadata.operation, ...metadata.tags]
+      .filter(Boolean)
+      .join(' ');
+
+    // 1) Try server-side Gemma embedding (Ollama)
     try {
-      // Create comprehensive text for embedding
-      const embeddingText = [vertexSource, fragmentSource, metadata.description, metadata.operation, ...metadata.tags]
-        .filter(Boolean)
-        .join(' ');
-      // Use existing embedding service
-      const response = await fetch('/api/ocr/langextract', {
+      const gemma = await this.generateGemmaEmbedding(text, metadata.tags ?? []);
+      if (Array.isArray(gemma) && gemma.length > 0) return gemma;
+    } catch {
+      // ignore and continue to next fallback
+    }
+
+    // 2) Try local nomic endpoint (preserved behavior)
+    try {
+      const resp = await fetch('/api/ocr/langextract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: embeddingText,
-          model: 'nomic-embed-text',
-          tags: ['shader', 'webgl', ...metadata.tags],
-          type: 'webgl_shader',
-        }),
+        body: JSON.stringify({ text, model: 'nomic-embed-text', tags: metadata.tags, type: 'webgl_shader' }),
       });
-      if (response.ok) {
-        const data = await response.json();
-        return data.embedding || data.tensor || [];
-      } else {
-        return this.generateFallbackEmbedding(vertexSource + fragmentSource);
+      if (resp.ok) {
+        const data = await resp.json().catch(() => ({}));
+        const emb = (data?.embedding || data?.tensor) ?? [];
+        if (Array.isArray(emb) && emb.length > 0) return emb;
       }
-    } catch (error: unknown) {
-      const err = error instanceof Error ? error : new Error(String(error));
-      console.warn('Failed to generate WebGL shader embedding:', err);
-      return this.generateFallbackEmbedding(vertexSource + fragmentSource);
+    } catch {
+      // continue to heuristic fallback
     }
+
+    // 3) Heuristic fallback
+    return this.generateFallbackEmbedding(vertexSource + fragmentSource);
   }
-  /**
-   * Generate fallback embedding for WebGL shader
-   */ private generateFallbackEmbedding(shaderCode: string): number[] {
-    const features = new Array(384).fill(0);
-    // Build lines array from shader code
+
+  private generateFallbackEmbedding(shaderCode: string): number[] {
+    const features = new Array(EMBEDDING_DIM).fill(0);
     const lines = shaderCode.split(/\r?\n/);
-    lines.forEach((line, index) => {
-      const hash = this.simpleHash(line);
-      const featureIndex = hash % features.length;
-      features[featureIndex] += 1 / (index + 1);
+    lines.forEach((line, i) => {
+      const h = this.simpleHash(line);
+      const idx = Math.abs(h) % features.length;
+      features[idx] += 1 / (i + 1);
     });
-    // Normalize
-    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0));
-    return magnitude > 0 ? features.map(val => val / magnitude) : features;
+    const mag = Math.sqrt(features.reduce((s, v) => s + v * v, 0));
+    return mag > 0 ? features.map(v => v / mag) : features;
   }
-  private simpleHash(str: string): number {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
+
+  /* ==============================
+	   Server-side Gemma embedding + persistence helpers
+	   ============================== */
+
+  private async generateGemmaEmbedding(text: string, tags: string[] = []): Promise<number[]> {
+    // Use centralized Ollama endpoint helper and EMBEDDING_MODEL constant.
+    try {
+      const endpoint = getOllamaEndpoint('/api/embeddings');
+      const body = JSON.stringify({ model: EMBEDDING_MODEL, prompt: text, options: { embedding: true }, tags });
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const emb = (data?.embedding ?? data?.vector ?? []) as number[];
+        if (Array.isArray(emb) && emb.length > 0) return emb;
+      }
+    } catch {
+      // ignore and fallback below
     }
-    return Math.abs(hash);
+
+    // Fallback: try local nomic-embed-text service endpoint as a last server fallback
+    try {
+      const resp = await fetch('/api/ocr/langextract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, model: 'nomic-embed-text', tags, type: 'fallback' }),
+      });
+      if (resp.ok) {
+        const d = await resp.json().catch(() => ({}));
+        return (d?.embedding || d?.tensor || []) as number[];
+      }
+    } catch {
+      // final fallback handled by caller
+    }
+    return [];
   }
-  /**
-   * Cache WebGL shader with embedding for search
-   */ async cacheWebGLShaderWithEmbedding(shaderProgram: ShaderProgram): Promise<void> {
+
+  public async cacheWebGLShaderWithEmbedding(shaderProgram: ShaderProgram): Promise<void> {
     if (!shaderProgram.vertexSource || !shaderProgram.fragmentSource) return;
     try {
-      // Generate embedding
-      const embedding = await this.generateShaderEmbedding(shaderProgram.vertexSource, shaderProgram.fragmentSource, {
-        description: shaderProgram.description || '',
-        operation: shaderProgram.operation || '',
-        tags: shaderProgram.tags || [],
-      });
+      const metadata = this.getShaderMetadata(shaderProgram.id);
+      const embedding = await this.generateShaderEmbedding(
+        shaderProgram.vertexSource,
+        shaderProgram.fragmentSource,
+        metadata
+      );
 
-      // Store in unified shader cache for search
       const searchableShader = {
         id: shaderProgram.id,
         name: shaderProgram.name,
-        shaderCode: shaderProgram.vertexSource + '\n\n// Fragment Shader\n' + shaderProgram.fragmentSource,
+        shaderCode: `${shaderProgram.vertexSource}\n\n// Fragment Shader\n${shaderProgram.fragmentSource}`,
         shaderType: 'webgl' as const,
         operation: shaderProgram.operation,
         metadata: {
@@ -738,49 +484,174 @@ export class WebGLShaderCache {
           operation: shaderProgram.operation,
         },
         embedding,
-        config: {
-          type: 'webgl' as const,
-          entryPoint: 'main',
-          hasVertex: true,
-          hasFragment: true,
-        },
+        config: { type: 'webgl' as const, entryPoint: 'main', hasVertex: true, hasFragment: true },
       };
 
-      // Store in Redis cache
-      await cache.set(`webgl_shader:${shaderProgram.id}`, searchableShader, 24 * 60 * 60 * 1000);
-      // Update unified search index
-      const shaderIndex = (await cache.get<string[]>('unified_shader_index')) || [];
-      if (!shaderIndex.includes(`webgl:${shaderProgram.id}`)) {
-        shaderIndex.push(`webgl:${shaderProgram.id}`);
-        await cache.set('unified_shader_index', shaderIndex, 24 * 60 * 60 * 1000);
+      if (this.cacheArchitecture) {
+        try {
+          await this.cacheArchitecture.set(`webgl_shader:${shaderProgram.id}`, searchableShader, {
+            ttl: 24 * 60 * 60 * 1000,
+            tags: ['webgl-shader', 'legal-ai'],
+            layers: ['loki', 'redis'],
+          });
+          const idx = ((await this.cacheArchitecture.get<string[]>('unified_shader_index')) || []) as string[];
+          if (!idx.includes(`webgl:${shaderProgram.id}`)) {
+            idx.push(`webgl:${shaderProgram.id}`);
+            await this.cacheArchitecture.set('unified_shader_index', idx, { ttl: 24 * 60 * 60 * 1000 });
+          }
+          return;
+        } catch {
+          // fall through to local fallback
+        }
       }
-      console.log(`✅ Cached WebGL shader with embedding: ${shaderProgram.id}`);
-    } catch (error: unknown) {
-      const err = error instanceof Error ? error : new Error(String(error));
+
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem(`webgl_shader:${shaderProgram.id}`, JSON.stringify(searchableShader));
+          const raw = localStorage.getItem('unified_shader_index');
+          const shaderIndex = raw ? (JSON.parse(raw) as string[]) : [];
+          if (!shaderIndex.includes(`webgl:${shaderProgram.id}`)) {
+            shaderIndex.push(`webgl:${shaderProgram.id}`);
+            localStorage.setItem('unified_shader_index', JSON.stringify(shaderIndex));
+          }
+          return;
+        } catch {
+          // ignore localStorage failures
+        }
+      }
+    } catch (err) {
       console.error('Failed to cache WebGL shader with embedding:', err);
     }
   }
-  /**
-   * Get metadata for legal AI shader operations
-   */ private getShaderMetadata(id: string): { description: string; operation: string; tags: string[] } {
-    const shaderName = id.replace('legal-ai-', '');
+
+  public async persistShaderEmbedding(id: string, text: string, meta: Record<string, unknown> = {}): Promise<void> {
+    const tags = extractTags(meta);
+    const embedding = await this.generateGemmaEmbedding(text, tags);
+    const key = `shader:${id}`;
+    const payload = { ...meta, embedding, ts: Date.now() };
+
+    try {
+      if (redisClient && typeof redisClient.set === 'function') {
+        // prefer normal set; setBuffer is optional
+        await redisClient.set(key, JSON.stringify(payload), 'EX', 86400);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    try {
+      if (pgPool) {
+        await pgPool.query(
+          'INSERT INTO shader_embeddings(id, vector, metadata) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET vector=$2, metadata=$3',
+          [id, embedding, meta]
+        );
+      }
+    } catch {
+      /* ignore */
+    }
+
+    try {
+      if (qdrantClient?.upsert) {
+        await qdrantClient.upsert('shader_embeddings', { points: [{ id, vector: embedding, payload: meta }] });
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  public async findSimilarShaders(
+    id: string,
+    topK = 3
+  ): Promise<Array<{ id: string; score: number; metadata?: unknown }>> {
+    try {
+      // best-effort: try Redis first
+      let base: string | null = null;
+      if (redisClient && typeof redisClient.get === 'function') {
+        try {
+          base = await redisClient.get(`shader:${id}`);
+        } catch {
+          base = null;
+        }
+      }
+
+      if (!base) {
+        if (qdrantClient?.search) {
+          const maybe = await qdrantClient.search('shader_embeddings', { id, limit: topK });
+          if (Array.isArray(maybe)) {
+            return maybe as Array<{ id: string; score: number; metadata?: unknown }>;
+          }
+          return [];
+        }
+        if (pgPool) {
+          const { rows } = await pgPool.query(
+            'SELECT id, metadata, 1 - (vector <=> $1) AS score FROM shader_embeddings ORDER BY score DESC LIMIT $2',
+            [[], topK]
+          );
+          return (rows as Array<{ id: string; metadata?: unknown; score: number }>) ?? [];
+        }
+        return [];
+      }
+
+      const parsed = JSON.parse(base);
+      const embedding = parsed?.embedding as number[] | undefined;
+      if (!embedding || !Array.isArray(embedding)) return [];
+
+      if (qdrantClient?.search) {
+        const res = await qdrantClient.search('shader_embeddings', { vector: embedding, limit: topK });
+        if (Array.isArray(res)) return res as Array<{ id: string; score: number; metadata?: unknown }>;
+      }
+
+      if (pgPool) {
+        const { rows } = await pgPool.query(
+          'SELECT id, metadata, 1 - (vector <=> $1) AS score FROM shader_embeddings ORDER BY score DESC LIMIT $2',
+          [embedding, topK]
+        );
+        if (rows && Array.isArray(rows)) return rows as Array<{ id: string; metadata?: unknown; score: number }>;
+      }
+
+      // Final fallback: scan Redis keys and compute cosine similarity locally
+      const keys = redisClient && typeof redisClient.keys === 'function' ? await redisClient.keys('shader:*') : [];
+      const sims: Array<{ id: string; score: number; metadata?: unknown }> = [];
+      if (keys && Array.isArray(keys)) {
+        for (const k of keys) {
+          try {
+            const val = redisClient && typeof redisClient.get === 'function' ? (await redisClient.get(k)) || '' : '';
+            if (!val) continue;
+            const obj = JSON.parse(val);
+            if (!Array.isArray(obj.embedding)) continue;
+            const score = cosineSimilarityVec(embedding, obj.embedding);
+            sims.push({ id: k.replace(/^shader:/, ''), score, metadata: obj });
+          } catch {
+            continue;
+          }
+        }
+      }
+      return sims.sort((a, b) => b.score - a.score).slice(0, topK);
+    } catch (err) {
+      console.warn('findSimilarShaders failed', err);
+      return [];
+    }
+  }
+
+  private getShaderMetadata(id: string): { description: string; operation: string; tags: string[] } {
+    const shaderName = id.replace(/^legal-ai-/, '');
     const metadataMap: Record<string, { description: string; operation: string; tags: string[] }> = {
-      'attentionHeatmap': {
+      attentionHeatmap: {
         description: 'Visualizes AI attention weights with dynamic heatmap colors and pulsing effects',
         operation: 'attention_visualization',
         tags: ['attention', 'heatmap', 'ai-visualization', 'legal-ai', 'dynamic'],
       },
-      'documentNetwork': {
+      documentNetwork: {
         description: 'Renders legal document similarity network with PageRank-based node sizing',
         operation: 'document_network',
         tags: ['network', 'similarity', 'pagerank', 'legal-documents', 'graph-visualization'],
       },
-      'textFlow': {
+      textFlow: {
         description: 'Animates legal document text flow with relevance-based particle systems',
         operation: 'text_flow',
         tags: ['text-flow', 'particles', 'relevance', 'animation', 'legal-text'],
       },
-      'evidenceTimeline': {
+      evidenceTimeline: {
         description: 'Timeline visualization for legal evidence with importance and temporal weighting',
         operation: 'evidence_timeline',
         tags: ['timeline', 'evidence', 'legal', 'temporal', 'importance-weighting'],
@@ -794,17 +665,96 @@ export class WebGLShaderCache {
       }
     );
   }
-  // Public getters
-  public getMetrics(): Writable<ShaderCacheMetrics> {
-    return this.metrics;
+
+  // ---------- Experimental GPU/LLM Integration (methods) ----------
+
+  public async persistGPUArtifact(
+    id: string,
+    sharedBuffer: SharedArrayBuffer,
+    metadata: Record<string, unknown> = {}
+  ): Promise<void> {
+    try {
+      const bytes = new Uint8Array(sharedBuffer);
+      // Redis cache (best-effort)
+      try {
+        if (redisClient?.setBuffer) {
+          await redisClient.setBuffer(`gpu:artifact:${id}`, bytes);
+        } else if (redisClient && typeof redisClient.set === 'function') {
+          // fallback to a normal set with binary converted to base64
+          await redisClient.set(`gpu:artifact:${id}`, Buffer.from(bytes).toString('base64'));
+        }
+      } catch {
+        /* ignore */
+      }
+
+      // send blob to API for persistent storage (MinIO/server-side)
+      try {
+        if (typeof window !== 'undefined') {
+          const resp = await fetch('/api/gpu/persist', {
+            method: 'POST',
+            body: bytes as unknown as BodyInit, // best-effort
+            headers: { 'x-artifact-id': id, 'content-type': 'application/octet-stream' },
+          });
+          if (!resp.ok) {
+            // ignore
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+
+      // optional embedding for metadata
+      const text = JSON.stringify(metadata);
+      const resp = await fetch('/api/embed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, model: 'embeddinggemma:latest', tags: ['gpu', 'artifact'] }),
+      });
+      const data = resp.ok ? await resp.json() : {};
+      const embedding: number[] = data.embedding ?? [];
+
+      // store vector (best-effort)
+      try {
+        if (qdrantClient?.upsert) {
+          await qdrantClient.upsert('gpu_artifacts', {
+            points: [{ id, vector: embedding, payload: { metadata, timestamp: Date.now() } }],
+          });
+        }
+      } catch {
+        /* ignore */
+      }
+    } catch (err) {
+      console.warn('Failed to persist GPU artifact:', err);
+    }
   }
-  public getCachedShaders(): Map<string, ShaderProgram> {
-    return this.shaderPrograms;
+
+  public async querySimilarArtifacts(queryEmbedding: number[], topK = 3): Promise<unknown[]> {
+    try {
+      if (qdrantClient?.query) {
+        const res = await qdrantClient.query('gpu_artifacts', { vector: queryEmbedding, limit: topK });
+        return (res as unknown[]) ?? [];
+      }
+    } catch (err) {
+      console.error('Vector query failed:', err);
+    }
+    return [];
+  }
+
+  /**
+   * Small deterministic string hash (djb2-like). Returns a signed 32-bit integer.
+   * Used by generateFallbackEmbedding to map lines to vector indices.
+   */
+  private simpleHash(input: string): number {
+    let hash = 5381;
+    for (let i = 0; i < input.length; i++) {
+      hash = ((hash << 5) + hash) ^ input.charCodeAt(i); // hash * 33 ^ c
+      hash = hash | 0; // force to 32-bit int
+    }
+    return hash;
   }
 }
-/**
- * Factory function for creating WebGL shader cache
- */
+
+/* ---------- Factory (single export) ---------- */
 export function createWebGLShaderCache(
   gl: WebGLRenderingContext | WebGL2RenderingContext,
   cacheArchitecture?: ComprehensiveCachingArchitecture
@@ -812,26 +762,36 @@ export function createWebGLShaderCache(
   return new WebGLShaderCache(gl, cacheArchitecture);
 }
 
-/**
- * Minimal interface for the comprehensive caching architecture used by this module.
- * Kept intentionally small and compatible with the current usage (set/get).
- */
-export interface ComprehensiveCachingSetOptions {
-  ttl?: number;
-  tags?: string[];
-  layers?: string[];
-}
-export interface ComprehensiveCachingArchitecture {
-  set(key: string, value: unknown, options?: ComprehensiveCachingSetOptions): Promise<void>;
-  get<T = unknown>(key: string): Promise<T | null>;
-  delete?(key: string): Promise<void>;
-}
+/* ========== New helpers & constants ========== */
 
 /**
- * Task item for queued shader compilations.
+ * Preferred embedding model name and vector dimension.
  */
-interface CompilationTask {
-  id: string;
-  resolve: (program: ShaderProgram) => void;
-  reject: (reason?: unknown) => void;
+export const EMBEDDING_MODEL = 'embeddinggemma:latest';
+export const EMBEDDING_DIM = 384;
+
+/**
+ * Return the configured Ollama endpoint for a given path.
+ * Uses the injected `ollamaEndpoint` (set via initCacheClients), then process.env.OLLAMA_URL,
+ * and finally the Docker hostname fallback. Ensures no duplicate slashes.
+ *
+ * Usage: getOllamaEndpoint('/api/embeddings')
+ */
+export function getOllamaEndpoint(path = '/api/embeddings'): string {
+  // prefer injected value
+  const baseFromVar = (ollamaEndpoint || '').trim();
+  // fallback to env or Docker host
+  const env = (process.env.OLLAMA_URL && process.env.OLLAMA_URL.trim()) || '';
+  const base = baseFromVar || env || 'http://ollama:11434';
+  const cleanBase = base.replace(/\/+$/, '');
+  if (!path) return cleanBase;
+  return cleanBase + (path.startsWith('/') ? path : '/' + path);
+}
+
+/* helper: safely extract tags array from unknown metadata */
+function extractTags(meta: Record<string, unknown> | undefined): string[] {
+  if (!meta) return [];
+  const maybe = (meta as { tags?: unknown }).tags;
+  if (Array.isArray(maybe) && maybe.every(t => typeof t === 'string')) return maybe as string[];
+  return [];
 }

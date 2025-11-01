@@ -48,15 +48,15 @@ export function useLegalCase(initialCaseId?: string) {
   let error = $state<string | null>(null);
   let lastFetched = $state<number>(0);
   // Derived values
-  let hasCurrentCase = $derived(currentCase !== null);
-  let currentCaseStatus = $derived(currentCase?.status || null);
-  let currentCasePriority = $derived(currentCase?.priority || null);
-  let activeCases = $derived(cases.filter(c => c.status === 'active'));
-  let urgentCases = $derived(cases.filter(c => c.priority === 'urgent'));
-  let casesCount = $derived(cases.length);
+  let hasCurrentCase = $derived(() => currentCase !== null);
+  let currentCaseStatus = $derived(() => currentCase?.status || null);
+  let currentCasePriority = $derived(() => currentCase?.priority || null);
+  let activeCases = $derived(() => cases.filter(c => c.status === 'active'));
+  let urgentCases = $derived(() => cases.filter(c => c.priority === 'urgent'));
+  let casesCount = $derived(() => cases.length);
   // Case status summary
   let statusSummary = $derived(() => {
-    const summary: Record<string, number> = {}
+    const summary: Record<string, number> = {};
     cases.forEach(c => {
       summary[c.status] = (summary[c.status] || 0) + 1;
     });
@@ -64,7 +64,7 @@ export function useLegalCase(initialCaseId?: string) {
   });
   // Priority distribution
   let priorityDistribution = $derived(() => {
-    const distribution: Record<string, number> = {}
+    const distribution: Record<string, number> = {};
     cases.forEach(c => {
       distribution[c.priority] = (distribution[c.priority] || 0) + 1;
     });
@@ -81,7 +81,7 @@ export function useLegalCase(initialCaseId?: string) {
     isLoading = true;
     error = null;
     try {
-      // removed unused response assignment
+      const response = await fetch(`/api/cases/${caseId}`);
       if (!response.ok) throw new Error(`Failed to load case: ${response.statusText}`);
       currentCase = await response.json();
       lastFetched = Date.now();
@@ -96,7 +96,7 @@ export function useLegalCase(initialCaseId?: string) {
     isLoading = true;
     error = null;
     try {
-      // removed unused response assignment
+      const response = await fetch('/api/cases');
       if (!response.ok) throw new Error(`Failed to load cases: ${response.statusText}`);
       cases = await response.json();
       lastFetched = Date.now();
@@ -114,7 +114,7 @@ export function useLegalCase(initialCaseId?: string) {
       const response = await fetch(`/api/cases/${currentCase.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
       if (!response.ok) throw new Error(`Failed to update case: ${response.statusText}`);
       const updated = await response.json();
@@ -136,11 +136,21 @@ export function useLegalCase(initialCaseId?: string) {
   }
   return {
     // State
-    currentCase: () => currentCase,
-    cases: () => cases,
-    isLoading: () => isLoading,
-    error: () => error,
-    lastFetched: () => lastFetched,
+    get currentCase() {
+      return currentCase;
+    },
+    get cases() {
+      return cases;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get error() {
+      return error;
+    },
+    get lastFetched() {
+      return lastFetched;
+    },
     // Derived
     hasCurrentCase,
     currentCaseStatus,
@@ -154,8 +164,8 @@ export function useLegalCase(initialCaseId?: string) {
     loadCase,
     loadCases,
     updateCase,
-    clearCurrentCase
-  }
+    clearCurrentCase,
+  };
 }
 // Evidence composable
 export function useEvidence(caseId?: string) {
@@ -165,12 +175,12 @@ export function useEvidence(caseId?: string) {
   let error = $state<string | null>(null);
   let uploadProgress = $state<Map<string, number>>(new Map());
   // Derived values
-  let evidenceCount = $derived(evidence.length);
-  let hasCurrentEvidence = $derived(currentEvidence !== null);
-  let isUploading = $derived(uploadProgress.size > 0);
+  let evidenceCount = $derived(() => evidence.length);
+  let hasCurrentEvidence = $derived(() => currentEvidence !== null);
+  let isUploading = $derived(() => uploadProgress.size > 0);
   // Evidence by type
   let evidenceByType = $derived(() => {
-    const byType: Record<string, Evidence[]> = {}
+    const byType: Record<string, Evidence[]> = {};
     evidence.forEach(e => {
       if (!byType[e.type]) byType[e.type] = [];
       byType[e.type].push(e);
@@ -179,8 +189,8 @@ export function useEvidence(caseId?: string) {
   });
   // Recent evidence (last 7 days)
   let recentEvidence = $derived(() => {
-    const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    return evidence.filter(item => item.getTime() > weekAgo);
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return evidence.filter(item => new Date(item.createdAt).getTime() > weekAgo);
   });
   // Effect to load evidence when caseId changes
   $effect(() => {
@@ -192,7 +202,7 @@ export function useEvidence(caseId?: string) {
     isLoading = true;
     error = null;
     try {
-      // removed unused response assignment
+      const response = await fetch(`/api/evidence/case/${targetCaseId}`);
       if (!response.ok) throw new Error(`Failed to load evidence: ${response.statusText}`);
       evidence = await response.json();
     } catch (err: any) {
@@ -212,7 +222,7 @@ export function useEvidence(caseId?: string) {
       formData.append('metadata', JSON.stringify(metadata));
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
       const newEvidence = await response.json();
@@ -229,7 +239,7 @@ export function useEvidence(caseId?: string) {
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
       if (!response.ok) throw new Error(`Failed to delete evidence: ${response.statusText}`);
       evidence = evidence.filter(e => e.id !== evidenceId);
@@ -250,11 +260,21 @@ export function useEvidence(caseId?: string) {
   }
   return {
     // State
-    evidence: () => evidence,
-    currentEvidence: () => currentEvidence,
-    isLoading: () => isLoading,
-    error: () => error,
-    uploadProgress: () => uploadProgress,
+    get evidence() {
+      return evidence;
+    },
+    get currentEvidence() {
+      return currentEvidence;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get error() {
+      return error;
+    },
+    get uploadProgress() {
+      return uploadProgress;
+    },
     // Derived
     evidenceCount,
     hasCurrentEvidence,
@@ -266,8 +286,8 @@ export function useEvidence(caseId?: string) {
     uploadEvidence,
     deleteEvidence,
     selectEvidence,
-    clearSelection
-  }
+    clearSelection,
+  };
 }
 // Person of Interest composable
 export function usePersonsOfInterest() {
@@ -277,20 +297,22 @@ export function usePersonsOfInterest() {
   let error = $state<string | null>(null);
   let searchQuery = $state('');
   // Derived values
-  let personsCount = $derived(persons.length);
-  let hasCurrentPerson = $derived(currentPerson !== null);
+  let personsCount = $derived(() => persons.length);
+  let hasCurrentPerson = $derived(() => currentPerson !== null);
   // Filtered persons based on search
   let filteredPersons = $derived(() => {
     if (!searchQuery.trim()) return persons;
     const query = searchQuery.toLowerCase();
-    return persons.filter(p => p.name.toLowerCase().includes(query) ||
-      p.alias?.some(alias => alias.toLowerCase().includes(query)) ||
-      p.notes?.toLowerCase().includes(query)
+    return persons.filter(
+      p =>
+        p.name.toLowerCase().includes(query) ||
+        p.alias?.some(alias => alias.toLowerCase().includes(query)) ||
+        p.notes?.toLowerCase().includes(query)
     );
   });
   // Persons by type
   let personsByType = $derived(() => {
-    const byType: Record<string, PersonOfInterest[]> = {}
+    const byType: Record<string, PersonOfInterest[]> = {};
     persons.forEach(p => {
       if (!byType[p.type]) byType[p.type] = [];
       byType[p.type].push(p);
@@ -298,12 +320,12 @@ export function usePersonsOfInterest() {
     return byType;
   });
   // Active persons
-  let activePersons = $derived(persons.filter(p => p.status === 'active'));
+  let activePersons = $derived(() => persons.filter(p => p.status === 'active'));
   async function loadPersons(): Promise<void> {
     isLoading = true;
     error = null;
     try {
-      // removed unused response assignment
+      const response = await fetch('/api/persons-of-interest');
       if (!response.ok) throw new Error(`Failed to load persons: ${response.statusText}`);
       persons = await response.json();
     } catch (err: any) {
@@ -312,14 +334,16 @@ export function usePersonsOfInterest() {
       isLoading = false;
     }
   }
-  async function createPerson(personData: Omit<PersonOfInterest, 'id' | 'createdAt' | 'updatedAt'>): Promise<PersonOfInterest | null> {
+  async function createPerson(
+    personData: Omit<PersonOfInterest, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<PersonOfInterest | null> {
     isLoading = true;
     error = null;
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData)
+        body: JSON.stringify(personData),
       });
       if (!response.ok) throw new Error(`Failed to create person: ${response.statusText}`);
       const newPerson = await response.json();
@@ -339,7 +363,7 @@ export function usePersonsOfInterest() {
       const response = await fetch(`/api/persons-of-interest/${personId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
       if (!response.ok) throw new Error(`Failed to update person: ${response.statusText}`);
       const updated = await response.json();
@@ -369,11 +393,21 @@ export function usePersonsOfInterest() {
   }
   return {
     // State
-    persons: () => persons,
-    currentPerson: () => currentPerson,
-    isLoading: () => isLoading,
-    error: () => error,
-    searchQuery: () => searchQuery,
+    get persons() {
+      return persons;
+    },
+    get currentPerson() {
+      return currentPerson;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get error() {
+      return error;
+    },
+    get searchQuery() {
+      return searchQuery;
+    },
     // Derived
     personsCount,
     hasCurrentPerson,
@@ -386,8 +420,8 @@ export function usePersonsOfInterest() {
     updatePerson,
     selectPerson,
     clearSelection,
-    setSearchQuery
-  }
+    setSearchQuery,
+  };
 }
 // Unified legal data composable
 export function useLegalData(caseId?: string) {
@@ -396,22 +430,16 @@ export function useLegalData(caseId?: string) {
   const personComposable = usePersonsOfInterest();
   // Combined loading state
   let isAnyLoading = $derived(
-    caseComposable.isLoading() ||
-    evidenceComposable.isLoading() ||
-    personComposable.isLoading()
+    () => caseComposable.isLoading || evidenceComposable.isLoading || personComposable.isLoading
   );
   // Combined error state
-  let hasAnyError = $derived(
-    !!caseComposable.error() ||
-    !!evidenceComposable.error() ||
-    !!personComposable.error()
-  );
+  let hasAnyError = $derived(() => !!caseComposable.error || !!evidenceComposable.error || !!personComposable.error);
   // Initialize all data
   async function initializeAll(): Promise<void> {
     await Promise.all([
       caseComposable.loadCases(),
       personComposable.loadPersons(),
-      caseId ? evidenceComposable.loadEvidenceForCase(caseId) : Promise.resolve()
+      caseId ? evidenceComposable.loadEvidenceForCase(caseId) : Promise.resolve(),
     ]);
   }
   return {
@@ -420,6 +448,6 @@ export function useLegalData(caseId?: string) {
     persons: personComposable,
     isAnyLoading,
     hasAnyError,
-    initializeAll
-  }
+    initializeAll,
+  };
 }

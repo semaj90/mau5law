@@ -69,14 +69,14 @@ export const POST: RequestHandler = async ({ request }) => {
     // Parse file based on type
     try {
       switch (file.type) {
-        case 'application/json':
+        case: 'application/json':
           data = JSON.parse(fileContent);
           break;
-        case 'text/csv':
+        case: 'text/csv':
           data = parseCSV(fileContent);
           break;
-        case 'application/xml':
-        case 'text/xml':
+        case: 'application/xml':
+        case: 'text/xml':
           data = parseXML(fileContent);
           break;
         default:
@@ -96,16 +96,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Process import based on type
     switch (importType) {
-      case 'cases':
+      case: 'cases':
         await importCases(data, overwriteExisting, results);
         break;
-      case 'evidence':
+      case: 'evidence':
         await importEvidence(data, overwriteExisting, results);
         break;
-      case 'criminals':
+      case: 'criminals':
         await importParticipants(data, overwriteExisting, results);
         break;
-      case 'all': {
+      case: 'all': {
         // Safely treat parsed data as an object and validate array shapes before calling import helpers.
         if (typeof data === 'object' && data !== null) {
           const payload = data as Record<string, unknown>;
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
             await importParticipants(payload['criminals'] as ParticipantImport[], overwriteExisting, results);
           }
         } else {
-          results.errors.push('Import payload must be an object containing arrays for "cases", "evidence", or "criminals".');
+          results.errors.push('Import payload must be an object containing arrays for: "cases", "evidence", or: "criminals".');
         }
         break;
       }
@@ -154,7 +154,7 @@ async function importCases(
 
   for (const caseData of casesArray) {
     try {
-      // Basic validation: prefer 'title' but accept legacy 'name'
+      // Basic validation: prefer: 'title' but accept legacy: 'name'
       const title = caseData?.title ?? caseData?.name;
       if (!title || !caseData?.status) {
         results.errors.push(`Case missing required fields: ${JSON.stringify(caseData)}`);

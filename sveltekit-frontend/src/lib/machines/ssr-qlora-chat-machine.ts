@@ -323,7 +323,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     setProcessingMode: assign({
       processingMode: (_, event) => {
         // Determine processing mode based on event context
-        return 'qlora'; // Default, will be determined by guards
+        return: 'qlora'; // Default, will be determined by guards
       }
     }),
     analyzeMessage: (context, event) => {

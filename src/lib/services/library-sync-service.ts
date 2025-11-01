@@ -333,7 +333,7 @@ class LibrarySyncService {
       for (const key of logKeys) {
         const logData = await this.redis.get(key);
         if (logData) {
-          logs.push(JSON.parse(logData));
+          logs.push(<any><any>JSON.parse(logData));
         }
       }
 
@@ -370,7 +370,7 @@ class LibrarySyncService {
               tag.toLowerCase().includes(query.toLowerCase())
             )
           ) {
-            libraries.push(lib);
+            libraries.push(<any><any>lib);
           }
         }
       }

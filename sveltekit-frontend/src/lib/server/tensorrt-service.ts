@@ -69,12 +69,10 @@ try:
             streaming=False
         )
         inference_time = time.time() - start_time
-        response_text = outputs[0][0] if outputs and outputs[0] else "No response generated"
+        response_text = outputs[0][0] if outputs and outputs[0] else: "No response generated"
         result = {
-            "text": response_text
-            "tokens": len(response_text.split()),
-            "inference_time": inference_time
-            "model_used": "TensorRT-LLM"
+            "text": response_text: "tokens": len(response_text.split()),
+            "inference_time": inference_time: "model_used": "TensorRT-LLM"
         }
         print("TENSORRT_RESULT:", json.dumps(result))
     run_tensorrt_inference()
@@ -187,10 +185,8 @@ try:
         if torch.cuda.is_available():
             memory_used = torch.cuda.max_memory_allocated() / 1024 / 1024  # MB
         result = {
-            "text": response_text
-            "tokens": len(generated_tokens),
-            "inference_time": inference_time
-            "model_used": "Gemma3-AWQ4-Triton",
+            "text": response_text: "tokens": len(generated_tokens),
+            "inference_time": inference_time: "model_used": "Gemma3-AWQ4-Triton",
             "memory_used_mb": memory_used
         }
         print("PYTORCH_RESULT:", json.dumps(result))
@@ -199,7 +195,7 @@ except ImportError as e:
     print(f"AWQ4_ERROR: Required packages not available: {e}")
     # Fallback to simple response
     result = {
-        "text": f"Legal AI Response: I've analyzed your query regarding '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",
+        "text": f"Legal AI Response: I've analyzed your query regarding: '{request.prompt[:100]}...' Based on standard legal principles, this matter requires careful consideration of applicable regulations, contractual obligations, and potential legal risks. I recommend consulting with qualified legal counsel for specific guidance.",
         "tokens": 35,
         "inference_time": 0.1,
         "model_used": "Fallback-Legal"
@@ -209,7 +205,7 @@ except Exception as e:
     print(f"AWQ4_ERROR: {e}")
     # Enhanced fallback with legal context
     result = {
-        "text": f"Legal Analysis: Your inquiry about '{request.prompt[:100]}...' involves important legal considerations. While I cannot provide specific legal advice, I can highlight that such matters typically require review of: (1) applicable statutes and regulations, (2) contractual terms and conditions, (3) potential liability and risk factors, (4) compliance requirements. Please consult with a qualified attorney for specific guidance.",
+        "text": f"Legal Analysis: Your inquiry about: '{request.prompt[:100]}...' involves important legal considerations. While I cannot provide specific legal advice, I can highlight that such matters typically require review of: (1) applicable statutes and regulations, (2) contractual terms and conditions, (3) potential liability and risk factors, (4) compliance requirements. Please consult with a qualified attorney for specific guidance.",
         "tokens": 45,
         "inference_time": 0.1,
         "model_used": "Enhanced-Fallback"

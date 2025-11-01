@@ -10,8 +10,7 @@
     id: string;
     data: Uint8Array;
     latent: number[];
-    position ;
-{ x: number; y: number; z: number }
+    position: { x: number; y: number; z: number };
     documentId: string;
     priority: number;
     timestamp: number;
@@ -58,8 +57,9 @@
       sharingPolicy: 'exclusive',
       updateFrequency: 'realtime',
       priority: 220,
-      estimatedUsage: 256 * 1024 // 256KB;
+      estimatedUsage: 256 * 1024 // 256KB
     });
+
     // Initialize default rooms
     rooms = [
       {
@@ -67,34 +67,34 @@
         name: 'Evidence Chamber',
         glyphs: [],
         theme: 'evidence',
-        capacity: MAX_GLYPHS_PER_ROOM;
+        capacity: MAX_GLYPHS_PER_ROOM,
       },
       {
         id: 'contracts-room',
         name: 'Contract Archive',
         glyphs: [],
         theme: 'contracts',
-        capacity: MAX_GLYPHS_PER_ROOM;
+        capacity: MAX_GLYPHS_PER_ROOM,
       },
       {
         id: 'cases-room',
         name: 'Case Gallery',
         glyphs: [],
         theme: 'cases',
-        capacity: MAX_GLYPHS_PER_ROOM;
+        capacity: MAX_GLYPHS_PER_ROOM,
       },
       {
         id: 'research-room',
         name: 'Research Lab',
         glyphs: [],
         theme: 'research',
-        capacity: MAX_GLYPHS_PER_ROOM;
+        capacity: MAX_GLYPHS_PER_ROOM,
       }
     ];
     selectedRoom = rooms[0];
   }
   async function generateGlyphFromDocument(
-    documentContent: string
+    documentContent: string,
     documentId: string
   ): Promise<MemoryGlyph> {
     // Convert document to visual representation
@@ -119,20 +119,20 @@
     const priority = calculateDocumentPriority({
       type: 'document',
       urgency: 'normal',
-      lastAccessed: new Date();
+      lastAccessed: new Date(),
     });
     // Generate 3D position based on semantic clustering
     const position = calculateSpatialPosition(latent, priority);
     return {
       id: `glyph-${documentId}-${Date.now()}`,
-      data: hashBytes
+      data: hashBytes,
       latent,
       position,
       documentId,
       priority,
       timestamp: Date.now(),
-      semantic: documentContent.substring(0, 100) // First 100 chars as semantic hint;
-    }
+      semantic: documentContent.substring(0, 100) // First 100 chars as semantic hint
+    };
   }
   function calculateSpatialPosition(
     latent: number[];
@@ -145,8 +145,8 @@
     return { x, y, z }
   }
   async function addDocumentToMemoryPalace(
-    documentContent: string
-    documentId: string
+    documentContent: string,
+    documentId: string,
     roomId: string
   ) {
     isProcessing = true;
@@ -190,19 +190,19 @@
       );
       if (selectedRoom) {
         switch (selectedRoom.theme) {
-          case 'evidence':
+          case: 'evidence':
             gradient.addColorStop(0, '#2a0845');
             gradient.addColorStop(1, '#0a0a1f');
             break;
-          case 'contracts':
+          case: 'contracts':
             gradient.addColorStop(0, '#1a3a52');
             gradient.addColorStop(1, '#0a1a2f');
             break;
-          case 'cases':
+          case: 'cases':
             gradient.addColorStop(0, '#3a1a1a');
             gradient.addColorStop(1, '#1a0a0a');
             break;
-          case 'research':
+          case: 'research':
             gradient.addColorStop(0, '#1a3a1a');
             gradient.addColorStop(1, '#0a1a0a');
             break;
@@ -227,9 +227,9 @@
     for (const glyph of sortedGlyphs) {
       // 3D to 2D projection
       const perspective = 300 / (300 + glyph.position.z);
-      const x = centerX + glyph.position.x * perspectiv;
+      const x = centerX + glyph.position.x * perspective;
       const y = centerY - glyph.position.y * perspective + Math.sin(time + glyph.position.x * 0.01) * 5;
-      const size = GLYPH_SIZE * perspectiv;
+      const size = GLYPH_SIZE * perspective;
       // Get cached image or reconstruct
       let imageData = glyphCache.get(glyph.id);
       if (!imageData) {
@@ -245,15 +245,15 @@
         tempCtx.putImageData(imageData, 0, 0);
         // Draw with perspective and glow effect
         ctx.save();
-        ctx.globalAlpha = perspectiv;
+        ctx.globalAlpha = perspective;
         // Glow effect
         ctx.shadowColor = `hsl(${glyph.priority + 180}, 100%, 50%)`;
-        ctx.shadowBlur = 10 * perspectiv;
+        ctx.shadowBlur = 10 * perspective;
         // Draw glyph
         ctx.drawImage(tempCanvas, x - size / 2, y - size / 2, size, size);
         // Priority indicator
         ctx.strokeStyle = `hsl(${240 - glyph.priority}, 70%, 50%)`;
-        ctx.lineWidth = 2 * perspectiv;
+        ctx.lineWidth = 2 * perspective;
         ctx.strokeRect(x - size / 2, y - size / 2, size, size);
         ctx.restore();
       }
@@ -278,7 +278,7 @@
       ctx.fillText('Processing...', 10, 70);
     }
   }
-  function selectRoom(_room: MemoryPalaceRoom) {
+  function selectRoom(room: MemoryPalaceRoom) {
     selectedRoom = room;
   }
 </script>
@@ -352,7 +352,7 @@
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
   .room-btn:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -377,7 +377,7 @@
     opacity: 0.7;
   }
   .palace-viewport {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -391,7 +391,7 @@
     border-radius: 8px;
   }
   .palace-controls {
-    position absolute;
+    position: absolute;
     bottom: 1rem;
     right: 1rem;
     display: flex;
@@ -409,7 +409,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
   .control-btn:hover {
     background: rgba(138, 43, 226, 0.3);
@@ -434,10 +434,10 @@
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.7);
   }
-  .stat-value {
+  .info-stat .stat-value {
     color: #8a2be2;
     font-weight: bold;
     font-family: 'Courier New', monospace;
   }
 </style>
-
+</style>

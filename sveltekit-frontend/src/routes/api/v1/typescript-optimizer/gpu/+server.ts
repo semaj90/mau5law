@@ -199,12 +199,12 @@ function calculateGPUEfficiency(processingTime: number, errorCount: number, succ
   return Math.round(throughputScore + accuracyScore);
 }
 function calculatePerformanceGrade(efficiencyScore: number): string {
-  if (efficiencyScore >= 95) return 'A+';
-  if (efficiencyScore >= 85) return 'A';
-  if (efficiencyScore >= 75) return 'B+';
-  if (efficiencyScore >= 65) return 'B';
-  if (efficiencyScore >= 55) return 'C';
-  return 'D';
+  if (efficiencyScore >= 95) return: 'A+';
+  if (efficiencyScore >= 85) return: 'A';
+  if (efficiencyScore >= 75) return: 'B+';
+  if (efficiencyScore >= 65) return: 'B';
+  if (efficiencyScore >= 55) return: 'C';
+  return: 'D';
 }
 function estimateSpeedupVsCPU(errorCount: number): number {
   // Estimated GPU speedup based on workload characteristics

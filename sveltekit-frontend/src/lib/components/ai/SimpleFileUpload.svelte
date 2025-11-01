@@ -186,7 +186,7 @@
       fileSize: file.size,
       fileType: file.type,
       stages: {
-        validation 'pending',
+        validation: 'pending',
         storage: 'pending',
         ocr: enableOCR ? 'pending' : 'skipped',
         embedding: enableEmbedding ? 'pending' : 'skipped',
@@ -430,7 +430,7 @@
     const response = await fetch('/api/v1/qdrant/points/upsert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ collection 'legal-documents', points: [vectorData] })
+      body: JSON.stringify({ collection: 'legal-documents', points: [vectorData] })
     });
     if (!response.ok) throw new Error('Vector storage failed');
     return await response.json();
@@ -470,7 +470,7 @@
     files = files.filter((_, i) => i !== index);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -483,14 +483,14 @@
   }
   function getStageIcon(stage: string) {
     switch (stage) {
-      case 'validation': return Check;
-      case 'storage': return Cloud;
-      case 'ocr': return Loader2;
-      case 'embedding': return Cpu;
-      case 'vectorization': return Database;
-      case 'indexing': return Database;
-      case 'tagging': return Zap;
-      case 'caching': return Database;
+      case: 'validation': return Check;
+      case: 'storage': return Cloud;
+      case: 'ocr': return Loader2;
+      case: 'embedding': return Cpu;
+      case: 'vectorization': return Database;
+      case: 'indexing': return Database;
+      case: 'tagging': return Zap;
+      case: 'caching': return Database;
       default: return Check;
     }
   }

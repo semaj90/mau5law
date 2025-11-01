@@ -245,11 +245,11 @@ export async function ollamaGenerate(prompt: string, model = 'gemma3:legal-lates
       if (out0 && typeof out0['content'] === 'string') return out0['content'] as string;
     }
 
-    // last resort: if the body contains "response" fields in nested objects, try to find one
+    // last resort: if the body contains: "response" fields in nested objects, try to find one
     const nestedResponse = JSON.stringify(result).match(/"response"\s*:\s*"([^"]+)"/);
     if (nestedResponse && nestedResponse[1]) return nestedResponse[1];
 
-    return '';
+    return: '';
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('❌ Legal response generation failed (ollamaGenerate):', msg);
@@ -418,7 +418,7 @@ class CachedRAGService {
           const r = item as Record<string, unknown> | null;
           const docId = String(this.extractResultField(r, 'documentId', 'id') ?? 'unknown');
           return {
-            id: docId, // ensure 'id' exists for expected merged result shapes
+            id: docId, // ensure: 'id' exists for expected merged result shapes
             documentId: docId,
             title: String(this.extractResultField(r, 'title') ?? 'Legal Document'),
             relevanceScore: Number(this.extractResultField(r, 'score', 'relevanceScore') ?? 0),

@@ -130,11 +130,11 @@ export const POST = async (event: RequestEvent) => {
     let result: unknown;
 
     switch (body.emergency_action) {
-      case 'shutdown_all':
+      case: 'shutdown_all':
         result = await orchestrator.emergencyShutdown();
         break;
 
-      case 'restart_critical':
+      case: 'restart_critical':
         // if explicit services provided, use them; otherwise try to infer critical services
         if (Array.isArray(body.services) && body.services.length) {
           result = await orchestrator.restartServices(body.services, body.options);
@@ -147,7 +147,7 @@ export const POST = async (event: RequestEvent) => {
         }
         break;
 
-      case 'enable_safe_mode':
+      case: 'enable_safe_mode':
         // Implement safe mode by stopping non-critical services
         {
           const managed = await orchestrator.getManagedServices();
@@ -164,7 +164,7 @@ export const POST = async (event: RequestEvent) => {
         }
         break;
 
-      case 'recover_from_failure':
+      case: 'recover_from_failure':
         // If a failure_context lists services, try restarting them; otherwise run health check and restart failing services.
         if (body.failure_context?.services && Array.isArray(body.failure_context.services)) {
           result = await orchestrator.restartServices(body.failure_context.services, body.options);

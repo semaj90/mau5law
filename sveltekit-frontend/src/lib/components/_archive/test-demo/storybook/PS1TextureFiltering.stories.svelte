@@ -3,7 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 &lt;script&gt;
   import { onMount } from 'svelte';
-  import './PS1TextureFiltering.stories.svelte';
+  import: './PS1TextureFiltering.stories.svelte';
   let containerRef;
   let filteringType = $state('nearest');
   let mipmapLevel = $state(0);
@@ -95,10 +95,10 @@ https://svelte.dev/e/expected_token -->
       const baselinePerf = 60;
       let filterCost = 1;
       switch(filteringType) {
-        case 'linear': filterCost = 1.2; break;
-        case 'bilinear': filterCost = 1.5; break;
-        case 'trilinear': filterCost = 2.0; break;
-        case 'anisotropic': filterCost = 3.5; break;
+        case: 'linear': filterCost = 1.2; break;
+        case: 'bilinear': filterCost = 1.5; break;
+        case: 'trilinear': filterCost = 2.0; break;
+        case: 'anisotropic': filterCost = 3.5; break;
         default: filterCost = 1; // nearest
       }
       const antialiasMultiplier = enableAntialiasing ? 1.8 : 1;

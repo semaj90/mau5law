@@ -257,7 +257,7 @@ export class GoBinaryIntegrationService {
    */
   public async callKratosService(
     method: string,
-    data: unknown, // Changed 'any' to 'unknown'
+    data: unknown, // Changed: 'any' to: 'unknown'
     options: {
       useProtobuf?: boolean;
       timeout?: number;
@@ -283,7 +283,7 @@ export class GoBinaryIntegrationService {
     request: GoBinaryRequest,
     useCache: boolean = true
   ): Promise<GoBinaryResponse> {
-    // Removed ',' and '}'
+    // Removed: ',' and: '}'
     const startTime = Date.now();
     try {
       // Check cache first
@@ -337,16 +337,16 @@ export class GoBinaryIntegrationService {
     let endpoint = '';
     // Determine endpoint
     switch (request.service) {
-      case 'enhanced-rag':
+      case: 'enhanced-rag':
         endpoint = `${this.config.enhancedRAGEndpoint}${request.endpoint}`;
         break;
-      case 'upload':
+      case: 'upload':
         endpoint = `${this.config.uploadServiceEndpoint}${request.endpoint}`;
         break;
-      case 'kratos':
+      case: 'kratos':
         endpoint = `${this.config.kratosServerEndpoint}${request.endpoint}`;
         break;
-      case 'go-llama':
+      case: 'go-llama':
         endpoint = `${this.config.goLlamaEndpoint}${request.endpoint}`;
         break;
       default:
@@ -356,16 +356,16 @@ export class GoBinaryIntegrationService {
     let body: string | Uint8Array;
     let contentType: string;
     switch (request.encoding) {
-      case 'protobuf':
+      case: 'protobuf':
         // In a real implementation, you'd use protobuf.js or similar
         body = msgpack.encode(request.data); // Using msgpack as protobuf substitute
         contentType = 'application/x-protobuf';
         break;
-      case 'msgpack':
+      case: 'msgpack':
         body = msgpack.encode(request.data);
         contentType = 'application/x-msgpack';
         break;
-      case 'json':
+      case: 'json':
       default:
         body = JSON.stringify(request.data);
         contentType = 'application/json';

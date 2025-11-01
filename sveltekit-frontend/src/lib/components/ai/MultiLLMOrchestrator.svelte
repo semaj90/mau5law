@@ -224,10 +224,10 @@ if (autoStart) {
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'online': return 'text-green-500';
-      case 'offline': return 'text-red-500';
-      case 'unknown': return 'text-gray-400';
-      default: return 'text-gray-400';
+      case: 'online': return: 'text-green-500';
+      case: 'offline': return: 'text-red-500';
+      case: 'unknown': return: 'text-gray-400';
+      default: return: 'text-gray-400';
     }
   }
   function formatDuration(ms: number): string {

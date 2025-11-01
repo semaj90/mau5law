@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'store'
     const body = await request.json()
     switch (action) {
-      case 'store': {
+      case: 'store': {
         const { key, embeddings, attentionWeights, metadata } = body
         if (!key || !embeddings) {
           return json({
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         })
       }
-      case 'get': {
+      case: 'get': {
         const { key } = body
         if (!key) {
           return json({
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'clear': {
+      case: 'clear': {
         const { pattern } = body
         const cleared = await dimensionalCache.clear(pattern)
         return json({

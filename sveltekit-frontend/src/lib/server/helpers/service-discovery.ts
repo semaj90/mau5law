@@ -49,7 +49,7 @@ export interface ServiceConfig {
 export interface ServiceDiscoveryResult {
   // The resolved URL
   url: string;
-  // How it was resolved ('env', 'discovery', or 'fallback')
+  // How it was resolved ('env', 'discovery', or: 'fallback')
   source: 'env' | 'discovery' | 'fallback';
   // Whether the endpoint was verified reachable
   verified?: boolean;

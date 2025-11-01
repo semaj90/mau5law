@@ -75,9 +75,9 @@ export async function ensureExtensions(): Promise<void> {
   try {
     const client = await adminPool.connect();
     // Enable required extensions with superuser privileges
-    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-    await client.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
-    await client.query('CREATE EXTENSION IF NOT EXISTS "vector"');
+    await client.query('CREATE EXTENSION IF NOT EXISTS: "uuid-ossp"');
+    await client.query('CREATE EXTENSION IF NOT EXISTS: "pgcrypto"');
+    await client.query('CREATE EXTENSION IF NOT EXISTS: "vector"');
     console.log('✅ PostgreSQL extensions ensured');
     client.release();
   } catch (error) {

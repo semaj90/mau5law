@@ -2,13 +2,13 @@
 /**
  * Legal Document Graph Visualization - WebGPU Implementation
  *
- * Advanced "Graph on a Texture" system for legal document networks:
+ * Advanced: "Graph on a Texture" system for legal document networks:
  * - GPU-accelerated graph layout and rendering
  * - Dimensional tensor stores for nodes, edges, and metadata
  * - Interactive 3D exploration of legal relationships
  * - Integration with client-side IndexedDB persistence
  *
- * Implements the "tricubic tensor" model on GPU for maximum performance
+ * Implements the: "tricubic tensor" model on GPU for maximum performance
  */
 import type { GraphVisualizationData, LegalEntity, DocumentCache } from '$lib/db/client-db';
 

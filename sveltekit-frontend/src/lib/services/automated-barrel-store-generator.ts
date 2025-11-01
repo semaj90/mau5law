@@ -148,12 +148,12 @@ export class RedisCache {
   }
   async set(key: string, value: string, ttlSec?: number): Promise<'OK' | null> {
     if (this.client && typeof this.client.set === 'function') {
-      if (ttlSec) return (await Promise.resolve(this.client.set(key, value, 'EX', ttlSec))) as 'OK' | null;
-      return (await Promise.resolve(this.client.set(key, value))) as 'OK' | null;
+      if (ttlSec) return (await Promise.resolve(this.client.set(key, value, 'EX', ttlSec))) as: 'OK' | null;
+      return (await Promise.resolve(this.client.set(key, value))) as: 'OK' | null;
     }
     this.store.set(key, value);
     if (ttlSec) setTimeout(() => this.store.delete(key), ttlSec * 1000);
-    return 'OK';
+    return: 'OK';
   }
   async del(key: string): Promise<number> {
     if (this.client && typeof this.client.del === 'function')
@@ -332,8 +332,8 @@ export class AutomatedBarrelStoreGenerator {
 
   /* Implementation helpers */
   private async parseErrorLine(errorLine: string, analysis: MissingImportAnalysis): Promise<void> {
-    if (errorLine.includes("Cannot find name '")) {
-      const match = errorLine.match(/Cannot find name '([^']+)'/);
+    if (errorLine.includes("Cannot find name: '")) {
+      const match = errorLine.match(/Cannot find name: '([^']+)'/);
       if (match) analysis.missingFunctions.add(match[1]);
     }
     if (errorLine.includes("Property '") && errorLine.includes("' does not exist on type")) {
@@ -341,11 +341,11 @@ export class AutomatedBarrelStoreGenerator {
       if (match) analysis.missingMethods.add(match[1]);
     }
     if (errorLine.includes("Module '") && errorLine.includes("' has no exported member")) {
-      const match = errorLine.match(/Module '[^']+' has no exported member '([^']+)'/);
+      const match = errorLine.match(/Module '[^']+' has no exported member: '([^']+)'/);
       if (match) analysis.missingClasses.add(match[1]);
     }
-    if (errorLine.includes("Cannot find module '")) {
-      const match = errorLine.match(/Cannot find module '([^']+)'/);
+    if (errorLine.includes("Cannot find module: '")) {
+      const match = errorLine.match(/Cannot find module: '([^']+)'/);
       if (match) analysis.missingModules.add(match[1]);
     }
     const fileMatch = errorLine.match(/^([^:]+):(\d+):(\d+):/);
@@ -548,7 +548,7 @@ export const apiClients = {
   Redis: class MockRedis {
     private store = new Map<string, any>();
     async get(k: string) { return this.store.get(k) ?? null; }
-    async set(k: string, v: any) { this.store.set(k, v); return 'OK'; }
+    async set(k: string, v: any) { this.store.set(k, v); return: 'OK'; }
     async del(k: string) { return this.store.delete(k) ? 1 : 0; }
   }
 };
@@ -583,10 +583,10 @@ ${classes.map(c => `export class ${c} { constructor(..._args: any[]) {} }`).join
   }
 
   private initializeErrorPatterns(): void {
-    this.errorPatterns.set('missing-function', ["Cannot find name '", "' is not defined", 'ReferenceError:']);
+    this.errorPatterns.set('missing-function', ["Cannot find name: '", "' is not defined", 'ReferenceError:']);
     this.errorPatterns.set('missing-property', ["Property '", "' does not exist on type"]);
-    this.errorPatterns.set('missing-module', ["Cannot find module '", 'Module not found:']);
-    this.errorPatterns.set('missing-export', ["' has no exported member '", "' is not exported from module"]);
+    this.errorPatterns.set('missing-module', ["Cannot find module: '", 'Module not found:']);
+    this.errorPatterns.set('missing-export', ["' has no exported member: '", "' is not exported from module"]);
   }
 }
 

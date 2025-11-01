@@ -13,20 +13,22 @@ https://svelte.dev/e/attribute_duplicate -->
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/Button.svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
-  // Badge replaced with span - not available in enhanced-bits
-  // Import route configuration
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
   // State management
   const testResults = writable<string[]>([]);
-  const routeStats = writable<any>( );
+  const routeStats = writable<any>({});
   let isLoading = $state(false);
   let currentPath = $state('');
+  // Provide a typed, const category list so TS knows the exact union type
+  const categoryList = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'] as const;
+  type Category = (typeof categoryList)[number];
+
   // Test configuration
   const testCases = [
     {
       name: 'Route Configuration Load',
       test: async () => {
-        const routes = allRoute;
+        const routes = allRoutes;
         return `✅ Loaded ${routes.length} routes from configuration`;
       }
     },
@@ -55,14 +57,14 @@ https://svelte.dev/e/attribute_duplicate -->
       name: 'Search Test - AI',
       test: async () => {
         const results = searchRoutes('ai');
-        return `✅ Found ${results.length} routes matching 'ai'`;
+        return `✅ Found ${results.length} routes matching: 'ai'`;
       }
     },
     {
       name: 'Search Test - Demo',
       test: async () => {
         const results = searchRoutes('demo');
-        return `✅ Found ${results.length} routes matching 'demo'`;
+        return `✅ Found ${results.length} routes matching: 'demo'`;
       }
     },
     {
@@ -83,25 +85,37 @@ https://svelte.dev/e/attribute_duplicate -->
       }
     }
   ];
-  $effect(() => {
-    // Get current path from page store
-    page.subscribe(($page) => {
-      currentPath = $page.url.pathnam;
+  // subscribe once on mount and calculate stats
+  onMount(() => {
+    const unsub = page.subscribe(($page) => {
+      currentPath = $page.url.pathname;
     });
-    // Calculate route statistics
     calculateRouteStats();
+    return unsub;
   });
   function calculateRouteStats() {
-    const categories = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'];
-    const stats: unknown = {
-      total: allRoutes.length,
-      categories: }
-    categories.forEach.length;
+    // use categoryList (typed) instead of an inline string array
+    const categories = categoryList as readonly string[];
+    const categoriesCount: Record<string, number> = {};
+    categories.forEach((cat) => {
+      categoriesCount[cat] = allRoutes.filter((r) => r.category === cat).length;
     });
-    // Count by status
-    stats.active = allRoutes.filter(item => item.length);
-    stats.experimental = allRoutes.filter(item => item.length);
-    stats.beta = allRoutes.filter(item => item.length);
+
+    const getFlagCount = (flag: string) =>
+      allRoutes.filter((r) => {
+        if (typeof (r as any)[flag] === 'boolean') return (r as any)[flag];
+        if ((r as any).status) return (r as any).status === flag;
+        if ((r as any).tags) return (r as any).tags.includes(flag);
+        return false;
+      }).length;
+
+    const stats = {
+      total: allRoutes.length,
+      categories: categoriesCount,
+      active: getFlagCount('active'),
+      experimental: getFlagCount('experimental'),
+      beta: getFlagCount('beta'),
+    };
     routeStats.set(stats);
   }
   async function runAllTests() {
@@ -112,12 +126,13 @@ https://svelte.dev/e/attribute_duplicate -->
         try {
           const result = await testCase.test();
           testResults.update(results => [...results, result]);
-        } catch (error) {
-          testResults.update(results => [...results, `❌ ${testCase.name}: ${error.message}`]);
+        } catch (error: any) {
+          // explicit any to satisfy TS strict catches
+          testResults.update(results => [...results, `❌ ${testCase.name}: ${error?.message ?? String(error)}`]);
         }
       }
-    } catch (error) {
-      testResults.update(results => [...results, `❌ Test suite failed: ${error.message}`]);
+    } catch (error: any) {
+      testResults.update(results => [...results, `❌ Test suite failed: ${error?.message ?? String(error)}`]);
     } finally {
       isLoading = false;
     }
@@ -129,13 +144,14 @@ https://svelte.dev/e/attribute_duplicate -->
         ...results,
         `✅ Navigated to: ${route}`
       ]);
-    } catch (error) {
+    } catch (error: any) {
       testResults.update(results => [
         ...results,
-        `❌ Navigation failed: ${error.message}`
+        `❌ Navigation failed: ${error?.message ?? String(error)}`
       ]);
     }
   }
+  // keep helper and use it in Debug panel (to avoid: "declared but never read")
   function formatJson(obj: unknown): string {
     return JSON.stringify(obj, null, 2);
   }
@@ -161,15 +177,17 @@ https://svelte.dev/e/attribute_duplicate -->
         <Button
           onclick={runAllTests}
           disabled={isLoading}
-          class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark bits-btn bits-btn"
+          class="bits-btn bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark"
         >
-{isLoading ? 'Running Tests...' : 'Run All Tests'}
+          {isLoading ? 'Running Tests...' : 'Run All Tests'}
+        </Button>
         <Button
           onclick={calculateRouteStats}
           variant="ghost"
-          class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
+          class="bits-btn border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
         >
-Refresh Stats
+          Refresh Stats
+        </Button>
       </div>
     </div>
     <!-- Test Results -->
@@ -228,38 +246,38 @@ Refresh Stats
       <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
         <div class="space-y-2">
-          <Button class="bits-btn"
+          <Button
             size="sm"
             variant="ghost"
-            onclick={() =>
-navigateToRoute('/')}
-            class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
+            onclick={() => navigateToRoute('/')}
+            class="bits-btn w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🏠 Home
-          <Button class="bits-btn"
+          </Button>
+          <Button
             size="sm"
             variant="ghost"
-            onclick={() =>
-navigateToRoute('/demo')}
-            class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
+            onclick={() => navigateToRoute('/demo')}
+            class="bits-btn w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🎯 Demo Overview
-          <Button class="bits-btn"
+          </Button>
+          <Button
             size="sm"
             variant="ghost"
-            onclick={() =>
-navigateToRoute('/dev/mcp-tools')}
-            class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
+            onclick={() => navigateToRoute('/dev/mcp-tools')}
+            class="bits-btn w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🔧 MCP Tools
-          <Button class="bits-btn"
+          </Button>
+          <Button
             size="sm"
             variant="ghost"
-            onclick={() =>
-navigateToRoute('/cases')}
-            class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
+            onclick={() => navigateToRoute('/cases')}
+            class="bits-btn w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             📁 Case Management
+          </Button>
         </div>
       </div>
     </div>
@@ -267,8 +285,8 @@ navigateToRoute('/cases')}
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Route Categories</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each ['main', 'demo', 'ai', 'legal', 'dev', 'admin'] as category}
-          {@const categoryRoutes = getRoutesByCategory(category)}
+        {#each categoryList as category}
+          {@const categoryRoutes = getRoutesByCategory(category as Category)}
           {#if categoryRoutes.length > 0}
             <div class="border border-yorha-text-muted p-4 rounded">
               <h3 class="text-lg font-semibold mb-3 text-yorha-text-accent capitalize">
@@ -281,6 +299,7 @@ navigateToRoute('/cases')}
                     onclick={() => navigateToRoute(route.route)}
                   >
                     {route.icon} {route.label}
+                  </button>
                 {/each}
                 {#if categoryRoutes.length > 5}
                   <p class="text-xs text-yorha-text-muted">
@@ -312,6 +331,9 @@ navigateToRoute('/cases')}
             </div>
           {/each}
         </div>
+
+        <!-- show full JSON for quick debugging (uses formatJson so it's not unused) -->
+        <pre class="mt-3 text-xs bg-white/5 p-3 rounded max-h-80 overflow-auto">{formatJson(allRoutes)}</pre>
       </details>
     </div>
   </div>

@@ -301,62 +301,62 @@
   }
   function getDocumentTypeIcon(category: string): string {
     switch (category) {
-      case 'litigation':
-        return '⚖️';
-      case 'contract':
-        return '📄';
-      case 'compliance':
-        return '✅';
-      case 'discovery':
-        return '🔍';
-      case 'pleading':
-        return '📝';
+      case: 'litigation':
+        return: '⚖️';
+      case: 'contract':
+        return: '📄';
+      case: 'compliance':
+        return: '✅';
+      case: 'discovery':
+        return: '🔍';
+      case: 'pleading':
+        return: '📝';
       default:
-        return '📋';
+        return: '📋';
     }
   }
   function getCategoryColor(category: string): string {
     switch (category) {
-      case 'litigation':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'contract':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'compliance':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'discovery':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'pleading':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case: 'litigation':
+        return: 'bg-red-100 text-red-800 border-red-200';
+      case: 'contract':
+        return: 'bg-blue-100 text-blue-800 border-blue-200';
+      case: 'compliance':
+        return: 'bg-green-100 text-green-800 border-green-200';
+      case: 'discovery':
+        return: 'bg-purple-100 text-purple-800 border-purple-200';
+      case: 'pleading':
+        return: 'bg-orange-100 text-orange-800 border-orange-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return: 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   function getComplexityColor(complexity: string): string {
     switch (complexity) {
-      case 'basic':
-        return 'text-green-600';
-      case 'intermediate':
-        return 'text-yellow-600';
-      case 'advanced':
-        return 'text-red-600';
+      case: 'basic':
+        return: 'text-green-600';
+      case: 'intermediate':
+        return: 'text-yellow-600';
+      case: 'advanced':
+        return: 'text-red-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
   function getSuggestionTypeIcon(type: string): string {
     switch (type) {
-      case 'content':
-        return '✏️';
-      case 'structure':
-        return '🏗️';
-      case 'legal_point':
-        return '⚖️';
-      case 'citation':
-        return '📖';
-      case 'language':
-        return '🔤';
+      case: 'content':
+        return: '✏️';
+      case: 'structure':
+        return: '🏗️';
+      case: 'legal_point':
+        return: '⚖️';
+      case: 'citation':
+        return: '📖';
+      case: 'language':
+        return: '🔤';
       default:
-        return '💡';
+        return: '💡';
     }
   }
   let filteredTemplates = $derived(() => {

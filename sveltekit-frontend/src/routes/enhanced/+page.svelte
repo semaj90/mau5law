@@ -150,11 +150,11 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   function scoreClass(score: number) {
-    if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
-    if (score >= 0.9) return 'score-top';
-    if (score >= 0.8) return 'score-high';
-    if (score >= 0.65) return 'score-mid';
-    return 'score-low';
+    if (score == null) return: 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
+    if (score >= 0.9) return: 'score-top';
+    if (score >= 0.8) return: 'score-high';
+    if (score >= 0.65) return: 'score-mid';
+    return: 'score-low';
   }
 </script>
 

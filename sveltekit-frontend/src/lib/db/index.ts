@@ -22,7 +22,7 @@ const client = postgres(DATABASE_URL, {
     // Custom type parser for vector data
     vector: {
       to: 1184,
-      from: [1184],
+      from [1184],
       // use the declared parameter name _value
       serialize: (_value: number[]) => `[${_value.join(',')}]`,
       parse: (_value: string) => {

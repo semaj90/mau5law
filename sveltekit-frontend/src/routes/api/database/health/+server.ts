@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         status: 'error',
-        message: 'Invalid action. Use "initialize"',
+        message: 'Invalid action. Use: "initialize"',
         timestamp: new Date().toISOString(),
       },
       { status: 400 }

@@ -48,7 +48,7 @@ class GraphSpatialLayout {
    * Connected nodes will be adjacent in memory
    */
   async computeBFSLayout(nodes: GraphNode[], edges: GraphEdge[]): Promise<Map<string, number>> {
-    // Corrected return type and removed extra '{'
+    // Corrected return type and removed extra: '{'
     // Build adjacency map
     const adjacency = new Map<string, string[]>();
     for (const node of nodes) {

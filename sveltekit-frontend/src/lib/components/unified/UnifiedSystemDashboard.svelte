@@ -4,12 +4,45 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  // System status and metrics stores
-  const systemStatus = writable({
+
+  // Strong typing for store data to avoid: 'unknown' in templates
+  interface Metrics {
+    totalProcessed: number;
+    gpuProcessed: number;
+    cpuProcessed: number;
+    averageGPUTime: number;
+    averageCPUTime: number;
+    errorRate: number;
+  }
+  interface ActiveJobs { gpu: number; cpu: number; }
+
+  interface SystemStatus {
+    status: string;
+    services: Record<string, string>; // keep simple: service -> status string
+    metrics: Metrics;
+    activeJobs: ActiveJobs;
+    uptime: number;
+    version: string;
+  }
+
+  interface ProcessingResult {
+    timestamp: number;
+    document: { id?: string; title: string; metadata?: { document_type?: string; court_level?: string } };
+    processingTime: number;
+    result: {
+      processingPath: string;
+      ranking: { finalScore: number };
+      analysis: { confidence: number };
+      metadata: { gpuUtilization?: number };
+    };
+  }
+
+  // initialize stores with explicit generics
+  const systemStatus = writable<SystemStatus>({
     status: 'unknown',
-    services: ,
+    services: {},
     metrics: {
       totalProcessed: 0,
       gpuProcessed: 0,
@@ -20,127 +53,169 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     },
     activeJobs: { gpu: 0, cpu: 0 },
     uptime: 0,
-    version '2.0.0',
+    version: '2.0.0',
   });
-  const processingResults = writable([]);
-  const isProcessing = writable(false);
+
+  const processingResults = writable<ProcessingResult[]>([]);
+  const isProcessing = writable<boolean>(false);
+
   // Derived stores for computed values
   const healthyServices = derived(systemStatus, ($status) => {
-    const services = Object.values($status.services);
-    const healthy = services.filter(item => item.length);
-    return { healthy, total: services.length }
+    const services = Object.values($status.services || {});
+    // count services that are present / considered healthy
+    const healthy = services.filter(s => {
+      if (!s) return false;
+      // if service is array-like (e.g. list of instances), consider length
+      if (Array.isArray(s)) return s.length > 0;
+      // otherwise presence indicates healthy-ish for this simplified dashboard
+      return true;
+    }).length;
+    return { healthy, total: services.length };
   });
   const performanceMetrics = derived(systemStatus, ($status) => {
     const total = $status.metrics.totalProcessed || 1;
+    const gpuEfficiency = ($status.metrics.gpuProcessed / total * 100) || 0;
+    const avgProcessingTime = (
+      ($status.metrics.averageGPUTime * $status.metrics.gpuProcessed) +
+      ($status.metrics.averageCPUTime * $status.metrics.cpuProcessed)
+    ) / total || 0;
+    const systemLoad = (($status.activeJobs?.gpu || 0) + ($status.activeJobs?.cpu || 0)) / 20 * 100;
     return {
-      gpuEfficiency: ($status.metrics.gpuProcessed / total * 100).toFixed(1),
-      avgProcessingTime: (
-        ($status.metrics.averageGPUTime * $status.metrics.gpuProcessed) +
-        ($status.metrics.averageCPUTime * $status.metrics.cpuProcessed)
-      ) / total,
-      systemLoad: ($status.activeJobs.gpu + $status.activeJobs.cpu) / 20 * 100
-    }
+      gpuEfficiency: Number(gpuEfficiency.toFixed(1)),
+      avgProcessingTime,
+      systemLoad
+    };
   });
-  let statusInterval: NodeJS.Timeout;
+  let statusInterval: ReturnType<typeof setInterval> | undefined;
   let testDocument = $state({
-    id: 'demo_doc_' + Date.now(),
-    title: 'Sample Legal Contract Analysis',
-    content: `This is a demonstration legal document for testing the unified processing system.
-    AGREEMENT made this day between Party A and Party B, whereas the parties agree to the following terms and conditions:
-    1. SCOPE OF WORK: Party A shall provide legal consulting services
-    2. COMPENSATIon Payment terms as specified herein
-    3. CONFIDENTIALITY: All information shall remain confidential
-    4. TERMINATIon This agreement may be terminated with 30 days notice
-    This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,
-    metadata: {
-      document_type: 'contract',
-      court_level: 'appellate',
-      jurisdiction 'federal',
-      practice_areas: ['contract', 'commercial'],
-      estimated_complexity: 'medium',
-    },
-    createdAt: new Date().toISOString()
-  });
-  // Processing options
-  let processingOptions = $state({
-    priority: 0.8,
-    forceGPU: false
-    batchMode: false,
-    query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
-  });
-  $effect(() => {
-    (async () => {
-await refreshSystemStatus();
-    // Start periodic status updates
-    statusInterval = setInterval(refreshSystemStatus, 5000);
-    })();
-  });
-  onDestroy(() => {
-    if (statusInterval) {
-      clearInterval(statusInterval);
-    }
-  });
-  async function refreshSystemStatus() {
-    try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        systemStatus.set(data);
-      }
-    } catch (error) {
-      console.error('Failed to refresh system status:', error);
-    }
-  }
-  async function processDocument() {
-    isProcessing.set(true);
-    try {
-      const response = await fetch('/api/unified/process', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+     id: 'demo_doc_' + Date.now(),
+     title: 'Sample Legal Contract Analysis',
+     content: `This is a demonstration legal document for testing the unified processing system.
+     AGREEMENT made this day between Party A and Party B, whereas the parties agree to the following terms and conditions:
+     1. SCOPE OF WORK: Party A shall provide legal consulting services
+     2. COMPENSATIon Payment terms as specified herein
+     3. CONFIDENTIALITY: All information shall remain confidential
+     4. TERMINATIon This agreement may be terminated with 30 days notice
+     This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,
+     metadata: {
+       document_type: 'contract',
+       court_level: 'appellate',
+       jurisdiction: 'federal',
+       practice_areas: ['contract', 'commercial'],
+       estimated_complexity: 'medium',
+     },
+     createdAt: new Date().toISOString()
+   });
+   // Processing options
+   let processingOptions = $state({
+     priority: 0.8,
+     forceGPU: false,
+     batchMode: false,
+     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
+   });
+   $effect(() => {
+     (async () => {
+ await refreshSystemStatus();
+     // Start periodic status updates
+     statusInterval = setInterval(refreshSystemStatus, 5000);
+     })();
+   });
+   onDestroy(() => {
+     if (statusInterval) {
+       clearInterval(statusInterval);
+     }
+   });
+   async function refreshSystemStatus() {
+     try {
+      const res = await fetch('/api/unified/status');
+      if (res.ok) {
+        const data = await res.json() as Partial<SystemStatus>;
+        // merge or set — set here for simplicity
+        systemStatus.set({
+          ...{
+             status: 'unknown',
+             services: {},
+             metrics: {
+               totalProcessed: 0,
+               gpuProcessed: 0,
+               cpuProcessed: 0,
+               averageGPUTime: 0,
+               averageCPUTime: 0,
+               errorRate: 0
+             },
+             activeJobs: { gpu: 0, cpu: 0 },
+             uptime: 0,
+             version: '2.0.0',
+           },
+           ...(data as any)
+         });
+       }
+     } catch (error) {
+       console.error('Failed to refresh system status:', error);
+     }
+   }
+   async function processDocument() {
+     isProcessing.set(true);
+     try {
+       const response = await fetch('/api/unified/process', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           document: testDocument,
-          options: processingOption,
+          options: processingOptions,
         })
-      });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        if ((data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).success) {
-          // Add to results
-          processingResults.update(results => [{
-            timestamp: Date.now(),
-            document: testDocument,
-            result: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result,
-            processingTime: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result.processingTime
-          }, ...results.slice(0, 9)]); // Keep last 10 results
-          // Update test document ID for next test
-          testDocument.id = 'demo_doc_' + Date.now();
-          // Refresh system status to show updated metrics
-          await refreshSystemStatus();
-        }
-      }
-    } catch (error) {
-      console.error('Document processing failed:', error);
-    }
-    isProcessing.set(false);
-  }
-  function formatUptime(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-  }
-  function getServiceStatusColor(status: string): string {
-    switch (status) {
-      case 'healthy': return 'text-green-400';
-      case 'unhealthy': return 'text-red-400';
-      case 'degraded': return 'text-yellow-400';
-      default: return 'text-gray-400';
-    }
-  }
-  function getProcessingPathColor(path: string): string {
-    return path === 'gpu' ? 'text-purple-400' : 'text-blue-400';
-  }
-  function getProcessingPathIcon(path: string): string {
-    return path === 'gpu' ? '🔥' : '⚙️';
+       });
+
+       if (response.ok) {
+         const data: any = await response.json();
+         if (data?.success) {
+           const newResult: ProcessingResult = {
+             timestamp: Date.now(),
+             document: testDocument,
+             processingTime: (data?.result?.processingTime ?? 0),
+             result: {
+               processingPath: data?.result?.processingPath ?? 'cpu',
+               ranking: { finalScore: Number(data?.result?.ranking?.finalScore ?? 0) },
+               analysis: { confidence: Number(data?.result?.analysis?.confidence ?? 0) },
+               metadata: { gpuUtilization: Number(data?.result?.metadata?.gpuUtilization ?? 0) }
+             }
+           };
+           processingResults.update(results => [newResult, ...results].slice(0, 10));
+           testDocument.id = 'demo_doc_' + Date.now();
+           // Refresh system status to show updated metrics
+           await refreshSystemStatus();
+         }
+       }
+     } catch (error) {
+       console.error('Document processing failed:', error);
+     } finally {
+       isProcessing.set(false);
+     }
+   }
+   function formatUptime(seconds: number): string {
+     const hours = Math.floor(seconds / 3600);
+     const minutes = Math.floor((seconds % 3600) / 60);
+     return `${hours}h ${minutes}m`;
+   }
+   function getServiceStatusColor(status: string): string {
+     switch (status) {
+       case: 'healthy': return: 'text-green-400';
+       case: 'unhealthy': return: 'text-red-400';
+       case: 'degraded': return: 'text-yellow-400';
+       default: return: 'text-gray-400';
+     }
+   }
+   function getProcessingPathColor(path: string): string {
+     return path === 'gpu' ? 'text-purple-400' : 'text-blue-400';
+   }
+   function getProcessingPathIcon(path: string): string {
+     return path === 'gpu' ? '🔥' : '⚙️';
+   }
+
+  // Safely read optional gpuUtilization and return a normalized number (0..1)
+  function getGpuUtilization(r: ProcessingResult): number {
+    // use optional chaining and default to 0 to satisfy TypeScript and templates
+    return Number(r?.result?.metadata?.gpuUtilization ?? 0);
   }
 </script>
 
@@ -273,13 +348,13 @@ await refreshSystemStatus();
           <div>
             <label class="block text-sm text-gray-400 mb-2" for="priority-affects-gpu"
               >Priority (affects GPU routing)</label
-            ><input
+            >
+            <input
               id="priority-affects-gpu"
               type="range"
               min="0"
               max="1"
               step="0.1"
-              ;
               bind:value={processingOptions.priority}
               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
             />
@@ -314,7 +389,6 @@ await refreshSystemStatus();
             <div>
               <label class="block text-sm text-gray-400 mb-2" for="court-level">Court Level</label><select
                 id="court-level"
-                ;
                 bind:value={testDocument.metadata.court_level}
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
               >
@@ -328,8 +402,7 @@ await refreshSystemStatus();
           <button
             onclick={processDocument}
             disabled={$isProcessing}
-            class="w-full py-3 px-4 bg-purple-600 hover: bg-purple-700 disabled:bg-gray-600 ;
-                         disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+            class="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
           >
             {#if $isProcessing}
               <div class="flex items-center justify-center">
@@ -350,86 +423,35 @@ await refreshSystemStatus();
             <div class="bg-gray-700 rounded-lg p-4">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center">
-                  <span class="mr-2"
-                    >{getProcessingPathIcon(
-                      (
-                        result as {
-                          result?: unknown;
-                          timestamp?: unknown;
-                          document?: unknown;
-                          processingTime?: unknown;
-                        }
-                      ).result.processingPath
-                    )}</span
-                  >
-                  <span
-                    class={`font-medium ${getProcessingPathColor((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.processingPath)}`}
-                  >
-                    {(
-                      result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }
-                    ).result.processingPath.toUpperCase()} Path
+                  <span class="mr-2">{getProcessingPathIcon(result.result.processingPath)}</span>
+                  <span class={`font-medium ${getProcessingPathColor(result.result.processingPath)}`}>
+                    {result.result.processingPath.toUpperCase()} Path
                   </span>
                 </div>
                 <span class="text-xs text-gray-400">
-                  {new Date(
-                    (
-                      result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }
-                    ).timestamp
-                  ).toLocaleTimeString()}
+                  {new Date(result.timestamp).toLocaleTimeString()}
                 </span>
               </div>
-              <div class="text-sm text-gray-300 mb-2">
-                {(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown })
-                  .document.title}
-              </div>
+              <div class="text-sm text-gray-300 mb-2">{result.document.title}</div>
               <div class="grid grid-cols-3 gap-2 text-xs">
                 <div>
                   <span class="text-gray-400">Time:</span>
-                  <span class="text-white ml-1"
-                    >{(
-                      result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }
-                    ).processingTime}ms</span
-                  >
+                  <span class="text-white ml-1">{result.processingTime}ms</span>
                 </div>
                 <div>
                   <span class="text-gray-400">Score:</span>
-                  <span class="text-white ml-1"
-                    >{(
-                      result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }
-                    ).result.ranking.finalScore.toFixed(3)}</span
-                  >
+                  <span class="text-white ml-1">{result.result.ranking.finalScore.toFixed(3)}</span>
                 </div>
                 <div>
                   <span class="text-gray-400">Confidence:</span>
-                  <span class="text-white ml-1"
-                    >{(
-                      (
-                        result as {
-                          result?: unknown;
-                          timestamp?: unknown;
-                          document?: unknown;
-                          processingTime?: unknown;
-                        }
-                      ).result.analysis.confidence * 100
-                    ).toFixed(1)}%</span
-                  >
+                  <span class="text-white ml-1">{(result.result.analysis.confidence * 100).toFixed(1)}%</span>
                 </div>
               </div>
-              {#if (result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.metadata.gpuUtilization > 0}
+
+              {#if getGpuUtilization(result) > 0}
                 <div class="mt-2 text-xs">
                   <span class="text-purple-400">GPU Utilization</span>
-                  <span class="text-white ml-1"
-                    >{(
-                      (
-                        result as {
-                          result?: unknown;
-                          timestamp?: unknown;
-                          document?: unknown;
-                          processingTime?: unknown;
-                        }
-                      ).result.metadata.gpuUtilization * 100
-                    ).toFixed(1)}%</span
-                  >
+                  <span class="text-white ml-1">{(getGpuUtilization(result) * 100).toFixed(1)}%</span>
                 </div>
               {/if}
             </div>

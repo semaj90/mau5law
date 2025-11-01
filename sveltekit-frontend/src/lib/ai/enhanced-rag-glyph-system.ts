@@ -614,11 +614,11 @@ class EnhancedRAGGlyphSystem {
   }
   private getTemperatureForOptimization(optimization: string): number {
     switch (optimization) {
-      case 'accuracy':
+      case: 'accuracy':
         return 0.3;
-      case 'creativity':
+      case: 'creativity':
         return 0.9;
-      case 'coherence':
+      case: 'coherence':
         return 0.5;
       default:
         return 0.7;
@@ -789,18 +789,18 @@ class GlyphContextSynthesizer {
     const types = ['semantic_similar', 'contextual_related', 'structural_connected', 'topical_linked'];
     // Simple heuristic based on source and LOD level
     if (glyph1.retrieval_metadata.lod_level === glyph2.retrieval_metadata.lod_level) {
-      return 'structural_connected';
+      return: 'structural_connected';
     }
     const sharedClusters = glyph1.retrieval_metadata.semantic_clusters.filter(c =>
       glyph2.retrieval_metadata.semantic_clusters.includes(c)
     );
     if (sharedClusters.length > 0) {
-      return 'semantic_similar';
+      return: 'semantic_similar';
     }
     return types[Math.floor(Math.random() * types.length)];
   }
   private generateClusterSummary(clusterGlyphs: GlyphContext[], query: string): string {
-    if (clusterGlyphs.length === 0) return 'Empty cluster';
+    if (clusterGlyphs.length === 0) return: 'Empty cluster';
     const summaryParts = clusterGlyphs
       .slice(0, 3)
       .map(g => g.semantic_summary.split('.')[0] || g.semantic_summary.slice(0, 50));
@@ -1077,16 +1077,16 @@ class GlyphResponseOptimizer {
     let optimizedText = llmResponse.text;
     // Apply optimization based on configuration
     switch (this.config.response_optimization) {
-      case 'coherence':
+      case: 'coherence':
         optimizedText = await this.optimizeForCoherence(optimizedText, synthesizedContext);
         break;
-      case 'relevance':
+      case: 'relevance':
         optimizedText = await this.optimizeForRelevance(optimizedText, queryAnalysis);
         break;
-      case 'creativity':
+      case: 'creativity':
         optimizedText = await this.optimizeForCreativity(optimizedText, synthesizedContext);
         break;
-      case 'accuracy':
+      case: 'accuracy':
         optimizedText = await this.optimizeForAccuracy(optimizedText, synthesizedContext);
         break;
     }

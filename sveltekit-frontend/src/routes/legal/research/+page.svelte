@@ -330,17 +330,17 @@
     });
   }
   function getRelevanceColor(score: number) {
-    if (score >= 0.9) return 'text-green-600 bg-green-100';
-    if (score >= 0.8) return 'text-blue-600 bg-blue-100';
-    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
-    return 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return: 'text-green-600 bg-green-100';
+    if (score >= 0.8) return: 'text-blue-600 bg-blue-100';
+    if (score >= 0.7) return: 'text-yellow-600 bg-yellow-100';
+    return: 'text-gray-600 bg-gray-100';
   }
   function getPrecedentialColor(value: string) {
     switch (value) {
-      case 'High': return 'text-red-600 bg-red-100';
-      case 'Medium': return 'text-yellow-600 bg-yellow-100';
-      case 'Low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-blue-600 bg-blue-100';
+      case: 'High': return: 'text-red-600 bg-red-100';
+      case: 'Medium': return: 'text-yellow-600 bg-yellow-100';
+      case: 'Low': return: 'text-gray-600 bg-gray-100';
+      default: return: 'text-blue-600 bg-blue-100';
     }
   }
 </script>
@@ -421,12 +421,13 @@
                 { id: 'boolean', label: 'Boolean', icon: Filter },
                 { id: 'phrase', label: 'Exact Phrase', icon: FileText }
               ] as mode}
+                {@const Icon = mode.icon}
                 <button
                   onclick={() => searchMode = mode.id}
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
                          {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
-                  <mode.icon class="h-3 w-3 mr-1" />
+                  <Icon class="h-3 w-3 mr-1" />
                   {mode.label}
                 </button>
               {/each}

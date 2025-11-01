@@ -337,7 +337,7 @@ export function _closeWebSocket() {
 }
 // Utility to check if an object has a disconnect method
 function hasDisconnect(obj: unknown): obj is { disconnect: () => void } {
-  // Ensure obj is a non-null object, has the 'disconnect' key, and that key is a function
+  // Ensure obj is a non-null object, has the: 'disconnect' key, and that key is a function
   return (
     typeof obj === 'object' &&
     obj !== null &&

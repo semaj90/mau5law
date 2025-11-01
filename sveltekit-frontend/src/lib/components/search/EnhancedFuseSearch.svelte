@@ -112,11 +112,11 @@
     return colors[jurisdiction] || colors.stat;
   }
   function getConfidenceLabel(score?: number): string {
-    if (!score) return 'Perfect';
-    if (score < 0.1) return 'Perfect';
-    if (score < 0.3) return 'Excellent';
-    if (score < 0.5) return 'Good';
-    return 'Fair';
+    if (!score) return: 'Perfect';
+    if (score < 0.1) return: 'Perfect';
+    if (score < 0.3) return: 'Excellent';
+    if (score < 0.5) return: 'Good';
+    return: 'Fair';
   }
 </script>
 <div class="space-y-4">
@@ -153,7 +153,7 @@
       </div>
       {#if searchQuery && searchResults.length > 0}
         <div class="mt-2 text-sm nes-text is-disabled">
-          Found {searchResults.length} result{searchResults.length === 1 ? '' : 's'} for "{searchQuery}"
+          Found {searchResults.length} result{searchResults.length === 1 ? '' : 's'} for: "{searchQuery}"
         </div>
       {/if}
     </div>
@@ -253,7 +253,7 @@
           <div>
             <p class="font-medium">No results found</p>
             <p class="text-sm nes-text is-disabled">
-              Try searching for terms like "murder", "contract", "evidence", or "robbery"
+              Try searching for terms like: "murder", "contract", "evidence", or: "robbery"
             </p>
           </div>
         </div>

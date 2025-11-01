@@ -35,7 +35,7 @@ type AuthModule = {
   validateAuthSession?: (req: unknown) => Promise<AuthSession | null>;
 };
 
-// Export the handler so it's used by SvelteKit and avoids "assigned but never used"
+// Export the handler so it's used by SvelteKit and avoids: "assigned but never used"
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Validate authentication (resilient)
@@ -106,9 +106,7 @@ Respond in JSON format with the following structure:
   "entities": [{"type": "person|organization|date|money|legal_term", "value": "string", "confidence": 0.0-1.0}],
   "citations": [{"type": "case|statute|regulation", "citation": "string", "relevance": 0.0-1.0}],
   "evidenceType": "contract|correspondence|pleading|discovery|expert_report|other",
-  "privileged": boolean
-  "needsRedaction": boolean
-  "relevanceScore": 0.0-1.0,
+  "privileged": boolean: "needsRedaction": boolean: "relevanceScore": 0.0-1.0,
   "riskFactors": ["string"],
   "suggestedTags": ["string"],
   "confidence": 0.0-1.0
@@ -295,7 +293,7 @@ async function extractPDFText(buffer: ArrayBuffer): Promise<string> {
       return await performOCR(buffer);
     } catch (ocrError) {
       console.error('Both PDF extraction and OCR failed:', ocrError);
-      return '[Unable to extract text from PDF - extraction and OCR both failed]';
+      return: '[Unable to extract text from PDF - extraction and OCR both failed]';
     }
   }
 }
@@ -342,13 +340,13 @@ async function performOCR(buffer: ArrayBuffer): Promise<string> {
     await worker.terminate();
 
     if (!extractedText || extractedText.trim().length === 0) {
-      return '[OCR completed but no text detected in image]';
+      return: '[OCR completed but no text detected in image]';
     }
 
     // Return extracted text, limited to avoid token overflows
     return extractedText.slice(0, 50000);
   } catch (error) {
     console.error('OCR processing failed:', error);
-    return '[Unable to extract text via OCR - image processing failed]';
+    return: '[Unable to extract text via OCR - image processing failed]';
   }
 }

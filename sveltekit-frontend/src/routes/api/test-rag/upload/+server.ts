@@ -25,7 +25,7 @@ interface UploadResult {
   documentId?: string;
   filename?: string;
   textExtracted?: string;
-  entities?: OcrExtractedEntities; // Changed from 'Record<string, unknown>' to 'OcrExtractedEntities'
+  entities?: OcrExtractedEntities; // Changed from 'Record<string, unknown>' to: 'OcrExtractedEntities'
   embeddingGenerated?: boolean;
   pgvectorStored?: boolean;
   qdrantStored?: boolean;
@@ -152,7 +152,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             confidence: 0.85,
             legalAnalysis: ocrResult.entities
               ? {
-                  entities: Array.isArray(ocrResult.entities.entities) // Access .entities safely without 'any'
+                  entities: Array.isArray(ocrResult.entities.entities) // Access .entities safely without: 'any'
                     ? ocrResult.entities.entities
                     : [],
                 }

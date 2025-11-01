@@ -271,7 +271,7 @@ export class Context7OrchestrationService {
     script += '# Health check all services\n';
     script += 'echo "🔍 Performing health checks..."\n';
     for (const service of services) {
-      script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health'} || echo "⚠️ ${service.name} health check failed"\n`;
+      script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health'} || echo: "⚠️ ${service.name} health check failed"\n`;
     }
     script += '\necho "🚀 All services started successfully!"\n';
     return script;

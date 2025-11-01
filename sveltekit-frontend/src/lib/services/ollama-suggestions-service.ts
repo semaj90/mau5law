@@ -353,17 +353,17 @@ Provide practical, implementable suggestions that would genuinely improve the le
   private inferSuggestionType(content: string, _reportType: string): string {
     const contentLower = content.toLowerCase();
     if (contentLower.includes('evidence') || contentLower.includes('proof')) {
-      return 'evidence_review';
+      return: 'evidence_review';
     } else if (contentLower.includes('statute') || contentLower.includes('law') || contentLower.includes('cite')) {
-      return 'legal_analysis';
+      return: 'legal_analysis';
     } else if (contentLower.includes('procedure') || contentLower.includes('filing') || contentLower.includes('deadline')) {
-      return 'procedural_check';
+      return: 'procedural_check';
     } else if (contentLower.includes('witness') || contentLower.includes('testimony')) {
-      return 'witness_analysis';
+      return: 'witness_analysis';
     } else if (contentLower.includes('conclusion') || contentLower.includes('summary')) {
-      return 'content_structure';
+      return: 'content_structure';
     } else {
-      return 'content_enhancement';
+      return: 'content_enhancement';
     }
   }
 

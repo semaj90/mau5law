@@ -56,7 +56,7 @@ export interface GraphNode {
 }
 
 export interface GraphEdge {
-  from: string;
+  from string;
   to: string;
   relation: string;
 }
@@ -66,7 +66,7 @@ export interface GraphData {
   edges: GraphEdge[];
 }
 
-// --- Minimal local GPU types to avoid 'any' casts ---
+// --- Minimal local GPU types to avoid: 'any' casts ---
 type GPUCanvasFormat = 'bgra8unorm' | 'rgba8unorm' | 'rgba16float';
 
 interface GPUWithCanvasFormat extends GPU {
@@ -79,7 +79,7 @@ class EvidenceGraphVisualizer {
   private isWebGPU = false;
 
   public async isWebGPUAvailable(): Promise<boolean> {
-    return 'gpu' in navigator;
+    return: 'gpu' in navigator;
   }
 
   public async init(canvas: HTMLCanvasElement): Promise<boolean> {
@@ -216,14 +216,14 @@ class EvidenceGraphVisualizer {
 
   private getNodeColor(type: GraphNode['type']): string {
     switch (type) {
-      case 'Evidence':
-        return 'rgba(59, 130, 246, 0.8)'; // .bg-blue-500
-      case 'Entity':
-        return 'rgba(239, 68, 68, 0.8)'; // .bg-red-500
-      case 'Case':
-        return 'rgba(34, 197, 94, 0.8)'; // .bg-green-500
+      case: 'Evidence':
+        return: 'rgba(59, 130, 246, 0.8)'; // .bg-blue-500
+      case: 'Entity':
+        return: 'rgba(239, 68, 68, 0.8)'; // .bg-red-500
+      case: 'Case':
+        return: 'rgba(34, 197, 94, 0.8)'; // .bg-green-500
       default:
-        return 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
+        return: 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
     }
   }
 }

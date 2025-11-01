@@ -13,7 +13,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { graphCacheMachine } from '../../../../machines/graph-cache-machine.js';
   import { createActor } from 'xstate';
-  // Load UI components dynamically to avoid TS "no default export" issues
+  // Load UI components dynamically to avoid TS: "no default export" issues
   let NES8BitButton = $state<any>(null);
   let SNES16BitButton = $state<any>(null);
   let N643DButton = $state<any>(null);
@@ -38,12 +38,12 @@
   });
   // NES memory visualization
   let nesMemoryBanks = $state([
-    { region 'PRG_ROM', utilization 75, status: 'active' },
-    { region 'CHR_ROM', utilization 60, status: 'cached' },
-    { region 'RAM', utilization 45, status: 'active' },
-    { region 'PPU_MEMORY', utilization 80, status: 'optimized' },
-    { region 'SPRITE_MEMORY', utilization 30, status: 'idle' },
-    { region 'PALETTE_MEMORY', utilization 90, status: 'full' },
+    { region: 'PRG_ROM', utilization 75, status: 'active' },
+    { region: 'CHR_ROM', utilization 60, status: 'cached' },
+    { region: 'RAM', utilization 45, status: 'active' },
+    { region: 'PPU_MEMORY', utilization 80, status: 'optimized' },
+    { region: 'SPRITE_MEMORY', utilization 30, status: 'idle' },
+    { region: 'PALETTE_MEMORY', utilization 90, status: 'full' },
   ]);
   $effect(() => {
     // Initialize XState machine

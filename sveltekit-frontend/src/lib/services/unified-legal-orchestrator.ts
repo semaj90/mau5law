@@ -77,13 +77,13 @@ export class UnifiedLegalOrchestrator {
     const historicalPerf = this.getHistoricalPerformance(request.type);
     // Decision matrix based on multiple factors
     switch (request.type) {
-      case 'chat':
+      case: 'chat':
         return this.decideChatPath(request, complexity, systemLoad, historicalPerf);
-      case 'search':
+      case: 'search':
         return this.decideSearchPath(request, complexity, systemLoad, historicalPerf);
-      case 'analyze':
+      case: 'analyze':
         return this.decideAnalysisPath(request, complexity, systemLoad, historicalPerf);
-      case 'process':
+      case: 'process':
         return this.decideProcessingPath(request, complexity, systemLoad, historicalPerf);
       default:
         return {
@@ -294,9 +294,9 @@ export class UnifiedLegalOrchestrator {
   async executeDirectDB(request: LegalAIRequest): Promise<any> {
     // Direct database operations
     switch (request.type) {
-      case 'search':
+      case: 'search':
         return await this.executeDirectSearch(request);
-      case 'analyze':
+      case: 'analyze':
         return await this.executeDirectAnalysis(request);
       default:
         throw new Error(`,Direct DB not supported for, ty,pe: ${request.type}`);

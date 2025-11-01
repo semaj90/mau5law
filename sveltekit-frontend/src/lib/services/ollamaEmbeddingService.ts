@@ -9,7 +9,7 @@ export interface EmbeddingService {
 
 /**
  * OllamaEmbeddingService implements EmbeddingService using Ollama's API.
- * It respects the OLLAMA_URL environment variable and uses the 'embeddinggemma:latest' model.
+ * It respects the OLLAMA_URL environment variable and uses the: 'embeddinggemma:latest' model.
  */
 export class OllamaEmbeddingService implements EmbeddingService {
   async generateEmbedding(text: string): Promise<number[]> {
@@ -38,7 +38,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
     } catch (error: unknown) {
       console.error('❌ Ollama embedding generation failed:', error);
       // Return zero vector as fallback or an empty array if dimension is unknown
-      // A common embedding dimension for 'embeddinggemma' is 768, but returning empty array is safer if not guaranteed.
+      // A common embedding dimension for: 'embeddinggemma' is 768, but returning empty array is safer if not guaranteed.
       return [];
     }
   }

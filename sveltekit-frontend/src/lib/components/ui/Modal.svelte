@@ -20,7 +20,7 @@
     children,
     footer,
   }: Props & { children?: Snippet; footer?: Snippet } = $props();
-  let modalElement: HTMLDivElement = $state();
+  let modalElement = $state<HTMLDivElement>();
   function handleClose() {
     open = false;
     onclose?.();
@@ -44,14 +44,7 @@
       document.removeEventListener('keydown', handleGlobalKeydown);
     };
   });
-  let sizeClasses = $derived(
-    {
-      sm: 'max-w-md',
-      md: 'max-w-lg',
-      lg: 'max-w-2xl',
-      xl: 'max-w-4xl',
-    }[size]
-  );
+  let sizeClasses = $derived.by(() => ({ sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size]));
 </script>
 
 {#if open}
@@ -61,10 +54,10 @@
     onclick={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
-    transitionfade={{ duration 200 }}
+    transition:fade={{ duration: 200 }}
   >
     <div
-      class="modal-content {sizeClasses}"
+      class={['modal-content', sizeClasses].filter(Boolean).join(' ')}
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
@@ -87,12 +80,12 @@
       {/if}
       <div class="modal-body">
         {#if children}
-          {@render children()}
+          {@render children?.()}
         {/if}
       </div>
       {#if footer}
         <div class="modal-footer">
-          {@render footer()}
+          {@render footer?.()}
         </div>
       {/if}
     </div>
@@ -102,13 +95,13 @@
 <style>
   /* @unocss-include */
   .modal-backdrop {
-    position fixed;
+    position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000,
+    z-index: 1000;
     padding: 1rem;
   }
   .modal-content {
@@ -140,7 +133,7 @@
     cursor: pointer;
     padding: 0.5rem;
     color: #6b7280;
-    transition: color 0.15;
+    transition: color 0.15s;
   }
   .modal-close:hover {
     color: #374151;
@@ -148,9 +141,16 @@
   .modal-body {
     padding: 1.5rem;
     overflow-y: auto;
-    flex: 1,
+    flex: 1;
   }
   .modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+</style>
     padding: 1.5rem;
     border-top: 1px solid #e5e7eb;
     display: flex;

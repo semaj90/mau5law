@@ -155,8 +155,7 @@ class GPUMetricsBatcher {
     const effects: string[] = [];
     // Check for common effect classes
     const effectSelectors = [
-      // Legacy retro effects
-      '.nes-3d-processing',
+      // Legacy retro effects: '.nes-3d-processing',
       '.gpu-accelerated',
       '.animate-gpu',
       '.yorha-processing',
@@ -171,23 +170,20 @@ class GPUMetricsBatcher {
       '.ps1-vertex-jitter',
       '.ps1-affine-texture',
       '.ps1-low-poly-smooth',
-      // Parallax and stereoscopic effects
-      '.parallax-transform',
+      // Parallax and stereoscopic effects: '.parallax-transform',
       '.parallax-depth-1',
       '.parallax-depth-2',
       '.parallax-depth-3',
       '.stereoscopic-anaglyph',
       '.stereoscopic-side-by-side',
-      // CRT and scan effects
-      '.crt-scan-deep',
+      // CRT and scan effects: '.crt-scan-deep',
       '.crt-convergence-shift',
       '.crt-phosphor-glow',
       // Transform effects (useRetroTransform.js)
       '.retro-tilt-active',
       '.retro-wobble-active',
       '.retro-focus-depth',
-      // Anisotropic and GPU hints
-      '.anisotropic-sim-2x',
+      // Anisotropic and GPU hints: '.anisotropic-sim-2x',
       '.anisotropic-sim-4x',
       '.gpu-hint-high-perf',
       '.gpu-hint-power-save'
@@ -260,7 +256,7 @@ class GPUMetricsBatcher {
    */
   private detectRenderingMode(): 'webgl' | 'webgpu' | 'software' {
     if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-      return 'webgpu';
+      return: 'webgpu';
     }
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');

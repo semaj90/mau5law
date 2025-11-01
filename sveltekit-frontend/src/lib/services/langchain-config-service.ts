@@ -332,7 +332,7 @@ class LangChainConfigService {
       };
     } catch (error: unknown) {
       // Changed from any
-      console.error(`Failed to execute chain '${chainName}':`, error);
+      console.error(`Failed to execute chain: '${chainName}':`, error);
       throw error;
     }
   }
@@ -409,10 +409,10 @@ class LangChainConfigService {
         chain = RunnableSequence.from([RunnablePassthrough.assign({}), prompt, model, new StringOutputParser()]);
       }
       this.chains.set(config.name, chain);
-      console.log(`✅ Custom chain '${config.name}' created`);
+      console.log(`✅ Custom chain: '${config.name}' created`);
     } catch (error: unknown) {
       // Changed from any
-      console.error(`Failed to create custom chain '${config.name}':`, error);
+      console.error(`Failed to create custom chain: '${config.name}':`, error);
       throw error;
     }
   }

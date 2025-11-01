@@ -16,14 +16,14 @@
     findings: [
       {
         type: 'pattern' as const,
-        description 'Recurring pattern in email communications indicates systematic behavior',
+        description: 'Recurring pattern in email communications indicates systematic behavior',
         confidence: 0.85,
         relevance: 0.9,
         supportingData: [],
       },
       {
         type: 'anomaly' as const,
-        description 'Unusual time gaps in document timestamps suggest tampering',
+        description: 'Unusual time gaps in document timestamps suggest tampering',
         confidence: 0.73,
         relevance: 0.8,
         supportingData: [],
@@ -34,14 +34,14 @@
         relatedEvidenceId: 'evidence-002',
         correlationType: 'temporal' as const,
         strength: 0.78,
-        description 'Similar timeframe and participants in both evidence items',
+        description: 'Similar timeframe and participants in both evidence items',
         sharedEntities: ['John Doe', 'Contract ABC'],
       },
       {
         relatedEvidenceId: 'evidence-003',
         correlationType: 'semantic' as const,
         strength: 0.65,
-        description 'Common terminology and legal concepts',
+        description: 'Common terminology and legal concepts',
         sharedEntities: ['Amendment', 'Termination'],
       },
     ],
@@ -92,14 +92,14 @@
     timeline: [
       {
         timestamp: new Date('2024-01-10'),
-        description 'Initial contract draft created',
+        description: 'Initial contract draft created',
         type: 'action' as const,
         actors: ['Legal Team'],
         confidence: 0.9,
       },
       {
         timestamp: new Date('2024-01-15'),
-        description 'Contract signed by all parties',
+        description: 'Contract signed by all parties',
         type: 'action' as const,
         actors: ['John Doe', 'Jane Smith'],
         confidence: 0.95,

@@ -96,7 +96,7 @@
 </div>
 
 <style>
-  /* Use the actual classes present in the markup to avoid Svelte "unused selector" errors */
+  /* Use the actual classes present in the markup to avoid Svelte: "unused selector" errors */
   .nier-bits-card {
     background-color: #fff;
     border-radius: 8px;

@@ -1,34 +1,42 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import * as monaco from 'monaco-editor';
   import { onDestroy, onMount } from 'svelte';
-  let editorContainer: HTMLDivElement = $state();
-  let editor = $state({}) as monaco.editor.IStandaloneCodeEditor | null;
-  // SSR safety: only run in browser
-  if (typeof window !== 'undefined') {
+
+  // DOM refs (nullable to be safe during SSR)
+  let editorContainer: HTMLDivElement | null = null;
+  // relax typing to avoid build-time type resolution errors
+  let editor: any | null = null;
+
+  onMount(async () => {
+    // dynamic import to avoid SSR issues; cast as any to avoid missing type declarations at build time
+    const monaco = (await import('monaco-editor')) as any;
+    if (!editorContainer) return;
+
     editor = monaco.editor.create(editorContainer, {
       value: '// Type your code here...\n',
       language: 'javascript',
       theme: 'vs-dark',
       automaticLayout: true,
     });
-  }
+  });
+
   onDestroy(() => {
-    if (editor) {
-      editor.dispose();
-    }
+    editor?.dispose();
+    editor = null;
   });
 </script>
 
-<div bind:this={editorContainer} class="space-y-4" aria-label="Monaco code editor" tabindex={0}></div>
+<!-- make this container explicitly an application role so tabindex=0 is permitted by a11y rules -->
+<div bind:this={editorContainer} class="monaco-container" aria-label="Monaco code editor" role="application" tabindex={0}></div>
 
 <style>
   /* @unocss-include */
   /* Ensure the Monaco editor fills the container */
+  .monaco-container {
+    height: 480px; /* ensure visible editor; adjust as needed */
+  }
   :global(.monaco-editor) {
     border-radius: 0.5rem;
+    height: 100% !important;
   }
 </style>

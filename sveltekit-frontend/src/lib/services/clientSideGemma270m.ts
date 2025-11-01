@@ -292,17 +292,17 @@ class ClientSideGemma270m {
   }
   private handleTensorRTMessage(data: any): void {
     switch (data.type) {
-      case 'MODEL_READY':
+      case: 'MODEL_READY':
         if (data.model_name === 'gemma3:270m') {
           console.log('⚡ TensorRT 270m model is ready');
           this.modelState.update(state => ({ ...state, source: 'tensorrt' }));
         }
         break;
-      case 'MEMORY_PRESSURE':
+      case: 'MEMORY_PRESSURE':
         console.log('⚠️ GPU memory pressure detected');
         this.handleMemoryPressure();
         break;
-      case 'IDLE_TIMEOUT':
+      case: 'IDLE_TIMEOUT':
         console.log('😴 GPU going idle, switching to client-side');
         this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu' : 'webassembly' }));
         break;

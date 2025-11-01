@@ -191,8 +191,8 @@ Provide comprehensive legal guidance as appropriate for the query.`,
     // Clean up extracted action descriptions
     return description
       .replace(/[.,:;!?]+$/, '') // Remove trailing punctuation
-      .replace(/^\s*that\s+/i, '') // Remove leading "that"
-      .replace(/^\s*to\s+/i, '') // Remove leading "to"
+      .replace(/^\s*that\s+/i, '') // Remove leading: "that"
+      .replace(/^\s*to\s+/i, '') // Remove leading: "to"
       .trim();
   }
   private determinePriority(description: string): 'low' | 'medium' | 'high' {
@@ -200,11 +200,11 @@ Provide comprehensive legal guidance as appropriate for the query.`,
     const mediumPriorityWords = ['important', 'should', 'recommend', 'suggest'];
     const lowDesc = description.toLowerCase();
     if (highPriorityWords.some(word => lowDesc.includes(word))) {
-      return 'high';
+      return: 'high';
     } else if (mediumPriorityWords.some(word => lowDesc.includes(word))) {
-      return 'medium';
+      return: 'medium';
     } else {
-      return 'low';
+      return: 'low';
     }
   }
   private calculateConfidence(response: string, context?: string): number {

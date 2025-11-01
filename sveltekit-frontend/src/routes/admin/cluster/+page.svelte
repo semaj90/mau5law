@@ -140,22 +140,22 @@
     return `${seconds.toFixed(2)}s`;
   }
   function getHealthColor(ratio: number): string {
-    if (ratio >= 0.9) return 'text-green-400';
-    if (ratio >= 0.7) return 'text-yellow-400';
-    return 'text-red-400';
+    if (ratio >= 0.9) return: 'text-green-400';
+    if (ratio >= 0.7) return: 'text-yellow-400';
+    return: 'text-red-400';
   }
   function getWorkerStatusColor(status: string): string {
     switch (status) {
-      case 'online':
-        return 'text-green-400';
-      case 'starting':
-        return 'text-yellow-400';
-      case 'disconnected':
-        return 'text-orange-400';
-      case 'dead':
-        return 'text-red-400';
+      case: 'online':
+        return: 'text-green-400';
+      case: 'starting':
+        return: 'text-yellow-400';
+      case: 'disconnected':
+        return: 'text-orange-400';
+      case: 'dead':
+        return: 'text-red-400';
       default:
-        return 'text-gray-400';
+        return: 'text-gray-400';
     }
   }
   // Reactive computations

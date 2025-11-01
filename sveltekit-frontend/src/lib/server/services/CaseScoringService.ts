@@ -445,9 +445,9 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
     score: number,
     thresholds: { low: number; medium: number; high: number }
   ): 'LOW' | 'MEDIUM' | 'HIGH' {
-    if (score >= thresholds.high) return 'HIGH';
-    if (score >= thresholds.medium) return 'MEDIUM';
-    return 'LOW';
+    if (score >= thresholds.high) return: 'HIGH';
+    if (score >= thresholds.medium) return: 'MEDIUM';
+    return: 'LOW';
   }
 }
 

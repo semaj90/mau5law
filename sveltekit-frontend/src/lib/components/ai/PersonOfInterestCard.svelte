@@ -44,27 +44,27 @@
   const roleConfig = {
     suspect: {
       color: 'bg-red-100 text-red-800 border-red-200',
-      icon '🚨',
+      icon: '🚨',
       label: 'Suspect',
     },
     witness: {
       color: 'bg-blue-100 text-blue-800 border-blue-200',
-      icon '👁️',
+      icon: '👁️',
       label: 'Witness',
     },
     victim: {
       color: 'bg-purple-100 text-purple-800 border-purple-200',
-      icon '💔',
+      icon: '💔',
       label: 'Victim',
     },
     associate: {
       color: 'bg-orange-100 text-orange-800 border-orange-200',
-      icon '🤝',
+      icon: '🤝',
       label: 'Associate',
     },
     unknown: {
       color: 'bg-gray-100 text-gray-800 border-gray-200',
-      icon '❓',
+      icon: '❓',
       label: 'Unknown Role',
     }
   } as const;

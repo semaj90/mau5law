@@ -21,7 +21,7 @@
     content: string;
     timestamp: Date;
     streaming?: boolean;
-    metadata?: Record<string, unknown>; // Changed from 'any' to 'unknown'
+    metadata?: Record<string, unknown>; // Changed from 'any' to: 'unknown'
   };
 
   type ChatSession = {
@@ -232,8 +232,21 @@
       stream: true,
     };
 
+    // Guard the socket reference — avoid calling send on null
+    const sock = chatSocket;
+    if (!sock) {
+      chatSession.messages.push({
+        id: `sys_${Date.now()}`,
+        role: 'system',
+        content: 'No active WebSocket connection. Please wait for the assistant to connect.',
+        timestamp: new Date(),
+      });
+      isConnected = false;
+      return;
+    }
+
     try {
-      chatSocket.send(JSON.stringify(chatRequest));
+      sock.send(JSON.stringify(chatRequest));
     } catch (err) {
       console.error('Send message error:', err);
       chatSession.messages.push({
@@ -331,10 +344,18 @@
       <!-- use onsubmit and call preventDefault inside handler -->
       <form onsubmit={handleSubmit} class="flex items-center gap-2">
         <Input
-          bind:value={currentMessage}
+          value={currentMessage}
           placeholder="Ask a legal question..."
           class="flex-1"
           disabled={!isConnected || isConnecting}
+          oninput={(e) => {
+            // support native input events and components that emit e.detail.value
+            const val =
+              (e && (e.target as HTMLInputElement)?.value !== undefined)
+                ? (e.target as HTMLInputElement).value
+                : (e.detail?.value ?? '');
+            currentMessage = val ?? '';
+          }}
         />
         <Button type="submit" disabled={!isConnected || isConnecting || !currentMessage.trim()}>
           <Send class="h-4 w-4" />

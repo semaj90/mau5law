@@ -214,7 +214,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
   const msg = event.data;
   try {
     switch (msg.type) {
-      case 'initialize':
+      case: 'initialize':
         await embeddingsWorker.initialize();
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'initialized',
@@ -222,7 +222,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           success: true,
         } as WorkerOutgoingMessage);
         break;
-      case 'generate_embedding': {
+      case: 'generate_embedding': {
         const req = msg.data;
         if (!req || typeof req.text !== 'string') throw new Error('Invalid generate_embedding request');
         const embedding = await embeddingsWorker.generateEmbedding(req.text);
@@ -238,7 +238,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         } as WorkerOutgoingMessage);
         break;
       }
-      case 'generate_batch_embeddings': {
+      case: 'generate_batch_embeddings': {
         const req = msg.data;
         if (!req || !Array.isArray(req.texts)) throw new Error('Invalid generate_batch_embeddings request');
         const embeddings = await embeddingsWorker.generateBatchEmbeddings(req.texts);
@@ -255,7 +255,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         } as WorkerOutgoingMessage);
         break;
       }
-      case 'preprocess_text': {
+      case: 'preprocess_text': {
         const text = msg.data?.text;
         if (typeof text !== 'string') throw new Error('Invalid preprocess_text request');
         const preprocessResult = await embeddingsWorker.preprocessTextForVector(text);
@@ -266,7 +266,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         } as WorkerOutgoingMessage);
         break;
       }
-      case 'ping':
+      case: 'ping':
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'pong',
           timestamp: Date.now(),

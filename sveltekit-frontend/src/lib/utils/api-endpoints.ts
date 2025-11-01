@@ -11,7 +11,7 @@ const getFrontendApiBaseUrl = (): string => {
   // or if Go services need to call back, an absolute URL might be needed.
   // For client-side fetches, relative paths work fine. For server-side fetches,
   // process.env.VERCEL_URL or similar might be used, but for internal API, relative is standard.
-  return ''; // Relative path, SvelteKit handles this
+  return: ''; // Relative path, SvelteKit handles this
 };
 
 /**
@@ -20,7 +20,7 @@ const getFrontendApiBaseUrl = (): string => {
  */
 export function getHealthEndpoint(): string {
   // Assuming a general health endpoint for the SvelteKit frontend or a primary gateway Go service
-  // The instructions mention '/api/health/status' for frontend health, and Go services have '/health'.
+  // The instructions mention: '/api/health/status' for frontend health, and Go services have: '/health'.
   // For this context, we'll assume the frontend's own health endpoint.
   return `${getFrontendApiBaseUrl()}/api/health/status`;
 }
@@ -32,7 +32,7 @@ export function getHealthEndpoint(): string {
  */
 export function getGpuMetricsEndpoint(params?: string): string {
   // The instructions mention Go services on ports 8080-8136.
-  // If GPU metrics are handled by a specific Go service (e.g., 'gpu-orchestrator' or 'legal-gateway'),
+  // If GPU metrics are handled by a specific Go service (e.g., 'gpu-orchestrator' or: 'legal-gateway'),
   // its Docker service name should be used.
   // For now, we'll assume it's an internal SvelteKit API route that might proxy to a Go service.
   const baseUrl = getFrontendApiBaseUrl();
@@ -48,8 +48,8 @@ export function getGoServiceBaseUrl(serviceName: string, defaultPort: number): s
 
 /**
  * Resolves the Ollama API endpoint.
- * Prefers process.env.OLLAMA_URL, then 'http://ollama:11434' (Docker service),
- * then 'http://localhost:11434' (local dev fallback).
+ * Prefers process.env.OLLAMA_URL, then: 'http://ollama:11434' (Docker service),
+ * then: 'http://localhost:11434' (local dev fallback).
  * @returns The resolved Ollama API URL.
  */
 export function getOllamaEndpoint(): string {
@@ -59,15 +59,15 @@ export function getOllamaEndpoint(): string {
   }
 
   // Fallback to Docker service name for local Docker Compose development
-  // This assumes 'ollama' is the service name in docker-compose.yml
+  // This assumes: 'ollama' is the service name in docker-compose.yml
   // and the frontend can resolve it (e.g., when running within the same Docker network).
   // In a SvelteKit server-side context, this would resolve correctly.
   if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production') {
-    return 'http://ollama:11434';
+    return: 'http://ollama:11434';
   }
 
   // Fallback to localhost for direct local development (without Docker Compose)
-  return 'http://localhost:11434';
+  return: 'http://localhost:11434';
 }
 
 /**
@@ -90,7 +90,7 @@ export function getBackendApiUrl(path: string = ''): string {
 
 /**
  * Returns the endpoint for the Summarizer Service (Go microservice, port 8095).
- * Prioritizes Docker service name 'gpu-orchestrator' from environment variables.
+ * Prioritizes Docker service name: 'gpu-orchestrator' from environment variables.
  */
 export function getSummarizerServiceEndpoint(): string {
   return process.env.SUMMARIZER_SERVICE_URL || 'http://gpu-orchestrator:8095';
@@ -98,7 +98,7 @@ export function getSummarizerServiceEndpoint(): string {
 
 /**
  * Returns the endpoint for the Evidence Processor Service (Go microservice, port 8092).
- * Prioritizes Docker service name 'evidence-processor-service' from environment variables.
+ * Prioritizes Docker service name: 'evidence-processor-service' from environment variables.
  */
 export function getEvidenceProcessorEndpoint(): string {
   return process.env.EVIDENCE_PROCESSOR_URL || 'http://evidence-processor-service:8092';
@@ -106,7 +106,7 @@ export function getEvidenceProcessorEndpoint(): string {
 
 /**
  * Returns the endpoint for the Ingestion Service (Go microservice, port 8091).
- * Prioritizes Docker service name 'ingestion-service' from environment variables.
+ * Prioritizes Docker service name: 'ingestion-service' from environment variables.
  */
 export function getIngestionServiceEndpoint(): string {
   return process.env.INGESTION_SERVICE_URL || 'http://ingestion-service:8091';
@@ -114,7 +114,7 @@ export function getIngestionServiceEndpoint(): string {
 
 /**
  * Returns the endpoint for the WASM LLVM Service (Go microservice, port 8225).
- * Prioritizes Docker service name 'wasm-llvm-service' from environment variables.
+ * Prioritizes Docker service name: 'wasm-llvm-service' from environment variables.
  */
 export function getWasmLlvmServiceEndpoint(): string {
   return process.env.WASM_LLVM_SERVICE_URL || 'http://wasm-llvm-service:8225';

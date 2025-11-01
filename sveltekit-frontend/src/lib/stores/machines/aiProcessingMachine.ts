@@ -65,11 +65,11 @@ export const aiProcessingMachine = createMachine({
                 }) => {
                   const { task, provider } = input;
                   switch (provider) {
-                    case "go-microservice":
+                    case: "go-microservice":
                       return await executeGoMicroserviceTask(task);
-                    case "ollama":
+                    case: "ollama":
                       return await executeOllamaTask(task);
-                    case "local-llm":
+                    case: "local-llm":
                       return await executeLocalLLMTask(task);
                     default:
                       throw new Error(`Unknown provider: ${provider}`);
@@ -205,7 +205,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
   try {
     let response: any;
     switch (task.type) {
-      case 'parse':
+      case: 'parse':
         response = await fetch("/api/parse", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -216,7 +216,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
           })
         });
         break;
-      case 'som-train':
+      case: 'som-train':
         response = await fetch("/api/train-som", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -229,7 +229,7 @@ async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
           })
         });
         break;
-      case 'cuda-infer':
+      case: 'cuda-infer':
         response = await fetch("/api/cuda-infer", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -280,7 +280,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
   try {
     let response: any;
     switch (task.type) {
-      case 'embed':
+      case: 'embed':
         response = await fetch("/api/llm/embeddings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -290,7 +290,7 @@ async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
           })
         });
         break;
-      case 'analyze':
+      case: 'analyze':
         response = await fetch("/api/llm/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

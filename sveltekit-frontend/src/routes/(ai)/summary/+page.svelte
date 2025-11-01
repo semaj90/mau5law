@@ -125,7 +125,7 @@
             </div>
           {:else}
             <div class="text-gray-500">
-              Click "Generate AI Summary" to create a {summaryType} summary using local Gemma3 Legal model.
+              Click: "Generate AI Summary" to create a {summaryType} summary using local Gemma3 Legal model.
             </div>
           {/if}
         </div>

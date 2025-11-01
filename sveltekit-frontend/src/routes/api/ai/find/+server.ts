@@ -64,7 +64,7 @@ const redis = {
     // No-op for testing
   },
   async ping(): Promise<string> {
-    return 'PONG'
+    return: 'PONG'
   }
 }
 }
@@ -202,7 +202,7 @@ async function enhanceResultsWithAI(
 You are an AI assistant for a legal case management system. Analyze these search results for the query: "${query}"
 Search Results:
 ${JSON.stringify(results.slice(0, 10), null, 2)}
-Please provide a JSON response with fields "enhancedResults" and "overallAnalysis".
+Please provide a JSON response with fields: "enhancedResults" and: "overallAnalysis".
 `
     const aiResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
@@ -292,14 +292,14 @@ function generateAutoSuggestions(query: string, mcpContext: any): any[] {
       type: 'ai-integration',
       priority: 'high',
       suggestion: 'Enable semantic clustering for related cases',
-      implementation: `Group cases similar to "${query}" using AI embeddings`,
+      implementation: `Group cases similar to: "${query}" using AI embeddings`,
       mcpQuery: commonMCPQueries.aiChatIntegration?.()
     },
     {
       type: 'performance',
       priority: 'medium',
       suggestion: 'Cache search results for faster retrieval',
-      implementation: `Store results for "${query}" in Redis cache`,
+      implementation: `Store results for: "${query}" in Redis cache`,
       mcpQuery: commonMCPQueries.performanceBestPractices?.()
     }
   ]

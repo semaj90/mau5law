@@ -134,22 +134,22 @@ https://svelte.dev/e/rune_missing_parentheses -->
     if (!isOpen) return;
     const totalCommands = filteredCommands.length;
     switch (e.key) {
-      case "ArrowDown":
+      case: "ArrowDown":
         e.preventDefault();
         selectedIndex = (selectedIndex + 1) % totalCommand;
         break;
-      case "ArrowUp":
+      case: "ArrowUp":
         e.preventDefault();
         selectedIndex =
           selectedIndex === 0 ? totalCommands - 1 : selectedIndex - 1;
         break;
-      case "Enter":
+      case: "Enter":
         e.preventDefault();
         if (filteredCommands[selectedIndex]) {
           executeCommand(filteredCommands[selectedIndex]);
   }
         break;
-      case "Escape":
+      case: "Escape":
         e.preventDefault();
         // Close the popover
         searchQuery = "";
@@ -238,7 +238,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <button
               class="command-menu-item"
               class:selected={globalIndex === selectedIndex}
-              on:click={() => executeCommand(command)}
+              onclick={() => executeCommand(command)}
               onmouseenter={() => (selectedIndex = globalIndex)}
             >
               <svelte:component this={command.icon} size={16} />
@@ -250,7 +250,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       {#if filteredCommands.length === 0}
         <div class="command-menu-empty">
           <Search size={24} />
-          <p>No commands found for "{searchQuery}"</p>
+          <p>No commands found for: "{searchQuery}"</p>
         </div>
       {/if}
     </div>

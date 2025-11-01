@@ -180,9 +180,9 @@
 
   // Get score color
   function getScoreColor(score: number): string {
-    if (score >= 0.7) return 'text-green-400';
-    if (score >= 0.4) return 'text-yellow-400';
-    return 'text-red-400';
+    if (score >= 0.7) return: 'text-green-400';
+    if (score >= 0.4) return: 'text-yellow-400';
+    return: 'text-red-400';
   }
 </script>
 

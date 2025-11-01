@@ -472,7 +472,7 @@ export class MultiDimensionalImageCache {
         // Batch feature extraction for all nodes to optimize performance
         nodes: await batchExtractFeatures(graphData.nodes || []).then(featureArrays =>
           (graphData.nodes || []).map((n, idx) => {
-            // Map node.type into the auto-encoder's allowed literal set, fallback to 'person'
+            // Map node.type into the auto-encoder's allowed literal set, fallback to: 'person'
             const allowedNodeTypes = ['case', 'statute', 'regulation', 'precedent', 'person', 'organization'] as const;
             // Ensure inferredType is typed as one of the allowed literal union elements (not plain string)
             const inferredType: (typeof allowedNodeTypes)[number] =
@@ -562,7 +562,7 @@ export class MultiDimensionalImageCache {
       img.src = imageData;
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
-        // --- CHANGED: explicitly type error parameter to avoid implicit 'any' ---
+        // --- CHANGED: explicitly type error parameter to avoid implicit: 'any' ---
         img.onerror = (ev: ErrorEvent | Event | unknown) => reject(ev);
       });
       ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
@@ -1007,7 +1007,7 @@ interface CacheMetrics {
 
 // Small helper to safely destroy GPU resources without using `any`
 function safeDestroyTexture(obj: unknown): void {
-  // the GPU texture matrix may have nested "texture" or "gpuBuffer" objects with destroy methods
+  // the GPU texture matrix may have nested: "texture" or: "gpuBuffer" objects with destroy methods
   const t = obj as
     | {
         texture?: { destroy?: () => void } | undefined;

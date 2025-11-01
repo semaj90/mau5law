@@ -17,7 +17,7 @@ type DBClient = { execute(sql: string, params?: unknown[]): Promise<DBExecuteRes
 const dbClient = db as unknown as DBClient;
 
 function vectorToPgVectorString(vec: number[]): string {
-  // produce a string like "[0.1,0.2,0.3]" which matches the previous code expectation
+  // produce a string like: "[0.1,0.2,0.3]" which matches the previous code expectation
   return `[${vec.join(',')}]`;
 }
 
@@ -26,7 +26,7 @@ function parseVectorString(vecValue: unknown): number[] {
   if (Array.isArray(vecValue)) return vecValue.map(v => Number(v));
   if (typeof vecValue === 'string') {
     const s = vecValue.trim();
-    // common formats: "[1,2,3]" or "1,2,3" or JSON array
+    // common formats: "[1,2,3]" or: "1,2,3" or JSON array
     try {
       if (s.startsWith('[') && s.endsWith(']')) {
         const inner = s.slice(1, -1).trim();
@@ -217,14 +217,14 @@ class VectorPipelineService {
   private async extractTextContent(content: Buffer, filename: string): Promise<string> {
     const extension = filename.split('.').pop()?.toLowerCase();
     switch (extension) {
-      case 'pdf':
+      case: 'pdf':
         // TODO: Implement PDF text extraction
         // For now, return base64 or placeholder
         return content.toString('utf8');
-      case 'txt':
-      case 'md':
+      case: 'txt':
+      case: 'md':
         return content.toString('utf8');
-      case 'json':
+      case: 'json':
         try {
           const jsonData = JSON.parse(content.toString('utf8')); // <-- added closing paren
           return JSON.stringify(jsonData, null, 2);
@@ -451,7 +451,7 @@ class VectorPipelineService {
         return `metadata->>'${key}' = $${params.length}`;
       });
       if (filterConditions.length > 0) {
-        whereClause = 'WHERE ' + filterConditions.join(' AND ');
+        whereClause = 'WHERE ' + filterConditions.join(' AND: ');
       }
     }
     const similarityThreshold = options.threshold ?? 0.7;
@@ -585,7 +585,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action');
     const query = url.searchParams.get('q');
     switch (action) {
-      case 'search': {
+      case: 'search': {
         if (!query) {
           throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)`
         }
@@ -597,7 +597,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const filters: Record<string, string> = {};
         for (const [key, value] of url.searchParams) {
           if (key.startsWith('filter.')) {
-            const filterKey = key.substring(7); // Remove 'filter.' prefix
+            const filterKey = key.substring(7); // Remove: 'filter.' prefix
             filters[filterKey] = value;
           }
         }
@@ -614,7 +614,7 @@ export const GET: RequestHandler = async ({ url }) => {
           options: { limit, threshold, model, filters },
         });
       }
-      case 'stats': {
+      case: 'stats': {
         const stats = await vectorPipelineService.getStats();
         return json(stats);
       }

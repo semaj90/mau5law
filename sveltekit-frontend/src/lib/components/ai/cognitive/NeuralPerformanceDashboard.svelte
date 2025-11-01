@@ -3,7 +3,7 @@
   Integrates with Legal AI Platform GPU acceleration and neural processing
 -->
 <script lang="ts">
-  // Props (fixed: don't redeclare 'number' etc.)
+  // Props (fixed: don't redeclare: 'number' etc.)
   const { updateInterval = 2000, maxHistoryPoints = 30, showAdvancedMetrics = true } = $props();
 
   import { onMount, onDestroy } from 'svelte';
@@ -152,18 +152,18 @@
   }
   function getServiceStatusColor(status: string): string {
     switch (status) {
-      case 'healthy': return 'text-green-400';
-      case 'degraded': return 'text-yellow-400';
-      case 'offline': return 'text-red-400';
-      default: return 'text-gray-400';
+      case: 'healthy': return: 'text-green-400';
+      case: 'degraded': return: 'text-yellow-400';
+      case: 'offline': return: 'text-red-400';
+      default: return: 'text-gray-400';
     }
   }
   function getServiceStatusIcon(status: string): string {
     switch (status) {
-      case 'healthy': return '✅';
-      case 'degraded': return '⚠️';
-      case 'offline': return '❌';
-      default: return '🔄';
+      case: 'healthy': return: '✅';
+      case: 'degraded': return: '⚠️';
+      case: 'offline': return: '❌';
+      default: return: '🔄';
     }
   }
 </script>

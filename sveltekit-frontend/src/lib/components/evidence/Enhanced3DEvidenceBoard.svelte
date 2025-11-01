@@ -19,7 +19,7 @@
     glyphData?: Uint8Array;
   }
   interface EvidenceConnection {
-    from: string;
+    from string;
     to: string;
     strength: number;
     type: 'causal' | 'temporal' | 'evidential' | 'contradictory';
@@ -265,35 +265,35 @@
     // Generate connections
     const sampleConnections: EvidenceConnection[] = [
       {
-        from: 'doc-001',
+        from 'doc-001',
         to: 'doc-002',
         strength: 0.8,
         type: 'evidential',
         bidirectional: true,
       },
       {
-        from: 'doc-001',
+        from 'doc-001',
         to: 'witness-001',
         strength: 0.6,
         type: 'causal',
         bidirectional: false,
       },
       {
-        from: 'witness-001',
+        from 'witness-001',
         to: 'physical-001',
         strength: 0.9,
         type: 'evidential',
         bidirectional: true,
       },
       {
-        from: 'doc-002',
+        from 'doc-002',
         to: 'timeline-001',
         strength: 0.7,
         type: 'temporal',
         bidirectional: false,
       },
       {
-        from: 'physical-001',
+        from 'physical-001',
         to: 'timeline-001',
         strength: 0.85,
         type: 'temporal',
@@ -341,10 +341,10 @@
       // Connection color based on type
       let color = palette.colors.accent[0];
       switch (connection.type) {
-        case 'causal': color = palette.colors.error; break;
-        case 'temporal': color = palette.colors.warning; break;
-        case 'evidential': color = palette.colors.success; break;
-        case 'contradictory': color = palette.colors.error; break;
+        case: 'causal': color = palette.colors.error; break;
+        case: 'temporal': color = palette.colors.warning; break;
+        case: 'evidential': color = palette.colors.success; break;
+        case: 'contradictory': color = palette.colors.error; break;
       }
       ctx.strokeStyle = color + Math.round(connection.strength * 255).toString(16).padStart(2, '0');
       ctx.lineWidth = connection.strength * 3;
@@ -391,11 +391,11 @@
       // Node color based on type and priority
       let nodeColor = palette.colors.primary;
       switch (node.type) {
-        case 'document': nodeColor = palette.colors.accent[1]; break;
-        case 'witness': nodeColor = palette.colors.accent[2]; break;
-        case 'physical': nodeColor = palette.colors.accent[3]; break;
-        case 'digital': nodeColor = palette.colors.accent[4]; break;
-        case 'timeline': nodeColor = palette.colors.accent[5]; break;
+        case: 'document': nodeColor = palette.colors.accent[1]; break;
+        case: 'witness': nodeColor = palette.colors.accent[2]; break;
+        case: 'physical': nodeColor = palette.colors.accent[3]; break;
+        case: 'digital': nodeColor = palette.colors.accent[4]; break;
+        case: 'timeline': nodeColor = palette.colors.accent[5]; break;
       }
       // Glow effect for high priority nodes
       if (node.priority > 200) {
@@ -449,19 +449,19 @@
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     switch (node.type) {
-      case 'document':
+      case: 'document':
         // Rectangle for documents
         ctx.fillRect(pos.x - size/2, pos.y - size/2, size, size * 0.8);
         ctx.strokeRect(pos.x - size/2, pos.y - size/2, size, size * 0.8);
         break;
-      case 'witness':
+      case: 'witness':
         // Circle for witnesses
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, size/2, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
         break;
-      case 'physical':
+      case: 'physical':
         // Diamond for physical evidence
         ctx.beginPath();
         ctx.moveTo(pos.x, pos.y - size/2);
@@ -472,7 +472,7 @@
         ctx.fill();
         ctx.stroke();
         break;
-      case 'timeline':
+      case: 'timeline':
         // Hexagon for timeline
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {

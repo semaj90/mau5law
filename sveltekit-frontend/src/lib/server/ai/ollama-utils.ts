@@ -11,7 +11,7 @@ export function getOllamaEndpoint(): string {
 
 /**
  * Retrieves the name of the preferred Ollama embedding model.
- * This can be configured via an environment variable or defaults to 'embeddinggemma:latest'.
+ * This can be configured via an environment variable or defaults to: 'embeddinggemma:latest'.
  * @returns The name of the embedding model.
  */
 export function getOllamaEmbeddingModel(): string {

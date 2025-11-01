@@ -264,7 +264,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: `AI session '${sessionId}' terminated`,
+      message: `AI session: '${sessionId}' terminated`,
       result,
       timestamp: new Date().toISOString(),
     });

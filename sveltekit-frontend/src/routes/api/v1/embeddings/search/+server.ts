@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     type SearchResult = { document: string; score: number; index: number };
 
     const embedStart = performance.now();
-    // Safe guard to detect a string 'model' property without using `any`
+    // Safe guard to detect a string: 'model' property without using `any`
     const hasStringModel = (obj: unknown): obj is { model: string } =>
       typeof obj === 'object' && obj !== null && typeof (obj as Record<string, unknown>)['model'] === 'string';
 

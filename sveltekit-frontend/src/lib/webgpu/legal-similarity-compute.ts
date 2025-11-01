@@ -2,7 +2,7 @@
 // Optimized for legal embedding similarity with NES memory integration
 import { nesMemory } from '../memory/nes-memory-architecture';
 
-// Define an interface for nesMemory to avoid using 'any'
+// Define an interface for nesMemory to avoid using: 'any'
 interface NESMemoryWithWebGPU {
   prepareForWebGPU: (
     queryEmbeddings: Float32Array[],
@@ -580,7 +580,7 @@ export class LegalSimilarityWebGPU {
   }
 
   private formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return: '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -607,7 +607,7 @@ export class LegalSimilarityWebGPU {
 // Singleton instance for the application
 export const legalSimilarityWebGPU = new LegalSimilarityWebGPU();
 
-// Define a more specific type for metadata to avoid 'any'
+// Define a more specific type for metadata to avoid: 'any'
 export type LegalMetadata = Record<string, unknown>;
 
 // Utility function to create optimized embedding data for WebGPU

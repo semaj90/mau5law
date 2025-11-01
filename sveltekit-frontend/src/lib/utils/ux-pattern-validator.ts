@@ -23,6 +23,8 @@ export class UXPatternValidator {
       description: 'All components use consistent legal AI color scheme',
       category: 'consistency',
       validate: () => {
+        // Safe-guard for SSR / non-browser environments
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const legalElements = document.querySelectorAll('[class*="legal-"]');
         const inconsistentElements = Array.from(legalElements).filter(el => {
           const computedStyle = window.getComputedStyle(el);
@@ -40,6 +42,7 @@ export class UXPatternValidator {
       description: 'Button variants follow consistent design patterns',
       category: 'consistency',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const buttons = document.querySelectorAll('button, [role="button"]');
         const inconsistentButtons = Array.from(buttons).filter(btn => {
           const classList = Array.from(btn.classList);
@@ -58,12 +61,19 @@ export class UXPatternValidator {
       description: 'All async actions provide loading feedback',
       category: 'usability',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const forms = document.querySelectorAll('form');
-        const buttonsWithActions = document.querySelectorAll('button[type="submit"], button[onclick]');
+        // include common actionable elements (buttons and inputs)
+        const buttonsWithActions = document.querySelectorAll(
+          'button[type="submit"], button[onclick], input[type="submit"], [role="button"][onclick]'
+        );
         // Check if loading indicators are present
         const hasLoadingIndicators = document.querySelectorAll('.loading, .spinner, [aria-live]').length > 0;
-        const hasLoadingStates = document.querySelectorAll('[aria-busy="true"], .btn-loading').length >= 0;
-        return hasLoadingIndicators || hasLoadingStates || forms.length === 0;
+        const hasLoadingStates = document.querySelectorAll('[aria-busy="true"], .btn-loading').length > 0;
+        // If there are no actionable elements (no forms or submit buttons), consider it passing.
+        const actionableCount = forms.length + buttonsWithActions.length;
+        if (actionableCount === 0) return true;
+        return hasLoadingIndicators || hasLoadingStates;
       },
       recommendation: 'Add loading indicators for all async operations and form submissions',
     },
@@ -72,6 +82,7 @@ export class UXPatternValidator {
       description: 'Error messages are clearly visible and actionable',
       category: 'usability',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const errorElements = document.querySelectorAll('.error, [role="alert"], .text-red-500, .text-destructive');
         const validErrors = Array.from(errorElements).filter(el => {
           const style = window.getComputedStyle(el);
@@ -88,6 +99,7 @@ export class UXPatternValidator {
       description: 'Images use lazy loading for performance',
       category: 'performance',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const images = document.querySelectorAll('img');
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
         // Most images should use lazy loading (except above-the-fold)
@@ -100,6 +112,7 @@ export class UXPatternValidator {
       description: 'Animations use performant CSS properties',
       category: 'performance',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const animatedElements = document.querySelectorAll('[class*="transition"], [class*="animate"]');
         // Check for performance-friendly animations
         return Array.from(animatedElements).every(el => {
@@ -123,6 +136,7 @@ export class UXPatternValidator {
       description: 'Headings follow semantic hierarchy (h1 → h2 → h3)',
       category: 'accessibility',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
         const headingLevels = headings.map(h => parseInt(h.tagName.charAt(1)));
         // Check for proper hierarchy
@@ -143,9 +157,10 @@ export class UXPatternValidator {
       description: 'Legal AI terminology is used consistently across the interface',
       category: 'consistency',
       validate: () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const textContent = document.body.textContent?.toLowerCase() || '';
         // Check for consistent terminology
-        const terminologyMappings = {
+        const terminologyMappings: Record<string, string[]> = {
           'case management': ['case handling', 'case processing'],
           'legal analysis': ['legal review', 'legal examination'],
           'evidence': ['proof', 'documentation'],
@@ -261,7 +276,8 @@ export class UXPatternValidator {
    * Monitor UX patterns in real-time
    */
   startUXMonitoring(): () => void {
-    let monitoringInterval: NodeJS.Timeout;
+    // Use ReturnType<typeof setInterval> to be compatible with both browser and Node typings
+    let monitoringInterval: ReturnType<typeof setInterval> | undefined;
     const runMonitoring = async () => {
       const results = await this.validateAllPatterns();
       const failedPatterns = results.filter(r => !r.passed);
@@ -273,10 +289,16 @@ export class UXPatternValidator {
     };
     // Run initial check
     runMonitoring();
-    // Set up periodic monitoring
-    monitoringInterval = setInterval(runMonitoring, 30000); // Every 30 seconds
+    // Set up periodic monitoring (guard for non-browser environments)
+    if (typeof window !== 'undefined') {
+      // Cast to satisfy differing lib types for setInterval (NodeJS.Timeout vs number)
+      monitoringInterval = window.setInterval(runMonitoring, 30000) as unknown as ReturnType<typeof setInterval>; // Every 30 seconds
+    }
     return () => {
-      clearInterval(monitoringInterval);
+      if (monitoringInterval !== undefined) {
+        // clearInterval expects a number in lib.dom; cast safe for runtime
+        clearInterval(monitoringInterval as unknown as number);
+      }
     };
   }
 }
@@ -292,28 +314,56 @@ export class PerformanceMetrics {
     fid?: number; // First Input Delay
     cls?: number; // Cumulative Layout Shift
   }> {
+    // If PerformanceObserver is not available (SSR or older env), return empty metrics
+    if (typeof PerformanceObserver === 'undefined') return {};
     return new Promise(resolve => {
-      const metrics: any = {};
+      // Use a typed partial metrics object instead of `any`
+      const metrics: Partial<{ lcp: number; fid: number; cls: number }> = {};
+
       // Largest Contentful Paint
-      new PerformanceObserver(list => {
-        const entries = list.getEntries();
-        metrics.lcp = entries[entries.length - 1].startTime;
-      }).observe({ entryTypes: ['largest-contentful-paint'] });
+      try {
+        new PerformanceObserver((list: PerformanceObserverEntryList) => {
+          const entries = list.getEntries() as PerformanceEntry[];
+          metrics.lcp = entries[entries.length - 1]?.startTime;
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch {
+        /* ignore */
+      }
+
       // First Input Delay
-      new PerformanceObserver(list => {
-        const entries = list.getEntries();
-        metrics.fid = entries[0].processingStart - entries[0].startTime;
-      }).observe({ entryTypes: ['first-input'] });
-      // Cumulative Layout Shift
-      new PerformanceObserver(list => {
-        let clsValue = 0;
-        for (const entry of list.getEntries()) {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
-          }
+      try {
+        // Define minimal shape for first-input entries
+        interface FirstInputShape {
+          startTime: number;
+          processingStart?: number;
         }
-        metrics.cls = clsValue;
-      }).observe({ entryTypes: ['layout-shift'] });
+        new PerformanceObserver((list: PerformanceObserverEntryList) => {
+          const entries = list.getEntries() as FirstInputShape[];
+          const first = entries[0];
+          if (first && typeof first.processingStart === 'number') {
+            metrics.fid = first.processingStart - first.startTime;
+          }
+        }).observe({ entryTypes: ['first-input'] });
+      } catch {
+        /* ignore */
+      }
+
+      // Cumulative Layout Shift
+      try {
+        new PerformanceObserver((list: PerformanceObserverEntryList) => {
+          let clsValue = 0;
+          const entries = list.getEntries() as Array<{ hadRecentInput?: boolean; value?: number }>;
+          for (const entry of entries) {
+            if (!entry.hadRecentInput) {
+              clsValue += entry.value ?? 0;
+            }
+          }
+          metrics.cls = clsValue;
+        }).observe({ entryTypes: ['layout-shift'] });
+      } catch {
+        /* ignore */
+      }
+
       // Return metrics after a short delay
       setTimeout(() => resolve(metrics), 3000);
     });
@@ -322,7 +372,9 @@ export class PerformanceMetrics {
    * Measure component render times
    */
   measureComponentPerformance(componentName: string): () => void {
-    const startTime = performance.now();
+    const now =
+      typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+    const startTime = now;
     return () => {
       const endTime = performance.now();
       const renderTime = endTime - startTime;
@@ -334,12 +386,22 @@ export class PerformanceMetrics {
     };
   }
 }
+
 // Export singleton instances
 export const uxPatternValidator = new UXPatternValidator();
 export const performanceMetrics = new PerformanceMetrics();
+
+// Provide a typed Window augmentation so attaching debug helpers is type-safe
+declare global {
+  interface Window {
+    uxPatternValidator?: UXPatternValidator;
+    performanceMetrics?: PerformanceMetrics;
+  }
+}
+
 // Development helper
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  // @ts-ignore - Attach to window for debugging
+  // Attach to window for debugging (now type-checked via declaration above)
   window.uxPatternValidator = uxPatternValidator;
   window.performanceMetrics = performanceMetrics;
 }

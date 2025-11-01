@@ -7,28 +7,28 @@ import { WSRegistry } from './ws-registry';
 
 export type WSConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
-export interface WSClientConfig {
+export interface WSClientConfig<T = unknown> {
   endpoint: string; // Path-based endpoint (e.g., '/ws/rag')
   maxReconnectAttempts?: number;
   reconnectDelay?: number;
   keepaliveInterval?: number; // Ping interval in ms
-  onMessage?: (data: any) => void;
+  onMessage?: (data: T) => void;
   onStatusChange?: (status: WSConnectionStatus) => void;
 }
 
-export class DynamicWebSocketClient {
+export class DynamicWebSocketClient<T = unknown> {
   private ws: WebSocket | null = null;
-  private config: Required<WSClientConfig>;
+  private config: Required<WSClientConfig<T>>;
   private reconnectAttempts = 0;
   private status: WSConnectionStatus = 'disconnected';
   private keepaliveTimer?: ReturnType<typeof setInterval>;
 
-  constructor(config: WSClientConfig) {
+  constructor(config: WSClientConfig<T>) {
     this.config = {
       maxReconnectAttempts: 5,
       reconnectDelay: 2000,
       keepaliveInterval: 30000, // 30s ping to prevent public WiFi timeouts
-      onMessage: () => {},
+      onMessage: (() => {}) as (data: T) => void,
       onStatusChange: () => {},
       ...config,
     };
@@ -69,7 +69,7 @@ export class DynamicWebSocketClient {
         if (event.data === 'pong') return;
 
         try {
-          const data = JSON.parse(event.data);
+          const data = JSON.parse(event.data) as T;
           this.config.onMessage(data);
         } catch (err) {
           console.warn('[WebSocket] Failed to parse message:', event.data);
@@ -126,7 +126,7 @@ export class DynamicWebSocketClient {
     }, this.config.reconnectDelay);
   }
 
-  send(data: any) {
+  send(data: T) {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
     } else {
@@ -153,9 +153,9 @@ export class DynamicWebSocketClient {
 }
 
 // Helper factory for common services
-export const createWSClient = (serviceName: string, config?: Partial<WSClientConfig>) => {
+export const createWSClient = <T = unknown>(serviceName: string, config?: Partial<WSClientConfig<T>>) => {
   const endpoint = WSRegistry.getEndpoint(serviceName);
-  return new DynamicWebSocketClient({
+  return new DynamicWebSocketClient<T>({
     endpoint,
     ...config,
   });

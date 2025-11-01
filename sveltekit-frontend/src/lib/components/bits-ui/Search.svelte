@@ -14,11 +14,11 @@
 <div class="bits-search">
   <div class="search-bar">
     <input bind:value={query} placeholder="Search legal documents..." />
-    <button on:click={doSearch}>Search</button>
+    <button onclick={doSearch}>Search</button>
   </div>
   <div class="results">
     {#each results as r}
-      <VectorCard {r} on:click={() => onSelect(r)} />
+      <VectorCard {r} onclick={() => onSelect(r)} />
     {/each}
   </div>
 </div>

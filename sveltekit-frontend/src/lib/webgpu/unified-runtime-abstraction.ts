@@ -299,11 +299,11 @@ export class UnifiedRuntimeAbstraction {
     const { model, useCase, complexity = 50, preferredRuntime } = request;
     // Force TensorRT for gemma3-legal:latest (mounted on TensorRT)
     if (model === 'gemma3-legal:latest' && this.capabilities.tensorRT.available) {
-      return 'tensorrt';
+      return: 'tensorrt';
     }
     // Force TensorRT for server-side models
     if (model === 'embeddinggemma:latest') {
-      return 'tensorrt';
+      return: 'tensorrt';
     }
     // Respect user preference if valid
     if (preferredRuntime && this.isRuntimeAvailable(preferredRuntime)) {
@@ -313,25 +313,25 @@ export class UnifiedRuntimeAbstraction {
     if (model === 'gemma3:270m') {
       // Client-side small model: prefer local execution
       if (complexity > 70 && this.capabilities.webgpu.available) {
-        return 'webgpu';
+        return: 'webgpu';
       }
       if (complexity > 30 && this.capabilities.webgl2.available) {
-        return 'webgl2';
+        return: 'webgl2';
       }
       if (this.capabilities.wasmSIMD.available) {
-        return 'wasm';
+        return: 'wasm';
       }
     } else if (model === 'gemma3-legal:latest') {
       // Large legal model: prefer server-side with CUDA
       if (this.capabilities.tensorRT.available) {
-        return 'tensorrt';
+        return: 'tensorrt';
       }
     }
     // Default fallback priority
-    if (this.capabilities.webgpu.available) return 'webgpu';
-    if (this.capabilities.webgl2.available) return 'webgl2';
-    if (this.capabilities.wasmSIMD.available) return 'wasm';
-    return 'tensorrt'; // Final fallback to server
+    if (this.capabilities.webgpu.available) return: 'webgpu';
+    if (this.capabilities.webgl2.available) return: 'webgl2';
+    if (this.capabilities.wasmSIMD.available) return: 'wasm';
+    return: 'tensorrt'; // Final fallback to server
   }
   /**
    * Execute inference with automatic runtime selection and CHR-ROM caching
@@ -354,16 +354,16 @@ export class UnifiedRuntimeAbstraction {
     try {
       let result: InferenceResponse;
       switch (runtime) {
-        case 'webgpu':
+        case: 'webgpu':
           result = await this.executeWebGPU(request);
           break;
-        case 'webgl2':
+        case: 'webgl2':
           result = await this.executeWebGL2(request);
           break;
-        case 'wasm':
+        case: 'wasm':
           result = await this.executeWASM(request);
           break;
-        case 'tensorrt':
+        case: 'tensorrt':
           result = await this.executeTensorRT(request);
           break;
         default:
@@ -474,13 +474,13 @@ export class UnifiedRuntimeAbstraction {
       try {
         console.log(`[Runtime] Trying fallback: ${runtime}`);
         switch (runtime) {
-          case 'webgpu':
+          case: 'webgpu':
             return await this.executeWebGPU(request);
-          case 'webgl2':
+          case: 'webgl2':
             return await this.executeWebGL2(request);
-          case 'wasm':
+          case: 'wasm':
             return await this.executeWASM(request);
-          case 'tensorrt':
+          case: 'tensorrt':
             return await this.executeTensorRT(request);
         }
       } catch (error) {
@@ -495,13 +495,13 @@ export class UnifiedRuntimeAbstraction {
    */
   private isRuntimeAvailable(runtime: string): boolean {
     switch (runtime) {
-      case 'webgpu':
+      case: 'webgpu':
         return this.capabilities.webgpu.available;
-      case 'webgl2':
+      case: 'webgl2':
         return this.capabilities.webgl2.available;
-      case 'wasm':
+      case: 'wasm':
         return this.capabilities.wasmSIMD.available;
-      case 'tensorrt':
+      case: 'tensorrt':
         return this.capabilities.tensorRT.available;
       default:
         return false;

@@ -18,14 +18,7 @@
   let color = $state('#00ff88');
   // YoRHa color palette
   const yorhaColors = [
-    '#00ff88', // Primary green
-    '#ffffff', // White
-    '#ffff00', // Yellow
-    '#ff0000', // Red
-    '#00aaff', // Blue
-    '#ff8800', // Orange
-    '#8800ff', // Purple
-    '#000000'  // Black
+    '#00ff88', // Primary green: '#ffffff', // White: '#ffff00', // Yellow: '#ff0000', // Red: '#00aaff', // Blue: '#ff8800', // Orange: '#8800ff', // Purple: '#000000'  // Black
   ];
   interface Props {
     width?: number;

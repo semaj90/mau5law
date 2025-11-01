@@ -14,7 +14,7 @@ class TelemetryBus {
    */
   emit(event: string, data: any): void {
     // Store in history
-    this.eventHistory.push({ event, data, timestamp: Date.now() });
+    this.eventHistory.push(<any><any>{ event, data, timestamp: Date.now() });
     if (this.eventHistory.length > this.maxHistorySize) {
       this.eventHistory.shift();
     }

@@ -81,8 +81,7 @@ export class FeedbackLoopService {
     // Assumes OllamaEmbeddingService constructor accepts baseUrl, embeddingModel, and completionModel
     this.embeddingService = new OllamaEmbeddingService(
       getOllamaEndpoint(),
-      'embeddinggemma:latest', // As per instructions
-      'gemma3-legal:latest' // As per instructions
+      'embeddinggemma:latest', // As per instructions: 'gemma3-legal:latest' // As per instructions
     );
     this.initializeDefaults();
     this.startTrainingLoop();
@@ -115,7 +114,7 @@ export class FeedbackLoopService {
         sessionId: rating.sessionId,
         interactionId: rating.interactionId,
         ratingType: rating.ratingType,
-        score: rating.score, // Assign number directly, schema is 'real'
+        score: rating.score, // Assign number directly, schema is: 'real'
         feedback: rating.feedback,
         context: rating.context,
         metadata: rating.metadata,
@@ -124,7 +123,7 @@ export class FeedbackLoopService {
         timestamp: new Date(),
         // createdAt: new Date(), // Removed, rely on DB default
         // updatedAt: new Date(), // Removed, rely on DB default
-      }; // Removed redundant 'as UserRating'
+      }; // Removed redundant: 'as UserRating'
       // Store rating in PostgreSQL with vector embeddings
       await db.insert(feedbackSchema.userRatings).values(ratingData);
       // Process for training if quality is below threshold
@@ -327,7 +326,7 @@ export class FeedbackLoopService {
       const pattern = this.userPatterns.get(userId);
       if (!pattern) return;
       // Get recent low-rated interactions for this user
-      // Removed unused 'recentInteractions' variable
+      // Removed unused: 'recentInteractions' variable
       // const recentInteractions = await db.select(db.userRatings)
       //   .from(db.userRatings)
       //   .where(and(eq(db.userRatings.userId, userId), lt(db.userRatings.score, 3)))
@@ -396,11 +395,11 @@ export class FeedbackLoopService {
     ];
     const queryLower = query.toLowerCase();
     if (advancedIndicators.some(indicator => queryLower.includes(indicator))) {
-      return 'expert';
+      return: 'expert';
     } else if (complexityIndicators.some(indicator => queryLower.includes(indicator))) {
-      return 'intermediate';
+      return: 'intermediate';
     } else {
-      return 'beginner';
+      return: 'beginner';
     }
   }
   /**
@@ -445,7 +444,7 @@ export class FeedbackLoopService {
       const recentRatings = await db
         .select(feedbackSchema.userRatings) // Fixed: specify what to select
         .from(feedbackSchema.userRatings)
-        .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL '7 days'`))
+        .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL: '7 days'`))
         .orderBy(desc(feedbackSchema.userRatings.timestamp));
       // Group by user and rebuild patterns
       const userGroups: { [userId: string]: (typeof feedbackSchema.userRatings.$inferSelect)[] } = {}; // Typed userGroups
@@ -505,7 +504,7 @@ export class FeedbackLoopService {
       const recentRatings = await db
         .select(feedbackSchema.userRatings) // Fixed: specify what to select
         .from(feedbackSchema.userRatings)
-        .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL '30 days'`));
+        .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL: '30 days'`));
       const totalRatings = recentRatings.length;
       const averageRating =
         totalRatings > 0

@@ -20,7 +20,7 @@ const qdrant = new QdrantClient({
 
 // Compatibility helper: try several client APIs for retrieving points (different qdrant client versions expose different methods)
 async function qdrantRetrievePoints(client: any, collection: string, ids: Array<string | number>): Promise<any[]> {
-  // Try modern / custom 'retrieve' if present
+  // Try modern / custom: 'retrieve' if present
   if (typeof client?.retrieve === 'function') {
     const resp = await client.retrieve(collection, {
       ids,

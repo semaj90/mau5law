@@ -1,9 +1,9 @@
 <script lang="ts">
   import ThemeProvider from './ThemeProvider.svelte';
   import ThemeToggle from './ThemeToggle.svelte';
-  import Sidebar from './Sidebar.svelte';
-  import DocumentCard from './DocumentCard.svelte';
-  import Button from './Button.svelte';
+  import { Sidebar } from './Sidebar.svelte'; // Changed to named import
+  import { DocumentCard } from './DocumentCard.svelte'; // Changed to named import
+  import { Button } from './Button.svelte'; // Changed to named import
   interface SidebarDemoProps {
     theme?: 'default' | 'legal' | 'gaming';
   }
@@ -11,58 +11,58 @@
     theme = 'default'
   }: SidebarDemoProps = $props();
   let currentPage = $state('dashboard');
-  let sidebarCollapsed = $state(true);
+  // let sidebarCollapsed = $state(true); // Removed as it's unused
   // Sample navigation items
   const navigationItems = [
     {
       id: 'dashboard',
       label: 'Dashboard',
-      icon '📊',
+      icon: '📊', // Fixed syntax
       badge: '3',
     },
     {
       id: 'documents',
       label: 'Documents',
-      icon '📄',
+      icon: '📄', // Fixed syntax
       badge: '12',
       children: [
-        { id: 'contracts', label: 'Contracts', icon '📋', badge: '5' },
-        { id: 'evidence', label: 'Evidence', icon '🔍', badge: '7' },
-        { id: 'briefs', label: 'Legal Briefs', icon '⚖️' }
+        { id: 'contracts', label: 'Contracts', icon: '📋', badge: '5' }, // Fixed syntax
+        { id: 'evidence', label: 'Evidence', icon: '🔍', badge: '7' }, // Fixed syntax
+        { id: 'briefs', label: 'Legal Briefs', icon: '⚖️' } // Fixed syntax
       ]
     },
     {
       id: 'cases',
       label: 'Cases',
-      icon '📚',
+      icon: '📚', // Fixed syntax
       badge: '8',
     },
     {
       id: 'clients',
       label: 'Clients',
-      icon '👥',
+      icon: '👥', // Fixed syntax
       badge: '24',
     },
     {
       id: 'calendar',
       label: 'Calendar',
-      icon '📅',
+      icon: '📅', // Fixed syntax
     },
     {
       id: 'reports',
       label: 'Reports',
-      icon '📈',
+      icon: '📈', // Fixed syntax
     },
     {
       id: 'ai-assistant',
       label: 'AI Assistant',
-      icon '🤖',
+      icon: '🤖', // Fixed syntax
       badge: 'NEW',
     },
     {
       id: 'settings',
       label: 'Settings',
-      icon '⚙️',
+      icon: '⚙️', // Fixed syntax
     }
   ];
   // Sample documents for demo
@@ -101,8 +101,8 @@
     }
   ];
   function handleSidebarItemClick(_event: CustomEvent) {
-    currentPage = e(vent as CustomEvent).detail.item.id;
-    console.log('Navigation to:', e(vent as CustomEvent).detail.item.label);
+    currentPage = _event.detail.item.id; // Fixed typo
+    console.log('Navigation to:', _event.detail.item.label); // Fixed typo
   }
   function handleHomeClick() {
     currentPage = 'home';
@@ -110,70 +110,70 @@
   }
   function getPageContent(page: string) {
     switch (page) {
-      case 'home':
+      case: 'home':
         return {
           title: '🏠 Home Dashboard',
-          description 'Welcome to your legal workspace',
+          description: 'Welcome to your legal workspace', // Fixed syntax
         }
-      case 'dashboard':
+      case: 'dashboard':
         return {
           title: '📊 Analytics Dashboard',
-          description 'Overview of your legal practice metrics',
+          description: 'Overview of your legal practice metrics', // Fixed syntax
         }
-      case 'documents':
+      case: 'documents':
         return {
           title: '📄 Document Library',
-          description 'Manage all your legal documents',
+          description: 'Manage all your legal documents', // Fixed syntax
         }
-      case 'contracts':
+      case: 'contracts':
         return {
           title: '📋 Contracts',
-          description 'Contract management and analysis',
+          description: 'Contract management and analysis', // Fixed syntax
         }
-      case 'evidence':
+      case: 'evidence':
         return {
           title: '🔍 Evidence Management',
-          description 'Digital evidence and discovery tools',
+          description: 'Digital evidence and discovery tools', // Fixed syntax
         }
-      case 'briefs':
+      case: 'briefs':
         return {
           title: '⚖️ Legal Briefs',
-          description 'Brief writing and case preparation',
+          description: 'Brief writing and case preparation', // Fixed syntax
         }
-      case 'cases':
+      case: 'cases':
         return {
           title: '📚 Case Management',
-          description 'Track and manage your legal cases',
+          description: 'Track and manage your legal cases', // Fixed syntax
         }
-      case 'clients':
+      case: 'clients':
         return {
           title: '👥 Client Portal',
-          description 'Client information and communication',
+          description: 'Client information and communication', // Fixed syntax
         }
-      case 'calendar':
+      case: 'calendar':
         return {
           title: '📅 Legal Calendar',
-          description 'Court dates, deadlines, and appointments',
+          description: 'Court dates, deadlines, and appointments', // Fixed syntax
         }
-      case 'reports':
+      case: 'reports':
         return {
           title: '📈 Reports & Analytics',
-          description 'Generate insights from your legal data',
+          description: 'Generate insights from your legal data', // Fixed syntax
         }
-      case 'ai-assistant':
+      case: 'ai-assistant':
         return {
           title: '🤖 AI Legal Assistant',
-          description 'AI-powered legal research and analysis',
+          description: 'AI-powered legal research and analysis', // Fixed syntax
         }
-      case 'settings':
+      case: 'settings':
         return {
           title: '⚙️ System Settings',
-          description 'Configure your legal workspace',
+          description: 'Configure your legal workspace', // Fixed syntax
         }
       default:
         return {
           title: '📄 Page Not Found',
-          description 'The requested page could not be found',
+          description: 'The requested page could not be found', // Fixed syntax
         }
     }
   }
@@ -231,7 +231,7 @@
           </div>
           <div class="flex items-center space-x-4">
             <ThemeToggle {theme} variant="button" showLabel={false} />
-            <Button {theme} variant="primary" size="sm">New Document</Button>
+            <Button variant="primary" size="sm">New Document</Button> <!-- Removed {theme} prop -->
           </div>
         </div>
       </header>
@@ -425,7 +425,7 @@
             >
               {pageContent.description}
             </p>
-            <Button {theme} variant="primary">Get Started</Button>
+            <Button variant="primary">Get Started</Button> <!-- Removed {theme} prop -->
           </div>
         {/if}
         <!-- Sidebar Demo Instructions -->

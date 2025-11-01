@@ -137,7 +137,7 @@
       }
       return alphabetTexture;
     } catch (error) {
-      console.error(`❌ Failed to cache texture for '${char}':`, error);
+      console.error(`❌ Failed to cache texture for: '${char}':`, error);
       // Return fallback texture
       return {
         char,
@@ -280,7 +280,7 @@
     // Get cached texture for character
     const texture = alphabetCache.get(char);
     if (texture && texture.cached) {
-      console.log(`🎨 Applied texture effect for '${char}'. Texture object:`, texture);
+      console.log(`🎨 Applied texture effect for: '${char}'. Texture object:`, texture);
       // TODO: Implement actual visual application of texture effects, potentially using WebGPU/WebGL
     }
     // Add character-specific animations
@@ -288,10 +288,10 @@
       // Exclamation/question marks get extra emphasis
       setTimeout(() => {
         if (textElement) {
-          console.log(`✨ Adding 'nes-text-emphasis' for '${char}'`);
+          console.log(`✨ Adding: 'nes-text-emphasis' for: '${char}'`);
           textElement.classList.add('nes-text-emphasis');
           setTimeout(() => {
-            console.log(`✨ Removing 'nes-text-emphasis' for '${char}'`);
+            console.log(`✨ Removing: 'nes-text-emphasis' for: '${char}'`);
             textElement.classList.remove('nes-text-emphasis');
           }, 200);
         }

@@ -104,7 +104,7 @@
 			aria-label="Search cases" />
 
 		<!-- replaced unavailable ButtonBits with native button and correct Svelte event -->
-		<button class="nes-btn is-primary" on:click={createNewCase}>➕ NEW CASE</button>
+		<button class="nes-btn is-primary" on:click={($event: any) => ($event: any) => createNewCase}>➕ NEW CASE</button>
 	</div>
 
 	{#if data.error}
@@ -116,7 +116,7 @@
 	{#if filteredCases.length === 0}
 		<div class="empty-state nes-container is-rounded">
 			<p>📁 No cases found{searchQuery ? ` matching "${searchQuery}"` : ''}</p>
-			<button class="nes-btn is-primary" on:click={createNewCase}>Create Your First Case</button>
+			<button class="nes-btn is-primary" on:click={($event: any) => ($event: any) => createNewCase}>Create Your First Case</button>
 		</div>
 	{:else}
 
@@ -304,3 +304,5 @@
 		}
 	}
 </style>
+
+

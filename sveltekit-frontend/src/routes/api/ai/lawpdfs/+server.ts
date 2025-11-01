@@ -85,7 +85,7 @@ interface FileProcessingResult {
   webSocketUrl?: string;
 }
 
-// Define a type for redisOptimized to remove 'any' cast
+// Define a type for redisOptimized to remove: 'any' cast
 interface RedisOptimizedMiddleware {
   documentProcessing: (handler: RequestHandler) => RequestHandler;
   // Add other methods if they exist, e.g.,
@@ -468,7 +468,7 @@ function extractBasicEntities(content: string) {
     matches.slice(0, 5).forEach(match => {
       entities.push({
         text: match,
-        type: type as 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT', // More specific type casting
+        type: type as: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT', // More specific type casting
         confidence: 0.7,
       });
     });
@@ -531,5 +531,5 @@ function assessBasicRisk(content: string) {
         : ['Minimal legal review required'],
   };
 }
-// TODO: Add 'documentProcessing' to the type definition in $lib/middleware/redis-orchestrator-middleware.ts
+// TODO: Add: 'documentProcessing' to the type definition in $lib/middleware/redis-orchestrator-middleware.ts
 export const POST = (redisOptimized as RedisOptimizedMiddleware).documentProcessing(originalPOSTHandler);

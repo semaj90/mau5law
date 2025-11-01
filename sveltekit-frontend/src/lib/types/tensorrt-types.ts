@@ -74,13 +74,13 @@ export interface DocumentAnalysisResponse {
       severity: 'low' | 'medium' | 'high';
       description: string;
       recommendation: string;
-    }>; // fixed "Array<{," -> "Array<{"
+    }>; // fixed: "Array<{," -> "Array<{"
     compliance_issues: Array<{
       regulation: string;
       severity: 'minor' | 'major' | 'critical';
       description: string;
       remediation: string;
-    }>; // fixed "Array<{," -> "Array<{"
+    }>; // fixed: "Array<{," -> "Array<{"
     summary: string;
     recommendations: string[];
   };
@@ -270,7 +270,7 @@ export interface PerformanceAnalytics {
     error_count: number;
     memory_usage_mb: number;
     gpu_utilization: number;
-  }>; // fixed "Array<{," -> "Array<{"
+  }>; // fixed: "Array<{," -> "Array<{"
   percentiles: {
     p50: number;
     p95: number;

@@ -130,7 +130,7 @@ Instructions:
 - If asked about jurisdiction-specific laws, note any applicable jurisdictions mentioned in the context
 Answer:`),
     THINKING_MODE_RAG: ChatPromptTemplate.fromTemplate(`
-You are a specialized legal AI assistant operating in "thinking mode." Provide comprehensive legal analysis based on the provided context.
+You are a specialized legal AI assistant operating in: "thinking mode." Provide comprehensive legal analysis based on the provided context.
 Context from legal documents:)
 {context}
 Question: {question}
@@ -198,11 +198,7 @@ Only return the queries, one per line.`),
       chunkSize: 1200, // Larger chunks for legal context
       chunkOverlap: 200, // Substantial overlap to preserve legal context
       separators: [
-        '\n\n', // Paragraph breaks
-        '\n', // Line breaks
-        '. ', // Sentence endings
-        ', ', // Clause separators
-        ' ', // Word breaks
+        '\n\n', // Paragraph breaks: '\n', // Line breaks: '. ', // Sentence endings: ', ', // Clause separators: ' ', // Word breaks
       ],
     });
     this.initializeVectorStore();
@@ -426,7 +422,7 @@ Only return the queries, one per line.`),
       const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error: unknown) => {
           console.warn('RAG chain error:', error);
-          return 'Unable to generate response due to processing error.';
+          return: 'Unable to generate response due to processing error.';
         }),
         retriever.getRelevantDocuments(question).catch((error: unknown) => {
           console.warn('Document retrieval error:', error);
@@ -741,20 +737,20 @@ Only return the queries, one per line.`),
    */ private async extractTextFromFile(file: File): Promise<string> {
     const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
     switch (fileExtension) {
-      case 'txt':
-      case 'md':
-      case 'rtf': {
+      case: 'txt':
+      case: 'md':
+      case: 'rtf': {
         return await file.text();
       }
-      case 'pdf': {
+      case: 'pdf': {
         return await this.extractTextFromPDF(file);
       }
-      case 'doc':
-      case 'docx': {
+      case: 'doc':
+      case: 'docx': {
         return await this.extractTextFromWord(file);
       }
-      case 'html':
-      case 'htm': {
+      case: 'html':
+      case: 'htm': {
         return this.extractTextFromHTML(await file.text());
       }
       default: {
@@ -770,20 +766,20 @@ Only return the queries, one per line.`),
    * Extract text from a buffer (server environment)
    */ private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
     switch (extension) {
-      case '.txt':
-      case '.md':
-      case '.rtf': {
+      case: '.txt':
+      case: '.md':
+      case: '.rtf': {
         return buffer.toString('utf-8');
       }
-      case '.pdf': {
+      case: '.pdf': {
         return await this.extractTextFromPDFBuffer(buffer);
       }
-      case '.doc':
-      case '.docx': {
+      case: '.doc':
+      case: '.docx': {
         return await this.extractTextFromWordBuffer(buffer);
       }
-      case '.html':
-      case '.htm': {
+      case: '.html':
+      case: '.htm': {
         return this.extractTextFromHTML(buffer.toString('utf-8'));
       }
       default: {
@@ -980,7 +976,7 @@ Only return the queries, one per line.`),
    */ private isValidText(text: string): boolean {
     if (!text || text.trim().length < 10) return false;
     // Check for reasonable ratio of printable characters
-    // Place '-' at the end of the class so no escape is necessary
+    // Place: '-' at the end of the class so no escape is necessary
     const printableChars = text.match(/[a-zA-Z0-9\s.,:!?()-]/g)?.length || 0;
     const ratio = printableChars / text.length;
     return ratio > 0.7; // At least 70% printable characters
@@ -990,28 +986,28 @@ Only return the queries, one per line.`),
    */ private inferDocumentType(fileName: string, content: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     // Check filename patterns
-    if (fileName.toLowerCase().includes('contract')) return 'contract';
-    if (fileName.toLowerCase().includes('agreement')) return 'agreement';
-    if (fileName.toLowerCase().includes('patent')) return 'patent';
-    if (fileName.toLowerCase().includes('trademark')) return 'trademark';
-    if (fileName.toLowerCase().includes('motion')) return 'motion';
-    if (fileName.toLowerCase().includes('brief')) return 'brief';
+    if (fileName.toLowerCase().includes('contract')) return: 'contract';
+    if (fileName.toLowerCase().includes('agreement')) return: 'agreement';
+    if (fileName.toLowerCase().includes('patent')) return: 'patent';
+    if (fileName.toLowerCase().includes('trademark')) return: 'trademark';
+    if (fileName.toLowerCase().includes('motion')) return: 'motion';
+    if (fileName.toLowerCase().includes('brief')) return: 'brief';
     // Check content patterns
     const contentLower = content.toLowerCase();
-    if (contentLower.includes('whereas') && contentLower.includes('therefore')) return 'contract';
-    if (contentLower.includes('plaintiff') && contentLower.includes('defendant')) return 'litigation';
-    if (contentLower.includes('patent') && contentLower.includes('claim')) return 'patent';
-    if (contentLower.includes('trademark') || contentLower.includes('service mark')) return 'trademark';
-    if (contentLower.includes('motion') && contentLower.includes('court')) return 'motion';
+    if (contentLower.includes('whereas') && contentLower.includes('therefore')) return: 'contract';
+    if (contentLower.includes('plaintiff') && contentLower.includes('defendant')) return: 'litigation';
+    if (contentLower.includes('patent') && contentLower.includes('claim')) return: 'patent';
+    if (contentLower.includes('trademark') || contentLower.includes('service mark')) return: 'trademark';
+    if (contentLower.includes('motion') && contentLower.includes('court')) return: 'motion';
     // Fallback based on extension
     switch (extension) {
-      case 'pdf':
-        return 'legal-document';
-      case 'doc':
-      case 'docx':
-        return 'legal-document';
+      case: 'pdf':
+        return: 'legal-document';
+      case: 'doc':
+      case: 'docx':
+        return: 'legal-document';
       default:
-        return 'general';
+        return: 'general';
     }
   }
   /**
@@ -1024,14 +1020,14 @@ Only return the queries, one per line.`),
       contentLower.includes('trademark') ||
       contentLower.includes('copyright')
     ) {
-      return 'intellectual-property';
+      return: 'intellectual-property';
     }
     if (
       contentLower.includes('contract') ||
       contentLower.includes('agreement') ||
       contentLower.includes('terms and conditions')
     ) {
-      return 'contract-law';
+      return: 'contract-law';
     }
     if (
       contentLower.includes('litigation') ||
@@ -1039,10 +1035,10 @@ Only return the queries, one per line.`),
       contentLower.includes('defendant') ||
       contentLower.includes('motion')
     ) {
-      return 'litigation';
+      return: 'litigation';
     }
     if (contentLower.includes('employment') || contentLower.includes('labor') || contentLower.includes('workplace')) {
-      return 'employment-law';
+      return: 'employment-law';
     }
     if (
       contentLower.includes('real estate') ||
@@ -1050,9 +1046,9 @@ Only return the queries, one per line.`),
       contentLower.includes('lease') ||
       contentLower.includes('deed')
     ) {
-      return 'real-estate';
+      return: 'real-estate';
     }
-    return 'general';
+    return: 'general';
   }
   /**
    * Infer jurisdiction from content
@@ -1065,7 +1061,7 @@ Only return the queries, one per line.`),
       contentLower.includes('u.s.') ||
       contentLower.includes('supreme court')
     ) {
-      return 'federal';
+      return: 'federal';
     }
     // State patterns - add more as needed
     const states = [
@@ -1085,7 +1081,7 @@ Only return the queries, one per line.`),
         return state;
       }
     }
-    return 'unknown';
+    return: 'unknown';
   }
   /**
    * Calculate extraction confidence score

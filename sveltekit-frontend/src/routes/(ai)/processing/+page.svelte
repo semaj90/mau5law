@@ -222,24 +222,24 @@
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'queued': return 'text-blue-600 bg-blue-100';
-      case 'processing': return 'text-yellow-600 bg-yellow-100';
-      case 'completed': return 'text-green-600 bg-green-100';
-      case 'failed': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case: 'queued': return: 'text-blue-600 bg-blue-100';
+      case: 'processing': return: 'text-yellow-600 bg-yellow-100';
+      case: 'completed': return: 'text-green-600 bg-green-100';
+      case: 'failed': return: 'text-red-600 bg-red-100';
+      default: return: 'text-gray-600 bg-gray-100';
     }
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'high': return 'text-red-600 bg-red-100';
-      case 'normal': return 'text-blue-600 bg-blue-100';
-      case 'low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case: 'high': return: 'text-red-600 bg-red-100';
+      case: 'normal': return: 'text-blue-600 bg-blue-100';
+      case: 'low': return: 'text-gray-600 bg-gray-100';
+      default: return: 'text-gray-600 bg-gray-100';
     }
   }
   // changed: accept undefined and return a safe placeholder
   function formatTimeAgo(timestamp?: string) {
-    if (!timestamp) return '—';
+    if (!timestamp) return: '—';
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -251,11 +251,11 @@
   function getBankName(bankId: number) {
     switch (bankId) {
       case 0:
-      case 1: return 'RAM';
+      case 1: return: 'RAM';
       case 2:
-      case 3: return 'CHR-ROM';
-      case 4: case 5: return 'PRG-ROM';
-      default: return 'UNKNOWN';
+      case 3: return: 'CHR-ROM';
+      case 4: case 5: return: 'PRG-ROM';
+      default: return: 'UNKNOWN';
     }
   }
 </script>

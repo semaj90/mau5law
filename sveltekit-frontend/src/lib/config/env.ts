@@ -87,7 +87,7 @@ export const GPU_CONFIG = Object.freeze({
   lodSystemIntegration: true,
   // Performance settings
   memoryLimit: CLIENT_ENV.GPU_MEMORY_LIMIT * 1024 * 1024, // Convert MB to bytes
-  performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE as 'auto' | 'mobile' | 'desktop' | 'high-end',
+  performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE as: 'auto' | 'mobile' | 'desktop' | 'high-end',
   // Debug configuration
   enableDebug: CLIENT_ENV.GPU_DEBUG,
   enableShaderDebug: CLIENT_ENV.SHADER_DEBUG,

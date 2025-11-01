@@ -160,9 +160,9 @@ async function streamToString(
   const chunks: Uint8Array[] = [];
   const nodeStream = body as AsyncIterable<Buffer | Uint8Array | string>;
   for await (const chunk of nodeStream) {
-    if (typeof chunk === 'string') chunks.push(Buffer.from(chunk));
-    else if (Buffer.isBuffer(chunk)) chunks.push(chunk);
-    else chunks.push(Buffer.from(chunk));
+    if (typeof chunk === 'string') chunks.push(<any><any>Buffer.from(chunk));
+    else if (Buffer.isBuffer(chunk)) chunks.push(<any><any>chunk);
+    else chunks.push(<any><any>Buffer.from(chunk));
   }
   return Buffer.concat(chunks).toString('utf-8');
 }

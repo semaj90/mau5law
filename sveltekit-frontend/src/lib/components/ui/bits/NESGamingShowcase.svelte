@@ -20,54 +20,54 @@
     {
       id: 'legal-ai',
       title: 'Legal AI System',
-      description 'Advanced neural networks for legal analysis',
+      description: 'Advanced neural networks for legal analysis',
       status: 'online',
-      icon '⚖️',
+      icon: '⚖️',
     },
     {
       id: 'evidence',
       title: 'Evidence Processing',
-      description 'Blockchain-verified evidence management',
+      description: 'Blockchain-verified evidence management',
       status: 'processing',
-      icon '🔍',
+      icon: '🔍',
     },
     {
       id: 'knowledge',
       title: 'Knowledge Graph',
-      description 'Connected legal precedent database',
+      description: 'Connected legal precedent database',
       status: 'online',
-      icon '🧠',
+      icon: '🧠',
     },
     {
       id: 'gpu-cluster',
       title: 'GPU Cluster',
-      description 'High-performance tensor operations',
+      description: 'High-performance tensor operations',
       status: 'warning',
-      icon '⚡',
+      icon: '⚡',
     }
   ];
   function handleCardSelect(cardId: string) {
     selectedCard = cardId;
     showModal = true;
   }
-  function handleGameAction(action string) {
+  function handleGameAction(action: string) {
     switch (action) {
-      case 'start':
+      case: 'start':
         isPlaying = true;
         score = 0;
         break;
-      case 'pause':
+      case: 'pause':
         isPlaying = false;
         break;
-      case 'powerup':
+      case: 'powerup':
         score += 100;
         if (score % 1000 === 0) level++;
         break;
-      case 'damage':
+      case: 'damage':
         lives = Math.max(0, lives - 1);
         if (lives === 0) isPlaying = false;
         break;
-      case 'reset':
+      case: 'reset':
         score = 1337;
         level = 42;
         lives = 3;
@@ -77,20 +77,20 @@
   }
   function getStatusVariant(status: string) {
     switch (status) {
-      case 'online': return 'success';
-      case 'processing': return 'warning';
-      case 'warning': return 'warning';
-      case 'error': return 'danger';
-      default: return 'default';
+      case: 'online': return: 'success';
+      case: 'processing': return: 'warning';
+      case: 'warning': return: 'warning';
+      case: 'error': return: 'danger';
+      default: return: 'default';
     }
   }
   function getStatusText(status: string) {
     switch (status) {
-      case 'online': return 'ONLINE';
-      case 'processing': return 'PROC...';
-      case 'warning': return 'WARN!';
-      case 'error': return 'ERROR';
-      default: return 'IDLE';
+      case: 'online': return: 'ONLINE';
+      case: 'processing': return: 'PROC...';
+      case: 'warning': return: 'WARN!';
+      case: 'error': return: 'ERROR';
+      default: return: 'IDLE';
     }
   }
 </script>
@@ -230,14 +230,14 @@
 <style>
   .nes-gaming-showcase {
     padding: 2rem;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     min-height: 100vh;
     color: theme('colors.nes.white');
   }
   .showcase-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
   }
@@ -260,7 +260,7 @@
   }
   .stat-item {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
   }
   .stat-label {
@@ -286,7 +286,7 @@
   }
   .feature-content {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-top: 1rem;
   }
@@ -356,7 +356,7 @@
   }
   .stat-row {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     font-size: 0.625rem;
   }
   .modal-actions {

@@ -4,7 +4,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!--
   N64 Detective UI - Gaming-Style Evidence Analysis Interface
   Integrates with Detective Analysis Engine, NES Memory Architecture,
-  Texture Streaming, and Multi-Dimensional Cache with "Did You Mean" suggestions
+  Texture Streaming, and Multi-Dimensional Cache with: "Did You Mean" suggestions
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -116,9 +116,9 @@ if (!browser) return;
           conflictId: `conflict_${Date.now()}`,
           type: 'factual_inconsistency',
           severity: 'medium',
-          description 'Potential inconsistency detected with previous evidence',
+          description: 'Potential inconsistency detected with previous evidence',
           affectedEvidence: [evidence.id],
-          suggestedResolution 'Review evidence for accuracy',
+          suggestedResolution: 'Review evidence for accuracy',
           confidence: 0.75,
           llmResponse: {
             summary: 'LLM analysis indicates potential conflict',
@@ -150,7 +150,7 @@ if (!browser) return;
     }
   }
   /**
-   * Handle search input with "did you mean" suggestions
+   * Handle search input with: "did you mean" suggestions
    */
   async function handleSearchInput() {
     if (searchQuery.length < 3) {

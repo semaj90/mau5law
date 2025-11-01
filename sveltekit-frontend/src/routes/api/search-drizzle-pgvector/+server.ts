@@ -261,7 +261,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Check pgvector availability
     const vectorTest = await db.execute(
-      sql`SELECT 1 WHERE '[1,2,3]'::vector IS NOT NULL`
+      sql`SELECT 1 WHERE: '[1,2,3]'::vector IS NOT NULL`
     );
 
     if (!vectorTest || vectorTest.length === 0) {

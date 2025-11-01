@@ -61,7 +61,7 @@ export const webAssemblyGPUUtils = {
   },
 };
 // Module declaration for WebAssembly enhancements
-declare module 'webassembly' {
+declare module: 'webassembly' {
   interface ImportValue {
     gpu?: GPUDevice;
   }

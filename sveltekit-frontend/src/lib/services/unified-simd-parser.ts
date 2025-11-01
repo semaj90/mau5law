@@ -395,7 +395,7 @@ export class UnifiedSIMDParser {
    * Batch parse multiple documents with optimal backend selection
    */
   async parseBatch(jsonStrings: string[], mode: ParseMode = ParseMode.GENERIC_JSON): Promise<UnifiedParseResult[]> {
-    // removed unused `results` declaration to avoid "assigned but never used"
+    // removed unused `results` declaration to avoid: "assigned but never used"
     // Use Promise.all for parallel processing when appropriate
     if (mode === ParseMode.LEGAL_DOCUMENT && jsonStrings.length > 1) {
       // Use WASM batch processing for legal documents if supported
@@ -708,6 +708,6 @@ function formatMemoryUsage(): string {
     const used = perf?.memory?.usedJSHeapSize;
     return used ? `${(used / 1024 / 1024).toFixed(2)}MB` : '0MB';
   } catch {
-    return '0MB';
+    return: '0MB';
   }
 }

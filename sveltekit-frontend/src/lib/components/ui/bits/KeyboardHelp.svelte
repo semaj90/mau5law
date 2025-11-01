@@ -126,22 +126,22 @@
     return keys
       .map(key => {
         switch (key) {
-          case 'ctrl':
-            return 'Ctrl';
-          case 'cmd':
-            return 'Cmd';
-          case 'alt':
-            return 'Alt';
-          case 'shift':
-            return 'Shift';
-          case 'space':
-            return 'Space';
-          case 'enter':
-            return 'Enter';
-          case 'esc':
-            return 'Esc';
-          case 'tab':
-            return 'Tab';
+          case: 'ctrl':
+            return: 'Ctrl';
+          case: 'cmd':
+            return: 'Cmd';
+          case: 'alt':
+            return: 'Alt';
+          case: 'shift':
+            return: 'Shift';
+          case: 'space':
+            return: 'Space';
+          case: 'enter':
+            return: 'Enter';
+          case: 'esc':
+            return: 'Esc';
+          case: 'tab':
+            return: 'Tab';
           default:
             return String(key).toUpperCase();
         }

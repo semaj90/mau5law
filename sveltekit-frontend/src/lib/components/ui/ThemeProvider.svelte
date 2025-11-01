@@ -6,9 +6,13 @@
     children?: Snippet;
   }
   let { theme = 'light', children }: Props = $props();
-  // supported themes: "light" or "dark"
-  // expose theme to descendants via context
-  // TODO: Convert to $derived: setContext('theme', theme)
+
+  // expose theme to descendants via context and update when `theme` changes
+  $effect(() => {
+    setContext('theme', theme);
+  });
+</script>
+
 <style>
   .theme-provider {
 	min-height: 100%;
@@ -27,6 +31,7 @@
 	color: var(--text);
   }
 </style>
-<div class="theme-provider {theme}">
+
+<div class={"theme-provider " + theme}>
   {@render children?.()}
 </div>

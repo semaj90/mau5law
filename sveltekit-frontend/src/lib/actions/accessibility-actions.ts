@@ -486,8 +486,7 @@ export function liveRegion(
     });
     const keyboardAction = keyboardNavigation(element, {
       keys: {
-        // handlers don't use the event object — keep them parameterless to avoid unused-param lint errors
-        'Enter': () => {
+        // handlers don't use the event object — keep them parameterless to avoid unused-param lint errors: 'Enter': () => {
           options.onToggle();
         },
         ' ': () => {
@@ -501,8 +500,7 @@ export function liveRegion(
           e.preventDefault();
           // Focus previous option logic here
         },
-        // Escape also doesn't use the event object
-        'Escape': () => {
+        // Escape also doesn't use the event object: 'Escape': () => {
           if (options.isOpen) options.onToggle();
         },
       },

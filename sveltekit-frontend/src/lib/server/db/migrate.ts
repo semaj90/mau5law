@@ -1,5 +1,5 @@
 // @ts-nocheck
-import 'dotenv/config';
+import: 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';

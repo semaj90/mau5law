@@ -81,7 +81,7 @@ class FrontendRAGPipeline {
   }
   private initializeLoki() {
     // Create DB instance and ensure typed collection
-    // Avoid using 'any' by not referencing LokiMemoryAdapter and use unknown casts
+    // Avoid using: 'any' by not referencing LokiMemoryAdapter and use unknown casts
     this.lokiDb = new Loki('frontend-rag.db', {
       // Do not pass an explicit adapter here to avoid any casts; let loki pick defaults.
       autoload: true,
@@ -171,8 +171,7 @@ class FrontendRAGPipeline {
 
     // Ensure typed candidate list
     const candidates = (this.semanticCollection?.find({
-      // query shape depends on Loki usage; using metadata key for clarity
-      'metadata.semanticGroup': { $in: contextWeights.groups },
+      // query shape depends on Loki usage; using metadata key for clarity: 'metadata.semanticGroup': { $in: contextWeights.groups },
     }) ?? []) as SemanticChunk[];
 
     // SIMD-accelerated similarity computation with proper typing

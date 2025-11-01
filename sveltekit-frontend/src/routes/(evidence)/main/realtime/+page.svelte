@@ -70,8 +70,7 @@
     const demoEvidence = [
       {
         title: "Security Camera Footage",
-        description
-          "Camera footage from the main entrance showing suspect entering at 9:15 PM",
+        description: "Camera footage from the main entrance showing suspect entering at 9:15 PM",
         type: "video",
         caseId: "case-001",
         tags: ["surveillance", "timestamp", "entrance"],
@@ -83,8 +82,7 @@
       },
       {
         title: "Witness Statement - John Doe",
-        description
-          "First-hand account of the incident from witness who was present at the scene",
+        description: "First-hand account of the incident from witness who was present at the scene",
         type: "testimony",
         caseId: "case-001",
         tags: ["witness", "firsthand", "scene"],
@@ -96,8 +94,7 @@
       },
       {
         title: "Fingerprint Analysis Report",
-        description
-          "Forensic analysis of fingerprints found on the door handle",
+        description: "Forensic analysis of fingerprints found on the door handle",
         type: "document",
         caseId: "case-001",
         tags: ["forensics", "fingerprints", "physical"],
@@ -109,8 +106,7 @@
       },
       {
         title: "Phone Records",
-        description
-          "Call logs and text messages from suspect's phone for the relevant time period",
+        description: "Call logs and text messages from suspect's phone for the relevant time period",
         type: "digital",
         caseId: "case-001",
         tags: ["communications", "timeline", "digital"],
@@ -151,7 +147,7 @@
   }
   function formatObjectAsCount(obj: Record<string, number>): string {
     const entries = Object.entries(obj);
-    if (entries.length === 0) return "0 types";
+    if (entries.length === 0) return: "0 types";
     if (entries.length <= 3) {
       return entries.map(([key, value]) => `${key}: ${value}`).join(", ");
   }

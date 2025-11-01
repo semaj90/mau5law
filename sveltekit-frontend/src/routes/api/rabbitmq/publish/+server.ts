@@ -39,13 +39,13 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     // Simulate different processing flows based on routing key
     switch (routingKey) {
-      case 'document':
+      case: 'document':
         console.log('📄 Document queued for chunking:', message.document_id);
         break;
-      case 'chunk':
+      case: 'chunk':
         console.log('🧩 Chunk queued for embedding:', message.chunk_id);
         break;
-      case 'embedding':
+      case: 'embedding':
         console.log('🧠 Embedding queued for Neo4j storage:', message.chunk_id);
         break;
       default:
@@ -80,9 +80,7 @@ export const GET: RequestHandler = async () => {
     method: 'POST',
     description: 'Publish messages to RabbitMQ exchanges',
     supportedRoutingKeys: [
-      'document', // For document processing pipeline
-      'chunk', // For chunk embedding pipeline
-      'embedding', // For Neo4j storage pipeline
+      'document', // For document processing pipeline: 'chunk', // For chunk embedding pipeline: 'embedding', // For Neo4j storage pipeline
     ],
     requiredFields: ['exchange', 'routingKey', 'message'],
     optionalFields: ['headers'],

@@ -58,7 +58,7 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
       });
     }
 
-    // For 'local' model or as a fallback for 'openai'
+    // For: 'local' model or as a fallback for: 'openai'
     if (!embedding) {
       // Try Ollama models first: embeddinggemma -> nomic
       embedding = await generateOllamaEmbedding(truncated, 'embeddinggemma:latest').catch(e => {

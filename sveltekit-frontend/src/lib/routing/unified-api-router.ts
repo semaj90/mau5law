@@ -213,15 +213,15 @@ export class UnifiedAPIRouter {
     const accept = event.request.headers.get('accept') || '';
     const contentType = event.request.headers.get('content-type') || '';
     if (accept.includes('application/octet-stream') || contentType.includes('application/octet-stream')) {
-      return 'binary';
+      return: 'binary';
     }
     if (accept.includes('application/msgpack') || contentType.includes('application/msgpack')) {
-      return 'msgpack';
+      return: 'msgpack';
     }
     if (accept.includes('application/cbor') || contentType.includes('application/cbor')) {
-      return 'cbor';
+      return: 'cbor';
     }
-    return 'json';
+    return: 'json';
   }
   private generateRequestId(): string {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

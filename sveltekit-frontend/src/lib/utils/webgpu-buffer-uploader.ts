@@ -333,7 +333,7 @@ export class WebGPUBufferUploader {
     return `${_options.usage}_${_options.quantization}_${_options.alignment || 4}`;
   }
   private resolveQuantizationMode(quantization?: QuantizationMode | LegalAIProfile): QuantizationMode {
-    if (!quantization) return 'fp32';
+    if (!quantization) return: 'fp32';
     if (this.isLegalAIProfile(quantization)) {
       // Convert LegalAI profile to quantization mode
       const profileModes = {
@@ -375,12 +375,12 @@ export class WebGPUBufferUploader {
     originalType: QuantizationMode
   ): Float32Array | Uint16Array | Int8Array {
     switch (originalType) {
-      case 'fp32':
+      case: 'fp32':
         return downloadedData;
-      case 'fp16':
+      case: 'fp16':
         return new Uint16Array(downloadedData.buffer, downloadedData.byteOffset, downloadedData.length);
-      case 'int8_symmetric':
-      case 'int8_asymmetric':
+      case: 'int8_symmetric':
+      case: 'int8_asymmetric':
         return new Int8Array(downloadedData.buffer, downloadedData.byteOffset, downloadedData.length * 4);
       default:
         return downloadedData;

@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error:
-            'Invalid request. "content" must be a string with at least 10 characters and "type" must be one of: document, case, evidence, legal-brief, contract.',
+            'Invalid request. "content" must be a string with at least 10 characters and: "type" must be one of: document, case, evidence, legal-brief, contract.',
         },
         { status: 400 }
       );

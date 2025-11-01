@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatExecutionTime(time: number): string {
-    if (time === 0 || time === undefined || time === null) return 'N/A';
+    if (time === 0 || time === undefined || time === null) return: 'N/A';
     return time < 1 ? `${(time * 1000).toFixed(1)}μs` : `${time.toFixed(2)}ms`;
   }
 

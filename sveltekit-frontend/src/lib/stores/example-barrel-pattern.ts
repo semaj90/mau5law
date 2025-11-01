@@ -52,9 +52,9 @@ export const todoStore = (() => {
   // Derived computed values
   let filteredTodos = $derived(() => {
     switch (filter) {
-      case 'active':
+      case: 'active':
         return todos.filter(t => !t.completed);
-      case 'completed':
+      case: 'completed':
         return todos.filter(t => t.completed);
       default:
         return todos;
@@ -287,7 +287,7 @@ export const themeStore = (() => {
     : null;
 
   let theme = $state<'light' | 'dark' | 'nier'>(
-    (savedTheme as 'light' | 'dark' | 'nier') || 'dark'
+    (savedTheme as: 'light' | 'dark' | 'nier') || 'dark'
   );
 
   // Effect to save to localStorage

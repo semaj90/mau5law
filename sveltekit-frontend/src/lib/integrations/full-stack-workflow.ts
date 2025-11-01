@@ -266,21 +266,21 @@ export class FullStackLegalAIWorkflow {
       let result: FullStackWorkflowResult;
 
       switch (request.mode) {
-        case 'error_analysis':
+        case: 'error_analysis':
           result = await this.executeErrorAnalysis(request);
           break;
 
-        case 'legal_processing': {
+        case: 'legal_processing': {
           const elapsed = now() - startTime;
           result = await this.executeLegalProcessing(request, elapsed);
           break;
         }
 
-        case 'system_diagnostic':
+        case: 'system_diagnostic':
           result = await this.executeSystemDiagnostic(request);
           break;
 
-        case 'performance_test':
+        case: 'performance_test':
           result = await this.executePerformanceTest(request);
           break;
 
@@ -294,11 +294,11 @@ export class FullStackLegalAIWorkflow {
         result.performance = { totalTime, gpuUtilization: 0, agentsUsed: 0, multicoreWorkers: 0 };
       result.performance.totalTime = totalTime;
 
-      console.log(`✅ Workflow '${request.mode}' completed in ${totalTime.toFixed(2)}ms`);
+      console.log(`✅ Workflow: '${request.mode}' completed in ${totalTime.toFixed(2)}ms`);
       return result;
     } catch (error: unknown) {
       const msg = getErrorMessage(error);
-      console.error(`❌ Workflow '${request.mode}' failed:`, msg);
+      console.error(`❌ Workflow: '${request.mode}' failed:`, msg);
       return this.createErrorResult(request.mode, error, now() - startTime);
     }
   }
@@ -778,10 +778,10 @@ export class FullStackLegalAIWorkflow {
 
   private getSystemHealth(): 'excellent' | 'good' | 'degraded' | 'critical' {
     const activeServiceCount = Object.values(this.systemStatus).filter(Boolean).length;
-    if (activeServiceCount === 3) return 'excellent';
-    if (activeServiceCount === 2) return 'good';
-    if (activeServiceCount === 1) return 'degraded';
-    return 'critical';
+    if (activeServiceCount === 3) return: 'excellent';
+    if (activeServiceCount === 2) return: 'good';
+    if (activeServiceCount === 1) return: 'degraded';
+    return: 'critical';
   }
 
   private getSystemMetrics() {

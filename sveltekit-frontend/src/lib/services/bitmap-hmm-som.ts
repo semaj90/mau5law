@@ -676,7 +676,7 @@ export class BitmapHiddenMarkovSOM {
         const prob = this.transitionMatrix[i * N + j];
         if (prob > 0.01) { // Only include significant transitions
           transitions.push({
-            from: i,
+            from i,
             to: j,
             probability: prob
           });

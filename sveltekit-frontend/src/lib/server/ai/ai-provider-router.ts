@@ -235,13 +235,13 @@ export class AIProviderRouter {
    */
   private async callProvider(provider: LLMProviderConfig, request: LLMRequest): Promise<LLMResponse> {
     switch (provider.type) {
-      case 'tensorrt':
+      case: 'tensorrt':
         return this.callTensorRT(provider, request);
-      case 'vllm':
+      case: 'vllm':
         return this.callVLLM(provider, request);
-      case 'ollama':
+      case: 'ollama':
         return this.callOllama(provider, request);
-      case 'openai':
+      case: 'openai':
         return this.callOpenAI(provider, request);
       default:
         throw new Error(`Unknown provider type: ${provider.type}`);
@@ -472,7 +472,7 @@ export class AIProviderRouter {
 
         const currentStatus = this.providerStatus.get(name);
         if (currentStatus) {
-          currentStatus.status = (status === 'healthy' ? 'healthy' : 'degraded') as 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
+          currentStatus.status = (status === 'healthy' ? 'healthy' : 'degraded') as: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
           currentStatus.lastCheck = new Date();
           currentStatus.responseTime = responseTime;
           currentStatus.successRate = 1.0;

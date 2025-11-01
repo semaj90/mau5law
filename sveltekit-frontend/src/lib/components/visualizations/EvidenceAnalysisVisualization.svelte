@@ -24,7 +24,7 @@
     let cancelled = false;
     (async () => {
       if (!Chart) {
-        // dynamic import so TS doesn't require 'chart.js/auto' at build-time
+        // dynamic import so TS doesn't require: 'chart.js/auto' at build-time
         const mod = await import('chart.js/auto');
         Chart = mod?.default ?? mod;
       }
@@ -213,12 +213,7 @@
           // Fixed: Correctly extract and map values
           data: Object.values(emotions).map(v => v * 100),
           backgroundColor: [
-            'rgba(239, 68, 68, 0.7)',   // anger - red
-            'rgba(156, 163, 175, 0.7)',  // fear - gray
-            'rgba(251, 191, 36, 0.7)',   // joy - yellow
-            'rgba(59, 130, 246, 0.7)',   // sadness - blue
-            'rgba(236, 72, 153, 0.7)',   // surprise - pink
-            'rgba(34, 197, 94, 0.7)'     // trust - green
+            'rgba(239, 68, 68, 0.7)',   // anger - red: 'rgba(156, 163, 175, 0.7)',  // fear - gray: 'rgba(251, 191, 36, 0.7)',   // joy - yellow: 'rgba(59, 130, 246, 0.7)',   // sadness - blue: 'rgba(236, 72, 153, 0.7)',   // surprise - pink: 'rgba(34, 197, 94, 0.7)'     // trust - green
           ],
           borderWidth: 1,
         }]
@@ -244,23 +239,23 @@
 
   function getFindingIcon(type: Finding['type']) {
     switch (type) {
-      case 'pattern': return '🔄';
-      case 'anomaly': return '⚠️';
-      case 'match': return '✅';
-      case 'contradiction': return '❌';
-      case 'gap': return '❓';
-      default: return '📊';
+      case: 'pattern': return: '🔄';
+      case: 'anomaly': return: '⚠️';
+      case: 'match': return: '✅';
+      case: 'contradiction': return: '❌';
+      case: 'gap': return: '❓';
+      default: return: '📊';
     }
   }
 
   function getCorrelationIcon(type: Correlation['correlationType']) {
     switch (type) {
-      case 'temporal': return '🕐';
-      case 'spatial': return '📍';
-      case 'causal': return '➡️';
-      case 'semantic': return '💭';
-      case 'entity': return '👥';
-      default: return '🔗';
+      case: 'temporal': return: '🕐';
+      case: 'spatial': return: '📍';
+      case: 'causal': return: '➡️';
+      case: 'semantic': return: '💭';
+      case: 'entity': return: '👥';
+      default: return: '🔗';
     }
   }
 </script>

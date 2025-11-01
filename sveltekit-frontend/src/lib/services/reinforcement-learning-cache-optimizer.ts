@@ -283,7 +283,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     reward += utilizationScore * 15;
     // Action-specific bonuses/penalties
     switch (action.type) {
-      case 'prefetch':
+      case: 'prefetch':
         // Bonus if prefetch resulted in cache hit
         if ((Number(currentMetrics.hitRatio ?? 0)) > (Number(previousMetrics.hitRatio ?? 0))) {
           reward += 25;
@@ -291,14 +291,14 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
           reward -= 10; // Penalty for unnecessary prefetch
         }
         break;
-      case 'evict':
+      case: 'evict':
         // Bonus if eviction freed up memory without hurting hit ratio
         if ((Number(currentMetrics.gpuMemoryUsage ?? 0) < Number(previousMetrics.gpuMemoryUsage ?? 0))
           && (Number(currentMetrics.hitRatio ?? 0) >= Number(previousMetrics.hitRatio ?? 0))) {
           reward += 15;
         }
         break;
-      case 'compress':
+      case: 'compress':
         // Bonus for compression that saves memory
         {
           const memorySaved = (Number(previousMetrics.gpuMemoryUsage ?? 0)) - (Number(currentMetrics.gpuMemoryUsage ?? 0));
@@ -366,20 +366,20 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
       const improvement = prediction.expectedHitRatio - state.hitRatio;
       expectedImprovement += improvement;
       switch (action.type) {
-        case 'prefetch':
-          recommendations.push(`Prefetch data pattern "${action.target}" to improve hit ratio by ${(improvement * 100).toFixed(1)}%`);
+        case: 'prefetch':
+          recommendations.push(`Prefetch data pattern: "${action.target}" to improve hit ratio by ${(improvement * 100).toFixed(1)}%`);
           break;
-        case 'evict':
+        case: 'evict':
           recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru'} strategy`);
           break;
-        case 'compress':
+        case: 'compress':
           recommendations.push(`Apply compression level ${action.parameters.compressionLevel ?? 1} to save GPU memory`);
           break;
-        case 'promote':
-          recommendations.push(`Promote frequently accessed entry "${action.target}" to faster cache tier`);
+        case: 'promote':
+          recommendations.push(`Promote frequently accessed entry: "${action.target}" to faster cache tier`);
           break;
-        case 'replicate':
-          recommendations.push(`Replicate critical data "${action.target}" with factor ${action.parameters.replicationFactor ?? 1}`);
+        case: 'replicate':
+          recommendations.push(`Replicate critical data: "${action.target}" with factor ${action.parameters.replicationFactor ?? 1}`);
           break;
       }
     }
@@ -634,9 +634,9 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
   }
   private applyActivation(x: number, func: string): number {
     switch (func) {
-      case 'relu': return Math.max(0, x);
-      case 'tanh': return Math.tanh(x);
-      case 'sigmoid': return 1 / (1 + Math.exp(-x));
+      case: 'relu': return Math.max(0, x);
+      case: 'tanh': return Math.tanh(x);
+      case: 'sigmoid': return 1 / (1 + Math.exp(-x));
       default: return x;
     }
   }
@@ -685,13 +685,13 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     // Add heuristic bonuses based on action type and state
     const state = this.vectorToState(stateVector);
     switch (action.type) {
-      case 'prefetch':
+      case: 'prefetch':
         if (state.hitRatio < 0.7) score += 0.3;
         break;
-      case 'evict':
+      case: 'evict':
         if (state.cacheUtilization > 0.8) score += 0.4;
         break;
-      case 'compress':
+      case: 'compress':
         if (state.gpuMemoryUsage > 0.7) score += 0.5;
         break;
     }

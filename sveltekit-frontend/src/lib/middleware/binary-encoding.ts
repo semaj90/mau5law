@@ -90,26 +90,26 @@ export class AdvancedBinaryEncodingService {
     // Context-aware format selection for legal workflows
     if (context) {
       switch (context.type) {
-        case 'document_upload':
-          if (size > 50_000 || context.binaryContent || this.hasBinaryData(data)) return 'cbor';
+        case: 'document_upload':
+          if (size > 50_000 || context.binaryContent || this.hasBinaryData(data)) return: 'cbor';
           break;
-        case 'evidence_review':
-          if (size > 5_000 && this.isStructuredData(data)) return 'msgpack';
+        case: 'evidence_review':
+          if (size > 5_000 && this.isStructuredData(data)) return: 'msgpack';
           break;
-        case 'case_analysis':
-          if (size > 10_000 || context.complexity === 'expert') return 'cbor';
+        case: 'case_analysis':
+          if (size > 10_000 || context.complexity === 'expert') return: 'cbor';
           break;
-        case 'contract_review':
-          if (size > 2_000) return 'msgpack';
+        case: 'contract_review':
+          if (size > 2_000) return: 'msgpack';
           break;
-        case 'litigation_prep':
-          if (size > 15_000 || context.realTime) return 'cbor';
+        case: 'litigation_prep':
+          if (size > 15_000 || context.realTime) return: 'cbor';
           break;
       }
     }
-    if (size > 100_000 || this.hasBinaryData(data)) return 'cbor';
-    if (size > 5_000 && this.isStructuredData(data)) return 'msgpack';
-    return 'json';
+    if (size > 100_000 || this.hasBinaryData(data)) return: 'cbor';
+    if (size > 5_000 && this.isStructuredData(data)) return: 'msgpack';
+    return: 'json';
   }
 
   /**
@@ -149,21 +149,21 @@ export class AdvancedBinaryEncodingService {
     let encodedSize: number;
     try {
       switch (targetFormat) {
-        case 'cbor': {
+        case: 'cbor': {
           const cborBuffer = CBOR.encode(data);
           const arr = cborBuffer instanceof Uint8Array ? cborBuffer : new Uint8Array(cborBuffer);
           encoded = this.toArrayBuffer(arr);
           encodedSize = encoded.byteLength;
           break;
         }
-        case 'msgpack': {
+        case: 'msgpack': {
           const msgpackData = msgpackEncode(data);
           const arr = msgpackData instanceof Uint8Array ? msgpackData : new Uint8Array(msgpackData);
           encoded = this.toArrayBuffer(arr);
           encodedSize = encoded.byteLength;
           break;
         }
-        case 'json':
+        case: 'json':
         default:
           encoded = JSON.stringify(data, null, this.options.compression ? 0 : 2);
           encodedSize = new TextEncoder().encode(encoded).length;
@@ -214,7 +214,7 @@ export class AdvancedBinaryEncodingService {
     let decoded: unknown;
     try {
       switch (format) {
-        case 'cbor': {
+        case: 'cbor': {
           const u8 =
             data instanceof ArrayBuffer
               ? new Uint8Array(data)
@@ -224,7 +224,7 @@ export class AdvancedBinaryEncodingService {
           decoded = CBOR.decode(u8);
           break;
         }
-        case 'msgpack': {
+        case: 'msgpack': {
           const u8 =
             data instanceof ArrayBuffer
               ? new Uint8Array(data)
@@ -234,7 +234,7 @@ export class AdvancedBinaryEncodingService {
           decoded = msgpackDecode(u8);
           break;
         }
-        case 'json':
+        case: 'json':
         default:
           decoded = JSON.parse(data as string);
           break;
@@ -311,7 +311,7 @@ export class AdvancedBinaryEncodingService {
     let expectedPerformanceGain = 0.0;
     let memoryImpact: 'low' | 'medium' | 'high' = 'low';
     switch (context.type) {
-      case 'document_upload':
+      case: 'document_upload':
         if (context.binaryContent || context.dataSize > 100_000) {
           recommendedFormat = 'cbor';
           expectedCompressionRatio = 2.5;
@@ -320,7 +320,7 @@ export class AdvancedBinaryEncodingService {
           recommendations.push('Use CBOR for binary document content', 'Enable compression for large files');
         }
         break;
-      case 'evidence_review':
+      case: 'evidence_review':
         if (context.complexity === 'high' || context.realTime) {
           recommendedFormat = 'msgpack';
           expectedCompressionRatio = 1.8;
@@ -332,7 +332,7 @@ export class AdvancedBinaryEncodingService {
           );
         }
         break;
-      case 'case_analysis':
+      case: 'case_analysis':
         if (context.gpuAccelerated || context.dataSize > 50_000) {
           recommendedFormat = 'cbor';
           expectedCompressionRatio = 2.2;
@@ -341,14 +341,14 @@ export class AdvancedBinaryEncodingService {
           recommendations.push('CBOR recommended for GPU-accelerated analysis', 'Enable streaming for large datasets');
         }
         break;
-      case 'contract_review':
+      case: 'contract_review':
         recommendedFormat = 'msgpack';
         expectedCompressionRatio = 1.6;
         expectedPerformanceGain = 0.35;
         memoryImpact = 'low';
         recommendations.push('MessagePack efficient for contract metadata');
         break;
-      case 'litigation_prep':
+      case: 'litigation_prep':
         recommendedFormat = 'cbor';
         expectedCompressionRatio = 2.0;
         expectedPerformanceGain = 0.5;
@@ -507,10 +507,10 @@ export class AdvancedBinaryEncodingService {
     processingTime: number
   ): 'excellent' | 'good' | 'moderate' | 'poor' {
     const score = compressionRatio * (1000 / (processingTime + 1));
-    if (score > 50) return 'excellent';
-    if (score > 20) return 'good';
-    if (score > 10) return 'moderate';
-    return 'poor';
+    if (score > 50) return: 'excellent';
+    if (score > 20) return: 'good';
+    if (score > 10) return: 'moderate';
+    return: 'poor';
   }
 
   private cleanupCache(): void {

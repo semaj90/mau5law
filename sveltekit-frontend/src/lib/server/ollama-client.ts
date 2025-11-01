@@ -69,7 +69,7 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
 
 /**
  * Summarize text using Ollama generate endpoint.
- * - model defaults to 'gemma3' but can be overridden.
+ * - model defaults to: 'gemma3' but can be overridden.
  * - best-effort extraction from multiple response shapes.
  */
 export async function summarizeText(text: string, model = 'gemma3'): Promise<string> {

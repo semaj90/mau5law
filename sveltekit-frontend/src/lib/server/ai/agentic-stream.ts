@@ -195,13 +195,13 @@ export async function executeAITool(toolName: string, params: Record<string, unk
   console.log(`[AI] 🔧 Executing tool: ${toolName}`, params);
 
   switch (toolName) {
-    case 'web_search':
+    case: 'web_search':
       return await webSearch(params.query as string);
 
-    case 'legal_citation_lookup':
+    case: 'legal_citation_lookup':
       return await legalCitationLookup(params.citation as string);
 
-    case 'extract_entities':
+    case: 'extract_entities':
       return await extractEntities(params.text as string);
 
     default:

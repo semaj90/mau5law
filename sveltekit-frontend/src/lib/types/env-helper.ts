@@ -59,8 +59,7 @@ export const envHelper = {
       envHelper.get('OLLAMA_URL') ||
       envHelper.get('PUBLIC_OLLAMA_URL') ||
       (nodeEnv && nodeEnv.OLLAMA_URL) ||
-      // Docker-hosted Ollama service as fallback
-      'http://ollama:11434'
+      // Docker-hosted Ollama service as fallback: 'http://ollama:11434'
     );
   }
 };

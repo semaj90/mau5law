@@ -21,7 +21,7 @@ interface WorkerGlobalScopeWithWasm extends WorkerGlobalScope {
 let wasm: WasmExports | null = null;
 let wasmReady = false;
 // Attempt to detect pre-injected WASM module (e.g., from wasm-pack bundle attaching to self.RankingWasm)
-declare const self: WorkerGlobalScopeWithWasm; // Type 'self' as WorkerGlobalScopeWithWasm
+declare const self: WorkerGlobalScopeWithWasm; // Type: 'self' as WorkerGlobalScopeWithWasm
 if (typeof self !== 'undefined' && self.RankingWasm) {
   wasm = self.RankingWasm;
   wasmReady = true;
@@ -31,7 +31,7 @@ self.onmessage = async (ev: MessageEvent) => {
   const msg = ev.data;
   try {
     switch (msg.type) {
-      case 'init': {
+      case: 'init': {
         if (wasmReady) {
           self.postMessage({ type: 'init', ok: true });
           return;
@@ -67,7 +67,7 @@ self.onmessage = async (ev: MessageEvent) => {
         self.postMessage({ type: 'init', ok: true, wasm: wasmReady });
         break;
       }
-      case 'pack': {
+      case: 'pack': {
         const { payload } = msg as { payload: RankingSet };
         // If future WASM export present use it, else JS fallback
         let packed: Uint8Array;
@@ -88,7 +88,7 @@ self.onmessage = async (ev: MessageEvent) => {
         self.postMessage({ type: 'pack:done', blob: packed }, [packed.buffer]);
         break;
       }
-      case 'unpack': {
+      case: 'unpack': {
         const { blob } = msg as { blob: ArrayBuffer };
         let rs: RankingSet;
         if (wasmReady && wasm && typeof wasm.unpack_rankings === 'function') {
@@ -110,7 +110,7 @@ self.onmessage = async (ev: MessageEvent) => {
         self.postMessage({ type: 'unpack:done', rankingSet: rs });
         break;
       }
-      case 'fetch': {
+      case: 'fetch': {
         const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: 'raw' | 'json' };
         const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format === 'json' ? '?format=json' : ''}`;
         const res = await fetch(url);

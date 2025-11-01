@@ -1,13 +1,30 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { createMachine, assign, fromPromise } from 'xstate';
-  import { useMachine } from '@xstate/svelte';
-  import { writable, derived, get } from 'svelte/store';
+  import { createMachine, assign } from 'xstate';
+  // interpret is a default export in some xstate builds/environments
+  import interpret from 'xstate';
+  import { writable, derived, get, readable } from 'svelte/store';
   // Toast notifications removed - using simple state instead
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
-  // Legal AI Assistant State Machine (XState Best Practices)
-  const legalAIMachine = createMachine(
+
+  // --- Types ---
+  type ConversationEntry = { prompt: string; response: string; timestamp: number };
+
+  interface AIContext {
+    prompt: string;
+    response: string;
+    error: string | null;
+    conversationHistory: ConversationEntry[];
+  }
+
+  type QueryEvent = { type: 'QUERY'; prompt: string };
+  type RetryEvent = { type: 'RETRY' };
+  type ClearEvent = { type: 'CLEAR' };
+  type AIEvent = QueryEvent | RetryEvent | ClearEvent;
+
+  // Legal AI Assistant State Machine (typed)
+  const legalAIMachine = createMachine<AIContext, AIEvent>(
     {
       id: 'legalAI',
       initial: 'idle',
@@ -22,18 +39,19 @@
           on: {
             QUERY: {
               target: 'querying',
-              guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
-              actions: assign({
-                prompt: (_ctx, evt) => (evt as any).prompt,
-                error: () => null,
-              }),
+              guard: (ctx: AIContext, evt: AIEvent): boolean => !!(evt as QueryEvent)?.prompt?.trim(),
+              // replaced assign<AIContext, QueryEvent> with assign<AIContext>(fn) and typed params
+              actions: assign<AIContext>((_ctx: AIContext, evt: QueryEvent) => ({
+                prompt: evt.prompt,
+                error: null,
+              })),
             },
           },
         },
         querying: {
           invoke: {
-            // wrap the async promise with fromPromise so XState accepts the actor logic type
-            src: fromPromise(async (ctx: any) => {
+            // use plain async src instead of fromPromise
+            src: async (ctx: AIContext) => {
               const payload = {
                 model: 'gemma3-legal:latest',
                 prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${ctx.prompt}`,
@@ -47,7 +65,9 @@
                 },
               };
 
-              const response = await fetch('http://localhost:11434/api/generate', {
+              import { getOllamaEndpoint } from './AIAssistant.svelte.ts';
+              const ollamaUrl = getOllamaEndpoint();
+              const response = await fetch(`${ollamaUrl}/api/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -59,23 +79,25 @@
 
               const data = await response.json();
               return { response: data.response ?? data.output ?? JSON.stringify(data) };
-            }),
+            },
             onDone: {
               target: 'success',
-              actions: assign((ctx: any, evt: any) => {
-                const result = (evt?.data as any)?.response ?? '';
+              // typed ctx and evt (evt contains data) and single generic for assign
+              actions: assign<AIContext>((ctx: AIContext, evt: { data: any }) => {
+                const result = evt?.data?.response ?? '';
                 return {
                   response: result,
                   conversationHistory: [
-                    ...(ctx?.conversationHistory ?? []),
-                    { prompt: ctx?.prompt ?? '', response: result, timestamp: Date.now() },
+                    ...(ctx.conversationHistory ?? []),
+                    { prompt: ctx.prompt ?? '', response: result, timestamp: Date.now() },
                   ],
                 };
               }),
             },
             onError: {
               target: 'error',
-              actions: assign((_ctx: any, evt: any) => ({
+              // typed params for error event shape
+              actions: assign<AIContext>((_ctx: AIContext, evt: { data?: { message?: string }; message?: string }) => ({
                 error: (evt?.data?.message as string) ?? (evt?.message as string) ?? 'Failed to connect to Legal AI',
               })),
             },
@@ -85,11 +107,12 @@
           on: {
             QUERY: {
               target: 'querying',
-              guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
-              actions: assign({
-                prompt: (_ctx, evt) => (evt as any).prompt,
-                error: () => null,
-              }),
+              guard: (ctx: AIContext, evt: AIEvent): boolean => !!(evt as QueryEvent)?.prompt?.trim(),
+              // same fix as idle->QUERY
+              actions: assign<AIContext>((_ctx: AIContext, evt: QueryEvent) => ({
+                prompt: evt.prompt,
+                error: null,
+              })),
             },
             CLEAR: {
               target: 'idle',
@@ -108,19 +131,30 @@
             },
             QUERY: {
               target: 'querying',
-              guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
-              actions: assign({
-                prompt: (_ctx, evt) => (evt as any).prompt,
-                error: () => null,
-              }),
+              guard: (ctx: AIContext, evt: AIEvent): boolean => !!(evt as QueryEvent)?.prompt?.trim(),
+              // same fix as other QUERY assignments
+              actions: assign<AIContext>((_ctx: AIContext, evt: QueryEvent) => ({
+                prompt: evt.prompt,
+                error: null,
+              })),
             },
           },
         },
       },
     } /* removed second-argument implementations; invoke uses inline src */
   );
-  // Initialize XState machine - use 'snapshot' returned by @xstate/svelte
-  const { snapshot, send } = useMachine(legalAIMachine);
+
+  // Replace useMachine: create a running service and expose a readable: 'snapshot' store + send
+  const service = interpret(legalAIMachine).start();
+
+  const snapshot = readable(service.state, (set) => {
+    const sub = service.subscribe((state: any) => set(state));
+    return () => sub.unsubscribe();
+  });
+
+  function send(event: AIEvent) {
+    service.send(event as any);
+  }
 
   // Use explicit Svelte stores for local UI state
   // Local writable stores
@@ -130,8 +164,8 @@
 
   // Derived stores based on the XState snapshot store
   const isLoading = derived(snapshot, $snapshot => $snapshot.matches('querying'));
-  const currentResponse = derived(snapshot, $snapshot => $snapshot.context.response);
-  const errorMessage = derived(snapshot, $snapshot => $snapshot.context.error);
+  const currentResponse = derived(snapshot, $snapshot => ($snapshot.context as AIContext).response);
+  const errorMessage = derived(snapshot, $snapshot => ($snapshot.context as AIContext).error);
   const canSubmit = derived(
     [promptInput, isLoading],
     ([$promptInput, $isLoading]) => $promptInput.trim().length > 0 && !$isLoading

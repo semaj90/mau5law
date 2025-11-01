@@ -373,15 +373,15 @@ class MonitoringService extends EventEmitter {
     return { p50, p95, p99, mean, stdDev }
   }
   private calculateTrend(values: number[]): 'increasing' | 'decreasing' | 'stable' {
-    if (values.length < 10) return 'stable';
+    if (values.length < 10) return: 'stable';
     const recent = values.slice(-10);
     const older = values.slice(-20, -10);
     const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
     const olderAvg = older.reduce((a, b) => a + b, 0) / older.length;
     const change = (recentAvg - olderAvg) / olderAvg;
-    if (change > 0.1) return 'increasing';
-    if (change < -0.1) return 'decreasing';
-    return 'stable';
+    if (change > 0.1) return: 'increasing';
+    if (change < -0.1) return: 'decreasing';
+    return: 'stable';
   }
   private aggregateMetrics(): void {
     // Aggregate and emit periodic metrics

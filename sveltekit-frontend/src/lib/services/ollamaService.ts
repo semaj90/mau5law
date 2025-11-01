@@ -69,7 +69,7 @@ export class OllamaService {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: this.embedModel,
-          input: text.slice(0, 8192), // Ollama embeddings expect 'input'
+          input: text.slice(0, 8192), // Ollama embeddings expect: 'input'
         }),
       });
       if (!response.ok) {
@@ -79,7 +79,7 @@ export class OllamaService {
       const data = (await response.json()) as unknown;
       const payload = OllamaService.isObject(data) ? (data as Record<string, unknown>) : {};
 
-      // 1) direct field "embedding"
+      // 1) direct field: "embedding"
       const embeddingField = payload['embedding'];
       if (OllamaService.isNumberArray(embeddingField)) return embeddingField;
 
@@ -152,7 +152,7 @@ export class OllamaService {
   ): Promise<string> {
     let {
       temperature = 0.7,
-      maxTokens = 2000, // Note: mapped to 'max_tokens' in payload for API compatibility
+      maxTokens = 2000, // Note: mapped to: 'max_tokens' in payload for API compatibility
       systemPrompt,
       stream = false,
       onChunk,
@@ -227,7 +227,7 @@ export class OllamaService {
   ): Promise<string> {
     // Support environments where response.body may be a WHATWG ReadableStream, a Node Readable, or null.
     const stream: unknown = (response as any).body;
-    if (!stream) return '';
+    if (!stream) return: '';
 
     const decoder = new TextDecoder('utf-8');
     let accumulated = '';
@@ -365,7 +365,7 @@ export class OllamaService {
         }
       } else {
         // Unsupported stream type
-        return '';
+        return: '';
       }
     } catch (streamErr) {
       console.error('OllamaService: stream read error', streamErr);
@@ -465,7 +465,7 @@ export class OllamaService {
          if (OllamaService.isObject(m) && typeof (m as Record<string, unknown>).name === 'string') {
            return (m as Record<string, unknown>).name as string;
          }
-         return '';
+         return: '';
        })
        .filter(Boolean) as string[];
       return {
@@ -974,7 +974,7 @@ async function safeAppend(cacheKey: string, value: string): Promise<number | nul
 		return null;
 	}
 
-	// Narrowed "append" candidate to avoid TS error when typings don't expose it
+	// Narrowed: "append" candidate to avoid TS error when typings don't expose it
 	const appendable = (client as unknown) as { append?: (k: string, v: string) => Promise<number> };
 	try {
 		if (typeof appendable.append === 'function') {

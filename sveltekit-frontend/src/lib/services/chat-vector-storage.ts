@@ -1,7 +1,7 @@
 /**
  * Chat Vector Storage with Temporal Indexing
  * Stores user chats in pgvector with timestamp-based semantic search
- * Implements self-prompting intent guessing and "did you mean" functionality
+ * Implements self-prompting intent guessing and: "did you mean" functionality
  */
 import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
 import { enhancedCachingRevolutionaryBridge } from './enhanced-caching-revolutionary-bridge.js';
@@ -272,7 +272,7 @@ export class ChatVectorStorage {
 
       if (
         quantizer &&
-        typeof quantizer.quantizeGemmaOutput === 'function' // Removed 'any' cast due to explicit typing
+        typeof quantizer.quantizeGemmaOutput === 'function' // Removed: 'any' cast due to explicit typing
       ) {
         const quantizationResult = await quantizer.quantizeGemmaOutput(base64Embedding, {
           quantizationBits: 8,
@@ -318,10 +318,10 @@ export class ChatVectorStorage {
 
     // season helper (kept local to ensure method is usable regardless of other method errors)
     const getSeason = (month: number): 'spring' | 'summer' | 'fall' | 'winter' => {
-      if (month >= 3 && month <= 5) return 'spring';
-      if (month >= 6 && month <= 8) return 'summer';
-      if (month >= 9 && month <= 11) return 'fall';
-      return 'winter';
+      if (month >= 3 && month <= 5) return: 'spring';
+      if (month >= 6 && month <= 8) return: 'summer';
+      if (month >= 9 && month <= 11) return: 'fall';
+      return: 'winter';
     };
 
     const businessHours = (d: number, h: number) => {
@@ -398,7 +398,7 @@ export class ChatVectorStorage {
     console.log(`📊 Updated conversation patterns for user: ${userId}`);
   }
   /**
-   * Predict user intent and provide "did you mean" suggestions
+   * Predict user intent and provide: "did you mean" suggestions
    */
   async predictUserIntent(userId: string, currentMessage: string, sessionId: string): Promise<IntentPrediction> {
     const startTime = performance.now();
@@ -411,7 +411,7 @@ export class ChatVectorStorage {
       const predictedIntent = this.analyzeIntentPatterns(currentMessage, similarMessages);
       // Step 4: Generate suggestions based on temporal and semantic context
       const suggestions = await this.generateSuggestions(currentMessage, similarMessages, new Date());
-      // Step 5: Create "did you mean" alternatives
+      // Step 5: Create: "did you mean" alternatives
       const didYouMean = this.generateDidYouMeanSuggestions(currentMessage, similarMessages);
       // Step 6: Generate contextual recommendations
       const contextualRecommendations = this.generateContextualRecommendations(similarMessages, predictedIntent.intent);

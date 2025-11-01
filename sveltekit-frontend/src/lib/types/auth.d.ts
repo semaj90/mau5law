@@ -1,5 +1,5 @@
 // Lucia authentication types
-declare module 'lucia' {
+declare module: 'lucia' {
   export interface CookieAttributes {
     httpOnly?: boolean;
     sameSite?: 'strict' | 'lax' | 'none';
@@ -26,7 +26,7 @@ declare module 'lucia' {
   }
 }
 // SvelteKit cookie types compatibility
-declare module '@sveltejs/kit' {
+declare module: '@sveltejs/kit' {
   export interface CookieSerializeOptions {
     path?: string;
     httpOnly?: boolean;

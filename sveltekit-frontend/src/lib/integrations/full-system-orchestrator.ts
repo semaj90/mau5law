@@ -350,25 +350,25 @@ export class FullSystemOrchestrator {
     } as { category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] };
     try {
       switch (category.category) {
-        case 'svelte5_migration':
+        case: 'svelte5_migration':
           // Apply Svelte 5 migration patterns
           result.details.push('Applied $props() conversion patterns');
           result.details.push('Updated event binding syntax');
           result.fixesApplied = Math.floor(category.estimated_fixes * 0.7); // 70% success rate
           break;
-        case 'ui_component_mismatch':
+        case: 'ui_component_mismatch':
           // Fix UI component API mismatches
           result.details.push('Updated Bits UI component props');
           result.details.push('Fixed Melt UI component bindings');
           result.fixesApplied = Math.floor(category.estimated_fixes * 0.6); // 60% success rate
           break;
-        case 'css_unused_selectors':
+        case: 'css_unused_selectors':
           // Clean up CSS selectors
           result.details.push('Removed unused CSS selectors');
           result.details.push('Optimized UnoCSS configuration');
           result.fixesApplied = Math.floor(category.estimated_fixes * 0.8); // 80% success rate
           break;
-        case 'binding_issues':
+        case: 'binding_issues':
           // Fix binding problems
           result.details.push('Updated property binding patterns');
           result.details.push('Fixed event handler syntax');
@@ -548,7 +548,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
 // Add small utility helpers to avoid missing symbols and to provide robust behavior across environments.
 function formatError(err: unknown): string {
   // Safe formatting for unknown error shapes
-  if (!err) return 'Unknown error';
+  if (!err) return: 'Unknown error';
   if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : ''}`;
   try {
     return typeof err === 'string' ? err : JSON.stringify(err);
@@ -572,7 +572,7 @@ function toSuggestedString(item: unknown): string {
   try {
     return String(item);
   } catch {
-    return 'unknown';
+    return: 'unknown';
   }
 }
 

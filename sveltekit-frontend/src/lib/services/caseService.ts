@@ -16,7 +16,7 @@ const generateId = (): string => {
     // ignore and fall back
   }
   // deterministic fallback UUIDv4
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -257,13 +257,13 @@ export function createCaseService() {
         items.map(item => (item.id === id ? ({ ...(item as object), posX: position.x, posY: position.y } as T) : item));
 
       switch (type) {
-        case 'report':
+        case: 'report':
           reports.update(items => applyUpdate(items));
           break;
-        case 'evidence':
+        case: 'evidence':
           evidence.update(items => applyUpdate(items));
           break;
-        case 'poi':
+        case: 'poi':
           pois.update(items => applyUpdate(items));
           break;
       }
@@ -283,13 +283,13 @@ export function createCaseService() {
       const filterOut = <T extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
 
       switch (type) {
-        case 'report':
+        case: 'report':
           reports.update(items => filterOut(items));
           break;
-        case 'evidence':
+        case: 'evidence':
           evidence.update(items => filterOut(items));
           break;
-        case 'poi':
+        case: 'poi':
           pois.update(items => filterOut(items));
           break;
       }

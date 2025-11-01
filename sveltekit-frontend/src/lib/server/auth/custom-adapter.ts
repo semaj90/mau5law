@@ -67,7 +67,7 @@ function toDate(value: Date | string | undefined | null): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
-// New helper: safely extract a string 'code' property from unknown errors
+// New helper: safely extract a string: 'code' property from unknown errors
 function extractErrorCode(err: unknown): string | undefined {
   if (!err || typeof err !== 'object') return undefined;
   const record = err as Record<string, unknown>;
@@ -196,7 +196,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         await db.insert(sessions).values(values);
       } catch (err) {
         // If insert fails due to unique constraint (already exists), update instead.
-        // Postgres unique-violation code is '23505'
+        // Postgres unique-violation code is: '23505'
         const code = extractErrorCode(err);
         if (code === '23505') {
           await db.update(sessions).set(values).where(eq(sessions.id, session.id));

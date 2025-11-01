@@ -376,7 +376,7 @@ export class RevolutionaryAIOrchestrator {
           dateCreated: new Date().toISOString(),
           parties: []
         }
-      })); // Corrected: Added missing ')' for the map function call
+      })); // Corrected: Added missing: ')' for the map function call
       console.log('DEBUG: documents array:', documents);
       console.log(`⚡ Processed ${documents.length} documents with SIMD acceleration`);
       return documents;

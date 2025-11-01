@@ -1,7 +1,7 @@
 // DEPRECATION WARNING:
 // This legacy camelCase schema is retained temporarily for non-auth code paths.
 // Do NOT import from '$lib/database/schema' for authentication/session logic.
-// Use '$lib/server/db/schema-postgres' instead. A runtime guard below logs when
+// Use: '$lib/server/db/schema-postgres' instead. A runtime guard below logs when
 // auth-critical tables are imported from this module.
 import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';

@@ -7,7 +7,7 @@ export const POST: RequestHandler = async () => {
     console.log('🔄 Setting up database tables...');
     // Create the users table if it doesn't exist
     await db.execute(`
-      CREATE TABLE IF NOT EXISTS "users" (
+      CREATE TABLE IF NOT EXISTS: "users" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
         "email" varchar(255) UNIQUE NOT NULL,
         "email_verified" timestamp,
@@ -16,10 +16,10 @@ export const POST: RequestHandler = async () => {
         "first_name" varchar(100),
         "last_name" varchar(100),
         "avatar_url" text,
-        "role" varchar(50) DEFAULT 'prosecutor' NOT NULL,
+        "role" varchar(50) DEFAULT: 'prosecutor' NOT NULL,
         "is_active" boolean DEFAULT true NOT NULL,
-        "metadata" jsonb DEFAULT '{}'::jsonb,
-        "settings" jsonb DEFAULT '{}'::jsonb,
+        "metadata" jsonb DEFAULT: '{}'::jsonb,
+        "settings" jsonb DEFAULT: '{}'::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL
       )
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async () => {
 
     // Create the documents table if it doesn't exist
     await db.execute(`
-      CREATE TABLE IF NOT EXISTS "documents" (
+      CREATE TABLE IF NOT EXISTS: "documents" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
         "title" varchar(512),
         "filename" varchar(255) NOT NULL,
@@ -35,10 +35,10 @@ export const POST: RequestHandler = async () => {
         "mime_type" varchar(100),
         "file_size" bigint,
         "extracted_text" text,
-        "processing_status" varchar(50) DEFAULT 'pending' NOT NULL,
+        "processing_status" varchar(50) DEFAULT: 'pending' NOT NULL,
         "case_id" uuid,
         "uploaded_by" uuid NOT NULL,
-        "metadata" jsonb DEFAULT '{}'::jsonb,
+        "metadata" jsonb DEFAULT: '{}'::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL,
         "processed_at" timestamp
@@ -47,9 +47,9 @@ export const POST: RequestHandler = async () => {
 
     // Create the document_chunks table if it doesn't exist
     await db.execute(`
-      CREATE TABLE IF NOT EXISTS "document_chunks" (
+      CREATE TABLE IF NOT EXISTS: "document_chunks" (
         "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        "document_id" uuid NOT NULL REFERENCES "documents"("id") ON DELETE cascade,
+        "document_id" uuid NOT NULL REFERENCES: "documents"("id") ON DELETE cascade,
         "chunk_index" integer NOT NULL,
         "parent_chunk_id" uuid,
         "level" integer DEFAULT 0 NOT NULL,
@@ -58,9 +58,9 @@ export const POST: RequestHandler = async () => {
         "start_offset" integer,
         "end_offset" integer,
         "embedding" vector(384),
-        "embedding_model" varchar(100) DEFAULT 'embeddinggemma:latest',
+        "embedding_model" varchar(100) DEFAULT: 'embeddinggemma:latest',
         "confidence" real,
-        "metadata" jsonb DEFAULT '{}'::jsonb,
+        "metadata" jsonb DEFAULT: '{}'::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL
       );
@@ -68,12 +68,12 @@ export const POST: RequestHandler = async () => {
 
     // Create the sessions table if it doesn't exist
     await db.execute(`
-      CREATE TABLE IF NOT EXISTS "sessions" (
+      CREATE TABLE IF NOT EXISTS: "sessions" (
         "id" text PRIMARY KEY,
         "user_id" uuid NOT NULL,
         "expires_at" timestamp with time zone NOT NULL,
-        CONSTRAINT "sessions_user_id_users_id_fk"
-          FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade
+        CONSTRAINT: "sessions_user_id_users_id_fk"
+          FOREIGN KEY ("user_id") REFERENCES: "users"("id") ON DELETE cascade
       )
     `);
 
@@ -81,21 +81,21 @@ export const POST: RequestHandler = async () => {
     // Enable pgvector extension
     await db.execute('CREATE EXTENSION IF NOT EXISTS vector;');
 
-    await db.execute('CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users"("email")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "users_role_idx" ON "users"("role")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "sessions_user_id_idx" ON "sessions"("user_id")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "sessions_expires_at_idx" ON "sessions"("expires_at")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_status" ON "documents"("processing_status")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_case" ON "documents"("case_id")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_filename" ON "documents"("filename")');
-    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_created" ON "documents"("created_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "users_email_idx" ON: "users"("email")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "users_role_idx" ON: "users"("role")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "sessions_user_id_idx" ON: "sessions"("user_id")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "sessions_expires_at_idx" ON: "sessions"("expires_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_status" ON: "documents"("processing_status")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_case" ON: "documents"("case_id")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_filename" ON: "documents"("filename")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_documents_created" ON: "documents"("created_at")');
     await db.execute(
-      'CREATE INDEX IF NOT EXISTS "idx_chunks_document" ON "document_chunks"("document_id", "chunk_index")'
+      'CREATE INDEX IF NOT EXISTS: "idx_chunks_document" ON: "document_chunks"("document_id", "chunk_index")'
     );
     await db.execute(
-      'CREATE INDEX IF NOT EXISTS "idx_chunks_hierarchy" ON "document_chunks"("parent_chunk_id", "level")'
+      'CREATE INDEX IF NOT EXISTS: "idx_chunks_hierarchy" ON: "document_chunks"("parent_chunk_id", "level")'
     );
-    await db.execute('CREATE INDEX IF NOT EXISTS "idx_chunks_created" ON "document_chunks"("created_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS: "idx_chunks_created" ON: "document_chunks"("created_at")');
     await db.execute(
       'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_document_chunks_embedding_hnsw ON document_chunks USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64);'
     );

@@ -154,12 +154,12 @@ export class FlashAttentionGPUErrorProcessor {
     }));
   }
   private detectErrorCategory(code: string, message: string): TypeScriptError['category'] {
-    if (message.includes('export let') || message.includes('$props')) return 'svelte5';
-    if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
-    if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
-    if (message.includes('syntax') || message.includes('Unexpected')) return 'syntax';
-    if (message.includes('bind:') || message.includes('on:')) return 'binding';
-    return 'unknown';
+    if (message.includes('export let') || message.includes('$props')) return: 'svelte5';
+    if (code.startsWith('TS2307') || message.includes('Cannot find module')) return: 'import';
+    if (code.startsWith('TS2322') || message.includes('Type')) return: 'type';
+    if (message.includes('syntax') || message.includes('Unexpected')) return: 'syntax';
+    if (message.includes('bind:') || message.includes('on:')) return: 'binding';
+    return: 'unknown';
   }
   private createErrorBatch(batchId: string, errors: TypeScriptError[]): GPUErrorBatch {
     const priority =
@@ -434,10 +434,10 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
     return groups;
   }
   private calculatePriority(category: string, count: number): GPUErrorBatch['priority'] {
-    if (category === 'syntax' || count > 500) return 'critical';
-    if (category === 'svelte5' || count > 200) return 'high';
-    if (category === 'type' || count > 50) return 'medium';
-    return 'low';
+    if (category === 'syntax' || count > 500) return: 'critical';
+    if (category === 'svelte5' || count > 200) return: 'high';
+    if (category === 'type' || count > 50) return: 'medium';
+    return: 'low';
   }
   private calculateOptimalBatchSize(errorCount: number): number {
     if (errorCount > 1000) return 16;
@@ -446,9 +446,9 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
     return 4;
   }
   private selectProcessingStrategy(batchSize: number): GPUErrorBatch['processing_strategy'] {
-    if (batchSize > 12) return 'parallel';
-    if (batchSize > 6) return 'hybrid';
-    return 'sequential';
+    if (batchSize > 12) return: 'parallel';
+    if (batchSize > 6) return: 'hybrid';
+    return: 'sequential';
   }
   private getPriorityWeight(priority: GPUErrorBatch['priority']): number {
     const weights = { critical: 4, high: 3, medium: 2, low: 1 };
@@ -481,7 +481,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
     const testErrors: TypeScriptError[] = [
       {
         code: 'TS2322',
-        message: "Type 'string' is not assignable to type 'number'",
+        message: "Type 'string' is not assignable to type: 'number'",
         file: 'test.ts',
         line: 1,
         column: 5,
@@ -490,7 +490,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
       },
       {
         code: 'TS2307',
-        message: "Cannot find module 'nonexistent'",
+        message: "Cannot find module: 'nonexistent'",
         file: 'test.ts',
         line: 2,
         column: 1,

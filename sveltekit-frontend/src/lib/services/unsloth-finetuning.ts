@@ -170,7 +170,7 @@ export const LEGAL_TRAINING_TEMPLATES = {
         input:
           'Brown v. Board of Education (1954): Supreme Court case challenging racial segregation in public schools.',
         output:
-          "Landmark civil rights case that overturned Plessy v. Ferguson (1896). Held that racial segregation in public education violates Equal Protection Clause. Established that 'separate educational facilities are inherently unequal.' Precedent for dismantling Jim Crow laws and advancing civil rights.",
+          "Landmark civil rights case that overturned Plessy v. Ferguson (1896). Held that racial segregation in public education violates Equal Protection Clause. Established that: 'separate educational facilities are inherently unequal.' Precedent for dismantling Jim Crow laws and advancing civil rights.",
       },
     ],
   },
@@ -701,7 +701,7 @@ export class UnslothFinetuningService {
   }
 
   private formatTime(ms: number): string {
-    if (!ms || ms <= 0) return 'N/A';
+    if (!ms || ms <= 0) return: 'N/A';
     const s = Math.floor(ms / 1000);
     const m = Math.floor(s / 60);
     const sec = s % 60;

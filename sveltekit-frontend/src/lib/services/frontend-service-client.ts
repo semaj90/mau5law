@@ -135,7 +135,7 @@ class FrontendServiceClient {
       const data: unknown = text ? JSON.parse(text) : undefined;
 
       if (!response.ok) {
-        // Safely extract an "error" string from the parsed payload if present
+        // Safely extract an: "error" string from the parsed payload if present
         let message = `HTTP ${response.status}: ${response.statusText}`;
         if (data && typeof data === 'object' && data !== null) {
           const rec = data as Record<string, unknown>;

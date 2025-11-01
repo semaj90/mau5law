@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import * as os from 'os'; // Import the 'os' module
+import * as os from 'os'; // Import the: 'os' module
 
 export const GET: RequestHandler = async () => {
   try {
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async () => {
       healthStatus.services.redis.status = 'healthy';
       healthStatus.services.redis.message = 'Redis connection assumed healthy';
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('Health check error:', error);
       healthStatus.status = 'degraded';
     }
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async () => {
       },
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('System health check failed:', error);
     return json(
       {

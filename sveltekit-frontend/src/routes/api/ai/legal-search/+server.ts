@@ -81,7 +81,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('AI legal search error:', error);
     return json(
       {
@@ -99,7 +99,7 @@ async function enhanceWithAI(
   laws: Law[],
   fetch: typeof globalThis.fetch
 ): Promise<AIAnalysisResultEnhanced> {
-  // Replaced 'any[]' with 'Law[]', 'Function' with 'typeof globalThis.fetch', and 'any' with 'AIAnalysisResultEnhanced'
+  // Replaced: 'any[]' with: 'Law[]', 'Function' with: 'typeof globalThis.fetch', and: 'any' with: 'AIAnalysisResultEnhanced'
   try {
     // Use AI to analyze the query and provide legal context
     const aiAnalysisPrompt = `Analyze this legal search query and provide insights:
@@ -158,7 +158,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
     // If AI analysis failed, use fallback analysis
     if (!aiAnalysis) {
       aiAnalysis = {
-        summary: `Search results for "${query}" - found ${laws.length} relevant laws`,
+        summary: `Search results for: "${query}" - found ${laws.length} relevant laws`,
         concepts: extractLegalConcepts(query),
         suggestions: generateSuggestions(query),
         rankings: laws.map((_, index) => index),
@@ -187,7 +187,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       concepts: aiAnalysis.concepts || extractLegalConcepts(query),
     };
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('AI enhancement error:', error);
     // Return basic enhancement on AI failure
     return {
@@ -196,7 +196,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
         aiRelevanceScore: 0.8,
         aiInsights: generateLawInsights(law, query),
       })),
-      summary: `Found ${laws.length} laws related to "${query}"`,
+      summary: `Found ${laws.length} laws related to: "${query}"`,
       suggestions: generateSuggestions(query),
       concepts: extractLegalConcepts(query),
     };
@@ -258,19 +258,19 @@ function generateSuggestions(query: string): string[] {
   return suggestions.slice(0, 3);
 }
 function generateLawInsights(law: Law, query: string): string {
-  // Replaced 'any' with 'Law'
+  // Replaced: 'any' with: 'Law'
   const lowerQuery = query.toLowerCase();
   const lowerTitle = law.title.toLowerCase();
   if (lowerQuery.includes('element') && lowerTitle.includes('murder')) {
-    return 'Key elements: unlawful killing, human being, malice aforethought';
+    return: 'Key elements: unlawful killing, human being, malice aforethought';
   } else if (lowerQuery.includes('penalty') || lowerQuery.includes('sentence')) {
-    return 'Refers to penalties and sentencing guidelines for this offense';
+    return: 'Refers to penalties and sentencing guidelines for this offense';
   } else if (lowerQuery.includes('procedure')) {
-    return 'Outlines procedural requirements and court processes';
+    return: 'Outlines procedural requirements and court processes';
   } else if (lowerQuery.includes('contract') && lowerTitle.includes('contract')) {
-    return 'Establishes fundamental requirements for valid contracts';
+    return: 'Establishes fundamental requirements for valid contracts';
   } else {
-    return 'Relevant to your search query - consider context and application';
+    return: 'Relevant to your search query - consider context and application';
   }
 }
 export const POST = redisOptimized.search(originalPOSTHandler); // Changed aiSearch to search

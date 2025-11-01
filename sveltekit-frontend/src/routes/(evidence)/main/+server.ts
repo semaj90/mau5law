@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ request }) => {
   return new Response(null, { status: 200 });
 };
 
-// A light wrapper that accepts multipart form uploads and stores the file in MinIO under 'evidence' bucket.
+// A light wrapper that accepts multipart form uploads and stores the file in MinIO under: 'evidence' bucket.
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const form = await request.formData();

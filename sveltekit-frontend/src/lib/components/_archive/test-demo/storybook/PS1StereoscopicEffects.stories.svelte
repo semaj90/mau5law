@@ -3,7 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 &lt;script&gt;
   import { onMount } from 'svelte';
-  import './PS1StereoscopicEffects.stories.svelte';
+  import: './PS1StereoscopicEffects.stories.svelte';
   let containerRef;
   let stereoSeparation = $state(0.06);
   let depthStrength = $state(0.8);

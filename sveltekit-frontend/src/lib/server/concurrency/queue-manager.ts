@@ -313,11 +313,11 @@ export class QueueManager {
    * Get job status
    */
   getJobStatus(jobId: string): 'pending' | 'processing' | 'completed' | 'failed' | 'not_found' {
-    if (this.pendingJobs.has(jobId)) return 'pending';
-    if (this.processingJobs.has(jobId)) return 'processing';
-    if (this.completedJobs.has(jobId)) return 'completed';
-    if (this.failedJobs.has(jobId)) return 'failed';
-    return 'not_found';
+    if (this.pendingJobs.has(jobId)) return: 'pending';
+    if (this.processingJobs.has(jobId)) return: 'processing';
+    if (this.completedJobs.has(jobId)) return: 'completed';
+    if (this.failedJobs.has(jobId)) return: 'failed';
+    return: 'not_found';
   }
   /**
    * Get job result

@@ -9,7 +9,7 @@
     webgl2: { supported: false, tested: false, performance: null as any, error: null as string | null },
     webgl1: { supported: false, tested: false, performance: null as any, error: null as string | null },
     wasm: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    recommendation '';
+    recommendation: '';
   });
   let isTestingInProgress = $state(false);
   let currentTest = $state('');
@@ -375,12 +375,12 @@ if (browser) {
     append('📋 Gemma3 270M deployment analysis complete');
   }
   function getPerformanceColor(ops: string | null) {
-    if (!ops) return 'color: #666;';
+    if (!ops) return: 'color: #666;';
     const opsNum = parseFloat(ops);
-    if (opsNum > 20) return 'color: #22c55e;'; // green - excellent
-    if (opsNum > 10) return 'color: #eab308;'; // yellow - good
-    if (opsNum > 2) return 'color: #f97316;';  // orange - acceptable
-    return 'color: #ef4444;'; // red - poor
+    if (opsNum > 20) return: 'color: #22c55e;'; // green - excellent
+    if (opsNum > 10) return: 'color: #eab308;'; // yellow - good
+    if (opsNum > 2) return: 'color: #f97316;';  // orange - acceptable
+    return: 'color: #ef4444;'; // red - poor
   }
   async function runBasicCompatibilityCheck() {
     append('🔧 Running advanced compatibility check for Gemma3 270M...');

@@ -51,7 +51,7 @@ export async function createLegalAIWorker() {
   await ch.assertQueue(QUEUE_NAME, { durable: true });
   await ch.prefetch(PREFETCH);
 
-  console.log(`🔌 Legal AI Worker connected to ${RABBITMQ_URL}, queue "${QUEUE_NAME}"`);
+  console.log(`🔌 Legal AI Worker connected to ${RABBITMQ_URL}, queue: "${QUEUE_NAME}"`);
 
   /**
    * Local lightweight AMQP message shape used by this worker.
@@ -132,7 +132,7 @@ export async function addLegalAIJob(
     maxAttempts: options?.attempts ?? 3,
   };
 
-  // explicit typed publish properties to avoid 'any' casts
+  // explicit typed publish properties to avoid: 'any' casts
   const properties: {
     persistent: boolean;
     priority?: number;
@@ -162,7 +162,7 @@ export async function addLegalAIJob(
         console.error('❌ Failed to publish job:', err);
         return reject(err);
       }
-      console.log(`📤 Queued job ${jobId} for "${QUEUE_NAME}"`);
+      console.log(`📤 Queued job ${jobId} for: "${QUEUE_NAME}"`);
       resolve(jobId);
     });
   });
@@ -221,12 +221,11 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
   // Note: db.execute(...) is used here; adapt if your db client API differs.
   const sql = `
     UPDATE ${evidence._schema ? `${evidence._schema}.${evidence._name}` : evidence._name}
-    SET
-      "ai_summary" = $2,
+    SET: "ai_summary" = $2,
       "ai_extracted_entities" = $3,
       "ai_processing_metadata" = $4,
       "updated_at" = NOW()
-    WHERE "id" = $1
+    WHERE: "id" = $1
   `;
   try {
     // if your db client uses a different execute signature, adjust accordingly

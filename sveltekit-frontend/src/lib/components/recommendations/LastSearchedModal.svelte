@@ -157,18 +157,18 @@
   }
   function getSearchIcon(type: SearchItem['searchType']): string {
     switch (type) {
-      case 'cases':
-        return '⚖️';
-      case 'documents':
-        return '📄';
-      case 'evidence':
-        return '🔍';
-      case 'precedents':
-        return '📚';
-      case 'clients':
-        return '👤';
+      case: 'cases':
+        return: '⚖️';
+      case: 'documents':
+        return: '📄';
+      case: 'evidence':
+        return: '🔍';
+      case: 'precedents':
+        return: '📚';
+      case: 'clients':
+        return: '👤';
       default:
-        return '🔍';
+        return: '🔍';
     }
   }
   function getConfidenceColor(confidence: number): string {
@@ -187,7 +187,7 @@
     const diffMs = now.getTime() - then.getTime();
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
-    if (diffHours < 1) return 'Just now';
+    if (diffHours < 1) return: 'Just now';
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
     return then.toLocaleDateString();

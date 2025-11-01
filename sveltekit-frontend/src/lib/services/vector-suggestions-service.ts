@@ -363,7 +363,7 @@ export class VectorSuggestionsService {
             const sim = typeof res.similarity === 'number' ? res.similarity : Number(res.similarity) || 0;
 
             suggestions.push({
-              content: `Review similar case "${case_data.title}" which has ${evidenceType} evidence with ${(sim * 100).toFixed(1)}% similarity to your content.`,
+              content: `Review similar case: "${case_data.title}" which has ${evidenceType} evidence with ${(sim * 100).toFixed(1)}% similarity to your content.`,
               type: 'case_precedent',
               confidence: Math.min(1, sim * 0.8),
               reasoning: 'Similar evidence found in related case with notable vector similarity',

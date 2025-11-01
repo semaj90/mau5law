@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  // removed static uploadStore import because the module has no exported member 'uploadStore'
+  // removed static uploadStore import because the module has no exported member: 'uploadStore'
   import { writable, type Writable } from 'svelte/store';
 
   // Props (exported to avoid $props() compile issues in this environment)
@@ -277,7 +277,7 @@
 
   // Helpers
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

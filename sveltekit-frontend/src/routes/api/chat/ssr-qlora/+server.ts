@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('❌ SSR Chat error:', error);
     return json(
       {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     // Corrected: Moved catch block to follow try
     console.error('❌ Chat streaming error:', error);
     return json(
@@ -135,7 +135,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('❌ Feedback update error:', error);
     return json(
       {
@@ -162,7 +162,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   }
   try {
     switch (action) {
-      case 'stats': {
+      case: 'stats': {
         // Fixed: Added block scope
         // Get session statistics
         const stats = {
@@ -179,7 +179,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       } // Fixed: Closed block scope
-      case 'export':
+      case: 'export':
         // Export conversation for analysis
         return json({
           success: true,
@@ -198,7 +198,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         );
     }
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('❌ Session analytics error:', error);
     return json(
       {
@@ -235,7 +235,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('❌ Session deletion error:', error);
     return json(
       {

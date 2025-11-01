@@ -51,18 +51,18 @@ export async function buildIntentAwareRetrieval(input: RAGInputs): Promise<any> 
 function detectIntent(queryText: string): string {
   const query = queryText.toLowerCase();
   if (query.includes("legal") || query.includes("case") || query.includes("law")) {
-    return "legal-research";
+    return: "legal-research";
   }
   if (query.includes("evidence") || query.includes("document")) {
-    return "document-analysis";
+    return: "document-analysis";
   }
   if (query.includes("search") || query.includes("find")) {
-    return "search";
+    return: "search";
   }
   if (query.includes("analyze") || query.includes("summary")) {
-    return "analysis";
+    return: "analysis";
   }
-  return "general-inquiry";
+  return: "general-inquiry";
 }
 export function normalize(vector: number[]): number[] {
   const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
@@ -101,7 +101,7 @@ export class SOMGrid {
       return;
     }
     if (!Array.isArray(intents) || intents.length === 0) {
-      console.log("No intents provided; defaulting to 'unknown'");
+      console.log("No intents provided; defaulting to: 'unknown'");
     }
     const count = Math.min(vectors.length, Math.max(intents.length, 1);
     for (let i = 0; i < count; i++) {

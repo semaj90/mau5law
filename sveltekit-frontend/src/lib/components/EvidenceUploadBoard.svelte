@@ -9,19 +9,30 @@
   let analysis = $state('');
   let isAnalyzing = $state(false);
 
-  async function handleFileUpload(_event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      files = Array.from(input.files);
+  // Use the event parameter (not the global/deprecated `event`) and safe casts
+  async function handleFileUpload(event: Event) {
+    // Prefer currentTarget (safer for input change) and fallback to target
+    const input = (event.currentTarget as HTMLInputElement | null) ?? (event.target as HTMLInputElement | null);
+    const fileList = input?.files ?? null;
+    if (fileList && fileList.length > 0) {
+      files = Array.from(fileList);
       await analyzeEvidence();
     }
   }
+
   async function analyzeEvidence() {
     if (!files.length) return;
     isAnalyzing = true;
     try {
-      const content = await files[0].text();
-      analysis = await AIAnalysisService.analyzeEvidence(content, 'current-case');
+      // AIAnalysisService expects a File — pass the File object directly
+      const file = files[0];
+      const result = await AIAnalysisService.analyzeEvidence(file);
+      // Normalize result to string for the textarea
+      if (typeof result === 'string') {
+        analysis = result;
+      } else {
+        analysis = JSON.stringify(result, null, 2);
+      }
     } catch (error) {
       analysis = 'Analysis failed: ' + (error as Error).message;
     } finally {

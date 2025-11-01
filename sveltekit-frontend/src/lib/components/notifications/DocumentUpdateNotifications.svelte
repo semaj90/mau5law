@@ -61,16 +61,16 @@ https://svelte.dev/e/js_parse_error -->
   })
   let connectionStatusIcon = $derived(() => {
     switch (connectionStatus) {
-      case "connected":
-        return "🟢";
-      case "connecting":
-        return "🟡";
-      case "disconnected":
-        return "⚪";
-      case "error":
-        return "🔴";
+      case: "connected":
+        return: "🟢";
+      case: "connecting":
+        return: "🟡";
+      case: "disconnected":
+        return: "⚪";
+      case: "error":
+        return: "🔴";
       default:
-        return "⚪";
+        return: "⚪";
     }
   });
   // Methods
@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
         100;
       return `${Math.round(progress)}%`;
     }
-    return "0%";
+    return: "0%";
   }
 </script>
 
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="flex-1 min-w-0">
                 <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
                   {#if typedNotification.type === 'document_changed'}
-                    Document "{typedNotification.data.title || 'Untitled'}" was modified
+                    Document: "{typedNotification.data.title || 'Untitled'}" was modified
                   {:else if typedNotification.type === 'reembedding_started'}
                     Re-embedding "{typedNotification.data.title || 'document'}"
                   {:else if typedNotification.type === 'reembedding_complete'}

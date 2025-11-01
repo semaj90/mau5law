@@ -168,8 +168,7 @@ class GRPCGemmaEmbeddingClient {
       'grpc.keepalive_permit_without_calls': true,
       'grpc.http2.max_pings_without_data': 0,
       'grpc.max_concurrent_streams': 100,
-      'grpc.max_receive_message_length': 16 * 1024 * 1024, // 16MB
-      'grpc.max_send_message_length': 16 * 1024 * 1024, // 16MB
+      'grpc.max_receive_message_length': 16 * 1024 * 1024, // 16MB: 'grpc.max_send_message_length': 16 * 1024 * 1024, // 16MB
     });
     this.client = raw as unknown as GemmaEmbeddingServiceClient;
   }
@@ -437,7 +436,7 @@ class GRPCGemmaEmbeddingClient {
             confidence_score = EXCLUDED.confidence_score,
             updated_at = NOW()
           RETURNING
-            CASE WHEN xmax = 0 THEN 'inserted' ELSE 'updated' END as operation
+            CASE WHEN xmax = 0 THEN: 'inserted' ELSE: 'updated' END as operation
         `;
         const result = await client.query(bulkUpsertSql, [
           documentIds,

@@ -405,7 +405,7 @@ export class CHRROMPrecomputationService {
   }
 
   /**
-   * Determine whether an existing cached pattern is "fresh" relative to the strategy frequency.
+   * Determine whether an existing cached pattern is: "fresh" relative to the strategy frequency.
    * Expects cached object to have metadata.timestamp (ms). Returns true when cached item is recent.
    */
   private isPatternFresh(existing: unknown, frequencyMs: number): boolean {

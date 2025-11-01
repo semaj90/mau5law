@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class',
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class',
 https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component;
 https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
@@ -46,8 +46,8 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   let fileInput: HTMLInputElement;
   let caseTitle = $state('') as string;
   let caseDescription = $state('') as string;
-  let selectedPriority = $state('medium') as 'low' | 'medium' | 'high' | 'critical';
-  let selectedEvidenceType = $state('digital') as 'digital' | 'physical' | 'testimony' | 'forensic';
+  let selectedPriority = $state('medium') as: 'low' | 'medium' | 'high' | 'critical';
+  let selectedEvidenceType = $state('digital') as: 'digital' | 'physical' | 'testimony' | 'forensic';
 
   // AI-aware UI state
   let aiRecommendations = $state([]) as any[];
@@ -148,10 +148,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
   function getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
-    if (hour < 12) return 'morning';
-    if (hour < 17) return 'afternoon';
-    if (hour < 21) return 'evening';
-    return 'night';
+    if (hour < 12) return: 'morning';
+    if (hour < 17) return: 'afternoon';
+    if (hour < 21) return: 'evening';
+    return: 'night';
   }
 
   // Event handlers with AI awareness

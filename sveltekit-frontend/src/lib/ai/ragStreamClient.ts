@@ -109,27 +109,27 @@ export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?:
   try {
     for await (const ev of streamRagGenerator({ ...base, signal: localAbort.signal })) {
       switch (ev.type) {
-        case 'meta':
+        case: 'meta':
           traceparent = ev.traceparent;
           break;
-        case 'token':
+        case: 'token':
           onToken?.(ev.token);
           break;
-        case 'patch':
+        case: 'patch':
           onPatch?.(ev.patch);
           break;
-        case 'summary':
+        case: 'summary':
           // server-provided summary; treat as done or expose via onPatch/onDone as needed
           break;
-        case 'error':
+        case: 'error':
           // Non-final errors are still forwarded; final errors will be handled below or by generator termination
           onError?.(ev.error);
           if (ev.final) return {};
           break;
-        case 'done':
+        case: 'done':
           onDone?.();
           return { traceparent };
-        case 'reconnect':
+        case: 'reconnect':
           // reconnect notifications are informational; ignore here
           break;
         default:
@@ -137,7 +137,7 @@ export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?:
       }
     }
 
-    // generator completed without an explicit 'done' event: treat as done
+    // generator completed without an explicit: 'done' event: treat as done
     onDone?.();
     return { traceparent };
   } catch (e: unknown) {
@@ -491,11 +491,11 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     try {
       for await (const ev of streamRagGenerator(merged)) {
         switch (ev.type) {
-          case 'meta':
+          case: 'meta':
             traceparentW.set(ev.traceparent);
             streamIdW.set(ev.streamId);
             break;
-          case 'token':
+          case: 'token':
             // transition status
             statusW.update(s => (s === 'connecting' || s === 'reconnecting' ? 'streaming' : s));
             if (batchingEnabled) {
@@ -511,7 +511,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               });
             }
             break;
-          case 'patch':
+          case: 'patch':
             patchesW.update(p => [...p, ev.patch]);
             if (initial?.patches?.autoApply) {
               try {
@@ -531,14 +531,14 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               }
             }
             break;
-          case 'summary':
+          case: 'summary':
             summaryW.set(ev.summary);
             break;
-          case 'reconnect':
+          case: 'reconnect':
             statusW.set('reconnecting');
             metricsW.update(m => ({ ...(m ?? { reconnects: 0, errors: 0 }), reconnects: (m?.reconnects ?? 0) + 1 }));
             break;
-          case 'error':
+          case: 'error':
             // non-final errors still reported
             errorW.set(ev.error);
             metricsW.update(m => ({ ...(m ?? { reconnects: 0, errors: 0 }), errors: (m?.errors ?? 0) + 1 }));
@@ -548,7 +548,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               return;
             }
             break;
-          case 'done':
+          case: 'done':
             statusW.set('done');
             flushBatch();
             running = false;
@@ -672,13 +672,13 @@ function applyJsonPatch(target: Record<string, unknown>, patch: JsonPatchOp[]): 
 
     try {
       switch (op.op) {
-        case 'add':
-        case 'replace':
+        case: 'add':
+        case: 'replace':
           if (Array.isArray(parent) && key === '-') parent.push(op.value);
           else parent[key] = op.value;
           changed = true;
           break;
-        case 'remove':
+        case: 'remove':
           if (Array.isArray(parent)) {
             const idx = Number(key);
             if (!isNaN(idx)) parent.splice(idx, 1);

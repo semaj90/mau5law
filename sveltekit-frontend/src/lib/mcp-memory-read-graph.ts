@@ -16,7 +16,7 @@ export interface GraphNode {
 export interface GraphReadResponse {
   nodes: GraphNode[];
   edges: {
-    from: string;
+    from string;
     to: string;
     type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';
   }[];

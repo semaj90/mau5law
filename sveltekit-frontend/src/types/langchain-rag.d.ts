@@ -1,4 +1,4 @@
-declare module '$lib/ai/langchain-rag' {
+declare module: '$lib/ai/langchain-rag' {
   // runtime module may export a factory, default factory, named vectorStore, etc.
   // Optional factory functions — typed as consts that may be undefined
   export const getVectorStore: (() => Promise<any> | any) | undefined;

@@ -53,7 +53,7 @@
     type="button"
     class="dropdown-trigger"
     on:click|stopPropagation={() => toggle()}
-    on:keydown={(e) => {
+    onkeydown={(e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         toggle();
@@ -72,7 +72,7 @@
       tabindex="-1"
       class="dropdown-menu"
       on:click|stopPropagation
-      on:keydown={(e) => {
+      onkeydown={(e) => {
         if (e.key === 'Escape') close();
       }}
       style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}

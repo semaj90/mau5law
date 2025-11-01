@@ -57,7 +57,7 @@ const qdrant: OptimizedQdrantServiceType = optimizedQdrantService as unknown as 
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
 
-// NOTE: If you encounter "Property 'methodName' does not exist on type 'OptimizedQdrantService'" errors,
+// NOTE: If you encounter: "Property 'methodName' does not exist on type: 'OptimizedQdrantService'" errors,
 // it means the type definition for `optimizedQdrantService` in `$lib/services/optimized-qdrant-service.ts`
 // needs to be updated to include the missing methods (e.g., healthCheck, searchVectors, upsertVectors, syncFromPostgreSQL).
 // This fix cannot be applied from this file.
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const health = await qdrant.healthCheck();
         // Simulate multiple search operations to test caching
         const searchPromises = Array.from({ length: 3 }, async () => {
-          // Removed unused 'i' parameter
+          // Removed unused: 'i' parameter
           const vector = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
           return await qdrant.searchVectors(vector, {
             limit: 3,

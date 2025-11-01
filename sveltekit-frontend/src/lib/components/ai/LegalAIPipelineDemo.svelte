@@ -26,7 +26,7 @@ https://svelte.dev/e/expected_token -->
     content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
     metadata: {
       document_type: 'contract',
-      jurisdiction 'federal',
+      jurisdiction: 'federal',
       confidence: 0.95,
       content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
       vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1),
@@ -115,7 +115,7 @@ https://svelte.dev/e/expected_token -->
         content: doc.content,
         metadata: {
           document_type: 'brief',
-          jurisdiction 'federal',
+          jurisdiction: 'federal',
           confidence: 0.8,
           content: doc.content,
           vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1);

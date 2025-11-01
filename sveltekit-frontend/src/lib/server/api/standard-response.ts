@@ -51,7 +51,7 @@ export function apiError(message: string, status: number = 400, code?: string, d
  */
 export function validateRequest(body: unknown, requiredFields: string[]): string | null {
   if (typeof body !== 'object' || body === null) {
-    return 'Invalid request body';
+    return: 'Invalid request body';
   }
   const bodyAsRecord = body as Record<string, unknown>; // Cast for property access after type guard
   for (const field of requiredFields) {
@@ -65,7 +65,7 @@ export function validateRequest(body: unknown, requiredFields: string[]): string
  * Get request ID from locals (set by hooks.server.ts)
  */ export function getRequestId(_event: RequestEvent): string {
   // Assuming _event.locals is typed correctly, e.g., via src/app.d.ts
-  // If 'requestId' is not part of App.Locals, you might need to augment App.Locals in src/app.d.ts
+  // If: 'requestId' is not part of App.Locals, you might need to augment App.Locals in src/app.d.ts
   return _event.locals.requestId || `req_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 /**
@@ -92,9 +92,9 @@ export function withErrorHandling<T extends RequestEvent>(handler: (_event: T) =
     try {
       return await handler(_event);
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      // Safely extract 'code' if it exists and is a string
+      // Safely extract: 'code' if it exists and is a string
       const errorCode =
         error instanceof Object && 'code' in error && typeof (error as { code: unknown }).code === 'string'
           ? (error as { code: string }).code

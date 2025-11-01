@@ -13,7 +13,7 @@
     Select,
     initializeEnhancedBits,
     LegalDesignTokens
-  } from './index.js';
+  } from './index';
   import LegalPOICard from './LegalPOICard.svelte';
   // Import all three legal systems
   import { citationsStore } from '$lib/stores/legal-citations.js';
@@ -64,7 +64,7 @@
     legalPlatformStore.createCase({
       caseNumber: `CASE-${Date.now()}`,
       title: 'New Legal Case',
-      description 'Case created from dashboard',
+      description: 'Case created from dashboard',
       status: 'active',
       priority: 'medium',
       citations: [],
@@ -72,7 +72,7 @@
       personsOfInterest: [],
       documents: [],
       notes: [],
-      jurisdiction 'Federal',
+      jurisdiction: 'Federal',
       court: 'District Court',
       filingDate: new Date().toISOString(),
       financials: {
@@ -89,7 +89,7 @@
         precedentCases: []
       },
       assignedTo: [],
-      tags: [],
+      tags: []
     });
   }
   function handleQuickAnalysis() {
@@ -107,16 +107,16 @@
       metadata: {
         riskLevel: 'critical',
         threatLevel: 'severe',
-        publicSafetyRisk: true
+        publicSafetyRisk: true,
         credibilityScore: 25,
         influenceLevel: 'significant',
         communicationStyle: ['aggressive', 'uncooperative'],
         strategicImportance: 85,
-        lastInteraction '2024-01-15',
+        lastInteraction: '2024-01-15',
         interactionCount: 12,
         personality: {
           traits: ['violent', 'unpredictable', 'anti-authority'],
-          communication [],
+          communication: [],
           predictedBehavior: [],
           negotiationStyle: 'hostile',
           riskFactors: ['violence history', 'weapon access'],
@@ -124,20 +124,20 @@
             stability: 0.2,
             aggressionLevel: 0.9,
             predictability: 0.3,
-            cooperationLikelihood: 0.1,
+            cooperationLikelihood: 0.1
           }
         },
         documentReferences: [],
         network: {
           connections: [],
           centralityScore: 0.8,
-          clusterMembership: [],
+          clusterMembership: []
         }
       },
       contact: {
         emails: [],
         phones: [],
-        addresses: [],
+        addresses: []
       },
       legal: {
         criminalHistory: []
@@ -149,18 +149,18 @@
           {
             id: 'W001',
             type: 'arrest',
-            jurisdiction 'State of California',
+            jurisdiction: 'State of California',
             issuedDate: '2024-01-01',
             charges: ['Armed Robbery', 'Assault with Deadly Weapon'],
-            status: 'active',
+            status: 'active'
           }
         ],
         watchLists: [
           {
             list: 'fbi_most_wanted',
             addedDate: '2024-01-01',
-            reason 'Violent felony charges',
-            priority: 'critical',
+            reason: 'Violent felony charges',
+            priority: 'critical'
           }
         ],
         knownAssociates: [],
@@ -169,16 +169,16 @@
           operatingAreas: ['Los Angeles'],
           methods: ['armed intimidation'],
           timingPatterns: ['nighttime'],
-          weaponsUsed: ['handgun'];
+          weaponsUsed: ['handgun']
         },
         dangerLevel: 'extreme',
-        armedAndDangerous: true
+        armedAndDangerous: true,
         escapeRisk: 'high',
-        lastKnownLocation {
+        lastKnownLocation: {
           address: '123 Main St, Los Angeles, CA',
           date: '2024-01-10',
           source: 'witness',
-          reliability: 0.8,
+          reliability: 0.8
         }
       },
       relationships: [],
@@ -189,14 +189,14 @@
       tags: ['violent', 'armed'],
       aiProcessing: {
         lastAnalyzed: '2024-01-15',
-        profileComplete: true
-        networkMapped: false
-        riskAssessed: true
-        documentsScanned: true
-        socialMediaScanned: false
-        backgroundCheckComplete: true
-        criminalProfileAnalyzed: true
-        threatAssessmentComplete: true
+        profileComplete: true,
+        networkMapped: false,
+        riskAssessed: true,
+        documentsScanned: true,
+        socialMediaScanned: false,
+        backgroundCheckComplete: true,
+        criminalProfileAnalyzed: true,
+        threatAssessmentComplete: true,
         watchListsChecked: true
       }
     }
@@ -346,7 +346,7 @@
       <!-- Search Results -->
       {#if searchQuery && Object.keys(searchResults).length > 0}
         <div class="search-results">
-          <h2>🔍 Search Results for "{searchQuery}"</h2>
+          <h2>🔍 Search Results for: "{searchQuery}"</h2>
           {#if searchResults.citations?.length > 0}
             <Card>
               <CardHeader>
@@ -424,7 +424,7 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
@@ -446,8 +446,7 @@
     padding: 2rem;
   }
   .dashboard-nav {
-    position fixed;
-d;
+    position: fixed;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
@@ -513,7 +512,7 @@ d;
   }
   .section-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
   }
@@ -567,8 +566,7 @@ d;
       grid-template-columns: 1fr;
     }
     .dashboard-nav {
-      position stati;
-c;
+      position: static;
       transform: none;
       margin-top: 2rem;
       justify-content: center;

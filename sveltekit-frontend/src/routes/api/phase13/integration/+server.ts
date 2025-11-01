@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
     switch (action) {
-      case 'health': {
+      case: 'health': {
         const health = await getSystemHealth();
         return json({
           success: true,
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'status': {
+      case: 'status': {
         const status = mockIntegration.getIntegrationStatus();
         return json({
           success: true,
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'services': {
+      case: 'services': {
         // Trigger service detection
         await mockIntegration.initializeFullIntegration();
         const services = mockIntegration.getIntegrationStatus();
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, config, suggestion } = body;
     switch (action) {
-      case 'initialize': {
+      case: 'initialize': {
         console.log('🚀 Manual Phase 13 initialization requested');
         const initResult = await mockIntegration.initializeFullIntegration();
         return json({
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'apply-suggestion': {
+      case: 'apply-suggestion': {
         if (!suggestion) {
           return json(
             {
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'configure': {
+      case: 'configure': {
         if (!config) {
           return json(
             {
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'test-services': {
+      case: 'test-services': {
         console.log('🧪 Testing all services connectivity');
         const testResult = await mockIntegration.initializeFullIntegration();
         const detailedStatus = mockIntegration.getIntegrationStatus();

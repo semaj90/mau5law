@@ -38,7 +38,7 @@ interface OllamaSystemStatus {
   timestamp: string;
 }
 
-// New small helpers to avoid 'any' casts and to create a timeout-able AbortSignal
+// New small helpers to avoid: 'any' casts and to create a timeout-able AbortSignal
 function getErrorMessage(e: unknown): string {
   // Prefer Error.message when available, otherwise try JSON/stringify fallback
   if (e instanceof Error) return e.message;
@@ -214,7 +214,7 @@ class OllamaService {
     try {
       const modelfile = `
 FROM ${modelPath}
-TEMPLATE """<start_of_turn>user
+TEMPLATE: """<start_of_turn>user
 {{ .Prompt }}<end_of_turn>
 <start_of_turn>model
 {{ .Response }}<end_of_turn>"""
@@ -222,7 +222,7 @@ PARAMETER temperature 0.7
 PARAMETER top_p 0.9
 PARAMETER top_k 40
 PARAMETER repeat_penalty 1.1
-SYSTEM """You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review. Provide accurate, well-reasoned responses that would be helpful to legal professionals."""
+SYSTEM: """You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review. Provide accurate, well-reasoned responses that would be helpful to legal professionals."""
 `;
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',

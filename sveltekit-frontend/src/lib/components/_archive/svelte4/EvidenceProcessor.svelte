@@ -120,24 +120,24 @@
   }
   function getStepIcon(step: string): string {
     switch (step) {
-      case 'ocr': return '🔍';
-      case 'embedding': return '🧠';
-      case 'rag':
-      case 'analysis': return '📚';
-      default: return '⚙️';
+      case: 'ocr': return: '🔍';
+      case: 'embedding': return: '🧠';
+      case: 'rag':
+      case: 'analysis': return: '📚';
+      default: return: '⚙️';
     }
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'done': return 'text-green-600';
-      case 'error': return 'text-red-600';
-      case 'processing': return 'text-blue-600';
-      case 'uploading': return 'text-yellow-600';
-      default: return 'text-gray-600';
+      case: 'done': return: 'text-green-600';
+      case: 'error': return: 'text-red-600';
+      case: 'processing': return: 'text-blue-600';
+      case: 'uploading': return: 'text-yellow-600';
+      default: return: 'text-gray-600';
     }
   }
   function formatFragment(fragment: unknown): string {
-    if (!fragment) return '';
+    if (!fragment) return: '';
     if (typeof fragment === 'string') return fragment;
     if (fragment.textPreview) return fragment.textPreview;
     if (fragment.snippet) return fragment.snippet;
@@ -174,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center space-x-2">
       {#if currentState === 'idle'}
         <button
-          on:click={startProcessing}
+          onclick={startProcessing}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Start Processing
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
       {#if isProcessing}
         <button
-          on:click={cancelProcessing}
+          onclick={cancelProcessing}
           class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
         >
           Cancel
@@ -190,14 +190,14 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
       {#if hasError}
         <button
-          on:click={retry}
+          onclick={retry}
           class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
         >
           Retry
         </button>
       {/if}
       <button
-        on:click={() => (showDetails = !showDetails)}
+        onclick={() => (showDetails = !showDetails)}
         class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
       >
         {showDetails ? 'Hide' : 'Show'} Details
@@ -351,7 +351,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <h4 class="font-medium text-gray-900">Processing Logs</h4>
-            <button on:click={() => (showLogs = !showLogs)} class="text-sm text-blue-600 hover:text-blue-800">
+            <button onclick={() => (showLogs = !showLogs)} class="text-sm text-blue-600 hover:text-blue-800">
               {showLogs ? 'Hide' : 'Show'} Logs
             </button>
           </div>
@@ -380,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Reset Button -->
         <div class="pt-4 border-t">
           <button
-            on:click={reset}
+            onclick={reset}
             class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             Reset Processor

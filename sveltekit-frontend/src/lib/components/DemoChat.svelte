@@ -72,7 +72,7 @@ Tests the demo RAG functionality with a working interface
       isLoading = false;
     }
   }
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendQuery();
@@ -209,7 +209,7 @@ Tests the demo RAG functionality with a working interface
   }
   .chat-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
@@ -254,7 +254,7 @@ Tests the demo RAG functionality with a working interface
   }
   .message-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.9em;
@@ -267,9 +267,11 @@ Tests the demo RAG functionality with a working interface
   .message-user .message-content {
     background-color: #0066cc;
     margin-left: auto;
+    color: white;
   }
   .message-ai .message-content {
     background-color: #1a1a1a;
+    color: #e6e6e6;
   }
   .summary-title {
     color: #fff;
@@ -304,7 +306,7 @@ Tests the demo RAG functionality with a working interface
     border-radius: 4px;
   }
   .source-item:last-child {
-    margin-bottom: 0,
+    margin-bottom: 0;
   }
   .source-relevance {
     font-size: 0.8em;
@@ -329,7 +331,7 @@ Tests the demo RAG functionality with a working interface
   }
   .reasoning-list {
     margin: 0.5rem 0 0 1rem;
-    padding: 0,
+    padding: 0;
   }
   .reasoning-list li {
     margin-bottom: 0.25rem;
@@ -340,18 +342,18 @@ Tests the demo RAG functionality with a working interface
     gap: 0.25rem;
     margin-bottom: 0.5rem;
   }
-  .loading-animation: span {
+  .loading-animation span {
     animation: pulse 1.5s ease-in-out infinite;
     font-size: 1.2em;
     color: #00ff00;
   }
-  .loading-animation: span:nth-child(1) {
+  .loading-animation span:nth-child(1) {
     animation-delay: 0s;
   }
-  .loading-animation: span:nth-child(2) {
+  .loading-animation span:nth-child(2) {
     animation-delay: 0.3s;
   }
-  .loading-animation: span:nth-child(3) {
+  .loading-animation span:nth-child(3) {
     animation-delay: 0.6s;
   }
   @keyframes pulse {
@@ -374,7 +376,7 @@ Tests the demo RAG functionality with a working interface
     align-items: flex-end;
   }
   .chat-input .nes-field {
-    flex: 1,
+    flex: 1;
   }
   .chat-input textarea {
     resize: vertical;

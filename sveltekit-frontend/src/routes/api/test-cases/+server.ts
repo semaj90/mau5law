@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // If embedding was generated, store it in the embedding cache for future use
     if (caseEmbedding && caseEmbedding.length > 0) {
       try {
-        // avoid "as any" by narrowing dynamic import to unknown and using plain property access
+        // avoid: "as any" by narrowing dynamic import to unknown and using plain property access
         const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
         const embeddingCache = schemaMod['embeddingCache'] as unknown; // keep as unknown to avoid any
         const contentHash = hashContent(caseContent);
@@ -392,7 +392,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         } catch (insertErr) {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
-            // use a narrowed access to the column name to avoid "as any" cast
+            // use a narrowed access to the column name to avoid: "as any" cast
             await db
               .update(embeddingCache as unknown as AnyTable)
               .set({ embedding: caseEmbedding, updated_at: now })
@@ -670,7 +670,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       throw error(
         400,
         makeHttpErrorPayload({
-          message: `Cannot delete case with status '${caseRecord.status}'. Please close the case first or contact an administrator.`,
+          message: `Cannot delete case with status: '${caseRecord.status}'. Please close the case first or contact an administrator.`,
           code: 'CASE_STATUS_PROTECTED',
         })
       );
@@ -792,5 +792,5 @@ function getUserDisplayName(user: unknown): string {
     const fullName = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
     return fullName || u.email || 'Unknown User';
   }
-  return 'Unknown User';
+  return: 'Unknown User';
 }

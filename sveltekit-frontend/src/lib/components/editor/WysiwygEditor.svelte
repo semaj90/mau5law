@@ -21,8 +21,8 @@
     enableCollaboration = false,
     ondispatch
   }: Props = $props();
-  import { onMount } from "svelte";
-  import * as Dialog from 'bits-ui/dialog';
+  // removed unused onMount import and external Dialog dependency (not available).
+  // We'll render lightweight in-file modal markup instead of importing bits-ui/dialog.
   import { writable } from 'svelte/store';
   import type { Writable } from 'svelte/store';
 
@@ -34,6 +34,12 @@
   const charCount: Writable<number> = writable(0);
   const aiOpen = writable(false);
   const citeOpen = writable(false);
+
+  // collaboration toggle so `enableCollaboration` is used
+  const collaborationActive = writable(false);
+  function toggleCollaboration() {
+    collaborationActive.update(v => !v);
+  }
 
   // AI Assistant state
   let aiQuery = $state('');
@@ -288,6 +294,11 @@
       <!-- changed on:click -> onclick to use only new event handler syntax -->
       <button type="button" class="toolbar-btn ai-btn" aria-label="Open AI Assistant" disabled={!enableAI} onclick={() => openAIAssistant(hugerte?.selection.getContent() || '')}> 🤖 AI Assistant </button>
       <button type="button" class="toolbar-btn cite-btn" aria-label="Open Citation Helper" disabled={!enableCitation} onclick={() => openCitationHelper(hugerte?.selection.getContent() || '')}> 📚 Citations </button>
+      {#if enableCollaboration}
+        <button type="button" class="toolbar-btn collab-btn" aria-pressed={$collaborationActive} onclick={toggleCollaboration}>
+          👥 { $collaborationActive ? 'Stop' : 'Collaborate' }
+        </button>
+      {/if}
     </div>
     <div class="toolbar-right" aria-live="polite" aria-atomic="true">
       <span>Words: {$wordCount}</span>
@@ -311,12 +322,12 @@
   </div>
 </div>
 
-<!-- AI Assistant Dialog -->
-<Dialog.Root bind:open={$aiOpen}>
-  <Dialog.Portal>
-    <Dialog.Overlay class="fixed inset-0 z-40 bg-black/50" />
-    <Dialog.Content class="fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-600px -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6">
-      <Dialog.Title class="pb-4 text-xl font-semibold">AI Legal Assistant</Dialog.Title>
+<!-- AI Assistant Modal (replaces Dialog.Root usage) -->
+{#if $aiOpen}
+  <div class="fixed inset-0 z-40">
+    <div class="fixed inset-0 bg-black/50" onclick={() => aiOpen.set(false)} />
+    <div class="fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-600px -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6" role="dialog" aria-modal="true" aria-labelledby="ai-title">
+      <h2 id="ai-title" class="pb-4 text-xl font-semibold">AI Legal Assistant</h2>
       <div class="pt-4">
         {#if selectedText}
           <div class="selected-text">
@@ -349,17 +360,17 @@
           {/if}
         </div>
       </div>
-      <Dialog.Close class="absolute right-4 top-4 cursor-pointer border-none bg-transparent text-2xl leading-none text-gray-500 hover:text-gray-700">×</Dialog.Close>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+      <button class="absolute right-4 top-4 cursor-pointer border-none bg-transparent text-2xl leading-none text-gray-500 hover:text-gray-700" onclick={() => aiOpen.set(false)}>×</button>
+    </div>
+  </div>
+{/if}
 
-<!-- Citation Helper Dialog -->
-<Dialog.Root bind:open={$citeOpen}>
-  <Dialog.Portal>
-    <Dialog.Overlay class="fixed inset-0 z-40 bg-black/50" />
-    <Dialog.Content class="fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-600px -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6">
-      <Dialog.Title class="pb-4 text-xl font-semibold">Citation Helper</Dialog.Title>
+<!-- Citation Helper Modal (replaces Dialog.Root usage) -->
+{#if $citeOpen}
+  <div class="fixed inset-0 z-40">
+    <div class="fixed inset-0 bg-black/50" onclick={() => citeOpen.set(false)} />
+    <div class="fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-600px -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6" role="dialog" aria-modal="true" aria-labelledby="cite-title">
+      <h2 id="cite-title" class="pb-4 text-xl font-semibold">Citation Helper</h2>
       <div class="pt-4">
         <div class="space-y-4">
           <label for="cite-query">Search for citations:</label>
@@ -387,10 +398,10 @@
           {/if}
         </div>
       </div>
-      <Dialog.Close class="absolute right-4 top-4 cursor-pointer border-none bg-transparent text-2xl leading-none text-gray-500 hover:text-gray-700">×</Dialog.Close>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+      <button class="absolute right-4 top-4 cursor-pointer border-none bg-transparent text-2xl leading-none text-gray-500 hover:text-gray-700" onclick={() => citeOpen.set(false)}>×</button>
+    </div>
+  </div>
+{/if}
 
 <style>
   /* @unocss-include */
@@ -437,6 +448,13 @@
   }
   .cite-btn:hover {
     background: #f0fdf4;
+  }
+  .collab-btn {
+    border-color: #a5b4fc;
+    color: #3730a3;
+  }
+  .collab-btn:hover {
+    background: #eef2ff;
   }
   .toolbar-right {
     display: flex;

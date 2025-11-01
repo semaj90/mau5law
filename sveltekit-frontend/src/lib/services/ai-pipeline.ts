@@ -188,7 +188,7 @@ export class EnhancedAIPipeline {
         `🔍 Found ${searchResults.length} results for query: "${query}"`
       );
       return searchResults;
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Semantic search failed:", error);
       throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -226,7 +226,7 @@ export class EnhancedAIPipeline {
           confidenceLevel: analysis.confidenceLevel || 0.7,
           recommendations: analysis.recommendations || []
         }
-      } catch (parseError: unknown) { // Use 'unknown' for caught errors
+      } catch (parseError: unknown) { // Use: 'unknown' for caught errors
         // Fallback if JSON parsing fails
         return {
           summary: response.substring(0, 200) + "...", // response is already string
@@ -237,7 +237,7 @@ export class EnhancedAIPipeline {
           recommendations: ["Review document manually"]
         }
       }
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Legal document analysis failed:", error);
       throw new Error(`Document analysis failed: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -275,7 +275,7 @@ export class EnhancedAIPipeline {
         embeddingId,
         processingTime
       }
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Document ingestion failed:", error);
       throw new Error(`Document ingestion failed: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -289,7 +289,7 @@ export class EnhancedAIPipeline {
         'SELECT',
         'COUNT(*) as total,',
         'AVG(EXTRACT(EPOCH FROM (updated_at - created_at))) as avg_time,',
-        "COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '24 hours') as recent",
+        "COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL: '24 hours') as recent",
         'FROM legal_document_embeddings'
       ].join(' '));
       const typeResult = await this.pgPool.query<DocumentTypeCountResult>([
@@ -310,7 +310,7 @@ export class EnhancedAIPipeline {
         documentTypes,
         recentActivity: parseInt(result.rows[0].recent)
       }
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Failed to get embedding stats:", error);
       return {
         totalDocuments: 0,
@@ -334,14 +334,14 @@ export class EnhancedAIPipeline {
       // Test Ollama
       await this.llm.invoke("test");
       health.ollama = true;
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Ollama health check failed:", error);
     }
     try {
       // Test PostgreSQL
       await this.pgPool.query("SELECT 1");
       health.postgres = true;
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("PostgreSQL health check failed:", error);
     }
     try {
@@ -349,14 +349,14 @@ export class EnhancedAIPipeline {
       if (this.vectorStore) {
         health.vectorStore = true;
       }
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Vector store health check failed:", error);
     }
     try {
       // Test embeddings
       await this.embeddings.embedQuery("test");
       health.embeddings = true;
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Embeddings health check failed:", error);
     }
     return health;
@@ -368,7 +368,7 @@ export class EnhancedAIPipeline {
     try {
       await this.pgPool.end();
       console.log("✅ AI Pipeline cleanup completed");
-    } catch (error: unknown) { // Use 'unknown' for caught errors
+    } catch (error: unknown) { // Use: 'unknown' for caught errors
       console.error("Cleanup failed:", error);
     }
   }

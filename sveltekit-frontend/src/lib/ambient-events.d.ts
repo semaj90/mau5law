@@ -1,4 +1,4 @@
-// Temporary ambient event declarations to avoid 'parameter of type never' diagnostics
+// Temporary ambient event declarations to avoid: 'parameter of type never' diagnostics
 // during migration. Remove after explicit dispatch typings are added.
 // Broad augmentation (kept minimal) to cover common handlers.
 // This intentionally widens types; narrowing will follow once components export events.

@@ -1,12 +1,12 @@
 import { db } from '$lib/db/connection';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
-import { sessions, messages } from '$lib/db/schema'; // Ensure 'messages' is exported from '$lib/db/schema'.
+import { sessions, messages } from '$lib/db/schema'; // Ensure: 'messages' is exported from '$lib/db/schema'.
 import { json } from '@sveltejs/kit'; // Add this import
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { messages: chatMessages, sessionId, model } = await request.json(); // Fix: Renamed 'messages' to 'chatMessages' to avoid conflict with imported 'messages'
+    const { messages: chatMessages, sessionId, model } = await request.json(); // Fix: Renamed: 'messages' to: 'chatMessages' to avoid conflict with imported: 'messages'
     if (!chatMessages || !Array.isArray(chatMessages)) {
       return json({ error: 'Messages array is required' }, { status: 400 });
     }
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const savedMessages = [];
     for (const message of chatMessages) {
       // Fix: Used chatMessages
-      // Generate embedding for message content, prioritizing 'embeddinggemma:latest' with 'nomic-embed-text' as fallback
+      // Generate embedding for message content, prioritizing: 'embeddinggemma:latest' with: 'nomic-embed-text' as fallback
       let embedding: number[] | null = null;
       const modelsToTry = ['embeddinggemma:latest', 'nomic-embed-text'];
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
             console.warn(`Failed to generate embedding with ${modelName}: ${embeddingResponse.statusText}`);
           }
         } catch (error: unknown) {
-          // Changed 'any' to 'unknown'
+          // Changed: 'any' to: 'unknown'
           console.warn(`Error generating embedding with ${modelName}:`, error);
         }
       }
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       sessionId,
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Error saving chat messages:', error);
     return json(
       {

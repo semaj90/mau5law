@@ -27,14 +27,14 @@ export interface ErrorFixResult {
 }
 // === Common Error Patterns ===
 const ERROR_PATTERNS = {
-  MISSING_EXPORT: /Module '.*' has no exported member '(.+)'/,
-  PROPERTY_NOT_EXIST: /Property '(.+)' does not exist on type '(.+)'/,
-  TYPE_MISMATCH: /Type '(.+)' is not assignable to type '(.+)'/,
-  IMPORT_PATH: /Cannot find module '(.+)'/,
-  VERBATIM_MODULE: /Re-exporting a type when 'verbatimModuleSyntax' is enabled requires using 'export type'/,
-  INTERFACE_EXTENDS: /Interface '(.+)' incorrectly extends interface '(.+)'/,
-  XSTATE_ACTOR: /Type '.*' is not assignable to type 'string \| AnyActorLogic'/,
-  DATABASE_SCHEMA: /has no exported member named '(.+)'\. Did you mean '(.+)'\?/,
+  MISSING_EXPORT: /Module '.*' has no exported member: '(.+)'/,
+  PROPERTY_NOT_EXIST: /Property '(.+)' does not exist on type: '(.+)'/,
+  TYPE_MISMATCH: /Type '(.+)' is not assignable to type: '(.+)'/,
+  IMPORT_PATH: /Cannot find module: '(.+)'/,
+  VERBATIM_MODULE: /Re-exporting a type when: 'verbatimModuleSyntax' is enabled requires using: 'export type'/,
+  INTERFACE_EXTENDS: /Interface '(.+)' incorrectly extends interface: '(.+)'/,
+  XSTATE_ACTOR: /Type '.*' is not assignable to type: 'string \| AnyActorLogic'/,
+  DATABASE_SCHEMA: /has no exported member named: '(.+)'\. Did you mean: '(.+)'\?/,
 };
 // === Error Fix Strategies ===
 export class WebGPUSOMErrorFixer {

@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   import { onDestroy, tick } from 'svelte';
-  import { createActor, type Snapshot, type ActorRef } from 'xstate'; // Import Snapshot and ActorRef types
+  import { interpret, type Snapshot, type Interpreter } from 'xstate'; // switched to interpret + Interpreter
   import { aiProcessingMachine } from '$lib/machines/ai-processing-machine'; // Adjusted path
   import { createAITask } from '$lib/utils/ai-task-helpers'; // Adjusted path
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store'; // Adjusted path
@@ -62,8 +62,8 @@
     task?: { id: string; [key: string]: any }; // Adjust to a more specific type if known
   }
 
-  // XState actor for AI processing
-  const aiActor: ActorRef<typeof aiProcessingMachine> = createActor(aiProcessingMachine);
+  // Replace actor creation with an Interpreter service
+  const aiActor: Interpreter<any> = interpret(aiProcessingMachine);
   aiActor.start();
 
   // Debounced suggestion generation
@@ -82,7 +82,7 @@
         text,
         contextBefore,
         contextAfter,
-        cursorPosition: cursorPos, // Fixed: missing colon
+        cursorPosition: cursorPos,
       });
       currentSuggestions = suggestions.slice(0, maxSuggestions);
       if (currentSuggestions.length > 0) {
@@ -117,7 +117,7 @@
             - Natural language flow
             Return JSON array with completions.`,
           model: aiModel,
-          // Assuming Ollama API path for completion is '/api/generate'
+          // Assuming Ollama API path for completion is: '/api/generate'
           apiUrl: getOllamaApiUrl('/api/generate'), // Wired Ollama endpoint
           format: 'json',
         });
@@ -150,7 +150,7 @@
             - Professional tone
             Return JSON with specific suggestions and replacements.`,
           model: aiModel,
-          // Assuming Ollama API path for analysis is '/api/generate'
+          // Assuming Ollama API path for analysis is: '/api/generate'
           apiUrl: getOllamaApiUrl('/api/generate'), // Wired Ollama endpoint
           format: 'json',
         });
@@ -182,7 +182,7 @@
           {
             text: context.contextBefore,
             model: 'nomic-embed-text',
-            // Assuming Ollama API path for embeddings is '/api/embeddings'
+            // Assuming Ollama API path for embeddings is: '/api/embeddings'
             apiUrl: getOllamaApiUrl('/api/embeddings'), // Wired Ollama endpoint
           },
           'medium'
@@ -215,34 +215,34 @@
     return suggestions;
   }
 
-  // Wait for AI task completion
+  // Wait for AI task completion — make subscription safe for timeout
   function waitForAIResult(taskId: string): Promise<any> {
     return new Promise((resolve, reject) => {
+      let subscription: ReturnType<typeof aiActor.subscribe> | null = null;
+
       const timeout = setTimeout(() => {
-        subscription.unsubscribe(); // Ensure unsubscribe on timeout
+        // safe unsubscribe guard
+        try { subscription?.unsubscribe?.(); } catch {}
         reject(new Error(`AI task timeout for task ID: ${taskId}`));
       }, 10000);
 
-      const subscription = aiActor.subscribe((snapshot: Snapshot<typeof aiProcessingMachine>) => {
-        // Assuming the aiProcessingMachine's context stores the result and task ID
-        const typedSnapshotContext = snapshot.context as AIProcessingSnapshotContext;
+      subscription = aiActor.subscribe((snapshot: Snapshot<typeof aiProcessingMachine>) => {
+        const typedSnapshotContext = (snapshot.context as any) || {};
         const currentTaskResult = typedSnapshotContext?.result;
         const currentTaskError = typedSnapshotContext?.error;
         const currentTaskId = typedSnapshotContext?.task?.id;
 
         if (currentTaskId === taskId) {
-          // Check if the machine is in a final state for this task
-          if (snapshot.matches('idle') && currentTaskResult) { // Assuming 'idle' is the success state
+          // adapt to expected machine states (assumes 'idle' and: 'error' exist)
+          if ((snapshot as any).matches?.('idle') && currentTaskResult) {
             clearTimeout(timeout);
-            subscription.unsubscribe();
+            try { subscription?.unsubscribe?.(); } catch {}
             resolve(currentTaskResult);
-          } else if (snapshot.matches('error') && currentTaskError) { // Assuming 'error' is the failure state
+          } else if ((snapshot as any).matches?.('error') && currentTaskError) {
             clearTimeout(timeout);
-            subscription.unsubscribe();
+            try { subscription?.unsubscribe?.(); } catch {}
             reject(new Error(currentTaskError));
           }
-          // If the machine has a specific state for task completion, use that.
-          // Example: if (snapshot.matches({ processing: { [taskId]: 'completed' } }))
         }
       });
     });
@@ -273,22 +273,22 @@
   function handleKeyDown(event: KeyboardEvent) {
     if (!isShowingSuggestions || currentSuggestions.length === 0) return;
     switch ((event as KeyboardEvent).key) {
-      case 'ArrowDown':
+      case: 'ArrowDown':
         event.preventDefault();
         selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, currentSuggestions.length - 1);
         break;
-      case 'ArrowUp':
+      case: 'ArrowUp':
         event.preventDefault();
         selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, 0);
         break;
-      case 'Tab':
-      case 'Enter':
+      case: 'Tab':
+      case: 'Enter':
         if (selectedSuggestionIndex >= 0) {
           event.preventDefault();
           applySuggestion(currentSuggestions[selectedSuggestionIndex]);
         }
         break;
-      case 'Escape':
+      case: 'Escape':
         event.preventDefault();
         hideSuggestions();
         break;
@@ -350,7 +350,8 @@
     };
   });
   onDestroy(() => {
-    // aiActor cleanup handled by stub implementation
+    // stop the xstate interpreter to avoid leaks
+    try { aiActor.stop(); } catch {}
     generateSuggestions.cancel();
   });
 </script>
@@ -452,7 +453,7 @@
   .suggestions-header {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Fixed: typo 'space-betweennn' */
+    justify-content: space-between; /* Fixed: typo: 'space-betweennn' */
     padding: 8px 12px;
     background: var(--console-primary, #3b82f6);
     color: var(--console-bg, white);

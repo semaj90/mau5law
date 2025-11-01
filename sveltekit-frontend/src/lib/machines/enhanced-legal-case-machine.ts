@@ -180,7 +180,7 @@ export const enhancedLegalCaseMachine = createMachine(
         return { id: 'evidence_' + Math.random().toString(36).slice(2), ...input.evidence };
       }),
       startAIAnalysis: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-        return { summary: 'analysis for ' + input.caseId };
+        return { summary: 'analysis for: ' + input.caseId };
       }),
     },
   }

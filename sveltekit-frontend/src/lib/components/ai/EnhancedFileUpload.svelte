@@ -4,7 +4,8 @@
   import { createUploadMachine } from '$lib/machines/uploadMachine';
   import type { ProcessingPipeline } from '$lib/types/upload';
   import { toast } from '$lib/utils/toast';
-  import { Check, FileText, Loader2, Search, Upload, X } from 'lucide-svelte';
+  // import only stable icons; replace problematic icons with inline fallbacks below
+  import { FileText, Search, Upload } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
 
@@ -137,7 +138,6 @@
   } as any;
 
   const uploadMachineActor = createActor(createUploadMachine(basePipeline));
-  uploadMachineActor.start();
 
   // File upload handler with real RAG processing
   async function handleFileUpload(e: Event) {
@@ -278,15 +278,15 @@
   }
 
   function getStatusColor(progress: number): string {
-    if (progress === -1) return 'text-red-500';
-    if (progress === 100) return 'text-green-500';
-    return 'text-blue-500';
+    if (progress === -1) return: 'text-red-500';
+    if (progress === 100) return: 'text-green-500';
+    return: 'text-blue-500';
   }
 
   function getProgressColor(progress: number): string {
-    if (progress === -1) return 'bg-red-500';
-    if (progress === 100) return 'bg-green-500';
-    return 'bg-blue-500';
+    if (progress === -1) return: 'bg-red-500';
+    if (progress === 100) return: 'bg-green-500';
+    return: 'bg-blue-500';
   }
 
   // Auto-search effect
@@ -342,7 +342,7 @@
 
   <!-- Upload Area -->
   <div class="upload-area">
-    <input type="file" {accept} multiple on:change={handleFileUpload} class="hidden" id="file-input" />
+    <input type="file" accept={accept} multiple onchange={handleFileUpload} class="hidden" id="file-input" />
     <label for="file-input" class="upload-label">
       <Upload class="w-12 h-12 mb-4 text-gray-400" />
       <p class="text-lg font-medium">Drop files here or click to upload</p>
@@ -369,11 +369,12 @@
             </div>
             <div class="flex items-center space-x-2">
               {#if state.status === 'complete'}
-                <Check class="w-5 h-5 text-green-500" />
+                <span class="w-5 h-5 text-green-500 inline-block" aria-hidden>✓</span>
               {:else if state.status === 'error'}
-                <X class="w-5 h-5 text-red-500" />
+                <span class="w-5 h-5 text-red-500 inline-block" aria-hidden>✗</span>
               {:else}
-                <Loader2 class="w-5 h-5 animate-spin text-blue-500" />
+                <!-- simple CSS spinner fallback -->
+                <span class="inline-block w-5 h-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" aria-hidden></span>
               {/if}
               <span class="text-sm font-medium {getStatusColor(state.progress)}">
                 {state.status === 'error' ? 'Error' : `${state.progress}%`}
@@ -403,12 +404,12 @@
           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          on:click={handleSearch}
+          onclick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2"
         >
           {#if isSearching}
-            <Loader2 class="w-4 h-4 animate-spin" />
+            <span class="inline-block w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" aria-hidden></span>
           {:else}
             <Search class="w-4 h-4" />
           {/if}
@@ -501,6 +502,13 @@
   .result-item:hover {
     background: #f9fafb;
   }
+
+  /* spinner animation (tailwind-like used above relies on this) */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-spin { animation: spin 1s linear infinite; }
 
   .hidden {
     display: none;

@@ -77,7 +77,7 @@
     <!-- Advanced Options Toggle -->
     <button
       type="button"
-      on:click={() => (showAdvanced = !showAdvanced)}
+      onclick={() => (showAdvanced = !showAdvanced)}
       class="toggle-advanced"
     >
       {showAdvanced ? '−' : '+'} Advanced Options
@@ -143,7 +143,7 @@
           >
             <button
               type="button"
-              on:click={() => toggleResult(result.id)}
+              onclick={() => toggleResult(result.id)}
               class="result-toggle"
             >
               <span class="toggle-icon">

@@ -135,11 +135,11 @@ https://svelte.dev/e/js_parse_error -->
       if (enableCache) {
         cacheEntry = enhancedGPUCache.getCachedTexture(cacheKey);
         if (cacheEntry) {
-          console.log(`🎯 Cache hit for texture "${textureId}"`);
+          console.log(`🎯 Cache hit for texture: "${textureId}"`);
           onCacheHit?.(textureId);
           updateCacheMetrics(true);
         } else {
-          console.log(`❌ Cache miss for texture "${textureId}"`);
+          console.log(`❌ Cache miss for texture: "${textureId}"`);
           onCacheMiss?.(textureId);
           updateCacheMetrics(false);
           // Load and cache new texture
@@ -199,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
       currentFilteringType = cacheEntry.filteringTyp;
       // Notify texture loaded
       onTextureLoaded?.(cacheEntry);
-      console.log(`🎨 Texture "${textureId}" cached with ${currentFilteringType} filtering in ${textureLoadTime.toFixed(2)}ms`);
+      console.log(`🎨 Texture: "${textureId}" cached with ${currentFilteringType} filtering in ${textureLoadTime.toFixed(2)}ms`);
     } catch (error: unknown) {
       throw new Error(`Failed to load and cache texture: ${error.message}`);
     }
@@ -316,9 +316,9 @@ https://svelte.dev/e/js_parse_error -->
    * Helper functions
    */
   function determineFilteringType(_options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' {
-    if (options.enableTrilinearFiltering) return 'trilinear';
-    if (options.anisotropicLevel && options.anisotropicLevel > 1) return 'anisotropic';
-    return 'bilinear';
+    if (options.enableTrilinearFiltering) return: 'trilinear';
+    if (options.anisotropicLevel && options.anisotropicLevel > 1) return: 'anisotropic';
+    return: 'bilinear';
   }
   function calculateQualityScore(_options: N64RenderingOptions): number {
   let score = $state(0.3);

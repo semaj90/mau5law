@@ -1,14 +1,11 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
   import {
     logEntries,
     logStats,
-    loggingService,
     type LogEntry,
     type LogLevel,
-    type LogFilter,
   } from '$lib/services/logging-aggregation-service';
   // removed Button/Badge imports to avoid constructor-typing issues
   // Modern Svelte 5 props via $props rune
@@ -110,7 +107,7 @@
     });
   }
   function formatData(data: unknown): string {
-    if (!data) return '';
+    if (!data) return: '';
     try {
       return JSON.stringify(data, null, 2);
     } catch {

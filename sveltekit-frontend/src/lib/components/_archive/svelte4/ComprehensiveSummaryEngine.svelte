@@ -133,16 +133,16 @@ https://svelte.dev/e/props_duplicate -->
   function handleServiceWorkerMessage(event) {
     const { type, data } = event.data;
     switch (type) {
-      case 'chunkComplete':
+      case: 'chunkComplete':
         updateStreamingProgress(data);
         break;
-      case 'summaryComplete':
+      case: 'summaryComplete':
         handleSummaryCompletion(data);
         break;
-      case 'error':
+      case: 'error':
         handleProcessingError(data);
         break;
-      case 'metrics':
+      case: 'metrics':
         updateMetrics(data);
         break;
     }
@@ -294,7 +294,7 @@ https://svelte.dev/e/props_duplicate -->
         }
       ).type
     ) {
-      case 'status':
+      case: 'status':
         currentStep = (
           data as {
             type?: any;
@@ -309,7 +309,7 @@ https://svelte.dev/e/props_duplicate -->
         ).message;
         summaryProgress.set((data as any).progress);
         break;
-      case 'llm_chunk':
+      case: 'llm_chunk':
         streamingData.update(d => [
           ...d,
           {
@@ -319,13 +319,13 @@ https://svelte.dev/e/props_duplicate -->
           },
         ]);
         break;
-      case 'complete':
+      case: 'complete':
         synthesisResult.set((data as any).result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
         isProcessing = false;
         break;
-      case 'error':
+      case: 'error':
         errorMessage = (
           data as {
             type?: any;
@@ -581,7 +581,7 @@ https://svelte.dev/e/props_duplicate -->
       <button
         class="btn-advanced"
         class:active={showAdvancedOptions}
-        on:click={() => (showAdvancedOptions = !showAdvancedOptions)}
+        onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
       >
         <Settings size="16" />
         Advanced
@@ -656,16 +656,16 @@ https://svelte.dev/e/props_duplicate -->
       </div>
       <div class="processing-controls">
         {#if !isProcessing}
-          <button class="nes-btn is-primary" on:click={startComprehensiveSummary}>
+          <button class="nes-btn is-primary" onclick={startComprehensiveSummary}>
             <Play size="16" />
             Start Analysis
           </button>
         {:else}
-          <button class="nes-btn" on:click={pauseProcessing}>
+          <button class="nes-btn" onclick={pauseProcessing}>
             <Pause size="16" />
             Pause
           </button>
-          <button class="btn-danger" on:click={stopProcessing}>
+          <button class="btn-danger" onclick={stopProcessing}>
             <Square size="16" />
             Stop
           </button>
@@ -730,7 +730,7 @@ https://svelte.dev/e/props_duplicate -->
             <option value="json">JSON</option>
             <option value="txt">Text</option>
           </select>
-          <button class="btn-export" on:click={exportSummary} disabled={!canExport}>
+          <button class="btn-export" onclick={exportSummary} disabled={!canExport}>
             <Download size="16" />
             Export
           </button>

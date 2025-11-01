@@ -298,19 +298,19 @@ function generateLegalConsiderations(documentType: string, jurisdiction: string,
   const considerations = [];
   // Document-specific considerations
   switch (documentType.toLowerCase()) {
-    case 'contract':
+    case: 'contract':
       considerations.push('Ensure all essential contract elements are present (offer, acceptance, consideration)');
       considerations.push('Include clear performance standards and deadlines');
       considerations.push('Address intellectual property ownership if applicable');
       considerations.push('Consider force majeure and impossibility clauses');
       break;
-    case 'motion':
+    case: 'motion':
       considerations.push('Verify proper court jurisdiction and venue');
       considerations.push('Ensure compliance with local court rules');
       considerations.push('Include proper service and notice requirements');
       considerations.push('Consider timing requirements and deadlines');
       break;
-    case 'brief':
+    case: 'brief':
       considerations.push('Comply with page and word limits');
       considerations.push('Follow court formatting requirements');
       considerations.push('Ensure all citations are accurate and complete');
@@ -343,12 +343,12 @@ function generateComplianceChecklist(documentType: string, _jurisdiction: string
   ];
   // Document-specific compliance
   switch (documentType.toLowerCase()) {
-    case 'contract':
+    case: 'contract':
       checklist.push('Verify parties have authority to enter contract');
       checklist.push('Ensure consideration is adequate');
       checklist.push('Check for required disclosures');
       break;
-    case 'motion':
+    case: 'motion':
       checklist.push('Verify meet and confer requirements');
       checklist.push('Check supporting documentation requirements');
       checklist.push('Confirm proper notice to all parties');
@@ -366,12 +366,12 @@ function generateCommonPitfalls(documentType: string, parties: DocumentDraftingR
   ];
   // Document-specific pitfalls
   switch (documentType.toLowerCase()) {
-    case 'contract':
+    case: 'contract':
       pitfalls.push('Unclear payment terms or schedules');
       pitfalls.push('Missing termination clauses');
       pitfalls.push('Inadequate liability limitations');
       break;
-    case 'motion':
+    case: 'motion':
       pitfalls.push('Insufficient factual support');
       pitfalls.push('Failure to address counterarguments');
       pitfalls.push('Missing procedural requirements');
@@ -397,12 +397,12 @@ function generateNextSteps(documentType: string, complexity: string): string[] {
     steps.push('Create compliance monitoring procedures');
   }
   switch (documentType.toLowerCase()) {
-    case 'motion':
+    case: 'motion':
       steps.push('Prepare supporting documentation');
       steps.push('Schedule hearing if required');
       steps.push('File with court and serve opposing parties');
       break;
-    case 'contract':
+    case: 'contract':
       steps.push('Negotiate terms with counterparty');
       steps.push('Execute original documents');
       steps.push('Distribute copies to all parties');
@@ -449,12 +449,12 @@ async function generateComplianceAnalysis(request: DocumentDraftingRequest): Pro
   analysisPoints.push(`• Verify court rules compliance if litigation document`);
   // Document type compliance
   switch (request.documentType.toLowerCase()) {
-    case 'contract':
+    case: 'contract':
       analysisPoints.push('Contract Formation Requirements:');
       analysisPoints.push('• Ensure mutual assent and consideration');
       analysisPoints.push('• Verify parties have capacity to contract');
       break;
-    case 'motion':
+    case: 'motion':
       analysisPoints.push('Motion Practice Requirements:');
       analysisPoints.push('• Comply with court deadlines and procedures');
       analysisPoints.push('• Include proper citations and legal authority');
@@ -492,11 +492,11 @@ function generateDraftingRecommendations(request: DocumentDraftingRequest, _assi
   const recommendations = [];
   // Based on complexity
   switch (request.complexity) {
-    case 'simple':
+    case: 'simple':
       recommendations.push('Use standard templates and proven language');
       recommendations.push('Focus on essential terms and clear obligations');
       break;
-    case 'complex':
+    case: 'complex':
       recommendations.push('Engage specialized legal counsel for review');
       recommendations.push('Plan for iterative drafting and stakeholder review');
       recommendations.push('Consider phased implementation approach');
@@ -504,11 +504,11 @@ function generateDraftingRecommendations(request: DocumentDraftingRequest, _assi
   }
   // Based on urgency
   switch (request.urgency) {
-    case 'high':
+    case: 'high':
       recommendations.push('Prioritize essential terms over comprehensive coverage');
       recommendations.push('Use proven templates to accelerate drafting');
       break;
-    case 'low':
+    case: 'low':
       recommendations.push('Take time for comprehensive legal research');
       recommendations.push('Consider innovative approaches and recent legal developments');
       break;

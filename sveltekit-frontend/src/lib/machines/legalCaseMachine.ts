@@ -302,7 +302,7 @@ export interface DataConflict {
 }
 export interface CustodyEntry {
   transferredTo: string;
-  transferredFrom: string;
+  transferredfrom string;
   transferDate: Date;
   reason: string;
   condition: string;

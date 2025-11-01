@@ -5,6 +5,12 @@
   const message = writable<string>('');
   const uploading = writable(false);
 
+  function handleFileChange(e: Event) {
+    const input = e.currentTarget as HTMLInputElement | null;
+    file = input?.files?.[0] ?? null;
+    if (file) message.set('');
+  }
+
   async function upload() {
     if (!file) {
       message.set('Please select a file to upload');
@@ -21,11 +27,18 @@
         body: fd,
       });
 
-      const data = await res.json();
+      // Safely parse JSON only if content-type is JSON
+      const ct = res.headers.get('content-type') ?? '';
+      let data: any = null;
+      if (ct.includes('application/json')) {
+        data = await res.json();
+      }
+
       if (res.ok) {
-        message.set(`Upload successful: ${data.url}`);
+        const url = data?.url ?? 'upload succeeded';
+        message.set(`Upload successful: ${url}`);
       } else {
-        message.set(data?.error || 'Upload failed');
+        message.set(data?.error || `Upload failed (${res.status})`);
       }
     } catch (err: any) {
       message.set(err?.message || String(err));
@@ -37,7 +50,7 @@
 
 <div class="minio-upload">
   <label for="file">Evidence file</label>
-  <input id="file" type="file" onchange={e => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
+  <input id="file" type="file" onchange={handleFileChange} />
   <button onclick={upload} disabled={$uploading}>Upload to MinIO</button>
   <p>{$message}</p>
 </div>

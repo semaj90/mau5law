@@ -3,7 +3,7 @@
  * Replaces vLLM with native Windows-compatible stack
  * Optimized for RTX 3060 with FlashAttention2 and gemma3 mohf16-q4_k_m.gguf
  */
-import { writable, derived } from 'svelte/store'; // Removed 'type Writable'
+import { writable, derived } from 'svelte/store'; // Removed: 'type Writable'
 import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the new utility function
 
 // Configuration Interfaces
@@ -136,7 +136,7 @@ export class LlamaCppOllamaService {
   private llamaConfig: LlamaCppConfig;
   private ollamaConfig: OllamaConfig;
   private flashAttentionConfig: FlashAttention2Config;
-  public flashAttentionService: FlashAttentionService; // Changed 'any' to FlashAttentionService
+  public flashAttentionService: FlashAttentionService; // Changed: 'any' to FlashAttentionService
   private isInitialized = false;
   // private ollamaProcess?: unknown; // Removed unused property
   // Performance tracking
@@ -260,7 +260,7 @@ export class LlamaCppOllamaService {
       }));
       console.log('✅ Llama.cpp + Ollama Integration initialized successfully');
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Llama.cpp + Ollama initialization failed:', error);
       this.serviceStatus.update(s => ({
         ...s,
@@ -288,7 +288,7 @@ export class LlamaCppOllamaService {
         await this.pullModel();
       }
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Ollama initialization failed:', error);
       throw error;
     }
@@ -309,7 +309,7 @@ export class LlamaCppOllamaService {
       }
       console.log('✅ Model pulled successfully');
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Model pull failed:', error);
       throw error;
     }
@@ -321,10 +321,10 @@ export class LlamaCppOllamaService {
     try {
       console.log('⚙️ Configuring Llama.cpp parameters...');
       // The configuration parameters are set on this.llamaConfig and this.ollamaConfig
-      // and are used when making requests to Ollama. No direct 'config' object needs to be sent here.
+      // and are used when making requests to Ollama. No direct: 'config' object needs to be sent here.
       console.log('✅ Llama.cpp parameters configured');
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Llama.cpp configuration failed:', error);
       throw error;
     }
@@ -357,7 +357,7 @@ export class LlamaCppOllamaService {
         this.flashAttentionConfig.enabled = false;
       }
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.warn('⚠️ FlashAttention2 initialization failed, using standard attention:', error);
       this.flashAttentionConfig.enabled = false;
     }
@@ -386,7 +386,7 @@ export class LlamaCppOllamaService {
         name: 'RTX 3060 (Detected)',
       };
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.warn('GPU detection failed:', error);
       return {
         computeCapability: 0,
@@ -430,7 +430,7 @@ export class LlamaCppOllamaService {
       }));
       console.log('✅ Model loaded successfully');
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Model loading failed:', error);
       throw error;
     }
@@ -504,7 +504,7 @@ export class LlamaCppOllamaService {
         ollamaVersion: '0.3.12',
       };
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Generation failed:', error);
       throw error;
     }

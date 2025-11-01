@@ -87,7 +87,7 @@ class SuggestionsService {
       if (response.ok) return response;
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       for (const port of fallbackPorts) {
         try {
           const fallbackUrl = url.replace(/:\d+/, `:${port}`);
@@ -243,11 +243,11 @@ export const GET: RequestHandler = async ({ url }) => {
       },
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Enhanced Legal AI Suggestions error:', error);
     // Fallback to basic suggestions if enhanced search fails
     const fallbackSuggestions = await getFallbackSuggestions(
-      url.searchParams.get('category') || 'general', // Removed 'query' parameter
+      url.searchParams.get('category') || 'general', // Removed: 'query' parameter
       parseInt(url.searchParams.get('limit') || '8')
     );
     return json({
@@ -314,7 +314,7 @@ async function processEnhancedSuggestions(
         urgencyLevel: determineUrgencyLevel(suggestion.text || ''),
       }));
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.warn('Error processing enhanced suggestions:', error);
     return [];
   }
@@ -336,7 +336,7 @@ async function processTrendingSuggestions(
       growthRate: trending.growthRate || 0,
     }));
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.warn('Error processing trending suggestions:', error);
     return [];
   }
@@ -447,21 +447,21 @@ function extractRelatedTerms(text: string, category: string): string[] {
 function determineJurisdiction(text: string): string {
   const textLower = text.toLowerCase();
   if (textLower.includes('federal') || textLower.includes('supreme court') || textLower.includes('constitutional')) {
-    return 'federal';
+    return: 'federal';
   }
   if (textLower.includes('state') || textLower.includes('local')) {
-    return 'state';
+    return: 'state';
   }
-  return 'general';
+  return: 'general';
 }
 function determineUrgencyLevel(text: string): 'low' | 'medium' | 'high' | 'critical' {
   const textLower = text.toLowerCase();
   const highUrgencyTerms = ['emergency', 'urgent', 'immediate', 'crisis', 'critical'];
   const mediumUrgencyTerms = ['deadline', 'hearing', 'court date', 'filing'];
-  if (highUrgencyTerms.some(term => textLower.includes(term))) return 'critical';
-  if (mediumUrgencyTerms.some(term => textLower.includes(term))) return 'high';
-  if (textLower.includes('review') || textLower.includes('analysis')) return 'medium';
-  return 'low';
+  if (highUrgencyTerms.some(term => textLower.includes(term))) return: 'critical';
+  if (mediumUrgencyTerms.some(term => textLower.includes(term))) return: 'high';
+  if (textLower.includes('review') || textLower.includes('analysis')) return: 'medium';
+  return: 'low';
 }
 function extractCommonTerms(suggestions: string[]): string[] {
   const wordCount: Record<string, number> = {};

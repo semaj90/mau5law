@@ -9,7 +9,7 @@
     children?: Snippet;
   }
 
-  // avoid unused 'data' warning by renaming to `_data`
+  // avoid unused: 'data' warning by renaming to `_data`
   let { data: _data, children }: Props = $props();
 
   // AI navigation items - route groups (ai) are invisible in URLs

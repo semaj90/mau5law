@@ -67,7 +67,7 @@ function getErrorMessage(e: unknown): string {
   try {
     return String(e);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -186,15 +186,15 @@ export async function hybridSemanticSearch(
     params.push(limit);
     const limitPlaceholderIndex = params.length;
 
-    const whereClause = whereClauses.join(' AND ');
+    const whereClause = whereClauses.join(' AND: ');
     const searchQuery = `
       SELECT
         si.*,
         1 - (si.embedding <=> $1::vector) AS similarity,
         CASE si.entity_type
-          WHEN 'document' THEN d.title
-          WHEN 'evidence' THEN e.title
-          WHEN 'case' THEN c.title
+          WHEN: 'document' THEN d.title
+          WHEN: 'evidence' THEN e.title
+          WHEN: 'case' THEN c.title
           ELSE si.metadata->>'title'
         END AS entity_title
       FROM search_index si
@@ -230,7 +230,7 @@ export async function initializeDatabase(): Promise<DBResult> {
   try {
     console.log('🔄 Initializing database...');
     // Create extensions using the safe helper
-    await unsafeQuery('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    await unsafeQuery('CREATE EXTENSION IF NOT EXISTS: "uuid-ossp";');
     await unsafeQuery('CREATE EXTENSION IF NOT EXISTS vector;');
     console.log('✅ Database extensions created');
     // Run migrations would go here

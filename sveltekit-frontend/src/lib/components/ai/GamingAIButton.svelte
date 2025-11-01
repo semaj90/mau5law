@@ -42,9 +42,9 @@ https://svelte.dev/e/expected_token -->
   // YoRHa/Gaming color scheme
   const getModeColor = (mode: string) => {
     switch (mode) {
-      case 'thinking': return 'text-amber-400'
-      case 'active': return 'text-green-400'
-      default: return 'text-blue-400';
+      case: 'thinking': return: 'text-amber-400'
+      case: 'active': return: 'text-green-400'
+      default: return: 'text-blue-400';
     }
   }
   const quickActions = [

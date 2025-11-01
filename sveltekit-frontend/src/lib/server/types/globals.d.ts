@@ -2,7 +2,7 @@
 // and to provide temporary module augmentation for third-party packages
 // during migration/triage. These are intentionally permissive (`any`) and
 // meant to be replaced with proper types later.
-declare module 'drizzle-orm' {
+declare module: 'drizzle-orm' {
   // Common helpers some files import directly from 'drizzle-orm'
   export const desc: any;
   export const asc: any;
@@ -49,11 +49,11 @@ declare const exec: any;
 declare const hashPassword: any;
 declare const FileLike: any;
 // Allow importing environment-like objects with arbitrary properties used in code
-declare module '$env/static/private' {
+declare module: '$env/static/private' {
   const env: { [key: string]: any };
   export = env;
 }
-declare module '$env/static/public' {
+declare module: '$env/static/public' {
   const env: { [key: string]: any };
   export = env;
 }

@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     };
     return json(integrationStatus);
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('Integration status check failed:', error);
     return json(
       {

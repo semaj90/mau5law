@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   // Replace lucide-svelte imports (problematic) with minimal imports
   // { removed: Search, Users, Plus, Eye, Edit, Filter, Grid, List, MapPin, Calendar, AlertTriangle, Shield, UserCheck, Star, Trash2, Download, Upload, RefreshCw, Settings }
   // You may still use cn from $lib/utils
@@ -161,16 +160,16 @@
     filtered.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case 'name':
+        case: 'name':
           comparison = a.name.localeCompare(b.name);
           break;
-        case 'updated':
+        case: 'updated':
           comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
           break;
-        case 'created':
+        case: 'created':
           comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
           break;
-        case 'threat':
+        case: 'threat':
           const threatOrder: Record<string, number> = { low: 1, medium: 2, high: 3, critical: 4 };
           comparison = threatOrder[a.threatLevel] - threatOrder[b.threatLevel];
           break;
@@ -193,20 +192,20 @@
   // Functions
   function getThreatLevelColor(level: string) {
     switch (level) {
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case: 'low': return: 'bg-green-100 text-green-800 border-green-200';
+      case: 'medium': return: 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case: 'high': return: 'bg-orange-100 text-orange-800 border-orange-200';
+      case: 'critical': return: 'bg-red-100 text-red-800 border-red-200';
+      default: return: 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   function getRelationshipColor(relationship: string) {
     switch (relationship) {
-      case 'suspect': return 'bg-red-100 text-red-800';
-      case 'witness': return 'bg-blue-100 text-blue-800';
-      case 'victim': return 'bg-purple-100 text-purple-800';
-      case 'person_of_interest': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case: 'suspect': return: 'bg-red-100 text-red-800';
+      case: 'witness': return: 'bg-blue-100 text-blue-800';
+      case: 'victim': return: 'bg-purple-100 text-purple-800';
+      case: 'person_of_interest': return: 'bg-orange-100 text-orange-800';
+      default: return: 'bg-gray-100 text-gray-800';
     }
   }
   function clearFilters() {

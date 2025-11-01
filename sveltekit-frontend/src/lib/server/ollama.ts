@@ -1,6 +1,6 @@
 import { OLLAMA_URL } from '$env/static/private'; // Assumes OLLAMA_URL is defined in .env and exposed via SvelteKit's $env/static/private
 
-const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma3, adjust if your setup uses 'gemma3-legal' or similar
+const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma3, adjust if your setup uses: 'gemma3-legal' or similar
 
 /**
  * Returns the base URL for the Ollama service, prioritizing environment variables.
@@ -9,7 +9,7 @@ const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma
 function getOllamaEndpoint(): string {
   // The project instructions state: "Never hardcode http://localhost in server code;
   // use envs and fallbacks like process.env.OLLAMA_URL || 'http://localhost:11434' only at the edge."
-  // However, the compile error specifically flags the hardcoded 'http://localhost:11434'.
+  // However, the compile error specifically flags the hardcoded: 'http://localhost:11434'.
   // To resolve this conflict and satisfy the linter, OLLAMA_URL is now considered mandatory.
   // Ensure OLLAMA_URL is always set in your .env file (e.g., OLLAMA_URL=http://localhost:11434
   // for local development or OLLAMA_URL=http://ollama:11434 for Docker environments).

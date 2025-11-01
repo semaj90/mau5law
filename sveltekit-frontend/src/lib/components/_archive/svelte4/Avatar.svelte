@@ -81,8 +81,8 @@ https://svelte.dev/e/props_duplicate -->
   <div
     class="avatar"
     style="width: {avatarSize}; height: {avatarSize};"
-    on:click={handleAvatarClick}
-    on:keydown={e => {
+    onclick={handleAvatarClick}
+    onkeydown={e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         handleAvatarClick();
@@ -121,12 +121,12 @@ https://svelte.dev/e/props_duplicate -->
 
   {#if showUploadButton}
     <div class="upload-controls">
-      <button type="button" class="upload-btn" on:click={() => fileInput?.click()} disabled={$avatarStore.isUploading}>
+      <button type="button" class="upload-btn" onclick={() => fileInput?.click()} disabled={$avatarStore.isUploading}>
         {$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
       </button>
 
       {#if $avatarStore.url && $avatarStore.url !== '/images/default-avatar.svg'}
-        <button type="button" class="remove-btn" on:click={handleRemoveAvatar}>Remove</button>
+        <button type="button" class="remove-btn" onclick={handleRemoveAvatar}>Remove</button>
       {/if}
     </div>
   {/if}
@@ -134,7 +134,7 @@ https://svelte.dev/e/props_duplicate -->
   {#if $avatarStore.error}
     <div class="error-row">
       <span>{$avatarStore.error}</span>
-      <button type="button" on:click={() => avatarStore.clearError()} class="close-error">×</button>
+      <button type="button" onclick={() => avatarStore.clearError()} class="close-error">×</button>
     </div>
   {/if}
 </div>
@@ -143,7 +143,7 @@ https://svelte.dev/e/props_duplicate -->
   bind:this={fileInput}
   type="file"
   accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp"
-  on:change={handleFileSelect}
+  onchange={handleFileSelect}
   style="display: none;"
 />
 

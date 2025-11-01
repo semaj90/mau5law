@@ -4,23 +4,35 @@
   Features: Lucia auth integration, persisted stores, TypeScript, Drizzle ORM
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, tick } from 'svelte';
-  import { browser } from '$app/environment';
-  import { page } from '$app/stores';
+  // keep only what we actually use
   import { goto } from '$app/navigation';
   import {
     user as currentUser,
     isAuthenticated
   } from "$lib/stores/sessionStore.svelte";
   import { cn } from '$lib/utils';
-  import {
-    FileText, Folder, Clock, User, Settings, Search,
-    Plus, Filter, SortAsc, ChevronDown, ChevronRight,
-    Eye, Edit3, Trash2, Archive, Star, AlertCircle,
-    Calendar, Tag, Paperclip, MessageSquare, Brain
-  } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  // prefer named exports from the UI barrel to avoid duplicate-prop/import mismatches
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  // lightweight inline icon map (emoji placeholders) — avoids lucide type/export issues
+  const ICON_EMOJI: Record<string, string> = {
+    FileText: '📄',
+    Folder: '📁',
+    Clock: '🕒',
+    User: '👤',
+    Settings: '⚙️',
+    Search: '🔍',
+    Plus: '+',
+    SortAsc: '⇅',
+    ChevronDown: '▾',
+    ChevronRight: '▸',
+    Eye: '👁️',
+    AlertCircle: '⚠️',
+    MessageSquare: '💬',
+    Paperclip: '📎',
+    Brain: '🧠',
+    Archive: '🗄️'
+  };
+  function ICON(key: string) { return ICON_EMOJI[key] ?? '❔'; }
   // Props
   interface Props {
     collapsed?: boolean;
@@ -110,21 +122,20 @@
   // Derived values
   let user = $derived(currentUser);
   let authenticated = $derived(isAuthenticated);
-  let role = $derived(() => currentUser?.role);
   // Filtered and sorted items
   let filteredItems = $derived(() => {
     let items: Array<any> = [];
     switch (selectedCategory) {
-      case 'cases':
+      case: 'cases':
         items = userCases;
         break;
-      case 'evidence':
+      case: 'evidence':
         items = userEvidence;
         break;
-      case 'reports':
+      case: 'reports':
         items = userReports;
         break;
-      case 'citations':
+      case: 'citations':
         items = userCitations;
         break;
       default:
@@ -148,19 +159,19 @@
     items.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case 'name':
+        case: 'name':
           comparison = (a.title || '').localeCompare(b.title || '');
           break;
-        case 'date':
+        case: 'date':
           comparison = new Date(a.updatedAt || a.createdAt).getTime() -
                       new Date(b.updatedAt || b.createdAt).getTime();
           break;
-        case 'priority': {
+        case: 'priority': {
           const priorityOrder: Record<string, number> = { low: 1, medium: 2, high: 3, critical: 4 };
           comparison = (priorityOrder[a.priority as string] || 0) - (priorityOrder[b.priority as string] || 0);
           break;
         }
-        case 'status':
+        case: 'status':
           comparison = (a.status || '').toString().localeCompare((b.status || '').toString()) || 0;
           break;
       }
@@ -181,7 +192,7 @@
       }
       return `${hours}h ago`;
     } else if (days === 1) {
-      return 'Yesterday';
+      return: 'Yesterday';
     } else if (days < 7) {
       return `${days}d ago`;
     } else {
@@ -189,23 +200,24 @@
     }
   }
   function truncateText(text: string, maxLength: number = 50): string {
-    if (!text) return '';
+    if (!text) return: '';
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   }
+  // return emoji string for UI icons (keeps UI expressive without depending on external icon exports)
   function getItemIcon(type: string) {
-    const icons: Record<string, any> = {
-      case: Folder,
-      evidence: FileText,
-      report: MessageSquare,
-      citation: Archive,
-      document: FileText,
-      photo: Eye,
-      video: Eye,
-      audio: Eye,
-      physical: Paperclip,
-      digital: FileText,
+    const map: Record<string, string> = {
+      case: ICON('Folder'),
+      evidence: ICON('FileText'),
+      report: ICON('MessageSquare'),
+      citation: ICON('Archive'),
+      document: ICON('FileText'),
+      photo: ICON('Eye'),
+      video: ICON('Eye'),
+      audio: ICON('Eye'),
+      physical: ICON('Paperclip'),
+      digital: ICON('FileText'),
     };
-    return icons[type] || FileText;
+    return map[type] ?? ICON('FileText');
   }
   function getStatusColor(status: string): string {
     const colors = {
@@ -240,14 +252,6 @@
       expandedFolders.add(folderId);
     }
     expandedFolders = new Set(expandedFolders);
-  }
-  function selectItem(itemId: string) {
-    if (selectedItems.has(itemId)) {
-      selectedItems.delete(itemId);
-    } else {
-      selectedItems.add(itemId);
-    }
-    selectedItems = new Set(selectedItems);
   }
   async function loadUserData() {
     if (!authenticated || !user) return;
@@ -328,6 +332,7 @@
     return () => clearInterval(interval);
   });
 </script>
+
 <div class={cn(
   "evidence-sidebar flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-200",
   collapsed ? "w-16" : "w-80",
@@ -337,17 +342,18 @@
   <div class="flex items-center justify-between p-4 border-b border-gray-200">
     {#if !collapsed}
       <div class="flex items-center gap-2">
-        <Folder class="w-5 h-5 text-blue-600" />
+        <!-- replaced missing <Folder /> component -->
+        <span class="w-5 h-5 text-blue-600 inline-block">{ICON('Folder')}</span>
         <h2 class="font-semibold text-gray-900">Evidence Hub</h2>
       </div>
-      <!-- Wrap Button to hold layout classes (avoid passing class prop to Button component) -->
       <div class="p-1">
         <Button
           variant="ghost"
           size="sm"
           onclick={() => collapsed = true}
         >
-          <ChevronRight class="w-4 h-4" />
+          <!-- replaced missing <ChevronRight /> -->
+          <span class="w-4 h-4 inline-block">{ICON('ChevronRight')}</span>
         </Button>
       </div>
     {:else}
@@ -357,18 +363,21 @@
           size="sm"
           onclick={() => collapsed = false}
         >
-          <ChevronDown class="w-4 h-4" />
+          <!-- replaced missing <ChevronDown /> -->
+          <span class="w-4 h-4 inline-block">{ICON('ChevronDown')}</span>
         </Button>
       </div>
     {/if}
   </div>
+
   {#if !collapsed}
     <!-- User Info -->
     {#if authenticated && user}
       <div class="p-4 border-b border-gray-200">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-            <User class="w-4 h-4 text-blue-600" />
+            <!-- replaced missing <User /> -->
+            <span class="w-4 h-4 text-blue-600 inline-block">{ICON('User')}</span>
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-900 truncate">
@@ -379,11 +388,13 @@
         </div>
       </div>
     {/if}
+
     <!-- Search and Filters -->
     <div class="p-4 space-y-3 border-b border-gray-200">
       <!-- Search -->
       <div class="relative">
-        <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <!-- replaced missing <Search /> -->
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 inline-block">{ICON('Search')}</span>
         <input
           type="text"
           bind:value={searchQuery}
@@ -391,6 +402,7 @@
           class="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
       <!-- Category Filter -->
       <select
         bind:value={selectedCategory}
@@ -402,6 +414,7 @@
         <option value="reports">Reports</option>
         <option value="citations">Citations</option>
       </select>
+
       <!-- Sort Options -->
       <div class="flex gap-2">
         <select
@@ -421,11 +434,12 @@
             onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
           >
             <span class={sortOrder === 'desc' ? 'rotate-180 inline-block' : 'inline-block'}>
-              <SortAsc class="w-3 h-3" />
+              {ICON('SortAsc')}
             </span>
           </Button>
         </div>
       </div>
+
       <!-- Quick Actions -->
       <div class="flex gap-1">
         <div class="flex-1 text-xs" title="New Case">
@@ -434,7 +448,7 @@
             size="sm"
             onclick={() => createNewItem('case')}
           >
-            <Plus class="w-3 h-3 mr-1" />
+            <span class="w-3 h-3 mr-1 inline-block">{ICON('Plus')}</span>
             Case
           </Button>
         </div>
@@ -444,12 +458,13 @@
             size="sm"
             onclick={() => createNewItem('evidence')}
           >
-            <Plus class="w-3 h-3 mr-1" />
+            <span class="w-3 h-3 mr-1 inline-block">{ICON('Plus')}</span>
             Evidence
           </Button>
         </div>
       </div>
     </div>
+
     <!-- Content Area -->
     <div class="flex-1 overflow-y-auto">
       {#if isLoading}
@@ -459,7 +474,7 @@
         </div>
       {:else if error}
         <div class="p-4 text-center">
-          <AlertCircle class="w-6 h-6 text-red-500 mx-auto mb-2" />
+          <span class="w-6 h-6 text-red-500 mx-auto mb-2 inline-block">{ICON('AlertCircle')}</span>
           <p class="text-sm text-red-600">{error}</p>
           <div class="mt-2 text-xs">
             <Button
@@ -480,13 +495,14 @@
               class="flex items-center gap-2 w-full text-left text-sm font-medium text-gray-700 hover:text-gray-900"
             >
               {#if expandedFolders.has('recent')}
-                <ChevronDown class="w-4 h-4" />
+                <span class="w-4 h-4 inline-block">{ICON('ChevronDown')}</span>
               {:else}
-                <ChevronRight class="w-4 h-4" />
+                <span class="w-4 h-4 inline-block">{ICON('ChevronRight')}</span>
               {/if}
-              <Clock class="w-4 h-4" />
+              <span class="w-4 h-4 inline-block">{ICON('Clock')}</span>
               Recent Activity
             </button>
+
             {#if expandedFolders.has('recent')}
               <div class="mt-2 space-y-1">
                 {#each recentActivity.slice(0, 5) as activity (activity.id)}
@@ -503,6 +519,7 @@
             {/if}
           </div>
         {/if}
+
         <!-- Items List -->
         <div class="p-4">
           <div class="flex items-center justify-between mb-3">
@@ -513,7 +530,7 @@
           </div>
           <div class="space-y-1">
             {#each filteredItems as item (item.id)}
-              {@const Icon = getItemIcon(item._type || item.type)}
+              {@const iconEmoji = getItemIcon(item._type || item.type)}
               <button
                 onclick={() => navigateToItem(item)}
                 class={cn(
@@ -521,7 +538,8 @@
                   selectedItems.has(item.id) && "bg-blue-50 border border-blue-200"
                 )}
               >
-                <Icon class="w-4 h-4 mt-0.5 text-gray-500 flex-shrink-0" />
+                <!-- replaced missing <Icon /> -->
+                <span class="w-4 h-4 mt-0.5 text-gray-500 flex-shrink-0 inline-block">{iconEmoji}</span>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between">
                     <p class="text-sm font-medium text-gray-900 truncate">
@@ -563,9 +581,11 @@
                 </div>
               </button>
             {/each}
+
             {#if filteredItems.length === 0}
               <div class="text-center py-8">
-                <FileText class="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                <!-- replaced missing <FileText /> -->
+                <span class="w-8 h-8 text-gray-300 mx-auto mb-2 inline-block">{ICON('FileText')}</span>
                 <p class="text-sm text-gray-500">No items found</p>
                 {#if searchQuery}
                   <div class="mt-2 text-xs">
@@ -584,36 +604,26 @@
         </div>
       {/if}
     </div>
+
     <!-- Footer Actions -->
     <div class="p-4 border-t border-gray-200 space-y-2">
       <div class="w-full">
-        <!-- keep empty: visual classes moved to wrapper below if needed -->
-        <div class="flex items-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onclick={() => goto('/ai-assistant')}
-          >
-            <Brain class="w-4 h-4 mr-2" />
+        <div class="flex items-center gap-2">
+          <Button variant="outline" onclick={() => goto('/ai-assistant')} class="btn-sm">
+            <span class="w-4 h-4 mr-2 inline-block">{ICON('Brain')}</span>
             AI Assistant
           </Button>
-        </div>
-      </div>
-      <div class="w-full">
-        <div class="flex items-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onclick={() => goto('/settings')}
-          >
-            <Settings class="w-4 h-4 mr-2" />
+
+          <Button variant="ghost" onclick={() => goto('/settings')} class="btn-sm">
+            <span class="w-4 h-4 mr-2 inline-block">{ICON('Settings')}</span>
             Settings
           </Button>
         </div>
       </div>
     </div>
-  {/if}
-</div>
+   {/if}
+ </div>
+
 <style>
   .evidence-sidebar {
     --sidebar-width: 320px;
@@ -621,6 +631,12 @@
   }
   .evidence-sidebar .rotate-180 {
     transform: rotate(180deg);
+  }
+  /* small helper for button sizing to replace size="sm" usage */
+  .btn-sm {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    line-height: 1;
   }
   /* Custom scrollbar */
   .evidence-sidebar ::-webkit-scrollbar {

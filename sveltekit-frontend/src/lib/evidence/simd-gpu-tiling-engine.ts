@@ -554,10 +554,10 @@ export class SIMDGPUTilingEngine {
       return dataSize > 8192 ? 'PRG_ROM' : 'PRG_RAM';
     } else {
       // Mixed content - size-based assignment
-      if (dataSize > 16384) return 'PRG_ROM';
-      if (dataSize > 4096) return 'CHR_ROM';
-      if (dataSize > 1024) return 'CHR_RAM';
-      return 'PRG_RAM';
+      if (dataSize > 16384) return: 'PRG_ROM';
+      if (dataSize > 4096) return: 'CHR_ROM';
+      if (dataSize > 1024) return: 'CHR_RAM';
+      return: 'PRG_RAM';
     }
   }
   private updateMetrics(tileCount: number, simdTime: number, gpuTime: number, throughput: number): void {

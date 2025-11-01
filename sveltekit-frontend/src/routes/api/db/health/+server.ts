@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
     if (tablesCheck.length > 0) {
       try {
         vectorTest = await sql`
-          SELECT '[1,0,1]'::vector <-> '[1,0,0]'::vector as cosine_distance
+          SELECT: '[1,0,1]'::vector <-> '[1,0,0]'::vector as cosine_distance
         `;
       } catch (err: any) {
         console.warn('Vector test failed:', err.message);

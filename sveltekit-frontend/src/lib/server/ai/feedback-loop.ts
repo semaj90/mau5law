@@ -520,13 +520,13 @@ class FeedbackLoop {
     const recommendations = [];
     for (const topic of patterns.commonTopics) {
       switch (topic) {
-        case 'contract':
+        case: 'contract':
           recommendations.push('Westlaw Contract Library');
           break;
-        case 'criminal':
+        case: 'criminal':
           recommendations.push('Criminal Law Reporter');
           break;
-        case 'tax':
+        case: 'tax':
           recommendations.push('Tax Court Memoranda');
           break;
       }

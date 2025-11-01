@@ -8,53 +8,64 @@ Automatically handles server upload with localStorage fallback
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
   import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
   import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
-  // Props
-  interface Props {
-    caseId?: string;
-    description?: string;
-    tags?: string[];
-    multiple?: boolean;
-    accept?: string;
-    maxSize?: number; // MB
-    forceLocalStorage?: boolean;
-    onupload?: (_event: { results: UploadResponse[] }) => void;
-    onerror?: (_event: { error: string }) => void;
-    onprogress?: (_event: { completed: number; total: number; file: string }) => void;
-  }
-  let {
-    caseId,
-    description,
-    tags = [],
-    multiple = false,
-    accept = '*/*',
-    maxSize = 10,
-    forceLocalStorage = false,
-    onupload,
-    onerror,
-    onprogress
-  }: Props = $props();
-  // State
-  let isDragOver = $state(false);
-  let isUploading = $state(false);
-  let uploadProgress = $state(0);
-  let currentFile = $state('');
-  let uploadResults = $state<UploadResponse[]>([]);
-  let error = $state<string | null>(null);
-  // Storage stats
-  let storageStats = $state(localStorageFiles.getStorageUsage());
-  // File input reference
-  let fileInput: HTMLInputElement;
+
+  // Props (use Svelte exports)
+  export let caseId: string | undefined;
+  export let description: string | undefined;
+  export let tags: string[] = [];
+  export let multiple = false;
+  export let accept = '*/*';
+  export let maxSize = 10; // MB
+  export let forceLocalStorage = false;
+  export let onupload: ((event: { results: UploadResponse[] }) => void) | undefined;
+  export let onerror: ((event: { error: string }) => void) | undefined;
+  export let onprogress: ((event: { completed: number; total: number; file: string }) => void) | undefined;
+
+  // State (plain let)
+  let isDragOver = false;
+  let isUploading = false;
+  let uploadProgress = 0;
+  let currentFile = '';
+  let uploadResults: UploadResponse[] = [];
+  let error: string | null = null;
+
+  // Storage stats shape
+  type StorageStats = { used: number; available: number; percentage: number };
+  let storageStats: StorageStats = { used: 0, available: 0, percentage: 0 };
+
+  let fileInput: HTMLInputElement | null = null;
+
+  // Combine initialization + periodic updater into one onMount to keep cleanup consistent
+  let _interval: ReturnType<typeof setInterval> | null = null;
+  onMount(() => {
+    try {
+      storageStats = (localStorageFiles as any).getStorageUsage?.() ?? storageStats;
+    } catch {
+      // ignore
+    }
+    _interval = setInterval(() => {
+      try {
+        storageStats = (localStorageFiles as any).getStorageUsage?.() ?? storageStats;
+      } catch {
+        // ignore
+      }
+    }, 5000);
+    return () => {
+      if (_interval) clearInterval(_interval);
+    };
+  });
+
   /**
    * Handle file selection
    */
-  async function handleFileSelect(files: FileList) {
-    if (files.length === 0) return;
+  async function handleFileSelect(files: FileList | null) {
+    if (!files || files.length === 0) return;
     // Validate files
     const validFiles: File[] = [];
     for (const file of Array.from(files)) {
       if (file.size > maxSize * 1024 * 1024) {
         error = `File ${file.name} is too large (max ${maxSize}MB)`;
-        onerror?.({ error: error! });
+        onerror?.({ error: error ?? 'File too large' });
         return;
       }
       validFiles.push(file);
@@ -71,27 +82,30 @@ Automatically handles server upload with localStorage fallback
     error = null;
     uploadResults = [];
     try {
-      const results = await enhancedFileUpload.uploadFiles(
+      const results: UploadResponse[] = await enhancedFileUpload.uploadFiles(
         files,
         { caseId, description, tags, useLocalStorage: forceLocalStorage },
-        (completed, total, file) => {
-          uploadProgress = (completed / total) * 100);
-          currentFile = fil;
-          onprogress?.({ completed, total, file });
+        (completed: number, total: number, fileName: string) => {
+          uploadProgress = (completed / total) * 100;
+          currentFile = fileName;
+          onprogress?.({ completed, total, file: fileName });
         }
       );
-      uploadResults = result;
-      storageStats = localStorageFiles.getStorageUsage();
-      const successCount = results.filter(item => item.length);
+
+      uploadResults = results;
+      storageStats = (localStorageFiles as any).getStorageUsage?.() ?? storageStats;
+
+      const successCount = results.filter(r => !!(r as any).success).length;
       const errorCount = results.length - successCount;
+
       if (errorCount > 0) {
         error = `${errorCount} file(s) failed to upload`;
-        onerror?.({ error: error! });
+        onerror?.({ error: error ?? `${errorCount} file(s) failed` });
       }
       onupload?.({ results });
-    } catch (err: unknown) {
-      error = err.message || 'Upload failed';
-      onerror?.({ error: error! });
+    } catch (err: any) {
+      error = (err && err.message) ? err.message : 'Upload failed';
+      onerror?.({ error: error ?? 'Upload failed' });
     } finally {
       isUploading = false;
       uploadProgress = 0;
@@ -101,16 +115,14 @@ Automatically handles server upload with localStorage fallback
   /**
    * Handle drag and drop
    */
-  function handleDrop(_event: DragEvent) {
-    event.preventDefault();
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
     isDragOver = false;
-    const files = event.dataTransfer?.file;
-    if (files) {
-      handleFileSelect(files);
-    }
+    const files = e.dataTransfer?.files ?? null;
+    if (files) handleFileSelect(files);
   }
-  function handleDragOver(_event: DragEvent) {
-    event.preventDefault();
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
     isDragOver = true;
   }
   function handleDragLeave() {
@@ -120,7 +132,7 @@ Automatically handles server upload with localStorage fallback
    * Open file selector
    */
   function openFileSelector() {
-    fileInput.click();
+    fileInput?.click();
   }
   /**
    * Clear results
@@ -129,14 +141,8 @@ Automatically handles server upload with localStorage fallback
     uploadResults = [];
     error = null;
   }
-  // Update storage stats periodically
-  $effect(() => {
-    const interval = setInterval(() => {
-      storageStats = localStorageFiles.getStorageUsage();
-    }, 5000);
-    return () => clearInterval(interval);
-  });
 </script>
+
 <div class="file-upload-container">
   <!-- Storage Usage Indicator -->
   {#if forceLocalStorage || storageStats.percentage > 0}
@@ -154,6 +160,7 @@ Automatically handles server upload with localStorage fallback
       </span>
     </div>
   {/if}
+
   <!-- Drop Zone -->
   <div
     class="drop-zone"
@@ -166,12 +173,12 @@ Automatically handles server upload with localStorage fallback
     aria-label="Drop zone"
     tabindex="0"
     onclick={openFileSelector}
-    onkeydown={(e) => e.key === 'Enter' && openFileSelector()}
+    onkeydown={(e: KeyboardEvent) => (e as KeyboardEvent).key === 'Enter' && openFileSelector()}
   >
     <div class="drop-zone-content">
       {#if isUploading}
         <div class="upload-progress">
-          <div class="spinner"></div>
+          <div class="spinner" aria-hidden="true"></div>
           <div class="progress-text">
             <div>Uploading {currentFile}...</div>
             <div class="progress-bar">
@@ -194,48 +201,51 @@ Automatically handles server upload with localStorage fallback
       {/if}
     </div>
   </div>
+
   <!-- Hidden file input -->
-  <input;
+  <input
     bind:this={fileInput}
     type="file"
     {accept}
     {multiple}
     style="display: none"
-    onchange={(e) => {
-      // removed unused target assignment
+    onchange={(e: Event) => {
+      const target = e.target as HTMLInputElement | null;
       if (target?.files) handleFileSelect(target.files);
     }}
   />
+
   <!-- Error Display -->
   {#if error}
-    <div class="error-message">
+    <div class="error-message" role="alert">
       ❌ {error}
     </div>
   {/if}
+
   <!-- Results Display -->
   {#if uploadResults.length > 0}
     <div class="results-container">
       <div class="results-header">
         <h4>Upload Results</h4>
-        <button class="clear-btn" onclick={clearResults}>Clear</button>
+        <button class="clear-btn" onclick={clearResults} type="button">Clear</button>
       </div>
       <div class="results-list">
-        {#each uploadResults as result}
-          <div class="result-item" class:success={(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success} class:error={!(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success}>
+        {#each uploadResults as result (result.fileName)}
+          <div class="result-item" class:result-success={result.success} class:result-error={!result.success}>
             <div class="result-icon">
-              {(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success ? '✅' : '❌'}
+              {result.success ? '✅' : '❌'}
             </div>
             <div class="result-details">
-              <div class="result-name">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).fileName}</div>
+              <div class="result-name">{result.fileName}</div>
               <div class="result-meta">
-                {#if (result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success}
-                  <span class="storage-type">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).storageType}</span>
-                  {#if (result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).fallbackUsed}
+                {#if result.success}
+                  <span class="storage-type">{result.storageType}</span>
+                  {#if result.fallbackUsed}
                     <span class="fallback-badge">localStorage fallback</span>
                   {/if}
-                  <span class="file-size">{Math.round.size / 1024)}KB</span>
+                  <span class="file-size">{Math.round(((result.size ?? 0) / 1024))}KB</span>
                 {:else}
-                  <span class="error-text">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).error}</span>
+                  <span class="error-text">{result.error}</span>
                 {/if}
               </div>
             </div>
@@ -245,6 +255,7 @@ Automatically handles server upload with localStorage fallback
     </div>
   {/if}
 </div>
+
 <style>
   .file-upload-container {
     width: 100%;
@@ -258,7 +269,7 @@ Automatically handles server upload with localStorage fallback
     font-size: 0.875rem;
   }
   .storage-bar {
-    flex: 1,
+    flex: 1;
     height: 4px;
     background-color: #e5e7eb;
     border-radius: 2px;
@@ -332,11 +343,11 @@ Automatically handles server upload with localStorage fallback
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   .progress-text {
-    flex: 1,
+    flex: 1;
   }
   .progress-bar {
     width: 100%;
@@ -403,17 +414,17 @@ Automatically handles server upload with localStorage fallback
   .result-item:last-child {
     border-bottom: none;
   }
-  .result-.success {
+  .result-success {
     background-color: #f0fdf4;
   }
-  .result-.error {
+  .result-error {
     background-color: #fef2f2;
   }
   .result-icon {
     font-size: 1.2rem;
   }
   .result-details {
-    flex: 1,
+    flex: 1;
   }
   .result-name {
     font-weight: 500;
@@ -436,7 +447,7 @@ Automatically handles server upload with localStorage fallback
   .fallback-badge {
     padding: 0.125rem 0.375rem;
     background-color: #fef3c7;
-    color: #92f400;
+    color: #92400e;
     border-radius: 12px;
     font-weight: 500;
   }

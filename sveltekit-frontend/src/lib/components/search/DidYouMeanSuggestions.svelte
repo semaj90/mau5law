@@ -152,21 +152,21 @@
     if (source === 'ai') return Brain;
     if (type === 'task') return Target;
     switch (type) {
-      case 'spelling':
+      case: 'spelling':
         return Search;
-      case 'synonym':
+      case: 'synonym':
         return Zap;
-      case 'contextual':
+      case: 'contextual':
         return Brain;
       default:
         switch (type) {
-          case 'PERSON':
+          case: 'PERSON':
             return User;
-          case 'DOCUMENT':
+          case: 'DOCUMENT':
             return FileText;
-          case 'CASE':
+          case: 'CASE':
             return Folder;
-          case 'TAG':
+          case: 'TAG':
             return Tag;
           default:
             return Search;
@@ -175,43 +175,43 @@
   }
   function getSourceBadge(source?: string): { color: string; text: string } {
     switch (source) {
-      case 'ai':
+      case: 'ai':
         return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' };
-      case 'semantic':
+      case: 'semantic':
         return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' };
-      case 'lexical':
+      case: 'lexical':
         return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' };
       default:
         return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
     }
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-600 dark:text-green-400';
-    if (confidence >= 0.6) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-orange-600 dark:text-orange-400';
+    if (confidence >= 0.8) return: 'text-green-600 dark:text-green-400';
+    if (confidence >= 0.6) return: 'text-yellow-600 dark:text-yellow-400';
+    return: 'text-orange-600 dark:text-orange-400';
   }
   function getTypeColor(type?: string): string {
     switch (type) {
-      case 'spelling':
-        return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
-      case 'synonym':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
-      case 'contextual':
-        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
-      case 'task':
-        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
-      case 'PERSON':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
-      case 'DOCUMENT':
-        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
-      case 'CASE':
-        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
-      case 'EVIDENCE':
-        return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
-      case 'TAG':
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+      case: 'spelling':
+        return: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
+      case: 'synonym':
+        return: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case: 'contextual':
+        return: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case: 'task':
+        return: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      case: 'PERSON':
+        return: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case: 'DOCUMENT':
+        return: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      case: 'CASE':
+        return: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case: 'EVIDENCE':
+        return: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
+      case: 'TAG':
+        return: 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
       default:
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+        return: 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
     }
   }
 
@@ -457,7 +457,7 @@
     >
       <div class="text-center text-gray-500 dark:text-gray-400">
         <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
-        <p class="text-sm">No AI suggestions found for "{query}"</p>
+        <p class="text-sm">No AI suggestions found for: "{query}"</p>
         <p class="text-xs mt-1">Try a different search term or check spelling</p>
         {#if includeAI}
           <p class="text-xs mt-1 text-blue-600 dark:text-blue-400">

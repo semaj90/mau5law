@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
                       const candidate = obj.name ?? obj.model;
                       return typeof candidate === 'string' ? candidate : '';
                     }
-                    return '';
+                    return: '';
                   })
                   .filter(Boolean) as string[];
               } catch {

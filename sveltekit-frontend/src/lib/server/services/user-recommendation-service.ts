@@ -144,7 +144,7 @@ export class UserRecommendationService {
         frequentCases: queryStats.frequentCases,
         preferredTopics: topicAnalysis.topics,
         queryComplexity: queryStats.complexity,
-        usageFrequency: sessionStats.frequency as 'high' | 'low' | 'medium',
+        usageFrequency: sessionStats.frequency as: 'high' | 'low' | 'medium',
         timePatterns: {
           mostActiveHours: sessionStats.activeHours,
           averageSessionLength: sessionStats.avgSessionLength,
@@ -182,7 +182,7 @@ export class UserRecommendationService {
   /**
    * Get comprehensive chat analytics for a user
    */
-  async getChatAnalytics(userId: string, timeRange?: { from: Date; to: Date }): Promise<ChatAnalytics> {
+  async getChatAnalytics(userId: string, timeRange?: { from Date; to: Date }): Promise<ChatAnalytics> {
     try {
       const whereCondition = timeRange
         ? and(
@@ -338,9 +338,9 @@ export class UserRecommendationService {
   }
   private assessQueryComplexity(queries: string[]): 'simple' | 'moderate' | 'complex' {
     const avgLength = queries.reduce((sum, q) => sum + q.length, 0) / queries.length;
-    if (avgLength < 50) return 'simple';
-    if (avgLength < 150) return 'moderate';
-    return 'complex';
+    if (avgLength < 50) return: 'simple';
+    if (avgLength < 150) return: 'moderate';
+    return: 'complex';
   }
   private extractActiveHours(sessions: { startedAt: Date | string | null }[]): number[] {
     const hourCounts = new Map<number, number>();

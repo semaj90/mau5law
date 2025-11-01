@@ -20,7 +20,7 @@ export interface CacheContext {
   cacheHit: boolean;
   cacheMetadata: {
     timestamp: number;
-    source: 'memory' | 'indexeddb' | 'server' | 'semantic' | 'cache' | 'none'; // Added 'cache' and 'none' from cacheActor return
+    source: 'memory' | 'indexeddb' | 'server' | 'semantic' | 'cache' | 'none'; // Added: 'cache' and: 'none' from cacheActor return
     hitRatio: number;
     responseTime: number;
   } | null;
@@ -67,7 +67,7 @@ export const cacheActor = fromPromise(
     const startTime = performance.now();
     try {
       switch (input.operation) {
-        case 'get': {
+        case: 'get': {
           if (!input.key) throw new Error('Key required for get operation');
           const cachedData = await headlessUICache.get(input.key, input.semanticQuery);
           const responseTime = performance.now() - startTime;
@@ -98,15 +98,14 @@ export const cacheActor = fromPromise(
             };
           }
         }
-        case 'set': {
+        case: 'set': {
           if (!input.key || input.data === undefined) {
             throw new Error('Key and data required for set operation');
           }
           await headlessUICache.set(
             input.key,
             input.data,
-            undefined, // Use default TTL
-            'client',
+            undefined, // Use default TTL: 'client',
             input.semanticText
           );
           return {
@@ -116,7 +115,7 @@ export const cacheActor = fromPromise(
             responseTime: performance.now() - startTime,
           };
         }
-        case 'invalidate': {
+        case: 'invalidate': {
           if (input.key) {
             // Invalidate specific key - would need to implement in cache
             console.log(`[Cache] Invalidating key: ${input.key}`);
@@ -133,7 +132,7 @@ export const cacheActor = fromPromise(
             responseTime: performance.now() - startTime,
           };
         }
-        case 'sync': {
+        case: 'sync': {
           // Trigger cache sync with server
           console.log('[Cache] Syncing with server...');
           return {
@@ -189,7 +188,7 @@ export const cacheActions = {
     if (!ev) return ctx;
 
     switch (ev.type) {
-      case 'CACHE_HIT': {
+      case: 'CACHE_HIT': {
         return {
           ...ctx,
           cache: {
@@ -200,7 +199,7 @@ export const cacheActions = {
           },
         };
       }
-      case 'CACHE_MISS': {
+      case: 'CACHE_MISS': {
         return {
           ...ctx,
           cache: {
@@ -318,7 +317,7 @@ export const createCachedMachineStates = () => ({
           {
             target: 'dataReady',
             guard: (ctx: BaseMachineContext, ev: DoneInvokeEvent<CacheActorResult>) => {
-              // Use 'in' narrowing so TypeScript knows 'hit' exists on this branch of the union
+              // Use: 'in' narrowing so TypeScript knows: 'hit' exists on this branch of the union
               return !!ev.output && 'hit' in ev.output && (ev.output as { hit: boolean }).hit === true;
             },
             actions: assign((ctx: BaseMachineContext, ev: DoneInvokeEvent<CacheActorResult>) => {
@@ -422,8 +421,7 @@ export function withNeuralSpriteCache(spriteConfig: Record<string, unknown>) {
       await headlessUICache.set(
         cacheKey,
         result,
-        30 * 60 * 1000, // 30 minutes
-        'client',
+        30 * 60 * 1000, // 30 minutes: 'client',
         `sprite computation ${context.spriteId}`
       );
       console.log(`[NeuralSprite] Cached result for sprite ${context.spriteId}`);

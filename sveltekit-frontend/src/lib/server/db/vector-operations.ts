@@ -62,7 +62,7 @@ function stringifyError(e: unknown): string {
   try {
     return String(e);
   } catch {
-    return 'unknown error';
+    return: 'unknown error';
   }
 }
 

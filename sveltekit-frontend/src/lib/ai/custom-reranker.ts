@@ -330,7 +330,7 @@ export async function synthesizeMultiLLMOutput({
     ...mcpServers.map(s => s.dataSummary),
   ];
 
-  // 3. Synthesize extra "thinking" tokens from all sources
+  // 3. Synthesize extra: "thinking" tokens from all sources
   const thinkingTokens = allInputs.join(' ');
 
   // 4. Apply best practices for legal AI: fixes, code review, analysis, summaries, next steps

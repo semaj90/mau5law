@@ -87,57 +87,57 @@ const productionEntities = [
 // #create_relations - Phase dependencies
 const phaseRelations = [
   {
-    from: "Phase1_Context_Integration",
+    from "Phase1_Context_Integration",
     to: "Phase2_Production_Setup",
     relationType: "prerequisite_for",
   },
   {
-    from: "Phase2_Production_Setup",
+    from "Phase2_Production_Setup",
     to: "Phase3_Performance_Optimization",
     relationType: "prerequisite_for",
   },
   {
-    from: "Phase3_Performance_Optimization",
+    from "Phase3_Performance_Optimization",
     to: "Phase4_Security_Monitoring",
     relationType: "prerequisite_for",
   },
   {
-    from: "Phase4_Security_Monitoring",
+    from "Phase4_Security_Monitoring",
     to: "Phase5_CICD_Pipeline",
     relationType: "prerequisite_for",
   },
   {
-    from: "Phase5_CICD_Pipeline",
+    from "Phase5_CICD_Pipeline",
     to: "Phase6_Production_Launch",
     relationType: "prerequisite_for",
   },
   {
-    from: "LegalAI_Production_Project",
+    from "LegalAI_Production_Project",
     to: "Phase1_Context_Integration",
     relationType: "contains",
   },
   {
-    from: "LegalAI_Production_Project",
+    from "LegalAI_Production_Project",
     to: "Phase2_Production_Setup",
     relationType: "contains",
   },
   {
-    from: "LegalAI_Production_Project",
+    from "LegalAI_Production_Project",
     to: "Phase3_Performance_Optimization",
     relationType: "contains",
   },
   {
-    from: "LegalAI_Production_Project",
+    from "LegalAI_Production_Project",
     to: "Phase4_Security_Monitoring",
     relationType: "contains",
   },
   {
-    from: "LegalAI_Production_Project",
+    from "LegalAI_Production_Project",
     to: "Phase5_CICD_Pipeline",
     relationType: "contains",
   },
   {
-    from: "LegalAI_Production_Project",
+    from "LegalAI_Production_Project",
     to: "Phase6_Production_Launch",
     relationType: "contains",
   },

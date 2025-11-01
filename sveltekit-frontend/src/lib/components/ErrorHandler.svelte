@@ -34,13 +34,13 @@
 <div class="toast-container">
   {#each $toasts as t (t.id)}
     <div class="toast {t.level}">
-      <div style="display:flex;justify-content: space-betweenn;align-items:center;">
+      <div style="display:flex;justify-content: space-between;align-items:center;">
         <div>
           {#if t.title}<div class="title">{t.title}</div>{/if}
           <div class="msg">{t.message}</div>
         </div>
         <div style="margin-left:1rem;">
-          <button on:click={() => removeToast(t.id)} style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
+          <button onclick={() => removeToast(t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
         </div>
       </div>
     </div>

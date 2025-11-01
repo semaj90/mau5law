@@ -56,16 +56,16 @@ export class SvelteKitRouteDiscovery {
       if (route) {
         switch (route.type) {
           case 'page':
-            routes.pages.push(route);
+            routes.pages.push(<any><any>route);
             break;
           case 'api':
-            routes.api.push(route);
+            routes.api.push(<any><any>route);
             break;
           case 'layout':
-            routes.layouts.push(route);
+            routes.layouts.push(<any><any>route);
             break;
           case 'error':
-            routes.errors.push(route);
+            routes.errors.push(<any><any>route);
             break;
         }
       }
@@ -204,22 +204,22 @@ export class SvelteKitRouteDiscovery {
     const services = [];
 
     // AI/ML Services
-    if (content.includes('ollama') || content.includes('Ollama')) services.push('ollama');
-    if (content.includes('openai') || content.includes('OpenAI')) services.push('openai');
-    if (content.includes('gemma') || content.includes('Gemma')) services.push('gemma');
-    if (content.includes('embedding')) services.push('embeddings');
+    if (content.includes('ollama') || content.includes('Ollama')) services.push(<any><any>'ollama');
+    if (content.includes('openai') || content.includes('OpenAI')) services.push(<any><any>'openai');
+    if (content.includes('gemma') || content.includes('Gemma')) services.push(<any><any>'gemma');
+    if (content.includes('embedding')) services.push(<any><any>'embeddings');
 
     // Database Services
-    if (content.includes('redis') || content.includes('Redis')) services.push('redis');
-    if (content.includes('postgres') || content.includes('PostgreSQL')) services.push('postgresql');
-    if (content.includes('qdrant') || content.includes('Qdrant')) services.push('qdrant');
-    if (content.includes('minio') || content.includes('MinIO')) services.push('minio');
+    if (content.includes('redis') || content.includes('Redis')) services.push(<any><any>'redis');
+    if (content.includes('postgres') || content.includes('PostgreSQL')) services.push(<any><any>'postgresql');
+    if (content.includes('qdrant') || content.includes('Qdrant')) services.push(<any><any>'qdrant');
+    if (content.includes('minio') || content.includes('MinIO')) services.push(<any><any>'minio');
 
     // Specialized Services
-    if (content.includes('nintendo') || content.includes('Nintendo')) services.push('nintendo-memory');
-    if (content.includes('orchestrator') || content.includes('Orchestrator')) services.push('ai-orchestrator');
-    if (content.includes('cuda') || content.includes('CUDA') || content.includes('gpu')) services.push('gpu-acceleration');
-    if (content.includes('nes') || content.includes('NES')) services.push('nes-texture');
+    if (content.includes('nintendo') || content.includes('Nintendo')) services.push(<any><any>'nintendo-memory');
+    if (content.includes('orchestrator') || content.includes('Orchestrator')) services.push(<any><any>'ai-orchestrator');
+    if (content.includes('cuda') || content.includes('CUDA') || content.includes('gpu')) services.push(<any><any>'gpu-acceleration');
+    if (content.includes('nes') || content.includes('NES')) services.push(<any><any>'nes-texture');
 
     return services;
   }

@@ -71,10 +71,10 @@
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
   // LOD configuration based on N64 constraints
   const lodConfig = {
-    0: { textureSize: 2048, quality: 1.0, description 'Ultra High' },
-    1: { textureSize: 1024, quality: 0.8, description 'High' },
-    2: { textureSize: 512, quality: 0.6, description 'Medium' },
-    3: { textureSize: 256, quality: 0.4, description 'Low (N64 Style)' }
+    0: { textureSize: 2048, quality: 1.0, description: 'Ultra High' },
+    1: { textureSize: 1024, quality: 0.8, description: 'High' },
+    2: { textureSize: 512, quality: 0.6, description: 'Medium' },
+    3: { textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
   }
   // Derived values for automatic LOD switching
   let recommendedLOD = $derived(() => {

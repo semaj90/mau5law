@@ -35,7 +35,7 @@ export {
   Separator,
 };
 
-// Compatibility namespace for legacy "bits.DropdownMenu.*" usage
+// Compatibility namespace for legacy: "bits.DropdownMenu.*" usage
 export const DropdownMenu = {
   Root: DropdownRoot,
   Trigger: DropdownTrigger,

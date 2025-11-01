@@ -205,8 +205,8 @@
       tabindex="0"
       aria-label="Upload document"
       class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
-      on:click={() => fileInput.click()}
-      on:keydown={(e: KeyboardEvent) => {
+      onclick={() => fileInput.click()}
+      onkeydown={(e: KeyboardEvent) => {
         // Activate on Enter or Space for accessibility
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -224,7 +224,7 @@
         type="file"
         class="hidden"
         bind:this={fileInput}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         accept=".pdf,.doc,.docx,.txt"
       />
       <p class="text-gray-500">Drag & drop a document here, or click to select a file.</p>

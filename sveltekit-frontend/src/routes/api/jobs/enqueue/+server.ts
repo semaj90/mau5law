@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     switch (jobType) {
-      case 'embedding': {
+      case: 'embedding': {
         const { text, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
         if (!text) {
           return json(
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedDuration: Math.ceil(text.length * 0.1) + 1000, // rough estimate
         });
       }
-      case 'batch-embedding': {
+      case: 'batch-embedding': {
         const { texts, model = 'embeddinggemma:latest', meta = {}, priority = 1 } = jobData;
         if (!Array.isArray(texts) || texts.length === 0) {
           return json(

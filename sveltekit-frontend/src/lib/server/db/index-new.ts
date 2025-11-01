@@ -51,7 +51,7 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   console.log('🐘 Connecting to PostgreSQL database (via postgres-js client):', databaseUrl);
   // assign poolShim typed as PoolLike
   _pool = poolShim as PoolLike;
-  // cast via unknown -> PostgresJsClient to avoid 'any'
+  // cast via unknown -> PostgresJsClient to avoid: 'any'
   if (!pgClient) {
     console.warn(
       'pgClient is not available from db-shim; drizzle will be initialized with a null client and may throw at runtime when used.'
@@ -121,7 +121,7 @@ export async function closeDatabase() {
   if (_pool) {
     console.log('Closing PostgreSQL connection pool...');
     try {
-      // Prefer calling end() on the current pool without using "any" casts
+      // Prefer calling end() on the current pool without using: "any" casts
       if (typeof _pool.end === 'function') {
         await _pool.end();
       } else if (typeof (poolShim as PoolLike).end === 'function') {

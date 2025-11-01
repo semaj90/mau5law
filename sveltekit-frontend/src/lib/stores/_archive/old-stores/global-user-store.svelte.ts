@@ -316,7 +316,7 @@ export const globalUserStore = {
       console.error('Failed to load recommendations:', error);
     }
   },
-  async loadAnalytics(timeRange?: { from: Date; to: Date }) {
+  async loadAnalytics(timeRange?: { from Date; to: Date }) {
     if (!globalUserState.user?.id) return;
     try {
       const params = new URLSearchParams({ userId: globalUserState.user.id });

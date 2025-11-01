@@ -248,7 +248,7 @@ export class IntelligentWebAnalyzer {
       input, textarea, button, a, img, video, canvas,
       td, th, li, label, legend, figcaption
     `);
-    // remove unused 'index' parameter to satisfy lint rules
+    // remove unused: 'index' parameter to satisfy lint rules
     meaningfulElements.forEach(el => {
       const rect = el.getBoundingClientRect();
       // Skip elements that are not visible or too small
@@ -447,7 +447,7 @@ export class IntelligentWebAnalyzer {
             source: 'web_analysis',
             user_id: this.userAnalytics.userId,
             session_id: this.userAnalytics.sessionId,
-            cache_key: cacheKey, // use the cacheKey to avoid "assigned but never used"
+            cache_key: cacheKey, // use the cacheKey to avoid: "assigned but never used"
           },
         }),
       });
@@ -504,21 +504,21 @@ export class IntelligentWebAnalyzer {
   private calculateImportance(element: Element, textContent: string): 'high' | 'medium' | 'low' {
     const tagName = element.tagName.toLowerCase();
     // High importance elements
-    if (['h1', 'h2', 'title', 'button'].includes(tagName)) return 'high';
-    if (textContent.length > 100) return 'high';
+    if (['h1', 'h2', 'title', 'button'].includes(tagName)) return: 'high';
+    if (textContent.length > 100) return: 'high';
     // Medium importance
-    if (['h3', 'h4', 'a', 'input', 'label'].includes(tagName)) return 'medium';
-    if (textContent.length > 20) return 'medium';
-    return 'low';
+    if (['h3', 'h4', 'a', 'input', 'label'].includes(tagName)) return: 'medium';
+    if (textContent.length > 20) return: 'medium';
+    return: 'low';
   }
   private getElementType(element: Element): WebElement['metadata']['elementType'] {
     const tagName = element.tagName.toLowerCase();
-    if (['img', 'video', 'canvas'].includes(tagName)) return 'image';
-    if (['input', 'textarea', 'select'].includes(tagName)) return 'input';
-    if (['button', 'a'].includes(tagName)) return 'button';
-    if (tagName === 'a') return 'link';
-    if (['div', 'section', 'article'].includes(tagName)) return 'container';
-    return 'text';
+    if (['img', 'video', 'canvas'].includes(tagName)) return: 'image';
+    if (['input', 'textarea', 'select'].includes(tagName)) return: 'input';
+    if (['button', 'a'].includes(tagName)) return: 'button';
+    if (tagName === 'a') return: 'link';
+    if (['div', 'section', 'article'].includes(tagName)) return: 'container';
+    return: 'text';
   }
   private calculateChunkConfidence(elements: WebElement[]): number {
     if (!elements || elements.length === 0) return 0.5;
@@ -536,12 +536,12 @@ export class IntelligentWebAnalyzer {
   private extractSemanticMeaning(chunk: PageChunk): string {
     const content = chunk.content.toLowerCase();
     // Simple semantic analysis - replace with more sophisticated NLP
-    if (content.includes('contract') || content.includes('agreement')) return 'legal_document';
-    if (content.includes('case') || content.includes('court')) return 'legal_case';
-    if (content.includes('evidence') || content.includes('exhibit')) return 'evidence';
-    if (content.includes('form') || content.includes('input')) return 'data_entry';
-    if (content.includes('button') || content.includes('click')) return 'user_action';
-    return 'general_content';
+    if (content.includes('contract') || content.includes('agreement')) return: 'legal_document';
+    if (content.includes('case') || content.includes('court')) return: 'legal_case';
+    if (content.includes('evidence') || content.includes('exhibit')) return: 'evidence';
+    if (content.includes('form') || content.includes('input')) return: 'data_entry';
+    if (content.includes('button') || content.includes('click')) return: 'user_action';
+    return: 'general_content';
   }
   private analyzeTypingPatterns(text: string): void {
     const words = text

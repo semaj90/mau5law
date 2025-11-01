@@ -700,13 +700,13 @@ class AutoEncoder {
 	}
 	private applyActivation(x: number): number {
 		switch (this.config.activation) {
-			case 'relu':
+			case: 'relu':
 				return Math.max(0, x);
-			case 'sigmoid':
+			case: 'sigmoid':
 				return 1 / (1 + Math.exp(-x));
-			case 'tanh':
+			case: 'tanh':
 				return Math.tanh(x);
-			case 'leaky_relu':
+			case: 'leaky_relu':
 				return x > 0 ? x : 0.01 * x;
 			default:
 				return x;

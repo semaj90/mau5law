@@ -51,21 +51,21 @@ https://svelte.dev/e/attribute_duplicate -->
       fileName: 'witness-statement-1.txt',
       content: 'The defendant was seen leaving the building at approximately 11:30 PM on the night of the incident. The witness, Jane Doe, observed suspicious behavior including looking around nervously and carrying a large bag.',
       type: 'witness_statement',
-      caseId: selectedCaseId;
+      caseId: selectedCaseId, // comma instead of semicolon
     },
     {
       id: 'evidence-002',
       fileName: 'security-footage-analysis.txt',
       content: 'Security camera footage shows an individual matching the defendant\'s description entering through the rear entrance at 11:15 PM. The timestamp corresponds with the security system breach recorded at 11:17 PM.',
       type: 'digital_evidence',
-      caseId: selectedCaseId;
+      caseId: selectedCaseId, // comma instead of semicolon
     },
     {
       id: 'evidence-003',
       fileName: 'forensic-report.txt',
       content: 'DNA analysis of samples collected from the scene shows a 99.7% match with the defendant. Fingerprint analysis reveals partial prints on the door handle and window frame.',
       type: 'forensic_evidence',
-      caseId: selectedCaseId;
+      caseId: selectedCaseId, // comma instead of semicolon
     }
   ];
   // ======================================================================
@@ -85,24 +85,28 @@ https://svelte.dev/e/attribute_duplicate -->
   // ======================================================================
   $effect(() => {
     (async () => {
-try {
-      // Initialize enhanced Loki database
-      await enhancedLoki.init();
-      // Initialize state machines
-      machines = await initializeEnhancedMachines();
-      // Subscribe to real-time updates
-      if (machines?.streamingActor) {
-        machines.streamingActor.subscribe((state: unknown) => {
-          if (state.context.messageQueue.length > realTimeUpdates.length) {
-            realTimeUpdates = [...state.context.messageQueue];
-          }
-    })();
-  });
+      try {
+        // Initialize enhanced Loki database
+        await enhancedLoki.init();
+
+        // Initialize state machines
+        machines = await initializeEnhancedMachines();
+
+        // Subscribe to real-time updates (safe checks)
+        if (machines?.streamingActor?.subscribe) {
+          machines.streamingActor.subscribe((state: any) => {
+            const queueLength = state?.context?.messageQueue?.length ?? 0;
+            if (queueLength > realTimeUpdates.length) {
+              realTimeUpdates = [...(state.context.messageQueue || [])];
+            }
+          });
+        }
+
+        console.log('Enhanced Legal AI system initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize enhanced system:', error);
       }
-      console.log('Enhanced Legal AI system initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize enhanced system:', error);
-    }
+    })();
   });
   onDestroy(() => {
     if (machines) {
@@ -122,7 +126,7 @@ try {
       title: 'Custom Evidence',
       summary: evidenceText.trim.substring(0, 100) + '...',
       description evidenceText.trim(),
-      location '',
+      location: '',
       tags: [],
       aiSummary: '',
       aiTags: [],
@@ -196,19 +200,19 @@ try {
   }
   function getHealthBadgeColor(health: string) {
     switch (health) {
-      case 'healthy': return 'bg-green-500';
-      case 'degraded': return 'bg-yellow-500';
-      case 'critical': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case: 'healthy': return: 'bg-green-500';
+      case: 'degraded': return: 'bg-yellow-500';
+      case: 'critical': return: 'bg-red-500';
+      default: return: 'bg-gray-500';
     }
   }
   function getCacheHealthColor(health: string) {
     switch (health) {
-      case 'excellent': return 'text-green-600';
-      case 'good': return 'text-blue-600';
-      case 'fair': return 'text-yellow-600';
-      case 'poor': return 'text-red-600';
-      default: return 'text-gray-600';
+      case: 'excellent': return: 'text-green-600';
+      case: 'good': return: 'text-blue-600';
+      case: 'fair': return: 'text-yellow-600';
+      case: 'poor': return: 'text-red-600';
+      default: return: 'text-gray-600';
     }
   }
 </script>

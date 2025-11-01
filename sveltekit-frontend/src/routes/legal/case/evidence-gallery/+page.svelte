@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { page } from '$app/stores'; // Changed from '$app/state' to '$app/stores'
+  import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
   import { Button } from '$lib/components/ui/enhanced-bits'; // Standardized Button import for bits-ui
   import * as Card from '$lib/components/ui/card';
   import Input from '$lib/components/ui/input/Input.svelte';
@@ -9,7 +9,7 @@
   let isConnecting = $state(false);
   let selectedItem: EvidenceCard | null = $state(null);
   let canvasItems = $state<EvidenceCard[]>([]);
-  let connections = $state<Array<{ from: string; to: string; type: string }>>([]);
+  let connections = $state<Array<{ from string; to: string; type: string }>>([]);
   let caseData = $state({
     id: 'CORPORATE ESPIONAGE INV',
     title: 'Corporate Espionage Investigation',
@@ -70,32 +70,32 @@
         },
       },
     ];
-    connections = [{ from: 'video-001', to: 'doc-001', type: 'correlation' }];
+    connections = [{ from 'video-001', to: 'doc-001', type: 'correlation' }];
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case 'VIDEO':
-        return '🎥';
-      case 'DOCUMENT':
-        return '📄';
-      case 'PHOTO':
-        return '📷';
-      case 'AUDIO':
-        return '🎵';
+      case: 'VIDEO':
+        return: '🎥';
+      case: 'DOCUMENT':
+        return: '📄';
+      case: 'PHOTO':
+        return: '📷';
+      case: 'AUDIO':
+        return: '🎵';
       default:
-        return '📋';
+        return: '📋';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'active':
-        return 'bg-green-500';
-      case 'pending':
-        return 'bg-yellow-500';
-      case 'completed':
-        return 'bg-blue-500';
+      case: 'active':
+        return: 'bg-green-500';
+      case: 'pending':
+        return: 'bg-yellow-500';
+      case: 'completed':
+        return: 'bg-blue-500';
       default:
-        return 'bg-gray-500';
+        return: 'bg-gray-500';
     }
   }
   function addEvidence() {
@@ -117,7 +117,7 @@
       const currentSelectedItem = selectedItem; // Introduce a local constant to help TypeScript
       // Create connection
       const newConnection = {
-        from: currentSelectedItem.id,
+        from currentSelectedItem.id,
         to: item.id,
         type: 'correlation',
       };

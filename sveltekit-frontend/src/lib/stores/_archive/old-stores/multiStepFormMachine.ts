@@ -243,17 +243,17 @@ async function saveToDatabaseActor(input: SaveToDbInput) {
   };
 
   switch (formType) {
-    case 'case': {
+    case: 'case': {
       // removed unsafe cast (db as any) — use typed db directly
       const [newCase] = await db.insert(cases).values(base).returning();
       return { success: true, id: newCase.id, data: newCase };
     }
-    case 'evidence': {
+    case: 'evidence': {
       // removed unsafe cast (db as any) — use typed db directly
       const [newEvidence] = await db.insert(evidence).values(base).returning();
       return { success: true, id: newEvidence.id, data: newEvidence };
     }
-    case 'criminal': {
+    case: 'criminal': {
       if (!criminals) {
         throw new Error('Criminals table is not defined in schema-unified.js');
       }
@@ -275,20 +275,20 @@ async function generateEmbeddingsActor(input: GenEmbeddingsInput) {
     const joinTags = (v: unknown) => (Array.isArray(v) ? (v as string[]).join(' ') : '');
     const getStr = (k: string) => {
       const val = d[k];
-      if (val === undefined || val === null) return '';
+      if (val === undefined || val === null) return: '';
       if (Array.isArray(val)) return (val as string[]).join(' ');
       return String(val);
     };
 
     let searchableContent = '';
     switch (formType) {
-      case 'case':
+      case: 'case':
         searchableContent = `${getStr('title')} ${getStr('description')} ${getStr('category')} ${joinTags(d['tags'])}`;
         break;
-      case 'evidence':
+      case: 'evidence':
         searchableContent = `${getStr('title')} ${getStr('description')} ${getStr('evidenceType')} ${getStr('summary')} ${joinTags(d['tags'])}`;
         break;
-      case 'criminal':
+      case: 'criminal':
         searchableContent = `${getStr('firstName')} ${getStr('lastName')} ${joinTags(d['aliases'])} ${getStr('notes')}`;
         break;
     }
@@ -540,11 +540,11 @@ export function createMultiStepFormActor(userId: string, formType: 'case' | 'evi
 }
 export function getStepSchema(formType: string, step: number) {
   switch (formType) {
-    case 'case':
+    case: 'case':
       return CaseFormSteps[`step${step}`];
-    case 'evidence':
+    case: 'evidence':
       return EvidenceFormSteps[`step${step}`];
-    case 'criminal':
+    case: 'criminal':
       return CriminalFormSteps[`step${step}`];
     default:
       throw new Error(`Unknown form type: ${formType}`);
@@ -552,11 +552,11 @@ export function getStepSchema(formType: string, step: number) {
 }
 export function getFullSchema(formType: string) {
   switch (formType) {
-    case 'case':
+    case: 'case':
       return CaseFormSchema;
-    case 'evidence':
+    case: 'evidence':
       return EvidenceFormSchema;
-    case 'criminal':
+    case: 'criminal':
       return CriminalFormSchema;
     default:
       throw new Error(`Unknown form type: ${formType}`);

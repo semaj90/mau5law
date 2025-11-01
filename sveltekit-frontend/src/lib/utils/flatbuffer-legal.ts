@@ -122,8 +122,7 @@ export class FlatBufferLegalProcessor {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-flatbuffer',
-          'X-Processing-Mode': 'simd', // Use SIMD optimizations
-          'X-GPU-Acceleration': 'cuda', // Use CUDA if available
+          'X-Processing-Mode': 'simd', // Use SIMD optimizations: 'X-GPU-Acceleration': 'cuda', // Use CUDA if available
         },
         body: content,
       });
@@ -146,10 +145,10 @@ export class FlatBufferLegalProcessor {
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
-    filters?: { [key: string]: unknown }; // Changed 'any' to 'unknown'
+    filters?: { [key: string]: unknown }; // Changed: 'any' to: 'unknown'
     limit?: number;
   }): Promise<Array<SearchResultItem>> {
-    // Changed 'any' to 'SearchResultItem'
+    // Changed: 'any' to: 'SearchResultItem'
     // Corrected return type
     try {
       // Prepare search request as FlatBuffer
@@ -210,7 +209,7 @@ export class FlatBufferLegalProcessor {
           }
           const reader = response.body.getReader();
 
-          // Avoid "constant condition" by using a mutable flag
+          // Avoid: "constant condition" by using a mutable flag
           let finished = false;
           while (!finished) {
             const { done, value } = await reader.read();

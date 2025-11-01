@@ -206,23 +206,23 @@ export class CaseManagementService {
       const conditions = [];
 
       if (filters.status?.length) {
-        conditions.push(sql`${cases.status} = ANY(${filters.status})`);
+        conditions.push(<any><any>sql`${cases.status} = ANY(${filters.status})`);
       }
 
       if (filters.practiceArea?.length) {
-        conditions.push(sql`${cases.practiceArea} = ANY(${filters.practiceArea})`);
+        conditions.push(<any><any>sql`${cases.practiceArea} = ANY(${filters.practiceArea})`);
       }
 
       if (filters.priority?.length) {
-        conditions.push(sql`${cases.priority} = ANY(${filters.priority})`);
+        conditions.push(<any><any>sql`${cases.priority} = ANY(${filters.priority})`);
       }
 
       if (filters.tags?.length) {
-        conditions.push(sql`${cases.tags} && ${filters.tags}`);
+        conditions.push(<any><any>sql`${cases.tags} && ${filters.tags}`);
       }
 
       if (filters.dateRange) {
-        conditions.push(
+        conditions.push(<any><any>
           and(
             sql`${cases.createdAt} >= ${filters.dateRange.start}`,
             sql`${cases.createdAt} <= ${filters.dateRange.end}`
@@ -291,7 +291,7 @@ export class CaseManagementService {
       // Log significant changes
       const changes = [];
       if (updates.status && updates.status !== currentCase.status) {
-        changes.push(`Status changed from ${currentCase.status} to ${updates.status}`);
+        changes.push(<any><any>`Status changed from ${currentCase.status} to ${updates.status}`);
         await this.logActivity(
           caseId,
           updatedBy,
@@ -305,7 +305,7 @@ export class CaseManagementService {
       }
 
       if (updates.priority && updates.priority !== currentCase.priority) {
-        changes.push(`Priority changed from ${currentCase.priority} to ${updates.priority}`);
+        changes.push(<any><any>`Priority changed from ${currentCase.priority} to ${updates.priority}`);
       }
 
       if (changes.length > 0) {
@@ -362,11 +362,11 @@ export class CaseManagementService {
       const conditions = [];
 
       if (caseId) {
-        conditions.push(eq(caseTodos.caseId, caseId));
+        conditions.push(<any><any>eq(caseTodos.caseId, caseId));
       }
 
       if (userId) {
-        conditions.push(
+        conditions.push(<any><any>
           or(
             eq(caseTodos.assignedToId, userId),
             eq(caseTodos.createdById, userId)
@@ -376,19 +376,19 @@ export class CaseManagementService {
 
       // Apply filters
       if (filters.status?.length) {
-        conditions.push(sql`${caseTodos.status} = ANY(${filters.status})`);
+        conditions.push(<any><any>sql`${caseTodos.status} = ANY(${filters.status})`);
       }
 
       if (filters.priority?.length) {
-        conditions.push(sql`${caseTodos.priority} = ANY(${filters.priority})`);
+        conditions.push(<any><any>sql`${caseTodos.priority} = ANY(${filters.priority})`);
       }
 
       if (filters.category?.length) {
-        conditions.push(sql`${caseTodos.category} = ANY(${filters.category})`);
+        conditions.push(<any><any>sql`${caseTodos.category} = ANY(${filters.category})`);
       }
 
       if (filters.dueDate) {
-        conditions.push(
+        conditions.push(<any><any>
           and(
             sql`${caseTodos.dueDate} >= ${filters.dueDate.start}`,
             sql`${caseTodos.dueDate} <= ${filters.dueDate.end}`
@@ -630,7 +630,7 @@ export class CaseManagementService {
 
       // Risk-based recommendations
       if (caseDetails.riskLevel === 'high' || caseDetails.riskLevel === 'critical') {
-        recommendations.push({
+        recommendations.push(<any><any>{
           caseId,
           type: 'risk_mitigation' as const,
           title: 'High Risk Case - Immediate Review Required',
@@ -650,7 +650,7 @@ export class CaseManagementService {
         );
 
         if (daysUntilDue < 30) {
-          recommendations.push({
+          recommendations.push(<any><any>{
             caseId,
             type: 'timeline_adjustment' as const,
             title: 'Timeline Risk - Consider Resource Allocation',
@@ -670,7 +670,7 @@ export class CaseManagementService {
       );
 
       if (overdueTodos.length > 0) {
-        recommendations.push({
+        recommendations.push(<any><any>{
           caseId,
           type: 'action_item' as const,
           title: `${overdueTodos.length} Overdue Tasks Require Attention`,
@@ -687,7 +687,7 @@ export class CaseManagementService {
       const createdRecommendations = [];
       for (const rec of recommendations) {
         const created = await this.createRecommendation(rec);
-        createdRecommendations.push(created);
+        createdRecommendations.push(<any><any>created);
       }
 
       return createdRecommendations;

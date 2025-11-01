@@ -580,7 +580,7 @@ export class WASMInferenceRAGService {
         // e.g., console.log, performance.now, etc., if exposed by the WASM build
         // For llama.cpp, you might need specific `llama_` prefixed functions if not fully self-contained
       },
-      // If using WASI, you might need a 'wasi_snapshot_preview1' object here
+      // If using WASI, you might need a: 'wasi_snapshot_preview1' object here
       wasi_snapshot_preview1: {
         proc_exit: () => {
           /* no-op */

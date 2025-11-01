@@ -1,14 +1,42 @@
 // Type Assertion Utilities for Complex Services
-export function assertAny<T>(_value: unknown): T {
-  return value as T;
+
+/**
+ * Force-cast an unknown value to T.
+ * Use sparingly; prefers explicit type-safe conversions elsewhere.
+ */
+export function assertAny<T>(value: unknown): T {
+	return value as T;
 }
-export function safeAccess<T>(obj: any, path: string, defaultValue?: T): T {
+
+/**
+ * Safely access nested properties using a dot path.
+ * Works with objects and arrays; returns defaultValue when path cannot be resolved.
+ */
+export function safeAccess<T>(obj: unknown, path: string, defaultValue?: T): T | undefined {
+  if (obj == null) return defaultValue;
+  if (!path) return obj as unknown as T;
+
   try {
-    return path.split('.').reduce((o, p) => o?.[p], obj) ?? defaultValue;
+    const parts = path.split('.');
+    let cur: unknown = obj;
+    for (const p of parts) {
+      if (cur == null) return defaultValue;
+      // handle numeric index for arrays
+      if (Array.isArray(cur) && /^\d+$/.test(p)) {
+        const idx = Number(p);
+        cur = cur[idx];
+      } else if (isRecord(cur) && p in cur) {
+        cur = (cur as Record<string, unknown>)[p];
+      } else {
+        return defaultValue;
+      }
+    }
+    return cur as unknown as T;
   } catch {
-    return defaultValue as T;
+    return defaultValue;
   }
 }
+
 export function withFallback<T>(fn: () => T, fallback: T): T {
   try {
     return fn();
@@ -16,17 +44,74 @@ export function withFallback<T>(fn: () => T, fallback: T): T {
     return fallback;
   }
 }
-// WebGPU compatibility
-export function asBuffer(data: any): ArrayBuffer {
+
+/**
+ * Convert various input shapes to ArrayBuffer.
+ * Accepts ArrayBuffer, SharedArrayBuffer, TypedArray (ArrayBufferView), plain number arrays, or iterable of numbers.
+ */
+export function asBuffer(
+  data: ArrayBufferLike | ArrayBufferView | Iterable<number> | null | undefined
+): ArrayBufferLike {
+  if (data == null) return new ArrayBuffer(0);
+
+  // Direct ArrayBuffer
   if (data instanceof ArrayBuffer) return data;
-  if (data?.buffer instanceof ArrayBuffer) return data.buffer;
-  if (Array.isArray(data)) return new Float32Array(data).buffer;
+
+  // SharedArrayBuffer (if available in environment)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - SharedArrayBuffer may not be in all TS lib targets
+  if (typeof SharedArrayBuffer !== 'undefined' && data instanceof SharedArrayBuffer) return data;
+
+  // Typed arrays / DataView -> ArrayBuffer via .buffer
+  if (ArrayBuffer.isView(data)) {
+    return (data as ArrayBufferView).buffer;
+  }
+
+  // Plain number array
+  if (Array.isArray(data)) {
+    return new Float32Array(data as number[]).buffer;
+  }
+
+  // Iterable of numbers (e.g., generator)
+  // Note: Using Array.from on a large or infinite iterable may cause performance issues or memory exhaustion.
+  if (isIterableOfNumber(data)) {
+    const arr = Array.from(data);
+    return new Float32Array(arr).buffer;
+  }
+
   return new ArrayBuffer(0);
 }
-// Property access helpers
-export function hasProperty(obj: any, prop: string): boolean {
-  return obj != null && typeof obj === 'object' && prop in obj;
+
+/**
+ * Type-guard: is the value an Iterable<number>?
+ * Avoids using `any` when checking Symbol.iterator.
+ */
+function isIterableOfNumber(value: unknown): value is Iterable<number> {
+  if (value == null) return false;
+  const maybe = value as { [Symbol.iterator]?: unknown };
+  return typeof maybe[Symbol.iterator] === 'function';
 }
-export function getProperty<T>(obj: any, prop: string, fallback?: T): T {
-  return hasProperty(obj, prop) ? obj[prop] : fallback;
+
+/**
+ * Narrowing helper: is obj a plain record (object).
+ */
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Property access helpers
+ */
+export function hasProperty(obj: unknown, prop: string): obj is Record<string, unknown> {
+  return isRecord(obj) && Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+/**
+ * Get a property with a typed fallback. Returns fallback when property missing.
+ */
+export function getProperty<T>(obj: unknown, prop: string, fallback?: T): T | undefined {
+  if (hasProperty(obj, prop)) {
+    return (obj as Record<string, unknown>)[prop] as unknown as T;
+  }
+  return fallback;
 }

@@ -142,7 +142,7 @@ async function testDatabaseConnection() {
       <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #eee;">
         <button
           type="button"
-          on:click={testDatabaseConnection}
+          onclick={testDatabaseConnection}
           style="padding: 10px 20px; border: 1px solid #007bff; background: white; color: #007bff; border-radius: 4px; cursor: pointer; font-size: 14px;"
         >
           Test Database Connection

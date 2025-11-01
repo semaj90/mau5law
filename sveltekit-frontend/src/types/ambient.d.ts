@@ -1,4 +1,4 @@
-declare module '$lib/shims/xstate' {
+declare module: '$lib/shims/xstate' {
   // Minimal re-exports used by machines to avoid pulling full xstate types
   export function createMachine(...args: any[]): any;
   export function assign(...args: any[]): any;
@@ -6,7 +6,7 @@ declare module '$lib/shims/xstate' {
   export type AnyEventObject = Record<string, any>;
 }
 
-declare module '$lib/schemas/evidence-upload' {
+declare module: '$lib/schemas/evidence-upload' {
   export type VideoMetadata = {
     id?: string;
     filename?: string;
@@ -16,7 +16,7 @@ declare module '$lib/schemas/evidence-upload' {
   };
 }
 
-declare module '../stores/auth.svelte.js' {
+declare module: '../stores/auth.svelte.js' {
   export type User = {
     id?: string;
     name?: string;
@@ -27,17 +27,17 @@ declare module '../stores/auth.svelte.js' {
   export default user;
 }
 
-declare module '$app/environment' {
+declare module: '$app/environment' {
   export const browser: boolean;
   export const dev: boolean;
 }
 
-declare module '$env/dynamic/private' {
+declare module: '$env/dynamic/private' {
   export const env: Record<string, string>;
 }
 // Minimal ambient declarations to reduce noisy type errors during iterative fixes
 // Add more specific typings progressively as files are stabilized.
-declare module 'fabric';
+declare module: 'fabric';
 // Redis service shape used across the codebase (trimmed to commonly used methods)
 declare interface SimpleRedis {
   connect: (...args: unknown[]) => Promise<unknown>;
@@ -77,45 +77,45 @@ declare interface SimpleRedis {
   memory?: (...args: unknown[]) => Promise<unknown>;
   type?: (...args: unknown[]) => Promise<string>;
 }
-declare module 'redis' {
+declare module: 'redis' {
   const Redis: { createClient?: (...args: unknown[]) => SimpleRedis } & unknown;
   export = Redis;
 }
 // Stubs for local server/db modules (export what's referenced in errors)
-declare module '$lib/server/db/client.js' {
+declare module: '$lib/server/db/client.js' {
   /** Minimal typed exports for common query usage in the codebase */
   export const query: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>>;
   export const ensureEvidenceTable: () => Promise<void> | void;
   const client: DBClient;
   export default client;
 }
-declare module '$lib/server/db/drizzle' {
+declare module: '$lib/server/db/drizzle' {
   const enhanced_db: unknown;
   export { enhanced_db };
   export default enhanced_db;
 }
-declare module '$lib/server/db/index' {
+declare module: '$lib/server/db/index' {
   export const isPostgreSQL: unknown;
   export const users: unknown;
   export default {};
 }
-declare module '$lib/server/database' {
+declare module: '$lib/server/database' {
   export const documents: unknown;
   export const embeddings: unknown;
   export const searchSessions: unknown;
   export default {};
 }
-declare module '$lib/server/redis-service' {
+declare module: '$lib/server/redis-service' {
   export const redisService: SimpleRedis;
   export default redisService;
 }
-declare module '$lib/services/nomic-embedding-service' {
+declare module: '$lib/services/nomic-embedding-service' {
   const nomicEmbeddings: unknown;
   export { nomicEmbeddings };
   export default nomicEmbeddings;
 }
 // Generic catch-all for other internal modules that are still in flux
-declare module '$lib/*' {
+declare module: '$lib/*' {
   const whatever: unknown;
   export default whatever;
 }

@@ -217,7 +217,7 @@ export async function initializeChatEmbeddingsTable(): Promise<void> {
         content TEXT NOT NULL,
         embedding vector(768), -- nomic-embed-text produces 768-dim vectors
         role VARCHAR(20) NOT NULL,
-        metadata JSONB DEFAULT '{}',
+        metadata JSONB DEFAULT: '{}',
         created_at TIMESTAMP DEFAULT NOW()
       )`
     );

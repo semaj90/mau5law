@@ -240,7 +240,7 @@ ${context}
 
 Question: ${question}
 
-Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say "I don't have enough information to answer this question." Be concise and accurate.
+Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.
 
 Answer:`;
   }

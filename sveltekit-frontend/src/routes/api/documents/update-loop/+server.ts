@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let result;
     switch (action) {
-      case 'auto': {
+      case: 'auto': {
         // Wrapped in block
         // Queue automatic update (background processing)
         await documentUpdateLoop.queueDocumentUpdate(documentId, content);
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
       } // End block
-      case 'force': {
+      case: 'force': {
         // Wrapped in block
         // Force immediate re-embedding
         const reembedResult = await documentUpdateLoop.reembedDocument(documentId);
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
       } // End block
-      case 'detect': {
+      case: 'detect': {
         // Wrapped in block
         // Only detect changes, don't process
         const change = await documentUpdateLoop.detectDocumentChanges(documentId, content);
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'status': {
+      case: 'status': {
         // Wrapped in block
         const status = await documentUpdateLoop.getQueueStatus();
         return json({
@@ -137,7 +137,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       } // End block
-      case 'health': {
+      case: 'health': {
         // Wrapped in block
         // Health check for the update loop service
         const healthStatus = await documentUpdateLoop.getQueueStatus();
@@ -188,7 +188,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       throw error(400, 'Action is required');
     }
     switch (action) {
-      case 'batch_reembed': {
+      case: 'batch_reembed': {
         // Wrapped in block
         if (!documentIds || !Array.isArray(documentIds)) {
           throw error(400, 'Document IDs array is required for batch operations');
@@ -222,7 +222,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           },
         });
       } // End block
-      case 'clear_queue': {
+      case: 'clear_queue': {
         // Wrapped in block
         // This would require adding a method to clear the queue
         return json({

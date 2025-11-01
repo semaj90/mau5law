@@ -568,7 +568,7 @@ class StreamingService extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     // Send closing events to all active streams
-    // iterate over values to avoid creating an unused 'streamId' binding
+    // iterate over values to avoid creating an unused: 'streamId' binding
     for (const subscribers of this.streams.values()) {
       const event: StreamEvent = {
         type: 'error',

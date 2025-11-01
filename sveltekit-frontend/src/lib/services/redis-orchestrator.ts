@@ -48,7 +48,7 @@ async function callRedis<T>(client: IORedis, command: string, ...args: unknown[]
     const result = await client[command](...args);
     return result as T;
   } catch (error) {
-    console.error(`Error calling Redis command '${command}':`, error);
+    console.error(`Error calling Redis command: '${command}':`, error);
     return undefined;
   }
 }

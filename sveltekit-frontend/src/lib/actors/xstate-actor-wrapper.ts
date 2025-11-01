@@ -201,16 +201,16 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
           let actor: any; // XState v5 actor type
           const stepId = `step_${index}`;
           switch (step.type) {
-            case 'embedding':
+            case: 'embedding':
               actor = createEmbeddingActor(step.input);
               break;
-            case 'document_processing':
+            case: 'document_processing':
               actor = createDocumentProcessingActor(step.input);
               break;
-            case 'legal_analysis':
+            case: 'legal_analysis':
               actor = createLegalAnalysisActor(step.input);
               break;
-            case 'rag_search':
+            case: 'rag_search':
               actor = createRAGSearchActor(step.input);
               break;
             default:
@@ -242,16 +242,16 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
         try {
           let actor: any; // XState v5 actor type
           switch (step.type) {
-            case 'embedding':
+            case: 'embedding':
               actor = createEmbeddingActor(step.input);
               break;
-            case 'document_processing':
+            case: 'document_processing':
               actor = createDocumentProcessingActor(step.input);
               break;
-            case 'legal_analysis':
+            case: 'legal_analysis':
               actor = createLegalAnalysisActor(step.input);
               break;
-            case 'rag_search':
+            case: 'rag_search':
               actor = createRAGSearchActor(step.input);
               break;
             default:

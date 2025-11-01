@@ -28,7 +28,7 @@
   // Filters and search
   let searchQuery = $state('');
   let roleFilter = $state('all' as UserRole | 'all');
-  let statusFilter = $state('all' as 'all' | 'active' | 'inactive');
+  let statusFilter = $state('all' as: 'all' | 'active' | 'inactive');
   // New user form
   let newUser = $state({
     email: '',
@@ -46,7 +46,7 @@
   const yorhaClasses = {
     card: 'bg-[#1a1a1a] border border-[#333333] p-4',
     cardHeader: 'text-[#00ff88] text-sm font-bold mb-4 tracking-wider flex items-center justify-between',
-    button 'px-4 py-2 border border-[#333333] bg-[#111111] hover:bg-[#2a2a2a] transition-colors text-sm',
+    button: 'px-4 py-2 border border-[#333333] bg-[#111111] hover:bg-[#2a2a2a] transition-colors text-sm',
     buttonPrimary: 'px-4 py-2 border border-[#00ff88] bg-[#002211] text-[#00ff88] hover:bg-[#003322] transition-colors text-sm',
     buttonDanger: 'px-4 py-2 border border-red-500 bg-red-900 text-red-100 hover:bg-red-800 transition-colors text-sm',
     input: 'bg-[#111111] border border-[#333333] px-3 py-2 text-sm w-full focus:border-[#00ff88] focus:outline-none',
@@ -294,10 +294,10 @@
   }
   function getRoleBadgeColor(role: string): string {
     const roleLevel = ROLES[role as UserRole]?.hierarchyLevel || 0;
-    if (roleLevel >= 80) return 'border-red-500 text-red-400';
-    if (roleLevel >= 60) return 'border-[#00ff88] text-[#00ff88]';
-    if (roleLevel >= 40) return 'border-yellow-500 text-yellow-400';
-    return 'border-gray-500 text-gray-400';
+    if (roleLevel >= 80) return: 'border-red-500 text-red-400';
+    if (roleLevel >= 60) return: 'border-[#00ff88] text-[#00ff88]';
+    if (roleLevel >= 40) return: 'border-yellow-500 text-yellow-400';
+    return: 'border-gray-500 text-gray-400';
   }
 </script>
 

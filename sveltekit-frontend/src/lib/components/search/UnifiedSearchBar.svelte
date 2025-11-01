@@ -307,15 +307,15 @@ await initializeSearchServices();
   function handleKeydown(_event: KeyboardEvent) {
     if (!showDropdown || searchResults.length === 0) return;
     switch (event.key) {
-      case 'ArrowDown':
+      case: 'ArrowDown':
         event.preventDefault();
         selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
         break;
-      case 'ArrowUp':
+      case: 'ArrowUp':
         event.preventDefault();
         selectedIndex = Math.max(selectedIndex - 1, -1);
         break;
-      case 'Enter':
+      case: 'Enter':
         event.preventDefault();
         if (selectedIndex >= 0) {
           handleResultClick(searchResults[selectedIndex]);
@@ -323,7 +323,7 @@ await initializeSearchServices();
           handleResultClick(searchResults[0]);
         }
         break;
-      case 'Escape':
+      case: 'Escape':
         showDropdown = false;
         selectedIndex = -1;
         searchInput.blur();
@@ -341,20 +341,20 @@ await initializeSearchServices();
   // Source icon mapping
   function getSourceIcon(source: string): string {
     switch (source) {
-      case 'postgresql': return '🗃️';
-      case 'qdrant': return '🧠';
-      case 'minio': return '🗄️';
-      case 'loki': return '📊';
-      default: return '📄';
+      case: 'postgresql': return: '🗃️';
+      case: 'qdrant': return: '🧠';
+      case: 'minio': return: '🗄️';
+      case: 'loki': return: '📊';
+      default: return: '📄';
     }
   }
   function getSourceLabel(source: string): string {
     switch (source) {
-      case 'postgresql': return 'Database';
-      case 'qdrant': return 'Vector';
-      case 'minio': return 'Files';
-      case 'loki': return 'Logs';
-      default: return 'Unknown';
+      case: 'postgresql': return: 'Database';
+      case: 'qdrant': return: 'Vector';
+      case: 'minio': return: 'Files';
+      case: 'loki': return: 'Logs';
+      default: return: 'Unknown';
     }
   }
 </script>
@@ -481,7 +481,7 @@ await initializeSearchServices();
           onclick={() => goto(`/evidence/search?q=${encodeURIComponent(searchQuery)}`)}
           class="w-full text-sm text-blue-600 hover:text-blue-800 font-medium"
         >
-          View all results for "{searchQuery}" →
+          View all results for: "{searchQuery}" →
         </button>
       </div>
     </div>
@@ -493,7 +493,7 @@ await initializeSearchServices();
         <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
         </svg>
-        <p class="text-sm">No evidence found for "{searchQuery}"</p>
+        <p class="text-sm">No evidence found for: "{searchQuery}"</p>
         <button
           onclick={() => goto('/evidence/upload')}
           class="mt-2 text-xs text-blue-600 hover:text-blue-800"

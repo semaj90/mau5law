@@ -2,242 +2,266 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from "$lib/components/ui/textarea/index";
-  import { aiPersonality,
+  // Replaced script to fix Svelte 5 runes, imports, types and logic typos
+
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Textarea } from '$lib/components/ui/textarea';
+  import {
+    aiPersonality,
     chatActions,
     currentConversation,
     isLoading,
     isTyping,
     showProactivePrompt,
-   } from '$lib/stores/unified";
-  import { notifications  } from '$lib/stores/unified";
-  import type { ApiResponse, ChatRequest, ChatResponse } from "$lib/types/api";
-  import { Bot, Loader2, Send } from "lucide-svelte";
-  import { onDestroy, onMount, tick } from "svelte";
-  import ChatMessage from "./ChatMessage.svelte";
-  import ProactivePrompt from "./ProactivePrompt.svelte";
-  import ThinkingStyleToggle from "./ThinkingStyleToggle.svelte";
-  import { ThinkingProcessor } from "$lib/ai/thinking-processor";
-  let { height = "500px", caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
-  let messageInput = $state("");
+    notifications
+  } from '$lib/stores/unified';
+  import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
+  import { Bot, Loader2, Send } from 'lucide-svelte';
+  import { onDestroy, tick } from 'svelte';
+  import ChatMessage from './ChatMessage.svelte';
+  import ProactivePrompt from './ProactivePrompt.svelte';
+  import ThinkingStyleToggle from './ThinkingStyleToggle.svelte';
+  import { ThinkingProcessor } from '$lib/ai/thinking-processor';
+
+  // props (Svelte 5 runes)
+  let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
+
+  // reactive state
+  let messageInput = $state('');
   let errorMessage = $state('');
-  let messagesContainer: HTMLElement;
-  let inputElement: HTMLTextAreaElement;
-  let inactivityTimer: NodeJS.Timeout;
-  // Enhanced thinking style state
+  let messagesContainer = $state<HTMLElement | undefined>();
+  let inputElement = $state<HTMLTextAreaElement | undefined>();
+  let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
+
   let thinkingStyleEnabled = $state(false);
   let analysisMode = $state(false);
   let lastAnalysisResult = $state<any>(null);
-  const IDLE_TIMEOUT = 60000; // 60 seconds
+
+  const IDLE_TIMEOUT = 60_000;
+
   function handleUserActivity() {
-    clearTimeout(inactivityTimer);
+    if (inactivityTimer) clearTimeout(inactivityTimer);
     chatActions.updateActivity();
     inactivityTimer = setTimeout(() => {
       triggerProactivePrompt();
     }, IDLE_TIMEOUT);
   }
+
   function triggerProactivePrompt() {
-    if ($currentConversation && $currentConversation.messages.length > 0) {
+    if ($currentConversation && $currentConversation.messages?.length > 0) {
       showProactivePrompt.set(true);
     }
   }
+
   async function sendMessage() {
-    if (!messageInput.trim()) return;
+    if (!messageInput || !messageInput.trim()) return;
     const userMessage = messageInput.trim();
-    messageInput = "";
-    // Reset activity timer
+    messageInput = '';
     handleUserActivity();
-    // Add user message
-    chatActions.addMessage(userMessage, "user");
+    chatActions.addMessage(userMessage, 'user');
+
     try {
       chatActions.setLoading(true);
       chatActions.setTyping(true);
-      // Check if this is an analysis request
-      const isAnalysisRequest = userMessage.toLowerCase().includes('analyze') ||
-                               userMessage.toLowerCase().includes('evidence') ||
-                               userMessage.toLowerCase().includes('case');
-  let response: Respon;
+
+      const isAnalysisRequest =
+        userMessage.toLowerCase().includes('analyze') ||
+        userMessage.toLowerCase().includes('evidence') ||
+        userMessage.toLowerCase().includes('case');
+
+      let response: Response;
+
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
-        // Use the enhanced analysis endpoint
-  response = await fetch("/api/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({,
-            text: userMessage
-            caseId,
-            useThinkingStyle: thinkingStyleEnabled
-            analysisType: 'reasoning',
-            documentType: 'legal_document',
-          }),
-  });
+        const payload = {
+          text: userMessage,
+          caseId,
+          useThinkingStyle: thinkingStyleEnabled,
+          analysisType: 'reasoning',
+          documentType: 'legal_document'
+        };
+        response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
       } else {
-        // Use the regular chat endpoint
         const requestBody: ChatRequest = {
           messages: $currentConversation?.messages || [],
           context: {
             caseId,
-            currentPage: window.location.pathname,
+            currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
             thinkingStyle: thinkingStyleEnabled
-          },
-        }
-        response = await fetch("/api/ai/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
+          }
+        };
+        response = await fetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
         });
       }
+
       if (!response.ok) {
-        throw new Error("Failed to get AI response");
+        throw new Error(`Failed to get AI response: ${response.status}`);
       }
-      const apiResponse = await response.json();
-      if (!apiResponse.success) {
-        throw new Error(apiResponse.error || "Invalid response format");
+
+      const apiResponse = (await response.json()) as ApiResponse<any>;
+
+      if (!apiResponse || apiResponse.success === false) {
+        throw new Error(apiResponse?.error || 'Invalid response format');
       }
-      // Handle different response types
+
+      // analysis response
       if (apiResponse.analysis) {
-        // This is an analysis response
-        lastAnalysisResult = apiResponse.analysi;
+        lastAnalysisResult = apiResponse.analysis;
         analysisMode = true;
-        const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata);
-        chatActions.addMessage(content, "assistant", {
-          ...apiResponse.metadata,
+        const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata || {});
+        chatActions.addMessage(content, 'assistant', {
+          ...(apiResponse.metadata || {}),
           analysisResult: apiResponse.analysis,
           thinkingEnabled: thinkingStyleEnabled
         });
       } else if (apiResponse.data) {
-        // This is a regular chat response
-        chatActions.addMessage(
-          apiResponse.data.content,
-          "assistant",
-          apiResponse.data.metadata
-        );
+        // regular chat response
+        chatActions.addMessage(apiResponse.data.content, 'assistant', apiResponse.data.metadata || {});
+      } else if (apiResponse.message) {
+        // fallback shape
+        chatActions.addMessage(apiResponse.message, 'assistant', apiResponse.metadata || {});
       }
-      // Scroll to bottom
+
       setTimeout(scrollToBottom, 100);
-    } catch (error) {
-      console.error("Chat error:", error);
+    } catch (err) {
+      console.error('Chat error:', err);
       notifications.add({
-        type: "error",
-        title: "Chat Error",
-        message: "Failed to get response from AI assistant",
+        type: 'error',
+        title: 'Chat Error',
+        message: 'Failed to get response from AI assistant'
       });
-      errorMessage = error instanceof Error ? error.message: 'An error occurred',
+      errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
     }
   }
+
   function formatAnalysisResponse(analysis: any, metadata: any): string {
-    if (!analysis) return "Analysis completed.";
-  let response = `# AI Analysis Results\n\n`;
-    // Add thinking process if available
+    if (!analysis) return: 'Analysis completed.';
+    let responseText = '# AI Analysis Results\n\n';
+
     if (analysis.thinking && thinkingStyleEnabled) {
-      response += `## 🧠 Reasoning Process\n\n`;
-      response += `*Showing step-by-step AI reasoning:*\n\n`;
-      response += analysis.thinking.replace(/\n/g, '\n\n') + `\n\n`;
-      response += `---\n\n`;
+      responseText += '## 🧠 Reasoning Process\n\n';
+      responseText += '*Showing step-by-step AI reasoning:*\n\n';
+      responseText += String(analysis.thinking).replace(/\n/g, '\n\n') + '\n\n';
+      responseText += '---\n\n';
     }
-    // Add main analysis
-    response += `## 📋 Analysis Results\n\n`;
-    if (analysis.analysis) {
-      const analysisData = analysis.analysi;
+
+    responseText += '## 📋 Analysis Results\n\n';
+
+    const analysisData = analysis.analysis || analysis; // tolerate shapes
+    if (analysisData) {
       if (analysisData.key_findings) {
-        response += `**Key Findings:**\n`;
-        analysisData.key_findings.forEach((finding: string) => {
-          response += `• ${finding}\n`;
+        responseText += '**Key Findings:**\n';
+        (analysisData.key_findings || []).forEach((finding: string) => {
+          responseText += `• ${finding}\n`;
         });
-        response += `\n`;
+        responseText += '\n';
       }
       if (analysisData.legal_implications) {
-        response += `**Legal Implications:**\n`;
-        analysisData.legal_implications.forEach((implication string) => {
-          response += `• ${implication}\n`;
+        responseText += '**Legal Implications:**\n';
+        (analysisData.legal_implications || []).forEach((implication: string) => {
+          responseText += `• ${implication}\n`;
         });
-        response += `\n`;
+        responseText += '\n';
       }
       if (analysisData.recommendations) {
-        response += `**Recommendations:**\n`;
-        analysisData.recommendations.forEach((rec: string) => {
-          response += `• ${rec}\n`;
+        responseText += '**Recommendations:**\n';
+        (analysisData.recommendations || []).forEach((rec: string) => {
+          responseText += `• ${rec}\n`;
         });
-        response += `\n`;
+        responseText += '\n';
       }
       if (analysisData.raw_analysis) {
-        response += analysisData.raw_analysis + `\n\n`;
+        responseText += analysisData.raw_analysis + '\n\n';
       }
     }
-    // Add confidence and metadata
-    response += `## 📊 Analysis Metadata\n\n`;
-    response += `• **Confidence:** ${Math.round(analysis.confidence * 100)}%\n`;
-    response += `• **Model:** ${metadata.model_used}\n`;
-    response += `• **Processing Time:** ${metadata.processing_time}ms\n`;
-    response += `• **Thinking Style:** ${metadata.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
-    if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
-      response += `\n**Reasoning Steps:**\n`;
-      analysis.reasoning_steps.forEach((step: string, index: number) => {
-        response += `${index + 1}. ${step}\n`;
-      });
+
+    responseText += '## 📊 Analysis Metadata\n\n';
+    try {
+      const confidence = typeof analysis.confidence === 'number' ? Math.round(analysis.confidence * 100) : 'N/A';
+      responseText += `• **Confidence:** ${confidence}%\n`;
+      responseText += `• **Model:** ${metadata?.model_used || metadata?.model || 'unknown'}\n`;
+      responseText += `• **Processing Time:** ${metadata?.processing_time ?? 'N/A'}ms\n`;
+      responseText += `• **Thinking Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
+      if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
+        responseText += '\n**Reasoning Steps:**\n';
+        analysis.reasoning_steps.forEach((step: string, index: number) => {
+          responseText += `${index + 1}. ${step}\n`;
+        });
+      }
+    } catch (e) {
+      // ignore metadata formatting errors
     }
-    return respon;
+
+    return responseText;
   }
+
   async function handleProactiveResponse() {
     if (!$showProactivePrompt || !$currentConversation) return;
     try {
       chatActions.setLoading(true);
       chatActions.setTyping(true);
       showProactivePrompt.set(false);
+
       const requestBody: ChatRequest = {
         messages: $currentConversation.messages,
         context: {
           caseId,
-          currentPage: window.location.pathname,
+          currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
           thinkingStyle: thinkingStyleEnabled
         },
         proactiveMode: true
-      }
-      const response = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
+      };
+
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
       });
-      if (!response.ok) throw new Error("Failed to get proactive response");
-      const apiResponse: ApiResponse<ChatResponse> = await response.json();
+
+      if (!response.ok) throw new Error('Failed to get proactive response');
+
+      const apiResponse = (await response.json()) as ApiResponse<ChatResponse>;
       if (!apiResponse.success || !apiResponse.data) {
-        throw new Error(apiResponse.error || "Invalid response format");
+        throw new Error(apiResponse.error || 'Invalid response format');
       }
-      chatActions.addMessage(apiResponse.data.content, "assistant", {
-        ...apiResponse.data.metadata,
-        proactive: true,
+
+      chatActions.addMessage(apiResponse.data.content, 'assistant', {
+        ...(apiResponse.data.metadata || {}),
+        proactive: true
       });
+
       setTimeout(scrollToBottom, 100);
-    } catch (error) {
-      console.error("Proactive response error:", error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
+    } catch (err) {
+      console.error('Proactive response error:', err);
+      errorMessage = err instanceof Error ? err.message : String(err);
+    } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
     }
   }
-  function handleThinkingToggle(_event: CustomEvent) {
-    thinkingStyleEnabled = e(vent as CustomEvent).detail.enabled;
-    // Add a system message to indicate the change
+
+  function handleThinkingToggle(event: CustomEvent) {
+    // Many components already bind enabled; but handle external toggle events too
+    const enabled = event?.detail?.enabled ?? Boolean(event?.detail);
+    thinkingStyleEnabled = enabled;
     const message = thinkingStyleEnabled
-      ? "🧠 Thinking Style enabled. AI will now show detailed reasoning process."
-      : "⚡ Quick Mode enabled. AI will provide concise responses.";
-    notifications.add({
-      type: "info",
-      title: "AI Mode Changed",
-      message,
-    });
+      ? '🧠 Thinking Style enabled. AI will now show detailed reasoning process.'
+      : '⚡ Quick Mode enabled. AI will provide concise responses.';
+    notifications.add({ type: 'info', title: 'AI Mode Changed', message });
   }
+
   async function quickAnalyzeEvidence() {
     if (!caseId) {
-      notifications.add({
-        type: "warning",
-        title: "No Case Selected",
-        message: "Please select a case to analyze evidence.",
-      });
+      notifications.add({ type: 'warning', title: 'No Case Selected', message: 'Please select a case to analyze evidence.' });
       return;
     }
     try {
@@ -245,71 +269,68 @@ https://svelte.dev/e/js_parse_error -->
         analysisType: 'reasoning',
         useThinkingStyle: thinkingStyleEnabled
       });
-      const content = formatAnalysisResponse(analysis, analysis.metadata);
-      chatActions.addMessage(content, "assistant", {
-        ...analysis.metadata,
-        analysisResult: analysis
-        quickAction true
+      const content = formatAnalysisResponse(analysis, analysis.metadata || {});
+      chatActions.addMessage(content, 'assistant', {
+        ...(analysis.metadata || {}),
+        analysisResult: analysis,
+        quickAction: true
       });
       setTimeout(scrollToBottom, 100);
-    } catch (error) {
-      console.error("Quick analysis error:", error);
-      notifications.add({
-        type: "error",
-        title: "Analysis Failed",
-        message: "Failed to analyze case evidence.",
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'});
+    } catch (err) {
+      console.error('Quick analysis error:', err);
+      notifications.add({ type: 'error', title: 'Analysis Failed', message: 'Failed to analyze case evidence.' });
+      errorMessage = err instanceof Error ? err.message : String(err);
     }
   }
+
   function scrollToBottom() {
     if (messagesContainer) {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      (messagesContainer as HTMLElement).scrollTop = (messagesContainer as HTMLElement).scrollHeight;
     }
   }
-  function handleKeyDown(_event: CustomEvent<KeyboardEvent>) {
-    const keyEvent = e(vent as CustomEvent).detail;
-    if (keyEvent.key === "Enter" && !keyEvent.shiftKey) {
+
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
     handleUserActivity();
   }
+
   function autoResize() {
     if (inputElement) {
-      inputElement.style.height = "auto";
-      inputElement.style.height =
-        Math.min(inputElement.scrollHeight, 120) + "px";
+      inputElement.style.height = 'auto';
+      inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + 'px';
     }
   }
+
   $effect(() => {
-    // Initialize conversation if none exists
     if (!$currentConversation) {
       chatActions.newConversation(caseId ? `Case ${caseId}` : undefined);
     }
-    // Set up activity tracking
     handleUserActivity();
-    // Add global activity listeners
-    window.addEventListener("mousemove", handleUserActivity);
-    window.addEventListener("keydown", handleUserActivity);
-    window.addEventListener("click", handleUserActivity);
-    // Auto-focus input
-    if (inputElement) {
-      inputElement.focus();
+    window.addEventListener('mousemove', handleUserActivity);
+    window.addEventListener('keydown', handleUserActivity);
+    window.addEventListener('click', handleUserActivity);
+
+    if (inputElement) inputElement.focus();
+  });
+
+  onDestroy(() => {
+    if (inactivityTimer) clearTimeout(inactivityTimer);
+    window.removeEventListener('mousemove', handleUserActivity);
+    window.removeEventListener('keydown', handleUserActivity);
+    window.removeEventListener('click', handleUserActivity);
+  });
+
+  // Auto-scroll when messages change
+  $effect(() => {
+    if ($currentConversation?.messages) {
+      tick().then(scrollToBottom);
     }
   });
-  onDestroy(() => {
-    clearTimeout(inactivityTimer);
-    window.removeEventListener("mousemove", handleUserActivity);
-    window.removeEventListener("keydown", handleUserActivity);
-    window.removeEventListener("click", handleUserActivity);
-  });
-// Reactive scroll to bottom when new messages arrive
-    $effect(() => {
-      if ($currentConversation?.messages) {
-        tick().then(scrollToBottom);
-      }
-    });
 </script>
+
 <div class="mx-auto px-4 max-w-7xl">
   <!-- Enhanced Header with Thinking Toggle -->
   <div class="mx-auto px-4 max-w-7xl">
@@ -320,16 +341,18 @@ https://svelte.dev/e/js_parse_error -->
           loading={$isLoading}
           premium={true}
           size="sm"
-          toggle={handleThinkingToggle}
+          on:toggle={handleThinkingToggle}
         />
         {#if caseId}
-          <Button class="bits-btn"
+          <Button
+            class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
-🔍 Quick Analysis
+            🔍 Quick Analysis
+          </Button>
         {/if}
         <div class="mx-auto px-4 max-w-7xl">
           {#if lastAnalysisResult}
@@ -342,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
   <!-- Messages Container -->
-  <div;
+  <div
     bind:this={messagesContainer}
     class="mx-auto px-4 max-w-7xl"
     style="height: calc({height} - 140px);"
@@ -421,8 +444,8 @@ https://svelte.dev/e/js_parse_error -->
           bind:element={inputElement}
           bind:value={messageInput}
           placeholder={thinkingStyleEnabled
-            ? "Ask for detailed analysis... (Enter to send, Shift+Enter for new line)"
-            : "Type your message... (Enter to send, Shift+Enter for new line)"}
+            ? 'Ask for detailed analysis... (Enter to send, Shift+Enter for new line)'
+            : 'Type your message... (Enter to send, Shift+Enter for new line)'}
           class="mx-auto px-4 max-w-7xl"
           onkeydown={handleKeyDown}
           oninput={autoResize}
@@ -441,6 +464,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <Send class="mx-auto px-4 max-w-7xl" />
         {/if}
+      </Button>
     </div>
     <!-- Enhanced Status Text -->
     <div class="mx-auto px-4 max-w-7xl">
@@ -468,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 0.5rem;
   }
   :global(.message-content p:last-child) {
-    margin-bottom: 0,
+    margin-bottom: 0;
   }
   :global(.message-content ul, .message-content ol) {
     margin: 0.5rem 0;

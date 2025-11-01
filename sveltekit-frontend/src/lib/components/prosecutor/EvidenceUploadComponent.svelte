@@ -126,7 +126,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   };
 
   // Upload file to MinIO and get S3 key
-  // accept unknown caseId and coerce to string to avoid TS 'unknown' -> string errors
+  // accept unknown caseId and coerce to string to avoid TS: 'unknown' -> string errors
   const uploadToMinIO = async (file: File, caseId: unknown): Promise<{ s3Key: string; s3Bucket: string }> => {
     const caseIdStr = String(caseId ?? '');
     const formData = new FormData();
@@ -256,7 +256,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     }
   };
   // YOLO object detection preview (placeholder)
-  // Rename param to _file to avoid "declared but its value is never read" warnings,
+  // Rename param to _file to avoid: "declared but its value is never read" warnings,
   // then attach the function to window in onMount so it's considered used at runtime.
   const analyzeImageWithYOLO = async (_file: File) => {
     // This would integrate with YOLO for object detection

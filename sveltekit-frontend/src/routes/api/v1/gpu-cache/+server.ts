@@ -40,7 +40,7 @@ type StoreRequest = {
   enableWebGPU?: boolean;
 };
 
-// Avoid Node 'url' import in SvelteKit routes
+// Avoid Node: 'url' import in SvelteKit routes
 // === GPU Cache API Handlers ===
 // POST /api/v1/gpu-cache/store - Enhanced with Binary Encoding + NES Cache
 export const POST: RequestHandler = async ({ request }) => {
@@ -471,22 +471,22 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     for (const db of databases) {
       try {
         switch (db) {
-          case 'postgresql':
+          case: 'postgresql':
             // Sync with PostgreSQL + pgvector
             await simulatePostgreSQLSync();
             syncResults.postgresql = { status: 'completed', entries: 150, errors: [] };
             break;
-          case 'qdrant':
+          case: 'qdrant':
             // Sync with Qdrant for tags
             await simulateQdrantSync();
             syncResults.qdrant = { status: 'completed', entries: 75, errors: [] };
             break;
-          case 'neo4j':
+          case: 'neo4j':
             // Sync with Neo4j graphs
             await simulateNeo4jSync();
             syncResults.neo4j = { status: 'completed', entries: 45, errors: [] };
             break;
-          case 'indexeddb':
+          case: 'indexeddb':
             // Sync with IndexedDB client cache
             await simulateIndexedDBSync();
             syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
@@ -548,7 +548,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, shaderKey, context, query } = body;
     switch (action) {
-      case 'get': {
+      case: 'get': {
         // Pass shaderKey (string) to match orchestrator signature (defensive handling)
         const shaderRaw = await gpuShaderCacheOrchestrator.getShader(shaderKey);
         const shader = (shaderRaw as ShaderEntry) ?? null;
@@ -570,7 +570,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
           timestamp: Date.now(),
         });
       }
-      case 'search': {
+      case: 'search': {
         const rawResults = await gpuShaderCacheOrchestrator.multiDimensionalSearch(query);
         const results = Array.isArray(rawResults) ? (rawResults as unknown[]) : [];
         return json({
@@ -590,7 +590,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
           timestamp: Date.now(),
         });
       }
-      case 'preload': {
+      case: 'preload': {
         if (context) {
           await gpuShaderCacheOrchestrator.analyzeAndPreload(context);
           return json({
@@ -601,7 +601,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         }
         return json({ error: 'Context required for preloading' }, { status: 400 });
       }
-      case 'clear': {
+      case: 'clear': {
         await gpuShaderCacheOrchestrator.clearCache(shaderKey);
         return json({
           success: true,
@@ -804,14 +804,14 @@ export const PUT: RequestHandler = async ({ request }) => {
     let results: BulkStoreResult | BulkRetrieveResult = operation === 'store' ? emptyStore : emptyRetrieve;
 
     switch (operation) {
-      case 'store':
+      case: 'store':
         results = await handleBulkStore(entries as Array<{ key?: string; data?: unknown; options?: CacheEntryLike }>);
         break;
-      case 'retrieve':
+      case: 'retrieve':
         results = await handleBulkRetrieve(entries as string[]);
         break;
       default:
-        return json({ error: 'Invalid operation. Use "store" or "retrieve"' }, { status: 400 });
+        return json({ error: 'Invalid operation. Use: "store" or: "retrieve"' }, { status: 400 });
     }
     return json({
       success: true,
@@ -927,7 +927,7 @@ function serializeCacheEntry(value: unknown, _seen = new WeakSet<object>()): unk
   if (t === 'object') {
     const obj = value as Record<string, unknown>;
     try {
-      if (_seen.has(obj)) return '[Circular]';
+      if (_seen.has(obj)) return: '[Circular]';
       _seen.add(obj);
     } catch {
       // WeakSet may throw for primitives; ignore

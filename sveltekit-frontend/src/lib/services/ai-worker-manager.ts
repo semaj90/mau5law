@@ -127,18 +127,18 @@ export class AIWorkerManager {
       const { type, taskId } = event.data;
       const payload = event.data.payload;
       switch (type) {
-        case 'TASK_STARTED':
+        case: 'TASK_STARTED':
           this.handleTaskStarted(taskId, workerId);
           break;
-        case 'TASK_COMPLETED':
+        case: 'TASK_COMPLETED':
           // payload should be an AIResponse
           this.handleTaskCompleted(taskId, payload as AIResponse, workerId);
           break;
-        case 'TASK_ERROR':
+        case: 'TASK_ERROR':
           // payload expected shape: { message?: string }
           this.handleTaskError(taskId, payload as { message?: string }, workerId);
           break;
-        case 'STATUS_UPDATE':
+        case: 'STATUS_UPDATE':
           // payload expected to be WorkerStatus
           this.handleStatusUpdate(payload as WorkerStatus);
           break;

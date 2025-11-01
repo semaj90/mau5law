@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   // $state and $derived are available in runes mode via types, not runtime imports
   import { Card } from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
   import * as Lucide from 'lucide-svelte';
@@ -92,30 +92,30 @@
   });
   function getThreatLevelColor(level: string) {
     switch (level) {
-      case 'critical':
-        return 'bg-red-500 text-white';
-      case 'high':
-        return 'bg-orange-500 text-white';
-      case 'medium':
-        return 'bg-yellow-500 text-black';
-      case 'low':
-        return 'bg-green-500 text-white';
+      case: 'critical':
+        return: 'bg-red-500 text-white';
+      case: 'high':
+        return: 'bg-orange-500 text-white';
+      case: 'medium':
+        return: 'bg-yellow-500 text-black';
+      case: 'low':
+        return: 'bg-green-500 text-white';
       default:
-        return 'bg-gray-500 text-white';
+        return: 'bg-gray-500 text-white';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'wanted':
-        return 'bg-red-600 text-white';
-      case 'surveillance':
-        return 'bg-blue-600 text-white';
-      case 'active':
-        return 'bg-orange-600 text-white';
-      case 'cleared':
-        return 'bg-green-600 text-white';
+      case: 'wanted':
+        return: 'bg-red-600 text-white';
+      case: 'surveillance':
+        return: 'bg-blue-600 text-white';
+      case: 'active':
+        return: 'bg-orange-600 text-white';
+      case: 'cleared':
+        return: 'bg-green-600 text-white';
       default:
-        return 'bg-gray-600 text-white';
+        return: 'bg-gray-600 text-white';
     }
   }
   // Load persons from API
@@ -182,13 +182,6 @@
   $effect(() => {
     loadPersons();
   });
-
-  // Workaround: some generated component d.ts export shapes cause TS to treat them as instance types.
-  // Cast to any and use svelte:component to avoid the "SvelteComponentTyped vs Constructor" errors.
-  const CardComponent: any = Card;
-  const ButtonComponent: any = Button;
-  const InputComponent: any = Input;
-  const BadgeComponent: any = Badge;
 </script>
 
 <svelte:head>
@@ -257,10 +250,10 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <ButtonComponent class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
+        <Button class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
           <Plus class="w-4 h-4" />
           ADD PERSON
-        </ButtonComponent>
+        </Button>
       </div>
     </header>
     <!-- Search and Filters -->
@@ -268,7 +261,7 @@
       <div class="search-section">
         <div class="search-input-wrapper">
           <Search class="search-icon w-4 h-4" />
-          <InputComponent
+          <Input
             type="text"
             placeholder="Search persons, aliases, descriptions..."
             bind:value={searchQuery}
@@ -314,8 +307,8 @@
         </div>
       {:else}
         {#each filteredPersons as person (person.id)}
-          <!-- replaced Card usage with direct component tag -->
-          <CardComponent class="person-nier-bits-card nes-container">
+          <!-- use direct component tags (Svelte 5 supports dynamic component variables) -->
+          <Card class="person-nier-bits-card nes-container">
             <div class="person-header nes-container">
               <div class="person-photo">
                 {#if person.photo}
@@ -332,12 +325,12 @@
                 <div class="person-id">{person.id}</div>
               </div>
               <div class="person-badges">
-                <BadgeComponent class={getThreatLevelColor(person.threat_level)}>
+                <Badge class={getThreatLevelColor(person.threat_level)}>
                   {person.threat_level.toUpperCase()}
-                </BadgeComponent>
-                <BadgeComponent class={getStatusColor(person.status)}>
+                </Badge>
+                <Badge class={getStatusColor(person.status)}>
                   {person.status.toUpperCase()}
-                </BadgeComponent>
+                </Badge>
               </div>
             </div>
             <div class="person-content nes-container">
@@ -367,30 +360,31 @@
               </div>
             </div>
 
-            <!-- replaced Card.Footer (not exported) with a plain div -->
             <div class="person-actions nes-container card-footer">
-              <ButtonComponent class="bits-btn" size="sm" variant="ghost">
+              <Button class="bits-btn" size="sm" variant="ghost">
                 <Eye class="w-4 h-4" />
                 View
-              </ButtonComponent>
-              <ButtonComponent class="bits-btn" size="sm" variant="ghost">
+              </Button>
+              <Button class="bits-btn" size="sm" variant="ghost">
                 <Edit class="w-4 h-4" />
                 Edit
-              </ButtonComponent>
-              <ButtonComponent class="bits-btn" size="sm" variant="destructive">
+              </Button>
+              <Button class="bits-btn" size="sm" variant="destructive">
                 <Trash2 class="w-4 h-4" />
                 Remove
-              </ButtonComponent>
+              </Button>
             </div>
-          </CardComponent>
+          </Card>
         {/each}
       {/if}
     </div>
+
     {#if filteredPersons.length === 0}
       <div class="empty-state">
         <div class="empty-icon">👤</div>
         <div class="empty-title">No Persons Found</div>
-        <div class="empty-subtitle>
+        <!-- fixed missing quote in class attribute -->
+        <div class="empty-subtitle">
           {searchQuery ? 'Try adjusting your search criteria' : 'Add persons of interest to begin tracking'}
         </div>
       </div>
@@ -435,7 +429,7 @@
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label" for="full-name">FULL NAME</label>
-            <InputComponent
+            <Input
               id="full-name"
               placeholder="Enter full name"
               class="yorha-input"
@@ -444,7 +438,7 @@
           </div>
           <div class="form-field">
             <label class="form-label" for="alias">ALIAS / CODENAME</label>
-            <InputComponent
+            <Input
               id="alias"
               placeholder="Known alias or codename"
               class="yorha-input"
@@ -471,11 +465,11 @@
           </div>
           <div class="form-field">
             <label class="form-label" for="last-seen">LAST SEEN DATE</label>
-            <InputComponent id="last-seen" type="date" class="yorha-input" bind:value={newPerson.last_seen} />
+            <Input id="last-seen" type="date" class="yorha-input" bind:value={newPerson.last_seen} />
           </div>
           <div class="form-field">
             <label class="form-label" for="location">LAST KNOWN LOCATION</label>
-            <InputComponent
+            <Input
               id="location"
               placeholder="e.g. Downtown District"
               class="yorha-input"
@@ -496,7 +490,7 @@
       </div>
 
       <footer class="dialog-footer">
-        <ButtonComponent
+        <Button
           class="bits-btn"
           variant="ghost"
           onclick={() => {
@@ -513,8 +507,9 @@
           }}
         >
           CANCEL
-        </ButtonComponent>
-        <ButtonComponent class="bits-btn" onclick={handleAddPerson}>ADD PERSON</ButtonComponent>
+        </Button>
+
+        <Button class="bits-btn" onclick={handleAddPerson}>ADD PERSON</Button>
       </footer>
     </div>
   </div>
@@ -935,6 +930,13 @@
     font-size: 12px;
     resize: vertical;
   }
+  .dialog-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+</style>
   .dialog-footer {
     display: flex;
     gap: 10px;

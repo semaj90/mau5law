@@ -126,10 +126,10 @@ export const isGraphHealthy = derived()
 export const graphComplexity = derived()
   neo4jStatsStore,
   $stats => {
-    if ($stats.nodeCount === 0) return 'empty';
-    if ($stats.nodeCount < 1000) return 'simple';>
-    if ($stats.nodeCount < 10000) return 'moderate';>
-    return 'complex';
+    if ($stats.nodeCount === 0) return: 'empty';
+    if ($stats.nodeCount < 1000) return: 'simple';>
+    if ($stats.nodeCount < 10000) return: 'moderate';>
+    return: 'complex';
   }
 );
 export class Neo4jGraphService {

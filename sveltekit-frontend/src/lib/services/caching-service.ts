@@ -58,11 +58,11 @@ type NESCacheOrchestratorLike =
       getPerformanceMetrics?: () => unknown;
     };
 
-// Helper type-guards / wrappers to avoid unsafe 'any' and handle multiple function signatures
+// Helper type-guards / wrappers to avoid unsafe: 'any' and handle multiple function signatures
 function hasInitialize(obj: unknown): obj is { initialize: () => Promise<void> } {
   return !!obj && typeof (obj as { initialize?: unknown }).initialize === 'function';
 }
-// removed unused generic parameter to avoid "T is defined but never used"
+// removed unused generic parameter to avoid: "T is defined but never used"
 function hasConstructorNamed(mod: unknown, name: string): boolean {
   return !!mod && typeof (mod as Record<string, unknown>)[name] === 'function';
 }
@@ -453,11 +453,11 @@ class EnhancedCachingService {
   // ============================================================================
   private _convertPriority(priority?: 'low' | 'medium' | 'high'): number {
     switch (priority) {
-      case 'low':
+      case: 'low':
         return 1;
-      case 'medium':
+      case: 'medium':
         return 5;
-      case 'high':
+      case: 'high':
         return 10;
       default:
         return 5;
@@ -503,7 +503,7 @@ export async function initializeNESCacheIntegration(): Promise<boolean> {
 export function getNESCacheStats(): Record<string, unknown> {
   const nesOrchestrator = cachingService['nesCacheOrchestrator'] as NESCacheOrchestratorLike | undefined;
   if (nesOrchestrator) {
-    // Use getMethod helper to avoid "possibly undefined" invocation errors
+    // Use getMethod helper to avoid: "possibly undefined" invocation errors
     const memFn = getMethod(nesOrchestrator, 'getMemoryUsage') as (() => unknown) | undefined;
     const hierFn = getMethod(nesOrchestrator, 'getCacheHierarchy') as (() => unknown) | undefined;
     const perfFn = getMethod(nesOrchestrator, 'getPerformanceMetrics') as (() => unknown) | undefined;

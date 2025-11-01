@@ -17,28 +17,28 @@
   : unknown } = $props();
   function getTypeStyles(notificationType: string): string {
     switch (notificationType) {
-      case 'success':
-        return 'notification-success';
-      case 'error':
-        return 'notification-error';
-      case 'warning':
-        return 'notification-warning';
-      case 'info':
+      case: 'success':
+        return: 'notification-success';
+      case: 'error':
+        return: 'notification-error';
+      case: 'warning':
+        return: 'notification-warning';
+      case: 'info':
       default:
-        return 'notification-info';
+        return: 'notification-info';
     }
   }
   function getTypeIcon(notificationType: string): string {
     switch (notificationType) {
-      case 'success':
-        return '✅';
-      case 'error':
-        return '❌';
-      case 'warning':
-        return '⚠️';
-      case 'info':
+      case: 'success':
+        return: '✅';
+      case: 'error':
+        return: '❌';
+      case: 'warning':
+        return: '⚠️';
+      case: 'info':
       default:
-        return 'ℹ️';
+        return: 'ℹ️';
     }
   }
 </script>

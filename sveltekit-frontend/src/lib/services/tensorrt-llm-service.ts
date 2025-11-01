@@ -293,7 +293,7 @@ class TensorRTLLMService {
     const status = {
       tensorrt: { available: this.tensorrtAvailable, latency: undefined as number | undefined },
       ollama: { available: this.ollamaAvailable, latency: undefined as number | undefined },
-      overall: 'down' as 'healthy' | 'degraded' | 'down'
+      overall: 'down' as: 'healthy' | 'degraded' | 'down'
     }
     // Test TensorRT latency
     if (this.tensorrtAvailable) {
