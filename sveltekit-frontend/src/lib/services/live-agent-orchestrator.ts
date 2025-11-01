@@ -286,14 +286,14 @@ export class LiveAgentOrchestrator {
     let prompt = request.payload.text || request.payload.query || '';
     // Use specialized models based on request type
     switch (request.type) {
-      case 'analyze':
+      case: 'analyze':
         model = 'gemma3-legal:latest';
         prompt = `,As a legal AI, analyz,e: ${prompt}`;
         break;
-      case 'embed':
+      case: 'embed':
         model = 'nomic-embed-text:latest';
         break;
-      case 'summarize':
+      case: 'summarize':
         model = 'gemma3-legal:latest';
         prompt = `,Provide a legal summary of: ${prompt}`;
         break;
@@ -377,11 +377,11 @@ export class LiveAgentOrchestrator {
   }
   private getGoBackendEndpoint(requestType: string): string {
     switch (requestType) {
-      case 'analyze': return '/api/analyze';
-      case 'summarize': return '/api/summarize';
-      case 'embed': return '/api/embed';
-      case 'search': return '/api/search';
-      default: return '/api/process';
+      case: 'analyze': return: '/api/analyze';
+      case: 'summarize': return: '/api/summarize';
+      case: 'embed': return: '/api/embed';
+      case: 'search': return: '/api/search';
+      default: return: '/api/process';
     }
   }
   private async synthesizeResults(responses: AgentResponse[], request: AgentRequest): Promise<any> {

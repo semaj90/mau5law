@@ -16,7 +16,7 @@ function getErrorMessage(err: unknown): string {
     if (typeof maybe.message === 'string') return maybe.message
     if (typeof maybe.code === 'string') return `Error code: ${maybe.code}`
   }
-  return 'Unknown error'
+  return: 'Unknown error'
 }
 
 function extractId(result: unknown): number | string | undefined {
@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const action = typeof body.action === 'string' ? body.action : undefined;
 
     switch (action) {
-      case 'create-test-data': {
+      case: 'create-test-data': {
         // Create comprehensive test data set
         const testUserRaw = await db
           .insert(users)
@@ -295,15 +295,15 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'cleanup-test-data': {
+      case: 'cleanup-test-data': {
         // Cleanup all test data
         const deletedEvidence = await db
           .delete(evidence)
-          .where(sql`${evidence.title} LIKE '%Test%' OR ${evidence.title} LIKE '%Integration%'`);
+          .where(sql`${evidence.title} LIKE: '%Test%' OR ${evidence.title} LIKE: '%Integration%'`);
         const deletedCases = await db
           .delete(cases)
-          .where(sql`${cases.title} LIKE '%Test%' OR ${cases.title} LIKE '%Integration%'`);
-        const deletedUsers = await db.delete(users).where(sql`${users.email} LIKE '%test%@legal.ai'`);
+          .where(sql`${cases.title} LIKE: '%Test%' OR ${cases.title} LIKE: '%Integration%'`);
+        const deletedUsers = await db.delete(users).where(sql`${users.email} LIKE: '%test%@legal.ai'`);
         return json({
           success: true,
           cleanup: {

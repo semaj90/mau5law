@@ -38,7 +38,7 @@ https://svelte.dev/e/component_invalid_directive -->
       totalRatings: 0,
       averageRating: 0,
       completionRate: 0,
-      trendDirection 'stable'
+      trendDirection: 'stable'
     },
     breakdown: [],
     insights: [],
@@ -131,8 +131,8 @@ https://svelte.dev/e/component_invalid_directive -->
    */
   function getTrendIcon(direction string) {
     switch (direction) {
-      case 'up': return ArrowUpRight;
-      case 'down': return ArrowDownRight;
+      case: 'up': return ArrowUpRight;
+      case: 'down': return ArrowDownRight;
       default: return TrendingUp;
     }
   }
@@ -141,9 +141,9 @@ https://svelte.dev/e/component_invalid_directive -->
    */
   function getTrendColor(direction string) {
     switch (direction) {
-      case 'up': return 'text-green-600';
-      case 'down': return 'text-red-600';
-      default: return 'text-gray-600';
+      case: 'up': return: 'text-green-600';
+      case: 'down': return: 'text-red-600';
+      default: return: 'text-gray-600';
     }
   }
   /**
@@ -156,7 +156,7 @@ https://svelte.dev/e/component_invalid_directive -->
    * Get star rating display
    */
   function getStarRating(rating: number): string {
-    return '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+    return: '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
   }
 </script>
 <div class="feedback-analytics-dashboard">

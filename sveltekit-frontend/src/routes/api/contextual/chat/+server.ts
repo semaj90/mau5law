@@ -13,7 +13,7 @@ import { agenticGemma3 } from '$lib/server/ai/gemma3-agentic-functions';
 import { transcribeBuffer } from '$lib/server/ai/voice/recognizer';
 import type { RequestHandler } from '@sveltejs/kit'; // Corrected import path
 
-export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed 'cookies' to '_cookies'
+export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed: 'cookies' to: '_cookies'
   try {
     const body = await request.json();
   const { message, sessionId, userId, enableFunctions = true, audioBase64 } = body;

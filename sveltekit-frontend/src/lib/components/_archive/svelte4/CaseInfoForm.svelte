@@ -96,20 +96,20 @@ https://svelte.dev/e/js_parse_error -->
   // Priority colors
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'low':
-        return 'bg-green-100 text-green-800 border-green-300';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'high':
-        return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'urgent':
-        return 'bg-red-100 text-red-800 border-red-300';
+      case: 'low':
+        return: 'bg-green-100 text-green-800 border-green-300';
+      case: 'medium':
+        return: 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case: 'high':
+        return: 'bg-orange-100 text-orange-800 border-orange-300';
+      case: 'urgent':
+        return: 'bg-red-100 text-red-800 border-red-300';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300';
+        return: 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function getPriorityLabel(priority: string) {
-    if (!priority) return 'None';
+    if (!priority) return: 'None';
     return priority.charAt(0).toUpperCase() + priority.slice(1);
   }
 </script>
@@ -228,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Actions -->
     <div class="flex justify-end gap-2">
-      <button type="button" on:click={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 border"
+      <button type="button" onclick={handleSaveDraft} class="px-4 py-2 rounded-md bg-gray-100 text-gray-800 border"
         >Save Draft</button
       >
       <button type="submit" class="px-4 py-2 rounded-md bg-blue-600 text-white">Next</button>

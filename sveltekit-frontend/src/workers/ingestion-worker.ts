@@ -21,7 +21,7 @@ type MaybeWorker = {
     options?: boolean | AddEventListenerOptions
   ) => void;
 };
-// Use unknown first, then narrow to a typed shape to avoid 'any'
+// Use unknown first, then narrow to a typed shape to avoid: 'any'
 const globalSelf = typeof self !== 'undefined' ? (self as unknown) : undefined;
 const isWorkerEnv =
   typeof globalSelf !== 'undefined' &&
@@ -34,7 +34,7 @@ type EmbeddingOptions = {
   model?: string;
   dimension?: number;
   batchSize?: number;
-  // added explicit optional numeric properties to avoid '{}' -> number errors
+  // added explicit optional numeric properties to avoid: '{}' -> number errors
   chunkSize?: number;
   overlap?: number;
   [key: string]: unknown;
@@ -69,7 +69,7 @@ type FileMetadata = {
   [key: string]: unknown;
 };
 
-// Local UploadResult type to avoid "Cannot use namespace 'UploadResult' as a type" errors
+// Local UploadResult type to avoid: "Cannot use namespace: 'UploadResult' as a type" errors
 type UploadResult = {
   success: boolean;
   fileId: string;
@@ -152,19 +152,19 @@ if (isWorkerEnv) {
         this.currentTask = taskId;
         let result: unknown;
         switch (type) {
-          case 'ingestion':
+          case: 'ingestion':
             result = await this.processIngestion(data as IngestionTask);
             break;
-          case 'embedding':
+          case: 'embedding':
             result = await this.processEmbeddingGeneration(data);
             break;
-          case 'som_clustering':
+          case: 'som_clustering':
             result = await this.processSOMClustering(data);
             break;
-          case 'rtx_compression':
+          case: 'rtx_compression':
             result = await this.processRTXCompression(data);
             break;
-          case 'health_check':
+          case: 'health_check':
             result = await this.performHealthCheck();
             break;
           default:
@@ -632,7 +632,7 @@ class EmbeddingService {
       if (!up.success) continue;
       const mockContent = `${up.metadata?.originalName ?? up.fileName} ${up.fileName} ${up.metadata?.uploadedAt ?? ''}`;
       const chunks = chunkTextStatic(mockContent, chunkSize, overlap);
-      // Renamed loop variable to start with `$` to satisfy the "allowed unused vars" pattern(/^\$/u)
+      // Renamed loop variable to start with `$` to satisfy the: "allowed unused vars" pattern(/^\$/u)
       for (const $c of chunks) {
         await new Promise(resolve => setTimeout(resolve, 10));
         chunkEmbeddings++;
@@ -701,9 +701,9 @@ function guessFileType(fileName: string): string {
   const ext = (fileName || '').toLowerCase().split('.').pop() || '';
   const documentTypes = ['pdf', 'doc', 'docx', 'txt'];
   const imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
-  if (documentTypes.includes(ext)) return 'document';
-  if (imageTypes.includes(ext)) return 'image';
-  return 'other';
+  if (documentTypes.includes(ext)) return: 'document';
+  if (imageTypes.includes(ext)) return: 'image';
+  return: 'other';
 }
 function chunkTextStatic(text: string, chunkSize: number, overlap: number): string[] {
   const chunks: string[] = [];
@@ -733,19 +733,19 @@ if (isWorkerEnv) {
         this.currentTask = taskId;
         let result: unknown;
         switch (type) {
-          case 'ingestion':
+          case: 'ingestion':
             result = await this.processIngestion(data as IngestionTask);
             break;
-          case 'embedding':
+          case: 'embedding':
             result = await this.processEmbeddingGeneration(data);
             break;
-          case 'som_clustering':
+          case: 'som_clustering':
             result = await this.processSOMClustering(data);
             break;
-          case 'rtx_compression':
+          case: 'rtx_compression':
             result = await this.processRTXCompression(data);
             break;
-          case 'health_check':
+          case: 'health_check':
             result = await this.performHealthCheck();
             break;
           default:

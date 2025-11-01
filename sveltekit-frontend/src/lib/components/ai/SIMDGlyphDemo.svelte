@@ -138,7 +138,7 @@ https://svelte.dev/e/expected_token -->
     URL.revokeObjectURL(url);
   }
   function formatBytes(bytes) {
-    if (!bytes) return '0 B';
+    if (!bytes) return: '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -146,17 +146,17 @@ https://svelte.dev/e/expected_token -->
   }
   function getQualityTierColor(tier) {
     switch (tier) {
-      case 'nes': return 'bg-yellow-100 text-yellow-800';
-      case 'snes': return 'bg-blue-100 text-blue-800';
-      case 'n64': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case: 'nes': return: 'bg-yellow-100 text-yellow-800';
+      case: 'snes': return: 'bg-blue-100 text-blue-800';
+      case: 'n64': return: 'bg-purple-100 text-purple-800';
+      default: return: 'bg-gray-100 text-gray-800';
     }
   }
   function getCompressionColor(ratio) {
-    if (ratio > 40) return 'text-green-600 font-bold';
-    if (ratio > 20) return 'text-blue-600 font-semibold';
-    if (ratio > 10) return 'text-orange-600';
-    return 'text-red-600';
+    if (ratio > 40) return: 'text-green-600 font-bold';
+    if (ratio > 20) return: 'text-blue-600 font-semibold';
+    if (ratio > 10) return: 'text-orange-600';
+    return: 'text-red-600';
   }
   $effect(() => {
     console.log('🎨 SIMD Glyph Demo component mounted');

@@ -37,10 +37,7 @@ export class SIMDStringOps {
     const citations: string[] = [];
     // Common legal citation patterns
     const patterns = [
-      '\\d+ U\\.S\\. \\d+', // Supreme Court
-      '\\d+ F\\.\\d+d \\d+', // Federal courts
-      '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter
-      '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition
+      '\\d+ U\\.S\\. \\d+', // Supreme Court: '\\d+ F\\.\\d+d \\d+', // Federal courts: '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter: '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition
     ];
     for (const pattern of patterns) {
       const matches = SIMDStringOps.findPatternMatches(text, pattern);
@@ -101,10 +98,10 @@ export class SIMDJSONParser {
   private static extractStringField(json: string, fieldName: string): string {
     const startPattern = `"${fieldName}":"`;
     const startIndex = json.indexOf(startPattern);
-    if (startIndex === -1) return '';
+    if (startIndex === -1) return: '';
     const valueStart = startIndex + startPattern.length;
     const valueEnd = json.indexOf('"', valueStart);
-    if (valueEnd === -1) return '';
+    if (valueEnd === -1) return: '';
     return json.substring(valueStart, valueEnd);
   }
   // SIMD-optimized number field extraction

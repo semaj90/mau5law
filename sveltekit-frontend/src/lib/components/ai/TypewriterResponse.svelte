@@ -7,7 +7,7 @@
   // Types
   interface UserActivity {
     timestamp: number;
-    action 'typing' | 'pause' | 'delete' | 'select';
+    action: 'typing' | 'pause' | 'delete' | 'select';
     content?: string;
     duration?: number;
     position?: number;
@@ -232,7 +232,7 @@
         const scaledDuration = (activity.duration || 500) / replaySpeed;
 
         switch (activity.action) {
-          case 'typing':
+          case: 'typing':
             if (activity.content) {
               // Show partial content being typed
               displayedText = activity.content.substring(
@@ -241,16 +241,16 @@
               );
             }
             break;
-          case 'pause':
+          case: 'pause':
             // Brief pause in typing
             break;
-          case 'delete':
+          case: 'delete':
             // Show text being deleted
             if (displayedText.length > 0) {
               displayedText = displayedText.substring(0, displayedText.length - 1);
             }
             break;
-          case 'select':
+          case: 'select':
             // Visual indication of text selection
             break;
         }

@@ -72,7 +72,7 @@
   }
   $effect(() => {
     append('🎮 WebGL2/WebGPU Acceleration Test - Enhanced UI Version');
-    append('🔧 Click "Run Test" to check browser GPU acceleration capabilities');
+    append('🔧 Click: "Run Test" to check browser GPU acceleration capabilities');
     append('📋 This test validates WebGPU → WebGL2 → WebGL1 → WASM fallback chain');
   });
 </script>

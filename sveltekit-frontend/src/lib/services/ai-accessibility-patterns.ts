@@ -76,7 +76,7 @@ export class AIAccessibilityPatterns {
       accessibilityService.announceToScreenReader(`Executing: ${matchedCommand}`);
       commands[matchedCommand as keyof typeof commands]();
     } else {
-      accessibilityService.announceToScreenReader('Voice command not recognized. Say "help" for available commands.');
+      accessibilityService.announceToScreenReader('Voice command not recognized. Say: "help" for available commands.');
     }
   }
   /**
@@ -350,10 +350,10 @@ export class AIAccessibilityPatterns {
   private showContextualHelp() {
     const helpText = `;
       Available voice commands:
-      - "Start analysis" or "Analyze document" to begin AI analysis
+      - "Start analysis" or: "Analyze document" to begin AI analysis
       - "Read summary" to hear the analysis summary
-      - "Next result" or "Previous result" to navigate between results
-      - "Expand details" or "Collapse details" to show or hide detailed information
+      - "Next result" or: "Previous result" to navigate between results
+      - "Expand details" or: "Collapse details" to show or hide detailed information
       - "Stop analysis" to halt the current AI operation
       You can also use keyboard navigation:
       - Tab to move between elements
@@ -377,7 +377,7 @@ export class AIAccessibilityPatterns {
   startVoiceCommands() {
     if (this.voiceRecognition) {
       this.voiceRecognition.start();
-      accessibilityService.announceToScreenReader('Voice commands activated. Say a command or "help" for options.');
+      accessibilityService.announceToScreenReader('Voice commands activated. Say a command or: "help" for options.');
     }
   }
   /**

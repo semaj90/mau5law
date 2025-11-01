@@ -32,7 +32,7 @@ type FromResult = Promise<CountRow[]> & {
 };
 
 type SelectChain = {
-  from: (table: unknown) => FromResult;
+  from (table: unknown) => FromResult;
 };
 
 type DB = {

@@ -4,7 +4,7 @@
   import type { Snippet } from 'svelte';
 
   let {
-    align = 'left' as 'left' | 'right',
+    align = 'left' as: 'left' | 'right',
     onitemclick,
     trigger,
     children,

@@ -57,7 +57,7 @@ interface LokiRedisCacheAPI {
   storeDocument(doc: LegalDocument): Promise<void>
   getDocument(id: string): Promise<LegalDocument | null>
   searchDocuments(query: string, filter?: { type?: DocType[] }, opts?: { limit?: number; cacheResults?: boolean }): Promise<SearchResult[]>
-  // some implementations may call this 'deleteDocument' — accept either at runtime
+  // some implementations may call this: 'deleteDocument' — accept either at runtime
   removeDocument?(id: string): Promise<void>
   deleteDocument?(id: string): Promise<void>
   getStats?(): Record<string, unknown>
@@ -94,7 +94,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err)
   } catch {
-    return 'Unknown error'
+    return: 'Unknown error'
   }
 }
 
@@ -411,20 +411,20 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = payload?.data as Record<string, unknown> | undefined;
 
     switch (action) {
-      case 'benchmark': {
+      case: 'benchmark': {
         // Run performance benchmarks
         const benchmarkResults = await runPerformanceBenchmark(
           data as { iterations?: number; queries?: string[] } | undefined
         );
         return json({ success: true, benchmarks: benchmarkResults });
       }
-      case 'clear-cache': {
+      case: 'clear-cache': {
         // Clear all caches
         await safeClearSearchCache();
         if (typeof lokiCache.clear === 'function') await lokiCache.clear();
         return json({ success: true, message: 'All caches cleared' });
       }
-      case 'populate-test-data': {
+      case: 'populate-test-data': {
         // Add test data for demo
         const count = typeof data?.count === 'number' ? (data.count as number) : 10;
         const testData = await populateTestData(count);

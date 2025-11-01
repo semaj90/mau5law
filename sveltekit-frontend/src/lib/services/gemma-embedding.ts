@@ -64,8 +64,7 @@ export class GemmaEmbeddingService {
   private availableModels: string[] = [];
   private timeout: number;
   private modelHierarchy: string[] = [
-    // Define model hierarchy
-    'embeddinggemma:latest',
+    // Define model hierarchy: 'embeddinggemma:latest',
     'gemma3-legal:latest',
     'nomic-embed-text:latest',
     // Add other potential models here based on your Ollama setup
@@ -73,7 +72,7 @@ export class GemmaEmbeddingService {
 
   constructor(
     ollamaHost?: string,
-    primaryModel: string = 'embeddinggemma:latest', // Or 'gemma3-legal:latest'
+    primaryModel: string = 'embeddinggemma:latest', // Or: 'gemma3-legal:latest'
     fallbackModel: string = 'nomic-embed-text:latest',
     timeout: number = 10000 // 10 seconds
   ) {

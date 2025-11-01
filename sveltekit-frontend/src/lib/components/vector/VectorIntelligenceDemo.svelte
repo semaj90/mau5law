@@ -43,22 +43,22 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   const demoSearchQueries = [
     {
       query: 'contract liability clauses in employment agreements',
-      description 'Legal contract analysis for employment disputes',
+      description: 'Legal contract analysis for employment disputes',
       category: 'Legal Research',
     },
     {
       query: 'evidence tampering patterns in criminal investigations',
-      description 'Criminal investigation methodology',
+      description: 'Criminal investigation methodology',
       category: 'Investigation',
     },
     {
       query: 'corporate compliance violations and penalties',
-      description 'Corporate law and regulatory compliance',
+      description: 'Corporate law and regulatory compliance',
       category: 'Compliance',
     },
     {
       query: 'witness testimony consistency analysis methods',
-      description 'Evidence evaluation techniques',
+      description: 'Evidence evaluation techniques',
       category: 'Evidence Analysis',
     }
   ];
@@ -66,17 +66,17 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     {
       context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.',
       role: 'prosecutor',
-      description 'Complex criminal case preparation',
+      description: 'Complex criminal case preparation',
     },
     {
       context: 'Our investigation has uncovered potential digital evidence tampering. How should we proceed with forensic analysis and evidence preservation?',
       role: 'detective',
-      description 'Digital forensics investigation',
+      description: 'Digital forensics investigation',
     },
     {
       context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',
       role: 'admin',
-      description 'Workflow optimization analysis',
+      description: 'Workflow optimization analysis',
     }
   ];
   const demoAnalysisContent = [
@@ -91,7 +91,7 @@ Company shall pay Employee a base salary of $150,000 per year, payable in accord
 Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
 4. TERMINATION
 This Agreement may be terminated by either party with thirty (30) days written notice.`,
-      description 'Employment contract for legal analysis',
+      description: 'Employment contract for legal analysis',
       type: 'Contract',
     },
     {
@@ -108,7 +108,7 @@ EVIDENCE COLLECTED:
 - Witness statements from two neighbors
 SUSPECTS:
 Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
-      description 'Criminal incident report for analysis',
+      description: 'Criminal incident report for analysis',
       type: 'Incident Report',
     }
   ];
@@ -212,54 +212,54 @@ await loadSystemHealth();
   }
   function getRecommendationIcon(type: string) {
     switch (type) {
-      case 'action': return Target;
-      case 'insight': return Lightbulb;
-      case 'warning': return AlertTriangl;
-      case 'opportunity': return TrendingUp;
+      case: 'action': return Target;
+      case: 'insight': return Lightbulb;
+      case: 'warning': return AlertTriangl;
+      case: 'opportunity': return TrendingUp;
       default: return FileText;
     }
   }
   function getRecommendationColor(type: string) {
     switch (type) {
-      case 'action': return 'recommendation-action';
-      case 'insight': return 'recommendation-insight';
-      case 'warning': return 'recommendation-warning';
-      case 'opportunity': return 'recommendation-opportunity';
-      default: return 'recommendation-item';
+      case: 'action': return: 'recommendation-action';
+      case: 'insight': return: 'recommendation-insight';
+      case: 'warning': return: 'recommendation-warning';
+      case: 'opportunity': return: 'recommendation-opportunity';
+      default: return: 'recommendation-item';
     }
   }
   function getEntityIcon(type: string) {
     switch (type) {
-      case 'person': return User;
-      case 'organization': return Network;
-      case 'location': return Target;
-      case 'date': return Clock;
-      case 'legal_concept': return FileText;
+      case: 'person': return User;
+      case: 'organization': return Network;
+      case: 'location': return Target;
+      case: 'date': return Clock;
+      case: 'legal_concept': return FileText;
       default: return Tag;
     }
   }
   function getEntityColor(type: string) {
     switch (type) {
-      case 'person': return 'semantic-entity-person';
-      case 'organization': return 'semantic-entity-organization';
-      case 'location': return 'semantic-entity-location';
-      case 'date': return 'semantic-entity-date';
-      case 'legal_concept': return 'semantic-entity-legal';
-      default: return 'semantic-entity-tag';
+      case: 'person': return: 'semantic-entity-person';
+      case: 'organization': return: 'semantic-entity-organization';
+      case: 'location': return: 'semantic-entity-location';
+      case: 'date': return: 'semantic-entity-date';
+      case: 'legal_concept': return: 'semantic-entity-legal';
+      default: return: 'semantic-entity-tag';
     }
   }
   function getConfidenceColor(confidence: number) {
-    if (confidence >= 0.8) return 'vector-confidence-high';
-    if (confidence >= 0.6) return 'vector-confidence-medium';
-    return 'vector-confidence-low';
+    if (confidence >= 0.8) return: 'vector-confidence-high';
+    if (confidence >= 0.6) return: 'vector-confidence-medium';
+    return: 'vector-confidence-low';
   }
   function getHealthColor(health: string) {
     switch (health) {
-      case 'excellent': return 'text-green-600';
-      case 'good': return 'text-blue-600';
-      case 'fair': return 'text-yellow-600';
-      case 'poor': return 'text-red-600';
-      default: return 'text-gray-600';
+      case: 'excellent': return: 'text-green-600';
+      case: 'good': return: 'text-blue-600';
+      case: 'fair': return: 'text-yellow-600';
+      case: 'poor': return: 'text-red-600';
+      default: return: 'text-gray-600';
     }
   }
 </script>

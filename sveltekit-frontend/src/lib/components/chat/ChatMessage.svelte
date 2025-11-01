@@ -3,7 +3,7 @@
   import type { ChatMessage } from '\/stores/chat.svelte';
   import DOMPurify from 'dompurify';
   import { Bot, User } from 'lucide-svelte';
-  import './chat-message.css';
+  import: './chat-message.css';
   interface Props {
     message: ChatMessage;
     showTimestamp?: boolean;

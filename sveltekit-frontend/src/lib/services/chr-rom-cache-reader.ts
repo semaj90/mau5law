@@ -9,7 +9,7 @@ import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integr
 import { chrROMPrecomputation } from './chr-rom-precomputation.js';
 import type { CHRROMPattern } from './chr-rom-precomputation.js';
 
-// Define an interface for the precomputation service to avoid using 'any'
+// Define an interface for the precomputation service to avoid using: 'any'
 interface CHRROMPrecomputationService {
   precomputeOnDemand(docId: string, patternType: string): Promise<CHRROMPattern | null | undefined>;
 }

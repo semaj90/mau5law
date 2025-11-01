@@ -41,9 +41,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const [outboxRow] = await db
       .insert(vectorOutbox)
       .values({
-        ownerType: ownerType as 'evidence' | 'report' | 'case' | 'document',
+        ownerType: ownerType as: 'evidence' | 'report' | 'case' | 'document',
         ownerId,
-        event: type as 'upsert' | 'delete' | 'reembed',
+        event: type as: 'upsert' | 'delete' | 'reembed',
         vector: null, // Will be filled by CUDA worker
         payload: data,
         attempts: 0,
@@ -54,9 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
       .insert(vectorJobs)
       .values({
         jobId: finalJobId,
-        ownerType: ownerType as 'evidence' | 'report' | 'case' | 'document',
+        ownerType: ownerType as: 'evidence' | 'report' | 'case' | 'document',
         ownerId,
-        event: type as 'upsert' | 'delete' | 'reembed',
+        event: type as: 'upsert' | 'delete' | 'reembed',
         status: 'enqueued',
         progress: 0,
       })
@@ -73,8 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
     };
     const streamId = await redis.xAdd(
-      'vec:requests', // Stream name for vector processing
-      '*', // Auto-generate ID
+      'vec:requests', // Stream name for vector processing: '*', // Auto-generate ID
       streamMessage
     );
     console.log(`📨 Enqueued to Redis stream vec:requests: ${streamId}`);
@@ -184,14 +183,14 @@ export const GET: RequestHandler = async ({ url }) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getEstimatedTime(type: string, data: any): number {
   switch (type) {
-    case 'upsert': {
+    case: 'upsert': {
       // Estimate based on content length
       const contentLength = JSON.stringify(data).length;
       return Math.max(500, Math.min(5000, contentLength / 10));
     }
-    case 'reembed':
+    case: 'reembed':
       return 2000; // Re-embedding typically takes 2 seconds
-    case 'delete':
+    case: 'delete':
       return 100; // Deletion is fast
     default:
       return 1000; // Default 1 second

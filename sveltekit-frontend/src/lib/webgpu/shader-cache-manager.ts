@@ -45,7 +45,7 @@ export interface ShaderSearchResult extends CompiledShader {
 export class ShaderCacheManager {
   private device: GPUDevice | null = null;
   private shaders = new Map<string, CompiledShader>();
-  private compileQueue = new Map<string, Promise<CompiledShader>>(); // Fixed: Added missing '>'
+  private compileQueue = new Map<string, Promise<CompiledShader>>(); // Fixed: Added missing: '>'
   private readonly SHADER_CACHE_PREFIX = 'webgpu_shader:';
   private readonly EMBEDDING_CACHE_PREFIX = 'shader_embed:';
   async initialize(device: GPUDevice): Promise<void> {
@@ -193,7 +193,7 @@ export class ShaderCacheManager {
   private generateTensorWGSL(operation: string, _dimensions: number): string {
     const workgroupSize = 64;
     switch (operation) {
-      case 'embedding':
+      case: 'embedding':
         return `
 @group(0) @binding(0) var<storage, read> input: array<f32>;
 @group(0) @binding(1) var<storage, read_write> output: array<f32>;
@@ -210,7 +210,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let normalized = tanh(input_val * 0.1); // Activation
   output[index] = normalized;
 }`;
-      case 'similarity':
+      case: 'similarity':
         return `
 @group(0) @binding(0) var<storage, read> embeddings_a: array<f32>;
 @group(0) @binding(1) var<storage, read> embeddings_b: array<f32>;
@@ -237,7 +237,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let cosine_sim = dot_product / (sqrt(norm_a) * sqrt(norm_b));
   similarities[pair_idx] = cosine_sim;
 }`;
-      case 'simd_parse':
+      case: 'simd_parse':
         return `
 @group(0) @binding(0) var<storage, read> raw_data: array<u32>;
 @group(0) @binding(1) var<storage, read_write> parsed_tensors: array<f32>;
@@ -458,16 +458,16 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       // Sort results
       results.sort((a, b) => {
         switch (query.sortBy) {
-          case 'performance':
+          case: 'performance':
             return (
               (a.metadata.averageExecutionTime || Number.MAX_VALUE) -
               (b.metadata.averageExecutionTime || Number.MAX_VALUE)
             );
-          case 'usage':
+          case: 'usage':
             return b.metadata.usageCount - a.metadata.usageCount;
-          case 'recent':
+          case: 'recent':
             return b.metadata.lastUsed - a.metadata.lastUsed;
-          case 'relevance':
+          case: 'relevance':
           default:
             return (b.relevanceScore || 0) - (a.relevanceScore || 0);
         }

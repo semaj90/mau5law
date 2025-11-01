@@ -144,7 +144,7 @@
 
       <!-- Replaced ButtonBits with native button -->
       <button
-        on:click={() => loadDashboard()}
+        on:click={($event: any) => ($event: any) => () => loadDashboard()}
         disabled={isLoading || refreshing}
         class="btn-outline btn-sm"
         aria-busy={isLoading || refreshing}
@@ -167,7 +167,7 @@
       <div class="alert-body">
         <h3 class="font-semibold">Failed to load dashboard</h3>
         <p class="text-sm mt-1">{error}</p>
-        <button on:click={() => loadDashboard()} class="btn-outline btn-sm mt-2">
+        <button on:click={($event: any) => ($event: any) => () => loadDashboard()} class="btn-outline btn-sm mt-2">
           🔄 Try Again
         </button>
       </div>
@@ -390,22 +390,22 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <button on:click={() => window.location.href = '/cases/new'} class="btn h-12 w-full justify-start">
+        <button on:click={($event: any) => ($event: any) => () => window.location.href = '/cases/new'} class="btn h-12 w-full justify-start">
           <span class="mr-2">➕</span>
           New Case
         </button>
 
-        <button on:click={() => window.location.href = '/cases'} class="btn-outline h-12 w-full justify-start">
+        <button on:click={($event: any) => ($event: any) => () => window.location.href = '/cases'} class="btn-outline h-12 w-full justify-start">
           <span class="mr-2">📁</span>
           View All Cases
         </button>
 
-        <button on:click={() => window.location.href = '/todos'} class="btn-outline h-12 w-full justify-start">
+        <button on:click={($event: any) => ($event: any) => () => window.location.href = '/todos'} class="btn-outline h-12 w-full justify-start">
           <span class="mr-2">📝</span>
           My Tasks
         </button>
 
-        <button on:click={() => window.location.href = '/recommendations'} class="btn-outline h-12 w-full justify-start">
+        <button on:click={($event: any) => ($event: any) => () => window.location.href = '/recommendations'} class="btn-outline h-12 w-full justify-start">
           <span class="mr-2">🧠</span>
           AI Insights
         </button>
@@ -504,3 +504,5 @@
     }
   }
 </style>
+
+

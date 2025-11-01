@@ -182,26 +182,26 @@ https://svelte.dev/e/js_parse_error -->
   ];
   function getStatusColor(status: string) {
     switch (status) {
-      case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-      case 'processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
-      case 'review': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
-      case 'final': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-      case 'archived': return 'bg-gray-100 text-gray-600 dark: bg-gray-900 dark:text-gray-400';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+      case: 'draft': return: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+      case: 'processing': return: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case: 'review': return: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case: 'final': return: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case: 'archived': return: 'bg-gray-100 text-gray-600 dark: bg-gray-900 dark:text-gray-400';
+      default: return: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case 'legal_brief': return '📋';
-      case 'contract': return '📝';
-      case 'evidence': return '🔍';
-      case 'report': return '📊';
-      case 'template': return '📄';
-      default: return '📎';
+      case: 'legal_brief': return: '📋';
+      case: 'contract': return: '📝';
+      case: 'evidence': return: '🔍';
+      case: 'report': return: '📊';
+      case: 'template': return: '📄';
+      default: return: '📎';
     }
   }
   function formatFileSize(bytes: number): string {
-    if (!bytes) return '0 B';
+    if (!bytes) return: '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -325,11 +325,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="flex gap-2">
         <!-- fixed: properly closed Button tags and valid onclick handlers -->
-        <Button class="bits-btn" variant="ghost" on:click={() => goto('/legal/documents/templates')}>
+        <Button class="bits-btn" variant="ghost" onclick={() => goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
         </Button>
-        <Button class="bits-btn" on:click={() => (showUploadDialog = true)}>
+        <Button class="bits-btn" onclick={() => (showUploadDialog = true)}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
         </Button>
@@ -360,6 +360,10 @@ https://svelte.dev/e/js_parse_error -->
           <div.Title class="text-sm font-medium">Completed</div.Title>
           <CheckCircle class="h-4 w-4 text-green-500" />
         </div.Header>
+        <div.Content>
+          <div class="text-2xl font-bold text-green-600">{documentStats.completed}</div>
+        </div>
+      </div>
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
           <div.Title class="text-sm font-medium">AI Analyzed</div.Title>
@@ -418,28 +422,26 @@ https://svelte.dev/e/js_parse_error -->
           <span class="nes-text is-disabled">Loading documents...</span>
         </div>
       </div>
-    {:else if filteredDocuments.length === 0}
+    {:else if documents.length === 0}
       <div.Root>
         <div.Content class="flex flex-col items-center justify-center py-12">
           <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
           <h3 class="text-lg font-semibold mb-2">
             {searchQuery || statusFilter !== 'all' || typeFilter !== 'all'
               ? 'No documents found matching your filters'
-              : 'No documents found'
-            }
+              : 'No documents found'}
           </h3>
           <p class="nes-text is-disabled mb-4">
             {documents.length === 0
               ? 'Upload your first document to get started with AI-powered analysis'
-              : 'Try adjusting your search terms or filters'
-            }
+              : 'Try adjusting your search terms or filters'}
           </p>
-          <Button class="bits-btn" onclick={() =>
-showUploadDialog = true}>
+          <Button class="bits-btn" onclick={() => (showUploadDialog = true)}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
-        </div>
-      </div>
+          </Button>
+        </div.Content>
+      </div.Root>
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {#each filteredDocuments as document}
@@ -464,12 +466,13 @@ showUploadDialog = true}>
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
-{ e.stopPropagation(); editDocument(document), }}>
+                  <!-- Document card actions: ensure Button tags are closed and handlers stop propagation properly -->
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
-                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
-{ e.stopPropagation(); deleteDocument(document), }}>
+                  </Button>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             </div.Header>
@@ -542,9 +545,9 @@ showUploadDialog = true}>
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm nes-text is-disabled">{formatFileSize(uploadFile.size)}</p>
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-uploadFile = null}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (uploadFile = null)}>
                 Remove
+              </Button>
             </div>
           {:else}
             <div class="space-y-2">
@@ -615,17 +618,19 @@ uploadFile = null}>
         </div>
       {/if}
     </div>
+    <!-- Upload dialog footer: fixed closing tags and onclick handlers -->
     <Dialog.Footer>
-      <Button class="bits-btn" variant="ghost" onclick={() =>
-{ showUploadDialog = false; resetUploadForm(), }}>
+      <Button class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
+      </Button>
       <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
-{#if uploading}
+        {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
         {:else}
           <Upload class="h-4 w-4 mr-2" />
         {/if}
         Upload Document
+      </Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -728,14 +733,15 @@ uploadFile = null}>
           </div>
         {/if}
       </div>
+      <!-- AI Analysis Dialog footer: fixed closing tags -->
       <Dialog.Footer>
-        <Button class="bits-btn" variant="ghost" onclick={() =>
-showAIAnalysisDialog = false}>
+        <Button class="bits-btn" variant="ghost" onclick={() => (showAIAnalysisDialog = false)}>
           Close
-        <Button class="bits-btn" onclick={() =>
-editDocument(selectedDocument)}>
+        </Button>
+        <Button class="bits-btn" onclick={() => editDocument(selectedDocument!)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
+        </Button>
       </Dialog.Footer>
     {/if}
   </Dialog.Content>

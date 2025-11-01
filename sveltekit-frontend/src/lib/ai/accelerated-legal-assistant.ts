@@ -250,7 +250,7 @@ export class AcceleratedLegalAssistant {
         recommendations.push({
           type: 'risk_assessment',
           confidence: 1.0 - riskMatch.riskAssessment,
-          description: `Risk factor identified in "${document.title}" - requires attention`,
+          description: `Risk factor identified in: "${document.title}" - requires attention`,
           documentId: document.id,
           relevanceScore: riskMatch.similarity,
           legalImplications: [

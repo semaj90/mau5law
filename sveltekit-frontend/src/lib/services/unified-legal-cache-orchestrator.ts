@@ -205,7 +205,7 @@ export class UnifiedLegalCacheOrchestrator {
         this.stats.retrieval.hits++;
         l1Result.hitCount++;
         const duration = performance.now() - startTime;
-        console.log(`🎯 L1 Cache HIT for query "${query}" (${duration.toFixed(2)}ms)`);
+        console.log(`🎯 L1 Cache HIT for query: "${query}" (${duration.toFixed(2)}ms)`);
         return this.reconstructRAGResponse(l1Result);
       }
 
@@ -226,14 +226,14 @@ export class UnifiedLegalCacheOrchestrator {
         };
         this.retrievalL1.set(cacheKey, promoted);
         const duration = performance.now() - startTime;
-        console.log(`🎮 Nintendo Cache HIT for query "${query}" (${duration.toFixed(2)}ms)`);
+        console.log(`🎮 Nintendo Cache HIT for query: "${query}" (${duration.toFixed(2)}ms)`);
         return this.reconstructRAGResponse(promoted);
       }
     }
 
     // Cache miss -> perform vector search and cache
     this.stats.retrieval.misses++;
-    console.log(`❌ Cache MISS for query "${query}" - performing vector search`);
+    console.log(`❌ Cache MISS for query: "${query}" - performing vector search`);
     const retrievalResult = await this.performVectorSearch(query, modelId, options);
 
     const rr = retrievalResult as APIResponse;
@@ -256,7 +256,7 @@ export class UnifiedLegalCacheOrchestrator {
 
     await this.storeCachedRetrieval(cacheKey, cachedRetrieval, priority);
     const duration = performance.now() - startTime;
-    console.log(`💾 Cached new retrieval result for "${query}" (${duration.toFixed(2)}ms)`);
+    console.log(`💾 Cached new retrieval result for: "${query}" (${duration.toFixed(2)}ms)`);
     this.updateCacheStats();
     return retrievalResult;
   }
@@ -533,7 +533,7 @@ export class UnifiedLegalCacheOrchestrator {
     for (let i = 0; i < Math.min(3, maxResults); i++) {
       chunks.push({
         id: `${baseHash}-${i}`,
-        content: `Placeholder content for "${query}" (chunk ${i})`,
+        content: `Placeholder content for: "${query}" (chunk ${i})`,
         similarity: Math.max(0, 1 - i * 0.2) >= similarityThreshold ? Math.max(0, 1 - i * 0.2) : 0,
       });
     }

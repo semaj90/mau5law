@@ -54,7 +54,7 @@ export const sidebar = writable({
 // Animation preferences
 export const motion = writable({
   reduceMotion: false,
-  duration: "normal" as "fast" | "normal" | "slow",
+  duration: "normal" as: "fast" | "normal" | "slow",
   spring: true
 });
 // Component state

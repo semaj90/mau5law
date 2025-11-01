@@ -541,7 +541,7 @@ function getPathHref(route: RouteDefinition | GeneratedRoute): { path?: string; 
 
 function getRouteCategory(route: RouteDefinition | GeneratedRoute): string {
   const r = route as unknown as Record<string, unknown>;
-  // prefer explicit 'category' property if present
+  // prefer explicit: 'category' property if present
   if ('category' in route) {
     const c = asString(r['category']);
     if (c) return c;

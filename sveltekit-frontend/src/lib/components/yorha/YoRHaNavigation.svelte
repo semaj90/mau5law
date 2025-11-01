@@ -58,16 +58,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getSectionIcon(sectionId: string): string {
     switch (sectionId) {
-      case 'main': return '⚡';
-      case 'demo': return '🎯';
-      case 'admin': return '⚙️';
+      case: 'main': return: '⚡';
+      case: 'demo': return: '🎯';
+      case: 'admin': return: '⚙️';
     }
   }
   function getSectionTitle(sectionId: string): string {
     switch (sectionId) {
-      case 'main': return 'CORE OPERATIONS';
-      case 'demo': return 'AI DEMONSTRATIONS';
-      case 'admin': return 'SYSTEM ADMINISTRATION';
+      case: 'main': return: 'CORE OPERATIONS';
+      case: 'demo': return: 'AI DEMONSTRATIONS';
+      case: 'admin': return: 'SYSTEM ADMINISTRATION';
     }
   }
   // Auto-scroll to active route

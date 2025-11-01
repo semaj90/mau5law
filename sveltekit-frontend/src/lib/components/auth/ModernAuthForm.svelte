@@ -93,12 +93,12 @@
     <!--
     NOTE: Using the non-standard 'onsubmit' attribute intentionally for Svelte 5 runes compatibility.
     See: https://github.com/sveltejs/rfcs/blob/main/text/0127-runes.md and Svelte 5 migration docs.
-    If migrating to a different event system or reverting to idiomatic Svelte, use 'onsubmit={handleSubmit}' instead.
+    If migrating to a different event system or reverting to idiomatic Svelte, use: 'onsubmit={handleSubmit}' instead.
     This workaround is required for compatibility with the current runes-based event handling.
 
     MIGRATION INSTRUCTIon
     - If you are upgrading away from Svelte 5 runes or restoring standard Svelte event handling,
-      replace 'onsubmit={handleSubmit}' with 'onsubmit={handleSubmit}' below.
+      replace: 'onsubmit={handleSubmit}' with: 'onsubmit={handleSubmit}' below.
   -->
     <form onsubmit={handleSubmit} class="space-y-4 mt-4">
       {#if success}

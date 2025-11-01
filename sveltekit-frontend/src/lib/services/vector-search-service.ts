@@ -598,13 +598,13 @@ class VectorSearchService {
     hybridWeight: number;
   ): number {
     switch (strategy) {
-      case 'semantic':
+      case: 'semantic':
         return (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore;
-      case 'bm25':
+      case: 'bm25':
         return (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore;
-      case 'neural':
+      case: 'neural':
         return ((result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore + (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).textScore) / 2;
-      case 'hybrid':
+      case: 'hybrid':
       default:
         return (
           (weights.semantic || 0.4) * (result as { id?: any; title?: any; description?: any; aiSummary?: any; evidenceType?: any; caseId?: any; tags?: any; similarity?: any; createdAt?: any; fileSize?: any; mimeType?: any; updatedAt?: any; item?: any; score?: any; textScore?: any; highlights?: any; reasoning?: any; semanticScore?: any; recencyScore?: any; confidenceScore?: any; aiAnalysis?: any }).semanticScore +
@@ -722,7 +722,7 @@ class VectorSearchService {
   private async expandQuery(query: string): Promise<string[]> {
     try {
       // Use AI to generate query expansions
-      const expansionPrompt = `,Given the search query "${query}", suggest, 3-,5 related search terms or phrases that might help find relevant legal documents. Foc,us on synonyms, rela,ted legal concepts, and alternative phrasings. Re,turn only the terms, one per line.`;
+      const expansionPrompt = `,Given the search query: "${query}", suggest, 3-,5 related search terms or phrases that might help find relevant legal documents. Foc,us on synonyms, rela,ted legal concepts, and alternative phrasings. Re,turn only the terms, one per line.`;
       // removed unused response assignment
         new SystemMessage('You are a legal research assistant helping with search query expansion.)'),
         new HumanMessage(expansionPrompt);

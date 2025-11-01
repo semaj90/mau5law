@@ -250,7 +250,7 @@ Features: Case management, evidence upload, AI chat, vector search
           <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
               <Input bind:value={searchQuery} placeholder="Search evidence, cases, precedents..." class="flex-1" />
-              <!-- moved classes to wrapper span to avoid passing unknown 'class' prop to Button -->
+              <!-- moved classes to wrapper span to avoid passing unknown: 'class' prop to Button -->
               <span class="bits-btn">
                 <Button onclick={performVectorSearch} disabled={!searchQuery.trim()}>
                   <Search class="w-4 h-4" />

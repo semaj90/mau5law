@@ -213,7 +213,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
     });
     return new Response(stream, { headers });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     console.error('Streaming endpoint error:', msg);
     return new Response(

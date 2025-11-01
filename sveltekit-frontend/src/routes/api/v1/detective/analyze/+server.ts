@@ -204,14 +204,14 @@ function getUserId(locals: ServiceLocals): string {
   // prefer explicit user.id, fallback to session userId, otherwise return a stable placeholder
   if (locals?.user && typeof locals.user.id === 'string') return locals.user.id;
   if (locals?.session && typeof locals.session.userId === 'string') return locals.session.userId;
-  // last resort: stringified user object or 'unknown'
+  // last resort: stringified user object or: 'unknown'
   try {
     if (locals?.user) return String(locals.user.id ?? JSON.stringify(locals.user));
   } catch (err) {
     // avoid empty catch - log for diagnostics
     console.warn('getUserId: failed to stringify locals.user', err);
   }
-  return 'unknown';
+  return: 'unknown';
 }
 /*
  * Perform comprehensive detective analysis
@@ -236,7 +236,7 @@ async function performDetectiveAnalysis(
   };
 
   try {
-    // mark case reference to avoid "declared but never used"
+    // mark case reference to avoid: "declared but never used"
     if (caseData?.id) {
       (analysis as Record<string, unknown>).caseId = caseData.id;
     }

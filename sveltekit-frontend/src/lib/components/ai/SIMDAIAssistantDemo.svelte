@@ -181,27 +181,27 @@
 
   function getStateColor(s: string) {
     switch (s) {
-      case 'idle': return 'bg-green-500';
-      case 'processing': return 'bg-yellow-500';
-      case 'streaming': return 'bg-blue-500';
-      case 'error': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case: 'idle': return: 'bg-green-500';
+      case: 'processing': return: 'bg-yellow-500';
+      case: 'streaming': return: 'bg-blue-500';
+      case: 'error': return: 'bg-red-500';
+      default: return: 'bg-gray-500';
     }
   }
 
   function getCompressionColor(ratio: number) {
-    if (ratio > 100) return 'text-purple-600 font-bold';
-    if (ratio > 50) return 'text-green-600 font-bold';
-    if (ratio > 25) return 'text-blue-600 font-semibold';
-    return 'text-orange-600';
+    if (ratio > 100) return: 'text-purple-600 font-bold';
+    if (ratio > 50) return: 'text-green-600 font-bold';
+    if (ratio > 25) return: 'text-blue-600 font-semibold';
+    return: 'text-orange-600';
   }
 
   function getQualityBadgeColor(tier: string) {
     switch (tier) {
-      case 'nes': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'snes': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'n64': return 'bg-purple-100 text-purple-800 border-purple-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case: 'nes': return: 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case: 'snes': return: 'bg-blue-100 text-blue-800 border-blue-300';
+      case: 'n64': return: 'bg-purple-100 text-purple-800 border-purple-300';
+      default: return: 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
 
@@ -312,7 +312,7 @@
         </div>
 
         <div class="flex items-end">
-          <Button on:click={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
+          <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
             {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
           </Button>
         </div>
@@ -327,10 +327,10 @@
             placeholder="Enter your legal AI query..."
             class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={isProcessing}
-            on:keydown={(e) => e.key === 'Enter' && submitQuery()}
+            onkeydown={(e) => e.key === 'Enter' && submitQuery()}
           />
           <Button
-            on:click={submitQuery}
+            onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class={isProcessing ? 'processing' : ''}
           >
@@ -341,11 +341,11 @@
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
-            <Button class="bits-btn text-xs" on:click={() => loadSampleQuery(index)} variant="ghost" size="sm" disabled={isProcessing}>
+            <Button class="bits-btn text-xs" onclick={() => loadSampleQuery(index)} variant="ghost" size="sm" disabled={isProcessing}>
               Sample {index + 1}
             </Button>
           {/each}
-          <Button class="bits-btn" on:click={clearConversation} variant="ghost" size="sm">Clear All</Button>
+          <Button class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">Clear All</Button>
         </div>
       </div>
     </div>
@@ -510,7 +510,7 @@
     <div class="nes-container">
       <div class="yorha-panel-header flex justify-between items-center">
         <h3 class="nes-text is-primary">📝 System Logs</h3>
-        <Button class="bits-btn" on:click={() => (processingLogs = [])} variant="ghost" size="sm">Clear Logs</Button>
+        <Button class="bits-btn" onclick={() => (processingLogs = [])} variant="ghost" size="sm">Clear Logs</Button>
       </div>
       <div class="yorha-panel-content">
         <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-xs max-h-48 overflow-y-auto">

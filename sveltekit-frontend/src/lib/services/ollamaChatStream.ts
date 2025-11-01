@@ -303,7 +303,7 @@ Please provide a detailed, professional response based on the context and your l
         limit: 5,
         threshold,
         timeRange: {
-          from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days;
+          from new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days;
           to: new Date()
         },
         includeRecentBias: true,
@@ -465,9 +465,9 @@ Please provide a detailed, professional response based on the context and your l
       (factors.sentences > 15 ? 2 : factors.sentences > 8 ? 1 : 0) +
       (factors.legalTerms > 8 ? 2 : factors.legalTerms > 4 ? 1 : 0) +
       (factors.citations > 3 ? 2 : factors.citations > 1 ? 1 : 0);
-    if (complexityScore >= 6) return 'high';
-    if (complexityScore >= 3) return 'medium';
-    return 'low';
+    if (complexityScore >= 6) return: 'high';
+    if (complexityScore >= 3) return: 'medium';
+    return: 'low';
   }
 }
 // Export the main function for backwards compatibility

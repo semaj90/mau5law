@@ -22,11 +22,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate inputs
     if (!content || typeof content !== 'string') {
-      throw error(400, 'Invalid or missing "content" field');
+      throw error(400, 'Invalid or missing: "content" field');
     }
 
     if (!metadata || typeof metadata !== 'object') {
-      throw error(400, 'Invalid or missing "metadata" field');
+      throw error(400, 'Invalid or missing: "metadata" field');
     }
 
     // Convert base64 file to Buffer if provided
@@ -75,7 +75,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { documents, batchSize = 10 } = body;
 
     if (!Array.isArray(documents) || documents.length === 0) {
-      throw error(400, 'Invalid or missing "documents" array');
+      throw error(400, 'Invalid or missing: "documents" array');
     }
 
     // Convert files if provided

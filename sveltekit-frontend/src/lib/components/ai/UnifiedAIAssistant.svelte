@@ -142,14 +142,14 @@
         webgpuBridge.onmessage = event => {
           const { type, data } = event.data;
           switch (type) {
-            case 'init-complete':
+            case: 'init-complete':
               aiBackends.webgpu.initialized = !!(data && (data as { success?: any }).success);
               aiBackends.webgpu.status = data && (data as { success?: any }).success ? 'ready' : 'error';
               break;
-            case 'task-complete':
+            case: 'task-complete':
               handleWebGPUTaskComplete(data);
               break;
-            case 'error':
+            case: 'error':
               console.error('WebGPU worker error:', data);
               break;
           }
@@ -267,7 +267,7 @@
     // Add recent conversation context
     const recentMessages = messages.slice(-5);
     if (recentMessages.length > 0) {
-      contextPrompt += 'Recent conversation ';
+      contextPrompt += 'Recent conversation: ';
       contextPrompt += recentMessages.map((m: any) => m?.content ?? String(m)).join(' | ') + ' | ';
     }
     contextPrompt += `User question ${message}`;
@@ -292,13 +292,13 @@
 
   async function useSpecificBackend(context: string, backend: string): Promise<any> {
     switch (backend) {
-      case 'vllm':
+      case: 'vllm':
         return await processWithVLLM(context);
-      case 'ollama':
+      case: 'ollama':
         return await processWithOllama(context);
-      case 'webasm':
+      case: 'webasm':
         return await processWithWebASM(context);
-      case 'goMicroservice':
+      case: 'goMicroservice':
         return await processWithGoMicroservice(context);
       default:
         throw new Error(`Unknown backend: ${backend}`);
@@ -538,11 +538,11 @@
               >Go µS</span
             >
           </div>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={exportConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
             <Download class="w-4 h-4 mr-1" />
             Export
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
             <Square class="w-4 h-4 mr-1" />
             Clear
           </Button>
@@ -652,9 +652,9 @@
           <Input
             bind:this={messageInput}
             value={currentMessage}
-            on:input={(e: Event) => (currentMessage = (e.target as HTMLInputElement).value)}
+            oninput={(e: Event) => (currentMessage = (e.target as HTMLInputElement).value)}
             placeholder="Ask about your case, evidence, or legal questions..."
-            on:keydown={handleKeyPress}
+            onkeydown={handleKeyPress}
             disabled={readonly || isProcessing}
             class="pr-12"
           />
@@ -662,7 +662,7 @@
             <Button
               variant="ghost"
               size="sm"
-              on:click={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
+              onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
               class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
               disabled={readonly}
             >
@@ -674,7 +674,7 @@
             </Button>
           {/if}
         </div>
-        <Button class="bits-btn" on:click={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
+        <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
           <Send class="w-4 h-4 mr-1" />
           Send
         </Button>
@@ -685,7 +685,7 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (currentMessage = 'Analyze the evidence in this case')}
+          onclick={() => (currentMessage = 'Analyze the evidence in this case')}
         >
           🔍 Analyze Evidence
         </Button>
@@ -693,18 +693,18 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (currentMessage = 'What are the key legal issues?')}
+          onclick={() => (currentMessage = 'What are the key legal issues?')}
         >
           ⚖️ Legal Issues
         </Button>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (currentMessage = 'Generate a case summary')}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (currentMessage = 'Generate a case summary')}>
           📋 Case Summary
         </Button>
         <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (currentMessage = 'Find relevant precedents')}
+          onclick={() => (currentMessage = 'Find relevant precedents')}
         >
           📚 Find Precedents
         </Button>

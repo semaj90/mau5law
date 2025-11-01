@@ -164,13 +164,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const bypassCache = url.searchParams.get('bypass-cache') === 'true';
     // Validate RAG request
     if (!ragRequest.query || ragRequest.query.trim().length === 0) {
-      error(400, ensureError({ message: 'Query is required and cannot be empty' })); // Added '))'
+      error(400, ensureError({ message: 'Query is required and cannot be empty' })); // Added: '))'
     }
     if (ragRequest.maxResults && (ragRequest.maxResults < 1 || ragRequest.maxResults > 100)) {
-      error(400, ensureError({ message: 'Max results must be between 1 and 100' })); // Added '))'
+      error(400, ensureError({ message: 'Max results must be between 1 and 100' })); // Added: '))'
     }
     if (ragRequest.threshold && (ragRequest.threshold < 0 || ragRequest.threshold > 1)) {
-      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added '))'
+      error(400, ensureError({ message: 'Threshold must be between 0 and 1' })); // Added: '))'
     }
     // Placeholder: Enhanced RAG go client is not available; use HTTP path or future client
     // Prepare request payload for Go service
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       },
     };
     // Generate ETag for caching
-    const requestHash = await generateRequestHash(JSON.stringify(requestPayload)); // Added ')'
+    const requestHash = await generateRequestHash(JSON.stringify(requestPayload)); // Added: ')'
     let response: Response;
     let protocol: string;
     try {
@@ -278,7 +278,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     // Validate document
     if (!document.id || !document.content) {
-      error(400, ensureError({ message: 'Document ID and content are required' })); // Added '))'
+      error(400, ensureError({ message: 'Document ID and content are required' })); // Added: '))'
     }
     const targetUrl = useHttp3
       ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/documents`
@@ -321,7 +321,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const documentId = url.searchParams.get('documentId');
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     if (!documentId) {
-      error(400, ensureError({ message: 'Document ID is required' })); // Added '))'
+      error(400, ensureError({ message: 'Document ID is required' })); // Added: '))'
     }
     const targetUrl = useHttp3
       ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/documents/${documentId}`
@@ -361,6 +361,6 @@ async function generateRequestHash(content: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(content);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer)); // Added ')'
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // Added: ')'
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }

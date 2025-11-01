@@ -248,10 +248,10 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   );
   // Status computed state
   const status = $derived(() => {
-    if (error) return 'error';
-    if (!isInitialized) return 'uninitialized';
-    if (isLoading) return 'loading';
-    return 'ready';
+    if (error) return: 'error';
+    if (!isInitialized) return: 'uninitialized';
+    if (isLoading) return: 'loading';
+    return: 'ready';
   });
   return {
     // State

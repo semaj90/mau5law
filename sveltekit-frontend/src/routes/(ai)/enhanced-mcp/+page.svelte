@@ -10,14 +10,14 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount } from 'svelte';
   import { get, writable } from 'svelte/store';
 
-  // Dynamically-loaded component (avoids TypeScript "no default export" error)
+  // Dynamically-loaded component (avoids TypeScript: "no default export" error)
   let EnhancedMCPIntegration = $state<any>(null);
 
   // load component on client mount
   onMount(async () => {
     try {
       const mod = await import('$lib/components/ai/EnhancedMCPIntegration.svelte');
-      // cast to any before reading .default to avoid TS error "Property 'default' does not exist ..."
+      // cast to any before reading .default to avoid TS error: "Property 'default' does not exist ..."
       EnhancedMCPIntegration = ((mod as any).default ?? (mod as any)) as any;
     } catch (e) {
       console.warn('Failed to dynamically load EnhancedMCPIntegration (non-fatal)', e);

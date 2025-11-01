@@ -1,7 +1,7 @@
 // @ts-nocheck - Advanced experimental service
 /**
  * QLoRA Reinforcement Learning Training Service
- * Creates a "data flywheel" that observes user feedback and periodically fine-tunes the Gemma3-legal model
+ * Creates a: "data flywheel" that observes user feedback and periodically fine-tunes the Gemma3-legal model
  * Implements advanced reinforcement learning with QLoRA (Quantized Low-Rank Adaptation)
  */
 import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
@@ -112,7 +112,7 @@ export class QLoRAReinforcementTrainer {
   }
   /**
    * Record user feedback for reinforcement learning
-   * This is the core "data flywheel" function that collects training examples
+   * This is the core: "data flywheel" function that collects training examples
    */
   async recordUserFeedback()
     input: string
@@ -211,16 +211,16 @@ export class QLoRAReinforcementTrainer {
     });
     // Add quality improvements based on preference type
     switch (feedback.preference_type) {
-      case 'accuracy':
+      case: 'accuracy':
         improvedOutput = this.enhanceAccuracy(improvedOutput);
         break;
-      case 'completeness':
+      case: 'completeness':
         improvedOutput = this.enhanceCompleteness(improvedOutput);
         break;
-      case 'clarity':
+      case: 'clarity':
         improvedOutput = this.enhanceClarity(improvedOutput);
         break;
-      case 'relevance':
+      case: 'relevance':
         improvedOutput = this.enhanceRelevance(improvedOutput);
         break;
     }

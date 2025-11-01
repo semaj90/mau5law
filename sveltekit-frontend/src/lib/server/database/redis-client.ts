@@ -70,7 +70,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
       console.log('🔴 Redis connection closed');
     });
 
-    // test ping - returns 'PONG' on success
+    // test ping - returns: 'PONG' on success
     await (instance as unknown as { ping?: () => Promise<string> }).ping?.();
     redis = instance as unknown as IORedisClient; // Assign to the module's shared instance
     return redis;
@@ -119,7 +119,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
   // For custom clients we can still construct a new ioredis instance, but
   // prefer delegating to createRedisInstance when no custom config is needed.
   if (Object.keys(customConfig).length === 0) {
-    // If no custom config, return the module's managed 'redis' instance (if available)
+    // If no custom config, return the module's managed: 'redis' instance (if available)
     // or create a new one with default config.
     return redis || (createRedisConnection() as unknown as IORedisClient);
   }

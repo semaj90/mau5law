@@ -200,7 +200,7 @@
       }
       const result = await response.json();
       if (result.success) {
-        alert(`✅ Action "${action.action}" has been initiated.`);
+        alert(`✅ Action: "${action.action}" has been initiated.`);
       } else {
         throw new Error(result.error || 'Action execution failed');
       }
@@ -215,7 +215,7 @@
       setTimeout(() => notice.remove(), 3000);
       // Mock success - simulate action execution
       await new Promise(resolve => setTimeout(resolve, 800));
-      alert(`✅ Mock: Action "${action.action}" simulated successfully.`);
+      alert(`✅ Mock: Action: "${action.action}" simulated successfully.`);
     } finally {
       isProcessing = false;
     }
@@ -223,18 +223,18 @@
 
   function getTypeIcon(type: AIRecommendation['type']): string {
     switch (type) {
-      case 'case':
-        return '⚖️';
-      case 'document':
-        return '📄';
-      case 'search':
-        return '🔍';
-      case 'workflow':
-        return '⚡';
-      case 'precedent':
-        return '📚';
+      case: 'case':
+        return: '⚖️';
+      case: 'document':
+        return: '📄';
+      case: 'search':
+        return: '🔍';
+      case: 'workflow':
+        return: '⚡';
+      case: 'precedent':
+        return: '📚';
       default:
-        return '🤖';
+        return: '🤖';
     }
   }
 
@@ -258,13 +258,13 @@
   function getActionPriorityColor(priority: AIAction['priority']): string {
     const palette = getCurrentPalette();
     switch (priority) {
-      case 'critical':
+      case: 'critical':
         return palette.colors?.error ?? '#e53e3e';
-      case 'high':
+      case: 'high':
         return palette.colors?.warning ?? '#dd6b20';
-      case 'medium':
+      case: 'medium':
         return palette.colors?.accent?.[1] ?? '#4a90e2';
-      case 'low':
+      case: 'low':
         return palette.colors?.accent?.[2] ?? '#9f7aea';
       default:
         return palette.colors?.primary ?? '#6b7280';
@@ -282,7 +282,7 @@
           <button
             class="type-btn"
             class:active={selectedType === analysisType.value}
-            on:click={() => (selectedType = analysisType.value)}
+            onclick={() => (selectedType = analysisType.value)}
             title={analysisType.description}
           >
             {analysisType.label}
@@ -297,7 +297,7 @@
           bind:value={customQuery}
           class="query-input"
         />
-        <button class="analyze-btn" on:click={generateRecommendations} disabled={isLoading || isThinking}>
+        <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
           {isLoading || isThinking ? '🤖 Analyzing...' : '🚀 Analyze'}
         </button>
       </div>
@@ -426,7 +426,7 @@
                     </div>
                   {/if}
 
-                  <button class="execute-btn" on:click={() => executeAction(action)} disabled={isProcessing}>
+                  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
                     {isProcessing ? '⏳ Processing...' : '🚀 Execute'}
                   </button>
                 </div>
@@ -441,7 +441,7 @@
             <h4>🔗 Related Topics</h4>
             <div class="topics-tags">
               {#each relatedTopics as topic}
-                <button class="topic-tag" on:click={() => (customQuery = topic)}>
+                <button class="topic-tag" onclick={() => (customQuery = topic)}>
                   {topic}
                 </button>
               {/each}
@@ -456,7 +456,7 @@
       <div class="empty-state">
         <div class="empty-icon">🤖</div>
         <h3>AI Assistant Ready</h3>
-        <p>Select an analysis type and click "Analyze" to get AI-powered legal recommendations</p>
+        <p>Select an analysis type and click: "Analyze" to get AI-powered legal recommendations</p>
       </div>
     {/if}
   </div>

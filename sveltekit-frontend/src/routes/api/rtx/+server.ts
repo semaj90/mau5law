@@ -28,15 +28,15 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case 'status':
+      case: 'status':
         return await handleStatusRequest();
-      case 'benchmark':
+      case: 'benchmark':
         return await handleBenchmarkRequest();
-      case 'pipeline':
+      case: 'pipeline':
         return await handlePipelineRequest();
-      case 'health':
+      case: 'health':
         return await handleHealthRequest();
-      case 'metrics':
+      case: 'metrics':
         return await handleMetricsRequest();
       default:
         return json(
@@ -63,11 +63,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'process';
   try {
     switch (action) {
-      case 'process':
+      case: 'process':
         return await handleProcessRequest(request);
-      case 'configure':
+      case: 'configure':
         return await handleConfigureRequest(request);
-      case 'benchmark-run':
+      case: 'benchmark-run':
         return await handleRunBenchmarkRequest(request);
       default:
         return json(
@@ -146,7 +146,7 @@ function getNumericMetric(metrics: Record<string, unknown>, key: string, fallbac
   return fallback;
 }
 
-// Add a typed result for document processing (replace many 'any' casts)
+// Add a typed result for document processing (replace many: 'any' casts)
 type DocumentProcessingResult = {
   originalSize?: number;
   compressedSize?: number;

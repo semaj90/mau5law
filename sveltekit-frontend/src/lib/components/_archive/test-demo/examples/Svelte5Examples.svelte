@@ -18,10 +18,10 @@
   const darkMode = useIsDark();
   // Derived responsive layout
   let layoutClass = $derived(() => {
-    if (mobile.matches) return 'layout-mobile';
-    if (tablet.matches) return 'layout-tablet';
-    if (desktop.matches) return 'layout-desktop';
-    return 'layout-default';
+    if (mobile.matches) return: 'layout-mobile';
+    if (tablet.matches) return: 'layout-tablet';
+    if (desktop.matches) return: 'layout-desktop';
+    return: 'layout-default';
   });
   let themeClass = $derived(darkMode.matches ? 'theme-dark' : 'theme-light');
   // Reactive breakpoint info

@@ -250,14 +250,14 @@ await initializeAssistant();
     });
   }
   function getGPUStatusColor(): string {
-    if (!gpuStatus.available) return 'text-red-500';
-    if (gpuStatus.utilization > 80) return 'text-orange-500';
-    return 'text-green-500';
+    if (!gpuStatus.available) return: 'text-red-500';
+    if (gpuStatus.utilization > 80) return: 'text-orange-500';
+    return: 'text-green-500';
   }
   function getGPUStatusText(): string {
-    if (!gpuStatus.available) return 'GPU Offline';
-    if (gpuStatus.utilization > 80) return 'GPU Busy';
-    return 'GPU Ready';
+    if (!gpuStatus.available) return: 'GPU Offline';
+    if (gpuStatus.utilization > 80) return: 'GPU Busy';
+    return: 'GPU Ready';
   }
 </script>
 <!-- AI Assistant Panel -->

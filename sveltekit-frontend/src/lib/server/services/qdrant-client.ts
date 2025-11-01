@@ -276,7 +276,7 @@ async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION 
       try {
         await qdrant.createPayloadIndex(collectionName, { field_name: field, field_schema: schema });
       } catch (e) {
-        console.warn(`Failed to create payload index for field '${field}':`, e);
+        console.warn(`Failed to create payload index for field: '${field}':`, e);
       }
     }
     return { ok: true };

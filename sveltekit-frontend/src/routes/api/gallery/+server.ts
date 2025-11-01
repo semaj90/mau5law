@@ -5,7 +5,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit'; // Removed RouteParams
 import { db } from '$lib/server/database';
-import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed 'default as users' to 'users' and renamed to usersTable
+import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed: 'default as users' to: 'users' and renamed to usersTable
 import { eq, desc, asc, and, or, like, count, gte, lte } from 'drizzle-orm';
 
 // Define a type for the selected evidence items
@@ -83,7 +83,7 @@ interface BulkActionPayload {
 }
 
 export const GET: RequestHandler = async ({ url, locals: _locals }) => {
-  // FIXED: Use 'locals' and new RequestHandler type
+  // FIXED: Use: 'locals' and new RequestHandler type
   try {
     // Parse query parameters
     const page = Math.max(1, parseInt(url.searchParams.get('page') || '1')); // Fixed parenthesis
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       userId: url.searchParams.get('userId') || undefined,
       search: url.searchParams.get('search') || undefined,
       tags: url.searchParams.get('tags')?.split(',').filter(Boolean) || undefined,
-      dateFrom: url.searchParams.get('dateFrom') || undefined,
+      datefrom url.searchParams.get('dateFrom') || undefined,
       dateTo: url.searchParams.get('dateTo') || undefined,
       fileTypes: url.searchParams.get('fileTypes')?.split(',').filter(Boolean) || undefined,
       isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined,
@@ -446,18 +446,18 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   }
   // For other file types, return appropriate icons
   if (fileType.includes('pdf')) {
-    return '/icons/pdf-thumbnail.svg';
+    return: '/icons/pdf-thumbnail.svg';
   }
   if (fileType.includes('video')) {
-    return '/icons/video-thumbnail.svg';
+    return: '/icons/video-thumbnail.svg';
   }
   if (fileType.includes('audio')) {
-    return '/icons/audio-thumbnail.svg';
+    return: '/icons/audio-thumbnail.svg';
   }
-  return '/icons/file-thumbnail.svg';
+  return: '/icons/file-thumbnail.svg';
 }
 export const POST: RequestHandler = async ({ request, locals: _locals }) => {
-  // FIXED: Use 'locals' and new RequestHandler type
+  // FIXED: Use: 'locals' and new RequestHandler type
   try {
     const data: BulkActionPayload = await request.json(); // Use the new interface
     // Handle bulk operations like delete, move, tag
@@ -484,12 +484,12 @@ async function handleBulkDelete(ids: string[]) {
   return json({ success: true, deleted: ids.length });
 }
 async function handleBulkTag(ids: string[], _tags: string[]) {
-  // Renamed 'tags' to '_tags'
+  // Renamed: 'tags' to: '_tags'
   // TODO: Implement bulk tagging across different item types
   return json({ success: true, tagged: ids.length });
 }
 async function handleBulkMove(ids: string[], _caseId: string) {
-  // Renamed 'caseId' to '_caseId'
+  // Renamed: 'caseId' to: '_caseId'
   // TODO: Implement bulk move to different case
   return json({ success: true, moved: ids.length });
 }

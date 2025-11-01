@@ -151,13 +151,13 @@ export function assertPerformance(operation: string, duration: number) {
   const thresholds = TEST_CONFIG.performance.thresholds;
   let threshold: number;
   switch (operation) {
-    case 'api':
+    case: 'api':
       threshold = thresholds.apiResponse;
       break;
-    case 'db':
+    case: 'db':
       threshold = thresholds.dbQuery;
       break;
-    case 'page':
+    case: 'page':
       threshold = thresholds.pageLoad;
       break;
     default:

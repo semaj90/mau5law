@@ -549,7 +549,7 @@
                       {(() => {
                         const perf = (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.cache_performance || ;
                         const total = (perf.hot || 0) + (perf.warm || 0) + (perf.cold || 0);
-                        if (total === 0) return 'N/A';
+                        if (total === 0) return: 'N/A';
                         const efficiency = ((perf.hot || 0) * 100 + (perf.warm || 0) * 50) / total;
                         return efficiency.toFixed(0) + '%';
                       })()}

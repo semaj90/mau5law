@@ -227,17 +227,17 @@ export const GET: RequestHandler = async ({ url }) => {
     const searchPromises = categories.map(async category => {
       try {
         switch (category.trim()) {
-          case 'cases':
+          case: 'cases':
             return await searchCases(query, limit, threshold, vectorSearch);
-          case 'evidence':
+          case: 'evidence':
             return await searchEvidence(query, limit, threshold, vectorSearch);
-          case 'criminals':
+          case: 'criminals':
             return await searchCriminals(query, limit, threshold);
-          case 'documents':
+          case: 'documents':
             return await searchDocuments(query, limit, threshold, vectorSearch);
-          case 'precedents':
+          case: 'precedents':
             return await searchPrecedents(query, limit);
-          case 'statutes':
+          case: 'statutes':
             return await searchStatutes(query, limit);
           default:
             return [];
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url }) => {
             );
             return {
               ...result,
-              semanticAnalysis: analysis, // Added missing ','
+              semanticAnalysis: analysis, // Added missing: ','
               confidence: analysis.confidence || result.score,
             };
           } catch (error: any) {
@@ -358,23 +358,23 @@ export const GET: RequestHandler = async ({ url }) => {
     // Enhanced response with legal AI platform optimization
     return json({
       success: true,
-      results: enhancedResults, // Added missing ','
+      results: enhancedResults, // Added missing: ','
       metadata: {
         query,
         categories,
         totalResults: enhancedResults.length,
         processingTime,
-        vectorSearchUsed: vectorSearch, // Added missing ','
-        aiEnhanced: aiSuggestions, // Added missing ','
+        vectorSearchUsed: vectorSearch, // Added missing: ','
+        aiEnhanced: aiSuggestions, // Added missing: ','
         searchStrategy: vectorSearch ? 'hybrid_vector_semantic' : 'semantic_only',
         confidence:
           enhancedResults.length > 0
             ? enhancedResults.reduce((sum, r) => sum + (r.score || 0), 0) / enhancedResults.length
             : 0,
         servicesUsed: {
-          enhancedRAG: true, // Added missing ','
+          enhancedRAG: true, // Added missing: ','
           uploadService: categories.includes('documents'),
-          vectorDB: vectorSearch, // Added missing ','
+          vectorDB: vectorSearch, // Added missing: ','
           semanticAnalysis: aiSuggestions,
           legalDocumentAnalyzer: legalAnalysis,
         },
@@ -426,7 +426,7 @@ async function searchCases(
       entityType: 'cases',
       limit,
       threshold,
-      includeRelatedEntities: true, // Added missing ','
+      includeRelatedEntities: true, // Added missing: ','
       legalContext: {
         jurisdiction: 'all',
         practiceAreas: ['criminal', 'civil', 'constitutional', 'commercial'],
@@ -452,7 +452,7 @@ async function searchCases(
       : processedResults;
 
     return mergedResults.slice(0, limit).map((result: any) => ({
-      // Removed extra ','
+      // Removed extra: ','
       id: result.id || `case-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: result.title || result.caseName || `Case: ${query}`,
       type: 'case' as const,
@@ -497,7 +497,7 @@ async function searchEvidence(
       entityType: 'evidence',
       limit,
       threshold,
-      forensicAnalysis: true, // Added missing ','
+      forensicAnalysis: true, // Added missing: ','
       evidenceTypes: ['physical', 'digital', 'documentary', 'testimonial', 'forensic'],
       chainOfCustody: true,
     });
@@ -542,7 +542,7 @@ async function searchEvidence(
     const finalResults = vectorSearch ? await mergeWithVectorResults(allEvidence, vectorResults) : allEvidence;
 
     return finalResults.slice(0, limit).map((result: any) => ({
-      // Removed extra ','
+      // Removed extra: ','
       id: result.id || `evidence-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: result.title || result.evidenceName || `Evidence: ${query}`,
       type: 'evidence' as const,
@@ -584,16 +584,16 @@ async function searchCriminals(query: string, limit: number, threshold: number):
       entityType: 'persons',
       limit,
       threshold,
-      includeAliases: true, // Added missing ','
-      includeCriminalHistory: true, // Added missing ','
-      riskAssessment: true, // Added missing ','
+      includeAliases: true, // Added missing: ','
+      includeCriminalHistory: true, // Added missing: ','
+      riskAssessment: true, // Added missing: ','
       backgroundCheck: true,
     });
 
     const processedResults = await processRAGResults(ragResults, 'criminal');
 
     return processedResults.slice(0, limit).map((result: any) => ({
-      // Removed extra ','
+      // Removed extra: ','
       id: result.id || `person-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: result.fullName || `${result.firstName || ''} ${result.lastName || ''}`.trim() || `Person: ${query}`,
       type: 'criminal' as const,
@@ -639,7 +639,7 @@ async function searchDocuments(
     const documentResults = await serviceClient.documentSearch(query, {
       documentTypes: ['legal-brief', 'court-filing', 'contract', 'motion', 'pleading', 'memorandum'],
       confidentiality: ['public', 'confidential', 'attorney-client'],
-      includeContent: true, // Added missing ','
+      includeContent: true, // Added missing: ','
       includeMetadata: true,
     });
 
@@ -648,8 +648,8 @@ async function searchDocuments(
       entityType: 'documents',
       limit,
       threshold,
-      includeFullText: true, // Added missing ','
-      documentAnalysis: true, // Added missing ','
+      includeFullText: true, // Added missing: ','
+      documentAnalysis: true, // Added missing: ','
       legalCitations: true,
     });
 
@@ -677,7 +677,7 @@ async function searchDocuments(
     const finalResults = vectorSearch ? await mergeWithVectorResults(combinedResults, vectorResults) : combinedResults;
 
     return finalResults.slice(0, limit).map((result: any) => ({
-      // Removed extra ','
+      // Removed extra: ','
       id: result.id || `doc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: result.title || result.documentName || `Document: ${query}`,
       type: 'document' as const,
@@ -719,7 +719,7 @@ async function fallbackDocumentSearch(query: string, limit: number): Promise<Sea
       id: `fallback-document-${Date.now()}`,
       title: `Document Search: ${query}`,
       type: 'document' as const,
-      content: `Fallback search result for documents related to "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for documents related to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
@@ -738,7 +738,7 @@ async function searchPrecedents(query: string, limit: number): Promise<SearchRes
   return [
     {
       id: `precedent-${Date.now()}`,
-      title: `Precedent case for "${query}"`,
+      title: `Precedent case for: "${query}"`,
       type: 'document' as const,
       content: 'Legal precedent analysis would go here...',
       score: 0.8,
@@ -756,7 +756,7 @@ async function searchStatutes(query: string, limit: number): Promise<SearchResul
   return [
     {
       id: `statute-${Date.now()}`,
-      title: `Relevant statute for "${query}"`,
+      title: `Relevant statute for: "${query}"`,
       type: 'document' as const,
       content: 'Statute text and analysis would go here...',
       score: 0.75,
@@ -808,7 +808,7 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
         return {
           ...result,
           score: Math.max(result.score, relevanceScore),
-          highlights: highlights, // Added missing ','
+          highlights: highlights, // Added missing: ','
           aiAnalysis: {
             legalConcepts,
             relevanceExplanation: analysis.explanation,
@@ -818,7 +818,7 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
           // Enhanced metadata with AI insights;
           metadata: {
             ...result.metadata,
-            aiEnhanced: true, // Added missing ','
+            aiEnhanced: true, // Added missing: ','
             relevanceFactors: analysis.relevanceFactors || [],
             practiceAreaMatch: analysis.practiceAreaMatch || 'general',
           },
@@ -841,7 +841,7 @@ async function processRAGResults(ragResults: any, resultType: string): Promise<S
     if (!ragResults || !ragResults.results) return [];
     return ragResults.results.map((result: any) => ({
       ...result,
-      type: resultType, // Added missing ','
+      type: resultType, // Added missing: ','
       ragEnhanced: true,
       confidence: result.confidence || result.score || 0.5,
       processingTimestamp: new Date().toISOString(),
@@ -860,17 +860,17 @@ async function mergeWithVectorResults(primaryResults: SearchResult[], vectorResu
       const exists = primaryResults.some(
         pr =>
           pr.id === vectorResult.id ||
-          (pr.title && vectorResult.title && pr.title.toLowerCase() === vectorResult.title.toLowerCase()) // Added missing ')'
+          (pr.title && vectorResult.title && pr.title.toLowerCase() === vectorResult.title.toLowerCase()) // Added missing: ')'
       );
       if (!exists) {
         merged.push({
           ...vectorResult,
-          vectorEnhanced: true, // Added missing ','
+          vectorEnhanced: true, // Added missing: ','
           score: vectorResult.similarity || vectorResult.score || 0.5,
         });
       }
     });
-    return merged.sort((a, b) => (b.score || 0) - (a.score || 0)); // Added missing ')'
+    return merged.sort((a, b) => (b.score || 0) - (a.score || 0)); // Added missing: ')'
   } catch (error: any) {
     console.warn('Error merging vector results:', error);
     return primaryResults;
@@ -899,7 +899,7 @@ function calculateEnhancedScore(result: SearchResult, query: string): number {
       score += 0.1 * (1 - daysSinceCreation / 30);
     }
   }
-  return Math.min(1.0, Math.max(0, score)); // Added missing ')'
+  return Math.min(1.0, Math.max(0, score)); // Added missing: ')'
 }
 
 function extractPracticeAreas(query: string): string[] {
@@ -924,7 +924,7 @@ function extractPracticeAreas(query: string): string[] {
 }
 
 function calculateUrgencyLevel(results: SearchResult[]): 'low' | 'medium' | 'high' | 'critical' {
-  if (results.length === 0) return 'low';
+  if (results.length === 0) return: 'low';
   const avgScore = results.reduce((sum, r) => sum + r.score, 0) / results.length;
   const hasHighPriorityTerms = results.some(
     r =>
@@ -932,10 +932,10 @@ function calculateUrgencyLevel(results: SearchResult[]): 'low' | 'medium' | 'hig
       r.content.toLowerCase().includes('emergency') ||
       r.metadata.status === 'critical'
   );
-  if (hasHighPriorityTerms || avgScore > 0.9) return 'critical';
-  if (avgScore > 0.7) return 'high';
-  if (avgScore > 0.5) return 'medium';
-  return 'low';
+  if (hasHighPriorityTerms || avgScore > 0.9) return: 'critical';
+  if (avgScore > 0.7) return: 'high';
+  if (avgScore > 0.5) return: 'medium';
+  return: 'low';
 }
 
 function generateRecommendedActions(results: SearchResult[], query: string): string[] {
@@ -971,7 +971,7 @@ function extractHighlights(content: string, query: string): string[] {
     const regex = new RegExp(`(.{0,30}\\b${word}\\b.{0,30})`, 'gi');
     const matches = contentLower.match(regex);
     if (matches) {
-      highlights.push(...matches.slice(0, 2)); // Added missing ')'
+      highlights.push(...matches.slice(0, 2)); // Added missing: ')'
     }
   }
   return Array.from(new Set(highlights)).slice(0, 3); // Remove duplicates and limit
@@ -984,7 +984,7 @@ async function fallbackCaseSearch(query: string, limit: number): Promise<SearchR
       id: `fallback-case-${Date.now()}`,
       title: `Legal Case Search: ${query}`,
       type: 'case' as const,
-      content: `Fallback search result for legal cases related to "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for legal cases related to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
@@ -1002,7 +1002,7 @@ async function fallbackEvidenceSearch(query: string, limit: number): Promise<Sea
       id: `fallback-evidence-${Date.now()}`,
       title: `Evidence Search: ${query}`,
       type: 'evidence' as const,
-      content: `Fallback search result for evidence related to "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for evidence related to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),
@@ -1021,7 +1021,7 @@ async function fallbackPersonSearch(query: string, limit: number): Promise<Searc
       id: `fallback-person-${Date.now()}`,
       title: `Person Search: ${query}`,
       type: 'criminal' as const,
-      content: `Fallback search result for persons related to "${query}". Enhanced search services are currently unavailable.`,
+      content: `Fallback search result for persons related to: "${query}". Enhanced search services are currently unavailable.`,
       score: 0.5,
       metadata: {
         date: new Date().toISOString(),

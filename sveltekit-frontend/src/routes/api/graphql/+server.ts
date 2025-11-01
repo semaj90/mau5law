@@ -4,13 +4,13 @@ import { createSchema, createYoga } from 'graphql-yoga';
 import { qdrant } from '$lib/server/vector/qdrant-service';
 import { langChainOllamaService } from '$lib/ai/langchain-ollama-service';
 import { db } from '$lib/server/db/client'; // Drizzle client
-import { vectors } from '$lib/server/db/schema-postgres'; // Assuming 'vectors' table schema
+import { vectors } from '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
 import { inArray } from 'drizzle-orm'; // Imported inArray from drizzle-orm
 import { sql } from '$lib/server/db/utils'; // Drizzle expressions for query building
 
 // Define the expected return type for mcpContext72GetLibraryDocs
-// The error message suggests that the type 'LibraryDocsResponse' itself is problematic.
-// Removing the alias and directly casting to string[] with an intermediate 'unknown' cast is more robust.
+// The error message suggests that the type: 'LibraryDocsResponse' itself is problematic.
+// Removing the alias and directly casting to string[] with an intermediate: 'unknown' cast is more robust.
 // type LibraryDocsResponse = string[]; // Removed this alias
 
 // Placeholder interfaces for Neo4jContext
@@ -33,7 +33,7 @@ interface Neo4jPathContext extends Neo4jContext {
 // Augment the LangChainOllamaService type to include missing methods
 interface AugmentedLangChainOllamaService {
   generateEmbedding(query: string): Promise<number[]>; // Assuming embedding is an array of numbers
-  ragQuery(question: string): Promise<{ answer: string }>; // Assuming it returns an object with an 'answer' property
+  ragQuery(question: string): Promise<{ answer: string }>; // Assuming it returns an object with an: 'answer' property
 }
 
 // Define type for Qdrant search results
@@ -42,7 +42,7 @@ interface QdrantSearchResultItem {
   payload?: {
     title?: string;
     summary?: string;
-    [key: string]: unknown; // Changed 'any' to 'unknown'
+    [key: string]: unknown; // Changed: 'any' to: 'unknown'
   };
   score: number;
 }
@@ -86,13 +86,13 @@ const typeDefs = /* GraphQL */ `
 const resolvers = {
   Query: {
     recommendations: async (
-      _parent: unknown, // Changed 'any' to 'unknown'
+      _parent: unknown, // Changed: 'any' to: 'unknown'
       {
         query,
         userContext,
         neo4jContext,
         limit = 5,
-      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed 'any' to 'unknown' and added UserContext/Neo4jPathContext
+      }: { query: string; userContext?: UserContext; neo4jContext?: Neo4jPathContext; limit?: number } // Changed: 'any' to: 'unknown' and added UserContext/Neo4jPathContext
     ) => {
       const reranked = await enhancedSearchWithNeo4j(
         query,
@@ -105,7 +105,7 @@ const resolvers = {
       const docs: string[] = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as unknown as string[]; // Simplified type assertion
       return reranked
         .map((result: RecommendationResult) => {
-          let score = result.rerankScore || 0; // Changed 'const' to 'let'
+          let score = result.rerankScore || 0; // Changed: 'const' to: 'let'
           // if (memory.some((m) => m.relatedId === result.id)) score += 1
           if (docs && result.intent && docs.includes(result.intent)) score += 1; // Uncommented and typed
           return {
@@ -121,7 +121,7 @@ const resolvers = {
         .slice(0, limit);
     },
     searchLegalDocs: async (_parent: unknown, { query, topK }: { query: string; topK: number }) => {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       // Use a double assertion to ensure the type is correctly applied
       const embedding = await (langChainOllamaService as unknown as AugmentedLangChainOllamaService).generateEmbedding(
         query
@@ -143,7 +143,7 @@ const resolvers = {
       const qdrantResultsMap = new Map(roughQdrantResults.map(r => [r.id, r]));
 
       // 2. Relational reranking with pgvector using Drizzle ORM
-      // Select only the ID from the 'vectors' table, ordered by cosine distance
+      // Select only the ID from the: 'vectors' table, ordered by cosine distance
       const refinedPgvectorResults = await db
         .select({ id: vectors.id })
         .from(vectors)
@@ -172,7 +172,7 @@ const resolvers = {
       });
     },
     ragQuery: async (_parent: unknown, { question }: { question: string }) => {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       const res = await (langChainOllamaService as AugmentedLangChainOllamaService).ragQuery(question); // Added type assertion
       return res.answer;
     },
@@ -180,7 +180,7 @@ const resolvers = {
 };
 
 const schema = createSchema({ typeDefs, resolvers });
-const yoga = createYoga({ schema }); // Renamed to 'yoga' and consolidated
+const yoga = createYoga({ schema }); // Renamed to: 'yoga' and consolidated
 export const GET = yoga;
 export const POST = yoga;
 export const GET = yoga;

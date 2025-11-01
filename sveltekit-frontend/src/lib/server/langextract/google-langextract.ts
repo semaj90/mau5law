@@ -98,19 +98,15 @@ function extractKeywordsFallback(text: string): string[] {
 
     // Extract common legal terms found in document
     const legalTerms = [
-      // Parties
-      'plaintiff', 'defendant', 'appellant', 'respondent', 'claimant', 'petitioner',
+      // Parties: 'plaintiff', 'defendant', 'appellant', 'respondent', 'claimant', 'petitioner',
       'witness', 'expert', 'counsel', 'attorney', 'judge', 'jury',
-      // Legal concepts
-      'contract', 'agreement', 'liability', 'damages', 'negligence', 'breach',
+      // Legal concepts: 'contract', 'agreement', 'liability', 'damages', 'negligence', 'breach',
       'fraud', 'misrepresentation', 'warranty', 'indemnity', 'arbitration',
       // Court/process
       'court', 'jurisdiction', 'venue', 'appeal', 'trial', 'hearing', 'motion',
       'discovery', 'deposition', 'interrogatory', 'settlement', 'judgment', 'verdict',
-      // Evidence
-      'evidence', 'testimony', 'deposition', 'affidavit', 'exhibit', 'document',
-      // Documents
-      'complaint', 'petition', 'brief', 'memorandum', 'motion', 'order', 'judgment',
+      // Evidence: 'evidence', 'testimony', 'deposition', 'affidavit', 'exhibit', 'document',
+      // Documents: 'complaint', 'petition', 'brief', 'memorandum', 'motion', 'order', 'judgment',
       // Time/money
       'damages', 'compensation', 'settlement', 'fee', 'cost', 'penalty',
     ];

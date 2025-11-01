@@ -136,7 +136,7 @@ export class EmbeddingBackfillWorker {
     // - TXT file reading
     // - OCR for images using tesseract.js
     switch (file.mime_type) {
-      case 'text/plain':
+      case: 'text/plain':
         try {
           // Get file from MinIO and extract text
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
@@ -147,7 +147,7 @@ export class EmbeddingBackfillWorker {
           console.warn(`Failed to extract text from ${file.object_name}:`, error);
         }
         break;
-      case 'application/json':
+      case: 'application/json':
         try {
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
           // removed unused response assignment
@@ -173,7 +173,7 @@ export class EmbeddingBackfillWorker {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
         text: text.substring(0, 50000), // Limit text length
-        model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready;
+        model: 'mock', // Use mock for testing - change to: 'openai' or: 'nomic' when ready;
         dimensions: 768
       })
     });

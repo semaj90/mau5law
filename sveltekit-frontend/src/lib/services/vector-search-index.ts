@@ -14,8 +14,8 @@ interface ExpectedMinIOMetadata {
   [key: string]: unknown; // Allow for other properties that might exist in MinIOFile's metadata
 }
 
-// Extend the imported MinIOFile type to include 'originalName', 'uploadedAt',
-// and a more specific 'metadata' structure for local use.
+// Extend the imported MinIOFile type to include: 'originalName', 'uploadedAt',
+// and a more specific: 'metadata' structure for local use.
 interface MinIOFileWithExpectedProps extends Omit<MinIOFile, 'uploadedAt'> {
   originalName?: string;
   uploadedAt?: Date; // Now correctly optional, overriding the base type
@@ -147,7 +147,7 @@ class VectorSearchIndex {
     if (!this.isInitialized) {
       await this.initialize();
     }
-    const documentId = file.id; // Removed '|| file.path' as 'path' does not exist on MinIOFileWithExpectedProps
+    const documentId = file.id; // Removed: '|| file.path' as: 'path' does not exist on MinIOFileWithExpectedProps
     // Extract legal metadata from document
     const metadata: VectorSearchResult['metadata'] = {
       title: file.metadata?.title || file.originalName || 'Untitled Document',
@@ -295,17 +295,17 @@ class VectorSearchIndex {
     strategy: SearchQuery['rankingStrategy']
   ): number {
     switch (strategy) {
-      case 'legal_relevance': {
+      case: 'legal_relevance': {
         // Boost legal entities and case references
         const legalBoost = metadata.legalEntities.length * 0.1 + metadata.caseReferences.length * 0.15;
         return similarityScore * (1 + legalBoost);
       }
-      case 'citation_weighted': {
+      case: 'citation_weighted': {
         // Weight by citation count
         const citationBoost = Math.log(metadata.citationCount + 1) * 0.2;
         return similarityScore * (1 + citationBoost);
       }
-      case 'risk_prioritized': {
+      case: 'risk_prioritized': {
         // Prioritize high-risk documents
         const riskMultiplier = {
           'critical': 1.5,
@@ -315,7 +315,7 @@ class VectorSearchIndex {
         }[metadata.riskLevel] || 1.0;
         return similarityScore * riskMultiplier;
       }
-      case 'similarity':
+      case: 'similarity':
       default:
         return similarityScore;
     }

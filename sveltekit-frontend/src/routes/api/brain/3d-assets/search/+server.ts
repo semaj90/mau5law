@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Server-side RL cache for asset discovery
       const cachedAssetPredictions = serverCache.get(`asset_search_${searchRequest.query}`);
       if (cachedAssetPredictions) {
-        console.log(`⚡ Found cached asset predictions for "${searchRequest.query}"`);
+        console.log(`⚡ Found cached asset predictions for: "${searchRequest.query}"`);
         predictions = cachedAssetPredictions;
       }
     }

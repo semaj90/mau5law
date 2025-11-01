@@ -7,7 +7,7 @@ import Fuse from '$lib/utils/fuse-import';
 
 // Define FuseJsResult type based on the actual Fuse instance's search method
 // Fix: Derive the return type of the search method from the prototype,
-// then explicitly set the 'item' property to the generic type T.
+// then explicitly set the: 'item' property to the generic type T.
 type FuseResult<T> = ReturnType<typeof Fuse.prototype.search>[number] & { item: T };
 type FuseJsResult<T> = FuseResult<T>; // Use FuseResult directly
 
@@ -17,7 +17,7 @@ export interface SearchableItem {
   content: string;
   keywords: string[];
   embedding?: Float32Array;
-  metadata?: { [key: string]: unknown }; // Changed 'any' to 'unknown'
+  metadata?: { [key: string]: unknown }; // Changed: 'any' to: 'unknown'
   timestamp?: number;
 }
 
@@ -36,7 +36,7 @@ export interface SearchResult {
   matches?: unknown[];
   similarity?: number;
   refIndex: number;
-  combinedScore?: number; // Added to fix 'combinedScore' does not exist on type 'SearchResult'
+  combinedScore?: number; // Added to fix: 'combinedScore' does not exist on type: 'SearchResult'
 }
 /**
  * Enhanced search service with Fuse.js, IndexedDB, and vector embeddings
@@ -65,7 +65,7 @@ export class FuseLazySearchService {
       this.isInitialized = true;
       console.log(`✅ Fuse lazy search initialized with ${this.items.length} items`);
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Failed to initialize Fuse lazy search:', error);
       throw error;
     }
@@ -80,7 +80,7 @@ export class FuseLazySearchService {
       request.onsuccess = () => {
         this.db = request.result;
         resolve();
-      }; // Changed ')' to ';'
+      }; // Changed: ')' to: ';'
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db = (event.target as IDBOpenDBRequest).result;
         // Create object store with auto-incrementing key
@@ -238,7 +238,7 @@ export class FuseLazySearchService {
       console.log(`📊 Search complete: ${results.length} results`);
       return results.slice(0, searchOptions.maxResults);
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Search failed:', error);
       return [];
     }
@@ -258,7 +258,7 @@ export class FuseLazySearchService {
       }
       return textResults;
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Vector enhancement failed:', error);
       return textResults;
     }

@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Citations List -->
   <div class="container mx-auto px-4">
     {#each filteredCitations as citation (citation.id)}
-      <div class="container mx-auto px-4 nes-container citation-card" on:click={() => selectCitation(citation)}>
+      <div class="container mx-auto px-4 nes-container citation-card" onclick={() => selectCitation(citation)}>
         <div class="container mx-auto px-4 citation-content">
           <div class="citation-header">
             <h3 class="citation-title">{citation.title}</h3>
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 class="bits-btn copy-btn"
                 title="Copy citation"
-                on:click={e => {
+                onclick={e => {
                   e.stopPropagation();
                   copyCitation(citation);
                 }}
@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
             role="button"
             tabindex={0}
             on:dragstart={e => handleDragStart(e, citation)}
-            on:keydown={e => {
+            onkeydown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 (e.currentTarget as HTMLElement).click();
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="bits-btn"
             size="sm"
-            on:click={() => {
+            onclick={() => {
               searchQuery = '';
               selectedCategory = 'all';
             }}

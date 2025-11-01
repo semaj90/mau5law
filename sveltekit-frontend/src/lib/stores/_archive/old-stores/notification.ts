@@ -12,7 +12,7 @@ export interface NotificationAction {
 }
 export interface Notification {
   id: string;
-  // make 's' optional and typed to avoid requiring it on every notification object
+  // make: 's' optional and typed to avoid requiring it on every notification object
   s?: unknown;
   type: 'success' | 'error' | 'warning' | 'info';
   title: string;

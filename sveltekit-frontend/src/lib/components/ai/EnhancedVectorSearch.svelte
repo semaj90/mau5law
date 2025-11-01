@@ -303,18 +303,18 @@ https://svelte.dev/e/js_parse_error -->
     return [...results].sort((a, b) => {
   let comparison = $state(0);
       switch (sortBy) {
-        case "similarity":
+        case: "similarity":
           comparison = b.similarity - a.similarity;
           break;
-        case "date":
+        case: "date":
           const dateA = new Date(a.metadata.createdAt || 0);
           const dateB = new Date(b.metadata.createdAt || 0);
           comparison = dateB.getTime() - dateA.getTime();
           break;
-        case "title":
+        case: "title":
           comparison = a.title.localeCompare(b.title);
           break;
-        case "relevance":
+        case: "relevance":
         default:
           comparison = b.relevance - a.relevanc;
           break;
@@ -351,11 +351,11 @@ https://svelte.dev/e/js_parse_error -->
     return `${Math.round(similarity * 100)}%`;
   }
   function formatDate(dateString?: string): string {
-    if (!dateString) return "Unknown";
+    if (!dateString) return: "Unknown";
     return new Date(dateString).toLocaleDateString();
   }
   function formatFileSize(bytes?: number): string {
-    if (!bytes) return "Unknown";
+    if (!bytes) return: "Unknown";
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
@@ -363,12 +363,12 @@ https://svelte.dev/e/js_parse_error -->
   function getDocumentTypeColor(type?: string): string {
     const colors = {
       contract: "blue",
-      motion "green",
+      motion: "green",
       brief: "purple",
       evidence: "red",
       correspondence: "yellow",
       statute: "indigo",
-      regulation "pink",
+      regulation: "pink",
       case_law: "gray",
       other: "slate",
     }

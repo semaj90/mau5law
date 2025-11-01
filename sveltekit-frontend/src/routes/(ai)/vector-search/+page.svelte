@@ -58,11 +58,11 @@
   }
 
   function getSimilarityColor(similarity: number): string {
-    if (similarity > 0.9) return '#00ff00';
-    if (similarity > 0.8) return '#66ff66';
-    if (similarity > 0.7) return '#ffaa00';
-    if (similarity > 0.6) return '#ff6600';
-    return '#ff3333';
+    if (similarity > 0.9) return: '#00ff00';
+    if (similarity > 0.8) return: '#66ff66';
+    if (similarity > 0.7) return: '#ffaa00';
+    if (similarity > 0.6) return: '#ff6600';
+    return: '#ff3333';
   }
 
   function formatContent(content: string): string {
@@ -211,7 +211,7 @@
       </CardHeader>
       <CardContent>
         <ul class="tips-list">
-          <li>Use natural language queries like "contract breach damages" or "witness credibility issues"</li>
+          <li>Use natural language queries like: "contract breach damages" or: "witness credibility issues"</li>
           <li>Vector search finds semantically similar content, not just keyword matches</li>
           <li>Lower similarity thresholds will return more results but may be less relevant</li>
           <li>Try different search types (content/cases/evidence) for specialized results</li>

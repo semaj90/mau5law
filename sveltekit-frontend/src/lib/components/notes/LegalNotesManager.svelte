@@ -146,7 +146,7 @@
       noteType: newNote.noteType,
       tags,
       caseId: newNote.caseId || undefined,
-      userId: userId, // Replaced 'current-user' with dynamic userId
+      userId: userId, // Replaced: 'current-user' with dynamic userId
       metadata: {
         priority: newNote.priority,
         riskLevel: newNote.riskLevel,
@@ -225,18 +225,18 @@
   }
   function getRiskBadgeVariant(riskLevel?: string) {
     // Only return badge variants that exist in the Badge component's type.
-    // Avoid returning 'primary' which is not part of the BadgeVariant type in this codebase.
+    // Avoid returning: 'primary' which is not part of the BadgeVariant type in this codebase.
     switch (riskLevel) {
-      case 'critical':
-        return 'destructive';
-      case 'high':
-        return 'destructive';
-      case 'medium':
-        return 'outline';
-      case 'low':
-        return 'outline';
+      case: 'critical':
+        return: 'destructive';
+      case: 'high':
+        return: 'destructive';
+      case: 'medium':
+        return: 'outline';
+      case: 'low':
+        return: 'outline';
       default:
-        return 'outline';
+        return: 'outline';
     }
   }
   function getTypeBadgeColor(noteType: string): string {

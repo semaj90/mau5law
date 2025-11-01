@@ -4,7 +4,7 @@
  * Note: this implementation focuses on correctness and a compatible API surface.
  */
 import { browser } from '$app/environment';
-import type { RedisCache } from '$lib/server/cache/redis-cache'; // Use 'type' for client-side safety
+import type { RedisCache } from '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
 
 interface CacheEntry<T> {
   value: T;

@@ -1,130 +1,147 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from "svelte";
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
-  import { evidenceStore  } from '$lib/stores/unified";
-  import * as fabric from "fabric";
-  type TEvent = any;
+  import { evidenceStore } from '$lib/stores/unified';
+  // Use loose typing for third-party libs to avoid heavy typing friction during migration
+  import type FuseType from "fuse.js";
   import Fuse from "fuse.js";
   import Loki from "lokijs";
-  import {
-    Archive,
-    Circle,
-    Clock,
-    Copy,
-    Download,
-    FileText,
-    Grid,
-    Hand,
-    Image as ImageIcon,
-    MapPin,
-    Minus,
-    MousePointer,
-    Move,
-    Redo,
-    Save,
-    Search,
-    Square,
-    Trash2,
-    Type,
-    Undo,
-    Users,
-    ZoomIn,
-    ZoomOut,
-  } from "lucide-svelte";
+  // fabric can be heavy-typed; use any for now
+  import * as fabric from "fabric";
+
   import { get, writable } from "svelte/store";
-  // Svelte 5 props
+
+  // Props via Svelte 5 $props() runes
+  interface Props {
+    caseId: string;
+    canvasId?: string;
+    width?: number;
+    height?: number;
+    readOnly?: boolean;
+  }
   let {
     caseId,
     canvasId = "",
     width = 1200,
     height = 800,
     readOnly = false
-  }: {
-    caseId: string;
-    canvasId?: string;
-    width?: number;
-    height?: number;
-    readOnly?: boolean;
-  } = $props();
-  let canvasElement = $state<HTMLCanvasElementlet canvas: fabric.Canvas  | null>(null); const data = null);
-  let lokiDb = $state<Loki | null >(null);
-  let canvasCollection = $state<Collection<any>(null) | null >(null);
-  let searchEngine = $state<Fuse<any>(null) | null >(null);
-  // Canvas state management
+  }: Props = $props();
+
+  // Reactive state (runes)
+  let canvasElement = $state<HTMLCanvasElement | null>(null);
+  let canvas = $state<any>(null);
+  let lokiDb = $state<any | null>(null);
+  let canvasCollection = $state<any | null>(null);
+  let searchEngine = $state<any | null>(null);
+
+  // Canvas state management as a Svelte store (writable)
   const canvasState = writable({
     tool: "select",
     zoom: 100,
-    showGrid: true
-    showRulers: true
-    snapToGrid: true
+    showGrid: true,
+    showRulers: true,
+    snapToGrid: true,
     gridSize: 20,
-    selectedObjects: [],
-    canUndo: false
-    canRedo: false
-    isDrawing: false
+    selectedObjects: [] as any[],
+    canUndo: false,
+    canRedo: false,
+    isDrawing: false,
     objectCount: 0,
     searchQuery: "",
-    layers: [],
+    layers: [] as any[],
   });
+
   // History management
-  let historyStack = $state<string[] >([]);
-  let historyIndex = -1;
+  let historyStack = $state<string[]>([]);
+  let historyIndex = $state<number>(-1);
   const maxHistorySize = 50;
   // Auto-save
-  let autoSaveTimeout: NodeJS.Timeout;
+  let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
   let isDirty = $state(false);
-  // Tools and modes
+
+  // Tools (use simple text/icon placeholders to avoid icon import issues)
   const tools = [
-    { id: "select", icon MousePointer, label: "Select" },
-    { id: "pan", icon Hand, label: "Pan" },
-    { id: "text", icon Type, label: "Text" },
-    { id: "rect", icon Square, label: "Rectangle" },
-    { id: "circle", icon Circle, label: "Circle" },
-    { id: "line", icon Minus, label: "Line" },
-    { id: "arrow", icon Move, label: "Arrow" },
-    { id: "image", icon ImageIcon, label: "Image" },
-    { id: "evidence", icon Archive, label: "Evidence" },
-    { id: "note", icon FileText, label: "Note" },
-    { id: "timeline", icon Clock, label: "Timeline" },
-    { id: "person", icon Users, label: "Person" },
-    { id: "location", icon MapPin, label: "Location" },
+    { id: "select", icon: "🖱️", label: "Select" },
+    { id: "pan", icon: "✋", label: "Pan" },
+    { id: "text", icon: "📝", label: "Text" },
+    { id: "rect", icon: "▭", label: "Rectangle" },
+    { id: "circle", icon: "◯", label: "Circle" },
+    { id: "line", icon: "—", label: "Line" },
+    { id: "arrow", icon: "➡️", label: "Arrow" },
+    { id: "image", icon: "🖼️", label: "Image" },
+    { id: "evidence", icon: "📦", label: "Evidence" },
+    { id: "note", icon: "📄", label: "Note" },
+    { id: "timeline", icon: "🕒", label: "Timeline" },
+    { id: "person", icon: "👤", label: "Person" },
+    { id: "location", icon: "📍", label: "Location" },
   ];
-  // Evidence items from store
-  let evidenceItems = $state<any[] >([]);
-  let searchResults = $state<any[] >([]);
+
+  // Evidence items and search results (local copies)
+  let evidenceItems = $state<any[]>([]);
+  let searchResults = $state<any[]>([]);
+
+  // Initialize on component mount using $effect so it re-runs only when needed
   $effect(() => {
-    // Initialize components
     initializeLokiDB();
     initializeCanvas();
     initializeSearch();
     setupEventListeners();
     loadCanvasData();
-    // Subscribe to evidence store
-    const unsubscribe = evidenceStore.evidence.subscribe((items) => {
-      evidenceItems = item;
+
+    // evidenceStore is a store that holds an object (state) with an: 'evidence' array.
+    // Subscribe to the store and read state.evidence instead of trying to access evidenceStore.evidence.
+    const unsubscribe = evidenceStore.subscribe((state: any) => {
+      const items = state?.evidence ?? [];
+      evidenceItems = items;
       updateSearchEngine();
     });
-    return unsubscrib;
+
+    return () => {
+      // cleanup subscription
+      unsubscribe();
+    };
   });
+
   onDestroy(() => {
-    if (autoSaveTimeout) {
-      clearTimeout(autoSaveTimeout);
+    // clear auto-save timer
+    if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+
+    // remove global keyboard listener
+    document.removeEventListener('keydown', handleKeyboard);
+
+    // remove Fabric event listeners to avoid leaks
+    if (canvas && typeof canvas.off === 'function') {
+      try {
+        canvas.off("object:added", handleObjectAdded);
+        canvas.off("object:removed", handleObjectRemoved);
+        canvas.off("object:modified", handleObjectModified);
+        canvas.off("selection:created", handleSelectionCreated);
+        canvas.off("selection:updated", handleSelectionUpdated);
+        canvas.off("selection:cleared", handleSelectionCleared);
+        canvas.off("path:created", handlePathCreated);
+        canvas.off("mouse:down", handleMouseDown);
+        canvas.off("mouse:move", handleMouseMove);
+        canvas.off("mouse:up", handleMouseUp);
+      } catch (err) {
+        // ignore if some handlers were not attached
+      }
     }
-    if (canvas) {
+
+    // dispose canvas and Loki DB
+    if (canvas && typeof canvas.dispose === "function") {
       canvas.dispose();
     }
-    if (lokiDb) {
+    if (lokiDb && typeof lokiDb.close === "function") {
       lokiDb.close();
     }
   });
+
+  // Initialize Loki DB (lightweight)
   function initializeLokiDB() {
     lokiDb = new Loki(`canvas_${caseId}.db`, {
-      autoload: true
+      autoload: true,
       autoloadCallback: () => {
         canvasCollection =
           lokiDb?.getCollection("canvas_data") ||
@@ -132,127 +149,119 @@ https://svelte.dev/e/js_parse_error -->
             indices: ["id", "caseId", "timestamp", "type"],
           });
       },
-      autosave: true
+      autosave: true,
       autosaveInterval: 4000,
     });
   }
+
+  // Initialize Fabric canvas (loose typing)
   function initializeCanvas() {
-    canvas = new fabric.Canvas(canvasElement, {
-      width,
-      height,
-      backgroundColor: "#ffffff",
-      selection !readOnly,
-      isDrawingMode: false
-      preserveObjectStacking: true
-      enableRetinaScaling: true,
-    });
-    // Canvas event listeners
-    canvas.on("object:added", handleObjectAdded);
-    canvas.on("object:removed", handleObjectRemoved);
-    canvas.on("object:modified", handleObjectModified);
-    canvas.on("selectioncreated", (options) =>
-      handleSelectionCreated(options)
-    );
-    canvas.on("selectionupdated", (options) =>
-      handleSelectionUpdated(options)
-    );
-    canvas.on("selectioncleared", handleSelectionCleared);
-    canvas.on("path:created", handlePathCreated);
-    // Setup grid
-    updateGrid();
-    // Initialize history
-    saveState();
+    try {
+      const Fabric = (fabric as any);
+      canvas = new Fabric.Canvas(canvasElement as any, {
+        width,
+        height,
+        backgroundColor: "#ffffff",
+        selection: !readOnly,
+        isDrawingMode: false,
+        preserveObjectStacking: true,
+        enableRetinaScaling: true,
+      });
+
+      // Event listeners
+      canvas.on("object:added", handleObjectAdded);
+      canvas.on("object:removed", handleObjectRemoved);
+      canvas.on("object:modified", handleObjectModified);
+      canvas.on("selection:created", (options: any) => handleSelectionCreated(options));
+      canvas.on("selection:updated", (options: any) => handleSelectionUpdated(options));
+      canvas.on("selection:cleared", () => handleSelectionCleared());
+      canvas.on("path:created", handlePathCreated);
+
+      updateGrid();
+      saveState();
+    } catch (err) {
+      console.error("Failed to initialize canvas:", err);
+    }
   }
+
   function initializeSearch() {
-    const searchOptions = {
+    const options = {
       keys: ["title", "description", "evidenceType", "tags"],
       threshold: 0.3,
       includeMatches: true,
-    }
-    searchEngine = new Fuse(evidenceItems, searchOptions);
+    };
+    searchEngine = new (Fuse as any)(evidenceItems, options);
   }
+
   function updateSearchEngine() {
     if (searchEngine && evidenceItems) {
-      searchEngine.setCollection(evidenceItems);
+      (searchEngine as any).setCollection(evidenceItems);
     }
   }
+
   function setupEventListeners() {
-    // Keyboard shortcuts
     document.addEventListener("keydown", handleKeyboard);
-    // Mouse events for tools
     if (canvas) {
       canvas.on("mouse:down", handleMouseDown);
       canvas.on("mouse:move", handleMouseMove);
       canvas.on("mouse:up", handleMouseUp);
     }
   }
+
   function handleKeyboard(e: KeyboardEvent) {
     if (!canvas) return;
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case "z":
+        case: "z":
           e.preventDefault();
-          if (e.shiftKey) {
-            redo();
-          } else {
-            undo();
-          }
+          if (e.shiftKey) redo();
+          else undo();
           break;
-        case "s":
+        case: "s":
           e.preventDefault();
           saveCanvas();
           break;
-        case "c":
+        case: "c":
           e.preventDefault();
           copySelected();
           break;
-        case "v":
+        case: "v":
           e.preventDefault();
           pasteClipboard();
           break;
-        case "a":
+        case: "a":
           e.preventDefault();
           selectAll();
           break;
-        case "Delete":
-        case "Backspace":
+        case: "Delete":
+        case: "Backspace":
           e.preventDefault();
           deleteSelected();
           break;
       }
     }
   }
-  function handleMouseDown(_event: TEvent) {
+
+  function handleMouseDown(event: any) {
     const state = get(canvasState);
     if (!canvas) return;
-    const pointer = canvas.getPointer(event.e);
+    const pointer = canvas.getPointer(event.e || event);
     switch (state.tool) {
-      case "rect":
-        createRectangle(pointer);
-        break;
-      case "circle":
-        createCircle(pointer);
-        break;
-      case "text":
-        createText(pointer);
-        break;
-      case "line":
-        createLine(pointer);
-        break;
-      case "arrow":
-        createArrow(pointer);
-        break;
+      case: "rect": createRectangle(pointer); break;
+      case: "circle": createCircle(pointer); break;
+      case: "text": createText(pointer); break;
+      case: "line": createLine(pointer); break;
+      case: "arrow": createArrow(pointer); break;
     }
   }
-  function handleMouseMove(_event: TEvent) {
-    // Handle drawing modes
-  }
-  function handleMouseUp(_event: TEvent) {
-    // Finalize drawing operations
-  }
-  function createRectangle(pointer: fabric.Point) {
+
+  function handleMouseMove(_event: any) { /* no-op for now */ }
+  function handleMouseUp(_event: any) { /* no-op for now */ }
+
+  // Shape creation helpers (use any typing to avoid type errors)
+  function createRectangle(pointer: any) {
     if (!canvas) return;
-    const rect = new fabric.Rect({
+    const rect = new (fabric as any).Rect({
       left: pointer.x,
       top: pointer.y,
       width: 100,
@@ -266,9 +275,9 @@ https://svelte.dev/e/js_parse_error -->
     canvas.add(rect);
     canvas.setActiveObject(rect);
   }
-  function createCircle(pointer: fabric.Point) {
+  function createCircle(pointer: any) {
     if (!canvas) return;
-    const circle = new fabric.Circle({
+    const circle = new (fabric as any).Circle({
       left: pointer.x,
       top: pointer.y,
       radius: 50,
@@ -279,9 +288,9 @@ https://svelte.dev/e/js_parse_error -->
     canvas.add(circle);
     canvas.setActiveObject(circle);
   }
-  function createText(pointer: fabric.Point) {
+  function createText(pointer: any) {
     if (!canvas) return;
-    const text = new fabric.IText("Click to edit text", {
+    const text = new (fabric as any).IText("Click to edit text", {
       left: pointer.x,
       top: pointer.y,
       fontFamily: "Inter",
@@ -290,236 +299,126 @@ https://svelte.dev/e/js_parse_error -->
     });
     canvas.add(text);
     canvas.setActiveObject(text);
-    text.enterEditing();
+    text.enterEditing && text.enterEditing();
   }
-  function createLine(pointer: fabric.Point) {
+  function createLine(pointer: any) {
     if (!canvas) return;
-    const line = new fabric.Line(
-      [pointer.x, pointer.y, pointer.x + 100, pointer.y],
-      {
-        stroke: "#ef4444",
-        strokeWidth: 2,
-        selectable: true,
-      }
-    );
+    const line = new (fabric as any).Line([pointer.x, pointer.y, pointer.x + 100, pointer.y], {
+      stroke: "#ef4444",
+      strokeWidth: 2,
+      selectable: true,
+    });
     canvas.add(line);
     canvas.setActiveObject(line);
   }
-  function createArrow(pointer: fabric.Point) {
+  function createArrow(pointer: any) {
     if (!canvas) return;
-    // Create arrow using a group of line and triangle
-    const line = new fabric.Line([0, 0, 100, 0], {
-      stroke: "#8b5cf6",
-      strokeWidth: 2,
+    const line = new (fabric as any).Line([0, 0, 100, 0], { stroke: "#8b5cf6", strokeWidth: 2 });
+    const triangle = new (fabric as any).Triangle({
+      left: 95, top: -5, width: 10, height: 10, fill: "#8b5cf6", angle: 90
     });
-    const triangle = new fabric.Triangle({
-      left: 95,
-      top: -5,
-      width: 10,
-      height: 10,
-      fill: "#8b5cf6",
-      angle: 90,
-    });
-    const arrow = new fabric.Group([line, triangle], {
-      left: pointer.x,
-      top: pointer.y,
-    });
+    const arrow = new (fabric as any).Group([line, triangle], { left: pointer.x, top: pointer.y });
     canvas.add(arrow);
     canvas.setActiveObject(arrow);
   }
-  function createEvidenceObject(evidence: unknown): fabric.Group {
-    const rect = new fabric.Rect({
-      width: 200,
-      height: 150,
-      fill: "#fef3c7",
-      stroke: "#f59e0b",
-      strokeWidth: 2,
-      rx: 8,
-      ry: 8,
+
+  function createEvidenceObject(evidence: any): any {
+    const rect = new (fabric as any).Rect({
+      width: 200, height: 150, fill: "#fef3c7", stroke: "#f59e0b", strokeWidth: 2, rx: 8, ry: 8
     });
-    const title = new fabric.Text(evidence.title, {
-      fontSize: 14,
-      fontWeight: "bold",
-      top: 10,
-      left: 10,
-      width: 180,
+    const title = new (fabric as any).Text(evidence?.title || "Untitled", {
+      fontSize: 14, fontWeight: "bold", top: 10, left: 10, width: 180
     });
-    const type = new fabric.Text(`Type: ${evidence.evidenceType}`, {
-      fontSize: 12,
-      top: 30,
-      left: 10,
-      fill: "#6b7280",
+    const type = new (fabric as any).Text(`Type: ${evidence?.evidenceType || "unknown"}`, {
+      fontSize: 12, top: 30, left: 10, fill: "#6b7280"
     });
-    const description = new fabric.Text(
-      evidence.description ? evidence.description.substring(0, 50) + "..." : "",
-      {
-        fontSize: 10,
-        top: 50,
-        left: 10,
-        width: 180,
-        fill: "#374151",
-      }
+    const description = new (fabric as any).Text(
+      (evidence?.description ? evidence.description.substring(0, 50) + "..." : ""),
+      { fontSize: 10, top: 50, left: 10, width: 180, fill: "#374151" }
     );
-    // Add thumbnail if available
-  let thumbnail = $state(null);
-    if (evidence.fileUrl) {
+
+    let thumbnail: any = null;
+    if (evidence?.fileUrl) {
       thumbnail = createThumbnail(evidence);
     }
     const elements = [rect, title, type, description];
     if (thumbnail) elements.push(thumbnail);
-    const group = new fabric.Group(elements, {
-      left: 100,
-      top: 100,
-      hasControls: true
-      hasBorders: true,
+    const group = new (fabric as any).Group(elements, {
+      left: 100, top: 100, hasControls: true, hasBorders: true
     });
-    // Store evidence data
     group.set("evidenceData", evidence);
     group.set("objectType", "evidence");
     return group;
   }
-  function createThumbnail(evidence: unknown): fabric.Object | null {
-    // Create appropriate thumbnail based on file type
-    const fileType = evidence.fileType || evidence.mimeType || "";
+
+  function createThumbnail(evidence: any): any | null {
+    const fileType = evidence?.fileType || evidence?.mimeType || "";
     if (fileType.startsWith("image/")) {
-      // For images, load and display thumbnail
-      return new fabric.Rect({
-        width: 60,
-        height: 60,
-        fill: "#e5e7eb",
-        top: 80,
-        left: 130,
-        rx: 4,
-        ry: 4,
-      });
+      return new (fabric as any).Rect({ width: 60, height: 60, fill: "#e5e7eb", top: 80, left: 130, rx: 4, ry: 4 });
     } else if (fileType === "application/pdf") {
-      // PDF icon
-      return new fabric.Text("PDF", {
-        fontSize: 12,
-        fontWeight: "bold",
-        top: 100,
-        left: 140,
-        fill: "#dc2626",
-      });
+      return new (fabric as any).Text("PDF", { fontSize: 12, fontWeight: "bold", top: 100, left: 140, fill: "#dc2626" });
     } else if (fileType.startsWith("video/")) {
-      // Video icon
-      return new fabric.Text("VIDEO", {
-        fontSize: 10,
-        fontWeight: "bold",
-        top: 100,
-        left: 140,
-        fill: "#7c2d12",
-      });
+      return new (fabric as any).Text("VIDEO", { fontSize: 10, fontWeight: "bold", top: 100, left: 140, fill: "#7c2d12" });
     }
     return null;
   }
+
   function addTimelineToCanvas() {
     if (!canvas) return;
-    // Create a simple timeline visualization
     const timelineGroup = createTimelineVisualization();
     canvas.add(timelineGroup);
     canvas.setActiveObject(timelineGroup);
   }
-  function createTimelineVisualization(): fabric.Group {
-    const line = new fabric.Line([0, 0, 400, 0], {
-      stroke: "#374151",
-      strokeWidth: 3,
-    });
-    const elements: fabric.FabricObject[] = [line];
-    // Add timeline markers
+
+  function createTimelineVisualization(): any {
+    const line = new (fabric as any).Line([0, 0, 400, 0], { stroke: "#374151", strokeWidth: 3 });
+    const elements: any[] = [line];
     for (let i = 0; i <= 4; i++) {
-      const marker = new fabric.Circle({
-        left: i * 100 - 5,
-        top: -5,
-        radius: 5,
-        fill: "#3b82f6",
-        stroke: "#1e40af",
-        strokeWidth: 1,
+      const marker = new (fabric as any).Circle({
+        left: i * 100 - 5, top: -5, radius: 5, fill: "#3b82f6", stroke: "#1e40af", strokeWidth: 1
       });
-      const date = new fabric.Text(`Event ${i + 1}`, {
-        left: i * 100 - 25,
-        top: 15,
-        fontSize: 10,
-        fill: "#374151",
-      });
+      const date = new (fabric as any).Text(`Event ${i + 1}`, { left: i * 100 - 25, top: 15, fontSize: 10, fill: "#374151" });
       elements.push(marker, date);
     }
-    const timeline = new fabric.Group(elements, {
-      left: 100,
-      top: 200,
-    });
+    const timeline = new (fabric as any).Group(elements, { left: 100, top: 200 });
     timeline.set("objectType", "timeline");
-    return timeli;
+    return timeline;
   }
+
   function addPersonToCanvas() {
     if (!canvas) return;
     const person = createPersonVisualization();
     canvas.add(person);
     canvas.setActiveObject(person);
   }
-  function createPersonVisualization(): fabric.Group {
-    const circle = new fabric.Circle({
-      radius: 30,
-      fill: "#dbeafe",
-      stroke: "#3b82f6",
-      strokeWidth: 2,
-    });
-    const name = new fabric.Text("Person Name", {
-      fontSize: 12,
-      fontWeight: "bold",
-      top: 40,
-      left: -30,
-      textAlign: "center",
-    });
-    const role = new fabric.Text("Role/Title", {
-      fontSize: 10,
-      top: 55,
-      left: -25,
-      fill: "#6b7280",
-      textAlign: "center",
-    });
-    const person = new fabric.Group([circle, name, role], {
-      left: 200,
-      top: 200,
-    });
+
+  function createPersonVisualization(): any {
+    const circle = new (fabric as any).Circle({ radius: 30, fill: "#dbeafe", stroke: "#3b82f6", strokeWidth: 2 });
+    const name = new (fabric as any).Text("Person Name", { fontSize: 12, fontWeight: "bold", top: 40, left: -30, textAlign: "center" });
+    const role = new (fabric as any).Text("Role/Title", { fontSize: 10, top: 55, left: -25, fill: "#6b7280", textAlign: "center" });
+    const person = new (fabric as any).Group([circle, name, role], { left: 200, top: 200 });
     person.set("objectType", "person");
-    return perso;
+    return person;
   }
+
   function addLocationToCanvas() {
     if (!canvas) return;
     const location = createLocationVisualization();
     canvas.add(location);
     canvas.setActiveObject(location);
   }
-  function createLocationVisualization(): fabric.Group {
-    const marker = new fabric.Polygon(
-      [
-        { x: 0, y: 0 },
-        { x: 20, y: 0 },
-        { x: 30, y: 15 },
-        { x: 20, y: 30 },
-        { x: 0, y: 30 },
-        { x: 10, y: 15 },
-      ],
-      {
-        fill: "#dc2626",
-        stroke: "#991b1b",
-        strokeWidth: 1,
-      }
+
+  function createLocationVisualization(): any {
+    const marker = new (fabric as any).Polygon(
+      [{ x: 0, y: 0 }, { x: 20, y: 0 }, { x: 30, y: 15 }, { x: 20, y: 30 }, { x: 0, y: 30 }, { x: 10, y: 15 }],
+      { fill: "#dc2626", stroke: "#991b1b", strokeWidth: 1 }
     );
-    const label = new fabric.Text("Location", {
-      fontSize: 12,
-      top: 35,
-      left: -10,
-      fill: "#374151",
-    });
-    const location = new fabric.Group([marker, label], {
-      left: 300,
-      top: 200,
-    });
+    const label = new (fabric as any).Text("Location", { fontSize: 12, top: 35, left: -10, fill: "#374151" });
+    const location = new (fabric as any).Group([marker, label], { left: 300, top: 200 });
     location.set("objectType", "location");
-    return locatio;
+    return location;
   }
+
   // Canvas state management functions
   function handleObjectAdded() {
     isDirty = true;
@@ -538,76 +437,64 @@ https://svelte.dev/e/js_parse_error -->
     scheduleAutoSave();
     saveState();
   }
-  function handleSelectionCreated(_options: unknown) {
-    updateSelection();
-  }
-  function handleSelectionUpdated(_options: unknown) {
-    updateSelection();
-  }
-  function handleSelectionCleared() {
-    updateSelection();
-  }
-  function handlePathCreated() {
-    saveState();
-  }
+  function handleSelectionCreated(_options: unknown) { updateSelection(); }
+  function handleSelectionUpdated(_options: unknown) { updateSelection(); }
+  function handleSelectionCleared() { updateSelection(); }
+  function handlePathCreated() { saveState(); }
+
   function updateSelection() {
     if (!canvas) return;
-    const activeObjects = canvas.getActiveObjects();
-    canvasState.update((state) => ({
-      ...state,
-      selectedObjects: activeObjects
-    }));
+    const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
+    canvasState.update((s: any) => ({ ...s, selectedObjects: activeObjects }));
   }
+
   function updateCanvasState() {
     if (!canvas) return;
-    canvasState.update((state) => ({
+    canvasState.update((state: any) => ({
       ...state,
-      objectCount: canvas.getObjects.length,
-      canUndo: historyIndex > 0
+      objectCount: canvas.getObjects ? canvas.getObjects().length : 0,
+      canUndo: historyIndex > 0,
       canRedo: historyIndex < historyStack.length - 1,
     }));
   }
+
   // History management
   function saveState() {
-    if (!canvas) return;
-    const state = JSON.stringify(canvas.toJSON());
-    // Remove states after current index
+    if (!canvas || !canvas.toJSON) return;
+    const stateString = JSON.stringify(canvas.toJSON());
     historyStack = historyStack.slice(0, historyIndex + 1);
-    // Add new state
-    historyStack.push(state);
+    historyStack.push(stateString);
     historyIndex = historyStack.length - 1;
-    // Limit history size
     if (historyStack.length > maxHistorySize) {
       historyStack.shift();
       historyIndex--;
     }
     updateCanvasState();
   }
+
   async function undo() {
     if (!canvas || historyIndex <= 0) return;
     historyIndex--;
     const state = historyStack[historyIndex];
-    await canvas.loadFromJSON(state);
-    canvas.renderAll();
+    await (canvas.loadFromJSON ? canvas.loadFromJSON(state) : Promise.resolve());
+    canvas.renderAll && canvas.renderAll();
     updateCanvasState();
   }
   async function redo() {
     if (!canvas || historyIndex >= historyStack.length - 1) return;
     historyIndex++;
     const state = historyStack[historyIndex];
-    await canvas.loadFromJSON(state);
-    canvas.renderAll();
+    await (canvas.loadFromJSON ? canvas.loadFromJSON(state) : Promise.resolve());
+    canvas.renderAll && canvas.renderAll();
     updateCanvasState();
   }
-  // Auto-save functionality
+
+  // Auto-save
   function scheduleAutoSave() {
-    if (autoSaveTimeout) {
-      clearTimeout(autoSaveTimeout);
-    }
-    autoSaveTimeout = setTimeout(() => {
-      saveCanvas();
-    }, 3000);
+    if (autoSaveTimeout) clearTimeout(autoSaveTimeout as any);
+    autoSaveTimeout = setTimeout(() => saveCanvas(), 3000);
   }
+
   async function saveCanvas() {
     if (!canvas || !canvasCollection || !isDirty) return;
     try {
@@ -615,28 +502,22 @@ https://svelte.dev/e/js_parse_error -->
         id: canvasId || crypto.randomUUID(),
         caseId,
         data: canvas.toJSON(),
-        thumbnail: canvas.toDataURL({ format: "png", multiplier: 0.1 }),
+        thumbnail: canvas.toDataURL ? canvas.toDataURL({ format: "png", multiplier: 0.1 }) : null,
         metadata: {
-          objectCount: canvas.getObjects.length,
-          width: canvas.getWidth(),
-          height: canvas.getHeight(),
+          objectCount: canvas.getObjects ? canvas.getObjects().length : 0,
+          width: canvas.getWidth ? canvas.getWidth() : width,
+          height: canvas.getHeight ? canvas.getHeight() : height,
           zoom: get(canvasState).zoom,
         },
         timestamp: new Date(),
-        version Date.now(),
-      }
-      // Save to Loki.js
-      const existing = canvasCollection.findOne({ id: canvasData.id });
-      if (existing) {
-        canvasCollection.update({ ...existing, ...canvasData });
-      } else {
-        canvasCollection.insert(canvasData);
-      }
-      // Save to server
+        version: Date.now(),
+      };
+      const existing = canvasCollection.findOne ? canvasCollection.findOne({ id: canvasData.id }) : null;
+      if (existing && canvasCollection.update) canvasCollection.update({ ...existing, ...canvasData });
+      else if (canvasCollection.insert) canvasCollection.insert(canvasData);
+
       await fetch("/api/canvas/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(canvasData),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(canvasData)
       });
       isDirty = false;
       showSaveIndicator();
@@ -644,266 +525,237 @@ https://svelte.dev/e/js_parse_error -->
       console.error("Failed to save canvas:", error);
     }
   }
+
   async function loadCanvasData() {
     if (!canvasCollection) return;
     try {
-      // Try loading from Loki.js first
-      const localData = canvasCollection.findOne({ caseId });
-      if (localData) {
-        canvas?.loadFromJSON(localData.data, () => {
-          canvas?.renderAll();
-        });
+      const localData = canvasCollection.findOne ? canvasCollection.findOne({ caseId }) : null;
+      if (localData && canvas && canvas.loadFromJSON) {
+        canvas.loadFromJSON(localData.data, () => canvas.renderAll && canvas.renderAll());
         return;
       }
-      // Fallback to server
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const serverData = await (response as { ok?: unknown; json?: unknown }).json();
-        canvas?.loadFromJSON(serverData.data, () => {
-          canvas?.renderAll();
-        });
+      // fallback to server
+      const resp = await fetch(`/api/canvas/load?caseId=${encodeURIComponent(caseId)}`);
+      if (resp.ok) {
+        const serverData = await resp.json();
+        canvas?.loadFromJSON(serverData.data, () => canvas.renderAll && canvas.renderAll());
       }
     } catch (error) {
       console.error("Failed to load canvas:", error);
     }
   }
+
   function showSaveIndicator() {
-    // Visual save indicator
     const indicator = document.createElement("div");
     indicator.textContent = "Canvas Saved";
-    indicator.class =
-      "fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50";
+    indicator.className = "fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50";
     document.body.appendChild(indicator);
     setTimeout(() => {
-      if (document.body.contains(indicator)) {
-        document.body.removeChild(indicator);
-      }
+      if (document.body.contains(indicator)) document.body.removeChild(indicator);
     }, 2000);
   }
-  // Tool functions
+
+  // Tools and zoom
   function setTool(toolId: string) {
-    canvasState.update((state) => ({ ...state, tool: toolId }));
+    canvasState.update((s: any) => ({ ...s, tool: toolId }));
     if (!canvas) return;
-    // Reset canvas modes
     canvas.isDrawingMode = false;
     canvas.selection = toolId === "select";
-    // Set appropriate cursor
     switch (toolId) {
-      case "pan":
-        canvas.defaultCursor = "grab";
-        break;
-      case "text":
-        canvas.defaultCursor = "text";
-        break;
-      default:
-        canvas.defaultCursor = "default";
+      case: "pan": canvas.defaultCursor = "grab"; break;
+      case: "text": canvas.defaultCursor = "text"; break;
+      default: canvas.defaultCursor = "default";
     }
   }
-  function zoomIn() {
-    const currentZoom = get(canvasState).zoom;
-    const newZoom = Math.min(currentZoom + 10, 200);
-    setZoom(newZoom);
-  }
-  function zoomOut() {
-    const currentZoom = get(canvasState).zoom;
-    const newZoom = Math.max(currentZoom - 10, 25);
-    setZoom(newZoom);
-  }
+  function zoomIn() { const currentZoom = get(canvasState).zoom; setZoom(Math.min(currentZoom + 10, 200)); }
+  function zoomOut() { const currentZoom = get(canvasState).zoom; setZoom(Math.max(currentZoom - 10, 25)); }
   function setZoom(zoom: number) {
     if (!canvas) return;
-    canvasState.update((state) => ({ ...state, zoom }));
-    canvas.setZoom(zoom / 100);
-    canvas.renderAll();
+    canvasState.update((s: any) => ({ ...s, zoom }));
+    canvas.setZoom && canvas.setZoom(zoom / 100);
+    canvas.renderAll && canvas.renderAll();
   }
+
   function toggleGrid() {
-    canvasState.update((state) => ({ ...state, showGrid: !state.showGrid }));
+    canvasState.update((s: any) => ({ ...s, showGrid: !s.showGrid }));
     updateGrid();
   }
+
   function updateGrid() {
     if (!canvas) return;
     const state = get(canvasState);
     if (state.showGrid) {
-      // Add grid pattern
-      const gridSize = state.gridSiz;
+      const gridSize = state.gridSize;
       const pattern = createGridPattern(gridSize);
-      canvas.backgroundColor = "#f8f9fa"; // Light gray background for grid
-      canvas.renderAll();
+      canvas.backgroundColor = `url(${pattern})`;
+      canvas.renderAll && canvas.renderAll();
     } else {
       canvas.backgroundColor = "#ffffff";
-      canvas.renderAll();
+      canvas.renderAll && canvas.renderAll();
     }
   }
+
   function createGridPattern(size: number): string {
-    const svg = `
-      <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="grid" width="${size}" height="${size}" patternUnits="userSpaceOnUse">
-            <path d="M ${size} 0 L 0 0 0 ${size}" fill="none" stroke="#e5e7eb" stroke-width="1"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-      </svg>
-    `;
+    const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="${size}" height="${size}" patternUnits="userSpaceOnUse"><path d="M ${size} 0 L 0 0 0 ${size}" fill="none" stroke="#e5e7eb" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" /></svg>`;
     return `data:image/svg+xml;base64,${btoa(svg)}`;
   }
+
   // Object manipulation
   function deleteSelected() {
     if (!canvas) return;
-    const activeObjects = canvas.getActiveObjects();
+    const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
     if (activeObjects.length) {
-      canvas.discardActiveObject();
-      activeObjects.forEach((obj) => canvas?.remove(obj));
-      canvas.renderAll();
+      canvas.discardActiveObject && canvas.discardActiveObject();
+      activeObjects.forEach((obj: any) => canvas?.remove(obj));
+      canvas.renderAll && canvas.renderAll();
     }
   }
+
   async function copySelected() {
     if (!canvas) return;
-    const activeObject = canvas.getActiveObject();
-    if (activeObject) {
-      const cloned = await activeObject.clone();
-      cloned.set({
-        left: (cloned.left || 0) + 10,
-        top: (cloned.top || 0) + 10,
+    const activeObject = canvas.getActiveObject && canvas.getActiveObject();
+    if (activeObject && activeObject.clone) {
+      activeObject.clone((cloned: any) => {
+        cloned.set({ left: (cloned.left || 0) + 10, top: (cloned.top || 0) + 10 });
+        canvas.add && canvas.add(cloned);
+        canvas.setActiveObject && canvas.setActiveObject(cloned);
+        canvas.renderAll && canvas.renderAll();
       });
-      canvas?.add(cloned);
-      canvas?.setActiveObject(cloned);
-      canvas?.renderAll();
     }
   }
-  function pasteClipboard() {
-    // Implement clipboard paste functionality
-    navigator.clipboard.read.then((items) => {
+
+  async function pasteClipboard() {
+    if (!canvas) return;
+    try {
+      // navigator.clipboard.read() is async and may require permissions
+      // Fallback gracefully if not supported
+      if (!navigator.clipboard || !navigator.clipboard.read) return;
+      const items = await navigator.clipboard.read();
       for (const item of items) {
-        if ((item as { types?: unknown; getType?: unknown }).types.includes("image/png")) {
-          (item as { types?: unknown; getType?: unknown }).getType.then((blob) => {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-              const imgUrl = e.target?.result as string;
-              const img = await fabric.Image.fromURL(imgUrl);
-              img.scale(0.5);
-              canvas?.add(img);
-              canvas?.renderAll();
-            }
-            reader.readAsDataURL(blob);
-          });
+        if (item.types && item.types.includes("image/png")) {
+          const blob = await item.getType("image/png");
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            const imgUrl = e.target?.result as string;
+            const img = await (fabric as any).Image.fromURL(imgUrl);
+            img.scale && img.scale(0.5);
+            canvas?.add(img);
+            canvas?.renderAll && canvas.renderAll();
+          };
+          reader.readAsDataURL(blob);
         }
       }
-    });
+    } catch (err) {
+      console.warn("Clipboard paste failed:", err);
+    }
   }
+
   function selectAll() {
     if (!canvas) return;
-    const allObjects = canvas.getObjects();
-    const selection = new fabric.ActiveSelection(allObjects, { canvas });
+    const allObjects = canvas.getObjects ? canvas.getObjects() : [];
+    const selection = new (fabric as any).ActiveSelection(allObjects, { canvas });
     canvas.setActiveObject(selection);
-    canvas.renderAll();
+    canvas.renderAll && canvas.renderAll();
   }
-  // Export functions
+
+  // Export
   function exportCanvas(format: "png" | "svg" | "json") {
     if (!canvas) return;
-  let dataUrl = $state<string;
-  let filename = $state<stringswitch (format) {
-      case "png":
-        dataUrl  | null>(null); const data = canvas.toDataURL({
-          format: "png",
-          quality: 1,
-          multiplier: 1,
-        }));
-        filename >(`canvas-${caseId}.png`);
+    let dataUrl = "";
+    let filename = "";
+    switch (format) {
+      case: "png":
+        dataUrl = canvas.toDataURL ? canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 }) : "";
+        filename = `canvas-${caseId}.png`;
         break;
-      case "svg":
-        dataUrl = `data:image/svg+xml;base64,${btoa(canvas.toSVG())}`;
+      case: "svg":
+        dataUrl = `data:image/svg+xml;base64,${btoa(canvas.toSVG ? canvas.toSVG() : "")}`;
         filename = `canvas-${caseId}.svg`;
         break;
-      case "json":
-        const jsonData = canvas.toJSON();
+      case: "json":
+        const jsonData = canvas.toJSON ? canvas.toJSON() : {};
         dataUrl = `data:application/json;base64,${btoa(JSON.stringify(jsonData, null, 2))}`;
         filename = `canvas-${caseId}.json`;
         break;
     }
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = filenam;
+    link.download = filename;
     link.click();
   }
-  // Search functionality
+
+  // Search
   function searchEvidence(query: string) {
     if (!searchEngine || !query.trim()) {
       searchResults = [];
       return;
     }
-    const results = searchEngine.search(query);
-    searchResults = results.map((result) => (result as { item?: unknown }).item);
+    const results = (searchEngine as any).search(query) || [];
+    searchResults = results.map((r: any) => r.item || r);
   }
-  // Generate AI summary for canvas
+
+  // AI summary
   async function generateAISummary() {
     if (!canvas) return;
     try {
-      const canvasObjects = canvas.getObjects();
-      const evidenceObjects = canvasObjects.filter(
-        (obj) => obj.get("objectType") === "evidence"
-      );
-      const evidenceData = evidenceObjects
-        .map((obj) => obj.get("evidenceData"))
-        .filter(Boolean);
+      const canvasObjects = canvas.getObjects ? canvas.getObjects() : [];
+      const evidenceObjects = canvasObjects.filter((obj: any) => obj.get && obj.get("objectType") === "evidence");
+      const evidenceData = evidenceObjects.map((obj: any) => obj.get("evidenceData")).filter(Boolean);
       if (evidenceData.length === 0) {
         alert("No evidence items found on canvas to summarize.");
         return;
       }
-      const summary = await aiSummarizationService.generateEvidenceAnalysis(
-        evidenceData,
-        caseId
-      );
-      // Add summary as a text object on canvas
-      const summaryText = new fabric.IText(
-        `AI SUMMARY:\n${summary.content.substring(0, 200)}...`,
-        {
-          left: 50,
-          top: 50,
-          width: 300,
-          fontSize: 12,
-          fill: "#374151",
-          backgroundColor: "#f0f9ff",
-          padding: 10,
-        }
-      );
+
+      // Resolve the available summarization method at runtime to avoid TS type errors.
+      const svc: any = aiSummarizationService as any;
+      const fn =
+        svc.generateEvidenceAnalysis ??
+        svc.generateSummary ??
+        svc.summarizeEvidence ??
+        svc.summarize ??
+        null;
+
+      if (!fn || typeof fn !== "function") {
+        throw new Error("AI summarization service does not expose a supported method.");
+      }
+
+      const summary = await fn.call(svc, evidenceData, caseId);
+      const summaryText = new (fabric as any).IText(`AI SUMMARY:\n${summary?.content?.substring(0, 200) || ""}...`, {
+        left: 50, top: 50, width: 300, fontSize: 12, fill: "#374151", backgroundColor: "#f0f9ff", padding: 10
+      });
       canvas.add(summaryText);
-      canvas.renderAll();
+      canvas.renderAll && canvas.renderAll();
     } catch (error) {
       console.error("Failed to generate AI summary:", error);
       alert("Failed to generate AI summary. Please try again.");
     }
   }
-  // Reactive statements
-  let state = $derived(get(canvasState));
-  // Exported functions for parent component access
+
+  // Derived/template usage: in template we use $canvasState directly
+  // Exported functions for parent access
   export function addEvidenceToCanvas(evidence: unknown) {
     if (!canvas) return;
-    const evidenceObject = createEvidenceObject(evidence);
-    canvas.add(evidenceObject);
-    canvas.setActiveObject(evidenceObject);
+    const evidenceObject = createEvidenceObject(evidence as any);
+    canvas.add && canvas.add(evidenceObject);
+    canvas.setActiveObject && canvas.setActiveObject(evidenceObject);
   }
+
   export function addElementsToCanvas(elements: unknown[]) {
     if (!canvas || !elements) return;
     elements.forEach((element) => {
-      // Create canvas objects from element data
-      const canvasObject = createCanvasObjectFromData(element);
-      if (canvasObject) {
-        canvas.add(canvasObject);
-      }
+      const canvasObject = createCanvasObjectFromData(element as any);
+      if (canvasObject) canvas.add && canvas.add(canvasObject);
     });
-    canvas.renderAll();
+    canvas.renderAll && canvas.renderAll();
   }
-  function createCanvasObjectFromData(elementData: unknown): fabric.Object | null {
+
+  function createCanvasObjectFromData(elementData: any): any | null {
     try {
-      // Basic implementation - can be expanded based on element types
-      if (elementData.type === "evidence") {
-        return createEvidenceObject(elementData);
-      } else if (elementData.type === "text") {
-        return new fabric.Text(elementData.text || "Text", {
-          left: elementData.left || 100,
-          top: elementData.top || 100,
-          fontSize: elementData.fontSize || 16,
-          fill: elementData.fill || "#333",
+      if (!elementData) return null;
+      if (elementData.type === "evidence") return createEvidenceObject(elementData);
+      if (elementData.type === "text") {
+        return new (fabric as any).Text(elementData.text || "Text", {
+          left: elementData.left || 100, top: elementData.top || 100, fontSize: elementData.fontSize || 16, fill: elementData.fill || "#333"
         });
       }
       return null;
@@ -914,149 +766,115 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div class="mx-auto px-4 max-w-7xl">
+<div class="canvas-editor-container mx-auto px-4 max-w-7xl">
   <!-- Main Toolbar -->
-  <div class="mx-auto px-4 max-w-7xl">
+  <div class="toolbar">
     <!-- File Operations -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => saveCanvas()} title="Save Canvas">
-        <Save size="18" />
-      </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => undo()} disabled={!state.canUndo} title="Undo">
-        <Undo size="18" />
-      </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => redo()} disabled={!state.canRedo} title="Redo">
-        <Redo size="18" />
-      </button>
+    <div class="toolbar-group">
+      <button class="toolbar-btn" onclick={() => saveCanvas()} title="Save Canvas">💾</button>
+      <button class="toolbar-btn" onclick={() => undo()} disabled={!$canvasState.canUndo} title="Undo">↶</button>
+      <button class="toolbar-btn" onclick={() => redo()} disabled={!$canvasState.canRedo} title="Redo">↷</button>
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
+
+    <div class="toolbar-separator" aria-hidden="true"></div>
+
     <!-- Tools -->
-    <div class="mx-auto px-4 max-w-7xl">
+    <div class="toolbar-group">
       {#each tools as tool}
         <button
-          class="mx-auto px-4 max-w-7xl"
-          class:active={state.tool === tool.id}
+          class="toolbar-btn"
+          class:active={$canvasState.tool === tool.id}
           onclick={() => setTool(tool.id)}
           title={tool.label}
         >
-          <svelte:component this={tool.icon} size="18" />
+          <span>{tool.icon}</span>
         </button>
       {/each}
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
+
     <!-- Canvas Controls -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomOut()} title="Zoom Out">
-        <ZoomOut size="18" />
-      </button>
-      <span class="mx-auto px-4 max-w-7xl">{state.zoom}%</span>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomIn()} title="Zoom In">
-        <ZoomIn size="18" />
-      </button>
-      <button
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.showGrid}
-        onclick={() => toggleGrid()}
-        title="Toggle Grid"
-      >
-        <Grid size="18" />
-      </button>
+    <div class="toolbar-group">
+      <button class="toolbar-btn" onclick={() => zoomOut()} title="Zoom Out">➖</button>
+      <span class="zoom-display">{$canvasState.zoom}%</span>
+      <button class="toolbar-btn" onclick={() => zoomIn()} title="Zoom In">➕</button>
+      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid">▦</button>
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
+
     <!-- Object Actions -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => copySelected()} title="Copy">
-        <Copy size="18" />
-      </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => pasteClipboard()} title="Paste">
-        <Copy size="18" />
-      </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => deleteSelected()} title="Delete">
-        <Trash2 size="18" />
-      </button>
+    <div class="toolbar-group">
+      <button class="toolbar-btn" onclick={() => copySelected()} title="Copy">📋</button>
+      <button class="toolbar-btn" onclick={() => pasteClipboard()} title="Paste">📥</button>
+      <button class="toolbar-btn" onclick={() => deleteSelected()} title="Delete">🗑️</button>
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
+
     <!-- AI Features -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => generateAISummary()} title="Generate AI Summary">
-        <FileText size="18" />
-      </button>
+    <div class="toolbar-group">
+      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">🧠</button>
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    <!-- Export -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl">
-        <Download size="18" />
-      </button>
-      <div class="mx-auto px-4 max-w-7xl">
+
+    <!-- Export (use dropdown markup so CSS selectors are used) -->
+    <div class="toolbar-group dropdown">
+      <button class="toolbar-btn" title="Export">⬇️</button>
+      <div class="dropdown-menu" role="menu" aria-hidden="true">
         <button onclick={() => exportCanvas('png')}>Export as PNG</button>
         <button onclick={() => exportCanvas('svg')}>Export as SVG</button>
         <button onclick={() => exportCanvas('json')}>Export as JSON</button>
       </div>
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
+
     <!-- Canvas Info -->
-    <div class="mx-auto px-4 max-w-7xl">
-      Objects: {state.objectCount} | Selected: {state.selectedObjects.length}
+    <div class="toolbar-group">
+      Objects: {$canvasState.objectCount} | Selected: {$canvasState.selectedObjects.length}
     </div>
   </div>
+
   <!-- Content Area -->
-  <div class="mx-auto px-4 max-w-7xl">
+  <div class="grid grid-cols-4 gap-4">
     <!-- Evidence Sidebar -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <div class="mx-auto px-4 max-w-7xl">
-        <div class="mx-auto px-4 max-w-7xl">
-          <Search size="16" />
+    <aside class="col-span-1">
+      <div>
+        <div class="flex items-center gap-2">
+          <span>🔎</span>
           <input
             type="text"
             placeholder="Search evidence..."
-            bind:value={state.searchQuery}
+            value={$canvasState.searchQuery}
             oninput={e => searchEvidence((e.target as HTMLInputElement).value)}
-            class="mx-auto px-4 max-w-7xl"
+            class="w-full"
           />
         </div>
-        <h3 class="mx-auto px-4 max-w-7xl">Evidence Items</h3>
-        <div class="mx-auto px-4 max-w-7xl">
-          {#each state.searchQuery ? searchResults : evidenceItems as evidence}
+        <h3>Evidence Items</h3>
+        <div>
+          {#each ($canvasState.searchQuery ? searchResults : evidenceItems) as evidence}
             <div
-              class="mx-auto px-4 max-w-7xl"
+              class="evidence-item"
               onclick={() => addEvidenceToCanvas(evidence)}
-              keydown={e => e.key === 'Enter' && addEvidenceToCanvas(evidence)}
+              onkeydown={e => (e as KeyboardEvent).key === 'Enter' && addEvidenceToCanvas(evidence)}
               role="button"
               tabindex={0}
             >
-              <div class="mx-auto px-4 max-w-7xl">{evidence.title}</div>
-              <div class="mx-auto px-4 max-w-7xl">{evidence.evidenceType}</div>
+              <div>{evidence.title}</div>
+              <div class="text-sm">{evidence.evidenceType}</div>
             </div>
           {/each}
         </div>
       </div>
-      <div class="mx-auto px-4 max-w-7xl">
-        <h3 class="mx-auto px-4 max-w-7xl">Quick Add</h3>
-        <div class="mx-auto px-4 max-w-7xl">
-          <button class="mx-auto px-4 max-w-7xl" onclick={() => addTimelineToCanvas()}>
-            <Clock size="16" class="mx-auto px-4 max-w-7xl" />
-            Timeline
-          </button>
-          <button class="mx-auto px-4 max-w-7xl" onclick={() => addPersonToCanvas()}>
-            <Users size="16" class="mx-auto px-4 max-w-7xl" />
-            Person
-          </button>
-          <button class="mx-auto px-4 max-w-7xl" onclick={() => addLocationToCanvas()}>
-            <MapPin size="16" class="mx-auto px-4 max-w-7xl" />
-            Location
-          </button>
-          <button class="mx-auto px-4 max-w-7xl" onclick={() => setTool('note')}>
-            <FileText size="16" class="mx-auto px-4 max-w-7xl" />
-            Note
-          </button>
+
+      <div class="mt-4">
+        <h3>Quick Add</h3>
+        <div class="space-y-2">
+          <button class="toolbar-btn" onclick={() => addTimelineToCanvas()}>🕒 Timeline</button>
+          <button class="toolbar-btn" onclick={() => addPersonToCanvas()}>👤 Person</button>
+          <button class="toolbar-btn" onclick={() => addLocationToCanvas()}>📍 Location</button>
+          <button class="toolbar-btn" onclick={() => setTool('note')}>📝 Note</button>
         </div>
       </div>
-    </div>
+    </aside>
+
     <!-- Canvas Area -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <canvas bind:this={canvasElement} class="mx-auto px-4 max-w-7xl"></canvas>
-    </div>
+    <main class="col-span-3">
+      <canvas bind:this={canvasElement} class="canvas-area w-full h-[600px] border"></canvas>
+    </main>
   </div>
 </div>
 
@@ -1095,7 +913,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: not-allowed;
   }
   .toolbar-btn.active {
-    background-color: #dbeaf;
+    background-color: #dbeafe; /* fixed hex */
     color: #2563eb;
   }
   .toolbar-separator {
@@ -1111,10 +929,10 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
   }
   .dropdown {
-    position relative;
+    position: relative; /* fixed missing colon */
   }
   .dropdown-menu {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 0;
     background-color: white;
@@ -1139,7 +957,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: transparent;
     cursor: pointer;
   }
-  .dropdown-menu buttonhover {
+  .dropdown-menu button:hover { /* fixed selector */
     background-color: #f3f4f6;
   }
   .evidence-item {
@@ -1155,4 +973,3 @@ https://svelte.dev/e/js_parse_error -->
     background-size: 20px 20px;
   }
 </style>
-

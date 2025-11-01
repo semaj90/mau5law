@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       analytics,
     } as CaseSummaryResponse);
   } catch (error: unknown) {
-    // MODIFIED: Changed 'any' to 'unknown'
+    // MODIFIED: Changed: 'any' to: 'unknown'
     // Corrected try-catch syntax
     console.error('Case summary generation error:', error);
     return json(
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       analytics,
     } as CaseSummaryResponse);
   } catch (error: unknown) {
-    // MODIFIED: Changed 'any' to 'unknown'
+    // MODIFIED: Changed: 'any' to: 'unknown'
     // Corrected try-catch syntax
     console.error('Case summary retrieval error:', error);
     return json(
@@ -250,7 +250,7 @@ Generate a ${depth} analysis with a structured summary.
     }
     return generateFallbackSummary(caseData);
   } catch (error: unknown) {
-    // MODIFIED: Changed 'any' to 'unknown'
+    // MODIFIED: Changed: 'any' to: 'unknown'
     console.error('AI summary generation error:', error);
     return generateFallbackSummary(caseData);
   }
@@ -301,10 +301,10 @@ function _determineImportance(content: string): 'low' | 'medium' | 'high' {
   const mediumPriorityKeywords = ['review', 'analysis', 'investigation', 'statement'];
   const lowerContent = content.toLowerCase();
   if (highPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
-    return 'high';
+    return: 'high';
   }
   if (mediumPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
-    return 'medium';
+    return: 'medium';
   }
-  return 'low';
+  return: 'low';
 }

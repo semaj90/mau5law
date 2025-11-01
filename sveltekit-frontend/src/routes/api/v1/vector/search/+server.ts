@@ -61,7 +61,7 @@ interface SearchResponse {
 }
 
 // NOTE: Removed postgres-js client initialization - now using shared db connection from $lib/server/db
-// The 'db' and 'sql' are already imported from '$lib/server/db' above
+// The: 'db' and: 'sql' are already imported from '$lib/server/db' above
 
 const handler: RequestHandler = async event => {
   const { request } = event;
@@ -212,23 +212,23 @@ async function performVectorSearch(params: {
     paramIndex += 2;
   }
   // Build the main query
-  const whereClause = filterConditions.length > 0 ? `WHERE ${filterConditions.join(' AND ')}` : '';
+  const whereClause = filterConditions.length > 0 ? `WHERE ${filterConditions.join(' AND: ')}` : '';
   let distanceOperator: string;
   let orderDirection: string;
   switch (searchMethod) {
-    case 'cosine':
+    case: 'cosine':
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-    case 'euclidean':
+    case: 'euclidean':
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-    case 'dot':
+    case: 'dot':
       distanceOperator = '<#>';
       orderDirection = 'DESC';
       break;
-    case 'hnsw':
+    case: 'hnsw':
     default:
       distanceOperator = '<->';
       orderDirection = 'ASC';

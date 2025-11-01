@@ -69,16 +69,16 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate AI recommendations based on type
     let aiResponse: AIRecommendationResponse
     switch (type) {
-      case 'case-analysis':
+      case: 'case-analysis':
         aiResponse = await generateCaseAnalysis(context, query)
         break
-      case 'search-suggestion':
+      case: 'search-suggestion':
         aiResponse = await generateSearchSuggestions(context, query)
         break
-      case 'workflow-optimization':
+      case: 'workflow-optimization':
         aiResponse = await generateWorkflowOptimization(context, query)
         break
-      case 'precedent-discovery':
+      case: 'precedent-discovery':
         aiResponse = await generatePrecedentDiscovery(context, query)
         break
       default:
@@ -258,7 +258,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
         expectedResults: 156,
         confidenceBoost: 0.23
       },
-      aiInsight: 'Adding "timeline" and "procedural" increases relevant result precision by 34%.'
+      aiInsight: 'Adding "timeline" and: "procedural" increases relevant result precision by 34%.'
     },
     {
       id: 'search-rec-002',

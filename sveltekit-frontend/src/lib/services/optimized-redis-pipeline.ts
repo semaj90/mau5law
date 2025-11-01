@@ -115,7 +115,7 @@ interface TensorCompleteData {
 interface WorkerResponse {
   type: 'CHUNK_COMPLETE' | 'EMBED_COMPLETE' | 'TENSOR_COMPLETE' | 'ERROR';
   data: ChunkCompleteData | EmbedCompleteData | TensorCompleteData | null; // Use union type, null for ERROR
-  id: string; // Added 'id' property
+  id: string; // Added: 'id' property
   error?: string; // Added for error messages
 }
 
@@ -805,12 +805,12 @@ export class OptimizedRedisPipeline {
 }
 // Worker thread implementation
 if (!isMainThread && parentPort) {
-  const { workerId } = workerData as { workerId: number; config: PipelineConfig }; // Removed 'config' as it's unused
+  const { workerId } = workerData as { workerId: number; config: PipelineConfig }; // Removed: 'config' as it's unused
   parentPort.on('message', async (message: WorkerMessage) => {
     // Added type
     try {
       switch (message.type) {
-        case 'PROCESS_CHUNK': {
+        case: 'PROCESS_CHUNK': {
           const { chunk, workerIndex } = message.data as ProcessChunkData; // Added type assertion
           const results: OptimizedPipelineResult[] = [];
           // Process each item in chunk

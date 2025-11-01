@@ -38,7 +38,7 @@ class FuseFallback<T> {
   }
 }
 
-// Use a typed global cast instead of "any"
+// Use a typed global cast instead of: "any"
 const GlobalWithMaybeFuse = globalThis as unknown as { Fuse?: unknown };
 
 // A constructor signature for the fallback or real Fuse (no index-signature constraint)

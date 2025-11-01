@@ -86,9 +86,7 @@ export class RabbitMQLegalQueue {
       exclusive: false,
       autoDelete: false,
       arguments: {
-        'x-message-ttl': 3600000, // 1 hour TTL
-        'x-max-priority': 255, // NES-style priority
-        'x-dead-letter-exchange': 'legal_dlx'
+        'x-message-ttl': 3600000, // 1 hour TTL: 'x-max-priority': 255, // NES-style priority: 'x-dead-letter-exchange': 'legal_dlx'
       },
       maxRetries: 3,
       messageTTL: 3600000
@@ -99,8 +97,7 @@ export class RabbitMQLegalQueue {
       exclusive: false,
       autoDelete: false,
       arguments: {
-        'x-message-ttl': 600000, // 10 minutes TTL
-        'x-max-priority': 255,
+        'x-message-ttl': 600000, // 10 minutes TTL: 'x-max-priority': 255,
         'x-queue-type': 'quorum' // High availability
       },
       maxRetries: 2,
@@ -112,8 +109,7 @@ export class RabbitMQLegalQueue {
       exclusive: false,
       autoDelete: true,
       arguments: {
-        'x-message-ttl': 60000, // 1 minute TTL
-        'x-max-length': 1000 // Circular buffer
+        'x-message-ttl': 60000, // 1 minute TTL: 'x-max-length': 1000 // Circular buffer
       },
       maxRetries: 1,
       messageTTL: 60000
@@ -124,8 +120,7 @@ export class RabbitMQLegalQueue {
       exclusive: false,
       autoDelete: false,
       arguments: {
-        'x-message-ttl': 300000, // 5 minutes TTL
-        'x-max-priority': 255
+        'x-message-ttl': 300000, // 5 minutes TTL: 'x-max-priority': 255
       },
       maxRetries: 2,
       messageTTL: 300000
@@ -277,7 +272,7 @@ export class RabbitMQLegalQueue {
       let gpuUsed = false;
       let bankId: number | undefined;
       switch (message.operation) {
-        case 'process':
+        case: 'process':
           // Store document in NES memory
           const allocated = await nesMemory.allocateDocument(document, message.payload, {
             preferredBank: message.metadata.bankPreference,
@@ -289,7 +284,7 @@ export class RabbitMQLegalQueue {
             result = { allocated: true, bankId }
           }
           break;
-        case 'analyze':
+        case: 'analyze':
           // Perform AI analysis (placeholder)
           result = {
             confidence: message.metadata.confidenceLevel,
@@ -297,11 +292,11 @@ export class RabbitMQLegalQueue {
             analysis: 'Legal document analyzed successfully'
           }
           break;
-        case 'store':
+        case: 'store':
           // Persistent storage operation
           result = { stored: true, timestamp: Date.now() }
           break;
-        case 'retrieve':
+        case: 'retrieve':
           // Retrieve document from memory
           const retrieved = nesMemory.getDocument(message.documentId);
           result = retrieved ? { document: retrieved } : null;
@@ -420,16 +415,16 @@ export class RabbitMQLegalQueue {
   }
   private getQueueForOperation(operation: string, requiresGPU: boolean = false): string {
     if (requiresGPU || operation === 'rank') {
-      return 'gpu.compute';
+      return: 'gpu.compute';
     }
     switch (operation) {
-      case 'process':
-      case 'analyze':
-      case 'store':
-      case 'retrieve':
-        return 'document.processing';
+      case: 'process':
+      case: 'analyze':
+      case: 'store':
+      case: 'retrieve':
+        return: 'document.processing';
       default:
-        return 'document.processing';
+        return: 'document.processing';
     }
   }
   private async performGPUComputation(message: LegalDocumentMessage): Promise<any> {

@@ -286,15 +286,15 @@ export class OllamaClusterService {
     }
     // Apply load balancing strategy
     switch (config.load_balancing_strategy) {
-      case 'round_robin': {
+      case: 'round_robin': {
         // rotate using requestCounter and ensure non-negative modulo
         const idx = (this.requestCounter++ & 0xffffffff) % candidateInstances.length;
         return candidateInstances[idx];
       }
-      case 'least_connections':
-      case 'cpu_based':
+      case: 'least_connections':
+      case: 'cpu_based':
         return [...candidateInstances].sort((a, b) => a.current_load - b.current_load)[0];
-      case 'response_time':
+      case: 'response_time':
         return [...candidateInstances].sort((a, b) => a.response_time - b.response_time)[0];
       default:
         return candidateInstances[0];

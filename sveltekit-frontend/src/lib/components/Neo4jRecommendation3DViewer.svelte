@@ -29,9 +29,8 @@ https://svelte.dev/e/js_parse_error -->
     ondispatch?: (event: any) => void;
   } = $props();
 
-  import { onMount, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   import xstateIntegration from '$lib/services/xstate-integration'; // Import central XState service
-  import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
   import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js';
   import { webgpuSOMCache } from '$lib/services/webgpu-som-enhanced-cache.js';
   // Props
@@ -221,8 +220,8 @@ https://svelte.dev/e/js_parse_error -->
         timestamp: new Date().toISOString(),
         confidence: graph.recommendationScore,
       }
-      // TODO: Implement the 'store' method in $lib/services/webgpu-som-enhanced-cache.js
-      // For now, casting to 'any' to suppress the type error.
+      // TODO: Implement the: 'store' method in $lib/services/webgpu-som-enhanced-cache.js
+      // For now, casting to: 'any' to suppress the type error.
       await (webgpuSOMCache as any).store(cacheEntry);
       console.log('📊 Graph cached in WebGPU SOM cache');
     } catch (err) {
@@ -275,9 +274,10 @@ https://svelte.dev/e/js_parse_error -->
    * Update progress animation
    */
   function updateProgressAnimation(deltaTime: number) {
-    // Smooth progress animation
+    // Normalize deltaTime to a ~60fps baseline so progress animations feel consistent
+    const dtFactor = Math.min(Math.max(deltaTime * 60, 0), 1);
     const diff = progressAnimation.target - progressAnimation.value;
-    progressAnimation.value += diff * progressAnimation.speed;
+    progressAnimation.value += diff * progressAnimation.speed * dtFactor;
     // Update progress variable for UI
     progress = progressAnimation.value;
   }
@@ -372,8 +372,8 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive updates for idle state
   $effect(() => {
-    const unsubscribe = xstateIntegration.subscribe((snapshot) => {
-      // Assuming snapshot contains states of all machines, and 'idleDetectionMachine' is its ID
+    const unsubscribe = xstateIntegration.subscribe((snapshot: Record<string, any>) => {
+      // Assuming snapshot contains states of all machines, and: 'idleDetectionMachine' is its ID
       idleState = snapshot.idleDetectionMachine;
     });
     return () => unsubscribe();

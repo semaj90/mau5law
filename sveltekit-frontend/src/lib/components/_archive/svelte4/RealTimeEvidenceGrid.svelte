@@ -85,19 +85,19 @@ https://svelte.dev/e/js_parse_error -->
       .sort((a, b) => {
         let aVal: unknown, bVal: unknown;
         switch (sortBy) {
-          case "date":
+          case: "date":
             aVal = new Date(a.timeline?.updatedAt || 0);
             bVal = new Date(b.timeline?.updatedAt || 0);
             break;
-          case "title":
+          case: "title":
             aVal = a.title.toLowerCase();
             bVal = b.title.toLowerCase();
             break;
-          case "type":
+          case: "type":
             aVal = a.type.toLowerCase();
             bVal = b.type.toLowerCase();
             break;
-          case "relevance":
+          case: "relevance":
             aVal = a.classification?.relevance || 0;
             bVal = b.classification?.relevance || 0;
             break;
@@ -247,13 +247,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case "document":
+      case: "document":
         return FileText;
-      case "image":
+      case: "image":
         return Imag;
-      case "video":
+      case: "video":
         return Video;
-      case "audio":
+      case: "audio":
         return Music;
       default:
         return Fil;
@@ -263,10 +263,10 @@ https://svelte.dev/e/js_parse_error -->
     return new Date(dateString).toLocaleDateString();
   }
   function getRelevanceColor(relevance: number): string {
-    if (relevance >= 0.8) return "text-green-600";
-    if (relevance >= 0.6) return "text-yellow-600";
-    if (relevance >= 0.4) return "text-orange-600";
-    return "text-red-600";
+    if (relevance >= 0.8) return: "text-green-600";
+    if (relevance >= 0.6) return: "text-yellow-600";
+    if (relevance >= 0.4) return: "text-orange-600";
+    return: "text-red-600";
   }
 </script>
 <!-- Connection Status Bar -->
@@ -308,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      on:click={() => evidenceStore.undo()}
+      onclick={() => evidenceStore.undo()}
       disabled={!evidenceStore.canUndo()}
       title="Undo (Ctrl+Z)"
     >
@@ -317,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      on:click={() => evidenceStore.redo()}
+      onclick={() => evidenceStore.redo()}
       disabled={!evidenceStore.canRedo()}
       title="Redo (Ctrl+Y)"
     >
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      on:click={() => syncWithServer()}
+      onclick={() => syncWithServer()}
       disabled={isLoading}
       title="Sync with server"
     >
@@ -344,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <button
           class="px-2 py-1 bg-red-100 hover:bg-red-200 rounded text-red-800"
-          on:click={() => (error = null)}
+          onclick={() => (error = null)}
         >
           <span class="text-sm">Dismiss</span>
           ✕
@@ -399,7 +399,7 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
         >
           {#if sortOrder === "asc"}
             <SortAsc class="w-4 h-4" />
@@ -415,7 +415,7 @@ https://svelte.dev/e/js_parse_error -->
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:click={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+        onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
       >
         {#if viewMode === "grid"}
           <List class="w-4 h-4" />
@@ -425,13 +425,13 @@ https://svelte.dev/e/js_parse_error -->
       </Button>
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => clearSelection()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
         </Button>
         <Button class="bits-btn"
           variant="danger"
           size="sm"
-          on:click={() => {
+          onclick={() => {
             if (confirm(`Delete ${selectedEvidence.size} selected items?`)) {
               selectedEvidence.forEach((id) => deleteEvidence(id));
             }
@@ -441,12 +441,12 @@ https://svelte.dev/e/js_parse_error -->
           Delete
         </Button>
       {:else}
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => selectAll()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectAll()}>
           Select All
         </Button>
       {/if}
       <!-- Add Evidence -->
-      <Button class="bits-btn" on:click={() => createEvidence()}>
+      <Button class="bits-btn" onclick={() => createEvidence()}>
         <span class="mr-1">+</span>
         Add Evidence
       </Button>
@@ -476,7 +476,7 @@ https://svelte.dev/e/js_parse_error -->
             ? "No evidence matches your current filters."
             : "No evidence has been added yet."}
         </p>
-        <Button class="bits-btn" on:click={() => createEvidence()}>
+        <Button class="bits-btn" onclick={() => createEvidence()}>
           Add First Evidence
         </Button>
       </div>
@@ -516,14 +516,14 @@ https://svelte.dev/e/js_parse_error -->
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() => (editingEvidence = (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  onclick={() => (editingEvidence = (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
                 >
                   <Eye class="w-4 h-4" />
                 </Button>
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() => deleteEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  onclick={() => deleteEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
                 >
                   <Trash2 class="w-4 h-4" />
                 </Button>
@@ -546,7 +546,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="mx-auto px-4 max-w-7xl">
                   <Button class="bits-btn"
                     size="sm"
-                    on:click={() => updateEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id, {
+                    onclick={() => updateEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id, {
                         title: (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title,
                         description: (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description,
                       })}
@@ -556,7 +556,7 @@ https://svelte.dev/e/js_parse_error -->
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() => (editingEvidence = null)}
+                    onclick={() => (editingEvidence = null)}
                   >
                     Cancel
                   </Button>
@@ -694,14 +694,14 @@ https://svelte.dev/e/js_parse_error -->
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:click={() => (editingEvidence = (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                      onclick={() => (editingEvidence = (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
                     >
                       <Eye class="w-4 h-4" />
                     </Button>
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:click={() => deleteEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                      onclick={() => deleteEvidence((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
                     >
                       <Trash2 class="w-4 h-4" />
                     </Button>
@@ -727,7 +727,7 @@ https://svelte.dev/e/js_parse_error -->
             variant="ghost"
             size="sm"
             disabled={currentPage === 0}
-            on:click={() => currentPage--}
+            onclick={() => currentPage--}
           >
             Previous
           </Button>
@@ -738,7 +738,7 @@ https://svelte.dev/e/js_parse_error -->
             variant="ghost"
             size="sm"
             disabled={currentPage >= totalPages - 1}
-            on:click={() => currentPage++}
+            onclick={() => currentPage++}
           >
             Next
           </Button>

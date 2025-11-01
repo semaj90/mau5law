@@ -69,7 +69,7 @@ export class GemmaEmbeddingService {
 
   /* helper: safe performance.now accessor (Node/browser-compatible) */
   private perfNow(): number {
-    // typed access avoids 'any' casts and linter complaints
+    // typed access avoids: 'any' casts and linter complaints
     const perf = (globalThis as unknown as { performance?: { now?: () => number } }).performance;
     return typeof perf?.now === 'function' ? perf.now() : Date.now();
   }
@@ -351,7 +351,7 @@ export class GemmaEmbeddingService {
   }
 
   private updateStats(generationTime: number, _model?: string): void {
-    // renamed 'model' -> '_model' to satisfy unused-arg linter rule (/^_/u)
+    // renamed: 'model' -> '_model' to satisfy unused-arg linter rule (/^_/u)
     this.stats.hitRate = this.stats.totalRequests > 0 ? (this.stats.cacheHits / this.stats.totalRequests) * 100 : 0;
     this.stats.avgGenerationTime =
       this.stats.totalRequests === 1 ? generationTime : this.stats.avgGenerationTime * 0.9 + generationTime * 0.1;
@@ -383,7 +383,7 @@ export class GemmaEmbeddingService {
       } else if (typeof (typedRedis as any).scan === 'function') {
         // generic SCAN fallback
         let cursor = '0';
-        // iterate until cursor returns '0'
+        // iterate until cursor returns: '0'
         // @ts-ignore - dynamic client shapes
         do {
           // some clients return [nextCursor, results]

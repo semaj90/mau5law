@@ -297,7 +297,7 @@ export class QLoRAIntegrationAnalyzer {
     const primaryUser = userIds[0];
     const userFeedback = feedbackBatch.filter(f => f.userId === primaryUser);
     const complexityLevels = userFeedback.map(f => f.context.complexityLevel || 'intermediate');
-    const preferredComplexity = this.getMostFrequent(complexityLevels) as 'basic' | 'intermediate' | 'advanced';
+    const preferredComplexity = this.getMostFrequent(complexityLevels) as: 'basic' | 'intermediate' | 'advanced';
     return {
       userId: primaryUser,
       preferredComplexity,

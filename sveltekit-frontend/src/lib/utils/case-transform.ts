@@ -4,8 +4,7 @@
  */
 // Common field mappings for consistency
 export const COMMON_FIELD_MAPPINGS = {
-  // User fields
-  'first_name': 'firstName',
+  // User fields: 'first_name': 'firstName',
   'last_name': 'lastName',
   'hashed_password': 'hashedPassword',
   'email_verified': 'emailVerified',
@@ -19,16 +18,14 @@ export const COMMON_FIELD_MAPPINGS = {
   'updated_at': 'updatedAt',
   'deleted_at': 'deletedAt',
   'avatar_url': 'avatarUrl',
-  // Case fields
-  'case_number': 'caseNumber',
+  // Case fields: 'case_number': 'caseNumber',
   'case_type': 'caseType',
   'legal_status': 'legalStatus',
   'assigned_attorney': 'assignedAttorney',
   'due_date': 'dueDate',
   'priority_level': 'priorityLevel',
   'case_embedding': 'caseEmbedding',
-  // Evidence fields
-  'file_path': 'filePath',
+  // Evidence fields: 'file_path': 'filePath',
   'file_size': 'fileSize',
   'mime_type': 'mimeType',
   'chain_of_custody': 'chainOfCustody',
@@ -36,8 +33,7 @@ export const COMMON_FIELD_MAPPINGS = {
   'collection_date': 'collectionDate',
   'hash_sha256': 'hashSha256',
   'content_text': 'contentText',
-  // Common timestamp fields
-  'uploaded_at': 'uploadedAt',
+  // Common timestamp fields: 'uploaded_at': 'uploadedAt',
   'processed_at': 'processedAt',
   'analyzed_at': 'analyzedAt'
 } as const;

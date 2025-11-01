@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error) {
     console.error('Error fetching recent cases:', error);
-    // Return mock data with "failure default to mock" error message
+    // Return mock data with: "failure default to mock" error message
     const mockFallbackCases = [
       {
         id: 'mock-case-001',
@@ -283,15 +283,15 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const caseItem = mockCases[caseIndex];
     switch (action) {
-      case 'access':
+      case: 'access':
         // Update last accessed time
         caseItem.lastAccessed = new Date().toISOString();
         break;
-      case 'boost':
+      case: 'boost':
         // Temporarily boost priority
         caseItem.confidence = Math.min(1.0, caseItem.confidence + 0.1);
         break;
-      case 'dismiss':
+      case: 'dismiss':
         // Lower priority
         caseItem.confidence = Math.max(0.1, caseItem.confidence - 0.2);
         break;

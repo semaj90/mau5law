@@ -14,7 +14,7 @@ export const documentEmbeddings = pgTable(
     chunkIndex: integer('chunk_index').notNull().default(0),
     chunkText: text('chunk_text').notNull(),
     embedding: vector('embedding', { dimensions: 384 }),
-    // removed .$type<Record<string, unknown>>() to avoid "Untyped function calls may not accept type arguments"
+    // removed .$type<Record<string, unknown>>() to avoid: "Untyped function calls may not accept type arguments"
     metadata: jsonb('metadata').default({}),
     modelUsed: text('model_used').default('nomic-embed-text'),
     createdAt: timestamp('created_at').defaultNow(),

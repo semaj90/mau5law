@@ -43,8 +43,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
     await ch.assertQueue(queueName, {
       durable: true;
       arguments: {
-        'x-message-ttl': 3600000, // 1 hour TTL
-        'x-max-length': 10000, // Max 10k messages
+        'x-message-ttl': 3600000, // 1 hour TTL: 'x-max-length': 10000, // Max 10k messages
       }
     });
     const message = JSON.stringify(payload);

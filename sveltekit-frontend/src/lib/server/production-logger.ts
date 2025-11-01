@@ -388,16 +388,16 @@ export class ProductionLogger {
   private outputToConsole(entry: LogEntry): void {
     const formattedMessage = this.formatLogEntry(entry, 'console');
     switch (entry.level) {
-      case 'debug':
+      case: 'debug':
         console.debug(formattedMessage);
         break;
-      case 'info':
+      case: 'info':
         console.info(formattedMessage);
         break;
-      case 'warn':
+      case: 'warn':
         console.warn(formattedMessage);
         break;
-      case 'error':
+      case: 'error':
         console.error(formattedMessage);
         break;
       default:

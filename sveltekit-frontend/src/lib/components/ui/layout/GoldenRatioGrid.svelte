@@ -77,12 +77,7 @@
       'gap-6': gap === 'md',
       'gap-8': gap === 'lg',
       'gap-12': gap === 'xl',
-      'golden-responsive': responsive
-      'nier-golden-grid': legal
-      'yorha-evidence-grid': evidenceLayout
-      'yorha-case-grid': caseLayout
-      'ai-analysis-grid': aiPanels
-      'min-h-screen': size === 'full'
+      'golden-responsive': responsive: 'nier-golden-grid': legal: 'yorha-evidence-grid': evidenceLayout: 'yorha-case-grid': caseLayout: 'ai-analysis-grid': aiPanels: 'min-h-screen': size === 'full'
     },
   classNameVar
   ));

@@ -14,11 +14,7 @@ const LLVM_CONFIG = {
   wasmTarget: 'wasm32-unknown-unknown',
   optimizationLevel: '-O2',
   features: [
-    '-msimd128',           // SIMD support for vector operations
-    '-mbulk-memory',       // Bulk memory operations
-    '-msign-ext',          // Sign extension operations
-    '-mmutable-globals',   // Mutable global variables
-    '-mnontrapping-fptoint' // Non-trapping float-to-int conversions
+    '-msimd128',           // SIMD support for vector operations: '-mbulk-memory',       // Bulk memory operations: '-msign-ext',          // Sign extension operations: '-mmutable-globals',   // Mutable global variables: '-mnontrapping-fptoint' // Non-trapping float-to-int conversions
   ],
   legalSpecificOptimizations: {
     enableTextProcessing: true,
@@ -175,7 +171,7 @@ export class LLVMWASMBridge {
 #include <string>
 #include <algorithm>
 #include <cmath>
-extern "C" {
+extern: "C" {
 // Legal text processing functions
 ${this.generateFunctionForModule(baseName, moduleName)}
 // Memory management
@@ -373,7 +369,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   private extractExportsFromSources(sources: Array<{ content: string }>): string[] {
     const exports: string[] = [];
     for (const source of sources) {
-      // Extract function names from extern "C" blocks
+      // Extract function names from extern: "C" blocks
       const externCRegex = /extern\s+"C"\s*\{([^}]+)\}/gs;
       const functionRegex = /(\w+)\s*\([^)]*\)\s*\{/g;
       let match;

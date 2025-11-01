@@ -6,7 +6,7 @@
   import { detectiveAnalysisEngine } from '$lib/evidence/detective-analysis-engine';
   import Upload from 'lucide-svelte/icons/upload';
   import FileText from 'lucide-svelte/icons/file-text';
-  import Image from 'lucide-svelte/icons/image'; // Corrected import
+  import ImageIcon from 'lucide-svelte/icons/image'; // renamed to avoid collision with DOM Image
   import AlertCircle from 'lucide-svelte/icons/alert-circle';
   import Loader2 from 'lucide-svelte/icons/loader-2'; // Corrected import
   import Zap from 'lucide-svelte/icons/zap';
@@ -89,7 +89,7 @@
     processingTime: number;
   }
 
-  // Custom Fabric.js object with an 'id' property
+  // Custom Fabric.js object with an: 'id' property
   interface FabricObjectWithId extends fabric.Object {
     id?: string; // Make id optional as not all fabric objects might have it
   }
@@ -103,7 +103,7 @@
     cudaProcessed?: boolean;
     errorMessage?: string;
     canvasObjectId?: string; // This will store the ID of the fabric object
-    ingestionResult?: unknown;
+    ingestionResult?: any; // loosened typing so template checks like .embedding work
     detectiveAnalysis?: DetectiveAnalysisResult; // Typed here
     anchorPoints?: AnchorPoint[]; // Typed here
     timestamp?: number; // Added for unified processing
@@ -436,20 +436,21 @@
           try {
             const ingestionResult = await processEnhancedIngestion(uploadFile);
             uploadFile.ingestionResult = ingestionResult.processing_result;
-            uploadFile.anchorPoints = ingestionResult.anchor_points; // Corrected from anchor_point
+            // cast the incoming anchor_points to our AnchorPoint[] (server may be loosely typed)
+            uploadFile.anchorPoints = ingestionResult.anchor_points as AnchorPoint[]; // explicit cast
             // Start detective analysis
             uploadFile.status = 'detective_analysis';
             const detectiveResult: DetectiveAnalysisResult = await processDetectiveAnalysis(uploadFile); // Typed here
             uploadFile.detectiveAnalysis = detectiveResult;
             uploadFile.status = 'completed';
             // Add file to canvas with anchor points and detective insights
-            await addFileToCanvas(uploadFile, position, uploadResultResponse.data); // Pass the typed data
+            await addFileToCanvas(uploadFile, position, uploadResultResponse.data); // Pass the typed data (param name changed below)
             // Add anchor points visualization
             if (ingestionResult.anchor_points) {
-              await addAnchorPointsToCanvas(uploadFile, ingestionResult.anchor_points);
+              await addAnchorPointsToCanvas(uploadFile, ingestionResult.anchor_points as AnchorPoint[]);
             }
             // Add detective analysis visualization
-            if (detectiveResult.analysis.detectedPatterns.length > 0) {
+            if ((detectiveResult.analysis.detectedPatterns?.length ?? 0) > 0) {
               await addDetectiveInsightsToCanvas(uploadFile, detectiveResult);
             }
           } catch (ingestionError) {
@@ -561,14 +562,15 @@
     };
   }
 
-  async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, uploadResult: UploadResult) {
+  async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, _uploadResult: UploadResult) {
     if (!fabricCanvas) return;
     const file = uploadFile.file;
     if (file.type.startsWith('image/')) {
       // Add image to canvas
       const reader = new FileReader();
       reader.onload = (e) => {
-        const imgElement = new Image();
+        // use the DOM Image constructor directly to avoid colliding with the lucide icon import
+        const imgElement = new window.Image();
         imgElement.onload = () => {
           const fabricImage = new fabric.Image(imgElement, {
             left: position.x,
@@ -655,27 +657,27 @@
   }
 
   function getFileIcon(file: File): string {
-    if (file.type.startsWith('image/')) return '🖼️';
-    if (file.type === 'application/pdf') return '📄';
-    if (file.type.startsWith('video/')) return '🎥';
-    if (file.type.startsWith('audio/')) return '🎵';
-    if (file.type.startsWith('text/')) return '📝';
-    if (file.type.includes('word')) return '📘';
-    if (file.type.includes('excel') || file.type.includes('spreadsheet')) return '📊';
-    return '📎';
+    if (file.type.startsWith('image/')) return: '🖼️';
+    if (file.type === 'application/pdf') return: '📄';
+    if (file.type.startsWith('video/')) return: '🎥';
+    if (file.type.startsWith('audio/')) return: '🎵';
+    if (file.type.startsWith('text/')) return: '📝';
+    if (file.type.includes('word')) return: '📘';
+    if (file.type.includes('excel') || file.type.includes('spreadsheet')) return: '📊';
+    return: '📎';
   }
 
   function getEvidenceType(file: File): string {
-    if (file.type.startsWith('image/')) return 'IMAGE';
-    if (file.type === 'application/pdf') return 'PDF';
-    if (file.type.startsWith('video/')) return 'VIDEO';
-    if (file.type.startsWith('audio/')) return 'AUDIO';
-    if (file.type.startsWith('text/')) return 'TEXT';
-    return 'DOCUMENT';
+    if (file.type.startsWith('image/')) return: 'IMAGE';
+    if (file.type === 'application/pdf') return: 'PDF';
+    if (file.type.startsWith('video/')) return: 'VIDEO';
+    if (file.type.startsWith('audio/')) return: 'AUDIO';
+    if (file.type.startsWith('text/')) return: 'TEXT';
+    return: 'DOCUMENT';
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -1056,15 +1058,15 @@
           <Database class="w-3 h-3" />
           <span>Ingestion</span>
         </div>
-        <div class="stage" class:active={uploadedFiles.some(f => f.ingestionResult?.embedding)}>
+        <div class="stage" class:active={uploadedFiles.some(f => (f.ingestionResult as any)?.embedding)}>
           <Layers class="w-3 h-3" />
           <span>Embeddings</span>
         </div>
-        <div class="stage" class:active={uploadedFiles.some(f => f.ingestionResult?.cluster_id !== undefined)}>
+        <div class="stage" class:active={uploadedFiles.some(f => (f.ingestionResult as any)?.cluster_id !== undefined)}>
           <Cpu class="w-3 h-3" />
           <span>Clustering</span>
         </div>
-        <div class="stage" class:active={uploadedFiles.some(f => f.anchorPoints?.length > 0)}>
+        <div class="stage" class:active={uploadedFiles.some(f => (f.anchorPoints?.length ?? 0) > 0)}>
           <CheckCircle class="w-3 h-3" />
           <span>Complete</span>
         </div>
@@ -1181,10 +1183,10 @@
       </div>
       <div class="files-grid">
         {#each uploadedFiles as file (file.id)}
-          <div class="file-item" class:n64-file={enableN64Style} class:status-{file.status}>
+          <div class="file-item" class:n64-file={enableN64Style} class={"status-" + file.status}>
             <div class="file-icon">
               {#if file.file.type.startsWith('image/')}
-                <Image class="w-4 h-4" />
+                <ImageIcon class="w-4 h-4" />
               {:else}
                 <FileText class="w-4 h-4" />
               {/if}
@@ -1733,8 +1735,13 @@
     border-color: #8B5CF6;
     background: linear-gradient(135deg, #2a1a3e 0%, #1a0a2a 100%);
   }
+  /* toolbar inside the main canvas container (descendant selector) */
+  .enhanced-evidence-canvas .toolbar {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
   @media (max-width: 768px) {
-    .enhanced-evidence-canvas.toolbar { /* Corrected class name */
+    .enhanced-evidence-canvas .toolbar {
       flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;

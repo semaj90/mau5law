@@ -50,7 +50,7 @@ export const goMicroserviceMachine = createMachine({
           target: 'connected.idle',
           actions: assign((_, e: any) => ({,
             connectionStatus: 'connected' as any,
-            healthCheck: { lastCheck: Date.now(), status: 'healthy' as 'healthy', responseTime: e.output.responseTime }
+            healthCheck: { lastCheck: Date.now(), status: 'healthy' as: 'healthy', responseTime: e.output.responseTime }
           })
         },
         onError: {
@@ -125,12 +125,12 @@ export const goMicroserviceMachine = createMachine({
             'done.invoke.periodicHealth': {
               target: 'idle',
               actions: assign((_, e: any) => ({,
-                healthCheck: { lastCheck: Date.now(), status: 'healthy' as 'healthy', responseTime: e.output.responseTime }
+                healthCheck: { lastCheck: Date.now(), status: 'healthy' as: 'healthy', responseTime: e.output.responseTime }
               })
             },
             'error.invoke.periodicHealth': {
               target: 'idle',
-              actions: assign(() => ({ healthCheck: { lastCheck: Date.now(), status: 'unhealthy' as 'unhealthy' } })
+              actions: assign(() => ({ healthCheck: { lastCheck: Date.now(), status: 'unhealthy' as: 'unhealthy' } })
             }
           }
         }

@@ -652,35 +652,35 @@ export class RabbitMQXStateIntegration {
     const startTime = Date.now();
     try {
       switch (message.type) {
-        case 'document_ingestion':
+        case: 'document_ingestion':
           return await this.processDocumentIngestion(message.payload);
-        case 'vector_search':
+        case: 'vector_search':
           return await this.processVectorSearch(message.payload);
-        case 'ai_analysis':
+        case: 'ai_analysis':
           return await this.processAIAnalysis(message.payload);
-        case 'self_prompt':
+        case: 'self_prompt':
           return await this.processSelfPrompt(message.payload);
-        case 'user_history_update':
+        case: 'user_history_update':
           return await this.processUserHistoryUpdate(message.payload);
-        case 'gpu_task':
+        case: 'gpu_task':
           return await this.processGPUTask(message.payload);
-        case 'wasm_compilation':
+        case: 'wasm_compilation':
           return await this.processWASMCompilation(message.payload);
-        case 'wasm_inference':
+        case: 'wasm_inference':
           return await this.processWASMInference(message.payload);
-        case 'wasm_inference_result':
+        case: 'wasm_inference_result':
           return await this.processWASMInferenceResult(message.payload);
-        case 'wasm_model_load':
+        case: 'wasm_model_load':
           return await this.processWASMModelLoad(message.payload);
-        case 'wasm_model_unload':
+        case: 'wasm_model_unload':
           return await this.processWASMModelUnload(message.payload);
-        case 'wasm_batch_inference':
+        case: 'wasm_batch_inference':
           return await this.processWASMBatchInference(message.payload);
-        case 'wasm_stream_inference':
+        case: 'wasm_stream_inference':
           return await this.processWASMStreamInference(message.payload);
-        case 'wasm_health_check':
+        case: 'wasm_health_check':
           return await this.processWASMHealthCheck(message.payload);
-        case 'cache_invalidation':
+        case: 'cache_invalidation':
           return await this.processCacheInvalidation(message.payload);
         default:
           throw new Error(`Unknown message type: ${message.type}`);
@@ -1140,16 +1140,16 @@ export class RabbitMQXStateIntegration {
     // WebAssembly-specific queue routing
     if (messageType?.startsWith('wasm_')) {
       switch (messageType) {
-        case 'wasm_inference':
-        case 'wasm_inference_result':
+        case: 'wasm_inference':
+        case: 'wasm_inference_result':
           return this.queues.WASM_INFERENCE;
-        case 'wasm_batch_inference':
+        case: 'wasm_batch_inference':
           return this.queues.WASM_BATCH;
-        case 'wasm_stream_inference':
+        case: 'wasm_stream_inference':
           return this.queues.WASM_STREAMING;
-        case 'wasm_model_load':
-        case 'wasm_model_unload':
-        case 'wasm_health_check':
+        case: 'wasm_model_load':
+        case: 'wasm_model_unload':
+        case: 'wasm_health_check':
           return this.queues.WASM_MODEL_MANAGEMENT;
         default:
           // Fall through to priority-based routing

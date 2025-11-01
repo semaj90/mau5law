@@ -1,6 +1,6 @@
 /**
  * @file Defines a data structure for routing cognitive tasks based on multiple dimensions.
- * This is a server-only module with '.server.ts' extension.
+ * This is a server-only module with: '.server.ts' extension.
  */
 interface Route {
   tool: string;
@@ -160,15 +160,15 @@ class MultidimensionalRoutingMatrix {
     // Sort by optimization preference
     const sortedRoutes = viableRoutes.sort((a, b) => {
       switch (constraints.optimizeFor) {
-        case 'cost':
+        case: 'cost':
           return a.cost - b.cost;
-        case 'latency':
+        case: 'latency':
           return a.latency - b.latency;
-        case 'quality':
+        case: 'quality':
           return b.quality - a.quality; // Higher is better
-        case 'throughput':
+        case: 'throughput':
           return b.throughput - a.throughput; // Higher is better
-        case 'reliability':
+        case: 'reliability':
           return b.reliability - a.reliability; // Higher is better
         default:
           // Multi-criteria optimization (weighted score)

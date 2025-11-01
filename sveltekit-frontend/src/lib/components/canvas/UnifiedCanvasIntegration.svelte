@@ -142,7 +142,7 @@
       metadata: {
         objectCount: canvasObjects.length,
         lastSync: Date.now(),
-        version '1.0',
+        version: '1.0',
       }
     }
     ondispatch?.(state);

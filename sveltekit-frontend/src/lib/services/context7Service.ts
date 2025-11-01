@@ -383,7 +383,7 @@ export class Context7Service {
    * @returns A list of suggested integrations.
    */
   async suggestIntegration(system: string, securityAspect: string): Promise<string[]> {
-    console.log(`Context7: Suggesting integration for '${system}' with security aspect '${securityAspect}'`);
+    console.log(`Context7: Suggesting integration for: '${system}' with security aspect: '${securityAspect}'`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 150));
     return [
@@ -399,7 +399,7 @@ export class Context7Service {
    * @returns A list of best practice recommendations.
    */
   async generateBestPractices(area: string): Promise<string[]> {
-    console.log(`Context7: Generating best practices for area '${area}'`);
+    console.log(`Context7: Generating best practices for area: '${area}'`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 120));
     if (area === 'performance') {

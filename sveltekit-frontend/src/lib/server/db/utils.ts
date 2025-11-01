@@ -40,7 +40,7 @@ try {
 } catch (e) {
   // Provide explicit runtime stubs that throw if used so failures are clear at call site.
   const makeStub = (name: string): ExprFn => (..._args: unknown[]) => {
-    throw new Error(`drizzle-orm expression '${name}' not available at runtime: ${String(e ?? 'unknown')}`);
+    throw new Error(`drizzle-orm expression: '${name}' not available at runtime: ${String(e ?? 'unknown')}`);
   };
 
   eqExpr = makeStub('eq');

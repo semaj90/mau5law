@@ -410,8 +410,8 @@ export class UnifiedSIMDParser {
           memory_bank: 'CHR_ROM_REDIS_BATCH'
         };
       } else {
-        uncachedIndices.push(i);
-        uncachedStrings.push(jsonStrings[i]);
+        uncachedIndices.push(<any><any>i);
+        uncachedStrings.push(<any><any>jsonStrings[i]);
       }
     }
 

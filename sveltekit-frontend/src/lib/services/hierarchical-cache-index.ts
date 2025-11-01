@@ -443,13 +443,13 @@ export class HierarchicalCacheIndex {
   private selectEntriesForEviction(entries: CacheEntry[], config: CacheLevel): CacheEntry[] {
     const excessCount = entries.length - config.maxSize + 1;
     switch (config.accessPattern) {
-      case 'lru':
+      case: 'lru':
         return entries.sort((a, b) => a.metadata.lastAccess - b.metadata.lastAccess).slice(0, excessCount);
-      case 'lfu':
+      case: 'lfu':
         return entries.sort((a, b) => a.metadata.accessCount - b.metadata.accessCount).slice(0, excessCount);
-      case 'fifo':
+      case: 'fifo':
         return entries.sort((a, b) => a.metadata.timestamp - b.metadata.timestamp).slice(0, excessCount);
-      case 'neural_priority':
+      case: 'neural_priority':
         return entries.sort((a, b) => a.metadata.neuralPriority - b.metadata.neuralPriority).slice(0, excessCount);
       default:
         return entries.slice(0, excessCount);

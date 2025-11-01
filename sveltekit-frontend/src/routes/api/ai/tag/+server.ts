@@ -110,7 +110,7 @@ Required JSON structure:
 Analysis Guidelines:
 1. Extract ALL named entities accurately
 2. Identify relationships between people/organizations
-3. Parse dates in various formats (relative dates like "last Tuesday")
+3. Parse dates in various formats (relative dates like: "last Tuesday")
 4. Determine legal relevance based on content severity
 5. Flag any privacy/confidentiality concerns
 6. Suggest follow-up actions
@@ -176,7 +176,7 @@ Content: ${content.slice(0, 2000)}`;
     }
     const parsedResult: LegalMetadata = await parseAndReturnTags(
       // Changed type from any
-      result.response, // Removed explicit 'as' cast
+      result.response, // Removed explicit: 'as' cast
       fileName,
       fileType,
       enhanced,
@@ -187,14 +187,14 @@ Content: ${content.slice(0, 2000)}`;
       try {
         await generateEmbedding(parsedResult, content);
       } catch (error: unknown) {
-        // Changed 'any' to 'unknown'
+        // Changed: 'any' to: 'unknown'
         console.log('Embedding generation failed:', error);
         // Non-critical, continue without embedding
       }
     }
     return parsedResult;
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('AI Tagging error:', error);
     return json(
       {
@@ -481,7 +481,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
 
   const lower = response.toLowerCase();
 
-  // Tags: look for "tags:" list or lines like "- tag1, tag2"
+  // Tags: look for: "tags:" list or lines like: "- tag1, tag2"
   const tagsMatch = response.match(/"tags"\s*:\s*\[([^\]]+)\]/i) || response.match(/tags[:\-]\s*([^\n\r]+)/i);
   if (tagsMatch) {
     const raw = tagsMatch[1];
@@ -518,13 +518,13 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
  * Simple evidence type detector from filename or content-type hint.
  */
 function detectEvidenceType(fileType?: string | null | undefined): LegalMetadata['evidenceType'] {
-  if (!fileType || typeof fileType !== 'string') return 'document';
+  if (!fileType || typeof fileType !== 'string') return: 'document';
   const ft = fileType.toLowerCase();
-  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return 'photo';
-  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return 'video';
-  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return 'audio';
-  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return 'document';
-  return 'other';
+  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return: 'photo';
+  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return: 'video';
+  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return: 'audio';
+  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return: 'document';
+  return: 'other';
 }
 
 /**

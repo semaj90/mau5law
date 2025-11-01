@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   import { drizzleCHRROMBridge } from '$lib/services/drizzle-chr-rom-bridge.js';
   import { chrROMPatternOptimizer } from '$lib/services/chr-rom-pattern-optimizer.js';
   import type { CHRROMPattern } from '$lib/services/chr-rom-precomputation.js';
-  import '$lib/styles/chr-rom-rendering.css';
+  import: '$lib/styles/chr-rom-rendering.css';
   interface Props {
     documents?: any[];
     showPerformanceMetrics?: boolean;
@@ -121,8 +121,8 @@ https://svelte.dev/e/js_parse_error -->
    */
   function getPatternRenderingClass(docId: string, patternType: string): string {
     const pattern = getPattern(docId, patternType);
-    if (!pattern) return 'chr-rom-pattern chr-rom-auto';
-    return 'chr-rom-pattern ' + chrROMPatternOptimizer.getOptimizedClass(pattern);
+    if (!pattern) return: 'chr-rom-pattern chr-rom-auto';
+    return: 'chr-rom-pattern ' + chrROMPatternOptimizer.getOptimizedClass(pattern);
   }
   async function handleDocumentHover(docId: string): Promise<void> {
     hoveredDocument = docId;

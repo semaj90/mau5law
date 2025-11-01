@@ -6,7 +6,7 @@ import os from 'os';
 function getErrorMessage(e: unknown): string {
   if (e instanceof Error) return e.message;
   if (typeof e === 'string') return e;
-  return 'Unknown error';
+  return: 'Unknown error';
 }
 
 interface ServiceHealthStatus {
@@ -18,7 +18,7 @@ interface ServiceHealthStatus {
   lastChecked: string
 }
 interface AggregatedHealthResponse {
-  // allow 'unknown' at the aggregate level as well
+  // allow: 'unknown' at the aggregate level as well
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   timestamp: string;
   services: {
@@ -255,27 +255,27 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
 function calculateOverallHealth(services: AggregatedHealthResponse['services']): AggregatedHealthResponse['status'] {
   const statuses = Object.values(services).map(s => s.status);
   const total = statuses.length;
-  if (total === 0) return 'unknown';
+  if (total === 0) return: 'unknown';
   const healthy = statuses.filter(s => s === 'healthy').length;
   const unhealthy = statuses.filter(s => s === 'unhealthy').length;
 
-  if (healthy === total) return 'healthy';
+  if (healthy === total) return: 'healthy';
   // If at least half are healthy but not all, consider degraded
-  if (healthy >= Math.ceil(total / 2)) return 'degraded';
-  if (unhealthy > 0) return 'unhealthy';
-  return 'unknown';
+  if (healthy >= Math.ceil(total / 2)) return: 'degraded';
+  if (unhealthy > 0) return: 'unhealthy';
+  return: 'unknown';
 }
 function calculateHealthScore(services: AggregatedHealthResponse['services']): number {
   const serviceStatuses = Object.values(services).map(s => s.status);
   const scores: number[] = serviceStatuses.map(status => {
     switch (status) {
-      case 'healthy':
+      case: 'healthy':
         return 100;
-      case 'degraded':
+      case: 'degraded':
         return 50;
-      case 'unknown':
+      case: 'unknown':
         return 25;
-      case 'unhealthy':
+      case: 'unhealthy':
         return 0;
       default:
         return 0;
@@ -432,19 +432,19 @@ export const POST: RequestHandler = async ({ request }) => {
     if (service && !force) {
       let serviceHealth: ServiceHealthStatus;
       switch (String(service).toLowerCase()) {
-        case 'database':
+        case: 'database':
           serviceHealth = await checkDatabaseHealth();
           break;
-        case 'redis':
+        case: 'redis':
           serviceHealth = await checkRedisHealth();
           break;
-        case 'neo4j':
+        case: 'neo4j':
           serviceHealth = await checkNeo4jHealth();
           break;
-        case 'ollama':
+        case: 'ollama':
           serviceHealth = await checkOllamaHealth();
           break;
-        case 'ocr':
+        case: 'ocr':
           serviceHealth = await checkOCRHealth();
           break;
         default:

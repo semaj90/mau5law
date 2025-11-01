@@ -74,7 +74,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
           datesFiled?: unknown;
           courtLevel?: unknown;
         };
-    // Removed redundant properties from MetaShape as they are now part of the 'case' object or handled separately
+    // Removed redundant properties from MetaShape as they are now part of the: 'case' object or handled separately
     classification?: unknown;
     processing?: unknown;
   };
@@ -189,8 +189,8 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     // This explicit construction ensures only the validated and expected fields are present.
     const normalized: LegalMetadata = {
       // Add other known properties from MetaShape if they are part of LegalMetadata
-      // and need to be preserved. Avoid spreading 'meta' directly to prevent type issues.
-      // For example, if LegalMetadata can have a 'title' property:
+      // and need to be preserved. Avoid spreading: 'meta' directly to prevent type issues.
+      // For example, if LegalMetadata can have a: 'title' property:
       // title: isString(meta?.title) ? (meta!.title as string) : undefined,
       case: defaultCase, // Assign the validated case information
       classification: classification, // Assign the validated classification information
@@ -212,7 +212,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       snippet: rawSnippet, // Assign the extracted raw snippet here
       metadata: meta,
     };
-  }); // No need for 'as SearchResult[]' if types are correctly aligned
+  }); // No need for: 'as SearchResult[]' if types are correctly aligned
 }
 
 export default { upsertToPGVector, searchPGVector };

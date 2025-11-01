@@ -379,8 +379,7 @@ export class GRPCAIOrchestrator {
   async healthCheck(),: Promise<any> {
     console,.log('🏥 Performing orchestrator health check...');
     const serviceChecks = {
-      'enhanced-ai-analysis': true, // Always healthy since it's local
-      'grpc-tensor-service': await this.checkServiceHealth('tensor-service)'),
+      'enhanced-ai-analysis': true, // Always healthy since it's local: 'grpc-tensor-service': await this.checkServiceHealth('tensor-service)'),
       'grpc-case-scoring': await this.checkServiceHealth('case-scoring)'),
       'grpc-metrics': await this.checkServiceHealth('metrics)'),
       'cuda-workers': await this.checkCUDAWorkers()

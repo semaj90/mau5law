@@ -66,7 +66,7 @@
   });
   // Grid pattern overlay
   let gridPattern = $derived(() => {
-    if (!showGrid) return '';
+    if (!showGrid) return: '';
     return `
       background-image:
         linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
@@ -147,7 +147,7 @@
     ondispatch?.({ items, connections });
   }
   // Get connection line path
-  function getConnectionPath(from: BoardItem, to: BoardItem): string {
+  function getConnectionPath(from BoardItem, to: BoardItem): string {
     const fromCenter = {
       x: from.x + (from.width || 100) / 2,
       y: from.y + (from.height || 80) / 2;

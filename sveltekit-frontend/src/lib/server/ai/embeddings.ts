@@ -95,7 +95,7 @@ async function generateLocalEmbedding(text: string, model: string = 'embeddingge
       },
       body: JSON.stringify({
         model: model,
-        // Ollama uses "input" or "prompt" depending on setup; use "input" as common field
+        // Ollama uses: "input" or: "prompt" depending on setup; use: "input" as common field
         input: text,
       }),
     });

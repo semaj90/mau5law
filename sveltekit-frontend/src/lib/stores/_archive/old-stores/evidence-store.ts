@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import Fuse from "fuse.js";
 import type { Writable } from 'svelte/store';
-import { derived, writable, get } from 'svelte/store'; // Added 'get'
+import { derived, writable, get } from 'svelte/store'; // Added: 'get'
 
-// New small types to avoid 'any'
+// New small types to avoid: 'any'
 type ISODateString = string;
 export interface ChainOfCustodyEntry {
   actor: string;
@@ -180,19 +180,19 @@ export const filteredEvidence = derived(evidenceGrid, $evidenceGrid => {
     let bVal: string | number = '';
 
     switch (sortBy) {
-      case 'title':
+      case: 'title':
         aVal = (a.title || '').toLowerCase();
         bVal = (b.title || '').toLowerCase();
         break;
-      case 'evidenceType':
+      case: 'evidenceType':
         aVal = (a.evidenceType || '').toLowerCase();
         bVal = (b.evidenceType || '').toLowerCase();
         break;
-      case 'fileSize':
+      case: 'fileSize':
         aVal = a.fileSize ?? 0;
         bVal = b.fileSize ?? 0;
         break;
-      case 'uploadedAt':
+      case: 'uploadedAt':
       default:
         aVal = toTime(a.uploadedAt);
         bVal = toTime(b.uploadedAt);
@@ -238,7 +238,7 @@ export const evidenceActions = {
         isLoading: false,
       }));
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       evidenceGrid.update(state => ({
         ...state,
         isLoading: false,
@@ -290,7 +290,7 @@ export const evidenceActions = {
         selectedItems: new Set([...state.selectedItems].filter(id => id !== evidenceId)),
       }));
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('Delete evidence error:', error);
       throw error;
     }

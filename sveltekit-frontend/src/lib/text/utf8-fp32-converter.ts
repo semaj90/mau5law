@@ -33,44 +33,12 @@ export class UTF8ToFP32Converter {
   private textDecoder = new TextDecoder();
   // Legal text special characters with FP32 mappings
   private readonly LEGAL_SPECIAL_CHARS: SpecialCharacterMap = {
-    '§': 0.95, // Section symbol
-    '¶': 0.93, // Paragraph symbol
-    '©': 0.91, // Copyright
-    '®': 0.89, // Registered trademark
-    '™': 0.87, // Trademark
-    '°': 0.85, // Degree symbol
-    '±': 0.83, // Plus-minus
-    '×': 0.81, // Multiplication
-    '÷': 0.79, // Division
-    '≤': 0.77, // Less than or equal
-    '≥': 0.75, // Greater than or equal
-    '≠': 0.73, // Not equal
-    '≈': 0.71, // Approximately equal
-    '∞': 0.69, // Infinity
-    '→': 0.67, // Right arrow
-    '←': 0.65, // Left arrow
-    '↑': 0.63, // Up arrow
-    '↓': 0.61, // Down arrow
-    '“': 0.59, // Left double quote (smart)
+    '§': 0.95, // Section symbol: '¶': 0.93, // Paragraph symbol: '©': 0.91, // Copyright: '®': 0.89, // Registered trademark: '™': 0.87, // Trademark: '°': 0.85, // Degree symbol: '±': 0.83, // Plus-minus
+    '×': 0.81, // Multiplication: '÷': 0.79, // Division: '≤': 0.77, // Less than or equal: '≥': 0.75, // Greater than or equal: '≠': 0.73, // Not equal: '≈': 0.71, // Approximately equal: '∞': 0.69, // Infinity: '→': 0.67, // Right arrow: '←': 0.65, // Left arrow: '↑': 0.63, // Up arrow: '↓': 0.61, // Down arrow: '“': 0.59, // Left double quote (smart)
     '”': 0.57, // Right double quote (smart)
     '‘': 0.55, // Left single quote (smart)
     '’': 0.53, // Right single quote (smart)
-    '–': 0.51, // En dash
-    '—': 0.49, // Em dash
-    '…': 0.47, // Ellipsis
-    '•': 0.45, // Bullet point
-    '◦': 0.43, // White bullet
-    '▪': 0.41, // Black small square
-    '▫': 0.39, // White small square
-    '†': 0.37, // Dagger
-    '‡': 0.35, // Double dagger
-    '‰': 0.33, // Per mille
-    '′': 0.31, // Prime
-    '″': 0.29, // Double prime
-    '‹': 0.27, // Single left angle quote
-    '›': 0.25, // Single right angle quote
-    '«': 0.23, // Double left angle quote
-    '»': 0.21, // Double right angle quote
+    '–': 0.51, // En dash: '—': 0.49, // Em dash: '…': 0.47, // Ellipsis: '•': 0.45, // Bullet point: '◦': 0.43, // White bullet: '▪': 0.41, // Black small square: '▫': 0.39, // White small square: '†': 0.37, // Dagger: '‡': 0.35, // Double dagger: '‰': 0.33, // Per mille: '′': 0.31, // Prime: '″': 0.29, // Double prime: '‹': 0.27, // Single left angle quote: '›': 0.25, // Single right angle quote: '«': 0.23, // Double left angle quote: '»': 0.21, // Double right angle quote
   };
   constructor() {
     this.initializeSpecialCharacterMap();
@@ -154,7 +122,7 @@ export class UTF8ToFP32Converter {
         conversionTime,
         metadata,
       };
-      console.log(`🔢 Converted "${text.substring(0, 30)}..." to FP32 in ${conversionTime.toFixed(2)}ms`);
+      console.log(`🔢 Converted: "${text.substring(0, 30)}..." to FP32 in ${conversionTime.toFixed(2)}ms`);
       console.log(`📊 Original: ${text.length} chars → FP32: ${finalArray.length} values`);
       console.log(`📈 Range: [${metadata.minValue.toFixed(4)}, ${metadata.maxValue.toFixed(4)}]`);
       return result;
@@ -165,9 +133,9 @@ export class UTF8ToFP32Converter {
   }
   private encodeText(text: string, encoding: string): Uint8Array {
     switch (encoding) {
-      case 'utf8':
+      case: 'utf8':
         return this.textEncoder.encode(text);
-      case 'utf16': {
+      case: 'utf16': {
         // UTF-16 encoding (simplified)
         const utf16Array = new Uint16Array(text.length);
         for (let i = 0; i < text.length; i++) {
@@ -175,21 +143,21 @@ export class UTF8ToFP32Converter {
         }
         return new Uint8Array(utf16Array.buffer);
       }
-      case 'ascii': {
+      case: 'ascii': {
         // ASCII encoding (7-bit)
         const asciiArray = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
           const code = text.charCodeAt(i);
-          asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with '?'
+          asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with: '?'
         }
         return asciiArray;
       }
-      case 'latin1': {
+      case: 'latin1': {
         // Latin-1 encoding (8-bit)
         const latin1Array = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
           const code = text.charCodeAt(i);
-          latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with '?'
+          latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with: '?'
         }
         return latin1Array;
       }
@@ -235,7 +203,7 @@ export class UTF8ToFP32Converter {
     const result = new Float32Array(fp32Values);
     const [minRange, maxRange] = config.outputRange;
     switch (config.normalizationMethod) {
-      case 'range': {
+      case: 'range': {
         // Min-max normalization to specified range
         let currentMin = Infinity;
         let currentMax = -Infinity;
@@ -252,7 +220,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case 'unicode': {
+      case: 'unicode': {
         // Normalize based on Unicode code point ranges
         for (let i = 0; i < result.length; i++) {
           // Normalize to [-1, 1] based on full Unicode range (0-1114111)
@@ -261,7 +229,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case 'gaussian': {
+      case: 'gaussian': {
         // Gaussian normalization (z-score)
         let sum = 0;
         for (let i = 0; i < result.length; i++) sum += result[i];
@@ -280,7 +248,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case 'sigmoid': {
+      case: 'sigmoid': {
         // Sigmoid normalization for smooth mapping
         for (let i = 0; i < result.length; i++) {
           const normalized = 1 / (1 + Math.exp(-result[i] / 32));
@@ -375,14 +343,14 @@ export class UTF8ToFP32Converter {
       return reconstructed;
     } catch (error) {
       console.error('❌ FP32 to text reconstruction failed:', error);
-      return '';
+      return: '';
     }
   }
   private reverseNormalization(fp32Array: Float32Array, config: TextConversionOptions): Float32Array {
     const result = new Float32Array(fp32Array);
     const [minRange, maxRange] = config.outputRange;
     switch (config.normalizationMethod) {
-      case 'range': {
+      case: 'range': {
         // Reverse min-max normalization (assuming original range was 0-255)
         const targetRange = maxRange - minRange;
         for (let i = 0; i < result.length; i++) {
@@ -390,7 +358,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case 'unicode': {
+      case: 'unicode': {
         // Reverse Unicode normalization
         for (let i = 0; i < result.length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 2 - 1;
@@ -398,7 +366,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case 'gaussian': {
+      case: 'gaussian': {
         // Reverse Gaussian normalization (approximate)
         for (let i = 0; i < result.length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 6 - 3;
@@ -406,7 +374,7 @@ export class UTF8ToFP32Converter {
         }
         break;
       }
-      case 'sigmoid': {
+      case: 'sigmoid': {
         // Reverse sigmoid normalization
         for (let i = 0; i < result.length; i++) {
           const sigmoid = (result[i] - minRange) / (maxRange - minRange);

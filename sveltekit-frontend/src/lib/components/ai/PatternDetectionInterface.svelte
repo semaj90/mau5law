@@ -114,31 +114,31 @@
 
   function getPatternTypeIcon(type: string): string {
     switch (type) {
-      case 'temporal': return '⏰';
-      case 'behavioral': return '👤';
-      case 'financial': return '💰';
-      case 'communication': return '📞';
-      case 'location': return '📍';
-      default: return '🔍';
+      case: 'temporal': return: '⏰';
+      case: 'behavioral': return: '👤';
+      case: 'financial': return: '💰';
+      case: 'communication': return: '📞';
+      case: 'location': return: '📍';
+      default: return: '🔍';
     }
   }
   function getPatternTypeColor(type: string): string {
     switch (type) {
-      case 'temporal': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'behavioral': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'financial': return 'bg-green-100 text-green-800 border-green-200';
-      case 'communication': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'location': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case: 'temporal': return: 'bg-blue-100 text-blue-800 border-blue-200';
+      case: 'behavioral': return: 'bg-purple-100 text-purple-800 border-purple-200';
+      case: 'financial': return: 'bg-green-100 text-green-800 border-green-200';
+      case: 'communication': return: 'bg-orange-100 text-orange-800 border-orange-200';
+      case: 'location': return: 'bg-indigo-100 text-indigo-800 border-indigo-200';
+      default: return: 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   function getRiskLevelColor(risk: string): string {
     switch (risk) {
-      case 'critical': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'medium': return 'text-yellow-600';
-      case 'low': return 'text-green-600';
-      default: return 'text-gray-600';
+      case: 'critical': return: 'text-red-600';
+      case: 'high': return: 'text-orange-600';
+      case: 'medium': return: 'text-yellow-600';
+      case: 'low': return: 'text-green-600';
+      default: return: 'text-gray-600';
     }
   }
 
@@ -161,15 +161,15 @@
   }
 
   function formatDuration(duration: string): string {
-    // Convert duration string to human readable format (expects like "3d" or "12h" or "30m")
+    // Convert duration string to human readable format (expects like: "3d" or: "12h" or: "30m")
     const match = duration.match(/(\d+)([dhm])/);
     if (match) {
       const value = match[1];
       const unit = match[2];
       switch (unit) {
-        case 'd': return `${value} day${value !== '1' ? 's' : ''}`;
-        case 'h': return `${value} hour${value !== '1' ? 's' : ''}`;
-        case 'm': return `${value} minute${value !== '1' ? 's' : ''}`;
+        case: 'd': return `${value} day${value !== '1' ? 's' : ''}`;
+        case: 'h': return `${value} hour${value !== '1' ? 's' : ''}`;
+        case: 'm': return `${value} minute${value !== '1' ? 's' : ''}`;
       }
     }
     return duration;

@@ -83,7 +83,7 @@ import type {
   VectorSearchResult as ProperVectorSearchResult,
   VectorSearchOptions as ProperVectorSearchOptions,
 } from '../types/svelte5-patterns';
-declare module '$lib/types/database' {
+declare module: '$lib/types/database' {
   export type LegalDocument = {
     id: string;
     title: string;
@@ -151,7 +151,7 @@ declare global {
   type WorkerResult = unknown;
 }
 // External Library Types
-declare module '$lib/types' {
+declare module: '$lib/types' {
   // Duplicate removed: // Duplicate removed: export type Case = any
 }
 declare global {

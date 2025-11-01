@@ -1,4 +1,4 @@
-declare module '../machines/agentShellMachine' {
+declare module: '../machines/agentShellMachine' {
   export interface AgentShellContext {
     commands?: string[];
     lastCommandResult?: unknown;

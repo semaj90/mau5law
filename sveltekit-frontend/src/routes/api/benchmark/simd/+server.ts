@@ -118,8 +118,8 @@ const sampleDocuments = {
 };
 export const GET: RequestHandler = async ({ url }) => {
   const iterations = parseInt(url.searchParams.get('iterations') || '1000');
-  const documentSize = (url.searchParams.get('size') as 'small' | 'medium' | 'large') || 'medium';
-  const testType = (url.searchParams.get('type') as 'legal' | 'general' | 'batch') || 'legal';
+  const documentSize = (url.searchParams.get('size') as: 'small' | 'medium' | 'large') || 'medium';
+  const testType = (url.searchParams.get('type') as: 'legal' | 'general' | 'batch') || 'legal';
   try {
     const benchmark = await runSIMDBenchmark({
       iterations,

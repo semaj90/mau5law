@@ -151,7 +151,7 @@ export class EnhancedVectorService {
     await this.qdrant.upsert(this.collectionName, {
       wait: true, // Changed semicolon to comma
       points: [
-        // Removed ')'
+        // Removed: ')'
         {
           id,
           vector: embedding, // Corrected syntax

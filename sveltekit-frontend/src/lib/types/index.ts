@@ -210,7 +210,7 @@ export type {
   WorkerScaleResponse,
 } from './cluster';
 
-// Replace wildcard re-export of './search' (causes duplicate top-level symbols)
+// Replace wildcard re-export of: './search' (causes duplicate top-level symbols)
 // and keep top-level re-exports from './api'.
 export * from './api';
 

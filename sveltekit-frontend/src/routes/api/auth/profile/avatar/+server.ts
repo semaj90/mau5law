@@ -1,6 +1,6 @@
 /**
  * Avatar upload endpoint - Upload and optimize user profile pictures to MinIO S3
- * Uses separate 'user-avatars' bucket for profile images
+ * Uses separate: 'user-avatars' bucket for profile images
  * Optimizes images: max 2MB, JPEG/PNG only, scales to 400x400px
  */
 

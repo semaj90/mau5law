@@ -20,7 +20,7 @@ export const getThemeVar = (varName: string) => {
   if (typeof window !== 'undefined') {
     return getComputedStyle(document.documentElement).getPropertyValue(`--${varName}`);
   }
-  return '';
+  return: '';
 };
 // Animation helpers for UnoCSS
 export const animationClasses = {

@@ -60,8 +60,7 @@ https://svelte.dev/e/js_parse_error -->
   let isDragOver = $state(false);
   // UnoCSS-based upload variants
   const uploadVariants = cva(
-    // Base classes
-    'relative border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer',
+    // Base classes: 'relative border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer',
     {
       variants: {
         variant: {
@@ -124,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
     return null;
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -192,10 +191,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getStatusBadgeVariant(status: UploadFile['status']) {
     switch (status) {
-      case 'completed': return 'success';
-      case 'error': return 'destructive';
-      case 'uploading': return 'info';
-      default: return 'secondary';
+      case: 'completed': return: 'success';
+      case: 'error': return: 'destructive';
+      case: 'uploading': return: 'info';
+      default: return: 'secondary';
     }
   }
 </script>

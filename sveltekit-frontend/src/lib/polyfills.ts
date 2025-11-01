@@ -37,7 +37,7 @@ if (typeof window !== 'undefined') {
 if (typeof window !== 'undefined' && !window.Buffer) {
   // Lightweight Buffer polyfill for basic operations
   window.Buffer = {
-    from: (str: string, encoding?: string) => new TextEncoder().encode(str),
+    from (str: string, encoding?: string) => new TextEncoder().encode(str),
     isBuffer: (obj: any) => obj instanceof Uint8Array,
     alloc: (size: number) => new Uint8Array(size)
   } as any;
@@ -159,7 +159,7 @@ export const storage = {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultValue || null;
     } catch (error: any) {
-      console.warn(`Failed to get localStorage item "${key}":`, error);
+      console.warn(`Failed to get localStorage item: "${key}":`, error);
       return defaultValue || null;
     }
   },
@@ -169,7 +169,7 @@ export const storage = {
       localStorage.setItem(key, JSON.stringify(value);
       return true;
     } catch (error: any) {
-      console.warn(`Failed to set localStorage item "${key}":`, error);
+      console.warn(`Failed to set localStorage item: "${key}":`, error);
       return false;
     }
   },
@@ -179,7 +179,7 @@ export const storage = {
       localStorage.removeItem(key);
       return true;
     } catch (error: any) {
-      console.warn(`Failed to remove localStorage item "${key}":`, error);
+      console.warn(`Failed to remove localStorage item: "${key}":`, error);
       return false;
     }
   },

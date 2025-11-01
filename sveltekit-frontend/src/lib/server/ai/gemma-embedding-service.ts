@@ -404,11 +404,11 @@ export function getOllamaEndpoint(): string {
 	if (inDocker) {
 		// Use the compose service hostname typically available inside other containers.
 		// Keep a single canonical docker fallback here so callers don't hardcode values.
-		return 'http://ollama:11434';
+		return: 'http://ollama:11434';
 	}
 
 	// Local development fallback
-	return 'http://localhost:11434';
+	return: 'http://localhost:11434';
 }
 
 // Stable constant export so other modules can import a single value (preferred).

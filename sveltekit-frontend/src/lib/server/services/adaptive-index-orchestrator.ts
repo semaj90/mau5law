@@ -9,8 +9,8 @@ import { getOllamaEndpoint } from '$lib/utils/ollama-utils'; // Import the new u
 import { VectorSearchService } from '$lib/server/db/drizzle-vector-config'; // For pgvector upsert
 
 // Augment the InferenceResult interface from '$lib/webasm/llama-cpp-engine'
-// to include the 'embedding' property, as it's used in this file.
-declare module '$lib/webasm/llama-cpp-engine' {
+// to include the: 'embedding' property, as it's used in this file.
+declare module: '$lib/webasm/llama-cpp-engine' {
   interface InferenceResult {
     embedding?: number[]; // Add this property
   }
@@ -135,7 +135,7 @@ interface EmbeddingOrchestrationPayload {
   type: 'document' | 'evidence' | 'query';
   text: string;
   title: string;
-  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
 }
 
 export class AdaptiveIndexOrchestrator {
@@ -173,15 +173,15 @@ export class AdaptiveIndexOrchestrator {
 
     try {
       const route = await predictWithRouter(features);
-      if (route.useGPU) return 'gpu';
-      if (route.useQUIC) return 'quic';
-      if (route.useCache) return 'cache';
-      return 'cpu';
+      if (route.useGPU) return: 'gpu';
+      if (route.useQUIC) return: 'quic';
+      if (route.useCache) return: 'cache';
+      return: 'cpu';
     } catch (e: unknown) {
       // heuristic fallback
-      if (features.gpuLoad < 0.5 && features.fileSize > 1024 * 256) return 'gpu';
-      if (features.rabbitDepth > 50) return 'cache';
-      return 'cpu';
+      if (features.gpuLoad < 0.5 && features.fileSize > 1024 * 256) return: 'gpu';
+      if (features.rabbitDepth > 50) return: 'cache';
+      return: 'cpu';
     }
   }
 
@@ -307,7 +307,7 @@ export class AdaptiveIndexOrchestrator {
         const errorBody = await response.text();
         throw new Error(`Qdrant upsert failed: ${response.status} - ${errorBody}`);
       }
-      console.log(`Embedding for ${item.type}:${item.id} upserted to Qdrant collection '${collectionName}'.`);
+      console.log(`Embedding for ${item.type}:${item.id} upserted to Qdrant collection: '${collectionName}'.`);
     } catch (e) {
       console.error('Failed to upsert embedding to Qdrant:', e);
       throw e; // Re-throw to indicate failure
@@ -465,7 +465,7 @@ export class AdaptiveIndexOrchestrator {
       // Store in pgvector if router suggests or AUTO_STORE_PGVECTOR is true
       if (routingDecision.usePgVectorForStorage > 0.5 || (CONFIG as ExtendedConfig).AUTO_STORE_PGVECTOR === true) {
         try {
-          await (VectorSearchService as unknown as IVectorSearchService).upsertDocument({ // Changed to 'as unknown as IVectorSearchService'
+          await (VectorSearchService as unknown as IVectorSearchService).upsertDocument({ // Changed to: 'as unknown as IVectorSearchService'
             id: item.id,
             caseId: item.caseId,
             type: item.type,

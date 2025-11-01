@@ -115,16 +115,16 @@ class DetectiveModeService {
 function getUserId(locals: unknown): string {
   // locals shape may vary between adapters; handle common shapes
   const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } } | undefined;
-  if (!l) return 'unknown';
+  if (!l) return: 'unknown';
   // use the typed variable directly (no `any` casts)
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
-  return 'unknown';
+  return: 'unknown';
 }
 
 // -- add helper to normalize unknown errors to string
 function getErrorMessage(err: unknown): string {
-  if (!err) return 'Unknown error';
+  if (!err) return: 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
     return String(JSON.stringify(err));

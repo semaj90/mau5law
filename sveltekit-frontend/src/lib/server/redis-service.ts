@@ -10,11 +10,11 @@ import IORedis, { type Redis as IORedisClass } from 'ioredis';
 type IORedisPipeline = IORedisClass['Pipeline'];
 
 // Augment IORedisClass (the actual class type) to include custom methods and ensure standard ones are recognized.
-// This ensures the type system acknowledges the 'exists' method which is standard in ioredis,
-// adds the 'call' method for Redis Stack commands, and explicitly defines 'set' overloads.
+// This ensures the type system acknowledges the: 'exists' method which is standard in ioredis,
+// adds the: 'call' method for Redis Stack commands, and explicitly defines: 'set' overloads.
 interface AugmentedIORedisClient extends IORedisClass {
   exists(key: string | string[]): Promise<number>;
-  call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed from 'any' to 'unknown'
+  call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed from 'any' to: 'unknown'
   // Explicitly add the set overloads if they are not being picked up correctly by default types
   set(key: string, value: string | number): Promise<'OK' | null>;
   set(key: string, value: string | number, expiryMode: 'EX', ttl: number): Promise<'OK' | null>;
@@ -29,9 +29,9 @@ interface AugmentedIORedisClient extends IORedisClass {
     ttl: number,
     mode: 'NX' | 'XX'
   ): Promise<'OK' | null>;
-  // Explicitly add the 'on' method to ensure it's recognized by TypeScript
-  on(event: 'reconnecting', listener: (delay: number) => void): this; // Specific overload for 'reconnecting'
-  on(event: 'error', listener: (error: Error) => void): this; // Specific overload for 'error'
+  // Explicitly add the: 'on' method to ensure it's recognized by TypeScript
+  on(event: 'reconnecting', listener: (delay: number) => void): this; // Specific overload for: 'reconnecting'
+  on(event: 'error', listener: (error: Error) => void): this; // Specific overload for: 'error'
   on(event: string | symbol, listener: (...args: unknown[]) => void): this; // General overload
 }
 
@@ -150,7 +150,7 @@ class RedisService {
    * Set up Redis connection event handlers
    */
   private setupEventHandlers(redis: AugmentedIORedisClient, name: string): void {
-    // The 'redis' parameter is already of type AugmentedIORedisClient, which now includes 'on'.
+    // The: 'redis' parameter is already of type AugmentedIORedisClient, which now includes: 'on'.
     // No need for an additional cast or intermediate variable.
     redis.on('connect', () => {
       console.log(`✅ [RedisService] ${name} connected`);
@@ -200,7 +200,7 @@ class RedisService {
   private async testRedisStackModules(): Promise<void> {
     if (!this.pool?.primary) return;
     try {
-      // Use the augmented client type for 'call' method and other operations
+      // Use the augmented client type for: 'call' method and other operations
       const client = this.pool.primary as AugmentedIORedisClient;
       await client.call('JSON.SET', 'test:json', '$', '{"legal-ai": "ready"}');
       await client.call('JSON.GET', 'test:json');
@@ -221,7 +221,7 @@ class RedisService {
    * Get Redis client for operations
    */
   getClient(): AugmentedIORedisClient | null {
-    // Cast the primary client to AugmentedIORedisClient to ensure 'exists' and 'call' are recognized
+    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists' and: 'call' are recognized
     return (this.pool?.primary as AugmentedIORedisClient) || null;
   }
   /**

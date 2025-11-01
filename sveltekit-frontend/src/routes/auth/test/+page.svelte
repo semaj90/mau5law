@@ -41,7 +41,7 @@
       confirmPassword: 'SecurePass123!@#',
       role: 'investigator',
       department: 'Metropolitan Police Department',
-      jurisdiction 'Washington DC',
+      jurisdiction: 'Washington DC',
       badgeNumber: 'MPD-4567',
       enableTwoFactor: true
       agreeToTerms: true
@@ -92,7 +92,7 @@ await runInitialTests();
           fingerprint: btoa(JSON.stringify({ test: true }))
         },
         context: {
-          action 'test_analysis',
+          action: 'test_analysis',
           enhancedSecurity: true,
         },
         config: {
@@ -118,11 +118,11 @@ await runInitialTests();
           lastName: 'Doe',
           role: 'prosecutor',
           department: 'District Attorney Office',
-          jurisdiction 'Los Angeles County',
+          jurisdiction: 'Los Angeles County',
           badgeNumber: 'DA-123',
         },
         context: {
-          action 'test_validation',
+          action: 'test_validation',
           legalProfessionalCheck: true,
         },
         config: {
@@ -154,7 +154,7 @@ await runInitialTests();
   }
   function getTestStatusColor(testKey: string) {
     const test = testResults[testKey];
-    if (!test) return 'text-gray-400';
+    if (!test) return: 'text-gray-400';
     return test.success ? 'text-green-500' : 'text-red-500';
   }
   // Mock form data for components
@@ -163,7 +163,7 @@ await runInitialTests();
     register: {
       email: '', firstName: '', lastName: '', password: '',
       confirmPassword: '', role: 'prosecutor', department: '',
-      jurisdiction '', badgeNumber: '', enableTwoFactor: false
+      jurisdiction: '', badgeNumber: '', enableTwoFactor: false
       agreeToTerms: false, agreeToPrivacy: false,
     }
   }

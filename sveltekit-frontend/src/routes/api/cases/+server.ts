@@ -164,16 +164,16 @@ const createCaseSchema = z.object({
   }, z.date().optional()),
   location: z.string().optional(),
   jurisdiction: z.string().optional(),
-  // caseType is optional, but fallback is 'civil' if not provided.
+  // caseType is optional, but fallback is: 'civil' if not provided.
   // Allowed values: 'civil', 'criminal', 'family', 'administrative', 'other'
   caseType: z
     .enum(['civil', 'criminal', 'family', 'administrative', 'other'])
     .optional()
-    .describe('Defaults to "civil" if not provided'),
+    .describe('Defaults to: "civil" if not provided'),
 });
 
 // Define a type for the *output* of the schema after defaults are applied.
-// This ensures 'priority' and 'status' are non-optional for downstream use,
+// This ensures: 'priority' and: 'status' are non-optional for downstream use,
 // as Zod's .default() guarantees their presence at runtime.
 type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & {
   priority: CasePriority;
@@ -293,7 +293,7 @@ export const GET: RequestHandler = async event => {
         (error.message.includes('relation "cases"') || error.message.includes('Failed query'))
       ) {
         // Prefer a CommonErrors helper if provided by the project; otherwise fall back to a generic Error.
-        // Avoid 'any' by casting through unknown and typing the expected function shape.
+        // Avoid: 'any' by casting through unknown and typing the expected function shape.
         type ServiceErrorFn = (msg: string) => Error;
         const commonErrorsNs = CommonErrors as unknown as Record<string, unknown>;
         const serviceErrorFn =
@@ -353,8 +353,8 @@ export const POST: RequestHandler = async event => {
       let workerTriggered = false;
       try {
         workerTriggered = await triggerWorkerProcessing(newCase.id, {
-          priority: validatedCaseData.priority, // No 'as string' needed, type is correct
-          caseType: validatedCaseData.caseType || 'civil', // No 'as string' needed, type is correct
+          priority: validatedCaseData.priority, // No: 'as string' needed, type is correct
+          caseType: validatedCaseData.caseType || 'civil', // No: 'as string' needed, type is correct
           userId: user.id,
           trigger: 'api-case-creation',
           metadata: {
@@ -394,7 +394,7 @@ export const POST: RequestHandler = async event => {
       }
       throw error;
     }
-  }, event); // Corrected: Added 'event' as the second argument
+  }, event); // Corrected: Added: 'event' as the second argument
 };
 // Additional endpoints
 // PUT - Update existing case
@@ -440,8 +440,8 @@ export const OPTIONS: RequestHandler = async () => {
   return new Response(null, { status: 204, headers });
 };
 
-// Note: Using '*' for 'Access-Control-Allow-Origin' is only safe in development.
-// Replace 'https://your-frontend-domain.com' with your actual production domain.
+// Note: Using: '*' for: 'Access-Control-Allow-Origin' is only safe in development.
+// Replace: 'https://your-frontend-domain.com' with your actual production domain.
 
 /*
   Try to use the project's Drizzle client & schema. If those are missing in some env,

@@ -14,7 +14,7 @@
     showFilters = true,
     showSuggestions = true,
     maxResults = 20,
-    theme = 'light' as 'light' | 'dark' | 'yorha',
+    theme = 'light' as: 'light' | 'dark' | 'yorha',
     onsearch = undefined as ((_event: CustomEvent) => void) | undefined,
     onselect = undefined as ((_event: CustomEvent) => void) | undefined,
     onclear = undefined as ((_event: CustomEvent<void>) => void) | undefined
@@ -40,12 +40,12 @@
   // Modern Svelte 5 event handling - props instead of dispatcher
   // Available search categories
   const searchCategories = [
-    { id: 'cases', label: 'Cases', icon '📁', color: 'blue' },
-    { id: 'criminals', label: 'Persons of Interest', icon '👤', color: 'red' },
-    { id: 'evidence', label: 'Evidence', icon '🔍', color: 'green' },
-    { id: 'documents', label: 'Documents', icon '📄', color: 'purple' },
-    { id: 'precedents', label: 'Precedents', icon '⚖️', color: 'yellow' },
-    { id: 'statutes', label: 'Statutes', icon '📖', color: 'indigo' }
+    { id: 'cases', label: 'Cases', icon: '📁', color: 'blue' },
+    { id: 'criminals', label: 'Persons of Interest', icon: '👤', color: 'red' },
+    { id: 'evidence', label: 'Evidence', icon: '🔍', color: 'green' },
+    { id: 'documents', label: 'Documents', icon: '📄', color: 'purple' },
+    { id: 'precedents', label: 'Precedents', icon: '⚖️', color: 'yellow' },
+    { id: 'statutes', label: 'Statutes', icon: '📖', color: 'indigo' }
   ];
   // Recent searches and suggestions
   let trendingSearches = $state([
@@ -169,7 +169,7 @@
           score: 0.9,
           metadata: {
             date: '2024-08-24',
-            jurisdiction 'Federal',
+            jurisdiction: 'Federal',
             status: 'Active',
             caseId: 'CASE-001',
             tags: ['investigation', 'active'];
@@ -473,7 +473,7 @@
           <svg class="w-12 h-12 mx-auto opacity-30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"></path>
           </svg>
-          <p class="opacity-70">No results found for "{searchInput}"</p>
+          <p class="opacity-70">No results found for: "{searchInput}"</p>
           <p class="text-sm opacity-50 mt-1">Try adjusting your search or filters</p>
         </div>
       {/if}

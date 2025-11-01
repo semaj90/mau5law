@@ -99,7 +99,7 @@
       addToast({
         variant: 'success',
         title: 'Case Created',
-        description: `Legal case "${result.caseTitle || 'Untitled'}" created successfully!`,
+        description: `Legal case: "${result.caseTitle || 'Untitled'}" created successfully!`,
         duration: 5000,
       });
     } catch (error: any) {
@@ -181,7 +181,7 @@
 
   // Correct constructor typing for Svelte components to satisfy TypeScript
   // Svelte 5 runes handle component typing differently; SvelteComponentTyped is deprecated.
-  // Casting to 'any' bypasses the need for explicit constructor types here.
+  // Casting to: 'any' bypasses the need for explicit constructor types here.
   // import type { SvelteComponentTyped } from 'svelte';
   // type ComponentConstructor<
   //   Props = Record<string, any>,

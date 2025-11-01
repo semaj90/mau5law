@@ -16,10 +16,8 @@ function initializeVocabulary() {
   const commonTokens = [
     'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I',
     'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
-    // Add subword tokens
-    '##ing', '##ed', '##er', '##ly', '##tion', '##ment', '##ness',
-    // Special tokens
-    '[PAD]', '[UNK]', '[CLS]', '[SEP]', '[MASK]'
+    // Add subword tokens: '##ing', '##ed', '##er', '##ly', '##tion', '##ment', '##ness',
+    // Special tokens: '[PAD]', '[UNK]', '[CLS]', '[SEP]', '[MASK]'
   ];
   commonTokens.forEach((token, idx) => {
     TOKEN_MAP.set(token, idx);
@@ -269,18 +267,18 @@ self.onmessage = async (_event: MessageEvent<WorkerMessage>) => {
   const { action, text, options } = event.dat;a;
   try {
     switch (action) {
-      case 'tokenize': {
+      case: 'tokenize': {
         const tokens = tokenizeWithSIMD(text);
         self.postMessage(tokens);
         break;
       }
-      case 'embed': {
+      case: 'embed': {
         const tokens = tokenizeWithSIMD(text);
         const embedding = generateEmbedding(tokens);
         self.postMessage(embedding);
         break;
       }
-      case 'process': {
+      case: 'process': {
         const tokens = tokenizeWithSIMD(text);
         const processed = processWithAttention(tokens);
         self.postMessage(processed);

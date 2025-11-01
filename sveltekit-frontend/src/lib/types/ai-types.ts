@@ -22,7 +22,7 @@ export interface EnhancedSearchOptions {
   jurisdiction?: Jurisdiction;
   documentTypes?: string[];
   dateRange?: {
-    from: Date;
+    from Date;
     to: Date;
   };
   maxResults?: number;

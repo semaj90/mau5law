@@ -182,18 +182,18 @@ export class LLMOrchestratorBridge {
       const processingStartTime = performance.now();
       let result: LLMBridgeResponse;
       switch (routingDecision.orchestrator) {
-        case 'server':
+        case: 'server':
           result = await this.executeServerOrchestrator(request, routingDecision);
           this.performanceMetrics.serverRoutedRequests++;
           break;
-        case 'client':
+        case: 'client':
           result = await this.executeClientOrchestrator(request, routingDecision);
           this.performanceMetrics.clientRoutedRequests++;
           break;
-        case 'mcp':
+        case: 'mcp':
           result = await this.executeMCPOrchestrator(request, routingDecision);
           break;
-        case 'hybrid':
+        case: 'hybrid':
           result = await this.executeHybridOrchestrator(request, routingDecision);
           break;
         default:
@@ -270,19 +270,19 @@ export class LLMOrchestratorBridge {
     }
     // Task-based routing
     switch (request.type) {
-      case 'embedding':
+      case: 'embedding':
         return {
           orchestrator: 'client',
           reasoning: 'Embedding tasks are faster on client-side ONNX',
           confidence: 0.9,
         };
-      case 'workflow':
+      case: 'workflow':
         return {
           orchestrator: 'server',
           reasoning: 'Complex workflows require server orchestrator with XState',
           confidence: 0.95,
         };
-      case 'legal_analysis': {
+      case: 'legal_analysis': {
         // Complex legal analysis -> server, simple questions -> client
         const isComplex =
           request.content.length > 500 ||
@@ -295,19 +295,19 @@ export class LLMOrchestratorBridge {
           confidence: 0.8,
         };
       }
-      case 'search':
+      case: 'search':
         return {
           orchestrator: 'server',
           reasoning: 'Search requires pgvector and Neo4j integration',
           confidence: 0.9,
         };
-      case 'document_processing':
+      case: 'document_processing':
         return {
           orchestrator: 'server',
           reasoning: 'Document processing needs full pipeline with caching',
           confidence: 0.85,
         };
-      case 'chat':
+      case: 'chat':
       default:
         // Latency-based routing for chat
         if (
@@ -364,7 +364,7 @@ export class LLMOrchestratorBridge {
       const eventType = `${request.type.toUpperCase()}_REQUEST`;
 
       // Send an event to the enhanced orchestrator via xstateIntegration
-      // Assuming 'enhancedOrchestrator' is the machine ID string.
+      // Assuming: 'enhancedOrchestrator' is the machine ID string.
       const result = await xstateIntegration.sendEvent(enhancedOrchestrator, {
         type: eventType,
         payload: eventPayload,
@@ -435,7 +435,7 @@ export class LLMOrchestratorBridge {
       };
       const result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
       const untyped = result as unknown as UntypedOrchestratorResult;
-      // Ensure executionMetrics is indexable to avoid TS '{}' property errors
+      // Ensure executionMetrics is indexable to avoid TS: '{}' property errors
       const execMetrics = (untyped.executionMetrics ?? {}) as UntypedOrchestratorResult['executionMetrics'];
       const modelUsed = String(untyped.modelUsed ?? '');
       const totalLatency = execMetrics.totalLatency ?? 0;
@@ -546,22 +546,22 @@ export class LLMOrchestratorBridge {
 
   // Helper: map external model names to client orchestrator allowed union
   private mapPreferredModelToClient(model?: string): 'auto' | 'gemma270m' | 'legal-bert' | 'gemma-legal' {
-    if (!model || model === 'auto') return 'auto';
+    if (!model || model === 'auto') return: 'auto';
     switch (model) {
-      case 'gemma270m':
-        return 'gemma270m';
-      case 'legal-bert':
-        return 'legal-bert';
-      // Map various server/variant tags to the client's canonical 'gemma-legal'
-      case 'gemma-legal':
-      case 'gemma-legal:latest':
-      case 'gemma3-legal':
-      case 'gemma3-legal:latest':
-      case 'gemma3-legal:latest:latest':
-        return 'gemma-legal';
+      case: 'gemma270m':
+        return: 'gemma270m';
+      case: 'legal-bert':
+        return: 'legal-bert';
+      // Map various server/variant tags to the client's canonical: 'gemma-legal'
+      case: 'gemma-legal':
+      case: 'gemma-legal:latest':
+      case: 'gemma3-legal':
+      case: 'gemma3-legal:latest':
+      case: 'gemma3-legal:latest:latest':
+        return: 'gemma-legal';
       default:
-        // fallback to 'auto' for server-orchestrator and unknown strings
-        return 'auto';
+        // fallback to: 'auto' for server-orchestrator and unknown strings
+        return: 'auto';
     }
   }
 
@@ -571,50 +571,50 @@ export class LLMOrchestratorBridge {
     bridgeTask: string
   ): 'chat' | 'legal_analysis' | 'context_switch' | 'embedding' | 'rl_training' {
     switch (bridgeTask) {
-      case 'legal_analysis':
-        return 'legal_analysis';
-      case 'embedding':
-        return 'embedding';
-      case 'document_processing':
-        return 'legal_analysis';
-      case 'search':
-        return 'context_switch';
-      case 'workflow':
-        return 'legal_analysis';
-      case 'chat':
+      case: 'legal_analysis':
+        return: 'legal_analysis';
+      case: 'embedding':
+        return: 'embedding';
+      case: 'document_processing':
+        return: 'legal_analysis';
+      case: 'search':
+        return: 'context_switch';
+      case: 'workflow':
+        return: 'legal_analysis';
+      case: 'chat':
       default:
-        return 'chat';
+        return: 'chat';
     }
   }
   private mapTaskTypeToMCP(bridgeTask: string): 'embedding' | 'generation' | 'analysis' | 'search' | 'workflow' {
     switch (bridgeTask) {
-      case 'embedding':
-        return 'embedding';
-      case 'legal_analysis':
-        return 'analysis';
-      case 'document_processing':
-        return 'analysis';
-      case 'search':
-        return 'search';
-      case 'workflow':
-        return 'workflow';
-      case 'chat':
+      case: 'embedding':
+        return: 'embedding';
+      case: 'legal_analysis':
+        return: 'analysis';
+      case: 'document_processing':
+        return: 'analysis';
+      case: 'search':
+        return: 'search';
+      case: 'workflow':
+        return: 'workflow';
+      case: 'chat':
       default:
-        return 'generation';
+        return: 'generation';
     }
   }
   private mapPriorityToMCP(bridgePriority: string): 'low' | 'normal' | 'high' | 'critical' {
     switch (bridgePriority) {
-      case 'low':
-        return 'low';
-      case 'normal':
-        return 'normal';
-      case 'high':
-        return 'high';
-      case 'realtime':
-        return 'critical';
+      case: 'low':
+        return: 'low';
+      case: 'normal':
+        return: 'normal';
+      case: 'high':
+        return: 'high';
+      case: 'realtime':
+        return: 'critical';
       default:
-        return 'normal';
+        return: 'normal';
     }
   }
   private generateRequestId(): string {

@@ -33,17 +33,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const userId = locals?.user?.id || 'test-user';
   try {
     switch (testType) {
-      case 'basic':
+      case: 'basic':
         return await testBasicCaching();
-      case 'parallel':
+      case: 'parallel':
         return await testParallelCaching();
-      case 'rag':
+      case: 'rag':
         return await testRAGCaching();
-      case 'quantized':
+      case: 'quantized':
         return await testQuantizedCaching();
-      case 'stats':
+      case: 'stats':
         return await getCacheStats();
-      case 'legal-api':
+      case: 'legal-api':
         return await testLegalAPIIntegration(userId);
       default:
         return json({ error: 'Invalid test type' }, { status: 400 });

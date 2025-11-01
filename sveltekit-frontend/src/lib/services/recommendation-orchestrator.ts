@@ -166,13 +166,13 @@ export class RecommendationOrchestrator {
         const payload = event.data as { type: string; data?: any };
         const { type, data } = payload;
         switch (type) {
-          case 'recommendation':
+          case: 'recommendation':
             this.addRecommendation(data as Recommendation);
             break;
-          case 'stats':
+          case: 'stats':
             this.updateNESRLStats(data);
             break;
-          case 'action_suggestion':
+          case: 'action_suggestion':
             this.handleActionSuggestion(data);
             break;
         }

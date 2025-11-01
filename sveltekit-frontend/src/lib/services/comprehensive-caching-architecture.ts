@@ -380,12 +380,12 @@ export class ComprehensiveCachingArchitecture {
       try {
         await this.qdrantClient.createPayloadIndex(this.config.qdrant.collection, 'confidentiality_level');
       } catch (error: any) {
-        console.log("Index for 'confidentiality_level' may already exist");
+        console.log("Index for: 'confidentiality_level' may already exist");
       }
       try {
         await this.qdrantClient.createPayloadIndex(this.config.qdrant.collection, 'case_id');
       } catch (error: any) {
-        console.log("Index for 'case_id' may already exist");
+        console.log("Index for: 'case_id' may already exist");
       }
       console.log('📐 Qdrant legal vector collection created');
     } catch (error: any) {
@@ -415,7 +415,7 @@ export class ComprehensiveCachingArchitecture {
     const client = await this.postgresPool.connect();
     try {
       await client.query('CREATE EXTENSION IF NOT EXISTS vector');
-      await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+      await client.query('CREATE EXTENSION IF NOT EXISTS: "uuid-ossp"');
       // Create legal cache table with comprehensive compliance fields
       await client.query(`
         CREATE TABLE IF NOT EXISTS legal_cache (
@@ -442,9 +442,9 @@ export class ComprehensiveCachingArchitecture {
           hit_count INTEGER DEFAULT 0,
           access_count INTEGER DEFAULT 0,
           last_accessed TIMESTAMP,
-          cluster_node TEXT DEFAULT '${this.config.cluster.nodeId}',
+          cluster_node TEXT DEFAULT: '${this.config.cluster.nodeId}',
           compliance_tags TEXT[],
-          audit_level TEXT DEFAULT 'basic',
+          audit_level TEXT DEFAULT: 'basic',
           encrypted BOOLEAN DEFAULT FALSE,
           checksum TEXT
         )
@@ -515,8 +515,7 @@ export class ComprehensiveCachingArchitecture {
       durable: true,
       exclusive: false,
       arguments: {
-        'x-message-ttl': 86400000, // 24 hours
-        'x-max-length': 10000,
+        'x-message-ttl': 86400000, // 24 hours: 'x-max-length': 10000,
       },
     });
     // Bind to legal cache invalidation patterns
@@ -752,19 +751,19 @@ export class ComprehensiveCachingArchitecture {
       try {
         let result: CacheEntry<T> | null = null;
         switch (layer) {
-          case 'loki':
+          case: 'loki':
             result = await this.getFromLoki<T>(key, legalContext);
             break;
-          case 'redis':
+          case: 'redis':
             result = await this.getFromRedis<T>(key, legalContext);
             break;
-          case 'qdrant':
+          case: 'qdrant':
             if (includeEmbedding) result = await this.getFromQdrant<T>(key, legalContext);
             break;
-          case 'postgres':
+          case: 'postgres':
             result = await this.getFromPostgres<T>(key, includeEmbedding, legalContext);
             break;
-          case 'neo4j':
+          case: 'neo4j':
             result = await this.getFromNeo4j<T>(key, legalContext);
             break;
         }
@@ -832,19 +831,19 @@ export class ComprehensiveCachingArchitecture {
     const promises = layers.map(async layer => {
       try {
         switch (layer) {
-          case 'loki':
+          case: 'loki':
             await this.setInLoki(key, cacheEntry);
             break;
-          case 'redis':
+          case: 'redis':
             await this.setInRedis(key, cacheEntry);
             break;
-          case 'qdrant':
+          case: 'qdrant':
             if (embedding) await this.setInQdrant(key, cacheEntry);
             break;
-          case 'postgres':
+          case: 'postgres':
             await this.setInPostgres(key, cacheEntry);
             break;
-          case 'neo4j':
+          case: 'neo4j':
             await this.setInNeo4j(key, cacheEntry);
             break;
         }
@@ -960,13 +959,13 @@ export class ComprehensiveCachingArchitecture {
     const value = parseInt(matches[1], 10);
     const unit = matches[2].toLowerCase();
     switch (unit) {
-      case 'day':
+      case: 'day':
         return value;
-      case 'week':
+      case: 'week':
         return value * 7;
-      case 'month':
+      case: 'month':
         return value * 30;
-      case 'year':
+      case: 'year':
         return value * 365;
       default:
         return 2555;
@@ -999,11 +998,11 @@ export class ComprehensiveCachingArchitecture {
   }
 
   private determineLokiCollection(context?: LegalCacheContext): string {
-    if (context?.privilege_protected) return 'privilege-protected';
-    if (context?.chain_of_custody_required) return 'chain-of-custody';
-    if (context?.case_id) return 'case-data';
-    if (context?.evidence_id) return 'evidence-cache';
-    return 'rag-results';
+    if (context?.privilege_protected) return: 'privilege-protected';
+    if (context?.chain_of_custody_required) return: 'chain-of-custody';
+    if (context?.case_id) return: 'case-data';
+    if (context?.evidence_id) return: 'evidence-cache';
+    return: 'rag-results';
   }
 
   private async getFromRedis<T>(key: string, context?: LegalCacheContext): Promise<CacheEntry<T> | null> {

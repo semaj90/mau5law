@@ -29,13 +29,13 @@ export interface ShimmedRedisClient {
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { // Specify return type here
-  // The 'url' and 'password' variables are not used here as the shim directly uses the pre-configured 'redis' instance.
+  // The: 'url' and: 'password' variables are not used here as the shim directly uses the pre-configured 'redis' instance.
 
   // Minimal typed surface for the shim to avoid `any` usage
   // This RedisLike interface should reflect the methods *used from the underlying `redis` instance*
-  // ioredis client has a comprehensive 'on' method.
+  // ioredis client has a comprehensive: 'on' method.
   type RedisLike = {
-    on: (event: string, listener: (...args: any[]) => void) => void; // ioredis 'on' method
+    on: (event: string, listener: (...args: any[]) => void) => void; // ioredis: 'on' method
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
     quit?: () => Promise<void>;
@@ -64,7 +64,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
   };
 
   // Attach minimal NOAUTH graceful handling
-  client.on('error', (err: unknown) => { // No ?. needed here as 'on' is guaranteed by RedisLike
+  client.on('error', (err: unknown) => { // No ?. needed here as: 'on' is guaranteed by RedisLike
     if (getErrorMessage(err).includes('NOAUTH')) {
       if (!globalThis.__redisNoAuthWarned) {
         console.warn(
@@ -98,7 +98,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
     /**
      * subscribe can be used in two ways:
      *  - subscribe(...channels) -> returns number of subscriptions (or truthy)
-     *  - subscribe(channel, callback) -> creates a dedicated subscriber and invokes callback on 'message'
+     *  - subscribe(channel, callback) -> creates a dedicated subscriber and invokes callback on: 'message'
      */
     subscribe: async (...args: (string | ((channel: string, message: string) => void))[]) => {
       const last = args[args.length - 1];
@@ -146,7 +146,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
       }
     },
     on: (ev: string, fn: (...a: unknown[]) => void) => {
-      client.on(ev, fn); // Simplified, assuming RedisLike guarantees 'on'
+      client.on(ev, fn); // Simplified, assuming RedisLike guarantees: 'on'
     },
     ping: async (message?: string) =>
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),

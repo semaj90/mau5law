@@ -26,7 +26,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     // Mock AI response - replace with actual AI/LLM integration
     const mockResponses = [
-      `Based on your query about "${prompt}", here are some key legal considerations:
+      `Based on your query about: "${prompt}", here are some key legal considerations:
 1. **Relevant Statutes**: This case may fall under PC 211 (Robbery) or PC 459 (Burglary) depending on the specific circumstances.
 2. **Evidence Requirements**:
    - Document all physical evidence thoroughly
@@ -54,7 +54,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 - Statute of limitations varies by charge type
 - Speedy trial requirements must be met
 - Discovery deadlines are critical`,
-      `Analysis of "${prompt}":
+      `Analysis of: "${prompt}":
 **Case Strength Assessment:**
 - Evidence appears substantial but requires expert testimony
 - Witness credibility will be key factor

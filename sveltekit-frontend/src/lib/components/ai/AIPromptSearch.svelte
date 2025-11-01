@@ -3,19 +3,60 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { aiHistory  } from '$lib/stores/unified';
   import Fuse from 'fuse.js';
+  import { aiHistory } from '$lib/stores/unified';
+  import type { Readable } from 'svelte/store';
+
+  type HistoryItem = {
+    prompt?: string;
+    response?: string;
+    timestamp?: string | number;
+    [key: string]: any;
+  };
+
+  // query state
   let query = $state('');
-  let fuse: Fuse<any>;
-  let history = $derived($aiHistory);
+
+  // local copy of history (reactive)
+  let history = $state<HistoryItem[]>([]);
+
+  // Fuse index
+  let fuse: Fuse<HistoryItem> | undefined;
+
+  // subscribe to store and update local history
   $effect(() => {
-    fuse = new Fuse(history, {
-      keys: ['prompt', 'response'],
-      threshold: 0.3,
+    const unsub = (aiHistory as Readable<HistoryItem[]>).subscribe((h) => {
+      history = Array.isArray(h) ? h : [];
     });
+    return unsub;
   });
-  let results = $derived(query && fuse ? fuse.search.map(r => r.item) : history);
+
+  // rebuild fuse whenever history changes (history identity)
+  $effect(() => {
+    if (history && history.length > 0) {
+      fuse = new Fuse(history, {
+        keys: ['prompt', 'response'],
+        threshold: 0.3,
+        ignoreLocation: true,
+      });
+    } else {
+      fuse = undefined;
+    }
+  });
+
+  // derived results: always return an array
+  let results = $derived.by((): HistoryItem[] => {
+    // dependencies
+    query;
+    history;
+    if (!query || !query.trim()) return history;
+    if (!fuse) return history;
+    try {
+      return fuse.search(query).map((r) => r.item);
+    } catch {
+      return history;
+    }
+  });
 </script>
 
 <div class="container mx-auto px-4">
@@ -27,16 +68,16 @@ https://svelte.dev/e/js_parse_error -->
     class="container mx-auto px-4"
   />
   <ul class="container mx-auto px-4">
-    {#each results as item}
+    {#each results ?? [] as item (item.timestamp ?? item.prompt)}
       <li class="container mx-auto px-4">
         <div class="container mx-auto px-4">
-          {(item as { prompt?: unknown; response?: unknown; timestamp?: unknown }).prompt}
+          {String((item as { prompt?: unknown }).prompt ?? '')}
         </div>
         <div class="container mx-auto px-4">
-          {(item as { prompt?: unknown; response?: unknown; timestamp?: unknown }).response}
+          {String((item as { response?: unknown }).response ?? '')}
         </div>
         <div class="container mx-auto px-4">
-          {(item as { prompt?: unknown; response?: unknown; timestamp?: unknown }).timestamp}
+          {String((item as { timestamp?: unknown }).timestamp ?? '')}
         </div>
       </li>
     {/each}

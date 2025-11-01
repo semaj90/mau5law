@@ -101,8 +101,8 @@ interface JobStatusResult {
   status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';
   progress: number;
   error?: string;
-  result?: DocumentProcessingJobResult; // For 'completed'
-  data?: DocumentProcessingJobData; // For 'waiting', 'active', 'delayed'
+  result?: DocumentProcessingJobResult; // For: 'completed'
+  data?: DocumentProcessingJobData; // For: 'waiting', 'active', 'delayed'
 }
 
 interface QueueStatsResult {
@@ -130,8 +130,8 @@ function normalizeJobState(state: string): JobStatusResult['status'] {
 	// allowed states in our JobStatusResult
 	const allowed = new Set(['completed', 'failed', 'waiting', 'active', 'delayed']);
 	if (allowed.has(state)) return state as JobStatusResult['status'];
-	// fallback to 'waiting' when unknown (keeps typing safe)
-	return 'waiting';
+	// fallback to: 'waiting' when unknown (keeps typing safe)
+	return: 'waiting';
 }
 
 // Typed helper to call getJobCounts() without using `any`

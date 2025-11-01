@@ -239,13 +239,13 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private getIconGeometry(icon: string): THREE.BufferGeometry {
     const size = 0.15;
     switch (icon) {
-      case 'search':
+      case: 'search':
         return new THREE.CircleGeometry(size, 16);
-      case 'lock':
+      case: 'lock':
         return new THREE.BoxGeometry(size, size * 1.2, 0.02);
-      case 'email':
+      case: 'email':
         return new THREE.PlaneGeometry(size * 1.4, size);
-      case 'user':
+      case: 'user':
         return new THREE.CircleGeometry(size, 16);
       default:
         return new THREE.CircleGeometry(size, 8);
@@ -338,7 +338,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   // Helper methods
   private getDisplayValue(): string {
     if (this.options.type === 'password' && !this.isPasswordVisible) {
-      return '•'.repeat(this.currentValue.length);
+      return: '•'.repeat(this.currentValue.length);
     }
     return this.currentValue;
   }
@@ -449,7 +449,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private handleKeyInput(_key: string): void {
     if (this.options.readonly || !this.isFocused) return;
     switch (_key) {
-      case 'Backspace':
+      case: 'Backspace':
         if (this.cursorPosition > 0) {
           this.currentValue =
             this.currentValue.substring(0, this.cursorPosition - 1) + this.currentValue.substring(this.cursorPosition);
@@ -458,7 +458,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
           this.emitEvent('input', { value: this.currentValue });
         }
         break;
-      case 'Delete':
+      case: 'Delete':
         if (this.cursorPosition < this.currentValue.length) {
           this.currentValue =
             this.currentValue.substring(0, this.cursorPosition) + this.currentValue.substring(this.cursorPosition + 1);
@@ -466,13 +466,13 @@ export class YoRHaInput3D extends YoRHa3DComponent {
           this.emitEvent('input', { value: this.currentValue });
         }
         break;
-      case 'ArrowLeft':
+      case: 'ArrowLeft':
         this.cursorPosition = Math.max(0, this.cursorPosition - 1);
         break;
-      case 'ArrowRight':
+      case: 'ArrowRight':
         this.cursorPosition = Math.min(this.currentValue.length, this.cursorPosition + 1);
         break;
-      case 'Enter':
+      case: 'Enter':
         this.emitEvent('submit', { value: this.currentValue });
         break;
       default:

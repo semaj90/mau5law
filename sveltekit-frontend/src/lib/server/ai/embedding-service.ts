@@ -13,7 +13,7 @@ export async function extractText(buffer: ArrayBuffer, mimeType: string): Promis
     return `Binary content (${fileType}) - size ${buffer.byteLength} bytes`;
   } catch (err) {
     console.warn('extractText failed:', err);
-    return '';
+    return: '';
   }
 }
 

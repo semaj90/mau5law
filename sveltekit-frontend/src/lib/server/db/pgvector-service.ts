@@ -439,11 +439,11 @@ class PgVectorService {
           ORDER BY count_per_type DESC
         `);
         const additionalStats = await clientWrapper.query(`
-          SELECT 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
+          SELECT: 'embedding_cache' as table_name, COUNT(*) as record_count FROM embedding_cache
           UNION ALL
-          SELECT 'vector_metadata' as table_name, COUNT(*) as record_count FROM vector_metadata
+          SELECT: 'vector_metadata' as table_name, COUNT(*) as record_count FROM vector_metadata
           UNION ALL
-          SELECT 'vector_operations' as table_name, COUNT(*) as record_count FROM vector_operations
+          SELECT: 'vector_operations' as table_name, COUNT(*) as record_count FROM vector_operations
         `);
         const indexStats = await clientWrapper.query(`
           SELECT schemaname, tablename, indexname, indexdef

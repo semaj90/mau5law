@@ -15,7 +15,7 @@ async function getRedisClient(): Promise<RedisClientType> {
 
     redisClient = redis;
 
-    // Provide an explicit type for the error parameter to avoid implicit 'any'
+    // Provide an explicit type for the error parameter to avoid implicit: 'any'
     redisClient.on('error', (err: unknown) => console.error('Redis Client Error', err));
     await redisClient.connect();
     console.log('Connected to Redis for cognitive cache.');

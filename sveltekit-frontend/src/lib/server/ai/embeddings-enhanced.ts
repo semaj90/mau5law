@@ -86,21 +86,21 @@ async function extractDocumentStructure(text: string): Promise<any> {
 function detectDocumentType(text: string): string {
   const lowerText = text.toLowerCase();
   if (lowerText.includes('contract') || lowerText.includes('agreement')) {
-    return 'contract';
+    return: 'contract';
   }
   if (lowerText.includes('complaint') || lowerText.includes('petition')) {
-    return 'pleading';
+    return: 'pleading';
   }
   if (lowerText.includes('motion') || lowerText.includes('brief')) {
-    return 'motion';
+    return: 'motion';
   }
   if (lowerText.includes('deposition') || lowerText.includes('transcript')) {
-    return 'deposition';
+    return: 'deposition';
   }
   if (lowerText.includes('evidence') || lowerText.includes('exhibit')) {
-    return 'evidence';
+    return: 'evidence';
   }
-  return 'general';
+  return: 'general';
 }
 function extractKeyPhrases(text: string): string[] {
   // Simple key phrase extraction

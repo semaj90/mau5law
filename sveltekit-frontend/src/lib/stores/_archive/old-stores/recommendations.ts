@@ -152,7 +152,7 @@ function normalizeErrorMessage(err: unknown): string {
   try {
     return String(err ?? 'Unknown error');
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -172,7 +172,7 @@ function normalizeBehaviorInsights(
   // If it's an array, assume it's a trends array and try to normalize its elements
   if (Array.isArray(v)) {
     const normalizedTrends: Array<TrendItem> = v.map(item => {
-      // Basic normalization for trend items, assuming they have a 'score'
+      // Basic normalization for trend items, assuming they have a: 'score'
       if (isRecord(item) && typeof item.score === 'number') {
         return { date: typeof item.date === 'string' ? item.date : new Date().toISOString(), score: item.score };
       }

@@ -183,7 +183,7 @@ export const cache = {
     // In-memory storage with TTL simulation
     const data = JSON.stringify(value);
     console.log(`📝 Cache SET: ${key} (TTL: ${ttlSeconds}s)`);
-    return 'OK';
+    return: 'OK';
   },
   async get(_key: string): Promise<any> {
     console.log(`📖 Cache GET: ${key}`);

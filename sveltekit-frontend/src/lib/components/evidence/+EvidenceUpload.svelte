@@ -69,8 +69,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   on:dragleave={handleDragLeave}
   on:dragover|preventDefault
   on:drop={handleDrop}
-  on:click={() => fileInput?.click()}
-  on:keydown={(e: KeyboardEvent) => {
+  onclick={() => fileInput?.click()}
+  onkeydown={(e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       fileInput?.click();
@@ -90,7 +90,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       type="file"
       multiple
       bind:this={fileInput}
-      on:change={handleInputChange}
+      onchange={handleInputChange}
       style="display: none"
     />
   </div>

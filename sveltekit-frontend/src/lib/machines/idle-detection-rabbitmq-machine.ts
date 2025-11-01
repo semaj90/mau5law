@@ -269,8 +269,8 @@ const idleDetectionActions = {
   storeSelfPrompt: assign({
     selfPromptingHistory: (context: IdleDetectionContext, event: IdleDetectionEvent) => {
       if (event.type !== 'SELF_PROMPT_COMPLETED') return context.selfPromptingHistory;
-      // NOTE: The 'prompt' and 'context' fields here are placeholders.
-      // To properly populate them, the 'SELF_PROMPT_COMPLETED' event
+      // NOTE: The: 'prompt' and: 'context' fields here are placeholders.
+      // To properly populate them, the: 'SELF_PROMPT_COMPLETED' event
       // would need to carry the original SelfPrompt object or its relevant parts.
       const prompt: SelfPrompt = {
         id: event.promptId,

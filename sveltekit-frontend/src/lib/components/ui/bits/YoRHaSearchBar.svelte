@@ -47,64 +47,64 @@
       id: '1',
       text: 'analyze contract liability clauses',
       type: 'suggestion',
-      icon '📋',
-      description 'AI analysis of liability terms',
+      icon: '📋',
+      description: 'AI analysis of liability terms',
       category: 'Contract Analysis',
     },
     {
       id: '2',
       text: 'search case precedents for employment law',
       type: 'suggestion',
-      icon '⚖️',
-      description 'Find relevant court decisions',
+      icon: '⚖️',
+      description: 'Find relevant court decisions',
       category: 'Legal Research',
     },
     {
       id: '3',
       text: 'evidence chain of custody verification',
       type: 'suggestion',
-      icon '🔍',
-      description 'Verify evidence integrity',
+      icon: '🔍',
+      description: 'Verify evidence integrity',
       category: 'Evidence Analysis',
     },
     {
       id: '4',
       text: 'generate citation format for brief',
       type: 'suggestion',
-      icon '📚',
-      description 'Auto-format legal citations',
+      icon: '📚',
+      description: 'Auto-format legal citations',
       category: 'Document Preparation',
     },
     {
       id: '5',
       text: '/analyze',
       type: 'command',
-      icon '🤖',
-      description 'AI analysis command',
+      icon: '🤖',
+      description: 'AI analysis command',
       category: 'System Commands',
     },
     {
       id: '6',
       text: '/search',
       type: 'command',
-      icon '🔎',
-      description 'Advanced search mode',
+      icon: '🔎',
+      description: 'Advanced search mode',
       category: 'System Commands',
     },
     {
       id: '7',
       text: '/evidence',
       type: 'command',
-      icon '📂',
-      description 'Evidence management',
+      icon: '📂',
+      description: 'Evidence management',
       category: 'System Commands',
     },
     {
       id: '8',
       text: 'intellectual property dispute analysis',
       type: 'recent',
-      icon '📝',
-      description 'Recent search',
+      icon: '📝',
+      description: 'Recent search',
       category: 'Recent Queries',
     }
   ];
@@ -125,36 +125,36 @@
     yorha: {
       container: 'bg-black border-2 border-green-400 shadow-[0_0_40px_rgba(0,255,65,0.4)]',
       input: 'bg-transparent text-green-400 placeholder-green-400/50 font-mono tracking-wide',
-      suggestion 'hover:bg-green-400/15 text-green-400 border-green-400/30',
-      activeSuggestion 'bg-green-400/25 text-green-300 border-green-400/50',
-      icon 'text-green-400 filter drop-shadow-[0_0_8px_currentColor]',
+      suggestion: 'hover:bg-green-400/15 text-green-400 border-green-400/30',
+      activeSuggestion: 'bg-green-400/25 text-green-300 border-green-400/50',
+      icon: 'text-green-400 filter drop-shadow-[0_0_8px_currentColor]',
       loading: 'text-green-400',
       glow: 'shadow-[0_0_30px_rgba(0,255,65,0.6)]',
     },
     gaming: {
       container: 'bg-black border border-green-400/50 shadow-[0_0_20px_rgba(0,255,65,0.3)]',
       input: 'bg-transparent text-green-400 placeholder-green-400/60',
-      suggestion 'hover:bg-green-400/10 text-green-400',
-      activeSuggestion 'bg-green-400/20 text-green-300',
-      icon 'text-green-400',
+      suggestion: 'hover:bg-green-400/10 text-green-400',
+      activeSuggestion: 'bg-green-400/20 text-green-300',
+      icon: 'text-green-400',
       loading: 'text-green-400',
       glow: 'shadow-[0_0_20px_rgba(0,255,65,0.4)]',
     },
     legal: {
       container: 'bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700',
       input: 'bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400',
-      suggestion 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100',
-      activeSuggestion 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-300',
-      icon 'text-slate-600 dark:text-slate-400',
+      suggestion: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100',
+      activeSuggestion: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-300',
+      icon: 'text-slate-600 dark:text-slate-400',
       loading: 'text-indigo-600 dark:text-indigo-400',
       glow: 'shadow-lg',
     },
     default: {
       container: 'bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700',
       input: 'bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400',
-      suggestion 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100',
-      activeSuggestion 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-300',
-      icon 'text-gray-600 dark:text-gray-400',
+      suggestion: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100',
+      activeSuggestion: 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-300',
+      icon: 'text-gray-600 dark:text-gray-400',
       loading: 'text-blue-600 dark:text-blue-400',
       glow: 'shadow-lg',
     }
@@ -189,15 +189,15 @@
   function handleKeydown(_event: KeyboardEvent) {
     if (!showSuggestions) return;
     switch (event.key) {
-      case 'ArrowDown':
+      case: 'ArrowDown':
         event.preventDefault();
         selectedIndex = Math.min(selectedIndex + 1, allSuggestions().length - 1);
         break;
-      case 'ArrowUp':
+      case: 'ArrowUp':
         event.preventDefault();
         selectedIndex = Math.max(selectedIndex - 1, -1);
         break;
-      case 'Enter':
+      case: 'Enter':
         event.preventDefault();
         if (selectedIndex >= 0) {
           selectSuggestion(allSuggestions()[selectedIndex]);
@@ -205,12 +205,12 @@
           handleSearch();
         }
         break;
-      case 'Escape':
+      case: 'Escape':
         showSuggestions = false;
         selectedIndex = -1;
         inputElement.blur();
         break;
-      case 'Tab':
+      case: 'Tab':
         if (selectedIndex >= 0) {
           event.preventDefault();
           selectSuggestion(allSuggestions()[selectedIndex]);

@@ -173,7 +173,7 @@ async function transcribeAudio(file: File): Promise<string> {
       /* ignore */
     }
   }
-  return '[Simulated transcript: integrate STT service]';
+  return: '[Simulated transcript: integrate STT service]';
 }
 
 export const POST: RequestHandler = async ({ request }) => {

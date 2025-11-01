@@ -12,12 +12,12 @@ import { connect } from 'nats';
 import { redisService } from '../redis-service.js';
 import { createHash } from 'crypto';
 import { fastStringify, fastParse } from '../../utils/fast-json.js';
-// Minimal connection interface to avoid depending on specific 'nats' typings in this module.
+// Minimal connection interface to avoid depending on specific: 'nats' typings in this module.
 type MinimalNatsSubscription<T = { data: Uint8Array; reply?: string }> = AsyncIterable<T> & {
   unsubscribe?: () => void;
   close?: () => void;
   // support async-iterable early termination if available
-  // Replace `any` with `unknown` to avoid the "Unexpected any" diagnostics
+  // Replace `any` with `unknown` to avoid the: "Unexpected any" diagnostics
   return?: (value?: unknown) => Promise<IteratorResult<T>>;
 };
 type MinimalNatsConnection = {
@@ -381,16 +381,16 @@ export class NatsQuicSearchService {
       // Set TTL based on priority
       let ttl: number;
       switch (priority) {
-        case 'realtime':
+        case: 'realtime':
           ttl = 60;
           break; // 1 minute
-        case 'high':
+        case: 'high':
           ttl = 300;
           break; // 5 minutes
-        case 'normal':
+        case: 'normal':
           ttl = 1800;
           break; // 30 minutes
-        case 'low':
+        case: 'low':
           ttl = 3600;
           break; // 1 hour
         default:
@@ -456,7 +456,7 @@ export class NatsQuicSearchService {
     if (!this.nats || !this.isInitialized) {
       console.warn('⚠️ NATS Search Service not available, using direct search fallback');
       // Return a dummy ID to indicate fallback mode
-      return 'fallback-' + Date.now();
+      return: 'fallback-' + Date.now();
     }
     const searchRequest: SearchRequest = {
       ...request,
@@ -525,7 +525,7 @@ export class NatsQuicSearchService {
   ): Promise<SearchResult[]> {
     // Basic deterministic mock implementation for testing/fallback:
     // - Produces up to `limit` results
-    // - Computes a stable "score" from the embedding sum so results are repeatable
+    // - Computes a stable: "score" from the embedding sum so results are repeatable
     if (!Array.isArray(embedding) || embedding.length === 0) return [];
 
     const sum = embedding.reduce((s, v) => s + (typeof v === 'number' ? v : 0), 0);

@@ -247,7 +247,7 @@
   function handleWebSocketMessage(data: unknown) {
     const payload = data as any;
     switch (payload.type) {
-      case 'connected':
+      case: 'connected':
         clientId = (payload.clientId as string) ?? clientId;
         gpuStatus = (payload.gpuConfig as any) ?? gpuStatus;
         // update derived GPU fields
@@ -255,7 +255,7 @@
         tensorRTEnabled = !!(gpuStatus as any)?.tensorRT?.enabled;
         console.log('Connected with ID:', clientId);
         break;
-      case 'chat_response':
+      case: 'chat_response':
         {
           const content = (payload.response ?? payload.content) as string;
           const message: GPUChatMessage = {
@@ -272,25 +272,25 @@
           }
         }
         break;
-      case 'typing':
+      case: 'typing':
         isTyping = Boolean(payload.isTyping);
         break;
-      case 'user_joined':
+      case: 'user_joined':
         connectedUsers++;
         showNotification(`User joined room: ${payload.clientId}`, 'info');
         break;
-      case 'user_left':
+      case: 'user_left':
         connectedUsers = Math.max(0, connectedUsers - 1);
         break;
-      case 'document_processed':
+      case: 'document_processed':
         showNotification('Document processed successfully', 'success');
         handleDocumentResult(payload);
         break;
-      case 'batch_complete':
+      case: 'batch_complete':
         handleBatchResults(payload.results as any[]);
         batchMode = false;
         break;
-      case 'error':
+      case: 'error':
         console.error(payload.error);
         showNotification('Error: ' + payload.error, 'error');
         isTyping = false;
@@ -982,7 +982,7 @@
   }
   /* Messages */
   .messages-container {
-    flex: 1,
+    flex: 1;
     overflow: hidden;
     padding: 2rem;
   }
@@ -1067,10 +1067,10 @@
     animation: typing 1.4s infinite;
   }
   .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2,
+    animation-delay: 0.2s;
   }
   .typing-indicator span:nth-child(3) {
-    animation-delay: 0.4,
+    animation-delay: 0.4s;
   }
   /* Speaking Indicator */
   .speaking-indicator {
@@ -1150,7 +1150,7 @@
     width: 100%;
   }
   .message-input {
-    flex: 1,
+    flex: 1;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.75rem;
@@ -1190,12 +1190,12 @@
     background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
     padding: 0.75rem 1.5rem;
   }
-  .send-buttonhover:not(:disabled),
+  .send-button:hover:not(:disabled),
   .add-batch-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
   }
-  .send-buttondisabled {
+  .send-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }

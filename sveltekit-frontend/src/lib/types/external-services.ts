@@ -37,7 +37,7 @@ export interface OllamaInferenceService {
   infer(request: LlamaInferenceRequest): Promise<LlamaInferenceResponse>;
 }
 
-// Legacy "I*" interfaces were present here and conflicted with canonical
+// Legacy: "I*" interfaces were present here and conflicted with canonical
 // interface definitions further down in this file. Replace them with small
 // compatibility aliases mapping to the canonical types to avoid duplicate
 // declarations while preserving backwards compatibility.
@@ -108,9 +108,9 @@ export type OllamaEmbeddingModel = 'embeddinggemma:latest' | 'nomic-embed-text' 
 export type OllamaCompletionModel = 'gemma3' | 'gemma3-mini' | string; // allow custom model ids
 
 export interface OllamaConfig {
-  host?: string; // e.g. 'http://localhost' or 'http://host.docker.internal'
+  host?: string; // e.g. 'http://localhost' or: 'http://host.docker.internal'
   port?: number; // default 11434
-  basePath?: string; // default '/api'
+  basePath?: string; // default: '/api'
   model?: OllamaEmbeddingModel | OllamaCompletionModel;
 }
 

@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'embed'
     const body = await request.json()
     switch (action) {
-      case 'embed':
+      case: 'embed':
         // Validate embedding request
         const validatedData = EmbeddingRequestSchema.safeParse(body)
         if (!validatedData.success) {
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           } : undefined,
           error: result.error
         })
-      case 'search':
+      case: 'search':
         // Validate search request
         const searchData = VectorSearchSchema.safeParse(body)
         if (!searchData.success) {
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             total_results: searchResults.length,
           }
         })
-      case 'batch',:
+      case: 'batch',:
         // Validate batch request
         const batchData = BatchEmbeddingSchema.safeParse(body)
         if (!batchData.success) {
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status'
     switch (action) {
-      case 'status':
+      case: 'status':
         return json({
           success: true,
           data: {
@@ -153,13 +153,13 @@ export const GET: RequestHandler = async ({ url }) => {
             features: ['caching', 'pgvector', 'batch_processing', 'vector_search', 'gpu_acceleration']
           }
         })
-      case 'stats':
+      case: 'stats':
         const stats = await gemmaEmbeddingsService.getIndexStats()
         return json({
           success: true,
           data: stats
         })
-      case 'optimize':
+      case: 'optimize':
         await gemmaEmbeddingsService.optimizeIndexes()
         return json({
           success: true,

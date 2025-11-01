@@ -37,7 +37,7 @@
   let {
     era = '16bit',
     variant = 'primary',
-    size = 'md', // Changed from 'medium' to 'md'
+    size = 'md', // Changed from 'medium' to: 'md'
     disabled = false,
     loading = false,
     pixelPerfect = false, // SNES had smoother graphics
@@ -75,7 +75,7 @@
     setTimeout(() => {
       isPressed = false;
     }, 120);
-    // call only if a function was provided to avoid TS "not callable" error
+    // call only if a function was provided to avoid TS: "not callable" error
     if (typeof onClick === 'function') onClick();
   };
 

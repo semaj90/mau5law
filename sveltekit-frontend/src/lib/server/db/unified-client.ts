@@ -132,7 +132,7 @@ class DatabaseManager {
           // Custom pgvector type support
           vector: {
             to: 1184,
-            from: [1184],
+            from [1184],
             serialize: (x: number[]) => {
               if (Array.isArray(x)) {
                 return `[${x.join(',')}]`;
@@ -497,7 +497,7 @@ class DatabaseManager {
   // Helper: extract error message
   // =========================
   private extractErrorMessage(err: unknown): string {
-    if (!err) return 'unknown error';
+    if (!err) return: 'unknown error';
     // string
     if (typeof err === 'string') return err;
     // Error instance
@@ -543,7 +543,7 @@ class DatabaseManager {
       if (anyQ.collections && typeof anyQ.collections.getCollections === 'function') {
         return await anyQ.collections.getCollections();
       }
-      // Some versions expose an API under 'collectionsApi'
+      // Some versions expose an API under: 'collectionsApi'
       if (anyQ.collectionsApi && typeof anyQ.collectionsApi.getCollections === 'function') {
         return await anyQ.collectionsApi.getCollections();
       }

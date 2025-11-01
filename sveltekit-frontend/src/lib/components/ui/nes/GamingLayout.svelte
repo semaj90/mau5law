@@ -39,12 +39,12 @@
   			accuracyScore: 94.2
   		},
   		navigation = [
-  			{ label: 'Dashboard', href: '/', icon '🏠' },
-  			{ label: 'Cases', href: '/cases', icon '📁' },
-  			{ label: 'Evidence', href: '/evidence', icon '📋' },
-  			{ label: 'Documents', href: '/documents', icon '📄' },
-  			{ label: 'Analysis', href: '/analysis', icon '🔍' },
-  			{ label: 'Reports', href: '/reports', icon '📊' },
+  			{ label: 'Dashboard', href: '/', icon: '🏠' },
+  			{ label: 'Cases', href: '/cases', icon: '📁' },
+  			{ label: 'Evidence', href: '/evidence', icon: '📋' },
+  			{ label: 'Documents', href: '/documents', icon: '📄' },
+  			{ label: 'Analysis', href: '/analysis', icon: '🔍' },
+  			{ label: 'Reports', href: '/reports', icon: '📊' },
   		],
   		children
   	} = $props();

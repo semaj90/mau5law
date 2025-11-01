@@ -137,7 +137,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     // Extract query parameters
     const q = url.searchParams.get('q') || url.searchParams.get('query');
     const intentRaw = url.searchParams.get('intent') ?? undefined;
-    // normalize/validate intent into UserIntent union, default to 'search'
+    // normalize/validate intent into UserIntent union, default to: 'search'
     const allowedIntents: UserIntent[] = ['search', 'legal_research', 'case_lookup', 'document_analysis'];
     const intent: UserIntent =
       intentRaw && allowedIntents.includes(intentRaw as UserIntent) ? (intentRaw as UserIntent) : 'search';

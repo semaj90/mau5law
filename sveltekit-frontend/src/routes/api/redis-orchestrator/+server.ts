@@ -119,7 +119,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     if (pattern) {
       clearedCount = await RedisLLMCache.clearCache(pattern); // Use the clearCache with pattern
-      message = `LLM cache entries matching pattern "${pattern}" cleared successfully.`;
+      message = `LLM cache entries matching pattern: "${pattern}" cleared successfully.`;
     } else {
       clearedCount = await RedisLLMCache.clearCache(); // Clear all LLM cache
       message = 'Full LLM cache cleared successfully';
@@ -131,7 +131,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       cleared_keys: clearedCount,
     });
   } catch (err: unknown) {
-    // Changed 'err' to 'err: unknown' for type safety
+    // Changed: 'err' to: 'err: unknown' for type safety
     console.error('🎮 Cache clear failed:', err);
     throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
@@ -157,7 +157,7 @@ function generatePerformanceRecommendations(stats: RedisOrchestratorStats): stri
   // Parse memory usage from redis_memory_info
   const usedMemoryHumanMatch = stats.redis_memory_info.match(/used_memory_human:\s*(\d+(\.\d+)?)\s*([A-Z]+)/);
   if (usedMemoryHumanMatch && usedMemoryHumanMatch[1]) {
-    const memoryString = usedMemoryHumanMatch[1]; // e.g., "2.50M" or "2.10G"
+    const memoryString = usedMemoryHumanMatch[1]; // e.g., "2.50M" or: "2.10G"
     const memoryMatch = memoryString.match(/(\d+(\.\d+)?)\s*([A-Z]+)/i); // Fix regex to capture amount and unit
     if (memoryMatch) {
       const [, amountStr, , unit] = memoryMatch; // Capture amount and unit
@@ -206,10 +206,7 @@ function generateTaskQueueRecommendations(queueStats: TaskQueueStats): string[] 
  */
 function $estimateProcessingTime(taskType: string, query: string): string {
   const baseTimesByType = {
-    'complex_legal': 30000, // 30 seconds
-    'document_analysis': 15000, // 15 seconds
-    'case_synthesis': 45000, // 45 seconds
-    'risk_assessment': 20000, // 20 seconds
+    'complex_legal': 30000, // 30 seconds: 'document_analysis': 15000, // 15 seconds: 'case_synthesis': 45000, // 45 seconds: 'risk_assessment': 20000, // 20 seconds
   };
   const baseTime = baseTimesByType[taskType as keyof typeof baseTimesByType] || 30000;
   const complexityMultiplier = Math.max(1, query.length / 200); // Longer queries take more time

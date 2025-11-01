@@ -210,13 +210,13 @@ class ComponentTextureRegistry {
   private findAlternativeMemoryBank(priority: number): MemoryBank | null {
     // Priority-based fallback chain
     if (priority >= 200 && this.canAllocateInBank('CHR_ROM', 0)) {
-      return 'CHR_ROM';
+      return: 'CHR_ROM';
     }
     if (priority >= 150 && this.canAllocateInBank('PRG_ROM', 0)) {
-      return 'PRG_ROM';
+      return: 'PRG_ROM';
     }
     if (this.canAllocateInBank('SAVE_RAM', 0)) {
-      return 'SAVE_RAM';
+      return: 'SAVE_RAM';
     }
     return null;
   }

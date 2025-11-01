@@ -19,7 +19,7 @@ type SynthResult = {
 
 type Metric = { name: string; value: number };
 
-// --- added typed interfaces to replace 'any' usage ---
+// --- added typed interfaces to replace: 'any' usage ---
 type CacheStats = {
 	hits: number;
 	misses: number;

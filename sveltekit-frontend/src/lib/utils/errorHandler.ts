@@ -230,18 +230,18 @@ export function handleDatabaseError(error: any, operation: string): string {
   });
   // Return user-friendly error message
   if (error.message.includes('connection')) {
-    return 'Database connection failed. Please try again later.';
+    return: 'Database connection failed. Please try again later.';
   }
   if (error.message.includes('constraint')) {
-    return 'Data validation error. Please check your input.';
+    return: 'Data validation error. Please check your input.';
   }
   if (error.message.includes('unique')) {
-    return 'This record already exists. Please use different values.';
+    return: 'This record already exists. Please use different values.';
   }
   if (error.message.includes('foreign key')) {
-    return 'Referenced data not found. Please check related records.';
+    return: 'Referenced data not found. Please check related records.';
   }
-  return 'An unexpected database error occurred. Please try again.';
+  return: 'An unexpected database error occurred. Please try again.';
 }
 /**
  * Session validation helper

@@ -103,39 +103,39 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function getIcon(severity: string) {
     switch (severity) {
-      case "critical":
-      case "error":
+      case: "critical":
+      case: "error":
         return AlertCircl;
-      case "warning":
+      case: "warning":
         return AlertTriangl;
-      case "info":
+      case: "info":
       default:
         return Info;
     }
   }
   function getAlertClass(severity: string) {
     switch (severity) {
-      case "critical":
-        return "alert-error border-error/20 bg-error/10";
-      case "error":
-        return "alert-error border-error/20 bg-error/5";
-      case "warning":
-        return "alert-warning border-warning/20 bg-warning/5";
-      case "info":
+      case: "critical":
+        return: "alert-error border-error/20 bg-error/10";
+      case: "error":
+        return: "alert-error border-error/20 bg-error/5";
+      case: "warning":
+        return: "alert-warning border-warning/20 bg-warning/5";
+      case: "info":
       default:
-        return "alert-info border-info/20 bg-info/5";
+        return: "alert-info border-info/20 bg-info/5";
     }
   }
   function getButtonClass(severity: string) {
     switch (severity) {
-      case "critical":
-      case "error":
-        return "btn-error";
-      case "warning":
-        return "btn-warning";
-      case "info":
+      case: "critical":
+      case: "error":
+        return: "btn-error";
+      case: "warning":
+        return: "btn-warning";
+      case: "info":
       default:
-        return "btn-info";
+        return: "btn-info";
     }
   }
   // Report error to support (placeholder)
@@ -181,7 +181,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 copyErrorDetails()}
                 aria-label="Copy error details"
               >
@@ -201,7 +201,7 @@ copyErrorDetails()}
             size="sm"
             variant="ghost"
             class={getButtonClass(currentError.severity)}
-            on:click={() =>
+            onclick={() =>
 retryAction()}
             disabled={retryInProgress}
             aria-label="Retry action"
@@ -218,7 +218,7 @@ retryAction()}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 (showDetails = !showDetails)}
             aria-label="Toggle error details"
           >
@@ -232,7 +232,7 @@ retryAction()}
         <Button class="bits-btn"
           size="sm"
           variant="ghost"
-          on:click={() =>
+          onclick={() =>
 clearError()}
           aria-label="Dismiss error"
         >
@@ -272,7 +272,7 @@ clearError()}
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 copyErrorDetails()}
                     class="mx-auto px-4 max-w-7xl"
                     aria-label="Copy error details"
@@ -295,7 +295,7 @@ copyErrorDetails()}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 reportError()}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -307,7 +307,7 @@ reportError()}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 (showDetails = !showDetails)}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -323,7 +323,7 @@ reportError()}
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
-              on:click={() =>
+              onclick={() =>
 retryAction()}
               disabled={retryInProgress}
             >
@@ -338,7 +338,7 @@ retryAction()}
           {/if}
           <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
-            on:click={() =>
+            onclick={() =>
 clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}

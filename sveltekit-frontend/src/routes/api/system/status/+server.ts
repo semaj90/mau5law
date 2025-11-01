@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
 // Define the ServiceStatus type based on usage in this file and inferred properties from apiRegistry.
 // This interface should align with the ServiceCheckResult type returned by apiRegistry.checkAllServices().
 interface ServiceStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown' | 'error'; // Added 'error' to match HealthStatus
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown' | 'error'; // Added: 'error' to match HealthStatus
   required?: boolean; // Used in filtering services
   name?: string; // Inferred from service-registry example
   baseUrl?: string; // Inferred from service-registry example

@@ -145,21 +145,21 @@ class ViteErrorLogger {
   private detectErrorType(message: string): ViteErrorLog['type'] {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('typescript') || lowerMessage.includes('type')) {
-      return 'typescript';
+      return: 'typescript';
     }
     if (lowerMessage.includes('svelte') || lowerMessage.includes('component')) {
-      return 'svelte';
+      return: 'svelte';
     }
     if (lowerMessage.includes('import') || lowerMessage.includes('module')) {
-      return 'import';
+      return: 'import';
     }
     if (lowerMessage.includes('syntax') || lowerMessage.includes('unexpected')) {
-      return 'syntax';
+      return: 'syntax';
     }
     if (lowerMessage.includes('build') || lowerMessage.includes('bundle')) {
-      return 'build';
+      return: 'build';
     }
-    return 'runtime';
+    return: 'runtime';
   }
   // Log error to Redis system
   async logError(errorLog: ViteErrorLog): Promise<void> {

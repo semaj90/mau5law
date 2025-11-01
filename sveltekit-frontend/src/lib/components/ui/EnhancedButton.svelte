@@ -8,7 +8,7 @@
     variant = 'default' as ButtonVariantProps['variant'],
     size = 'default' as ButtonVariantProps['size'],
     disabled = false,
-    type = 'button' as 'button' | 'submit' | 'reset',
+    type = 'button' as: 'button' | 'submit' | 'reset',
     href = undefined as string | undefined,
     target = undefined as string | undefined,
     loading = false,

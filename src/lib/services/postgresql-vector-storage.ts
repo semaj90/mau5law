@@ -387,23 +387,23 @@ export class PostgreSQLVectorStorage {
       const conditions = [];
 
       if (filters.document_type?.length) {
-        conditions.push(sql`metadata->>'document_type' = ANY(${filters.document_type})`);
+        conditions.push(<any><any>sql`metadata->>'document_type' = ANY(${filters.document_type})`);
       }
 
       if (filters.practice_area?.length) {
-        conditions.push(sql`metadata->>'practice_area' = ANY(${filters.practice_area})`);
+        conditions.push(<any><any>sql`metadata->>'practice_area' = ANY(${filters.practice_area})`);
       }
 
       if (filters.jurisdiction?.length) {
-        conditions.push(sql`metadata->>'jurisdiction' = ANY(${filters.jurisdiction})`);
+        conditions.push(<any><any>sql`metadata->>'jurisdiction' = ANY(${filters.jurisdiction})`);
       }
 
       if (filters.confidence_min !== undefined) {
-        conditions.push(sql`(metadata->>'confidence_score')::float >= ${filters.confidence_min}`);
+        conditions.push(<any><any>sql`(metadata->>'confidence_score')::float >= ${filters.confidence_min}`);
       }
 
       // Add similarity threshold
-      conditions.push(sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`);
+      conditions.push(<any><any>sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`);
 
       // Apply conditions
       if (conditions.length > 0) {
@@ -475,11 +475,11 @@ export class PostgreSQLVectorStorage {
 
       // Filter by document IDs if provided
       if (documentIds?.length) {
-        conditions.push(inArray(documentChunks.documentId, documentIds));
+        conditions.push(<any><any>inArray(documentChunks.documentId, documentIds));
       }
 
       // Add similarity threshold
-      conditions.push(sql`1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`);
+      conditions.push(<any><any>sql`1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`);
 
       if (conditions.length > 0) {
         query = query.where(and(...conditions));
@@ -550,15 +550,15 @@ export class PostgreSQLVectorStorage {
       const conditions = [];
 
       if (filters.document_types?.length) {
-        conditions.push(sql`metadata->>'document_type' = ANY(${filters.document_types})`);
+        conditions.push(<any><any>sql`metadata->>'document_type' = ANY(${filters.document_types})`);
       }
 
       if (filters.practice_areas?.length) {
-        conditions.push(sql`metadata->>'practice_area' = ANY(${filters.practice_areas})`);
+        conditions.push(<any><any>sql`metadata->>'practice_area' = ANY(${filters.practice_areas})`);
       }
 
       if (confidence_min) {
-        conditions.push(sql`(metadata->>'confidence_score')::float >= ${confidence_min}`);
+        conditions.push(<any><any>sql`(metadata->>'confidence_score')::float >= ${confidence_min}`);
       }
 
       if (conditions.length > 0) {
@@ -577,7 +577,7 @@ export class PostgreSQLVectorStorage {
         const practiceArea = metadata.practice_area || 'general';
 
         // Generate instruction-input-output triplets
-        trainingData.push({
+        trainingData.push(<any><any>{
           instruction: `Analyze this ${metadata.document_type || 'legal document'} and provide key insights.`,
           input: `Document Title: ${doc.title}\n\nContent: ${doc.content.substring(0, 1000)}...`,
           output: `This ${metadata.document_type || 'document'} pertains to ${practiceArea}. Key legal concepts include: ${this.extractKeyLegalConcepts(doc.content).join(', ')}. The document's jurisdiction is ${metadata.jurisdiction || 'unspecified'} and it relates to ${metadata.legal_area || 'general legal matters'}.`,
@@ -691,7 +691,7 @@ export class PostgreSQLVectorStorage {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
+      chunks.push(<any><any>array.slice(i, i + size));
     }
     return chunks;
   }

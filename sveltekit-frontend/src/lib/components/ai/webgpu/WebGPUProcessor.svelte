@@ -9,9 +9,10 @@ https://svelte.dev/e/js_parse_error -->
   	// Advanced 3D rendering with WebGPU compute shaders, LOD optimization,
   	// service worker caching, and multi-threaded processing
   	// ================================================================================
-  	import { onMount, onDestroy } from 'svelte';
+  	import { writable, derived, get } from 'svelte/store';
+  	import type { Readable, Unsubscriber } from 'svelte/store';
+  import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
-  	import { writable, derived } from 'svelte/store';
   	// Props
   	let {
   		scene3D = true,
@@ -88,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   	// REACTIVE STORES
   	// ============================================================================
   	const webgpuStore = writable({
-  		device: null as GPUDevice | null,
+  		device: null as WebGPUDevice | null, // <-- changed from GPUDevice | null
   		shaders: new Map<string, ComputeShader>(),
   		buffers: new Map<string, CustomGPUBuffer>(),
   		active: false,
@@ -126,7 +127,14 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	});
   	// Derived performance metrics
-  	const performanceMetrics = derived(
+  	type PerformanceMetrics = {
+  		gpu: { computeTime: number; memoryUsage: number; throughput: number; };
+  		rendering: { fps: number; objects: number; currentLOD: number; };
+  		cache: { cacheHitRate: number; averageLatency: number; totalRequests: number; };
+  		overall: { memory: number; cpu: number; network: number; };
+  	};
+
+  	const performanceMetrics: Readable<PerformanceMetrics> = derived(
   		[webgpuStore, threeStore, serviceWorkerStore],
   		([$webgpu, $three, $sw]) => ({
   			gpu: $webgpu.performance,
@@ -143,6 +151,20 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		})
   	);
+
+  	// Local typed metrics object populated from the derived store
+  	let metrics: PerformanceMetrics = {
+  		gpu: { computeTime: 0, memoryUsage: 0, throughput: 0 },
+  		rendering: { fps: 0, objects: 0, currentLOD: 0 },
+  		cache: { cacheHitRate: 0, averageLatency: 0, totalRequests: 0 },
+  		overall: { memory: 0, cpu: 0, network: 0 }
+  	};
+  	let _perfUnsub: Unsubscriber | null = null;
+  	// Start subscription immediately so template can read `metrics`
+  	_perfUnsub = performanceMetrics.subscribe((v) => {
+  		if (v) metrics = v;
+  	});
+
   	// ============================================================================
   	// WEBGPU INITIALIZATION
   	// ============================================================================
@@ -357,9 +379,9 @@ https://svelte.dev/e/js_parse_error -->
   			return null;
   		}
   	}
-  	function handleServiceWorkerMessage(message: any) { // Use 'any' for now as message structure is not fully defined
+  	function handleServiceWorkerMessage(message: any) { // Use: 'any' for now as message structure is not fully defined
   		switch (message.type) {
-  			case 'CACHE_HIT':
+  			case: 'CACHE_HIT':
   				serviceWorkerStore.update(store => ({
   					...store,
   					performance: {
@@ -369,7 +391,7 @@ https://svelte.dev/e/js_parse_error -->
   					}
   				}));
   				break;
-  			case 'PERFORMANCE_UPDATE':
+  			case: 'PERFORMANCE_UPDATE':
   				serviceWorkerStore.update(store => ({
   					...store,
   					performance: {
@@ -421,121 +443,125 @@ https://svelte.dev/e/js_parse_error -->
   	// ============================================================================
   	let canvas: HTMLCanvasElement;
   	let animationFrame: number;
-    let initialized = $state(false);
+  	let initialized = $state(false);
 
-  	$effect(() => {
-      const init = async () => {
-        console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
-        // Initialize WebGPU
-        if (enableGPUCompute) {
-          const webgpuDevice = await initializeWebGPU();
-          if (webgpuDevice) {
-            webgpuStore.update(store => ({
-              ...store,
-              device: webgpuDevice,
-              active: true,
-            }));
-            // Create compute shaders
-            const matrixShader = await createComputeShader(
-              webgpuDevice.device,
-              matrixMultiplyShader,
-              'matrix-multiply'
-            );
-            const embeddingShader = await createComputeShader(
-              webgpuDevice.device,
-              vectorEmbeddingShader,
-              'vector-embedding'
-            );
-            webgpuStore.update(store => {
-              store.shaders.set('matrix-multiply', matrixShader);
-              store.shaders.set('vector-embedding', embeddingShader);
-              return store;
-            });
-          }
-        }
-        // Initialize Three.js
-        if (scene3D && canvas) {
-          const { scene, camera, renderer } = initializeThreeJS(canvas);
-          threeStore.update(store => ({
-            ...store,
-            scene,
-            camera,
-            renderer
-          }));
-          // Add sample objects with LOD
-          const geometry = new THREE.IcosahedronGeometry(1, 2);
-          const lodLevels = createLODGeometry(geometry);
-          for (let i = 0; i < 5; i++) {
-            const mesh = new THREE.Mesh(lodLevels[0].geometry, lodLevels[0].material);
-            mesh.position.set(
-              (Math.random() - 0.5) * 10,
-              (Math.random() - 0.5) * 10,
-              (Math.random() - 0.5) * 10
-            );
-            scene.add(mesh);
-            const renderObject: RenderObject = {
-              id: `object-${i}`,
-              mesh,
-              lodLevels,
-              currentLOD: 0,
-              cached: false,
-              gpuOptimized: enableGPUCompute,
-            };
-            threeStore.update(store => {
-              store.objects.set(renderObject.id, renderObject);
-              return store;
-            });
-          }
-          // Lighting
-          const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-          scene.add(ambientLight);
-          const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-          directionalLight.position.set(10, 10, 5);
-          directionalLight.castShadow = true;
-          scene.add(directionalLight);
-          // Start render loop
-          function animate() {
-            animationFrame = requestAnimationFrame(animate);
-            // LOD optimization
-            if (lodOptimization) {
-              threeStore.update(store => {
-                if (store.objects && store.camera) {
-                  optimizeLOD(store.objects, store.camera);
-                }
-                return store;
-              });
-            }
-            // Rotate objects
-            threeStore.update(store => {
-              store.objects.forEach(obj => {
-                obj.mesh.rotation.x += 0.01;
-                obj.mesh.rotation.y += 0.01;
-              });
-              return store;
-            });
-            // Render
-            const $three = threeStore;
-            if ($three && $three.renderer && $three.scene && $three.camera) {
-              $three.renderer.render($three.scene, $three.camera);
-            }
-          }
-          animate();
-        }
-        // Register Service Worker
-        if (enableServiceWorker) {
-          const registration = await registerServiceWorker();
-          if (registration) {
-            serviceWorkerStore.update(store => ({
-              ...store,
-              registration
-            }));
-          }
-        }
-        initialized = true;
-        console.log('✅ WebGPU + Three.js + Service Worker system initialized');
-      };
-      init();
+  	onMount(() => {
+  		const init = async () => {
+  			console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
+  			// Initialize WebGPU
+  			if (enableGPUCompute) {
+  				const webgpuDevice = await initializeWebGPU();
+  				if (webgpuDevice) {
+  					// store the wrapper object (WebGPUDevice) we returned
+  					webgpuStore.update(store => ({
+  						...store,
+  						device: webgpuDevice,
+  						active: true,
+  					}));
+  					// Create compute shaders using the raw GPUDevice
+  					const matrixShader = await createComputeShader(
+  						webgpuDevice.device,
+  						matrixMultiplyShader,
+  						'matrix-multiply'
+  					);
+  					const embeddingShader = await createComputeShader(
+  						webgpuDevice.device,
+  						vectorEmbeddingShader,
+  						'vector-embedding'
+  					);
+  					webgpuStore.update(store => {
+  						store.shaders.set('matrix-multiply', matrixShader);
+  						store.shaders.set('vector-embedding', embeddingShader);
+  						return store;
+  					});
+  				}
+  			}
+
+  			// Initialize Three.js
+  			if (scene3D && canvas) {
+  				const { scene, camera, renderer } = initializeThreeJS(canvas);
+  				threeStore.update(store => ({
+  					...store,
+  					scene,
+  					camera,
+  					renderer
+  				}));
+  				// Add sample objects with LOD
+  				const geometry = new THREE.IcosahedronGeometry(1, 2);
+  				const lodLevels = createLODGeometry(geometry);
+  				for (let i = 0; i < 5; i++) {
+  					const mesh = new THREE.Mesh(lodLevels[0].geometry, lodLevels[0].material);
+  					mesh.position.set(
+  						(Math.random() - 0.5) * 10,
+  						(Math.random() - 0.5) * 10,
+  						(Math.random() - 0.5) * 10
+  					);
+  					scene.add(mesh);
+  					const renderObject: RenderObject = {
+  						id: `object-${i}`,
+  						mesh,
+  						lodLevels,
+  						currentLOD: 0,
+  						cached: false,
+  						gpuOptimized: enableGPUCompute,
+  					};
+  					threeStore.update(store => {
+  						store.objects.set(renderObject.id, renderObject);
+  						return store;
+  					});
+  				}
+  				// Lighting
+  				const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+  				scene.add(ambientLight);
+  				const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  				directionalLight.position.set(10, 10, 5);
+  				directionalLight.castShadow = true;
+  				scene.add(directionalLight);
+  				// Start render loop
+  				function animate() {
+  					animationFrame = requestAnimationFrame(animate);
+  					// use get(...) to read current store values safely
+  					const three = get(threeStore);
+  					if (lodOptimization) {
+  						if (three.objects && three.camera) {
+  							optimizeLOD(three.objects, three.camera);
+  						}
+  					}
+  					// Rotate objects
+  					if (three.objects) {
+  						three.objects.forEach(obj => {
+  							obj.mesh.rotation.x += 0.01;
+  							obj.mesh.rotation.y += 0.01;
+  						});
+  					}
+  					// Render safely if renderer/camera/scene are available
+  					if (three.renderer && three.scene && three.camera) {
+  						three.renderer.render(three.scene, three.camera);
+  					}
+  				}
+  				animate();
+  			}
+
+  			// Register Service Worker
+  			if (enableServiceWorker) {
+  				const registration = await registerServiceWorker();
+  				if (registration) {
+  					serviceWorkerStore.update(store => ({
+  						...store,
+  						registration
+  					}));
+  				}
+  			}
+  			initialized = true;
+  			console.log('✅ WebGPU + Three.js + Service Worker system initialized');
+  		};
+  		init();
+
+  		return () => {
+  			// onMount returns cleanup — but actual heavy cleanup is handled in onDestroy below
+  		};
   	});
+
   	onDestroy(() => {
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
@@ -546,27 +572,39 @@ https://svelte.dev/e/js_parse_error -->
   				store.renderer.dispose();
   			}
   			store.objects.forEach(obj => {
-  				obj.mesh.geometry.dispose();
+  				try {
+  					obj.mesh.geometry.dispose();
+  				} catch (e) { /* ignore */ }
   				if (Array.isArray(obj.mesh.material)) {
-  					obj.mesh.material.forEach(mat => mat.dispose());
+  					obj.mesh.material.forEach(mat => {
+  						try { mat.dispose(); } catch (e) { /* ignore */ }
+  					});
   				} else {
-  					obj.mesh.material.dispose();
+  					try { obj.mesh.material.dispose(); } catch (e) { /* ignore */ }
   				}
   			});
   			return store;
   		});
-  		// Cleanup WebGPU
+  		// Cleanup WebGPU - DO NOT call a non-existent device.destroy(); instead nullify and release buffers
   		webgpuStore.update(store => {
-  			if (store.device) {
-  				store.device.destroy();
-  			}
+  			// destroy GPUBuffer objects we created (if any) then clear maps
+  			store.buffers.forEach(b => {
+  				try { b.buffer?.destroy?.(); } catch (e) { /* ignore */ }
+  			});
+  			store.buffers.clear();
+  			store.shaders.clear();
+  			// Clear wrapper reference to allow GC
+  			store.device = null;
+  			store.active = false;
   			return store;
   		});
+  		// unsubscribe performance metrics subscription
+  		try { _perfUnsub && _perfUnsub(); } catch {}
   	});
   	// ============================================================================
   	// REACTIVE STATEMENTS
   	// ============================================================================
-  	let metrics = $derived(performanceMetrics)
+  	// (metrics is updated by the subscription above)
 </script>
 
 <!-- ============================================================================ -->

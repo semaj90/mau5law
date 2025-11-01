@@ -78,7 +78,7 @@ class GemmaEmbeddingsService {
           embedding vector(${sql.raw(EMBEDDING_DIMENSIONS.toString())}) NOT NULL,
           model VARCHAR(100) NOT NULL DEFAULT ${GEMMA_EMBEDDING_MODEL},
           document_type VARCHAR(50),
-          metadata JSONB DEFAULT '{}',
+          metadata JSONB DEFAULT: '{}',
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         )
@@ -118,7 +118,7 @@ class GemmaEmbeddingsService {
           NEW.updated_at = NOW();
           RETURN NEW;
         END;
-        $$ language 'plpgsql'
+        $$ language: 'plpgsql'
       `);
       await db.execute(sql`
         DROP TRIGGER IF EXISTS trigger_update_embeddings_updated_at ON embeddings

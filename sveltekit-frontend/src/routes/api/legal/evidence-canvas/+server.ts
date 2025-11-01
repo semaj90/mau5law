@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const result = await unifiedLegalOrchestrationService.processEvidenceCanvas(
       canvasId,
       evidenceItems,
-      analysisType as 'detective' | 'forensic'
+      analysisType as: 'detective' | 'forensic'
     );
     // Convert status stores to serializable format
     const jobStatuses: { [key: string]: any } = {};

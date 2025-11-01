@@ -40,7 +40,7 @@ const logger = {
   debug: (msg: string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
 };
 
-// --- Added: narrow gRPC types moved ahead of the class to avoid "cannot find name" errors
+// --- Added: narrow gRPC types moved ahead of the class to avoid: "cannot find name" errors
 type GrpcResponse = {
   case_id?: string;
   score?: number;
@@ -196,8 +196,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         target,
         credentials.createInsecure(),
         {
-          'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB
-          'grpc.max_send_message_length': 100 * 1024 * 1024,
+          'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB: 'grpc.max_send_message_length': 100 * 1024 * 1024,
           'grpc.keepalive_time_ms': 10000,
           'grpc.keepalive_timeout_ms': 5000,
           'grpc.keepalive_permit_without_calls': 1,
@@ -419,7 +418,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const results: CaseScoringResult[] = [];
-      // changed: allow async processing inside 'data' handler
+      // changed: allow async processing inside: 'data' handler
       call.on('data', async (payload: unknown) => {
         const response = payload as GrpcResponse;
         try {
@@ -498,7 +497,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   private async decompressAnalysis(
     compressedData: Buffer | string | Uint8Array | ArrayBuffer | undefined
   ): Promise<string> {
-    if (!compressedData) return '';
+    if (!compressedData) return: '';
     try {
       // If it's already a Buffer, decompress directly
       if (Buffer.isBuffer(compressedData)) {

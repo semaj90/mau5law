@@ -276,7 +276,7 @@ export class LegalCacheWarmer {
     // Minimal deterministic work: simulate small memory usage per document and record warnings if any.
     try {
       for (const doc of documents) {
-        // cheap heuristic: only "warm" a pattern for higher-priority docs
+        // cheap heuristic: only: "warm" a pattern for higher-priority docs
         const p = calculateDocumentPriority(doc);
         if (p < strategy.priorityThreshold) continue;
         // simulate a small pattern size (e.g., 2KB per warmed pattern)

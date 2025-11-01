@@ -33,8 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // UnoCSS-based card variants
   const cardVariants = cva(
-    // Base classes
-    'rounded-lg border transition-all duration-200',
+    // Base classes: 'rounded-lg border transition-all duration-200',
     {
       variants: {
         variant: {

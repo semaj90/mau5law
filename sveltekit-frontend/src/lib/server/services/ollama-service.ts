@@ -1,7 +1,7 @@
 // Minimal Ollama service stub to satisfy imports during build.
 // Replace with real implementation that calls local Ollama HTTP API.
 
-// Add explicit, exported types used by the class to avoid "not found" errors
+// Add explicit, exported types used by the class to avoid: "not found" errors
 export interface GenerateOptions {
   model?: string;
   temperature?: number;

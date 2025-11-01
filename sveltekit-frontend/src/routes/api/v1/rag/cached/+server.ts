@@ -75,15 +75,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, query, documents, ...options } = body;
     switch (action) {
-      case 'query':
+      case: 'query':
         return await handleRAGQuery(query, options);
-      case 'ingest':
+      case: 'ingest':
         return await handleDocumentIngestion(documents, options);
-      case 'test':
+      case: 'test':
         return await handleCacheTest(options);
-      case 'metrics':
+      case: 'metrics':
         return await handleCacheMetrics();
-      case 'warmup':
+      case: 'warmup':
         return await handleCacheWarmup();
       default:
         return json({ error: 'Invalid action. Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
@@ -120,7 +120,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown) {
       );
     }
 
-    // Safe runtime narrowing: ensure it's a non-null object and has a 'query' property
+    // Safe runtime narrowing: ensure it's a non-null object and has a: 'query' property
     if (
       queryData == null ||
       typeof queryData !== 'object' ||
@@ -141,7 +141,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown) {
 
     console.log(`🔍 Processing cached RAG query: "${queryStr.substring(0, 50)}..."`);
 
-    // Local runtime-checked types to avoid 'any' usages
+    // Local runtime-checked types to avoid: 'any' usages
     type RAGFilters = {
       confidenceThreshold?: number;
       legalCategories?: string[];
@@ -349,7 +349,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case 'status':
+      case: 'status':
         return json({
           success: true,
           data: {
@@ -366,10 +366,10 @@ export const GET: RequestHandler = async ({ url }) => {
             timestamp: new Date().toISOString(),
           },
         });
-      case 'metrics':
+      case: 'metrics':
         return await handleCacheMetrics();
-      case 'test': {
-        // Braces added to avoid "Unexpected lexical declaration in case block"
+      case: 'test': {
+        // Braces added to avoid: "Unexpected lexical declaration in case block"
         const testType = url.searchParams.get('type') || 'smoke';
         return await handleCacheTest({ type: testType } as unknown);
       }

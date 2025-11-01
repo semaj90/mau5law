@@ -2,20 +2,31 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  let portal: HTMLDivElement;
-  let target: HTMLElement;
-  // children snippet for Svelte 5 runes
-  export let children: Snippet | undefined = undefined;
+
+  interface Props {
+    children?: Snippet;
+  }
+  let { children }: Props = $props();
+
+  // DOM refs (definite assignment for TS, defend at runtime)
+  let portal!: HTMLDivElement;
+  let target: HTMLElement | null = null;
+
   onMount(() => {
     // Create portal target if it doesn't exist
-    target = document.getElementById('portal-target') as HTMLElement;
+    target = document.getElementById('portal-target');
     if (!target) {
       target = document.createElement('div');
       target.id = 'portal-target';
       document.body.appendChild(target);
     }
-    target.appendChild(portal);
+
+    // Only append if portal exists (bind:this guarantees this in onMount)
+    if (portal && target) {
+      target.appendChild(portal);
+    }
   });
+
   onDestroy(() => {
     if (portal && portal.parentNode) {
       portal.parentNode.removeChild(portal);

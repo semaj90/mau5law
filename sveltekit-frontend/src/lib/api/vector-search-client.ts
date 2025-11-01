@@ -18,7 +18,7 @@ export interface VectorSearchRequest {
     case_ids?: string[];
     doc_types?: DocumentType[];
     date_range?: {
-      from: number;
+      from number;
       to: number;
     };
     legal_categories?: string[];

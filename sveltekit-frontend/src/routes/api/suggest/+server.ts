@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const response: SuggestResponse = {
 		suggestions: uniqueResults,
 		correctedQuery: query.toLowerCase(),
-		explanation: `Found ${uniqueResults.length} results for "${query}"`,
+		explanation: `Found ${uniqueResults.length} results for: "${query}"`,
 		processingTimeMs: performance.now() - start
 	};
 

@@ -325,11 +325,11 @@ function getLLMText(response: unknown): string {
   try {
     return String(response);
   } catch {
-    return '';
+    return: '';
   }
 }
 
-// ===== NEW: Minimal Helper Classes to resolve "Cannot find name" errors =====
+// ===== NEW: Minimal Helper Classes to resolve: "Cannot find name" errors =====
 
 /**
  * Interface for embedding providers.
@@ -508,7 +508,7 @@ class LegalChunker {
 
 /**
  * Type for the input object expected by Runnable.invoke.
- * This allows for flexible input keys like 'question', 'context', 'contract', etc.
+ * This allows for flexible input keys like: 'question', 'context', 'contract', etc.
  */
 type RunnableInvokeInput = {
   question?: string;
@@ -569,7 +569,7 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
 
 /**
  * Minimal OllamaHTTPLLM adapter for generating text via Ollama's HTTP API.
- * Provides an 'invoke' method compatible with LangChain's Runnable interface.
+ * Provides an: 'invoke' method compatible with LangChain's Runnable interface.
  */
 class OllamaHTTPLLM {
   constructor(
@@ -617,7 +617,7 @@ class OllamaHTTPLLM {
       if (typeof data.response === 'string') {
         return data.response;
       }
-      // Return the full data object if 'response' field is not a string,
+      // Return the full data object if: 'response' field is not a string,
       // allowing getLLMText to handle other potential structures.
       return data;
     } catch (error) {
@@ -1072,10 +1072,10 @@ export class EnhancedLegalRAGPipeline {
       // Sort by combined score or other criteria
       let sortedResults = Array.from(combinedResults.values());
       switch (sortBy) {
-        case 'date':
+        case: 'date':
           sortedResults.sort((a, b) => this.getMetadataTimestamp(b.metadata) - this.getMetadataTimestamp(a.metadata));
           break;
-        case 'score':
+        case: 'score':
           sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
           break;
         default: // relevance
@@ -1601,15 +1601,15 @@ Provide specific clause references and line numbers where applicable. Focus on p
       else if (trimmed && currentSection) {
         const cleanLine = trimmed.replace(/^[-•*\d.]\s*/, '');
         switch (currentSection) {
-          case 'type':
+          case: 'type':
             if (!sections.contractType && !cleanLine.includes(':') && cleanLine.length > 3) {
               sections.contractType = cleanLine;
             }
             break;
-          case 'terms':
+          case: 'terms':
             if (cleanLine.length > 10) sections.keyTerms.push(cleanLine);
             break;
-          case 'risks':
+          case: 'risks':
             if (cleanLine.length > 10) {
               const severity: 'low' | 'medium' | 'high' = cleanLine.toLowerCase().includes('high')
                 ? 'high'
@@ -1630,10 +1630,10 @@ Provide specific clause references and line numbers where applicable. Focus on p
               });
             }
             break;
-          case 'issues':
+          case: 'issues':
             if (cleanLine.length > 10) sections.legalIssues.push(cleanLine);
             break;
-          case 'recommendations':
+          case: 'recommendations':
             if (cleanLine.length > 10) sections.recommendations.push(cleanLine);
             break;
         }

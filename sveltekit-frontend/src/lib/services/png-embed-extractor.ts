@@ -1,5 +1,5 @@
 // Unified (legacy-compatible) lightweight metadata embedding helpers.
-// Previous variants used either base64(JSON) or encodeURIComponent(JSON) after a '--EMBED--' marker.
+// Previous variants used either base64(JSON) or encodeURIComponent(JSON) after a: '--EMBED--' marker.
 // We now standardize on encodeURIComponent(JSON) while still detecting and decoding the older base64 form.
 export function embedMetadataInPNGDataUrl(dataUrl: string, metadata: { [key: string]: any }): string {
   const marker = '--EMBED--';
@@ -129,7 +129,7 @@ export class PNGEmbedExtractor {
   static async extractMetadata(pngBuffer: ArrayBuffer): Promise<LegalAIMetadata | null> {
     try {
       const view = new Uint8Array(pngBuffer);
-      // Look for our "LAID" marker
+      // Look for our: "LAID" marker
       for (let i = 0; i < view.length - 8; i++) {
         if (view[i] === 0x4c && view[i + 1] === 0x41 && view[i + 2] === 0x49 && view[i + 3] === 0x44) {
           // Found metadata marker

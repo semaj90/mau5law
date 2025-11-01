@@ -83,7 +83,7 @@ export const modelLoadingProgress = writable<ModelLoadingProgress>({
 });
 
 export class WebGPUWASMService {
-  // replace broad `any` types with local "like" interfaces or concrete WASM/Export types
+  // replace broad `any` types with local: "like" interfaces or concrete WASM/Export types
   private device: DeviceLike | null = null;
   private adapter: AdapterLike | null = null;
   private gl: WebGL2RenderingContext | null = null;

@@ -113,7 +113,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
           for (let i = 0; i < inner.length; i++) {
             const ch = inner[i];
             if (ch === '"') {
-              // handle escaped quotes ""
+              // handle escaped quotes: ""
               if (inQuotes && inner[i + 1] === '"') {
                 cur += '"';
                 i++;

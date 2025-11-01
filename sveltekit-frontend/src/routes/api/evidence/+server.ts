@@ -462,7 +462,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       );
     }
     switch (action) {
-      case 'analyze': {
+      case: 'analyze': {
         try {
           // Use case management service for analysis
           const analysisResult = await caseManagementService.analyzeEvidence(evidenceId);
@@ -500,7 +500,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           );
         }
       }
-      case 'update': {
+      case: 'update': {
         try {
           const { updateData } = options;
           if (!updateData) {

@@ -85,16 +85,16 @@ if (!canvas) return;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     // Render based on type and data
     switch (type) {
-      case 'evidence-card':
+      case: 'evidence-card':
         renderEvidenceCard();
         break;
-      case 'document-viewer':
+      case: 'document-viewer':
         renderDocumentViewer();
         break;
-      case 'chat-interface':
+      case: 'chat-interface':
         renderChatInterface();
         break;
-      case 'case-timeline':
+      case: 'case-timeline':
         renderCaseTimeline();
         break;
     }
@@ -140,7 +140,7 @@ if (!canvas) return;
     if (!doc) return;
     // Title
     ctx.fillStyle = colorPalette.yorhaGold;
-    ctx.font = 'bold 14px "Courier New", monospace';
+    ctx.font = 'bold 14px: "Courier New", monospace';
     ctx.fillText(doc.title.toUpperCase(), 10, 25);
     // Content with glyph streaming (for large documents)
     ctx.fillStyle = colorPalette.yorhaWhit;

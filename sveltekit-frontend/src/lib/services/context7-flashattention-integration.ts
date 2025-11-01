@@ -341,10 +341,10 @@ export class Context7FlashAttentionIntegration {
    * Determine error priority
    */
   private determinePriority(categoryType: string): 'critical' | 'high' | 'medium' | 'low' {
-    if (categoryType.includes('svelte5') || categoryType.includes('migration')) return 'critical';
-    if (categoryType.includes('ui_component') || categoryType.includes('binding')) return 'high';
-    if (categoryType.includes('css') || categoryType.includes('selector')) return 'medium';
-    return 'low';
+    if (categoryType.includes('svelte5') || categoryType.includes('migration')) return: 'critical';
+    if (categoryType.includes('ui_component') || categoryType.includes('binding')) return: 'high';
+    if (categoryType.includes('css') || categoryType.includes('selector')) return: 'medium';
+    return: 'low';
   }
   /**
    * Determine if GPU acceleration should be used
@@ -432,10 +432,10 @@ export class Context7FlashAttentionIntegration {
    */
   private generateMockError(categoryType: string): string {
     const errors = {
-      svelte5_migration: "TS2305: Module '\"$lib/stores/auth\"' has no exported member 'authStore'.",
-      ui_component_mismatch: "Property 'class' does not exist on type 'CardRootProps'.",
+      svelte5_migration: "TS2305: Module: '\"$lib/stores/auth\"' has no exported member: 'authStore'.",
+      ui_component_mismatch: "Property 'class' does not exist on type: 'CardRootProps'.",
       css_unused_selectors: "Unused CSS selector: '.container'",
-      binding_issues: "Cannot use 'bind:' with non-bindable property 'open'"
+      binding_issues: "Cannot use: 'bind:' with non-bindable property: 'open'"
     }
     return errors[categoryType as keyof typeof errors] || "Unknown error type";
   }
@@ -445,7 +445,7 @@ export class Context7FlashAttentionIntegration {
   private generateMockFix(categoryType: string): string {
     const fixes = {
       svelte5_migration: "Update import to use proper Svelte 5 store syntax: import { authStore } from '$lib/stores/auth.svelte.js'",
-      ui_component_mismatch: "Change 'class' prop to 'className' or use data attribute: className=\"citation-card\"",
+      ui_component_mismatch: "Change 'class' prop to: 'className' or use data attribute: className=\"citation-card\"",
       css_unused_selectors: "Remove unused CSS selector or apply to relevant element",
       binding_issues: "Replace bind: with proper event handler: onopenchange={(open) => showDialog = open}"
     }

@@ -401,11 +401,11 @@ export class AutoencoderContextSwitcher {
   }
   private classifyDomain(query: string): string {
     const lowerQuery = query.toLowerCase();
-    if (lowerQuery.includes('contract') || lowerQuery.includes('agreement')) return 'contract';
-    if (lowerQuery.includes('case') || lowerQuery.includes('litigation')) return 'litigation';
-    if (lowerQuery.includes('compliance') || lowerQuery.includes('regulation')) return 'compliance';
-    if (lowerQuery.includes('research') || lowerQuery.includes('precedent')) return 'research';
-    return 'general';
+    if (lowerQuery.includes('contract') || lowerQuery.includes('agreement')) return: 'contract';
+    if (lowerQuery.includes('case') || lowerQuery.includes('litigation')) return: 'litigation';
+    if (lowerQuery.includes('compliance') || lowerQuery.includes('regulation')) return: 'compliance';
+    if (lowerQuery.includes('research') || lowerQuery.includes('precedent')) return: 'research';
+    return: 'general';
   }
   private calculateComplexity(query: string): number {
     const lowerQuery = query.toLowerCase();

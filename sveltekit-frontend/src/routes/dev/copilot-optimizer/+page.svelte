@@ -80,7 +80,7 @@ await loadCopilotContent();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action 'optimize_index',
+          action: 'optimize_index',
           content: copilotContent;
           options: optimizationConfig;
         }),
@@ -111,7 +111,7 @@ await loadCopilotContent();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action 'semantic_search',
+          action: 'semantic_search',
           content: searchQuery;
           options: {
             limit: 10,
@@ -177,7 +177,7 @@ await loadCopilotContent();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action 'generate_suggestions',
+          action: 'generate_suggestions',
           content: {
             currentCode: testCode
             cursor: { line: 5, character: 25 },
@@ -374,7 +374,7 @@ await loadCopilotContent();
             <div class="p-8 text-center text-purple-400 bg-black/20 rounded-lg border border-purple-500/20">
               <div class="text-4xl mb-2">⚡</div>
               <p>Ready to optimize your copilot index</p>
-              <p class="text-sm mt-1">Load content and click "Optimize Index" to begin</p>
+              <p class="text-sm mt-1">Load content and click: "Optimize Index" to begin</p>
             </div>
           {:else if optimizationStatus === 'optimizing'}
             <div class="p-8 text-center text-purple-300 bg-black/20 rounded-lg border border-purple-500/20">
@@ -693,10 +693,10 @@ await loadCopilotContent();
         <div class="space-y-4">
           <!-- Boolean options -->
           {#each [
-            { key: 'enableContext7Boost', label: 'Enable Context7 Pattern Boosting', description 'Boost relevance for Context7-compatible patterns' },
-            { key: 'enableSemanticClustering', label: 'Enable Semantic Clustering', description 'Use SOM clustering for better organization' },
-            { key: 'enablePatternRecognition', label: 'Enable Pattern Recognition', description 'Recognize and boost known code patterns' },
-            { key: 'enablePerformanceOptimization', label: 'Enable Performance Optimization', description 'Apply compression and sorting optimizations' }
+            { key: 'enableContext7Boost', label: 'Enable Context7 Pattern Boosting', description: 'Boost relevance for Context7-compatible patterns' },
+            { key: 'enableSemanticClustering', label: 'Enable Semantic Clustering', description: 'Use SOM clustering for better organization' },
+            { key: 'enablePatternRecognition', label: 'Enable Pattern Recognition', description: 'Recognize and boost known code patterns' },
+            { key: 'enablePerformanceOptimization', label: 'Enable Performance Optimization', description: 'Apply compression and sorting optimizations' }
           ] as option}
             <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
               <label class="flex items-center justify-between">

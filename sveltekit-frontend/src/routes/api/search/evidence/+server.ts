@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const startTime = Date.now();
     let results = [];
     switch (searchMode) {
-      case 'text':
+      case: 'text':
         // Fast metadata search
         results = await searchEvidenceText(query, {
           caseId,
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit,
         });
         break;
-      case 'content':
+      case: 'content':
         // Deep content search using Qdrant
         results = await searchEvidenceContent(query, {
           caseId,
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit,
         });
         break;
-      case 'semantic':
+      case: 'semantic':
         // PostgreSQL vector search
         results = await searchEvidenceSemantic(query, {
           caseId,
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit,
         });
         break;
-      case 'hybrid':
+      case: 'hybrid':
       default:
         // Best of all worlds
         results = await searchEvidenceHybrid(query, {

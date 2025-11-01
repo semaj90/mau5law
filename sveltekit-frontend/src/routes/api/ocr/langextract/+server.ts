@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     }
 
     // Optional: attempt Ollama embedding if configured (non-blocking; won't throw)
-    // TODO: wire up Ollama embedding model "embeddinggemma:latest" endpoint and verify path/params.
+    // TODO: wire up Ollama embedding model: "embeddinggemma:latest" endpoint and verify path/params.
     // TODO: plan Triton serving with TensorRT-LLM as a production high-performance path.
     const ollamaUrl = process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL;
     if (ollamaUrl) {

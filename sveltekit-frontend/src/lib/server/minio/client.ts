@@ -1,7 +1,7 @@
 import { Client as MinioClient } from 'minio';
 import { env } from '$env/dynamic/private';
 
-// Parse MINIO_ENDPOINT which may be 'host', 'host:port', or 'http(s)://host:port'
+// Parse MINIO_ENDPOINT which may be: 'host', 'host:port', or: 'http(s)://host:port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';
 let _host = _raw;
 let _port = Number(env.MINIO_PORT || 9000);

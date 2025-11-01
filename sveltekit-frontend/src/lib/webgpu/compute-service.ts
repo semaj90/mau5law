@@ -37,7 +37,7 @@ class WebGPUComputeService {
         success: true,
         data: {
           message: 'WebGPU compute request processed',
-          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a 'type' property
+          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a: 'type' property
           timestamp: new Date().toISOString(),
         },
         performance: {

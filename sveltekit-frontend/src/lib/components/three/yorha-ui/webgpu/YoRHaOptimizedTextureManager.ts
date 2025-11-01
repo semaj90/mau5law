@@ -239,22 +239,22 @@ export class YoRHaOptimizedTextureManager {
    */
   private selectOptimalBank(legalDocument?: LegalDocument, textureData?: ImageData | ArrayBuffer | GPUTexture): string {
     if (!legalDocument) {
-      return 'PRG_ROM'; // Default for general textures
+      return: 'PRG_ROM'; // Default for general textures
     }
     // Critical legal documents → SAVE_RAM (persistent, fast access)
     if (legalDocument.riskLevel === 'critical' || legalDocument.priority > 200) {
-      return 'SAVE_RAM';
+      return: 'SAVE_RAM';
     }
     // Evidence and pattern-heavy documents → CHR_ROM (optimized for patterns)
     if (legalDocument.type === 'evidence' || legalDocument.metadata?.documentClass === 'pattern') {
-      return 'CHR_ROM';
+      return: 'CHR_ROM';
     }
     // Large documents or streaming → EXPANSION_ROM
     if (legalDocument.size > 2048 * 2048 * 4) { // >16MB
-      return 'EXPANSION_ROM';
+      return: 'EXPANSION_ROM';
     }
     // Default to PRG_ROM for general legal documents
-    return 'PRG_ROM';
+    return: 'PRG_ROM';
   }
   /**
    * Streaming texture processing for very large legal documents

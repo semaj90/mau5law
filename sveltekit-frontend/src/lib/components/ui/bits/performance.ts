@@ -54,7 +54,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
     });
     return module;
   } catch (error: any) {
-    console.error(`Failed to load component '${name}':`, error);
+    console.error(`Failed to load component: '${name}':`, error);
     throw error;
   }
 }

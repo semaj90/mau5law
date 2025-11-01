@@ -14,34 +14,34 @@
     {
       label: 'AI Document Demo',
       href: '/demo/document-ai',
-      description 'Document upload with AI processing',
-      icon '🤖',
+      description: 'Document upload with AI processing',
+      icon: '🤖',
     },
     {
       label: 'AI Service Test',
       href: 'http://localhost:8081/test',
-      description 'Go microservice test interface',
-      icon '🧪',
+      description: 'Go microservice test interface',
+      icon: '🧪',
       external: true,
     },
     {
       label: 'Service Health',
       href: 'http://localhost:8081/api/health',
-      description 'System health API endpoint',
-      icon '💚',
+      description: 'System health API endpoint',
+      icon: '💚',
       external: true,
     },
     {
       label: 'Dev Tools',
       href: '/dev/mcp-tools',
-      description 'MCP and development tools',
-      icon '🛠️',
+      description: 'MCP and development tools',
+      icon: '🛠️',
     },
     {
       label: 'Legal AI Cases',
       href: '/cases',
-      description 'Case management interface',
-      icon '⚖️',
+      description: 'Case management interface',
+      icon: '⚖️',
     }
   ];
   let isOpen = $state(false);

@@ -97,7 +97,7 @@
       id: '1',
       type: 'pattern',
       title: 'Evidence Pattern Detected',
-      description 'Similar contract clauses found across 15 cases with 89% similarity',
+      description: 'Similar contract clauses found across 15 cases with 89% similarity',
       confidence: 0.91,
       relevance: 0.87,
       timestamp: new Date(Date.now() - 1000 * 60 * 5),
@@ -107,7 +107,7 @@
       id: '2',
       type: 'anomaly',
       title: 'Unusual Timeline Gap',
-      description 'Missing evidence period detected between March 15-22 in Case #2024-156',
+      description: 'Missing evidence period detected between March 15-22 in Case #2024-156',
       confidence: 0.84,
       relevance: 0.95,
       timestamp: new Date(Date.now() - 1000 * 60 * 12),
@@ -117,7 +117,7 @@
       id: '3',
       type: 'prediction',
       title: 'Case Outcome Prediction',
-      description 'Based on similar precedents, 73% likelihood of favorable settlement',
+      description: 'Based on similar precedents, 73% likelihood of favorable settlement',
       confidence: 0.73,
       relevance: 0.92,
       timestamp: new Date(Date.now() - 1000 * 60 * 18),
@@ -175,32 +175,32 @@
   }
   function getTrendIcon(trend: 'up' | 'down' | 'stable') {
     switch (trend) {
-      case 'up': return TrendingUp;
-      case 'down': return TrendingUp; // We'll rotate with CSS
-      case 'stable': return Activity;
+      case: 'up': return TrendingUp;
+      case: 'down': return TrendingUp; // We'll rotate with CSS
+      case: 'stable': return Activity;
     }
   }
   function getInsightTypeColor(type: ContextualInsight['type']) {
     switch (type) {
-      case 'pattern': return 'bg-blue-500';
-      case 'anomaly': return 'bg-red-500';
-      case 'prediction': return 'bg-purple-500';
-      case 'recommendation': return 'bg-green-500';
+      case: 'pattern': return: 'bg-blue-500';
+      case: 'anomaly': return: 'bg-red-500';
+      case: 'prediction': return: 'bg-purple-500';
+      case: 'recommendation': return: 'bg-green-500';
     }
   }
   function getInsightTypeIcon(type: ContextualInsight['type']) {
     switch (type) {
-      case 'pattern': return Network;
-      case 'anomaly': return AlertCircl;
-      case 'prediction': return Brai;
-      case 'recommendation': return Target;
+      case: 'pattern': return Network;
+      case: 'anomaly': return AlertCircl;
+      case: 'prediction': return Brai;
+      case: 'recommendation': return Target;
     }
   }
   function formatRelativeTime(date: Date): string {
     const now = new Date());
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / (1000 * 60));
-    if (minutes < 1) return 'Just now';
+    if (minutes < 1) return: 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
     return `${hours}h ago`;
@@ -216,7 +216,7 @@
         id: `insight_${Date.now()}`,
         type: 'recommendation',
         title: `Analysis: "${analysisQuery.slice(0, 50)}..."`,
-        description 'Processing contextual analysis...',
+        description: 'Processing contextual analysis...',
         confidence: 0.85,
         relevance: 0.90,
         timestamp: new Date(),
@@ -512,7 +512,7 @@
                 id: `doc_insight_${file.id}`,
                 type: 'pattern',
                 title: `Document Analyzed: ${file.filename}`,
-                description 'Processing document for contextual patterns and insights...',
+                description: 'Processing document for contextual patterns and insights...',
                 confidence: 0.80,
                 relevance: 0.85,
                 timestamp: new Date(),

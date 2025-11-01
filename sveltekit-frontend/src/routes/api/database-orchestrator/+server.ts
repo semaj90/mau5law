@@ -38,34 +38,34 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json();
     switch (action) {
-      case 'start':
+      case: 'start':
         await databaseOrchestrator.start();
         return json({
           success: true,
           message: 'Database orchestrator started',
           status: databaseOrchestrator.getStatus(),
         });
-      case 'stop':
+      case: 'stop':
         await databaseOrchestrator.stop();
         return json({
           success: true,
           message: 'Database orchestrator stopped',
         });
-      case 'add_condition':
+      case: 'add_condition':
         databaseOrchestrator.addCondition(data.condition);
         return json({
           success: true,
           message: 'Condition added',
           condition: data.condition,
         });
-      case 'remove_condition':
+      case: 'remove_condition':
         databaseOrchestrator.removeCondition(data.conditionId);
         return json({
           success: true,
           message: 'Condition removed',
           conditionId: data.conditionId,
         });
-      case 'save_data':
+      case: 'save_data':
         const result = await databaseOrchestrator.saveToDatabase(data.record, data.table);
         return json({
           success: true,
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           result,
           table: data.table,
         });
-      case 'query_data':
+      case: 'query_data':
         const queryResult = await databaseOrchestrator.queryDatabase(data.query, data.table);
         return json({
           success: true,

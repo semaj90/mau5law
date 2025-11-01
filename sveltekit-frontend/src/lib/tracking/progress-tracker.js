@@ -135,7 +135,7 @@ export class ProductionTracker {
     const phaseIds = Array.from(this.phases.keys());
     for (let i = 0; i < phaseIds.length - 1; i++) {
       relations.push({
-        from: `Phase_${phaseIds[i]}`,
+        from `Phase_${phaseIds[i]}`,
         to: `Phase_${phaseIds[i + 1]}`,
         relationType: 'prerequisite_for',
       });

@@ -30,7 +30,7 @@ let { data } = $props<{ data: { user?: { id: string } | null } }>();
 
 $effect(() => {
     // Conditionally set the userId from session data if a user is logged in.
-    // If no session is detected, it falls back to the default 'mock-user-id'.
+    // If no session is detected, it falls back to the default: 'mock-user-id'.
     if (data?.user?.id) {
         userId = data.user.id;
     }
@@ -43,7 +43,7 @@ $effect(() => {
   let timelineLoading = $state(false);
   let showTimeline = $state(false);
   let evidenceReports = $state<any[]>([]);
-  // ragAnalysisResults comes back as an object with a 'persons' array; type as any (not any[])
+  // ragAnalysisResults comes back as an object with a: 'persons' array; type as any (not any[])
   let ragAnalysisResults = $state<any>({});
 
   // User Activity Timeline State
@@ -145,32 +145,32 @@ $effect(() => {
             const { done, value } = await reader.read();
             if (done) break;
             const chunk = decoder.decode(value);
-            const lines = chunk.split('\n'); // Declared 'lines' here
+            const lines = chunk.split('\n'); // Declared: 'lines' here
             for (const line of lines) {
               if (line.startsWith('data: ')) {
                 try {
                   const eventData = JSON.parse(line.slice(6));
                   switch (eventData.type) {
-                    case 'connection':
+                    case: 'connection':
                       if (eventData.conversationId) {
                         conversationId = eventData.conversationId;
                       }
                       break;
-                    case 'token':
+                    case: 'token':
                       aiMessage.content = eventData.fullResponse || aiMessage.content + eventData.content;
                       // Trigger Svelte 5 reactivity
                       messages = [...messages];
                       break;
-                    case 'complete':
+                    case: 'complete':
                       aiMessage.content = eventData.fullResponse; // Corrected typo
                       messages = [...messages];
                       isStreaming = false;
                       break;
-                    case 'error':
+                    case: 'error':
                       error = eventData.error;
                       isStreaming = false;
                       break;
-                    case 'close':
+                    case: 'close':
                       isStreaming = false;
                       break;
                   }
@@ -234,7 +234,7 @@ $effect(() => {
   // Semantic RAG-based POI Timeline Functions
   async function loadEvidenceReports() {
     try {
-      const response = await fetch('/api/v1/evidence/reports'); // Declared 'response' here
+      const response = await fetch('/api/v1/evidence/reports'); // Declared: 'response' here
       if (!response.ok) {
         throw new Error(`Evidence reports API failed: ${response.status}`);
       }
@@ -310,7 +310,7 @@ $effect(() => {
   async function generateUserActivityTimeline() {
     activityLoading = true;
     try {
-      const response = await fetch('/api/v1/user/activity'); // Declared 'response' here
+      const response = await fetch('/api/v1/user/activity'); // Declared: 'response' here
       if (response.ok) {
         const data = await response.json();
         userActivityTimeline = data.timeline || [];
@@ -395,25 +395,25 @@ $effect(() => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('Explain contract formation requirements')}
+            onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             aria-label="Explain contract formation requirements"
           >Contract Law</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             aria-label="What is the chain of custody for evidence?"
           >Evidence Rules</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
+            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             aria-label="Explain liability limitations in contracts"
           >Liability</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('What are the elements of negligence?')}
+            onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             aria-label="What are the elements of negligence?"
           >Tort Law</button>
@@ -437,7 +437,7 @@ $effect(() => {
               </span>
               <button
                 class="bits-btn bits-nes-btn px-3 py-1 rounded-md text-sm"
-                on:click={clearChat}
+                onclick={clearChat}
                 disabled={isStreaming}
                 aria-label="Clear chat"
               >Clear</button>
@@ -488,12 +488,12 @@ $effect(() => {
             <div class="flex gap-2">
               <input
                 bind:value={currentMessage}
-                on:keydown={handleKeydown}
+                onkeydown={handleKeydown}
                 class="flex-1 p-2 border rounded-md"
                 placeholder="Ask a legal question..."
               />
               <button
-                on:click={sendMessage}
+                onclick={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn rounded-md"
                 aria-label="Send message"
@@ -519,7 +519,7 @@ $effect(() => {
                 Persons of Interest Timeline
               </CardTitle>
               <button
-                on:click={() => showTimeline = false}
+                onclick={() => showTimeline = false}
                 class="nes-btn bits-btn px-2 py-1 rounded-md"
                 aria-label="Close timeline"
               >
@@ -541,7 +541,7 @@ $effect(() => {
                       </div>
                     </div>
                     <button
-                      on:click={() => selectPOI(poi)}
+                      onclick={() => selectPOI(poi)}
                       class="nes-btn bits-btn px-2 py-1 rounded-md"
                       aria-label={`View details for ${poi.name}`}
                     >View Details</button>
@@ -683,7 +683,7 @@ $effect(() => {
             </CardHeader>
             <CardContent class="space-y-3">
               <button
-                on:click={checkSystemStatus}
+                onclick={checkSystemStatus}
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Refresh system status"
               >
@@ -695,7 +695,7 @@ $effect(() => {
 
               <button
                 class="bits-btn w-full justify-start px-3 py-2 rounded-md text-sm"
-                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
+                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -706,7 +706,7 @@ $effect(() => {
 
               <button
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
-                on:click={analyzePersonsOfInterest}
+                onclick={analyzePersonsOfInterest}
                 disabled={timelineLoading}
                 aria-label="Analyze evidence"
               >
@@ -724,7 +724,7 @@ $effect(() => {
               </button>
 
               <button
-                on:click={generateUserActivityTimeline}
+                onclick={generateUserActivityTimeline}
                 disabled={activityLoading}
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Generate user activity timeline"
@@ -801,7 +801,7 @@ $effect(() => {
       <div>
         <button
           class="px-2 py-1 rounded-md text-sm"
-          on:click={closePOIDetails}
+          onclick={closePOIDetails}
           aria-label="Close dialog"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -894,12 +894,12 @@ $effect(() => {
     <!-- Modal Footer -->
     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
       <button
-        on:click={closePOIDetails}
+        onclick={closePOIDetails}
         class="bits-btn px-3 py-2 rounded-md"
         aria-label="Close person of interest details"
       >Close</button>
       <button
-        on:click={() => {
+        onclick={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}

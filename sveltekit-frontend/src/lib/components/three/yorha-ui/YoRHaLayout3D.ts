@@ -77,19 +77,19 @@ export class YoRHaLayout3D extends THREE.Group {
   public updateLayout(): void {
     if (!this.needsLayout) return;
     switch (this.options.type) {
-      case 'flex':
+      case: 'flex':
         this.layoutFlex();
         break;
-      case 'grid':
+      case: 'grid':
         this.layoutGrid();
         break;
-      case 'absolute':
+      case: 'absolute':
         this.layoutAbsolute();
         break;
-      case 'stack':
+      case: 'stack':
         this.layoutStack();
         break;
-      case 'flow':
+      case: 'flow':
         this.layoutFlow();
         break;
     }
@@ -252,17 +252,17 @@ export class YoRHaLayout3D extends THREE.Group {
     const containerBounds = this.getContainerBounds();
     let start = -availableMain / 2 + padding.left;
     switch (this.options.justify) {
-      case 'center':
+      case: 'center':
         start = -totalMainSize / 2;
         break;
-      case 'end':
+      case: 'end':
         start = availableMain / 2 - totalMainSize + padding.left;
         break;
-      case 'space-between':
+      case: 'space-between':
         start = -availableMain / 2 + padding.left;
         break;
-      case 'space-around':
-      case 'space-evenly':
+      case: 'space-around':
+      case: 'space-evenly':
         // Handled in flex distribution
         break;
     }
@@ -276,11 +276,11 @@ export class YoRHaLayout3D extends THREE.Group {
   ): number {
     const align = alignSelf || this.options.align || 'start';
     switch (align) {
-      case 'center':
+      case: 'center':
         return 0;
-      case 'end':
+      case: 'end':
         return availableCross / 2 - childCrossSize / 2 - padding.bottom;
-      case 'start':
+      case: 'start':
       default:
         return -availableCross / 2 + childCrossSize / 2 + padding.top;
     }

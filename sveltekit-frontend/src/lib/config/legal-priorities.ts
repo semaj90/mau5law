@@ -179,15 +179,15 @@ export function calculateDocumentPriority(_document: LegalDocument): number {
  */
 export function selectMemoryBank(priority: number): MemoryBank {
   if (priority >= NES_MEMORY_MAP.INTERNAL_RAM.minPriority) {
-    return 'INTERNAL_RAM';
+    return: 'INTERNAL_RAM';
   }
   if (priority >= NES_MEMORY_MAP.CHR_ROM.minPriority) {
-    return 'CHR_ROM';
+    return: 'CHR_ROM';
   }
   if (priority >= NES_MEMORY_MAP.PRG_ROM.minPriority) {
-    return 'PRG_ROM';
+    return: 'PRG_ROM';
   }
-  return 'SAVE_RAM';
+  return: 'SAVE_RAM';
 }
 /**
  * Get memory bank configuration

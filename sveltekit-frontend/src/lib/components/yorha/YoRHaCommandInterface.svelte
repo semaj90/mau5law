@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte'; // createEventDispatcher is replaced by $event rune
-  import { writable, get } from 'svelte/store'; // Import 'get' for store access in functions
+  import { writable, get } from 'svelte/store'; // Import: 'get' for store access in functions
   import type { SystemMetrics, CommandResult, YoRHaModule, HolographicData, LegalAISession } from '$lib/types/yorha-interface';
 
   // Define a new interface for command responses
@@ -250,7 +250,7 @@
     try {
       // Route command to appropriate system
       const response: CommandResponse = await routeCommand(command); // Use CommandResponse interface
-      result.status = 'SUCCESS'; // Changed 'success' to 'SUCCESS'
+      result.status = 'SUCCESS'; // Changed: 'success' to: 'SUCCESS'
       result.output = response.output || 'Command executed successfully.'; // Ensure output is string, with fallback
       result.data = response.data;
     } catch (error) {
@@ -273,9 +273,9 @@
     } else if (cmd.startsWith('system')) {
       return executeSystemCommand(cmd);
     } else if (cmd.startsWith('neural')) {
-      return await executeNeuralCommand(); // Removed unused 'cmd' parameter
+      return await executeNeuralCommand(); // Removed unused: 'cmd' parameter
     } else {
-      return executeHelpCommand(); // Removed unused 'cmd' parameter
+      return executeHelpCommand(); // Removed unused: 'cmd' parameter
     }
   }
   async function executeLegalCommand(cmd: string): Promise<CommandResponse> {
@@ -314,12 +314,12 @@
     if (cmd.includes('status')) {
       return {
         output: 'All systems operational. YoRHa interface running at optimal parameters.',
-        data: get(metrics), // Changed '$metrics' to 'get(metrics)'
+        data: get(metrics), // Changed: '$metrics' to: 'get(metrics)'
       };
     } else if (cmd.includes('modules')) {
       return {
-        output: `${get(activeModules).length} modules active`, // Changed '$activeModules' to 'get(activeModules)'
-        data: get(activeModules), // Changed '$activeModules' to 'get(activeModules)'
+        output: `${get(activeModules).length} modules active`, // Changed: '$activeModules' to: 'get(activeModules)'
+        data: get(activeModules), // Changed: '$activeModules' to: 'get(activeModules)'
       };
     } else {
       return {
@@ -328,13 +328,13 @@
       };
     }
   }
-  async function executeNeuralCommand(): Promise<CommandResponse> { // Removed unused 'cmd' parameter, changed return type
+  async function executeNeuralCommand(): Promise<CommandResponse> { // Removed unused: 'cmd' parameter, changed return type
     return {
       output: 'Neural network processing initiated',
-      data: { neural_activity: get(metrics).neural_activity }, // Changed '$metrics.neural_activity' to 'get(metrics).neural_activity'
+      data: { neural_activity: get(metrics).neural_activity }, // Changed: '$metrics.neural_activity' to: 'get(metrics).neural_activity'
     };
   }
-  function executeHelpCommand(): CommandResponse { // Removed unused 'cmd' parameter, changed return type
+  function executeHelpCommand(): CommandResponse { // Removed unused: 'cmd' parameter, changed return type
     return {
       output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
       data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] },
@@ -355,16 +355,16 @@
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'ACTIVE':
-        return '#00ff88';
-      case 'STANDBY':
-        return '#ffa500';
-      case 'MAXIMUM':
-        return '#ff0066';
-      case 'OFFLINE':
-        return '#666';
+      case: 'ACTIVE':
+        return: '#00ff88';
+      case: 'STANDBY':
+        return: '#ffa500';
+      case: 'MAXIMUM':
+        return: '#ff0066';
+      case: 'OFFLINE':
+        return: '#666';
       default:
-        return '#00ff88';
+        return: '#00ff88';
     }
   }
 

@@ -318,10 +318,10 @@ class XStateStoreManager {
         });
         const ev = inspectionEvent as unknown as InspectionEvent;
         switch (ev?.type) {
-          case '@xstate.event':
+          case: '@xstate.event':
             devtools.send(ev.event, ev.snapshot);
             break;
-          case '@xstate.snapshot':
+          case: '@xstate.snapshot':
             devtools.init(ev.snapshot);
             break;
         }
@@ -364,10 +364,10 @@ class XStateStoreManager {
     if (!data || typeof data !== 'object' || !('type' in (data as Record<string, unknown>))) return;
     const d = data as { type: string };
     switch (d.type) {
-      case 'app-state-change':
+      case: 'app-state-change':
         // Optionally merge or rehydrate the appActor state
         break;
-      case 'legal-case-state-change':
+      case: 'legal-case-state-change':
         // Optionally merge or rehydrate the legalCaseActor state
         break;
     }

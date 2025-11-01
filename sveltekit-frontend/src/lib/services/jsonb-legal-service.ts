@@ -555,7 +555,7 @@ export class JsonbLegalService {
       const result = verificationResult[0] as any;
       const evidence = result as Evidence;
       const chain = (evidence.metadata as EvidenceMetadata)?.chainOfCustody || [];
-      const gaps: Array<{ from: string; to: string; durationHours: number }> = [];
+      const gaps: Array<{ from string; to: string; durationHours: number }> = [];
 
       for (let i = 1; i < chain.length; i++) {
         const prevTime = new Date(chain[i - 1].timestamp);
@@ -563,7 +563,7 @@ export class JsonbLegalService {
         const durationMs = currTime.getTime() - prevTime.getTime();
         if (durationMs > 24 * 60 * 60 * 1000) {
           gaps.push({
-            from: chain[i - 1].custodian,
+            from chain[i - 1].custodian,
             to: chain[i].custodian,
             durationHours: Math.round(durationMs / (60 * 60 * 1000)),
           });
@@ -647,7 +647,7 @@ export class JsonbLegalService {
             );
             if (targetNode && targetNode.id !== row.id) {
               edges.push({
-                from: row.id,
+                from row.id,
                 to: targetNode.id,
                 type: citation.type || 'citation',
                 relevance: citation.relevance,

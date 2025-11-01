@@ -92,7 +92,7 @@ type TimelineAnomaly = {
 
 type CrossReference = {
   type: 'semantic_similarity' | 'shared_entity' | 'temporal_proximity' | 'citation_link';
-  from: string;
+  from string;
   to: string;
   entity?: string;
   confidence: number;
@@ -385,7 +385,7 @@ export class CaseManagementService {
 		console.error(`❌ Failed to start evidence processing:`, err);
 	}
 
-	// Non-blocking lightweight local forensic probes to avoid "declared but never used" warnings.
+	// Non-blocking lightweight local forensic probes to avoid: "declared but never used" warnings.
 	// These calls are intentionally asynchronous and do not affect the main pipeline.
 	(async () => {
 		try {
@@ -565,7 +565,7 @@ export class CaseManagementService {
       patterns.push({
         pattern: 'keyword_urgency',
         confidence: 0.7,
-        description: 'Use of "urgent" keyword may indicate pressure or coercion.',
+        description: 'Use of: "urgent" keyword may indicate pressure or coercion.',
         evidenceIds: [evidence.id],
         severity: 'low',
       });
@@ -887,7 +887,7 @@ export class CaseManagementService {
         if (daysDiff > 30) { // Gap of more than 30 days
           anomalies.push({
             type: 'temporal_gap',
-            description: `Unexplained ${daysDiff.toFixed(0)}-day gap between "${sortedEvents[i].title}" and "${sortedEvents[i + 1].title}"`,
+            description: `Unexplained ${daysDiff.toFixed(0)}-day gap between: "${sortedEvents[i].title}" and: "${sortedEvents[i + 1].title}"`,
             eventIds: [sortedEvents[i].id, sortedEvents[i + 1].id],
             confidence: 0.6,
             severity: 'medium'
@@ -915,7 +915,7 @@ export class CaseManagementService {
         if (currentStage && nextStage && currentStage > nextStage) {
           anomalies.push({
             type: 'sequence_violation',
-            description: `Timeline sequence violation: "${sortedEvents[i].title}" (stage ${currentStage}) before "${sortedEvents[i + 1].title}" (stage ${nextStage})`,
+            description: `Timeline sequence violation: "${sortedEvents[i].title}" (stage ${currentStage}) before: "${sortedEvents[i + 1].title}" (stage ${nextStage})`,
             eventIds: [sortedEvents[i].id, sortedEvents[i + 1].id],
             confidence: 0.7,
             severity: 'high'
@@ -939,7 +939,7 @@ export class CaseManagementService {
           if (similarity > 0.8 && timeDiff < 7) {
             anomalies.push({
               type: 'duplicate',
-              description: `Potential duplicate events: "${sortedEvents[i].title}" and "${sortedEvents[j].title}" (${similarity.toFixed(2)} similarity)`,
+              description: `Potential duplicate events: "${sortedEvents[i].title}" and: "${sortedEvents[j].title}" (${similarity.toFixed(2)} similarity)`,
               eventIds: [sortedEvents[i].id, sortedEvents[j].id],
               confidence: similarity,
               severity: 'low'
@@ -959,7 +959,7 @@ export class CaseManagementService {
         if (timeDiff < 30 && sortedEvents[i].eventType !== sortedEvents[i + 1].eventType) {
           anomalies.push({
             type: 'implausible_timing',
-            description: `Implausibly short time (${timeDiff.toFixed(0)} minutes) between "${sortedEvents[i].title}" and "${sortedEvents[i + 1].title}"`,
+            description: `Implausibly short time (${timeDiff.toFixed(0)} minutes) between: "${sortedEvents[i].title}" and: "${sortedEvents[i + 1].title}"`,
             eventIds: [sortedEvents[i].id, sortedEvents[i + 1].id],
             confidence: 0.8,
             severity: 'medium'
@@ -1049,7 +1049,7 @@ export class CaseManagementService {
     currentEvidenceId: string
   ): Promise<Array<{
     type: 'semantic_similarity' | 'shared_entity' | 'temporal_proximity' | 'citation_link';
-    from: string;
+    from string;
     to: string;
     entity?: string;
     confidence: number;
@@ -1094,7 +1094,7 @@ export class CaseManagementService {
             if (result.id !== currentEvidenceId && result.score > 0.75) {
               references.push({
                 type: 'semantic_similarity',
-                from: currentEvidenceId,
+                from currentEvidenceId,
                 to: result.id,
                 confidence: result.score,
                 metadata: {
@@ -1125,7 +1125,7 @@ export class CaseManagementService {
               if (this.entitiesMatchFuzzy(currentEntity, otherEntity)) {
                 references.push({
                   type: 'shared_entity',
-                  from: currentEvidenceId,
+                  from currentEvidenceId,
                   to: otherEvidence.id,
                   entity: currentEntity.text,
                   confidence: Math.min(currentEntity.confidence, otherEntity.confidence),
@@ -1156,7 +1156,7 @@ export class CaseManagementService {
           if (daysDiff <= 3) {
             references.push({
               type: 'temporal_proximity',
-              from: currentEvidenceId,
+              from currentEvidenceId,
               to: otherEvidence.id,
               confidence: Math.max(0.5, 1 - (daysDiff / 3) * 0.5),
               metadata: {
@@ -1183,7 +1183,7 @@ export class CaseManagementService {
               if (currentCite.caseNumber === otherCite.caseNumber) {
                 references.push({
                   type: 'citation_link',
-                  from: currentEvidenceId,
+                  from currentEvidenceId,
                   to: otherEvidence.id,
                   entity: currentCite.caseNumber,
                   confidence: 0.95,
@@ -1400,7 +1400,7 @@ export class CaseManagementService {
         });
       }
 
-      // Pattern 2: Explicit case number forms "No. 123-ABC", "Case No. 2021/0001", "Case 2021-123"
+      // Pattern 2: Explicit case number forms: "No. 123-ABC", "Case No. 2021/0001", "Case 2021-123"
       const pattern2 = /\b(?:No\.|Case No\.|Case)\s+([A-Z0-9\-\/\.]+)/gi;
       while ((m = pattern2.exec(text)) !== null) {
         results.push({ caseNumber: m[1].trim() });
@@ -1514,7 +1514,7 @@ export class CaseManagementService {
         // shallow clone to avoid mutating original objects
         map.set(key, {
           type: r.type,
-          from: r.from,
+          from r.from,
           to: r.to,
           entity: r.entity,
           confidence: r.confidence ?? 0,

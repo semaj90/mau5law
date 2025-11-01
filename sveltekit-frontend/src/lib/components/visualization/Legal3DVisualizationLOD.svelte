@@ -389,13 +389,13 @@ if (!browser) return;
     const config = lodConfig[lodLevel as keyof typeof lodConfig];
     const complexity = config?.renderComplexity || 0.2;
     switch (entity.meshType) {
-      case 'cube':
+      case: 'cube':
         return generateCubeMesh(complexity);
-      case 'sphere':
+      case: 'sphere':
         return generateSphereMesh(complexity);
-      case 'pyramid':
+      case: 'pyramid':
         return generatePyramidMesh(complexity);
-      case 'cylinder':
+      case: 'cylinder':
         return generateCylinderMesh(complexity);
       default:
         return generateCubeMesh(complexity); // Default fallback

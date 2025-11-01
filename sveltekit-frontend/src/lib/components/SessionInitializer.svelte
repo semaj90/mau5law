@@ -4,58 +4,68 @@ Updated to work with proper SvelteKit data flow instead of global stores
 -->
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { userDataStore  } from '$lib/stores/unified';
+  import { onDestroy } from 'svelte';
+  import { userStore } from '$lib/stores/unified';
 
-  // Props from the layout with session data from server
-  interface Props {
-    user: any;
-    session any;
-    isAuthenticated: boolean;
-    enableAutoSync?: boolean;
-    syncInterval?: number;
-    enableDebugLogging?: boolean;
-  }
+  // Replace `export let ...` with $props() usage (runes mode)
+  const props = $props();
 
-  let {
-    user,
-    session,
-    isAuthenticated,
-    enableAutoSync = true,
-    syncInterval = 5 * 60 * 1000, // 5 minutes
-    enableDebugLogging = false,
-  }: Props = $props();
+  // Small helper types for local use
+  type MaybeUser = { id?: string; role?: string } | null;
+  type MaybeSession = { id?: string } | null;
+
+  // Extend the imported userStore type locally so TS allows optional methods used here
+  type MaybeUserStore = {
+    subscribe?: any;
+    init?: (id: string) => void;
+    clear?: () => void;
+    isLoading?: () => boolean;
+    // ...other store members if needed...
+  };
+  const typedUserStore = userStore as MaybeUserStore;
 
   let syncIntervalId: number | null = null;
 
-  // Debug logging helper
   function debugLog(message: string, ...args: any[]) {
-    if (enableDebugLogging) {
-      console.log(`[SessionInitializer] ${message}`, ...args);
+    if ((props.enableDebugLogging as boolean) ?? false) {
+      console.log('[SessionInitializer]', message, ...args);
     }
   }
 
-  // Initialize user data store when session changes
+  // Initialize user data store when session/props changes
   $effect(() => {
+    const user = props.user as MaybeUser;
     if (browser && user?.id) {
       debugLog('Initializing user data for:', user.id);
-      userDataStore.init(user.id);
+      typedUserStore.init?.(user.id);
     } else if (!user) {
       debugLog('Clearing user data - no user session');
-      userDataStore.clear();
+      typedUserStore.clear?.();
     }
   });
 
   // Set up periodic sync if enabled
   $effect(() => {
+    // clear previous interval if any
+    if (syncIntervalId) {
+      clearInterval(syncIntervalId);
+      syncIntervalId = null;
+    }
+
+    const enableAutoSync = (props.enableAutoSync as boolean) ?? true;
+    const isAuthenticated = (props.isAuthenticated as boolean) ?? false;
+    const syncInterval = (props.syncInterval as number) ?? 5 * 60 * 1000;
+    const user = props.user as MaybeUser;
+
     if (browser && enableAutoSync && isAuthenticated && user?.id) {
       debugLog('Setting up auto-sync interval:', syncInterval);
 
       syncIntervalId = window.setInterval(() => {
         debugLog('Auto-syncing user data');
-        userDataStore.init(user.id);
+        typedUserStore.init?.(user.id as string);
       }, syncInterval);
 
-      // Cleanup function
+      // cleanup when effect re-runs or component destroyed
       return () => {
         if (syncIntervalId) {
           clearInterval(syncIntervalId);
@@ -66,14 +76,23 @@ Updated to work with proper SvelteKit data flow instead of global stores
     }
   });
 
+  // Ensure interval is cleared on destroy as a safeguard
+  onDestroy(() => {
+    if (syncIntervalId) {
+      clearInterval(syncIntervalId);
+      syncIntervalId = null;
+      debugLog('Cleared auto-sync interval on destroy');
+    }
+  });
+
   // Log session state changes for debugging
   $effect(() => {
-    if (enableDebugLogging) {
+    if ((props.enableDebugLogging as boolean) ?? false) {
       debugLog('Session state changed:', {
-        isAuthenticated,
-        userId: user?.id,
-        userRole: user?.role,
-        sessionId: session?.id,
+        isAuthenticated: props.isAuthenticated,
+        userId: props.user?.id,
+        userRole: props.user?.role,
+        sessionId: props.session?.id,
       });
     }
   });

@@ -65,7 +65,7 @@
   function getStatusColor(item: DataPoint): string {
     if ((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).color) return (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).color;
     if ((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status) return statusColors[(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status];
-    return 'var(--yorha-secondary, #ffd700)';
+    return: 'var(--yorha-secondary, #ffd700)';
   }
 </script>
 <div class="yorha-dataviz" bind:this={chartRef}>

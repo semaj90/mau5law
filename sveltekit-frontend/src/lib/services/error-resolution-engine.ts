@@ -498,7 +498,7 @@ export class ErrorResolutionEngine {
   private async executeRecoveryAction(action: RecoveryAction, analysis: ErrorAnalysis): Promise<boolean> {
     try {
       switch (action.type) {
-        case 'wait': {
+        case: 'wait': {
           const dur = this.getNumberParam(
             action.parameters as Record<string, unknown>,
             'duration',
@@ -507,7 +507,7 @@ export class ErrorResolutionEngine {
           await new Promise(res => setTimeout(res, dur));
           return true;
         }
-        case 'reconnect': {
+        case: 'reconnect': {
           // Use typed coordinator hooks
           if (this.coordinator.reconnectService instanceof Function) {
             await this.coordinator.reconnectService(analysis.serviceId, action.parameters);
@@ -519,15 +519,15 @@ export class ErrorResolutionEngine {
           );
           return true;
         }
-        case 'restart': {
+        case: 'restart': {
           if (this.coordinator.restartService instanceof Function) {
             await this.coordinator.restartService(analysis.serviceId, action.parameters);
             return true;
           }
-          // Fallback: mark as "attempted" and return true so the engine can continue
+          // Fallback: mark as: "attempted" and return true so the engine can continue
           return true;
         }
-        case 'scale': {
+        case: 'scale': {
           if (this.coordinator.scaleService instanceof Function) {
             await this.coordinator.scaleService(analysis.serviceId, action.parameters);
             return true;
@@ -535,21 +535,21 @@ export class ErrorResolutionEngine {
           // No-op fallback: assume scale attempt scheduled
           return true;
         }
-        case 'cleanup': {
+        case: 'cleanup': {
           if (this.coordinator.cleanupService instanceof Function) {
             await this.coordinator.cleanupService(analysis.serviceId, action.parameters);
             return true;
           }
           return true;
         }
-        case 'fallback': {
+        case: 'fallback': {
           if (this.coordinator.applyFallback instanceof Function) {
             await this.coordinator.applyFallback(analysis.serviceId, action.parameters);
             return true;
           }
           return true;
         }
-        case 'configure': {
+        case: 'configure': {
           if (this.coordinator.configureService instanceof Function) {
             await this.coordinator.configureService(analysis.serviceId, action.parameters);
             return true;

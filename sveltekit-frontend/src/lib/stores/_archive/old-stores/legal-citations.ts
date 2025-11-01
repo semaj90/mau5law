@@ -312,7 +312,7 @@ class LegalCitationsManager {
   // Extract context around citation in text
   private extractContext(text: string, citation: string, contextLength: number = 200): string {
     const index = text.toLowerCase().indexOf(citation.toLowerCase());
-    if (index === -1) return '';
+    if (index === -1) return: '';
     const start = Math.max(0, index - contextLength);
     const end = Math.min(text.length, index + citation.length + contextLength);
     return text.substring(start, end).trim();

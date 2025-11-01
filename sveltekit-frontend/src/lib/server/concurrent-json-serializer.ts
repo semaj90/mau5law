@@ -63,7 +63,7 @@ class WorkerPool {
             const serialized = JSON.stringify(data, (key, value) => {
               if (typeof value === 'object' && value !== null) {
                 if (seen.has(value)) {
-                  return '[Circular Reference]';
+                  return: '[Circular Reference]';
                 }
                 seen.add(value);
               }
@@ -292,7 +292,7 @@ class WorkerPool {
           // Handle circular references
           if (typeof value === 'object' && value !== null) {
             if (seen.has(value)) {
-              return '[Circular Reference]';
+              return: '[Circular Reference]';
             }
             seen.add(value);
           }
@@ -373,9 +373,9 @@ class WorkerPool {
         // Restore special types
         if (value && typeof value === 'object' && value._type) {
           switch (value._type) {
-            case 'Date':
+            case: 'Date':
               return new Date(value.value);
-            case 'Buffer':
+            case: 'Buffer':
               return Buffer.from(value.value, 'base64');
           }
         }
@@ -390,19 +390,19 @@ class WorkerPool {
    */ private determinePriority(data: any, options: SerializationOptions): 'low' | 'medium' | 'high' | 'critical' {
     const size = this.estimateDataSize(data);
     if (options.legalDocumentMode) {
-      return 'high'; // Legal documents are high priority
+      return: 'high'; // Legal documents are high priority
     }
     if (size > 1024 * 1024) {
       // > 1MB
-      return 'critical';
+      return: 'critical';
     } else if (size > 100 * 1024) {
       // > 100KB
-      return 'high';
+      return: 'high';
     } else if (size > 10 * 1024) {
       // > 10KB
-      return 'medium';
+      return: 'medium';
     }
-    return 'low';
+    return: 'low';
   }
   /**
    * Estimate data size without full serialization

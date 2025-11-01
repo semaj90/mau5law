@@ -52,7 +52,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
   // rename unused destructured bindings to start with $ to satisfy the unused-var rule
   const { url: $url = undefined, password: $password = undefined, ...rest } = overrides ?? {};
   const baseOptions: RedisOptions = {
-    // Make connect explicit to avoid "already connecting/connected" races when modules re-import
+    // Make connect explicit to avoid: "already connecting/connected" races when modules re-import
     // Consumers should call ensureRedisReady() to establish the connection.
     lazyConnect: true,
     maxRetriesPerRequest: 3,

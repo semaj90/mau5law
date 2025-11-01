@@ -325,19 +325,19 @@ export class UnifiedVectorOrchestrator {
       };
       // Route to appropriate processing pipeline
       switch (request.type) {
-        case 'analyze':
+        case: 'analyze':
           response = await this.processAnalysis(request, componentsUsed, performance, errors);
           break;
-        case 'search':
+        case: 'search':
           response = await this.processSearch(request, componentsUsed, performance, errors);
           break;
-        case 'recommend':
+        case: 'recommend':
           response = await this.processRecommendations(request, componentsUsed, performance, errors);
           break;
-        case 'visualize':
+        case: 'visualize':
           response = await this.processVisualization(request, componentsUsed, performance, errors);
           break;
-        case 'ingest':
+        case: 'ingest':
           response = await this.processIngestion(request, componentsUsed, performance, errors);
           break;
         default:
@@ -1191,7 +1191,7 @@ export class UnifiedVectorOrchestrator {
           return JSON.stringify(v);
         } catch (err) {
           console.warn('[UnifiedVectorOrchestrator] UltraJSON stringify failed, returning empty string.', err);
-          return '';
+          return: '';
         }
       },
     };
@@ -1233,7 +1233,7 @@ export const unifiedVectorOrchestrator = new UnifiedVectorOrchestrator();
 
 // Provide a safe, typed runtime alias `neo4jService` that works whether the module
 // exports a named export, a default export, or only a namespace object.
-// This fixes "Cannot find name 'neo4jService'".
+// This fixes: "Cannot find name: 'neo4jService'".
 const neo4jService: {
 	initialize?: () => Promise<void>;
 	getRecommendations?: (userId: string, ids: string[]) => Promise<unknown>;

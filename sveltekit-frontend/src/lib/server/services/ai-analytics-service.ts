@@ -2,7 +2,7 @@ import os from 'os';
 import { redis } from '$lib/server/redis';
 import { CONFIG } from '$lib/config/env.server';
 import { RabbitMQXStateIntegration } from '$lib/messaging/rabbitmq-xstate-integration';
-// Minimal local type declarations to avoid 'any' and keep defensive calls typed
+// Minimal local type declarations to avoid: 'any' and keep defensive calls typed
 type RabbitMQIntegration = {
   publishEvent?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
   enqueue?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;

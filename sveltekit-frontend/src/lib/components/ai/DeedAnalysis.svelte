@@ -1,19 +1,26 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import type { Document } from '$lib/types/global';
+  import type { Document as LegalDocument } from '$lib/types/global';
+
   // Types
-  interface SimilarityResult extends Document {
+  interface SimilarityResult extends LegalDocument {
     similarity: number;
   }
-  // Props (Svelte 5 runes)
-  let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props();
+
+  // Props (Svelte 5 runes) — add explicit types to avoid accidental runtime issues
+  let {
+    selectedDocument = $bindable(),
+    searchQuery = $bindable()
+  }: { selectedDocument?: LegalDocument; searchQuery?: string } = $props();
+
   // State
   let similarDocuments = $state<SimilarityResult[]>([]);
   let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
-  async function performSemanticSearch(query: string) {
-    if (!query.trim()) {
+
+  async function performSemanticSearch(query: string | undefined) {
+    const q = String(query ?? '').trim();
+    if (!q) {
       similarDocuments = [];
       return;
     }
@@ -26,16 +33,24 @@
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query: query.trim(),
+          query: q,
           limit: 5,
           threshold: 0.3,
         }),
       });
-      const data = await response.json();
-      if (data.success) {
-        similarDocuments = data.result;
+      if (!response.ok) {
+        const text = await response.text().catch(() => response.statusText);
+        throw new Error(text || `HTTP ${response.status}`);
+      }
+      const data = await response.json().catch(() => ({}));
+      if (data && data.success && Array.isArray(data.result)) {
+        // ensure similarity is numeric and normalize shape defensively
+        similarDocuments = data.result.map((r: any) => ({
+          ...r,
+          similarity: typeof r.similarity === 'number' ? r.similarity : Number(r.similarity) || 0,
+        }));
       } else {
-        error = data.error || 'Search failed';
+        error = data?.error ?? 'Search failed';
         similarDocuments = [];
       }
     } catch (err) {
@@ -45,12 +60,17 @@
       isLoading = false;
     }
   }
+
   // Reactive search when query changes
   // simple reactive trigger (debounce could be added later)
   $effect(() => {
-    if (searchQuery && searchQuery.trim().length) {
-      // Added .trim() to ensure non-empty string
+    // safe-trim check
+    if (searchQuery && String(searchQuery).trim().length) {
       performSemanticSearch(searchQuery);
+    } else {
+      // clear results when query becomes empty/undefined
+      similarDocuments = [];
+      error = null;
     }
   });
 </script>
@@ -68,13 +88,14 @@
     />
     <button
       onclick={() => performSemanticSearch(searchQuery)}
-      disabled={isLoading || !searchQuery.trim()}
+      disabled={isLoading || !(searchQuery && String(searchQuery).trim())}
       class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {isLoading ? '🔄' : '🔍'}
     </button>
   </div>
 </div>
+
 <!-- Selected Document Display -->
 {#if selectedDocument}
   <div class="bg-white rounded-lg shadow-md p-6 mb-6 border">
@@ -96,12 +117,13 @@
       <h3 class="font-bold mb-2 text-gray-700">Content Preview</h3>
       <div class="bg-gray-50 p-3 rounded border max-h-40 overflow-y-auto">
         <p class="text-sm text-gray-700 whitespace-pre-wrap">
-          {selectedDocument.content.slice(0, 500)}{selectedDocument.content.length > 500 ? '...' : ''}
+          {String(selectedDocument?.content ?? '').slice(0, 500)}{(selectedDocument?.content?.length ?? 0) > 500 ? '...' : ''}
         </p>
       </div>
     </div>
   </div>
 {/if}
+
 <!-- Search Results -->
 <div class="bg-white rounded-lg shadow-md p-6 border">
   <h2 class="text-xl font-bold mb-4 text-gray-800">
@@ -153,7 +175,7 @@
             {/if}
           </div>
           <div class="bg-gray-50 p-3 rounded text-sm">
-            <p class="text-gray-700">{doc.content.slice(0, 200)}{doc.content.length > 200 ? '...' : ''}</p>
+            <p class="text-gray-700">{String(doc.content ?? '').slice(0, 200)}{(doc.content?.length ?? 0) > 200 ? '...' : ''}</p>
           </div>
           <div class="mt-3 flex justify-end">
             <button
@@ -170,7 +192,7 @@
   {:else if searchQuery}
     <div class="text-center py-8">
       <div class="text-gray-400 text-4xl mb-4">📄</div>
-      <p class="text-gray-600 mb-2">No similar documents found for "{searchQuery}"</p>
+      <p class="text-gray-600 mb-2">No similar documents found for: "{searchQuery}"</p>
       <p class="text-sm text-gray-500">Try adjusting your search terms or lowering the similarity threshold</p>
     </div>
   {:else}
@@ -178,7 +200,7 @@
       <div class="text-gray-400 text-4xl mb-4">🔍</div>
       <p class="text-gray-600 mb-2">Enter a search query to find similar legal documents</p>
       <p class="text-sm text-gray-500">
-        Use natural language like "property deed transfer" or "contract liability clauses"
+        Use natural language like: "property deed transfer" or: "contract liability clauses"
       </p>
     </div>
   {/if}

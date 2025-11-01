@@ -245,12 +245,12 @@
 
   function statusBadge(status: TestStatus) {
     switch (status) {
-      case 'success':
-        return 'bg-emerald-900/40 text-emerald-300 border-emerald-500/40';
-      case 'error':
-        return 'bg-rose-900/40 text-rose-300 border-rose-500/40';
+      case: 'success':
+        return: 'bg-emerald-900/40 text-emerald-300 border-emerald-500/40';
+      case: 'error':
+        return: 'bg-rose-900/40 text-rose-300 border-rose-500/40';
       default:
-        return 'bg-amber-900/40 text-amber-300 border-amber-500/40';
+        return: 'bg-amber-900/40 text-amber-300 border-amber-500/40';
     }
   }
 </script>

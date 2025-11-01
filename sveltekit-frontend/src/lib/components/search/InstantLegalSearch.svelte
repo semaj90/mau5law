@@ -206,13 +206,13 @@ https://svelte.dev/e/expected_token -->
 
   function getResultTypeIcon(resultType: string | undefined) {
     switch (resultType) {
-      case 'cache':
+      case: 'cache':
         return Clock;
-      case 'fuzzy':
+      case: 'fuzzy':
         return Search;
-      case 'semantic':
+      case: 'semantic':
         return TrendingUp;
-      case 'hybrid':
+      case: 'hybrid':
         return Zap;
       default:
         return FileText;
@@ -221,21 +221,21 @@ https://svelte.dev/e/expected_token -->
 
   function getResultTypeColor(resultType: string | undefined) {
     switch (resultType) {
-      case 'cache':
-        return 'text-blue-600';
-      case 'fuzzy':
-        return 'text-green-600';
-      case 'semantic':
-        return 'text-purple-600';
-      case 'hybrid':
-        return 'text-orange-600';
+      case: 'cache':
+        return: 'text-blue-600';
+      case: 'fuzzy':
+        return: 'text-green-600';
+      case: 'semantic':
+        return: 'text-purple-600';
+      case: 'hybrid':
+        return: 'text-orange-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
 
   function formatScore(score: number | undefined) {
-    if (typeof score !== 'number' || Number.isNaN(score)) return '0.0%';
+    if (typeof score !== 'number' || Number.isNaN(score)) return: '0.0%';
     return (score * 100).toFixed(1) + '%';
   }
 
@@ -367,7 +367,7 @@ https://svelte.dev/e/expected_token -->
         <div class="flex items-center gap-4">
           {#if searchQuery && searchResults.length > 0}
             <span>
-              Found {searchResults.length} results for "{searchQuery}"
+              Found {searchResults.length} results for: "{searchQuery}"
               {#if lastSearchTime}
                 <span class="text-green-600">({lastSearchTime}ms)</span>
               {/if}
@@ -496,7 +496,7 @@ https://svelte.dev/e/expected_token -->
           <AlertTriangle class="h-12 w-12 mx-auto nes-text is-disabled mb-4" />
           <h3 class="font-medium mb-2">No results found</h3>
           <p class="nes-text is-disabled text-sm mb-4">
-            No documents match your search for "{searchQuery}".
+            No documents match your search for: "{searchQuery}".
           </p>
           <div class="text-sm nes-text is-disabled space-y-1">
             <p>Try:</p>
@@ -504,7 +504,7 @@ https://svelte.dev/e/expected_token -->
               <li>Using different or more general keywords</li>
               <li>Checking your spelling</li>
               <li>Reducing the number of filters</li>
-              <li>Using legal synonyms (e.g., "contract" instead of "agreement")</li>
+              <li>Using legal synonyms (e.g., "contract" instead of: "agreement")</li>
             </ul>
           </div>
         </Card.Content>

@@ -491,9 +491,9 @@ class CHRROMMemoryOrchestrator {
   }
   private getCompressionLevel(dataType: string): number {
     switch (dataType) {
-      case 'legal_document': return 100; // High compression for documents
-      case 'embedding': return 50; // Medium compression for embeddings
-      case 'metadata': return 127; // Maximum compression for metadata
+      case: 'legal_document': return 100; // High compression for documents
+      case: 'embedding': return 50; // Medium compression for embeddings
+      case: 'metadata': return 127; // Maximum compression for metadata
       default: return 75;
     }
   }

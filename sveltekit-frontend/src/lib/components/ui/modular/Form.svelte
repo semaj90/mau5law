@@ -41,8 +41,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // UnoCSS-based form variants
   const formVariants = cva(
-    // Base classes
-    'space-y-6',
+    // Base classes: 'space-y-6',
     {
       variants: {
         variant: {

@@ -104,7 +104,7 @@ export const searchFormSchema = z.object({
   query: z.string().max(200).optional(),
   caseStatus: z.array(z.enum(['draft', 'active', 'pending', 'closed'])).optional(),
   evidenceType: z.array(z.enum(['document', 'image', 'video', 'audio', 'digital'])).optional(),
-  dateRange: z.object({ from: z.string().optional(), to: z.string().optional() }).optional(),
+  dateRange: z.object({ from z.string().optional(), to: z.string().optional() }).optional(),
   priority: z.array(z.enum(['low', 'medium', 'high'])).optional(),
   tags: z.array(z.string()).optional(),
   sortBy: z.enum(['relevance', 'date', 'priority', 'status']).default('relevance'),

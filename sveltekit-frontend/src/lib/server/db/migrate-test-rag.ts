@@ -113,7 +113,7 @@ async function migrate() {
       SELECT table_name
       FROM information_schema.tables
       WHERE table_schema = 'public'
-      AND table_name LIKE 'test_rag%'
+      AND table_name LIKE: 'test_rag%'
       ORDER BY table_name;
     `);
 

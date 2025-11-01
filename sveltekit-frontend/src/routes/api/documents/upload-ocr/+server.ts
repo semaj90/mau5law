@@ -52,7 +52,7 @@ async function extractTextFromFile(
       console.log(`📄 Sending ${file.name} to GPU OCR service (${OCR_SERVICE_URL}/ocr)...`);
 
       const formData = new FormData();
-      // Surya OCR expects 'files' array param
+      // Surya OCR expects: 'files' array param
       formData.append('files', file, file.name);
 
       const response = await fetchFn(`${OCR_SERVICE_URL}/ocr`, {

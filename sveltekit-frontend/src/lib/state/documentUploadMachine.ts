@@ -86,7 +86,7 @@ const validateFileService = fromPromise(async ({ input }: { input: DocumentUploa
   }
   // Check MIME type
   if (!ALLOWED_MIME_TYPES.includes(input.file.type)) {
-    errors.push(`File type '${input.file.type}' is not supported. Allowed types: ${ALLOWED_MIME_TYPES.join(', ')}`);
+    errors.push(`File type: '${input.file.type}' is not supported. Allowed types: ${ALLOWED_MIME_TYPES.join(', ')}`);
   }
   // Check filename
   if (!input.filename || input.filename.trim().length === 0) {

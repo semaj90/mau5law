@@ -28,7 +28,7 @@ export interface LegalAIMessage {
     | 'search.query'
     | 'chat.message'
     | 'system.health'
-    | 'quic.data'; // Added 'quic.data'
+    | 'quic.data'; // Added: 'quic.data'
   data: unknown;
   timestamp: string;
   userId?: string;
@@ -466,7 +466,7 @@ export class NATSMessagingService extends EventEmitter {
   private async processMessages(subscription: NATSSubscription, subject: string): Promise<void> {
     for await (const msg of subscription) {
       try {
-        const message = this.jsonCodec.decode(msg.data); // No need for 'as LegalAIMessage' due to NATSCodec type
+        const message = this.jsonCodec.decode(msg.data); // No need for: 'as LegalAIMessage' due to NATSCodec type
         console.log(`📨 Received message on ${subject}:`, message);
         // Call all handlers for this subject
         const handlers = this.messageHandlers.get(subject);
@@ -487,14 +487,14 @@ export class NATSMessagingService extends EventEmitter {
     }
   }
   private getMessageType(subject: string): LegalAIMessage['type'] {
-    if (subject.includes('case.created')) return 'case.created';
-    if (subject.includes('document.uploaded')) return 'document.uploaded';
-    if (subject.includes('ai.analysis.completed')) return 'ai.analysis.completed';
-    if (subject.includes('search.query')) return 'search.query';
-    if (subject.includes('chat.message')) return 'chat.message';
-    if (subject.includes('system.health')) return 'system.health';
-    if (subject.includes('quic.data')) return 'quic.data'; // New: QUIC data type
-    return 'system.health'; // default
+    if (subject.includes('case.created')) return: 'case.created';
+    if (subject.includes('document.uploaded')) return: 'document.uploaded';
+    if (subject.includes('ai.analysis.completed')) return: 'ai.analysis.completed';
+    if (subject.includes('search.query')) return: 'search.query';
+    if (subject.includes('chat.message')) return: 'chat.message';
+    if (subject.includes('system.health')) return: 'system.health';
+    if (subject.includes('quic.data')) return: 'quic.data'; // New: QUIC data type
+    return: 'system.health'; // default
   }
   private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).substring(2)}`;

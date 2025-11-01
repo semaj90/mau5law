@@ -4,18 +4,21 @@
     user: User | null;
   }
   let { user = null }: Props = $props();
+
   import { goto } from '$app/navigation';
-  import { page } from '$app/state';
   import SearchInput from './SearchInput.svelte';
-  import { FolderOpen, Home, LogOut, MoreVertical, Palette, Settings, Shield, User as UserIcon } from 'lucide-svelte';
   import type { User } from '$lib/types/user';
+
+  // Svelte 5 reactive state
   let searchQuery = $state('');
   let userMenuOpen = $state(false);
-  function handleSearch(_event: CustomEvent) {
-    searchQuery = e(vent as CustomEvent).detail.query;
-    // Handle global search
+
+  // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
+  function handleSearch(event: CustomEvent<{ query: string }>) {
+    searchQuery = event.detail.query;
     console.log('Global search:', searchQuery);
   }
+
   function handleLogout() {
     goto('/logout');
   }
@@ -24,104 +27,116 @@
     userMenuOpen = false;
   }
   function toggleUserMenu() {
-    userMenuOpen = !userMenuOpe;
+    userMenuOpen = !userMenuOpen;
   }
   function closeUserMenu() {
     userMenuOpen = false;
   }
 </script>
 
-import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
-
-<header class="space-y-4">
-  <div class="space-y-4">
+<header class="space-y-4 app-header">
+  <div class="space-y-4 header-content">
     <!-- Logo and Brand -->
-    <div class="space-y-4">
-      <button class="space-y-4" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
-        <Palette size={24} />
-        <span class="space-y-4">Prosecutor Canvas</span>
+    <div class="brand-section">
+      <!-- changed on:click -> onclick -->
+      <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
+        <!-- replaced lucide icon with simple inline marker -->
+        <span class="icon" aria-hidden="true">🎨</span>
+        <span class="brand-text">Prosecutor Canvas</span>
       </button>
     </div>
+
     <!-- Navigation -->
-    <nav class="space-y-4" aria-label="Main navigation">
-      <button class="space-y-4" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
-        <Home size={18} />
+    <nav class="main-nav" aria-label="Main navigation">
+      <!-- changed on:click -> onclick for each button -->
+      <button class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
+        <span class="icon">🏠</span>
         <span>Dashboard</span>
       </button>
-      <button class="space-y-4" onclick={() => handleNavigation('/cases')} aria-label="Cases">
-        <FolderOpen size={18} />
+      <button class="nav-button" onclick={() => handleNavigation('/cases')} aria-label="Cases">
+        <span class="icon">📁</span>
         <span>Cases</span>
       </button>
-      <button class="space-y-4" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
-        <Palette size={18} />
+      <button class="nav-button" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
+        <span class="icon">🖌️</span>
         <span>Canvas</span>
       </button>
       <button
-        class="space-y-4"
+        class="nav-button"
         onclick={() => handleNavigation('/evidence/hash')}
         aria-label="Hash Verification"
         title="Verify evidence file integrity"
       >
-        <Shield size={18} />
+        <span class="icon">🛡️</span>
         <span>Hash Verify</span>
       </button>
     </nav>
+
     <!-- Search -->
-    <div class="space-y-4">
-      <SearchInput placeholder="Search cases, evidence, notes..." value={searchQuery} search={handleSearch} />
+    <div class="search-section">
+      <!-- changed on:search -> onsearch and added cast to satisfy TS -->
+      <SearchInput
+        placeholder="Search cases, evidence, notes..."
+        bind:value={searchQuery}
+        onsearch={(e) => handleSearch(e as CustomEvent<{ query: string }>)}
+      />
     </div>
+
     <!-- User Menu -->
-    <div class="space-y-4">
+    <div class="user-section user-menu-container">
       {#if user}
-        <div class="space-y-4">
+        <div>
+          <!-- changed on:click -> onclick -->
           <button
-            class="space-y-4"
+            class="user-button"
             onclick={() => toggleUserMenu()}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
           >
-            <div class="space-y-4">
+            <div class="user-avatar">
               {#if user.avatarUrl}
                 <img src={user.avatarUrl} alt={user.name} />
               {:else}
-                <span class="space-y-4">
-                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
-                </span>
+                <span class="avatar-fallback">{user.name?.charAt(0)?.toUpperCase() || 'U'}</span>
               {/if}
             </div>
-            <span class="space-y-4">{user.name}</span>
-            <MoreVertical size={16} />
+            <span class="user-name">{user.name}</span>
+            <span class="icon">⋯</span>
           </button>
+
           {#if userMenuOpen}
-            <div class="space-y-4" role="menu">
-              <button class="space-y-4" onclick={() => handleNavigation('/profile')} role="menuitem">
-                <UserIcon size={16} />
+            <div class="user-menu" role="menu">
+              <!-- changed on:click -> onclick for menu items -->
+              <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem">
+                <span class="icon">👤</span>
                 Profile
               </button>
-              <button class="space-y-4" onclick={() => handleNavigation('/settings')} role="menuitem">
-                <Settings size={16} />
+              <button class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem">
+                <span class="icon">⚙️</span>
                 Settings
               </button>
-              <hr class="space-y-4" />
-              <button class="space-y-4" onclick={() => handleLogout()} role="menuitem">
-                <LogOut size={16} />
+              <hr class="menu-separator" />
+              <button class="menu-item" onclick={() => handleLogout()} role="menuitem">
+                <span class="icon">🚪</span>
                 Sign Out
               </button>
             </div>
           {/if}
         </div>
       {:else}
-        <button class="space-y-4" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
+        <!-- changed on:click -> onclick -->
+        <button class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
       {/if}
     </div>
   </div>
 </header>
+
 <!-- Click outside to close menu -->
 {#if userMenuOpen}
   <div
-    class="space-y-4"
+    class="menu-overlay"
     onclick={() => closeUserMenu()}
-    keydown={e => e.key === 'Escape' && closeUserMenu()}
+    onkeydown={(e) => e.key === 'Escape' && closeUserMenu()}
     role="button"
     tabindex={-1}
     aria-label="Close user menu"
@@ -131,10 +146,10 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
 <style>
   /* @unocss-include */
   .app-header {
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     height: 60px;
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-light);
@@ -153,7 +168,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   .brand-section {
     display: flex;
     align-items: center;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .brand-button {
     display: flex;
@@ -168,7 +183,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border-radius: 6px;
     transition: background 0.2s ease;
   }
-  .brand-buttonhover {
+  .brand-button:hover {
     background: var(--bg-tertiary);
   }
   .brand-text {
@@ -179,7 +194,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .nav-button {
     display: flex;
@@ -193,13 +208,9 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border-radius: 6px;
     transition: all 0.2s ease;
   }
-  .nav-buttonhover {
+  .nav-button:hover {
     color: var(--text-primary);
     background: var(--bg-tertiary);
-  }
-  .nav-button.active {
-    color: var(--harvard-crimson);
-    background: var(--bg-secondary);
   }
   .search-section {
     flex: 1;
@@ -209,10 +220,10 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   .user-section {
     display: flex;
     align-items: center;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .user-menu-container {
-    position relative;
+    position: relative;
   }
   .user-button {
     display: flex;
@@ -226,7 +237,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     transition: background 0.2s ease;
     color: var(--text-primary);
   }
-  .user-buttonhover {
+  .user-button:hover {
     background: var(--bg-tertiary);
   }
   .user-avatar {
@@ -254,7 +265,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     color: var(--text-primary);
   }
   .user-menu {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0;
     min-width: 180px;
@@ -297,19 +308,20 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .sign-in-buttonhover {
+  .sign-in-button:hover {
     background: var(--harvard-crimson);
     color: var(--text-inverse);
   }
   .menu-overlay {
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
-    z-index: 999,
+    z-index: 999;
     background: transparent;
   }
+
   /* Responsive */
   @media (max-width: 768px) {
     .header-content {
@@ -331,7 +343,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   }
   @media (max-width: 480px) {
     .main-nav {
-      gap: 0,
+      gap: 0;
     }
     .search-section {
       max-width: 200px;

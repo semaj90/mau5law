@@ -156,19 +156,19 @@ if (!canvas) return;
     const contentY = navigationHeight + 20;
     const contentHeight = canvasHeight - navigationHeight - 40;
     switch (currentView) {
-      case 'dashboard':
+      case: 'dashboard':
         renderDashboard(contentY, contentHeight);
         break;
-      case 'evidence':
+      case: 'evidence':
         renderEvidence(contentY, contentHeight);
         break;
-      case 'documents':
+      case: 'documents':
         renderDocuments(contentY, contentHeight);
         break;
-      case 'chat':
+      case: 'chat':
         renderChat(contentY, contentHeight);
         break;
-      case 'cases':
+      case: 'cases':
         renderCases(contentY, contentHeight);
         break;
     }
@@ -176,7 +176,7 @@ if (!canvas) return;
   function renderDashboard(y: number, height: number) {
     if (!ctx) return;
     // Dashboard title
-    ctx.font = 'bold 32px "Courier New", monospace';
+    ctx.font = 'bold 32px: "Courier New", monospace';
     ctx.fillStyle = colors.text;
     ctx.textAlign = 'center';
     ctx.fillText('🏛️ LEGAL AI DASHBOARD', canvasWidth / 2, y + 40);
@@ -204,12 +204,12 @@ if (!canvas) return;
       ctx.lineWidth = 2;
       ctx.strokeRect(x, cardY, cardWidth, cardHeight);
       // Card title
-      ctx.font = 'bold 14px "Courier New", monospace';
+      ctx.font = 'bold 14px: "Courier New", monospace';
       ctx.fillStyle = colors.textSecondary;
       ctx.textAlign = 'center';
       ctx.fillText(stat.title, x + cardWidth / 2, cardY + 25);
       // Card value
-      ctx.font = 'bold 36px "Courier New", monospace';
+      ctx.font = 'bold 36px: "Courier New", monospace';
       ctx.fillStyle = stat.color;
       ctx.fillText(stat.value.toString(), x + cardWidth / 2, cardY + 70);
     });
@@ -217,7 +217,7 @@ if (!canvas) return;
   function renderEvidence(y: number, height: number) {
     if (!ctx || !legalData.evidence) return;
     // Evidence title
-    ctx.font = 'bold 24px "Courier New", monospace';
+    ctx.font = 'bold 24px: "Courier New", monospace';
     ctx.fillStyle = colors.text;
     ctx.textAlign = 'left';
     ctx.fillText('📋 EVIDENCE MANAGEMENT', 20, y + 30);
@@ -239,7 +239,7 @@ if (!canvas) return;
       ctx.fillStyle = priorityColors[(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority];
       ctx.fillRect(20, itemY, 5, itemHeight - 10);
       // Item title
-      ctx.font = 'bold 16px "Courier New", monospace';
+      ctx.font = 'bold 16px: "Courier New", monospace';
       ctx.fillStyle = colors.text;
       ctx.textAlign = 'left';
       ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title, 35, itemY + 25); // Fixed: fillText.title -> fillText(item.title
@@ -251,7 +251,7 @@ if (!canvas) return;
   }
   function renderDocuments(y: number, height: number) {
     if (!ctx) return;
-    ctx.font = 'bold 24px "Courier New", monospace';
+    ctx.font = 'bold 24px: "Courier New", monospace';
     ctx.fillStyle = colors.text;
     ctx.textAlign = 'center';
     ctx.fillText('📄 DOCUMENT ANALYSIS', canvasWidth / 2, y + 40);
@@ -276,7 +276,7 @@ if (!canvas) return;
         ctx.lineWidth = 2;
         ctx.strokeRect(x, docY, docWidth, docHeight);
         // Document title
-        ctx.font = 'bold 14px "Courier New", monospace';
+        ctx.font = 'bold 14px: "Courier New", monospace';
         ctx.fillStyle = colors.text;
         ctx.textAlign = 'center';
         ctx.fillText(doc.title.substring(0, 20) + '...', x + docWidth / 2, docY + 30);
@@ -294,7 +294,7 @@ if (!canvas) return;
   }
   function renderChat(y: number, height: number) {
     if (!ctx) return;
-    ctx.font = 'bold 24px "Courier New", monospace';
+    ctx.font = 'bold 24px: "Courier New", monospace';
     ctx.fillStyle = colors.text;
     ctx.textAlign = 'center';
     ctx.fillText('💬 AI LEGAL ASSISTANT', canvasWidth / 2, y + 40);
@@ -333,7 +333,7 @@ if (!canvas) return;
   }
   function renderCases(y: number, height: number) {
     if (!ctx) return;
-    ctx.font = 'bold 24px "Courier New", monospace';
+    ctx.font = 'bold 24px: "Courier New", monospace';
     ctx.fillStyle = colors.text;
     ctx.textAlign = 'center';
     ctx.fillText('⚖️ CASE MANAGEMENT', canvasWidth / 2, y + 40);

@@ -116,7 +116,7 @@ export class AIPipeline {
     const { chunks } = await ollamaService.embedDocument(content, { documentId, chunkSize, chunkOverlap });
     // Store each chunk with its embedding
     for (const chunk of chunks) {
-      // Minimal usage to avoid "assigned but never used" errors until DB schema exists.
+      // Minimal usage to avoid: "assigned but never used" errors until DB schema exists.
       void chunk.content;
       void chunk.metadata;
       const dim = chunk.embedding?.length ?? 0;
@@ -154,7 +154,7 @@ export class AIPipeline {
     const entities: string[] = [];
     const lines = entitiesText.split('\n');
     for (const line of lines) {
-      // Look for patterns like "- Person: John Doe" or "Person: John Doe"
+      // Look for patterns like: "- Person: John Doe" or: "Person: John Doe"
       const match = line.match(/[-•*]?\s*(?:Person|Organization|Location|Date):\s*(.+)/i);
       if (match) {
         entities.push(match[1].trim());
@@ -207,7 +207,7 @@ export class AIPipeline {
    * Find similar documents based on content (stub)
    */
   async findSimilarDocuments(documentId: string, limit: number = 5): Promise<SearchResult[]> {
-    // mark params as used to avoid "declared but never read" errors
+    // mark params as used to avoid: "declared but never read" errors
     void documentId;
     void limit;
 
@@ -224,7 +224,7 @@ export class AIPipeline {
     userId: string,
     type: 'case' | 'evidence' | 'document' = 'document'
   ): Promise<SearchResult[]> {
-    // mark params as used to avoid "declared but never read" / "assigned a value but never used" errors
+    // mark params as used to avoid: "declared but never read" / "assigned a value but never used" errors
     void userId;
     void type;
 

@@ -158,7 +158,7 @@ export class QLoRAWasmLoader {
   private async loadWasmModule(wasmPath: string): Promise<QLoRAWasmModule> {
     // In a real implementation, this would load the actual WASM binary
     // For now, we'll create a mock implementation
-    console.log(`📦 Loading WASM module from: ${wasmPath}`);
+    console.log(`📦 Loading WASM module from ${wasmPath}`);
     // Simulate loading time
     await new Promise(resolve => setTimeout(resolve, 1000);
     // Return mock implementation

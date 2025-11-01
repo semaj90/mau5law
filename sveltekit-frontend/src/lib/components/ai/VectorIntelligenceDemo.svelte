@@ -112,13 +112,13 @@
   // Get document type icon and color
   function getDocumentTypeStyle(type: SearchResult['documentType']) {
     switch (type) {
-      case 'deed':
+      case: 'deed':
         return { icon FileText, color: 'bg-blue-100 text-blue-800' };
-      case 'contract':
+      case: 'contract':
         return { icon FileText, color: 'bg-green-100 text-green-800' };
-      case 'evidence':
+      case: 'evidence':
         return { icon Database, color: 'bg-orange-100 text-orange-800' };
-      case 'case_law':
+      case: 'case_law':
         return { icon Brain, color: 'bg-purple-100 text-purple-800' };
       default:
         return { icon FileText, color: 'bg-gray-100 text-gray-800' };

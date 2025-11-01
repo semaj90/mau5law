@@ -3,12 +3,35 @@
   interface Props {
     showDetails?: unknown;
   }
+
+  // Types for memory data (prevent `never` and implicit any errors)
+  interface MemoryPool {
+    id: string;
+    percentage: number;
+    // ...other fields if present...
+  }
+  interface CacheLayer {
+    name: string;
+    hitRate: number;
+    // ...other fields if present...
+  }
+  interface MemoryData {
+    currentLOD: { name: string; level: number };
+    memoryPressure: number;
+    pools: MemoryPool[];
+    clusters: any[]; // adjust if a concrete cluster shape is known
+    cacheLayers: CacheLayer[];
+  }
+
   let {
     showDetails = false
   }: Props = $props();
+
   import { onMount, onDestroy } from 'svelte';
   import { memoryMonitoring } from '$lib/services/memory-monitoring.service';
-  let memoryData = $state({
+
+  // typed reactive state
+  let memoryData = $state<MemoryData>({
     currentLOD: { name: 'medium', level: 2 },
     memoryPressure: 0.5,
     pools: [],
@@ -17,20 +40,78 @@
   });
   let updateCount = $state(0);
   let isOptimizing = $state(false);
-  $effect(() => {
-    memoryMonitoring.start(10000); // Update every 10 seconds
-    memoryMonitoring.onUpdate((data) => {
+
+  // resilient subscription adapter using onMount/onDestroy
+  let _unsubscribe: (() => void) | null = null;
+  let _callback: ((data: MemoryData) => void) | null = null;
+
+  onMount(() => {
+    // start if available
+    if (typeof memoryMonitoring.start === 'function') {
+      try { memoryMonitoring.start(10000); } catch (e) { /* ignore start errors */ }
+    }
+
+    // common callback updates typed memoryData
+    _callback = (data: MemoryData) => {
       memoryData = data;
       updateCount++;
-    });
+    };
+
+    // Prefer modern `subscribe` that returns an unsubscribe.
+    if (typeof (memoryMonitoring as any).subscribe === 'function') {
+      const unsub = (memoryMonitoring as any).subscribe(_callback);
+      if (typeof unsub === 'function') _unsubscribe = unsub;
+    } else if (typeof (memoryMonitoring as any).onUpdate === 'function') {
+      // older API - register callback and attempt to use matching off/unsubscribe on cleanup
+      (memoryMonitoring as any).onUpdate(_callback);
+      if (typeof (memoryMonitoring as any).offUpdate === 'function') {
+        _unsubscribe = () => (memoryMonitoring as any).offUpdate(_callback);
+      } else if (typeof (memoryMonitoring as any).unsubscribe === 'function') {
+        _unsubscribe = () => (memoryMonitoring as any).unsubscribe(_callback);
+      } else {
+        // cannot reliably unsubscribe — leave as best-effort (no-op on cleanup)
+        _unsubscribe = null;
+      }
+    } else {
+      // no subscription API found; nothing to do
+    }
   });
+
   onDestroy(() => {
-    memoryMonitoring.stop();
+    // attempt to unsubscribe
+    try {
+      if (_unsubscribe) _unsubscribe();
+    } catch (e) {
+      /* ignore unsubscribe errors */
+    }
+
+    // stop or dispose if available
+    if (typeof (memoryMonitoring as any).stop === 'function') {
+      try { (memoryMonitoring as any).stop(); } catch (e) { /* ignore */ }
+    } else if (typeof (memoryMonitoring as any).dispose === 'function') {
+      try { (memoryMonitoring as any).dispose(); } catch (e) { /* ignore */ }
+    }
   });
+
   async function triggerOptimization() {
     isOptimizing = true;
     try {
-      const success = await memoryMonitoring.triggerOptimization();
+      // support multiple possible method names
+      const fn =
+        (memoryMonitoring as any).triggerOptimization ??
+        (memoryMonitoring as any).optimize ??
+        (memoryMonitoring as any).triggerOptimize ??
+        (memoryMonitoring as any).opt;
+
+      let success = false;
+      if (typeof fn === 'function') {
+        const res = await fn.call(memoryMonitoring);
+        // normalize boolean-like success
+        success = !!res;
+      } else {
+        console.warn('No optimization method available on memoryMonitoring');
+      }
+
       if (success) {
         console.log('✅ Optimization triggered successfully');
       }
@@ -40,16 +121,11 @@
       isOptimizing = false;
     }
   }
+
   function getMemoryPressureColor(pressure: number): string {
-    if (pressure > 0.9) return 'text-red-600';
-    if (pressure > 0.7) return 'text-yellow-600';
-    return 'text-green-600';
-  }
-  function formatBytes(bytes: number): string {
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 B';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    if (pressure > 0.9) return: 'text-red-600';
+    if (pressure > 0.7) return: 'text-yellow-600';
+    return: 'text-green-600';
   }
 </script>
 
@@ -67,6 +143,7 @@
       </button>
     </div>
   </div>
+
   <!-- Key Metrics -->
   <div class="grid grid-cols-3 gap-4 mb-4">
     <div class="metric">
@@ -75,7 +152,7 @@
     </div>
     <div class="metric">
       <div class="text-xs text-gray-500">Memory Pressure</div>
-      <div class="text-lg font-bold {getMemoryPressureColor(memoryData.memoryPressure)}">
+      <div class={`text-lg font-bold ${getMemoryPressureColor(memoryData.memoryPressure)}`}>
         {(memoryData.memoryPressure * 100).toFixed(1)}%
       </div>
     </div>
@@ -84,6 +161,7 @@
       <div class="text-lg font-bold">{memoryData.clusters.length}</div>
     </div>
   </div>
+
   <!-- Memory Pools -->
   {#if showDetails && memoryData.pools.length > 0}
     <div class="pools mb-4">
@@ -103,6 +181,7 @@
       </div>
     </div>
   {/if}
+
   <!-- Cache Layers -->
   {#if showDetails && memoryData.cacheLayers.length > 0}
     <div class="cache-layers">

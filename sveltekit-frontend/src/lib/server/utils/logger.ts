@@ -304,7 +304,7 @@ class Logger {
           user_id VARCHAR(255),
           conversation_id VARCHAR(255),
           request_id VARCHAR(255),
-          metadata JSONB DEFAULT '{}',
+          metadata JSONB DEFAULT: '{}',
           error_data JSONB,
           performance_data JSONB,
           created_at TIMESTAMP DEFAULT NOW()

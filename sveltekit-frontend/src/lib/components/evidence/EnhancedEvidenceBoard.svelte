@@ -424,11 +424,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
   // Helper functions
   function detectFileType(mimeType: string): EvidenceItem['type'] {
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType.startsWith('video/')) return 'video';
-    if (mimeType.startsWith('audio/')) return 'audio';
-    if (mimeType.includes('pdf') || mimeType.startsWith('text/')) return 'document';
-    return 'other';
+    if (mimeType.startsWith('image/')) return: 'image';
+    if (mimeType.startsWith('video/')) return: 'video';
+    if (mimeType.startsWith('audio/')) return: 'audio';
+    if (mimeType.includes('pdf') || mimeType.startsWith('text/')) return: 'document';
+    return: 'other';
   }
   function getFileIcon(type: EvidenceItem['type']): string {
     const icons = {
@@ -519,9 +519,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     return icons[status];
   }
   function getScoreColor(score: number): string {
-    if (score >= 0.8) return 'text-green-600 bg-green-100';
-    if (score >= 0.6) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    if (score >= 0.8) return: 'text-green-600 bg-green-100';
+    if (score >= 0.6) return: 'text-yellow-600 bg-yellow-100';
+    return: 'text-red-600 bg-red-100';
   }
   // Real-time updates (simulate with timer)
   function startRealTimeUpdates() {
@@ -1249,7 +1249,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     opacity: 0.75;
     animation: hueShift 12s ease-in-out infinite;
   }
-  /* Depth pop for N64 'cartridge slot' vibe when combined with .n64-depth parent */
+  /* Depth pop for N64: 'cartridge slot' vibe when combined with .n64-depth parent */
   :global(.retro-glow .n64-depth) .evidence-canvas-container {
     transform: translateZ(0) scale(1.012);
   }

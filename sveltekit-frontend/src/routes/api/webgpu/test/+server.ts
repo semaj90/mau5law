@@ -14,13 +14,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now();
     let result;
     switch (operation) {
-      case 'generate_text':
+      case: 'generate_text':
         result = await simulateTextGeneration(input, fallback);
         break;
-      case 'generate_embedding':
+      case: 'generate_embedding':
         result = await simulateEmbeddingGeneration(input);
         break;
-      case 'capability_test':
+      case: 'capability_test':
         result = await simulateCapabilityTest();
         break;
       default:
@@ -147,9 +147,9 @@ async function simulateCapabilityTest(): Promise<any> {
 function generateLegalResponse(input: string): string {
   const legalTemplates = [
     `Regarding "${input.substring(0, 50)}...", the key legal considerations include: (1) contractual obligations and duties of care, (2) statutory compliance requirements, and (3) potential liability exposure under applicable jurisdictions.`,
-    `Legal analysis of "${input.substring(0, 50)}..." reveals several important factors: First, the applicable legal framework must be considered. Second, precedential authority suggests specific approaches. Third, risk mitigation strategies should be implemented.`,
-    `In response to "${input.substring(0, 50)}...", legal counsel would typically advise: examining all relevant documentation, identifying potential claims or defenses, and developing a comprehensive litigation strategy if necessary.`,
-    `The legal implications of "${input.substring(0, 50)}..." require careful consideration of: statutory requirements, case law precedents, regulatory compliance obligations, and potential remedial actions.`,
+    `Legal analysis of: "${input.substring(0, 50)}..." reveals several important factors: First, the applicable legal framework must be considered. Second, precedential authority suggests specific approaches. Third, risk mitigation strategies should be implemented.`,
+    `In response to: "${input.substring(0, 50)}...", legal counsel would typically advise: examining all relevant documentation, identifying potential claims or defenses, and developing a comprehensive litigation strategy if necessary.`,
+    `The legal implications of: "${input.substring(0, 50)}..." require careful consideration of: statutory requirements, case law precedents, regulatory compliance obligations, and potential remedial actions.`,
   ];
   const template = legalTemplates[Math.floor(Math.random() * legalTemplates.length)];
   // Add some legal-specific elaboration
@@ -171,17 +171,17 @@ function getRecommendedConfig(capabilities: any) {
     enableParallelProcessing: false,
   };
   switch (capabilities.deviceType) {
-    case 'webgpu':
+    case: 'webgpu':
       config.batchSize = 8;
       config.maxTokens = 8192;
       config.enableParallelProcessing = true;
       break;
-    case 'webgl':
+    case: 'webgl':
       config.batchSize = 4;
       config.maxTokens = 4096;
       config.useQuantization = true;
       break;
-    case 'wasm':
+    case: 'wasm':
       config.batchSize = 1;
       config.maxTokens = 2048;
       config.useQuantization = true;

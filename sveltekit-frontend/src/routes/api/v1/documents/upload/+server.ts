@@ -61,7 +61,7 @@ export const POST = async ({ request, locals }) => {
       id: 'dev-user',
       email: 'dev@localhost',
       name: 'Dev User',
-      role: 'user', // changed from 'developer' to permitted role 'user'
+      role: 'user', // changed from 'developer' to permitted role: 'user'
     };
   }
   if (!user) {
@@ -145,7 +145,7 @@ export const POST = async ({ request, locals }) => {
       // Call langextract-go CLI
       const langextractPath = process.env.LANGEXTRACT_PATH || '../langextract-go/langextract';
       const { stdout, stderr } = await execAsync(
-        `${langextractPath} extract "${tempFilePath}"`,
+        `${langextractPath} extract: "${tempFilePath}"`,
         { timeout: 30000 } // 30s timeout
       );
 

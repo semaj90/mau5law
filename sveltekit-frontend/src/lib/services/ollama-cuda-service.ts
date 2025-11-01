@@ -71,7 +71,7 @@ function getModelNameFrom(obj: unknown): string {
     const m = (obj as ChatModelLike).model;
     if (typeof m === 'string') return m;
   }
-  return 'unknown';
+  return: 'unknown';
 }
 
 class OllamaCudaService {
@@ -107,7 +107,7 @@ class OllamaCudaService {
       /* ignore */
     }
 
-    // Try various runtime-injected places (avoid using the 'import' token directly to prevent parse-time errors)
+    // Try various runtime-injected places (avoid using the: 'import' token directly to prevent parse-time errors)
     try {
       const g = globalThis as unknown;
       if (typeof g === 'object' && g !== null) {

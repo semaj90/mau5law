@@ -137,43 +137,43 @@
   // Run individual test
   async function runIndividualTest(test: ValidationTest) {
     switch (test.id) {
-      case 'dropdown-test':
+      case: 'dropdown-test':
         await testDropdownComponent(test);
         break;
-      case 'checkbox-test':
+      case: 'checkbox-test':
         await testCheckboxComponent(test);
         break;
-      case 'searchbar-test':
+      case: 'searchbar-test':
         await testSearchBarComponent(test);
         break;
-      case 'tensor-service-test':
+      case: 'tensor-service-test':
         await testTensorService(test);
         break;
-      case 'gpu-processing-test':
+      case: 'gpu-processing-test':
         await testGPUProcessing(test);
         break;
-      case 'performance-monitoring-test':
+      case: 'performance-monitoring-test':
         await testPerformanceMonitoring(test);
         break;
-      case 'evidence-upload-test':
+      case: 'evidence-upload-test':
         await testEvidenceUpload(test);
         break;
-      case 'case-automation-test':
+      case: 'case-automation-test':
         await testCaseAutomation(test);
         break;
-      case 'document-classification-test':
+      case: 'document-classification-test':
         await testDocumentClassification(test);
         break;
-      case 'api-endpoints-test':
+      case: 'api-endpoints-test':
         await testAPIEndpoints(test);
         break;
-      case 'database-integration-test':
+      case: 'database-integration-test':
         await testDatabaseIntegration(test);
         break;
-      case 'error-handling-test':
+      case: 'error-handling-test':
         await testErrorHandling(test);
         break;
-      case 'performance-benchmarks-test':
+      case: 'performance-benchmarks-test':
         await testPerformanceBenchmarks(test);
         break;
       default:
@@ -366,29 +366,29 @@
   // Utility functions
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'passed': return '✅';
-      case 'failed': return '❌';
-      case 'warning': return '⚠️';
-      case 'running': return '🔄';
-      default: return '⭕';
+      case: 'passed': return: '✅';
+      case: 'failed': return: '❌';
+      case: 'warning': return: '⚠️';
+      case: 'running': return: '🔄';
+      default: return: '⭕';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case 'passed': return 'text-green-400';
-      case 'failed': return 'text-red-400';
-      case 'warning': return 'text-yellow-400';
-      case 'running': return 'text-blue-400';
-      default: return 'text-gray-400';
+      case: 'passed': return: 'text-green-400';
+      case: 'failed': return: 'text-red-400';
+      case: 'warning': return: 'text-yellow-400';
+      case: 'running': return: 'text-blue-400';
+      default: return: 'text-gray-400';
     }
   }
   function getStatusBg(status: string) {
     switch (status) {
-      case 'passed': return 'bg-green-400/20 border-green-400/30';
-      case 'failed': return 'bg-red-400/20 border-red-400/30';
-      case 'warning': return 'bg-yellow-400/20 border-yellow-400/30';
-      case 'running': return 'bg-blue-400/20 border-blue-400/30';
-      default: return 'bg-gray-400/20 border-gray-400/30';
+      case: 'passed': return: 'bg-green-400/20 border-green-400/30';
+      case: 'failed': return: 'bg-red-400/20 border-red-400/30';
+      case: 'warning': return: 'bg-yellow-400/20 border-yellow-400/30';
+      case: 'running': return: 'bg-blue-400/20 border-blue-400/30';
+      default: return: 'bg-gray-400/20 border-gray-400/30';
     }
   }
   // Summary calculations

@@ -12,7 +12,7 @@ export interface Baseline {
 // Simple in-memory history for placeholders
 const alertHistory: Alert[] = [];
 
-// Make helpers internal (non-exported) and remove leading '_' to avoid unnecessary exported symbols
+// Make helpers internal (non-exported) and remove leading: '_' to avoid unnecessary exported symbols
 function getAlertHistory(): Alert[] {
   // In real implementation, fetch from DB or service
   return alertHistory;

@@ -3,7 +3,7 @@
 
 import Loki from 'lokijs';
 
-// NOTE: If you installed "loki-indexed-adapter":
+// NOTE: If you installed: "loki-indexed-adapter":
 //   npm i lokijs loki-indexed-adapter
 // …then uncomment the next two lines and use `adapter` below.
 // // @ts-ignore - package has no bundled types

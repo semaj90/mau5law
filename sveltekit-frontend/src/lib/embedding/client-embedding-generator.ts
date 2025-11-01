@@ -23,52 +23,150 @@ export class ClientEmbeddingGenerator {
   private worker: Worker | null = null;
   private embedModel: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding';
   private ollamaUrl: string;
-  constructor(
-    model: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding',
-    ollamaUrl = 'http://localhost:11434'
-  ) {
+
+  constructor(model: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding', ollamaUrl?: string) {
     this.embedModel = model;
-    this.ollamaUrl = ollamaUrl;
+    // prefer provided param, then env / docker host fallback
+    this.ollamaUrl = ollamaUrl || getOllamaEndpoint();
   }
+
+  // Helper: Post a message and wait for a matching response (one-time listener)
+  private postWorkerRequest(match: (msg: any) => boolean, message: unknown, timeoutMs = 60000): Promise<any> {
+    if (!this.worker) return Promise.reject(new Error('Worker not initialized'));
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      // capture worker locally to avoid TS nullability complaints
+      const worker = this.worker as Worker;
+
+      // typed MessageEvent for worker messages
+      const onMessage = (e: MessageEvent) => {
+        try {
+          const data = e.data as WorkerToMain;
+          if (match(data)) {
+            cleanup();
+            settled = true;
+            resolve(data);
+          }
+        } catch {
+          // ignore unrelated message handling errors
+        }
+      };
+
+      const cleanup = () => {
+        // clearTimeout accepts different return types across runtimes; cast to any
+        clearTimeout(timer as any);
+        try {
+          if (typeof worker.removeEventListener === 'function') {
+            worker.removeEventListener('message', onMessage as EventListener);
+          } else {
+            // restore prevOnMessage if we replaced onmessage
+            try {
+              (worker as any).onmessage = prevOnMessage;
+            } catch {}
+          }
+        } catch {
+          /* ignore */
+        }
+      };
+
+      // support environments where worker.onmessage is used instead of addEventListener
+      const prevOnMessage = (worker as any).onmessage;
+      try {
+        if (typeof worker.addEventListener === 'function') {
+          worker.addEventListener('message', onMessage as EventListener);
+        } else {
+          (worker as any).onmessage = onMessage;
+        }
+      } catch {
+        // fallback assignment
+        try {
+          (worker as any).onmessage = onMessage;
+        } catch {}
+      }
+
+      // handle timer typing for DOM/Node
+      const timer = setTimeout(() => {
+        if (!settled) {
+          cleanup();
+          reject(new Error('Worker request timeout'));
+        }
+      }, timeoutMs) as unknown as number;
+      try {
+        worker.postMessage(message);
+      } catch (err) {
+        cleanup();
+        reject(err);
+      }
+    });
+  }
+
+  // Create Worker robustly: prefer ES module worker using import.meta.url, fallback to raw path
+  private createWorker(path: string): Worker {
+    // Ensure Worker is available in this runtime
+    if (typeof Worker === 'undefined') {
+      throw new Error('Web Worker is not available in this runtime');
+    }
+    // Try multiple strategies to maximize compatibility across bundlers/runtimes
+    // 1) new Worker(new URL(path, import.meta.url), { type: 'module' })
+    try {
+      // @ts-ignore - import.meta exists in ESM environments; this may throw in some bundlers
+      return new Worker(new URL(path, import.meta.url), { type: 'module' });
+    } catch {
+      // 2) try plain path with module option (some environments accept this)
+      try {
+        return new Worker(path, { type: 'module' } as WorkerOptions);
+      } catch {
+        // 3) final fallback - plain worker without options
+        return new Worker(path);
+      }
+    }
+  }
+
   /**
    * Initialize the embedding generator with WASM module
    */
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
+    // If using remote Ollama embeddings, no worker required — treat as initialized (SSR-safe)
+    if (this.embedModel === 'ollama-embedding') {
+      this.initialized = true;
+      return true;
+    }
     try {
-      // Initialize web worker for embedding generation
-      this.worker = new Worker('/workers/embedding-worker.js');
-      // Wait for worker initialization
-      await new Promise((resolve, reject) => {
-        const timeout: ReturnType<typeof setTimeout> = setTimeout(
-          () => reject(new Error('Worker initialization timeout')),
-          30000
-        );
+      // ensure Worker exists
+      if (typeof Worker === 'undefined') {
+        console.warn('Worker is not available in this environment; embedding worker cannot be created');
+        return false;
+      }
+      // pick GPU-enabled worker when WebGPU is available
+      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: unknown }).gpu;
+      const workerPath = hasWebGPU ? '/workers/embedding-worker-webgpu.js' : '/workers/embedding-worker.js';
 
-        // typed message event
-        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
-          const data = e.data;
-          if (data?.type === 'initialized') {
-            clearTimeout(timeout);
-            this.initialized = true;
-            resolve(true);
-          }
-        };
-        this.worker!.onerror = error => {
-          clearTimeout(timeout);
-          reject(error);
-        };
-        this.worker!.postMessage({
-          type: 'initialize',
-          model: this.embedModel,
-        });
-      });
-      console.log(`Client embedding generator initialized with ${this.embedModel}`);
+      // Create worker via helper so bundler-friendly URLs are attempted first
+      const worker = this.createWorker(workerPath);
+      this.worker = worker;
+
+      // Wait for worker initialization using one-time listener
+      await this.postWorkerRequest(
+        (data: any) => data?.type === 'initialized',
+        { type: 'initialize', model: this.embedModel },
+        30000
+      );
+
+      this.initialized = true;
+      console.log(`Client embedding generator initialized with ${this.embedModel} (webgpu=${String(hasWebGPU)})`);
       return true;
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Failed to initialize embedding generator:', error);
       this.initialized = false;
+      // ensure worker cleaned up on failure
+      if (this.worker) {
+        try {
+          this.worker.terminate();
+        } catch {}
+        this.worker = null;
+      }
       return false;
     }
   }
@@ -77,7 +175,7 @@ export class ClientEmbeddingGenerator {
    * Optimized for legal terminology and case law
    */
   async generateEmbedding(text: string): Promise<Float32Array | null> {
-    // If using Ollama remote embedding model, call the Ollama HTTP API directly
+    // Ollama remote path unchanged
     if (this.embedModel === 'ollama-embedding') {
       return await this.callOllamaEmbedding(text);
     }
@@ -86,36 +184,19 @@ export class ClientEmbeddingGenerator {
       return null;
     }
     try {
-      return new Promise((resolve, reject) => {
-        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
-          reject(new Error('Embedding generation timeout'));
-        }, 60000); // 60 second timeout
-
-        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
-          clearTimeout(timeout);
-          const data = e.data;
-
-          if ('success' in data) {
-            if (data.success && Array.isArray(data.embedding)) {
-              resolve(new Float32Array(data.embedding));
-            } else {
-              reject(new Error(data.error ?? 'Unknown worker error'));
-            }
-          } else {
-            reject(new Error('Unexpected worker message'));
-          }
-        };
-
-        this.worker!.postMessage({
+      const resp = await this.postWorkerRequest(
+        (data: any) => data?.type === 'response' && typeof data.success !== 'undefined',
+        {
           type: 'generate_embedding',
-          text: text,
-          options: {
-            maxLength: 8192, // Legal documents can be long
-            normalize: true,
-            legal_mode: true,
-          },
-        });
-      });
+          text,
+          options: { maxLength: 8192, normalize: true, legal_mode: true },
+        },
+        60000
+      );
+      if (resp.success && Array.isArray(resp.embedding)) {
+        return new Float32Array(resp.embedding);
+      }
+      throw new Error(resp.error ?? 'Unknown worker error');
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Embedding generation failed:', error);
@@ -141,7 +222,6 @@ export class ClientEmbeddingGenerator {
    * Optimized for memory efficiency (70% reduction target)
    */
   async generateBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
-    // If using Ollama remote embedding model, call the Ollama HTTP API for batches
     if (this.embedModel === 'ollama-embedding') {
       return await this.callOllamaBatch(texts);
     }
@@ -150,38 +230,19 @@ export class ClientEmbeddingGenerator {
       return [];
     }
     try {
-      return new Promise((resolve, reject) => {
-        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
-          reject(new Error('Batch embedding timeout'));
-        }, 120000); // 2 minute timeout for batches
-
-        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
-          clearTimeout(timeout);
-          const data = e.data;
-
-          if ('success' in data) {
-            if (data.success && Array.isArray(data.embeddings)) {
-              const embeddings = (data.embeddings ?? []).map((emb: number[]) => new Float32Array(emb));
-              resolve(embeddings);
-            } else {
-              reject(new Error(data.error ?? 'Unknown worker error'));
-            }
-          } else {
-            reject(new Error('Unexpected worker message'));
-          }
-        };
-
-        this.worker!.postMessage({
+      const resp = await this.postWorkerRequest(
+        (data: any) => data?.type === 'response' && typeof data.success !== 'undefined',
+        {
           type: 'generate_batch_embeddings',
-          texts: texts,
-          options: {
-            batchSize: 10, // Process in batches to manage memory
-            maxLength: 4096,
-            normalize: true,
-            legal_mode: true,
-          },
-        });
-      });
+          texts,
+          options: { batchSize: 10, maxLength: 4096, normalize: true, legal_mode: true },
+        },
+        120000
+      );
+      if (resp.success && Array.isArray(resp.embeddings)) {
+        return (resp.embeddings ?? []).map((emb: number[]) => new Float32Array(emb));
+      }
+      throw new Error(resp.error ?? 'Unknown worker error');
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Batch embedding generation failed:', error);
@@ -258,7 +319,7 @@ export class ClientEmbeddingGenerator {
    * Prepare evidence text for embedding generation
    */
   private prepareEvidenceText(evidence: Evidence): string {
-    const components = [];
+    const components: string[] = [];
     // Add evidence title
     if (evidence.title) {
       components.push(`Evidence: ${evidence.title}`);
@@ -369,19 +430,13 @@ export class ClientEmbeddingGenerator {
   async getMemoryStats(): Promise<MemoryStats | null> {
     if (!this.worker) return null;
     try {
-      return new Promise(resolve => {
-        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => resolve(null), 5000);
-        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
-          const data = e.data;
-          if (data?.type === 'memory_stats') {
-            clearTimeout(timeout);
-            resolve(data.stats);
-          }
-        };
-        this.worker!.postMessage({ type: 'get_memory_stats' });
-      });
-    } catch (err) {
-      // swallow and return null on error
+      const resp = await this.postWorkerRequest(
+        (data: any) => data?.type === 'memory_stats',
+        { type: 'get_memory_stats' },
+        5000
+      );
+      return resp?.stats ?? null;
+    } catch {
       return null;
     }
   }
@@ -409,7 +464,7 @@ export class ClientEmbeddingGenerator {
   }
 }
 // Singleton instance for application use (default wired to Ollama embeddinggemma:latest)
-export const clientEmbeddingGenerator = new ClientEmbeddingGenerator('ollama-embedding', typeof process !== 'undefined' && (process.env?.OLLAMA_URL as string) ? (process.env.OLLAMA_URL as string) : 'http://localhost:11434');
+export const clientEmbeddingGenerator = new ClientEmbeddingGenerator('ollama-embedding', getOllamaEndpoint());
 // Utility functions for embedding management
 export class EmbeddingCache {
   private cache = new Map<string, { embedding: Float32Array; timestamp: number }>();
@@ -462,7 +517,6 @@ export class EmbeddingCache {
    * Cleanup old cache entries
    */
   private cleanup(): void {
-    const now = Date.now();
     const entries = Array.from(this.cache.entries());
     // Sort by timestamp and remove oldest entries
     entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
@@ -476,12 +530,57 @@ export class EmbeddingCache {
    * Get cache statistics
    */
   getStats() {
+    // compute memory estimate from current model dimensions when possible
+    let dimensions = 384; // default fallback
+    try {
+      dimensions = clientEmbeddingGenerator.getModelInfo()?.dimensions ?? dimensions;
+    } catch {
+      // ignore, keep fallback
+    }
     return {
       size: this.cache.size,
       maxSize: this.maxCacheSize,
       hitRate: 0, // Would need to track hits/misses
-      memoryUsage: this.cache.size * 384 * 4, // Approximate bytes
+      memoryUsage: this.cache.size * dimensions * 4, // bytes (Float32Array)
     };
   }
 }
 export const embeddingCache = new EmbeddingCache();
+
+// Helper: resolve OLLAMA_URL from common runtime surfaces safely
+function getOllamaEndpoint(): string {
+  // Prefer Docker service hostname for compose-based dev (per project convention),
+  // then process.env / import.meta.env / global overrides. Keep fallback conservative.
+  try {
+    // 1) Node / server-side env (SSR)
+    const proc = (globalThis as any)?.process;
+    if (proc && proc.env && typeof proc.env.OLLAMA_URL === 'string' && proc.env.OLLAMA_URL.trim()) {
+      return proc.env.OLLAMA_URL;
+    }
+
+    // 2) import.meta.env (Vite / ESM) - access safely inside try/catch
+    try {
+      const ime: any = typeof import.meta !== 'undefined' ? ((import.meta as any).env ?? null) : null;
+      if (ime) {
+        // check common Vite prefixes first (VITE_...), then plain OLLAMA_URL
+        if (typeof ime.VITE_OLLAMA_URL === 'string' && ime.VITE_OLLAMA_URL.trim()) return ime.VITE_OLLAMA_URL;
+        if (typeof ime.OLLAMA_URL === 'string' && ime.OLLAMA_URL.trim()) return ime.OLLAMA_URL;
+      }
+    } catch {
+      // ignore import.meta access errors
+    }
+
+    // 3) runtime global overrides (browser/globalThis)
+    const globalUrl =
+      (globalThis as any)?.OLLAMA_URL ?? (typeof window !== 'undefined' ? (window as any).OLLAMA_URL : undefined);
+    if (typeof globalUrl === 'string' && globalUrl.trim()) return globalUrl;
+
+    // 4) Fallbacks: prefer Docker service hostname for compose-based usage, then localhost for local dev
+    const dockerDefault = 'http://ollama:11434';
+    const localhostFallback = 'http://localhost:11434';
+    return dockerDefault || localhostFallback;
+  } catch {
+    // In case of any unexpected error, return conservative localhost fallback
+    return: 'http://localhost:11434';
+  }
+}

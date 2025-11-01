@@ -87,7 +87,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     const template = REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
     // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Added missing ')'
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Added missing: ')'
     // Generate structured report content
     const reportContent = generateReportContent(
       template,
@@ -252,5 +252,5 @@ function generateSectionContent(section: string, reportType: string): string {
   );
 }
 // TODO: Ideally, 'documentProcessing' should be added to $lib/middleware/redis-orchestrator-middleware.
-// Using 'aiAnalysis' as a fallback based on available types and context.
+// Using: 'aiAnalysis' as a fallback based on available types and context.
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

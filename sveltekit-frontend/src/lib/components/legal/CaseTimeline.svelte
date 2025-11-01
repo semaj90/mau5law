@@ -102,7 +102,7 @@
     </div>
     {#if onAddEvent && interactive}
       <button
-        on:click={onAddEvent}
+        onclick={onAddEvent}
         class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded-md hover:bg-yorha-primary/20 transition-colors"
       >
         <Calendar class="w-4 h-4" />
@@ -118,7 +118,7 @@
         <Calendar class="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>No timeline events recorded</p>
         {#if onAddEvent}
-          <button on:click={onAddEvent} class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors">
+          <button onclick={onAddEvent} class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors">
             Add the first event
           </button>
         {/if}
@@ -135,8 +135,8 @@
             role="button"
             tabindex="0"
             aria-label={"Open event: " + (event.title ?? 'event')}
-            on:click={() => interactive && onEventClick?.(event)}
-            on:keydown={(e: KeyboardEvent) => {
+            onclick={() => interactive && onEventClick?.(event)}
+            onkeydown={(e: KeyboardEvent) => {
               if (!interactive) return;
               const key = (e as KeyboardEvent).key;
               if (key === 'Enter' || key === ' ' || key === 'Spacebar') {

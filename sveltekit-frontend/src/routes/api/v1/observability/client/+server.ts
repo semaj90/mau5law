@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const action = url.searchParams.get('action') || 'stats';
   try {
     switch (action) {
-      case 'stats': {
+      case: 'stats': {
         return json({
           aggregatedStats: metricsStore.aggregatedStats,
           totalStoredMetrics: metricsStore.clientMetrics.length,
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           requestId,
         });
       }
-      case 'recent': {
+      case: 'recent': {
         const limit = parseInt(url.searchParams.get('limit') || '10');
         const recentMetrics = metricsStore.clientMetrics.slice(-limit).map(payload => ({
           timestamp: payload.timestamp,
@@ -172,7 +172,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           requestId,
         });
       }
-      case 'health': {
+      case: 'health': {
         const healthScore = calculateHealthScore();
         return json({
           status: healthScore > 80 ? 'excellent' : healthScore > 60 ? 'good' : healthScore > 40 ? 'fair' : 'poor',
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           requestId,
         });
       }
-      case 'performance': {
+      case: 'performance': {
         const performanceMetrics: PerformanceMetrics = {
           overall: {
             status:
@@ -228,7 +228,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           requestId,
         });
       }
-      case 'clear': {
+      case: 'clear': {
         // Clear metrics (development only)
         if (process.env.NODE_ENV !== 'production') {
           const clearedCount = metricsStore.clientMetrics.length;

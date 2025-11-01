@@ -1,7 +1,11 @@
 <script lang="ts">
-  // Ensure title/value props accept strings (and numbers) used throughout the app.
-  export let title: string = '';
-  export let value: string | number | null = null;
+  interface Props {
+    title?: string;
+    value?: string | number | null;
+  }
+
+  // Use Svelte 5 runes API for props to avoid export-let / legacy mismatches
+  let { title = '', value = null }: Props = $props();
 </script>
 
 <div class="stats-card nes-container">

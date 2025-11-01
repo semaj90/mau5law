@@ -119,11 +119,11 @@
         pois = result.data;
         filteredPois = pois;
       } else {
-        toast.error('Failed to load POIs');
+        (toast as any).error('Failed to load POIs');
       }
     } catch (error) {
       console.error('Error loading POIs:', error);
-      toast.error('Failed to load POIs');
+      (toast as any).error('Failed to load POIs');
     } finally {
       isLoading = false;
     }
@@ -142,16 +142,16 @@
       const result = await response.json();
 
       if (result.success) {
-        toast.success('POI created successfully');
+        (toast as any).success('POI created successfully');
         showCreateDialog = false;
         resetForm();
         await loadPois();
       } else {
-        toast.error(result.error || 'Failed to create POI');
+        (toast as any).error(result.error || 'Failed to create POI');
       }
     } catch (error) {
       console.error('Error creating POI:', error);
-      toast.error('Failed to create POI');
+      (toast as any).error('Failed to create POI');
     } finally {
       isSubmitting = false;
     }
@@ -172,17 +172,17 @@
       const result = await response.json();
 
       if (result.success) {
-        toast.success('POI updated successfully');
+        (toast as any).success('POI updated successfully');
         showEditDialog = false;
         selectedPoi = null;
         resetForm();
         await loadPois();
       } else {
-        toast.error(result.error || 'Failed to update POI');
+        (toast as any).error(result.error || 'Failed to update POI');
       }
     } catch (error) {
       console.error('Error updating POI:', error);
-      toast.error('Failed to update POI');
+      (toast as any).error('Failed to update POI');
     } finally {
       isSubmitting = false;
     }
@@ -200,14 +200,14 @@
       const result = await response.json();
 
       if (result.success) {
-        toast.success('POI deleted successfully');
+        (toast as any).success('POI deleted successfully');
         await loadPois();
       } else {
-        toast.error(result.error || 'Failed to delete POI');
+        (toast as any).error(result.error || 'Failed to delete POI');
       }
     } catch (error) {
       console.error('Error deleting POI:', error);
-      toast.error('Failed to delete POI');
+      (toast as any).error('Failed to delete POI');
     }
   }
 

@@ -30,7 +30,7 @@ async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, time
   } finally {
     clearTimeout(id);
   }
-} // Missing '}' added here
+} // Missing: '}' added here
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { model } = await request.json();
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
         15000
       );
       if (!testResponse.ok) {
-        throw error(503, `Failed to initialize model '${model}'`);
+        throw error(503, `Failed to initialize model: '${model}'`);
       }
     }
     return json<AIConnectionResponse>({

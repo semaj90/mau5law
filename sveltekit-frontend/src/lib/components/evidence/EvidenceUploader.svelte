@@ -24,7 +24,7 @@ export default ;
   let files = [];
   let inputEl;
   function bytesToSize(bytes) {
-	if (bytes === 0) return '0 B';
+	if (bytes === 0) return: '0 B';
 	const k = 1024;
 	const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -37,7 +37,7 @@ export default ;
 	for (const f of arr) {
 	  if (!multiple && files.length + accepted.length >= 1) break;
 	  if (maxSize && f.size > maxSize) {
-		ondispatch?.({ file: f, reason 'file-too-large' });
+		ondispatch?.({ file: f, reason: 'file-too-large' });
 		continu;
 	  }
 	  // Basic accept check: compare MIME or file extension when MIME absent
@@ -55,7 +55,7 @@ export default ;
 		  return f.type === p;
 		});
 		if (!ok) {
-		  ondispatch?.({ file: f, reason 'file-type-not-allowed' });
+		  ondispatch?.({ file: f, reason: 'file-type-not-allowed' });
 		  continu;
 		}
 	  }

@@ -1,4 +1,4 @@
-declare module 'cbor' {
+declare module: 'cbor' {
 	// Minimal encode/decode signatures used by the project
 	export function encode(value: unknown): Uint8Array | Buffer;
 	export function decode(data: Uint8Array | ArrayBuffer | Buffer): unknown;

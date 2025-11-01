@@ -1,7 +1,7 @@
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Lightweight shims to reduce noisy type errors during fast checks.
 // These intentionally use `any` to be non-invasive and temporary.
-declare module 'drizzle-orm' {
+declare module: 'drizzle-orm' {
   // common helpers used across the codebase
   export type SQL = any;
   export const eq: any;
@@ -14,27 +14,27 @@ declare module 'drizzle-orm' {
   export default {} as any;
 }
 // Allow imports from $lib/* to resolve during typecheck without strict typings.
-declare module '$lib/*' {
+declare module: '$lib/*' {
   const _default: any;
   export default _default;
   export const __any__: any;
 }
 // Specific server/db shims for internal barrel modules that tsc flags as missing exports
-declare module '$lib/server/database' {
+declare module: '$lib/server/database' {
   export const cases: any;
   export const evidence: any;
   export const criminals: any;
   export const legalDocuments: any;
   export const db: any;
 }
-declare module '$lib/server/db/index' {
+declare module: '$lib/server/db/index' {
   export const eq: any;
   export const or: any;
   export const desc: any;
   export default {} as any;
 }
 // Provide named exports used from $lib/types in various modules
-declare module '$lib/types' {
+declare module: '$lib/types' {
   export const LegalCase: any;
   export const Notification: any;
   export const NotificationType: any;
@@ -51,12 +51,12 @@ declare module '$lib/types' {
   const _default: any;
   export default _default;
 }
-declare module '$lib/services/embedding-service' {
+declare module: '$lib/services/embedding-service' {
   export const createEmbedding: any;
   export default createEmbedding;
 }
 // Provide a minimal Redis shape for methods that were flagged (setex, psubscribe, disconnect, on)
-declare module 'redis' {
+declare module: 'redis' {
   export class Redis {
     set(_key: string, value: string, ...rest: any[]): Promise<any>;
     setex?(_key: string, ttl: number, value: string): Promise<any>;
@@ -71,14 +71,14 @@ declare module 'redis' {
   export default client;
 }
 // Generic wildcard for other unresolved modules
-declare module '*';
-declare module 'minio';
-declare module 'pg';
-declare module '@qdrant/js-client-rest';
-declare module 'tesseract.js';
-declare module 'pdf-parse';
+declare module: '*';
+declare module: 'minio';
+declare module: 'pg';
+declare module: '@qdrant/js-client-rest';
+declare module: 'tesseract.js';
+declare module: 'pdf-parse';
 // Lokijs minimal typings to satisfy imports with named Collection
-declare module 'lokijs' {
+declare module: 'lokijs' {
   const Loki: any;
   export default Loki;
   export type Collection = any;
@@ -184,9 +184,9 @@ interface TextureRegion {
   format: string;
 }
 // SvelteKit component interfaces
-declare module '$lib/services/cognitive-cache-integration' {
+declare module: '$lib/services/cognitive-cache-integration' {
   export const cognitiveCache: any;
   export const cognitiveCacheManager: any;
   export default cognitiveCache;
 }
-declare module '*';
+declare module: '*';

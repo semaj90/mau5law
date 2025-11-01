@@ -56,10 +56,10 @@ export function getDatabaseUrls(): DatabaseUrls {
 export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app'): string {
   const urls = getDatabaseUrls();
   switch (type) {
-    case 'admin':
-    case 'migration':
+    case: 'admin':
+    case: 'migration':
       return urls.adminUrl;
-    case 'app':
+    case: 'app':
     default:
       return urls.appUrl;
   }

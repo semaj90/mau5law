@@ -200,7 +200,7 @@ class SSRLegalAPICache {
       await parallelCacheOrchestrator.storeParallel(cacheKey, this.serializeEntry(cacheEntry), {
         tier: this.selectOptimalTier(endpoint, processedResponse),
         ttl: cacheEntry.ttl,
-        priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',
+        priority: this.determinePriority(endpoint) as: 'low' | 'normal' | 'high',
         type: 'ssr_legal_api',
       });
       console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
@@ -345,28 +345,28 @@ class SSRLegalAPICache {
   }
   private determinePriority(endpoint: string): 'low' | 'normal' | 'high' | 'critical' {
     if (endpoint.includes('/detective/') || endpoint.includes('/recommendations')) {
-      return 'high';
+      return: 'high';
     }
     if (endpoint.includes('/cases/') || endpoint.includes('/evidence/')) {
-      return 'normal';
+      return: 'normal';
     }
-    return 'low';
+    return: 'low';
   }
   private selectOptimalTier(endpoint: string, response: LegalAPIResponse): 'l1' | 'l2' | 'l3' | 'all' {
     const dataSize = JSON.stringify(response).length;
     // Critical endpoints -> all tiers
     if (endpoint.includes('/detective/') || endpoint.includes('/recommendations')) {
-      return 'all';
+      return: 'all';
     }
     // Large responses -> L2/L3 only
     if (dataSize > 50000) {
-      return 'l3';
+      return: 'l3';
     }
     // Small frequent responses -> all tiers
     if (dataSize < 10000) {
-      return 'all';
+      return: 'all';
     }
-    return 'l2';
+    return: 'l2';
   }
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
     // Don't cache errors

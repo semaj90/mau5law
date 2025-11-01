@@ -291,16 +291,16 @@ export function formatThroughput(nodesPerSec: number): string {
   return `${Math.round(nodesPerSec)} nodes/sec`;
 }
 export function getPerformanceStatus(gflops: number): 'excellent' | 'good' | 'average' | 'poor' {
-  if (gflops >= 140) return 'excellent';
-  if (gflops >= 100) return 'good';
-  if (gflops >= 60) return 'average';
-  return 'poor';
+  if (gflops >= 140) return: 'excellent';
+  if (gflops >= 100) return: 'good';
+  if (gflops >= 60) return: 'average';
+  return: 'poor';
 }
 export function getPipelineHealthColor(status: RTXSystemStatus): string {
   switch (status.pipelineStatus) {
-    case 'active': return status.gpuUtilization > 80 ? '#00ff88' : '#ffcc00';
-    case 'idle': return '#666666';
-    case 'error': return '#ff6b35';
-    default: return '#333333';
+    case: 'active': return status.gpuUtilization > 80 ? '#00ff88' : '#ffcc00';
+    case: 'idle': return: '#666666';
+    case: 'error': return: '#ff6b35';
+    default: return: '#333333';
   }
 }

@@ -17,7 +17,7 @@ export interface RAGDocument {
   uploaded_at: Date;
   user_id?: string;
   case_id?: string;
-  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
 }
 
 export interface RAGChunk {
@@ -27,7 +27,7 @@ export interface RAGChunk {
   chunk_index: number;
   chunk_size: number;
   overlap_size: number;
-  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
 }
 
 export interface RAGEmbedding {
@@ -69,7 +69,7 @@ export interface IngestionInput {
   file_type: 'pdf' | 'docx' | 'txt' | 'image' | 'html';
   user_id?: string;
   case_id?: string;
-  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
+  metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
   options?: {
     enable_ocr?: boolean;
     chunk_size?: number;
@@ -175,7 +175,7 @@ export const ragIngestionMachine = setup({
 
     chunkDocument: fromPromise(
       async ({ input }: { input: { document: RAGDocument; content: string; options?: IngestionInput['options'] } }) => {
-        // Changed 'any' to 'IngestionInput['options']'
+        // Changed: 'any' to: 'IngestionInput['options']'
         const chunkSize = input.options?.chunk_size || 600;
         const chunkOverlap = input.options?.chunk_overlap || 100;
 
@@ -219,7 +219,7 @@ export const ragIngestionMachine = setup({
       }: {
         input: { chunks: RAGChunk[]; document: RAGDocument; options?: IngestionInput['options'] };
       }) => {
-        // Changed 'any' to 'IngestionInput['options']'
+        // Changed: 'any' to: 'IngestionInput['options']'
         const texts = input.chunks.map(chunk => chunk.content);
 
         // Batch generate embeddings using embeddinggemma:latest (512-dim)
@@ -236,7 +236,7 @@ export const ragIngestionMachine = setup({
 
         // Map to RAGEmbedding format
         const embeddings: RAGEmbedding[] = input.chunks.map((chunk, _index) => ({
-          // Changed 'index' to '_index'
+          // Changed: 'index' to: '_index'
           chunk_id: chunk.id,
           embedding: [], // Embeddings are stored in DB, not returned
           dimensions: 512,
@@ -423,16 +423,16 @@ export class RAGIngestionService {
       return new Promise(resolve => {
         actor.subscribe((state: StateFrom<typeof ragIngestionMachine>) => {
           // Explicitly type state
-          // Use type assertion for state.matches to resolve 'never' issue
+          // Use type assertion for state.matches to resolve: 'never' issue
           if (state.matches('complete')) {
-            // Removed 'as RagIngestionStateValue'
+            // Removed: 'as RagIngestionStateValue'
             resolve({
               success: true,
               document_id: state.context.document?.id,
               stats: state.context.stats,
             });
           } else if (state.matches('error')) {
-            // Removed 'as RagIngestionStateValue'
+            // Removed: 'as RagIngestionStateValue'
             resolve({
               success: false,
               error: state.context.error,

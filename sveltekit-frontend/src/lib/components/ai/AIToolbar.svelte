@@ -3,27 +3,30 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Input from '$lib/components/ui/input/Input.svelte';
-  import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
+  import Loader2 from 'lucide-svelte/icons/loader-2';
+  import Bot from 'lucide-svelte/icons/bot';
+  import MessageSquare from 'lucide-svelte/icons/message-square';
+  import FileText from 'lucide-svelte/icons/file-text';
+  import Search from 'lucide-svelte/icons/search';
+  import Sparkles from 'lucide-svelte/icons/sparkles';
+  import Zap from 'lucide-svelte/icons/zap';
 
-  // Exported props (clean, typed)
-  // Use runes for props in Svelte 5
-  let onAISearch: ((res: any) => void) | null = $props<((res: any) => void) | null>(null);
-  let onAIChat: ((res: any) => void) | null = $props<((res: any) => void) | null>(null);
-  let onAISummarize: ((res: any) => void) | null = $props<((res: any) => void) | null>(null);
-  let disabled: boolean = $props<boolean>(false);
-  let compact: boolean = $props<boolean>(false);
+  // Exported props (use standard exports to avoid svelte-preprocess type errors)
+  export let onAISearch: ((res: any) => void) | null = null;
+  export let onAIChat: ((res: any) => void) | null = null;
+  export let onAISummarize: ((res: any) => void) | null = null;
+  export let disabled: boolean = false;
 
   // Local state
   let aiSearchQuery: string = '';
   let errorMessage: string = '';
-  let isLoading: boolean = false;
-  let aiChatMessage: string = '';
-  let summarizeText: string = '';
   let isAISearching = false;
   let isAIChatting = false;
   let isSummarizing = false;
   let aiSearchResults: any[] = [];
+  let aiChatMessage: string = '';
   let aiChatResponse = '';
+  let summarizeText = '';
   let summaryResult = '';
 
   // Enhanced AI Search with LangChain.js and vector similarity
@@ -35,7 +38,7 @@
     try {
       const payload = {
         query: aiSearchQuery,
-        jurisdiction 'all',
+        jurisdiction: 'all',
         category: 'all',
         maxResults: 10,
         useAI: true,
@@ -75,7 +78,7 @@
   // Fallback search method
   async function performFallbackSearch() {
     try {
-      const payload = { query: aiSearchQuery, jurisdiction 'all', category: 'all', useAI: true };
+      const payload = { query: aiSearchQuery, jurisdiction: 'all', category: 'all', useAI: true };
       const response = await fetch('/api/ai/legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -156,13 +159,13 @@
 
   // Keyboard handlers
   function handleAISearchKeydown(event: KeyboardEvent) {
-    if ((event as KeyboardEvent).key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       performAISearch();
     }
   }
   function handleAIChatKeydown(event: KeyboardEvent) {
-    if ((event as KeyboardEvent).key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       performAIChat();
     }
@@ -180,130 +183,128 @@
     <h2 class="text-2xl font-bold flex items-center justify-center gap-2">
       <Sparkles class="h-6 w-6 text-primary" />
       AI Legal Assistant
-            <Input
-              placeholder="Ask AI to find laws..."
-              bind:value={aiSearchQuery}
-              onkeydown={handleAISearchKeydown}
-              {disabled}
-              class="pl-10" />
-          </div>
-          <button
-            type="button"
-            class="bits-btn text-sm px-2 py-1"
-            onclick={performAISearch}
-            disabled={disabled || isAISearching || !aiSearchQuery.trim()}>
-            {#if isAISearching}
-              <Loader2 class="h-4 w-4 animate-spin" />
-            {:else}
-              <Search class="h-4 w-4" />
-            {/if}
-          </button>
-        </div>
+    </h2>
 
-        {#if aiSearchResults.length > 0}
-          <div class="space-y-2 max-h-32 overflow-y-auto">
-            {#each aiSearchResults.slice(0, 3) as result}
-              <div class="p-2 bg-muted/50 rounded text-sm">
-                <div class="font-medium truncate">{result?.title}</div>
-                <div class="text-xs nes-text is-disabled">{result?.jurisdiction}</div>
-              </div>
-            {/each}
-            {#if aiSearchResults.length > 3}
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{aiSearchResults.length - 3} more results</span>
-            {/if}
-          </div>
+    <!-- Search -->
+    <div class="mt-3 flex items-center justify-center gap-2">
+      <Input
+        placeholder="Ask AI to find laws..."
+        bind:value={aiSearchQuery}
+        onkeydown={handleAISearchKeydown}
+        {disabled}
+        class="pl-10" />
+      <button
+        type="button"
+        class="bits-btn text-sm px-2 py-1"
+        onclick={performAISearch}
+        disabled={disabled || isAISearching || !aiSearchQuery.trim()}>
+        {#if isAISearching}
+          <Loader2 class="h-4 w-4 animate-spin" />
+        {:else}
+          <Search class="h-4 w-4" />
         {/if}
-      </div>
+      </button>
     </div>
 
-    <!-- AI Chat -->
-    <div class="border-green-500/20 nes-container">
-      <div class="yorha-panel-header pb-3">
-        <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
-          <MessageSquare class="h-5 w-5 text-green-600" />
-          AI Chat
-        </h3>
-      </div>
-      <div class="yorha-panel-content space-y-4">
-        <div class="space-y-2">
-          <!-- use a small form so submit behavior is explicit and accessible -->
-          <form onsubmit|preventDefault={performAIChat} class="space-y-2">
-            <textarea
-              name="aiChat"
-              placeholder="Ask a legal question..."
-              bind:value={aiChatMessage}
-              onkeydown={(e) => handleAIChatKeydown(e as KeyboardEvent)}
-              disabled={disabled}
-              rows="2"
-              aria-label="Ask a legal question"
-              class="resize-none rounded border px-3 py-2 w-full"></textarea>
-
-            <button
-              type="submit"
-              onclick|preventDefault={() => {}}
-              disabled={disabled || isAIChatting || !aiChatMessage.trim()}
-              class="w-full bits-btn text-sm px-3 py-2">
-              {#if isAIChatting}
-                <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin mr-2" />
-                Thinking...
-              {:else}
-                <MessageSquare aria-hidden="true" class="h-4 w-4 mr-2" />
-                Ask AI
-              {/if}
-            </button>
-          </form>
-        </div>
-
-        {#if aiChatResponse}
-          <div class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32 overflow-y-auto">
-            <div class="prose prose-sm max-w-none">
-              <p class="whitespace-pre-wrap">{aiChatResponse}</p>
-            </div>
+    {#if aiSearchResults.length > 0}
+      <div class="space-y-2 max-h-32 overflow-y-auto mt-2">
+        {#each aiSearchResults.slice(0, 3) as result}
+          <div class="p-2 bg-muted/50 rounded text-sm">
+            <div class="font-medium truncate">{result?.title}</div>
+            <div class="text-xs nes-text is-disabled">{result?.jurisdiction}</div>
           </div>
+        {/each}
+        {#if aiSearchResults.length > 3}
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{aiSearchResults.length - 3} more results</span>
         {/if}
       </div>
-    </div>
+    {/if}
+  </div>
 
-    <!-- AI Summarization -->
-    <div class="border-blue-500/20 nes-container">
-      <div class="yorha-panel-header pb-3">
-        <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
-          <FileText class="h-5 w-5 text-blue-600" />
-          AI Summary
-        </h3>
-      </div>
-      <div class="yorha-panel-content space-y-4">
-        <div class="space-y-2">
-          <!-- use native textarea for summarization to ensure keyboard events/props behave correctly -->
+  <!-- AI Chat -->
+  <div class="border-green-500/20 nes-container">
+    <div class="yorha-panel-header pb-3">
+      <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
+        <MessageSquare class="h-5 w-5 text-green-600" />
+        AI Chat
+      </h3>
+    </div>
+    <div class="yorha-panel-content space-y-4">
+      <div class="space-y-2">
+        <form on:submit|preventDefault={performAIChat} class="space-y-2">
           <textarea
-            placeholder="Paste legal text to summarize..."
-            bind:value={summarizeText}
+            name="aiChat"
+            placeholder="Ask a legal question..."
+            bind:value={aiChatMessage}
+            onkeydown={handleAIChatKeydown}
             disabled={disabled}
-            rows={2}
+            rows="2"
+            aria-label="Ask a legal question"
             class="resize-none rounded border px-3 py-2 w-full"></textarea>
+
           <button
-            type="button"
-            onclick={performAISummarization}
-            disabled={disabled || isSummarizing || !summarizeText.trim()}
+            type="submit"
+            disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             class="w-full bits-btn text-sm px-3 py-2">
-            {#if isSummarizing}
-              <Loader2 class="h-4 w-4 animate-spin mr-2" />
-              Summarizing...
+            {#if isAIChatting}
+              <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin mr-2" />
+              Thinking...
             {:else}
-              <Zap class="h-4 w-4 mr-2" />
-              Summarize
+              <MessageSquare aria-hidden="true" class="h-4 w-4 mr-2" />
+              Ask AI
             {/if}
           </button>
-        </div>
-
-        {#if summaryResult}
-          <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm max-h-32 overflow-y-auto">
-            <div class="prose prose-sm max-w-none">
-              <p class="whitespace-pre-wrap">{summaryResult}</p>
-            </div>
-          </div>
-        {/if}
+        </form>
       </div>
+
+      {#if aiChatResponse}
+        <div class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32 overflow-y-auto">
+          <div class="prose prose-sm max-w-none">
+            <p class="whitespace-pre-wrap">{aiChatResponse}</p>
+          </div>
+        </div>
+      {/if}
+    </div>
+  </div>
+
+  <!-- AI Summarization -->
+  <div class="border-blue-500/20 nes-container">
+    <div class="yorha-panel-header pb-3">
+      <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
+        <FileText class="h-5 w-5 text-blue-600" />
+        AI Summary
+      </h3>
+    </div>
+    <div class="yorha-panel-content space-y-4">
+      <div class="space-y-2">
+        <textarea
+          placeholder="Paste legal text to summarize..."
+          bind:value={summarizeText}
+          disabled={disabled}
+          rows={2}
+          class="resize-none rounded border px-3 py-2 w-full"></textarea>
+        <button
+          type="button"
+          onclick={performAISummarization}
+          disabled={disabled || isSummarizing || !summarizeText.trim()}
+          class="w-full bits-btn text-sm px-3 py-2">
+          {#if isSummarizing}
+            <Loader2 class="h-4 w-4 animate-spin mr-2" />
+            Summarizing...
+          {:else}
+            <Zap class="h-4 w-4 mr-2" />
+            Summarize
+          {/if}
+        </button>
+      </div>
+
+      {#if summaryResult}
+        <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm max-h-32 overflow-y-auto">
+          <div class="prose prose-sm max-w-none">
+            <p class="whitespace-pre-wrap">{summaryResult}</p>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 
@@ -350,26 +351,3 @@
     <div class="text-center text-sm text-red-600 mt-2">{errorMessage}</div>
   {/if}
 </div>
-
-          <Textarea
-            placeholder="Paste legal text to summarize..."
-            bind:value={summarizeText}
-            {disabled}
-            rows={2}
-            aria-label="Paste legal text to summarize"
-            class="resize-none" />
-          <Button
-            type="button"
-            onclick={performAISummarization}
-            disabled={disabled || isSummarizing || !summarizeText.trim()}
-            size="sm"
-            class="w-full bits-btn"
-            aria-label="Summarize text">
-            {#if isSummarizing}
-              <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin mr-2" />
-              Summarizing...
-            {:else}
-              <Zap aria-hidden="true" class="h-4 w-4 mr-2" />
-              Summarize
-            {/if}
-          </Button>

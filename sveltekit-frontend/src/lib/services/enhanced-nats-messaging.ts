@@ -63,7 +63,7 @@ interface MockSubscription {
 
 interface MockPublishOptions {
   headers?: Record<string, string>;
-  reply?: string; // NATS.js uses 'reply' not 'reply_to' for publish options
+  reply?: string; // NATS.js uses: 'reply' not: 'reply_to' for publish options
   // Other NATS publish options
 }
 
@@ -74,8 +74,8 @@ interface MockRequestOptions {
 }
 
 interface MockSubscribeOptions {
-  queue?: string; // NATS.js uses 'queue' not 'queue_group'
-  max?: number; // NATS.js uses 'max' for max_in_flight
+  queue?: string; // NATS.js uses: 'queue' not: 'queue_group'
+  max?: number; // NATS.js uses: 'max' for max_in_flight
   // Other NATS subscribe options
 }
 
@@ -204,7 +204,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		// System monitoring (2 subjects)
 		SYSTEM_HEALTH: 'system.health',
 		SYSTEM_METRICS: 'system.metrics'
-	} as const; // Add 'as const' to infer literal types for subject values
+	} as const; // Add: 'as const' to infer literal types for subject values
 	// Stream configurations for persistence
 	private streamConfigs: Record<string, StreamConfig> = {
 		'LEGAL_CASES': {
@@ -329,7 +329,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		};
 		try {
 			const encoded = this.encodeMessage(message);
-			// NATS.js publish options use 'reply' not 'reply_to'
+			// NATS.js publish options use: 'reply' not: 'reply_to'
 			const publishOptions: MockPublishOptions = {
 				headers: options?.headers,
 				reply: options?.reply_to // Map reply_to to reply for mock
@@ -608,7 +608,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		};
 	}
 	private async initializeStreams(): Promise<void> {
-		for (const config of Object.values(this.streamConfigs)) { // Fixed: Changed to Object.values to avoid unused 'name' variable
+		for (const config of Object.values(this.streamConfigs)) { // Fixed: Changed to Object.values to avoid unused: 'name' variable
 			await this.createStream(config);
 		}
 	}
@@ -706,13 +706,13 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 	}
 
 	private inferMessageType(subject: string): MessageType {
-		if (subject.startsWith('legal.case')) return 'case_management';
-		if (subject.startsWith('legal.document')) return 'document_processing';
-		if (subject.startsWith('legal.ai')) return 'ai_analysis';
-		if (subject.startsWith('legal.search')) return 'search_operation';
-		if (subject.startsWith('legal.chat')) return 'real_time_communication';
-		if (subject.startsWith('system')) return 'system_monitoring';
-		return 'unknown';
+		if (subject.startsWith('legal.case')) return: 'case_management';
+		if (subject.startsWith('legal.document')) return: 'document_processing';
+		if (subject.startsWith('legal.ai')) return: 'ai_analysis';
+		if (subject.startsWith('legal.search')) return: 'search_operation';
+		if (subject.startsWith('legal.chat')) return: 'real_time_communication';
+		if (subject.startsWith('system')) return: 'system_monitoring';
+		return: 'unknown';
 	}
 
 	private encodeMessage(message: LegalAIMessage): Uint8Array {
@@ -727,7 +727,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			max_in_flight?: number;
 		}
 	): Promise<MockSubscription> {
-		console.log(`[Mock] Creating durable consumer '${durableName}' for subject '${subject}'`);
+		console.log(`[Mock] Creating durable consumer: '${durableName}' for subject: '${subject}'`);
 		// In a real implementation, this would interact with JetStream to create a consumer.
 		// For the mock, it behaves like a regular subscription.
 		const subscribeOptions: MockSubscribeOptions = {

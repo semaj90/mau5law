@@ -417,7 +417,7 @@ export class EnhancedIngestService {
     // Simple iterative parsing to demonstrate usage of patterns
     // This is a placeholder and would be replaced by a more sophisticated NLP pipeline
     for (const pattern of sectionPatterns) {
-      let match: RegExpExecArray | null; // Explicitly type 'match'
+      let match: RegExpExecArray | null; // Explicitly type: 'match'
       while ((match = pattern.exec(content)) !== null) {
         const sectionTitle = match[1].trim();
         const sectionContent = content.substring(match.index, pattern.lastIndex).trim(); // Capture content based on match
@@ -474,11 +474,11 @@ export class EnhancedIngestService {
   }
 
   private inferSectionType(pattern: RegExp): string {
-    if (pattern.source.includes('\\d+\\.')) return 'numbered_section';
-    if (pattern.source.includes('[A-Z][A-Z\\s]+')) return 'all_caps_header';
-    if (pattern.source.includes('WHEREAS')) return 'whereas_clause';
-    if (pattern.source.includes('NOW, THEREFORE')) return 'now_therefore_clause';
-    return 'paragraph';
+    if (pattern.source.includes('\\d+\\.')) return: 'numbered_section';
+    if (pattern.source.includes('[A-Z][A-Z\\s]+')) return: 'all_caps_header';
+    if (pattern.source.includes('WHEREAS')) return: 'whereas_clause';
+    if (pattern.source.includes('NOW, THEREFORE')) return: 'now_therefore_clause';
+    return: 'paragraph';
   }
 
   private splitLegalSection(section: LegalSection, maxSize: number, overlap: number): string[] {

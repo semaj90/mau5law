@@ -1,5 +1,5 @@
 // Permissive Redis (ioredis-like) shim to include commonly used runtime methods.
-declare module 'ioredis' {
+declare module: 'ioredis' {
   class Redis {
     // common methods used in repo
     get(_key: string): Promise<any>;
@@ -21,7 +21,7 @@ declare module 'ioredis' {
     [key: string]: any;
   }
 }
-// Also provide a generic Redis type for imports that use "Redis" as a type name
+// Also provide a generic Redis type for imports that use: "Redis" as a type name
 declare global {
   type RedisClient = import('ioredis');
 }

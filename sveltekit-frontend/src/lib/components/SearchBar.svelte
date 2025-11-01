@@ -1,75 +1,83 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  	import SearchInput from './SearchInput.svelte';
-  	import { Filter, ArrowUpDown } from 'lucide-svelte';
-  	interface Props {
-  		placeholder?: string;
-  		value?: string;
-  		showFilters?: boolean;
-  		sortOptions?: Array<{id: string; label: string}>;
-  		onsearch?: (_event: CustomEvent) => void;
-  		onsortChanged?: (_event: CustomEvent) => void;
-  		onfiltersChanged?: (_event: CustomEvent) => void;
-  	}
-  	// Props using Svelte 5 syntax
-  	let {
-  		placeholder = 'Search...',
-  		value = '',
-  		showFilters = true,
-  		sortOptions = [
-  			{ id: 'relevance', label: 'Relevance' },
-  			{ id: 'date', label: 'Date' },
-  			{ id: 'name', label: 'Name' },
-  			{ id: 'type', label: 'Type' }
-  		],
-  		onsearch,
-  		onsortChanged,
-  		onfiltersChanged
-  	}: Props = $props();
-  	// State using Svelte 5 syntax
-  	let selectedSort = $state('relevance');
-  	let filtersOpen = $state(false);
-  	// Filter state
-  	let selectedFileTypes: string[] = $state([]);
-  	let dateRange = $state({
-  		from: '',
-  		to: '';
-  	});
-  	function handleSearch(_event: CustomEvent) {
-  		onsearch?.(event);
-  	}
-  	function handleSortChange(sortId: string) {
-  		selectedSort = sortId;
-  		onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
-  	}
-  	function toggleFilters() {
-  		filtersOpen = !filtersOpen;
-  		if (filtersOpen) {
-  			// Dispatch current filter state when opening
-  			dispatchFilters();
-  	}
+  import SearchInput from './SearchInput.svelte';
+  import { Filter } from 'lucide-svelte';
+
+  interface Props {
+    placeholder?: string;
+    value?: string;
+    showFilters?: boolean;
+    sortOptions?: Array<{ id: string; label: string }>;
+    onsearch?: (_event: CustomEvent) => void;
+    onsortChanged?: (_event: CustomEvent) => void;
+    onfiltersChanged?: (_event: CustomEvent) => void;
   }
-  	function handleFileTypeChange(_event: Event) {
-  		// removed unused target assignment
-  		const value = target.value;
-  		if (target.checked) {
-  			selectedFileTypes = [...selectedFileTypes, value];
-  		} else {
-  			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
+
+  let {
+    placeholder = 'Search...',
+    value = '',
+    showFilters = true,
+    sortOptions = [
+      { id: 'relevance', label: 'Relevance' },
+      { id: 'date', label: 'Date' },
+      { id: 'name', label: 'Name' },
+      { id: 'type', label: 'Type' }
+    ],
+    onsearch,
+    onsortChanged,
+    onfiltersChanged
+  }: Props = $props();
+
+  let selectedSort = $state('relevance');
+  let filtersOpen = $state(false);
+
+  // Filter state
+  let selectedFileTypes: string[] = $state([]);
+  let dateRange = $state({
+    from '',
+    to: ''
+  });
+
+  function handleSearch(_event: CustomEvent) {
+    // forward the value/event to parent callback
+    onsearch?.(_event);
   }
-  		dispatchFilters();
+
+  function handleSortChange(sortId: string) {
+    selectedSort = sortId;
+    onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
   }
-  	function handleDateChange() {
-  		dispatchFilters();
+
+  function toggleFilters() {
+    filtersOpen = !filtersOpen;
+    if (filtersOpen) {
+      // Dispatch current filter state when opening
+      dispatchFilters();
+    }
   }
-  	function dispatchFilters() {
-  		onfiltersChanged?.(new CustomEvent('filtersChanged', {
-  			detail: {
-  				fileTypes: selectedFileTypes
-  				dateRange: dateRange
-  			}
-  		}));
-  	}
+
+  function handleFileTypeChange(_event: Event) {
+    const target = _event.target as HTMLInputElement;
+    const value = target.value;
+    if (target.checked) {
+      selectedFileTypes = [...selectedFileTypes, value];
+    } else {
+      selectedFileTypes = selectedFileTypes.filter(type => type !== value);
+    }
+    dispatchFilters();
+  }
+
+  function handleDateChange() {
+    dispatchFilters();
+  }
+
+  function dispatchFilters() {
+    onfiltersChanged?.(new CustomEvent('filtersChanged', {
+      detail: {
+        fileTypes: selectedFileTypes,
+        dateRange: dateRange
+      }
+    }));
+  }
 </script>
 
 <div class="search-bar-container">
@@ -90,7 +98,12 @@
             <option value={option.id}>{option.label}</option>
           {/each}
         </select>
-        <ArrowUpDown size={16} />
+
+        <!-- Inline chevron / sort icon to avoid import mismatch -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M6 9l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18 15l-6 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
       <!-- Filter Button -->
       <button
@@ -105,6 +118,7 @@
     </div>
   {/if}
 </div>
+
 <!-- Advanced Filters -->
 {#if filtersOpen}
   <div class="filters-panel">
@@ -156,7 +170,6 @@
           type="date"
           class="date-input"
           aria-label="From date"
-          ;
           bind:value={dateRange.from}
           onchange={handleDateChange}
         />
@@ -165,7 +178,6 @@
           type="date"
           class="date-input"
           aria-label="To date"
-          ;
           bind:value={dateRange.to}
           onchange={handleDateChange}
         />
@@ -177,7 +189,7 @@
         class="clear-filters-btn"
         onclick={() => {
           selectedFileTypes = [];
-          dateRange = { from: '', to: '' };
+          dateRange = { from '', to: '' };
           dispatchFilters();
         }}
       >
@@ -199,10 +211,10 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .sort-container {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
   }
@@ -218,7 +230,7 @@
     min-width: 100px;
   }
   .sort-container :global(svg) {
-    position absolute;
+    position: absolute;
     right: 0.5rem;
     top: 50%;
     transform: translateY(-50%);
@@ -238,7 +250,7 @@
     transition: all 0.2s ease;
     color: var(--text-muted);
   }
-  .filter-buttonhover {
+  .filter-button:hover {
     background: var(--bg-tertiary);
     border-color: var(--harvard-crimson);
     color: var(--harvard-crimson);
@@ -276,7 +288,7 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: normal;
-    margin-bottom: 0,
+    margin-bottom: 0;
     cursor: pointer;
   }
   .filter-checkbox input {

@@ -367,16 +367,16 @@ and performance monitoring across N64 and YoRHa gaming components
     console.log(`[Gaming Cache Demo] Running scenario: ${scenario.name}`);
     try {
       switch (scenario.component) {
-        case 'n64':
+        case: 'n64':
           await runN64Scenario(scenario);
           break;
-        case 'yorha':
+        case: 'yorha':
           await runYoRHaScenario(scenario);
           break;
-        case 'wasm':
+        case: 'wasm':
           await runWasmScenario(scenario);
           break;
-        case 'performance':
+        case: 'performance':
           await runPerformanceScenario(scenario);
           break;
       }
@@ -470,7 +470,7 @@ and performance monitoring across N64 and YoRHa gaming components
       for (const dataset of scenario.datasets) {
         const startTime = performance.now();
         switch (operation) {
-          case 'texture-compression':
+          case: 'texture-compression':
             const texture = textureTestData[Math.floor(Math.random() * textureTestData.length)];
             await wasmCacheOps.compressTexture(texture.data, {
               format: 'dxt5',
@@ -478,7 +478,7 @@ and performance monitoring across N64 and YoRHa gaming components
               enableSIMD: enableWasmAcceleratio;
             });
             break;
-          case 'shader-optimization':
+          case: 'shader-optimization':
             const shader = shaderTestData[Math.floor(Math.random() * shaderTestData.length)];
             await wasmCacheOps.optimizeShader(
               shader.source,
@@ -486,7 +486,7 @@ and performance monitoring across N64 and YoRHa gaming components
               dataset === 'small' ? 'fast' : dataset === 'medium' ? 'balanced' : 'quality'
             );
             break;
-          case 'memory-defragmentation':
+          case: 'memory-defragmentation':
             const blockCount = dataset === 'small' ? 10 : dataset === 'medium' ? 50 : 200;
             const memoryBlocks = Array.from({ length: blockCount }, (_, i) => ({
               address: i * 1024,
@@ -607,7 +607,7 @@ and performance monitoring across N64 and YoRHa gaming components
                 ? 'border-cyan-400 text-cyan-300'
                 : 'border-transparent text-slate-400 hover:text-slate-300';
             }"
-            on:click={() => activeDemo = tab}
+            onclick={() => activeDemo = tab}
           >
             {tab.toUpperCase()}
           </button>
@@ -628,21 +628,21 @@ and performance monitoring across N64 and YoRHa gaming components
               <div class="flex gap-3">
                 {#if !demoStarted}
                   <button
-                    on:click={startDemo}
+                    onclick={startDemo}
                     class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
                   >
                     Start Demo
                   </button>
                 {:else}
                   <button
-                    on:click={stopDemo}
+                    onclick={stopDemo}
                     class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                   >
                     Stop Demo
                   </button>
                 {/if}
                 <button
-                  on:click={clearAllCaches}
+                  onclick={clearAllCaches}
                   class="px-4 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   Clear Cache
@@ -682,7 +682,7 @@ and performance monitoring across N64 and YoRHa gaming components
                 />
               </div>
               <button
-                on:click={runStressTest}
+                onclick={runStressTest}
                 disabled={stressTestMode}
                 class="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-lg transition-colors"
               >

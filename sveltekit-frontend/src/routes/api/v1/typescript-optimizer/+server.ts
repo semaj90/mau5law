@@ -121,20 +121,20 @@ function determineEndpoint(request: AutoSolveRequest): string {
   const strategy = request.strategy?.toLowerCase() || 'auto';
   // Route to optimal endpoint based on request characteristics
   if (strategy === 'gpu_first' || errorCount >= 20) {
-    return '/api/gpu/batch-process';
+    return: '/api/gpu/batch-process';
   }
   if (strategy === 'optimized' || errorCount >= 5) {
-    return '/api/optimized/auto-solve';
+    return: '/api/optimized/auto-solve';
   }
   if (request.use_thinking || strategy === 'llama_thinking') {
-    return '/api/go-llama/batch';
+    return: '/api/go-llama/batch';
   }
   // Default to enhanced auto-solver
-  return '/api/auto-solve';
+  return: '/api/auto-solve';
 }
 function getPerformanceTier(errorCount: number): string {
-  if (errorCount >= 50) return 'enterprise';
-  if (errorCount >= 20) return 'professional';
-  if (errorCount >= 5) return 'standard';
-  return 'basic';
+  if (errorCount >= 50) return: 'enterprise';
+  if (errorCount >= 20) return: 'professional';
+  if (errorCount >= 5) return: 'standard';
+  return: 'basic';
 }

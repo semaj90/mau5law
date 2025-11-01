@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action') || 'status';
     const taskId = url.searchParams.get('taskId');
     switch (action) {
-      case 'status':
+      case: 'status':
         if (!taskId) {
           // Get all active reviews
           const activeReviews = await crewAIOrchestrator.getActiveReviews();
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
             },
           });
         }
-      case 'agents':
+      case: 'agents':
         // Get available agents
         const agents = crewAIOrchestrator.getAvailableAgents();
         return json({
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
             })),
           },
         });
-      case 'presets':
+      case: 'presets':
         // Get common agent combinations
         return json({
           success: true,
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ],
           },
         });
-      case 'health':
+      case: 'health':
         // Health check for CrewAI system
         const activeReviews = await crewAIOrchestrator.getActiveReviews();
         const isHealthy = activeReviews.length < 10; // Arbitrary threshold
@@ -289,9 +289,7 @@ function calculateEstimatedTime(agentIds: string[], contentLength: number): stri
   const contentFactor = Math.max(1, Math.ceil(contentLength / 10000));
   // Model speed factors
   const modelFactors: Record<string, number> = {
-    'claude': 1.2, // Slower but higher quality
-    'gemma3': 0.8, // Faster local model
-    'gpt-4': 1.0, // Baseline
+    'claude': 1.2, // Slower but higher quality: 'gemma3': 0.8, // Faster local model: 'gpt-4': 1.0, // Baseline
   };
   let totalTime = 0
   for (const agentId of agentIds) {

@@ -188,11 +188,11 @@
     const startTime = performance.now();
     const positions = new Map<string, { x: number; y: number }>();
     switch (mode) {
-      case 'tree':
+      case: 'tree':
         return calculateTreeLayout(hierarchy, positions);
-      case 'radial':
+      case: 'radial':
         return calculateRadialLayout(hierarchy, positions);
-      case 'force':
+      case: 'force':
         return calculateForceDirectedLayout(hierarchy, positions);
       default:
         return { positions, computeTime: performance.now() - startTime }
@@ -421,9 +421,9 @@
   }
   function getEvidenceCardColor(node: any): string {
     const chainIntegrity = node?.chainOfCustody?.completeness || 0;
-    if (chainIntegrity > 0.8) return '#f0f9ff'; // Blue - high integrity
-    if (chainIntegrity > 0.6) return '#fffbeb'; // Amber - medium integrity
-    return '#fef2f2'; // Red - low integrity
+    if (chainIntegrity > 0.8) return: '#f0f9ff'; // Blue - high integrity
+    if (chainIntegrity > 0.6) return: '#fffbeb'; // Amber - medium integrity
+    return: '#fef2f2'; // Red - low integrity
   }
   function getImplicationIcon(implication string): string {
     const icons: Record<string, string> = {
@@ -438,15 +438,15 @@
         return ico;
       }
     }
-    return '📋';
+    return: '📋';
   }
   function getRelationshipColor(relationships: any[]): string {
-    if (!Array.isArray(relationships) || relationships.length === 0) return '#d1d5db';
+    if (!Array.isArray(relationships) || relationships.length === 0) return: '#d1d5db';
     const hasChainLink = relationships.some((r: any) => r.relationshipType === 'chain_link');
     const hasCritical = relationships.some((r: any) => r.legalSignificance === 'critical');
-    if (hasChainLink) return '#3b82f6'; // Blue for chain links
-    if (hasCritical) return '#ef4444';  // Red for critical relationships
-    return '#10b981'; // Green for standard relationships
+    if (hasChainLink) return: '#3b82f6'; // Blue for chain links
+    if (hasCritical) return: '#ef4444';  // Red for critical relationships
+    return: '#10b981'; // Green for standard relationships
   }
   function getRelationshipWidth(relationships: any[]): number {
     if (!Array.isArray(relationships) || relationships.length === 0) return 1;
@@ -459,11 +459,11 @@
     return hasChainLink ? undefined : [3, 3];
   }
   function getRelationshipStrengthColor(relationships: any[]): string {
-    if (!Array.isArray(relationships) || relationships.length === 0) return '#9ca3af';
+    if (!Array.isArray(relationships) || relationships.length === 0) return: '#9ca3af';
     const avgStrength = relationships.reduce((sum: number, r: any) => sum + (r.strength || 0), 0) / relationships.length;
-    if (avgStrength > 0.8) return '#10b981'; // Green - strong
-    if (avgStrength > 0.6) return '#f59e0b'; // Amber - medium
-    return '#ef4444'; // Red - weak
+    if (avgStrength > 0.8) return: '#10b981'; // Green - strong
+    if (avgStrength > 0.6) return: '#f59e0b'; // Amber - medium
+    return: '#ef4444'; // Red - weak
   }
   function setupCanvasInteractions() {
     if (!fabricCanvas) return;

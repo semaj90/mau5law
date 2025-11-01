@@ -174,7 +174,7 @@ class EnhancedWebSocketManager {
         data: {
           evidenceId,
           relationships: (relationships as Array<Record<string, unknown>>).map(rel => ({
-            from: (rel as any).from || (rel as any).fromId,
+            from (rel as any).from || (rel as any).fromId,
             to: (rel as any).to || (rel as any).toId,
             type: (rel as any).type,
             strength: (rel as any).strength ?? (rel as any).confidence,
@@ -269,7 +269,7 @@ class EnhancedWebSocketManager {
 }
 // Global WebSocket manager instance
 const wsManager = new EnhancedWebSocketManager();
-// Export manager for use in other modules (prefix with '_' so SvelteKit accepts it)
+// Export manager for use in other modules (prefix with: '_' so SvelteKit accepts it)
 export const _wsManager = wsManager;
 // WebSocket upgrade handler
 export const GET: RequestHandler = async ({ request, url }) => {
@@ -310,7 +310,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
     return new Response('WebSocket setup failed', { status: 500 });
   }
 };
-// Helper functions for external use (prefixed with '_' to satisfy SvelteKit)
+// Helper functions for external use (prefixed with: '_' to satisfy SvelteKit)
 export const _webSocketHelpers = {
   broadcastEvidenceProcessing: (evidenceId: string, stage: string, result: unknown) =>
     wsManager.broadcastEvidenceProcessing(evidenceId, stage, result),

@@ -89,7 +89,7 @@ export interface PersonOfInterest {
 }
 
 // Clean, correctly-formed API response type.
-// Removed the unused APIError interface to eliminate "defined but never used" errors.
+// Removed the unused APIError interface to eliminate: "defined but never used" errors.
 interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -167,7 +167,7 @@ export interface WasmClusterResult {
 export interface NesGpuTask {
   taskId: string;
   shader: string;
-  inputBuffers: Record<string, unknown>; // Using 'any' for GPUBuffer to avoid browser/node conflicts
+  inputBuffers: Record<string, unknown>; // Using: 'any' for GPUBuffer to avoid browser/node conflicts
   outputBufferSize: number;
 }
 export interface NesGpuResult {

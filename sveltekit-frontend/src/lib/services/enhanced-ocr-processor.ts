@@ -10,7 +10,7 @@ import { EventEmitter } from "events";
 import { createWorker } from "tesseract.js"; // only import factory; avoid importing conflicting Worker type
 
 // Concrete extended worker interface declaring the runtime methods we call.
-// Do not extend a potentially conflicting 'Worker' DOM type — declare the useful API surface explicitly.
+// Do not extend a potentially conflicting: 'Worker' DOM type — declare the useful API surface explicitly.
 interface TesseractExtendedWorker {
   load: () => Promise<void>;
   loadLanguage: (lang: string) => Promise<void>;
@@ -159,7 +159,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
     this.queueRunning = true;
     while (this.processingQueue.length > 0) {
       // Dequeue the task first
-      const task = this.processingQueue.shift(); // Removed '!' for safer handling
+      const task = this.processingQueue.shift(); // Removed: '!' for safer handling
       if (!task) {
         // Added explicit check for undefined task
         // This should ideally not happen if length > 0, but provides robustness
@@ -277,7 +277,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       await this.cleanupImages(pageImages); // Call the new method
 
       // Assign the result to a variable with an explicit type to help the compiler
-      // and use explicit property assignment for 'confidenceBySection'.
+      // and use explicit property assignment for: 'confidenceBySection'.
       const ocrResult: OCRResult = {
         text: resultsText.join('\n\n'),
         confidence: pageImages.length > 0 ? totalConfidence / pageImages.length : 0,
@@ -463,34 +463,34 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
   private async detectDocumentType(text: string): Promise<'legal' | 'contract' | 'evidence' | 'general'> {
     const lower = text.toLowerCase();
-    if (lower.includes('contract') || lower.includes('agreement') || lower.includes('whereas')) return 'contract';
-    if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return 'evidence';
-    if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return 'legal';
-    return 'general';
+    if (lower.includes('contract') || lower.includes('agreement') || lower.includes('whereas')) return: 'contract';
+    if (lower.includes('evidence') || lower.includes('exhibit') || lower.includes('affidavit')) return: 'evidence';
+    if (Array.from(this.legalKeywords).some(keyword => lower.includes(keyword))) return: 'legal';
+    return: 'general';
   }
 
   private getMimeType(filename: string): string {
     const ext = path.extname(filename).toLowerCase();
     switch (ext) {
-      case '.pdf':
-        return 'application/pdf';
-      case '.png':
-        return 'image/png';
-      case '.jpg':
-      case '.jpeg':
-        return 'image/jpeg';
-      case '.tiff':
-      case '.tif':
-        return 'image/tiff';
+      case: '.pdf':
+        return: 'application/pdf';
+      case: '.png':
+        return: 'image/png';
+      case: '.jpg':
+      case: '.jpeg':
+        return: 'image/jpeg';
+      case: '.tiff':
+      case: '.tif':
+        return: 'image/tiff';
       default:
-        return 'application/octet-stream';
+        return: 'application/octet-stream';
     }
   }
 
   private async simulatePDFConversion(filePath: string, _options: ProcessingOptions): Promise<string[]> {
-    // Renamed 'options' to '_options'
+    // Renamed: 'options' to: '_options'
     // This is a mock implementation. In a real scenario, you'd use a library
-    // like 'pdf-poppler' or 'imagemagick' to convert PDF pages to images.
+    // like: 'pdf-poppler' or: 'imagemagick' to convert PDF pages to images.
     console.warn(`Simulating PDF conversion for ${filePath}. This is a placeholder.`);
     const numPages = 3; // Simulate a 3-page PDF
     const imagePaths: string[] = [];
@@ -518,12 +518,12 @@ export class EnhancedOCRProcessor extends EventEmitter {
   private async detectConfidentiality(text: string): Promise<'public' | 'confidential' | 'privileged'> {
     const lower = text.toLowerCase();
     if (lower.includes('attorney-client privilege') || lower.includes('privileged communication')) {
-      return 'privileged';
+      return: 'privileged';
     }
     if (lower.includes('confidential') || lower.includes('proprietary information')) {
-      return 'confidential';
+      return: 'confidential';
     }
-    return 'public';
+    return: 'public';
   }
 
   private extractDocumentStructure(text: string): string[] {

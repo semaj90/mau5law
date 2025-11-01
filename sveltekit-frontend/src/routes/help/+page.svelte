@@ -99,7 +99,7 @@
   4. Save the case
   ## Step 3: Add Evidence
   1. Open your case
-  2. Click "Add Evidence"
+  2. Click: "Add Evidence"
   3. Upload files or enter evidence descriptions
   4. Tag and categorize evidence
   ## Step 4: Use AI Assistant
@@ -164,15 +164,15 @@
   [Play Video: CaseCreation Walkthrough] (8 minutes)
   ## Written Steps
   1. **Navigate to Cases**
-   - Click "Cases" in the main navigation
-   - Click "New Case" button
+   - Click: "Cases" in the main navigation
+   - Click: "New Case" button
   2. **Fill Case Details**
    - Enter a descriptive title
    - Add detailed description
    - Set appropriate priority level
    - Choose initial status
   3. **Add Participants**
-   - Click "Add Participant"
+   - Click: "Add Participant"
    - Enter names and roles
    - Add contact information
   4. **Organize with Tags**
@@ -383,9 +383,9 @@
 
   function getTypeIcon(type: string) {
     switch (type) {
-      case 'video':
+      case: 'video':
         return Video;
-      case 'interactive':
+      case: 'interactive':
         return Play;
       default:
         return Book;
@@ -393,12 +393,12 @@
   }
   function getTypeColor(type: string) {
     switch (type) {
-      case 'video':
-        return 'text-red-600';
-      case 'interactive':
-        return 'text-blue-600';
+      case: 'video':
+        return: 'text-red-600';
+      case: 'interactive':
+        return: 'text-blue-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
 </script>
@@ -473,15 +473,15 @@
       <div class="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
-          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
           </Button>
-          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
           </Button>
-          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
           </Button>
@@ -533,7 +533,7 @@
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
                       {@html article.content.split('\n').slice(0, 3).join('\n').substring(0, 200)}...
                     </div>
-                    <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate 'bits-btn' -->
+                    <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
@@ -583,11 +583,11 @@
               Can't find what you're looking for? Our support team is here to help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate 'bits-btn' -->
+              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
               </Button>
-              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate 'bits-btn' -->
+              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
               </Button>

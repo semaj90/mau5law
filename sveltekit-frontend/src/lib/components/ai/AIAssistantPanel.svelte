@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
-  // Use existing lowercase 'card' folder to avoid casing conflicts on disk
+  // Use existing lowercase: 'card' folder to avoid casing conflicts on disk
   import Card from '$lib/components/ui/card/Card.svelte';
   import CardContent from '$lib/components/ui/card/CardContent.svelte';
   import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
@@ -245,7 +245,7 @@
                 content: message.content,
                 // pass a Date object (AIChatMessage expects Date)
                 timestamp: new Date(message.timestamp),
-                // map evidenceIds into the expected 'sources' property (was 'references')
+                // map evidenceIds into the expected: 'sources' property (was 'references')
                 sources: message.evidenceIds?.map((id: string) => ({ id, score: 1.0 })) || [],
               }}
               showReferences={true}

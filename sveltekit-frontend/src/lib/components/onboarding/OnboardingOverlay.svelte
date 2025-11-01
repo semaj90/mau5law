@@ -95,15 +95,15 @@ https://svelte.dev/e/js_parse_error -->
   function handleKeydown(_event: KeyboardEvent) {
     if (!open) return;
     switch (event.key) {
-      case "Escape":
+      case: "Escape":
         closeOnboarding();
         break;
-      case "ArrowRight":
-      case " ":
+      case: "ArrowRight":
+      case: " ":
         event.preventDefault();
         nextStep();
         break;
-      case "ArrowLeft":
+      case: "ArrowLeft":
         event.preventDefault();
         previousStep();
         break;
@@ -199,25 +199,25 @@ https://svelte.dev/e/js_parse_error -->
     const position = currentStepData.position || "bottom";
     const margin = 20;
     switch (position) {
-      case "top":
+      case: "top":
         return {
           top: `${highlightBox.top - margin}px`,
           left: `${highlightBox.left + highlightBox.width / 2}px`,
           transform: "translate(-50%, -100%)",
         }
-      case "bottom":
+      case: "bottom":
         return {
           top: `${highlightBox.top + highlightBox.height + margin}px`,
           left: `${highlightBox.left + highlightBox.width / 2}px`,
           transform: "translate(-50%, 0)",
         }
-      case "left":
+      case: "left":
         return {
           top: `${highlightBox.top + highlightBox.height / 2}px`,
           left: `${highlightBox.left - margin}px`,
           transform: "translate(-100%, -50%)",
         }
-      case "right":
+      case: "right":
         return {
           top: `${highlightBox.top + highlightBox.height / 2}px`,
           left: `${highlightBox.left + highlightBox.width + margin}px`,
@@ -380,7 +380,7 @@ skipOnboarding()}>
                   class:active={index === currentStep}
                   class:completed={index < currentStep}
                   onclick={() => goToStep(index)}
-                  aria-label={"Go to step " + (index + 1) + ": " + step.title}
+                  aria-label={"Go to step: " + (index + 1) + ": " + step.title}
                 >
                   {#if index < currentStep}
                     <Check class="w-4 h-4" />

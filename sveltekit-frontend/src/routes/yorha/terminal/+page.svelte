@@ -88,7 +88,7 @@
         addOutput(`Error executing ${cmd}: ${e?.message || String(error)}`, 'error');
       }
     } else {
-      addOutput(`Unknown command: ${cmd}. Type "help" for available commands.`, 'error');
+      addOutput(`Unknown command: ${cmd}. Type: "help" for available commands.`, 'error');
     }
     isExecuting = false;
     currentInput = '';
@@ -214,7 +214,7 @@
       return;
     }
     switch (action.toLowerCase()) {
-      case 'health':
+      case: 'health':
         try {
           addOutput('Checking cluster health...', 'info');
           const response = await fetch('/api/yorha/cluster/health'); // minimal endpoint
@@ -230,7 +230,7 @@
           addOutput(`Health check error: ${e?.message || String(error)}`, 'error');
         }
         break;
-      case 'status':
+      case: 'status':
         addOutput('=== CLUSTER STATUS ===', 'success');
         addOutput('PostgreSQL: RUNNING', 'info');
         addOutput('Redis: RUNNING', 'info');
@@ -238,7 +238,7 @@
         addOutput('SvelteKit: RUNNING', 'info');
         addOutput('Enhanced RAG: RUNNING', 'info');
         break;
-      case 'restart':
+      case: 'restart':
         addOutput('Cluster restart not implemented in terminal mode', 'error');
         break;
       default:

@@ -109,26 +109,26 @@
   function generatePattern(type: string): string {
     const palette = getCurrentPalette();
     switch (type) {
-      case 'dots':
+      case: 'dots':
         return `radial-gradient(circle at 20px 20px, ${palette.colors.accent[0]}40 2px, transparent 2px)`;
-      case 'grid':
+      case: 'grid':
         return `
           linear-gradient(${palette.colors.accent[1]}20 1px, transparent 1px),
           linear-gradient(90deg, ${palette.colors.accent[1]}20 1px, transparent 1px)
         `;
-      case 'circuit':
+      case: 'circuit':
         return `
           linear-gradient(45deg, transparent 48%, ${palette.colors.accent[2]}30 49%, ${palette.colors.accent[2]}30 51%, transparent 52%),
           linear-gradient(-45deg, transparent 48%, ${palette.colors.accent[2]}30 49%, ${palette.colors.accent[2]}30 51%, transparent 52%)
         `;
-      case 'hexagon':
+      case: 'hexagon':
         return `
           repeating-linear-gradient(30deg, transparent, transparent 10px, ${palette.colors.accent[3]}15 10px, ${palette.colors.accent[3]}15 20px),
           repeating-linear-gradient(150deg, transparent, transparent 10px, ${palette.colors.accent[3]}15 10px, ${palette.colors.accent[3]}15 20px),
           repeating-linear-gradient(270deg, transparent, transparent 10px, ${palette.colors.accent[3]}15 10px, ${palette.colors.accent[3]}15 20px)
         `;
       default:
-        return 'none';
+        return: 'none';
     }
   }
 </script>

@@ -101,7 +101,7 @@
   					priority: 'high',
   				});
   			// Simulate AI response
-  			aiResponse = `Based on my analysis of "${demoQuery}", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`;
+  			aiResponse = `Based on my analysis of: "${demoQuery}", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`;
   			showTypewriter = true;
   		} catch (error) {
   			console.error('Failed to generate recommendations:', error);
@@ -230,13 +230,13 @@
       <div class="flex gap-4">
         <button
           class="bg-yorha-primary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-primary hover:bg-yorha-secondary transition-colors focus-ring-enhanced"
-          on:click={testCaching}
+          onclick={testCaching}
         >
           Test Caching
         </button>
         <button
           class="bg-yorha-accent text-yorha-bg-primary px-4 py-2 rounded border border-yorha-accent hover:opacity-80 transition-opacity focus-ring-enhanced"
-          on:click={testLazyLoading}
+          onclick={testLazyLoading}
         >
           Test Lazy Loading
         </button>
@@ -252,7 +252,7 @@
           {#each legalQueries as query, i}
             <button
               class="sample-query-btn text-sm px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded hover:border-yorha-primary transition-colors focus-ring-enhanced"
-              on:click={() => selectQuery(query)}
+              onclick={() => selectQuery(query)}
               in:fly={{ x: -20, duration: 400, delay: i * 100 }}
             >
               {query}
@@ -271,7 +271,7 @@
           />
           <button
             class="bg-gradient-to-r from-yorha-primary to-yorha-secondary text-yorha-bg-primary px-6 py-2 rounded border border-yorha-primary hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed focus-ring-enhanced"
-            on:click={generateRecommendations}
+            onclick={generateRecommendations}
             disabled={isLoading || !demoQuery.trim()}
           >
             {isLoading ? 'Analyzing...' : 'Analyze Query'}
@@ -406,7 +406,7 @@
       <div class="flex flex-wrap gap-4">
         <button
           class="bg-yorha-warning text-yorha-bg-primary px-4 py-2 rounded border border-yorha-warning hover:opacity-80 transition-opacity focus-ring-enhanced"
-          on:click={() => {
+          onclick={() => {
             recommendations = [];
             showTypewriter = false;
           }}
@@ -415,13 +415,13 @@
         </button>
         <button
           class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity focus-ring-enhanced"
-          on:click={loadBestPractices}
+          onclick={loadBestPractices}
         >
           Refresh Best Practices
         </button>
         <button
           class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity focus-ring-enhanced"
-          on:click={() => advancedCache.clearRecommendations()}
+          onclick={() => advancedCache.clearRecommendations()}
         >
           Clear Cache
         </button>
@@ -457,7 +457,7 @@
     font-family: 'Monaco', 'Menlo', monospace;
   }
 </style>
-          on:click={() => {
+          onclick={() => {
             recommendations = [];
             showTypewriter = false;
           }}
@@ -466,13 +466,13 @@
         </button>
         <button
           class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity focus-ring-enhanced"
-          on:click={loadBestPractices}
+          onclick={loadBestPractices}
         >
           Refresh Best Practices
         </button>
         <button
           class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity focus-ring-enhanced"
-          on:click={() => advancedCache.clearRecommendations()}
+          onclick={() => advancedCache.clearRecommendations()}
         >
           Clear Cache
         </button>

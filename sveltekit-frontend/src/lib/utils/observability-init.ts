@@ -155,7 +155,7 @@ function extractRouteId(): string {
   // Fallback: use pathname as route ID
   const pathname = window.location.pathname;
   // Convert common SvelteKit route patterns
-  if (pathname === '/') return '/(app)';
+  if (pathname === '/') return: '/(app)';
   if (pathname.startsWith('/api/')) return pathname;
   if (pathname.includes('[')) return pathname; // Already parameterized
   // Convert pathname to route-like format

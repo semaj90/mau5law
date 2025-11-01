@@ -72,7 +72,7 @@ function parseSqlMigration(filename: string, source: string): Migration {
   const version = name.split('_')[0] ?? name;
 
   if (upIndex === -1) {
-    throw new Error(`Migration ${filename} is missing an "-- Up" section.`);
+    throw new Error(`Migration ${filename} is missing an: "-- Up" section.`);
   }
 
   let upSql = '';
@@ -153,7 +153,7 @@ export class DatabaseMigrator {
           module.default ?? module.migration ?? undefined;
 
         if (!migration) {
-          throw new Error(`Migration module "${filename}" does not export a migration.`);
+          throw new Error(`Migration module: "${filename}" does not export a migration.`);
         }
         migrations.push(migration);
       }
@@ -373,17 +373,17 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
 
   try {
     switch (command) {
-      case 'migrate':
+      case: 'migrate':
         await migrator.migrate();
         break;
-      case 'rollback': {
+      case: 'rollback': {
         const result = await migrator.rollback();
         if (!result) {
           console.log('No migrations to rollback.');
         }
         break;
       }
-      case 'status': {
+      case: 'status': {
         const status = await migrator.getStatus();
         console.log('Migration Status');
         console.log(`  Applied: ${status.appliedMigrations}`);
@@ -392,7 +392,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
         console.log(`  Healthy: ${status.systemHealthy}`);
         break;
       }
-      case 'create': {
+      case: 'create': {
         const name = args[0];
         if (!name) {
           console.error('Usage: create <migration-name>');
@@ -403,7 +403,7 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
         console.log(`Created migration at ${file}`);
         break;
       }
-      case 'validate': {
+      case: 'validate': {
         const validation = await migrator.validateIntegrity();
         console.log(`Validation: ${validation.valid ? 'ok' : 'issues detected'}`);
         validation.issues.forEach(issue => console.log(`  - ${issue}`));

@@ -22,7 +22,7 @@
     displayName: string;
     provider: 'ollama' | 'autogen' | 'crewai' | 'langchain';
     size: string;
-    specialization 'general' | 'legal' | 'code' | 'reasoning' | 'embedding';
+    specialization: 'general' | 'legal' | 'code' | 'reasoning' | 'embedding';
     status: 'online' | 'offline' | 'loading' | 'error';
     performance: {
       tokensPerSecond: number;
@@ -54,7 +54,7 @@
       displayName: 'Gemma3 Legal Specialist',
       provider: 'ollama',
       size: '7.3GB',
-      specialization 'legal',
+      specialization: 'legal',
       status: 'online',
       performance: {
         tokensPerSecond: 25,
@@ -70,7 +70,7 @@
       displayName: 'Llama3 Instruct',
       provider: 'ollama',
       size: '4.7GB',
-      specialization 'general',
+      specialization: 'general',
       status: 'online',
       performance: {
         tokensPerSecond: 35,
@@ -86,7 +86,7 @@
       displayName: 'CodeLlama Code Expert',
       provider: 'ollama',
       size: '3.8GB',
-      specialization 'code',
+      specialization: 'code',
       status: 'offline',
       performance: {
         tokensPerSecond: 40,
@@ -102,7 +102,7 @@
       displayName: 'Nomic Embeddings',
       provider: 'ollama',
       size: '274MB',
-      specialization 'embedding',
+      specialization: 'embedding',
       status: 'online',
       performance: {
         tokensPerSecond: 500,
@@ -142,13 +142,13 @@
   // Provider Icons
   const getProviderIcon = (provider: string) => {
     switch (provider) {
-      case 'ollama':
+      case: 'ollama':
         return Cpu;
-      case 'autogen':
+      case: 'autogen':
         return Brain;
-      case 'crewai':
+      case: 'crewai':
         return Database;
-      case 'langchain':
+      case: 'langchain':
         return Globe;
       default:
         return Setting;
@@ -157,28 +157,28 @@
   // Status Colors
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'online':
-        return 'text-green-400';
-      case 'offline':
-        return 'text-red-400';
-      case 'loading':
-        return 'text-yellow-400';
-      case 'error':
-        return 'text-red-500';
+      case: 'online':
+        return: 'text-green-400';
+      case: 'offline':
+        return: 'text-red-400';
+      case: 'loading':
+        return: 'text-yellow-400';
+      case: 'error':
+        return: 'text-red-500';
       default:
-        return 'text-gray-400';
+        return: 'text-gray-400';
     }
   };
   // Status Icons
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'online':
+      case: 'online':
         return CheckCircle;
-      case 'offline':
+      case: 'offline':
         return AlertCircle;
-      case 'loading':
+      case: 'loading':
         return Loader2;
-      case 'error':
+      case: 'error':
         return AlertCircl;
       default:
         return AlertCircl;
@@ -378,7 +378,7 @@
         <!-- No models message -->
         {#if filteredModels.length === 0}
           <div class="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            No models available for "{filterBy}" filter
+            No models available for: "{filterBy}" filter
           </div>
         {/if}
       </div>

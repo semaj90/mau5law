@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action');
     const data = await request.json();
     switch (action) {
-      case 'rate': {
+      case: 'rate': {
         const { userId, sessionId, interactionId, ratingType, score, feedback, context, metadata } = data;
         // Validate required fields
         if (!userId || !sessionId || !interactionId || !ratingType || score === undefined) {
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           message: 'Rating collected successfully',
         });
       }
-      case 'batch_rate': {
+      case: 'batch_rate': {
         const { ratings } = data;
         if (!Array.isArray(ratings)) {
           return json(
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action');
     const userId = url.searchParams.get('userId');
     switch (action) {
-      case 'recommendations': {
+      case: 'recommendations': {
         if (!userId) {
           return json(
             {
@@ -113,14 +113,14 @@ export const GET: RequestHandler = async ({ url }) => {
           data: recommendations,
         });
       }
-      case 'metrics': {
+      case: 'metrics': {
         const metrics = await feedbackLoopService.getFeedbackMetrics();
         return json({
           success: true,
           data: metrics,
         });
       }
-      case 'health': {
+      case: 'health': {
         return json({
           success: true,
           service: 'feedback-loop',

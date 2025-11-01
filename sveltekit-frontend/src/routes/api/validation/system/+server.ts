@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   }
   try {
     switch (action) {
-      case 'health': {
+      case: 'health': {
         const startTime = Date.now();
         const healthCheck = await safeQuickHealthCheck();
         return json({
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
         });
       }
-      case 'validate': {
+      case: 'validate': {
         if (validationInProgress) {
           return json(
             {
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           validationInProgress = false;
         }
       }
-      case 'report': {
+      case: 'report': {
         if (!lastValidationReport) {
           return json(
             {
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
         });
       }
-      case 'status': {
+      case: 'status': {
         return json({
           success: true,
           data: {
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
         });
       }
-      case 'metrics': {
+      case: 'metrics': {
         const metrics = {
           system: {
             platform: process.platform,
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       );
     }
     switch (action) {
-      case 'force_validate': {
+      case: 'force_validate': {
         if (validationInProgress) {
           return json(
             {
@@ -374,7 +374,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           validationInProgress = false;
         }
       }
-      case 'clear_cache': {
+      case: 'clear_cache': {
         lastValidationReport = null;
         return json({
           success: true,
@@ -382,7 +382,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           data: { clearedAt: new Date().toISOString() },
         });
       }
-      case 'benchmark': {
+      case: 'benchmark': {
         const startTime = Date.now();
         // Optionally warm up any optional validator to avoid TS unused warnings
         try {

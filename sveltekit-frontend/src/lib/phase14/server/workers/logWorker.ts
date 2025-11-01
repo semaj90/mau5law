@@ -4,7 +4,7 @@ import { Worker } from 'bullmq';
 import { getEmbedding } from '$lib/server/services/embeddingService'; // You'll create this
 import { storeLogInVectorDB } from '$lib/server/services/vectorDBService'; // You'll create this
 console.log(' Log worker process started.');
-// The worker listens for jobs on the 'logQueue'
+// The worker listens for jobs on the: 'logQueue'
 const worker = new Worker('logQueue', async (job) => {
   try {
     console.log(`Processing log job ${job.id}...`);

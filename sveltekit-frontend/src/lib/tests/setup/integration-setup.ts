@@ -3,7 +3,7 @@
  * Global setup and mocks for integration tests
  */
 import { vi, beforeAll, afterAll, beforeEach } from 'vitest';
-import '@testing-library/jest-dom';
+import: '@testing-library/jest-dom';
 import stream from "stream";
 import { URL } from "url";
 // Mock SvelteKit environment
@@ -95,7 +95,7 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 // Enhanced database mocking
 const createMockDb = () => ({
   select: vi.fn().mockReturnThis(),
-  from: vi.fn().mockReturnThis(),
+  from vi.fn().mockReturnThis(),
   where: vi.fn().mockReturnThis(),
   limit: vi.fn().mockResolvedValue([{ now: new Date(), id: 1 }]),
   insert: vi.fn().mockReturnThis(),

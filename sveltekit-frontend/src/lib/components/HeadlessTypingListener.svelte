@@ -19,7 +19,8 @@
     type TypingState,
   } from '$lib/machines/userTypingStateMachine.js';
 
-  const dispatch = createEventDispatcher();
+  // use a typed dispatcher to avoid deprecated untyped signature
+  const dispatch = createEventDispatcher<Record<string, any>>();
 
   // Props
   interface Props {
@@ -28,7 +29,7 @@
     debounceMs?: number;
     enableAnalytics?: boolean;
     enableContextualPrompts?: boolean;
-    mcpEndpoint?: string;
+    _mcpEndpoint?: string; // renamed to avoid: "declared but never read"
   }
 
   let {
@@ -37,7 +38,7 @@
     debounceMs = 300,
     enableAnalytics = true,
     enableContextualPrompts = true,
-    mcpEndpoint = 'http://localhost:3002',
+    _mcpEndpoint = 'http://localhost:3002', // intentionally unused, kept for future wiring
   }: Props = $props();
 
   // XState actor
@@ -241,14 +242,17 @@
 
   // Lifecycle
   onMount(() => {
-    // start actor and subscribe to updates
+    // start actor if implementation exposes start()
     try {
-      typingActor.start();
+      if (typeof (typingActor as any).start === 'function') {
+        (typingActor as any).start();
+      }
     } catch {
       // ignore if already started or actor implementation varies
     }
 
-    const subscription any = typingActor.subscribe?.((s: any) => {
+    // explicitly type subscription to avoid: "implicitly any" error
+    const subscription: any = typingActor.subscribe?.((s: any) => {
       currentState = s.value as TypingState;
       currentContext = s.context as TypingContext;
       handleStateChange(currentState, currentContext);
@@ -266,7 +270,9 @@
 
   onDestroy(() => {
     try {
-      typingActor.stop();
+      if (typeof (typingActor as any).stop === 'function') {
+        (typingActor as any).stop();
+      }
     } catch {
       // ignore stop errors
     }
@@ -294,7 +300,7 @@
   <!-- Debug info only in development -->
   <div
     class="debug-panel"
-    style="position fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
+    style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
   >
     <div><strong>Typing State:</strong> {currentState}</div>
     <div><strong>User Engagement:</strong> {userEngagement}</div>

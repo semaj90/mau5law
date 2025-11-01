@@ -277,15 +277,15 @@ await advancedCache.set(cacheKey, encryptedData, {
   // Helper methods
   private categorizeRecommendation(recommendation: AIRecommendation): Context7BestPractice['category'] {
     if (recommendation.type?.includes('performance') || recommendation.category === 'speed') {
-      return 'performance';
+      return: 'performance';
     }
     if (recommendation.type?.includes('security') || recommendation.category === 'safety') {
-      return 'security';
+      return: 'security';
     }
     if (recommendation.type?.includes('accessibility') || recommendation.category === 'a11y') {
-      return 'accessibility';
+      return: 'accessibility';
     }
-    return 'maintainability';
+    return: 'maintainability';
   }
   private matchesRecommendation(recommendation: AIRecommendation, tag: string): boolean {
     const recText = JSON.stringify(recommendation).toLowerCase();

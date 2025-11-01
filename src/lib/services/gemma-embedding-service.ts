@@ -181,7 +181,7 @@ export class GemmaEmbeddingService {
 
       // Process batch with concurrency limit
       const batchEmbeddings = await this.processConcurrently(batchPromises, this.concurrencyLimit);
-      embeddings.push(...batchEmbeddings.filter(emb => emb !== null));
+      embeddings.push(<any><any>...batchEmbeddings.filter(emb => emb !== null));
 
       // Add delay between batches to avoid overwhelming the server
       if (batches.indexOf(batch) < batches.length - 1) {
@@ -240,7 +240,7 @@ export class GemmaEmbeddingService {
             try {
               const chunkEmbedding = await this.generateEmbedding(chunk.content);
 
-              vectorizedChunks.push({
+              vectorizedChunks.push(<any><any>{
                 ...chunk as EnhancedDocumentChunk,
                 embedding: chunkEmbedding,
                 embedding_model: this.currentModel,
@@ -256,7 +256,7 @@ export class GemmaEmbeddingService {
           vectorizedDoc.chunks = vectorizedChunks;
         }
 
-        vectorizedDocs.push(vectorizedDoc);
+        vectorizedDocs.push(<any><any>vectorizedDoc);
         completed++;
 
         if (onProgress) {
@@ -341,7 +341,7 @@ export class GemmaEmbeddingService {
         const similarity = this.calculateCosineSimilarity(queryEmbedding, chunk.embedding);
 
         if (similarity >= minSimilarity) {
-          results.push({
+          results.push(<any><any>{
             document_id: doc.id,
             chunk_id: chunk.id,
             content: chunk.content,
@@ -395,7 +395,7 @@ export class GemmaEmbeddingService {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
+      chunks.push(<any><any>array.slice(i, i + size));
     }
     return chunks;
   }
@@ -409,10 +409,10 @@ export class GemmaEmbeddingService {
 
     for (const promise of promises) {
       const execute = promise.then(result => {
-        results.push(result);
+        results.push(<any><any>result);
       });
 
-      executing.push(execute);
+      executing.push(<any><any>execute);
 
       if (executing.length >= concurrencyLimit) {
         await Promise.race(executing);
@@ -472,7 +472,7 @@ export class GemmaEmbeddingService {
       // Check all models
       for (const model of [this.primaryModel, ...this.fallbackModels]) {
         if (await this.isModelAvailable(model)) {
-          availableModels.push(model);
+          availableModels.push(<any><any>model);
         }
       }
 

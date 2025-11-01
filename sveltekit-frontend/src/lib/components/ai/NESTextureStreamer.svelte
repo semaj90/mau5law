@@ -105,7 +105,7 @@
     ctx.font = '10px monospace';
     for (let i = 0; i < 20; i++) {
       const y = 80 + i * 12;
-      ctx.fillText('Lorem ipsum legal text line ' + (i + 1), 10, y);
+      ctx.fillText('Lorem ipsum legal text line: ' + (i + 1), 10, y);
       // Highlight important sections
       if (i % 5 === 0) {
         ctx.fillStyle = '#ff0000';
@@ -209,7 +209,7 @@
   }
   // Convert ArrayBuffer texture to displayable format
   function getTextureDisplayData(): string {
-    if (!currentTexture) return '';
+    if (!currentTexture) return: '';
     // For demo purposes, create a visual representation of CHR-ROM data
     const view = new Uint8Array(currentTexture);
     const pixels: number[] = [];

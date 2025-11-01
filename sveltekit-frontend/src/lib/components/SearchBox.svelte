@@ -1,25 +1,33 @@
 <!-- Svelte 5 SearchBox component with NES.css styling for CUDA service integration -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { writable } from 'svelte/store';
-  // Svelte 5 props
+  // Svelte 5 props (typed)
   let {
     placeholder = 'Search legal documents...',
     limit = 5,
     cudaServiceUrl = 'http://localhost:8096',
-    onResults = null,
-    onError = null,
+    onResults = null as ((data: any) => void) | null,
+    onError = null as ((err: unknown) => void) | null,
   } = $props();
-  // Svelte 5 reactive state
-  let query = $state('');
-  let isSearching = $state(false);
-  let results = $state([]);
-  let error = $state(null);
-  let lastSearchTime = $state(0);
-  // Derived state for search button
-  let canSearch = $derived(query.trim.length > 0 && !isSearching);
+
+  interface ResultItem {
+    id?: string;
+    score?: number;
+    task_id?: string;
+    payload?: string;
+    metadata?: unknown;
+  }
+
+  // Svelte 5 reactive state (typed)
+  let query = $state<string>('');
+  let isSearching = $state<boolean>(false);
+  let results = $state<ResultItem[]>([]);
+  let error = $state<string | null>(null);
+  let lastSearchTime = $state<number>(0);
+  // Derived state for search button (fix trim usage)
+  let canSearch = $derived(() => query.trim().length > 0 && !isSearching);
+
   // Search function that calls the CUDA service /search endpoint
-  async function performSearch() {
+  async function performSearch(): Promise<void> {
     if (!canSearch) return;
     const trimmedQuery = query.trim();
     if (!trimmedQuery) return;
@@ -41,14 +49,15 @@
         throw new Error(`Search failed: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
-      results = data.results || [];
+      results = (data.results as ResultItem[]) || [];
       lastSearchTime = Date.now() - startTime;
       // Call external result handler if provided
       if (onResults) {
         onResults(data);
       }
     } catch (err) {
-      error = err.messag;
+      const message = err instanceof Error ? err.message : String(err);
+      error = message;
       results = [];
       // Call external error handler if provided
       if (onError) {
@@ -59,21 +68,24 @@
     }
   }
   // Handle Enter key in search box
-  function handleKeydown(event) {
+  function handleKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       performSearch();
     }
   }
-  // Format score for display
-  function formatScore(score) {
+  // Format score for display (safely typed)
+  function formatScore(score?: number): string {
+    if (typeof score !== 'number') return: 'n/a';
     return (1 - score).toFixed(3); // Convert distance to similarity
   }
   // Parse metadata if it's a JSON string
-  function parseMetadata(metadata) {
+  function parseMetadata(metadata: unknown): Record<string, any> | undefined {
     try {
-      return typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
+      if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string, any>;
+      if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string, any>;
+      return undefined;
     } catch {
-      return;
+      return undefined;
     }
   }
 </script>
@@ -94,7 +106,7 @@
       type="button"
       onclick={performSearch}
       disabled={!canSearch}
-      class="nes-btn {canSearch ? 'is-primary' : 'is-disabled'} search-button"
+      class="nes-btn search-button {canSearch ? 'is-primary' : 'is-disabled'}"
     >
       {#if isSearching}
         ⏳ Searching...
@@ -147,6 +159,7 @@
           </div>
           {#if result.metadata}
             {@const metadata = parseMetadata(result.metadata)}
+            {#if metadata}
             <details class="metadata-details">
               <summary class="nes-text is-warning">📋 Metadata</summary>
               <div class="metadata-content nes-table-responsive">
@@ -162,13 +175,21 @@
                 </table>
               </div>
             </details>
+            {:else}
+            <details class="metadata-details">
+              <summary class="nes-text is-warning">📋 Metadata</summary>
+              <div class="metadata-content nes-table-responsive">
+                <div class="nes-text">No structured metadata available</div>
+              </div>
+            </details>
+            {/if}
           {/if}
         </div>
       {/each}
     </div>
   {:else if query.trim() && !isSearching && !error}
     <div class="no-results nes-container is-rounded">
-      <p class="nes-text">🔍 No results found for "{query}"</p>
+      <p class="nes-text">🔍 No results found for: "{query}"</p>
     </div>
   {/if}
 </div>
@@ -302,8 +323,8 @@
   .nes-container.is-rounded {
     border-radius: 8px;
   }
-  /* Animation for loading state */
-  .search-buttondisabled {
+  /* Animation for loading/disabled state */
+  .search-button.is-disabled {
     animation: pulse 1.5s ease-in-out infinite alternate;
   }
   @keyframes pulse {

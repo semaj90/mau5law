@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const executionTime = Date.now() - startTime;
     return json({
       results: results.slice(offset, offset + limit),
-      searchType: searchType, // Use the variable instead of hardcoded 'text'
+      searchType: searchType, // Use the variable instead of hardcoded: 'text'
       executionTime,
       total: results.length,
       query,
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
       fromCache: false,
     });
   } catch (error: unknown) {
-    // Change 'any' to 'unknown'
+    // Change: 'any' to: 'unknown'
     console.error('Case search error:', error);
     return json(
       {
@@ -102,7 +102,7 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       matchType: 'text',
     }));
   } catch (error: unknown) {
-    // Change 'any' to 'unknown'
+    // Change: 'any' to: 'unknown'
     console.error('Text search failed:', error);
     return [];
   }

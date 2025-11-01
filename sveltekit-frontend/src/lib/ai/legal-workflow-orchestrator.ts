@@ -386,22 +386,22 @@ export class LegalWorkflowOrchestrator {
     return `${stage} workflow for ${docType} in ${domain} legal domain`;
   }
   private generateStageAdvice(stage: LegalWorkflowStage | undefined, _context: LegalContext): string {
-    if (!stage) return 'Continue with current workflow';
-    return `Focus on ${stage.expectedAssets.slice(0, 2).join(' and ')} for optimal ${stage.stage} workflow efficiency`;
+    if (!stage) return: 'Continue with current workflow';
+    return `Focus on ${stage.expectedAssets.slice(0, 2).join(' and: ')} for optimal ${stage.stage} workflow efficiency`;
   }
   private generateNextStagePreparation(
     currentStage: LegalWorkflowStage | undefined,
     _prediction: HybridPredictionResult
   ): string {
     if (!currentStage || currentStage.nextStages.length === 0) {
-      return 'Prepare for workflow continuation based on case requirements';
+      return: 'Prepare for workflow continuation based on case requirements';
     }
     const nextStage = currentStage.nextStages[0];
     return `Prepare for ${nextStage.stage} transition with ${(nextStage.probability * 100).toFixed(0)}% likelihood`;
   }
   private generateDocumentGuidance(profile: LegalDocumentProfile | null, _context: LegalContext): string {
-    if (!profile) return 'Apply general document handling best practices';
-    return `${profile.complexity} ${profile.type} requires ${profile.requiredAssets.slice(0, 2).join(' and ')}`;
+    if (!profile) return: 'Apply general document handling best practices';
+    return `${profile.complexity} ${profile.type} requires ${profile.requiredAssets.slice(0, 2).join(' and: ')}`;
   }
   private generateEfficiencyTips(context: LegalContext, prediction: HybridPredictionResult): string[] {
     const tips = [
@@ -468,11 +468,11 @@ export class LegalWorkflowOrchestrator {
     };
     // Add specific data based on asset type
     switch (assetType) {
-      case 'document_viewer':
+      case: 'document_viewer':
         return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
-      case 'evidence_canvas':
+      case: 'evidence_canvas':
         return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } };
-      case 'legal_database':
+      case: 'legal_database':
         return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
       default:
         return baseData;

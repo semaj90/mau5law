@@ -68,7 +68,7 @@ function extractErrorMessage(err: unknown): string {
     }
     return String(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -394,7 +394,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
     switch (action) {
-      case 'health': {
+      case: 'health': {
         const startTime = Date.now();
         const dbTest = await dbC.select({ count: sql<number>`count(*)` }).from(documentsC);
         const processingTime = Date.now() - startTime;
@@ -409,7 +409,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'stats': {
+      case: 'stats': {
         const [docStats, embeddingStats] = await Promise.all([
           dbC.select({ count: sql<number>`count(*)` }).from(documentsC),
           dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC),

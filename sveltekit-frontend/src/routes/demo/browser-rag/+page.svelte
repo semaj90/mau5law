@@ -24,7 +24,7 @@
     {
       id: 'contract1',
       content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
-      metadata: { type: 'contract', jurisdiction 'California', date: '2024-01-15' }
+      metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
     },
     {
       id: 'precedent1',
@@ -34,7 +34,7 @@
     {
       id: 'statute1',
       content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
-      metadata: { type: 'statute', jurisdiction 'Federal', topic: 'Labor Law' }
+      metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
     }
   ]);
 

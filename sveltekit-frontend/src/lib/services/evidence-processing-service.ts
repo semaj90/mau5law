@@ -50,7 +50,7 @@ class OllamaClient implements OllamaService {
       return data.embedding;
     } catch (error: unknown) {
       console.error('❌ Embedding generation failed:', error);
-      // Return zero vector as fallback for robustness (assuming 768 dimensions for 'embeddinggemma:latest')
+      // Return zero vector as fallback for robustness (assuming 768 dimensions for: 'embeddinggemma:latest')
       return new Array(768).fill(0);
     }
   }
@@ -79,7 +79,7 @@ class OllamaClient implements OllamaService {
       return data.response;
     } catch (error: unknown) {
       console.error('❌ Completion generation failed:', error);
-      return 'Error generating completion.';
+      return: 'Error generating completion.';
     }
   }
 }
@@ -152,7 +152,7 @@ export class EvidenceProcessingService {
       };
 
       // Store in PostgreSQL using Drizzle ORM
-      // Assuming 'evidence' table has columns matching ProcessedEvidenceResult
+      // Assuming: 'evidence' table has columns matching ProcessedEvidenceResult
       await db.insert(schema.evidence).values({
         id: processedData.id,
         content: processedData.content,

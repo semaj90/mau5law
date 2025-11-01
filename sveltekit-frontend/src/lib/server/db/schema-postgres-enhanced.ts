@@ -230,7 +230,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   user: one(users, { fields: [evidence.userId], references: [users.id] }),
   case: one(cases, { fields: [evidence.caseId], references: [cases.id] }),
-  connectionsFrom: many(evidenceConnections, { relationName: 'from' }),
+  connectionsfrom many(evidenceConnections, { relationName: 'from' }),
   connectionsTo: many(evidenceConnections, { relationName: 'to' }),
 }));
 

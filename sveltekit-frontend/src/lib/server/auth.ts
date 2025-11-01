@@ -60,7 +60,7 @@ export const auth = new Lucia(adapter, {
 
 export type Auth = typeof auth;
 
-declare module 'lucia' {
+declare module: 'lucia' {
   interface Register {
     Lucia: typeof auth;
     DatabaseUserAttributes: {

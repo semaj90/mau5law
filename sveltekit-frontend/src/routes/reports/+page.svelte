@@ -101,14 +101,14 @@
 
   function getStatusBadgeClass(status: string) {
     switch (status) {
-      case 'published':
-        return 'badge-success';
-      case 'draft':
-        return 'badge-warning';
-      case 'archived':
-        return 'badge-neutral';
+      case: 'published':
+        return: 'badge-success';
+      case: 'draft':
+        return: 'badge-warning';
+      case: 'archived':
+        return: 'badge-neutral';
       default:
-        return 'badge-info';
+        return: 'badge-info';
     }
   }
 </script>
@@ -122,7 +122,7 @@
     <h2>Quick Draft (hover to autosave)</h2>
     <input bind:value={title} placeholder="Title" />
     <!-- Added role and aria-label to satisfy a11y rule for interactive handlers -->
-    <div role="region" aria-label="Quick draft editor" on:mouseenter={handleHoverStart} on:mouseleave={handleHoverEnd}>
+    <div role="region" aria-label="Quick draft editor" onmouseenter={handleHoverStart} onmouseleave={handleHoverEnd}>
       <textarea bind:value={content} placeholder="Write your report here..."></textarea>
     </div>
     {#if $isSaving}

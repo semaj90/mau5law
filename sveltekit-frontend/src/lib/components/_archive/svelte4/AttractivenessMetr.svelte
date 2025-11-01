@@ -64,7 +64,7 @@ https://svelte.dev/e/props_duplicate -->
         class:active={isActive}
         class:hovered={isHovered}
         disabled={readOnly}
-        on:click={() => handleRatingClick(rating)}
+        onclick={() => handleRatingClick(rating)}
         onmouseenter={() => handleMouseEnter(rating)}
         onmouseleave={handleMouseLeave}
         aria-label="Rate {rating} out of 10"

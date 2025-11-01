@@ -321,7 +321,7 @@ export const GET: RequestHandler = async ({ url }): Promise<Response> => {
     const limit = parseInt(url.searchParams.get('limit') || '20', 10);
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     if (!query?.trim()) {
-      return json({ success: false, error: 'Query parameter "q" is required' }, { status: 400 });
+      return json({ success: false, error: 'Query parameter: "q" is required' }, { status: 400 });
     }
     const cacheKey = `${query.trim()}:${limit}:${threshold}`;
     const cached = EmbeddingSearchCache.get(cacheKey);

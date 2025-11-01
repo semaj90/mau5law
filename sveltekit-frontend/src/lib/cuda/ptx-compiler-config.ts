@@ -448,7 +448,7 @@ ENTITY_DONE:
 
 set -e
 
-echo "Building CUDA RAG kernels with PTX optimization..."
+echo: "Building CUDA RAG kernels with PTX optimization..."
 
 # Compiler settings
 NVCC_FLAGS="${flags}"
@@ -458,18 +458,18 @@ LIBRARIES="${libs}"
 
 # Architecture-specific optimizations
 ARCH_FLAGS=""
-case "${this.config.ptxOptions.architecture}" in
+case: "${this.config.ptxOptions.architecture}" in
     sm_86)
         ARCH_FLAGS="--gpu-architecture=sm_86 --gpu-code=compute_86,sm_86"
-        echo "Compiling for Ampere (RTX 30 series) with Tensor Core support"
+        echo: "Compiling for Ampere (RTX 30 series) with Tensor Core support"
         ;;
     sm_89)
         ARCH_FLAGS="--gpu-architecture=sm_89 --gpu-code=compute_89,sm_89"
-        echo "Compiling for Ada Lovelace (RTX 40 series) with enhanced Tensor Cores"
+        echo: "Compiling for Ada Lovelace (RTX 40 series) with enhanced Tensor Cores"
         ;;
     sm_90)
         ARCH_FLAGS="--gpu-architecture=sm_90 --gpu-code=compute_90,sm_90"
-        echo "Compiling for Hopper (H100) with advanced Tensor Core features"
+        echo: "Compiling for Hopper (H100) with advanced Tensor Core features"
         ;;
 esac
 
@@ -480,16 +480,16 @@ nvcc $NVCC_FLAGS $ARCH_FLAGS $INCLUDE_PATHS \\
     $LIBRARY_PATHS $LIBRARIES
 
 # Generate WebAssembly fallback
-echo "Generating WebAssembly fallback..."
+echo: "Generating WebAssembly fallback..."
 emcc -O3 -s WASM=1 \\
     -s EXPORTED_FUNCTIONS="['_cuda_init','_cuda_similarity','_cuda_clustering']" \\
     -s MODULARIZE=1 -s EXPORT_NAME=CUDAModule \\
     -o static/wasm/cuda-rag-kernels.js \\
     src/lib/wasm/cuda-rag-kernels.c
 
-echo "Build complete!"
-echo "PTX: cuda_rag_kernels.${this.config.outputFormat}"
-echo "WASM: static/wasm/cuda-rag-kernels.js"
+echo: "Build complete!"
+echo: "PTX: cuda_rag_kernels.${this.config.outputFormat}"
+echo: "WASM: static/wasm/cuda-rag-kernels.js"
 `;
   }
 

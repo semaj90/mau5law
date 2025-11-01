@@ -57,7 +57,7 @@ const memoryCache = new Map<string, MemoryEntry>();
 let rawRedisClient: RedisClient = null;
 if (IS_SERVER) {
   try {
-    // guard createClient to avoid "possibly 'undefined'" errors
+    // guard createClient to avoid: "possibly 'undefined'" errors
     if (typeof createClient === 'function') {
       // createClient is the node-redis v4 factory; use socket.reconnectStrategy for retry timing
       rawRedisClient = createClient({

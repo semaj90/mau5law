@@ -1,6 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import LegalCaseManager from './LegalCaseManager.svelte.js';
-const meta = {
+import LegalCaseManager from './LegalCaseManager.svelte';
+
+// Add explicit props interface to match story args (avoids 'unknown property' errors)
+interface LegalCaseManagerProps {
+  caseId?: string | null;
+  viewMode?: 'list' | 'grid' | 'timeline' | 'kanban';
+  filterMode?: 'all' | 'active' | 'closed' | 'assigned';
+  sortBy?: 'date' | 'priority' | 'status' | 'title';
+  enableAI?: boolean;
+  showStats?: boolean;
+}
+
+const meta: Meta<LegalCaseManagerProps> = {
   title: 'Business/LegalCaseManager',
   component: LegalCaseManager,
   parameters: {
@@ -34,9 +45,10 @@ const meta = {
     },
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof LegalCaseManager>;
+}; // explicit typed Meta to avoid: 'satisfies' parsing issues
+
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<LegalCaseManagerProps>;
 export const Default: Story = {
   args: {
     viewMode: 'list',

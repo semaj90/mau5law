@@ -4,7 +4,7 @@
 
   import { cn } from '$lib/utils';
 
-  // Use slot instead of a 'children' prop; avoid exporting 'class' (reserved) — use className
+  // Use slot instead of a: 'children' prop; avoid exporting: 'class' (reserved) — use className
   export let className = '';
   export let side: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
   export let align: 'start' | 'center' | 'end' = 'start';

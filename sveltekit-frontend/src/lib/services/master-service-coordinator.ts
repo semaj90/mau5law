@@ -671,7 +671,7 @@ export class MasterServiceCoordinator {
     for (const action of actions) {
       try {
         switch (action.type) {
-          case 'restart': {
+          case: 'restart': {
             const svc = this.services.find(s => s.id === action.target);
             if (svc) {
               await this.startService(svc);

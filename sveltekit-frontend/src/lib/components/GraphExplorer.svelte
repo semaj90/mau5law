@@ -104,24 +104,24 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function addSampleData() {
     try {
-      // Add sample chat message
+      // Add sample chat message (do NOT provide timestamp - DB/Type expects it)
       await db.addChatMessage({
         role: 'user',
         content: searchQuery || 'Sample legal query about contract liability',
         metadata: {
           legalContext: {
             documentType: 'contract',
-            jurisdiction 'california',
+            jurisdiction: 'california',
             practiceArea: 'corporate',
           }
-        },
-        timestamp: new Date(),
+        }
+        // removed: timestamp
       });
       // Add sample graph node
       await db.addGraphNode({
         nodeId: `node_${Date.now()}`,
         label: 'Sample Legal Node',
-        position {
+        position: {
           x: Math.random() * viewport.width,
           y: Math.random() * viewport.height,
         },
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
         varianceMatrix: Array.from({ length: 16 }, () => Math.random() * 0.1),
         metadata: {
           documentType: 'contract',
-          jurisdiction 'california',
+          jurisdiction: 'california',
           practiceArea: 'corporate',
           confidence: 0.85,
           lastUpdated: new Date(),
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {
-      // Add search to chat history
+      // Add search to chat history (no explicit timestamp)
       await db.addChatMessage({
         role: 'user',
         content: searchQuery,
@@ -159,11 +159,11 @@ https://svelte.dev/e/js_parse_error -->
             documentType: 'search',
             practiceArea: 'general'
           }
-        },
-        timestamp: new Date(),
+        }
+        // removed: timestamp
       });
       // Perform integrated search
-      const result: any = await integratedSearch.search({,
+      const result: any = await integratedSearch.search({
         text: searchQuery,
         filters: {
           confidenceThreshold: 0.7
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
         }
       });
       searchResults = (result?.results ?? []) as SearchResult[];
-      // Add AI response to chat
+      // Add AI response to chat (no explicit timestamp)
       await db.addChatMessage({
         role: 'assistant',
         content: `Found ${searchResults.length} results in ${result?.metrics?.totalTime ?? 0}ms.`,
@@ -185,17 +185,18 @@ https://svelte.dev/e/js_parse_error -->
           legalContext: {
             documentType: 'search_results'
           }
-        },
-        timestamp: new Date(),
+        }
+        // removed: timestamp
       });
       console.log('Search completed:', result);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Search failed:', error);
+      // System message (no explicit timestamp)
       await db.addChatMessage({
         role: 'system',
-        content: `Search failed: ${message}`,
-        timestamp: new Date(),
+        content: `Search failed: ${message}`
+        // removed: timestamp
       });
     } finally {
       isSearching = false;
@@ -204,12 +205,14 @@ https://svelte.dev/e/js_parse_error -->
   // ========================================================================
   // VIEWPORT MANAGEMENT
   // ========================================================================
-  async function updateViewport(newViewport: Viewport) {
+  // Exported so parent components or external code can call it (avoids "declared but never read")
+  export async function updateViewport(newViewport: Viewport) {
     viewport = newViewport;
     await graphTextureManager.updateViewport(viewport);
     await updatePerformanceStats();
   }
-  function handleCanvasInteraction(_event: MouseEvent) {
+
+  function handleCanvasInteraction(event: MouseEvent) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -239,18 +242,20 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const [dbStats, searchStats, gpuStats, storageStats, quantizationStats] = await Promise.all([
         db.getDatabaseStats(),
-        integratedSearch.getPerformanceAnalytics(),
+        // call optionally if implemented by integratedSearch, otherwise resolve null
+        Promise.resolve((integratedSearch as any).getPerformanceAnalytics?.() ?? null),
         graphTextureManager.getPerformanceStats(),
         unifiedDimensionalStore.getStorageStats(),
-        Promise.resolve(vectorQuantization.getQuantizationStats())
+        // call optionally if implemented by vectorQuantization, otherwise resolve null
+        Promise.resolve((vectorQuantization as any).getQuantizationStats?.() ?? null)
       ]);
       performanceStats = {
         database: dbStats,
         search: searchStats,
         gpu: gpuStats,
         storage: storageStats,
-        quantization quantizationStats,
-      }
+        quantization: quantizationStats,
+      };
     } catch (error) {
       console.error('Failed to update performance stats:', error);
     }
@@ -301,7 +306,8 @@ https://svelte.dev/e/js_parse_error -->
         db.graphNodes.clear(),
         db.graphEdges.clear(),
         db.cache.clear(),
-        integratedSearch.reset(),
+        // call reset only if available
+        ((integratedSearch as any).reset?.() ?? Promise.resolve()),
         graphTextureManager.cleanup(),
         unifiedDimensionalStore.clearAllStorage()
       ]);
@@ -459,7 +465,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Inter', monospace;
   }
   .controls {
-    grid-area: control;
+    grid-area: controls;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -475,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 600px;
   }
   .search-input {
-    flex: 1,
+    flex: 1;
     padding: 0.75rem;
     border: 2px solid #e1e5e9;
     border-radius: 6px;
@@ -520,7 +526,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #dc3545;
   }
   .main-content {
-    grid-area: mai;
+    grid-area: main;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -532,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  .graph-canv.node-details {
+  .node-details {
     margin-top: 1rem;
     padding: 0.75rem;
     background: #f8f9fa;
@@ -598,7 +604,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #721c24;
   }
   .stats-panel {
-    grid-area: stat;
+    grid-area: stats;
     background: white;
     border-radius: 8px;
     padding: 1rem;

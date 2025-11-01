@@ -20,8 +20,7 @@ interface GRPCServiceEndpoint {
 
 // Legal AI Platform Service Registry (matches Go implementation)
 const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
-  // Core AI Services
-  'legal-gateway': {
+  // Core AI Services: 'legal-gateway': {
     name: 'legal-gateway',
     host: 'localhost',
     port: 8080,
@@ -66,8 +65,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['cuda-kernels', 'gpu-computation', 'parallel-processing']
   },
-  // Legal Analysis Services
-  'legal-ai-inference': {
+  // Legal Analysis Services: 'legal-ai-inference': {
     name: 'legal-ai-inference',
     host: 'localhost',
     port: 8100,
@@ -112,8 +110,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['named-entity-recognition', 'legal-entities', 'relationship-extraction']
   },
-  // Vector & Embedding Services
-  'vector-search': {
+  // Vector & Embedding Services: 'vector-search': {
     name: 'vector-search',
     host: 'localhost',
     port: 8110,
@@ -131,8 +128,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['text-embeddings', 'document-embeddings', 'legal-embeddings']
   },
-  // Streaming & Real-time Services
-  'quic-streaming': {
+  // Streaming & Real-time Services: 'quic-streaming': {
     name: 'quic-streaming',
     host: 'localhost',
     port: 8130,
@@ -141,8 +137,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['ultra-low-latency', 'quic-protocol', 'streaming-inference']
   },
-  // Authentication & Security
-  'auth-service': {
+  // Authentication & Security: 'auth-service': {
     name: 'auth-service',
     host: 'localhost',
     port: 8150,

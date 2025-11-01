@@ -235,7 +235,7 @@ export class AIServiceOrchestrator {
       const embeddingRequest: EmbeddingRequest = {
         text: request.text,
         documentId: request.documentId,
-        type: (request.type || 'text') as 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
+        type: (request.type || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
         cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}`
       };
 
@@ -267,7 +267,7 @@ export class AIServiceOrchestrator {
       const embeddingRequests: EmbeddingRequest[] = requests.map(req => ({
         text: req.text,
         documentId: req.documentId,
-        type: (req.type || 'text') as 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
+        type: (req.type || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
         cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}`
       }));
 
@@ -385,7 +385,7 @@ export class AIServiceOrchestrator {
         const embedding = await this.embed({
           text: doc.content,
           documentId: doc.documentId,
-          type: (doc.embeddingType || 'text') as 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause'
+          type: (doc.embeddingType || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause'
         });
         doc.embedding = embedding.embedding;
       }

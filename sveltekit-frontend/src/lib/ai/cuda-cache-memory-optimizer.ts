@@ -255,7 +255,7 @@ export class CudaCacheMemoryOptimizer {
     const vector = new Float32Array(this.inputFeatureSize).fill(0);
     const words = query.toLowerCase().split(/\s+/);
 
-    // Simple "bag of words" hashing for demonstration
+    // Simple: "bag of words" hashing for demonstration
     words.forEach(word => {
       let hash = 0;
       for (let j = 0; j < word.length; j++) {
@@ -278,13 +278,13 @@ export class CudaCacheMemoryOptimizer {
     const [, x, y] = neuron.id.split('_').map(Number);
 
     // Map different regions to different intent categories
-    if (x < 3 && y < 3) return 'legal_analysis';
-    if (x > 6 && y > 6) return 'chat';
-    if (x < 5 && y > 5) return 'document_review';
-    if (x > 5 && y < 5) return 'research';
-    if (x >= 3 && x <= 6 && y >= 3 && y <= 6) return 'search';
+    if (x < 3 && y < 3) return: 'legal_analysis';
+    if (x > 6 && y > 6) return: 'chat';
+    if (x < 5 && y > 5) return: 'document_review';
+    if (x > 5 && y < 5) return: 'research';
+    if (x >= 3 && x <= 6 && y >= 3 && y <= 6) return: 'search';
 
-    return 'unknown';
+    return: 'unknown';
   }
 
   /**
@@ -295,14 +295,14 @@ export class CudaCacheMemoryOptimizer {
     const activationFrequency = neuron.activationCount / Math.max(1, this.userIntentHistory.length);
 
     switch (category) {
-      case 'legal_analysis':
-      case 'document_review':
+      case: 'legal_analysis':
+      case: 'document_review':
         return Math.min(0.95, 0.8 + activationFrequency);
-      case 'research':
+      case: 'research':
         return Math.min(0.8, 0.6 + activationFrequency);
-      case 'search':
+      case: 'search':
         return Math.min(0.7, 0.4 + activationFrequency);
-      case 'chat':
+      case: 'chat':
         return Math.min(0.4, 0.2 + activationFrequency);
       default:
         return 0.1;
@@ -317,22 +317,22 @@ export class CudaCacheMemoryOptimizer {
 
     // Check for urgent keywords
     if (['urgent', 'asap', 'immediate', 'critical', 'emergency'].some(k => q.includes(k))) {
-      return 'critical';
+      return: 'critical';
     }
 
     if (['quickly', 'soon', 'priority', 'important'].some(k => q.includes(k))) {
-      return 'high';
+      return: 'high';
     }
 
     // Check user context for urgency indicators
     if (userContext.deadline && typeof userContext.deadline === 'number') {
       const hoursUntilDeadline = (userContext.deadline - Date.now()) / (1000 * 60 * 60);
-      if (hoursUntilDeadline < 2) return 'critical';
-      if (hoursUntilDeadline < 24) return 'high';
-      if (hoursUntilDeadline < 72) return 'medium';
+      if (hoursUntilDeadline < 2) return: 'critical';
+      if (hoursUntilDeadline < 24) return: 'high';
+      if (hoursUntilDeadline < 72) return: 'medium';
     }
 
-    return 'medium';
+    return: 'medium';
   }
 
   /**
@@ -392,12 +392,12 @@ export class CudaCacheMemoryOptimizer {
   }
 
   private identifyUserBehaviorPattern(): UserBehaviorPattern {
-    if (this.userIntentHistory.length < 5) return 'explorer';
+    if (this.userIntentHistory.length < 5) return: 'explorer';
     const recent = this.userIntentHistory.slice(-10);
     const unique = new Set(recent.map(r => r.intentCategory)).size;
-    if (unique === 1) return 'focused';
-    if (unique > 3) return 'explorer';
-    return 'learning';
+    if (unique === 1) return: 'focused';
+    if (unique > 3) return: 'explorer';
+    return: 'learning';
   }
 
   private calculateQuerySimilarity(a: string, b: string): number {

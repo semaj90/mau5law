@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
       session: newSession,
     });
   } catch (error: unknown) {
-    // Changed from 'any' to 'unknown'
+    // Changed from 'any' to: 'unknown'
     console.error('Error creating chat session:', error);
     return json(
       {
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ sessions });
     }
   } catch (error: unknown) {
-    // Changed from 'any' to 'unknown'
+    // Changed from 'any' to: 'unknown'
     console.error('Error fetching chat sessions:', error);
     return json(
       {

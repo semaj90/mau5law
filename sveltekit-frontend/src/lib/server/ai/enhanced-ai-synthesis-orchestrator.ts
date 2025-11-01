@@ -246,7 +246,7 @@ class EnhancedAISynthesisOrchestrator {
     }
     sources.push({
       title: 'LangChain knowledge base',
-      excerpt: `Seed insights related to "${query.substring(0, 64)}"`,
+      excerpt: `Seed insights related to: "${query.substring(0, 64)}"`,
       type: 'vector-store',
     });
     return sources;
@@ -385,7 +385,7 @@ class EnhancedAISynthesisOrchestrator {
 
   async analyzeCluster(promptText: string, clusterId: string, userId?: string) {
     try {
-      // avoid "await has no effect on the type of this expression" by not using `as typeof import(...)` with await
+      // avoid: "await has no effect on the type of this expression" by not using `as typeof import(...)` with await
       const graph = (await import('$lib/server/graph-service')).default;
       const res = await graph.mergePromptCluster(promptText, clusterId, userId);
       logger.info('[Orchestrator] analyzeCluster persisted graph relationship', { clusterId, userId });

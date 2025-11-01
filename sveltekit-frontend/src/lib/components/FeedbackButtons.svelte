@@ -5,14 +5,16 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
 
   let sending = $state(false);
-  let { sessionId }: string;
-  let { query }: string;
-  let { candidateIds }: string[] = [];
-  let { chosenId }: string | null = null;
+
+  // Props must be accessed via $props() in runes mode — use a top-level initializer per Svelte rules
+  // Moved here so $props() is only used as a top-level declaration initializer.
+  let { sessionId, query, candidateIds = [], chosenId = null } = $props();
+
   let lastResp = $state<any>(null);
   async function sendFeedback(reward: number) {
     sending = true;
     try {
+      // Use the top-level variables (sessionId, query, candidateIds, chosenId)
       const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

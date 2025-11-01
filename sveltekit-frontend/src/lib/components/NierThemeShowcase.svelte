@@ -1,9 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from 'bits-ui';
+  // import Button from 'bits-ui';
   // import * as Dialog from 'bits-ui'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';
-  import { writable } from 'svelte/store';
   // Demo states
   let isDarkMode = $state(false);
   let showModal = $state(false);
@@ -28,7 +27,27 @@
     witnesses: 5,
   }
   const statuses = ['active', 'pending', 'closed', 'archived']
-  const priorities = ['critical', 'high', 'medium', 'low']
+  // priorities removed (was unused)
+
+  // Add modal helper functions for keyboard accessibility
+  function closeModal() {
+    showModal = false;
+  }
+
+  function handleOverlayKeydown(e: KeyboardEvent) {
+    // Close on Enter or Space to mirror click behavior
+    if (e.key === 'Enter' || e.code === 'Space') {
+      e.preventDefault();
+      closeModal();
+    }
+  }
+
+  function handleModalKeydown(e: KeyboardEvent) {
+    // Close dialog on Escape
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  }
 </script>
 <div class="min-h-screen bg-nier-white dark:bg-nier-black transition-colors duration-500">
   <!-- Header -->
@@ -36,10 +55,10 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <h1 class="text-2xl font-display nier-heading">NieR: Legal System</h1>
       <div class="flex items-center gap-6">
-        <a href="#" class="nav-item">Cases</a>
-        <a href="#" class="nav-item">Evidence</a>
-        <a href="#" class="nav-item">Analytics</a>
-        <a href="#" class="nav-item">AI Assistant</a>
+        <a href="/cases" class="nav-item" data-sveltekit-preload-data="hover">Cases</a>
+        <a href="/evidence" class="nav-item" data-sveltekit-preload-data="hover">Evidence</a>
+        <a href="/analytics" class="nav-item" data-sveltekit-preload-data="hover">Analytics</a>
+        <a href="/ai" class="nav-item" data-sveltekit-preload-data="hover">AI Assistant</a>
         <button
           onclick={() => isDarkMode = !isDarkMode}
           class="nier-button-outline px-4 py-2 rounded-lg"
@@ -182,7 +201,7 @@
         <!-- Interactive Elements -->
         <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Interactive Elements</h3>
-          <!-- Melt UI Dialog Example -->
+          <!-- Modal Example (bits-ui / HTML5 fallback using Svelte transitions) -->
           <button
             class="nier-button-crimson"
             onclick={() => showModal = true}
@@ -190,25 +209,36 @@
             Open Modal Dialog
           </button>
           {#if showModal}
+            <!-- overlay is now a button so it is keyboard-focusable and interactive -->
+            <button
+              type="button"
+              class="nier-modal-overlay fixed inset-0 bg-black/50 flex items-center justify-center z-40"
+              transition:fade={{ duration: 200 }}
+              onclick={closeModal}
+              onkeydown={handleOverlayKeydown}
+              aria-label="Close dialog"
+            ></button>
+
             <div
-              class="nier-modal-overlay"
-              transitifade={{ duration 200 }}
-></div>
-            <div
-              class="nier-modal"
-              /* transition: removed */}
+              class="nier-modal z-50 max-w-lg w-full bg-white dark:bg-nier-black rounded-lg p-6 shadow-lg mx-4"
+              transition:fly={{ y: 8, duration: 200 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-title"
+              tabindex="0"
+              onkeydown={handleModalKeydown}
             >
-              <h2 class="text-2xl font-display nier-heading mb-4">
+              <h2 id="modal-title" class="text-2xl font-display nier-heading mb-4">
                 System Alert
               </h2>
               <p class="text-nier-gray dark:text-nier-silver mb-6">
-                This is a NieR: Automata styled modal dialog using Melt UI.
+                This is a NieR: Automata styled modal dialog using a lightweight fallback.
               </p>
               <div class="flex gap-4 justify-end">
-                <button class="nier-button-outline px-4 py-2" onclick={() => showModal = false}>
+                <button class="nier-button-outline px-4 py-2" onclick={() => closeModal()}>
                   Cancel
                 </button>
-                <button class="nier-button-digital px-4 py-2">
+                <button class="nier-button-digital px-4 py-2" onclick={() => closeModal()}>
                   Confirm
                 </button>
               </div>
@@ -225,8 +255,9 @@
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-case-title-">
                 Case Title
-              </label><input id="-case-title-"
-                type="text";
+              </label>
+              <input id="-case-title-"
+                type="text"
                 bind:value={inputValue}
                 placeholder="Enter case title..."
                 class="nier-input"
@@ -236,7 +267,8 @@
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-status-">
                 Status
-              </label><select id="-status-";
+              </label>
+              <select id="-status-"
                 bind:value={selectedStatus}
                 class="nier-input"
               >
@@ -249,7 +281,8 @@
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-case-description-">
                 Case Description
-              </label><textarea id="-case-description-"
+              </label>
+              <textarea id="-case-description-"
                 rows="4"
                 placeholder="Describe the case details..."
                 class="nier-input resize-none"
@@ -257,20 +290,24 @@
             </div>
             <!-- Checkbox Group -->
             <div>
-              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver">
-                Evidence Types
-              </label>
-              <div class="space-y-2">
-                {#each ['Documents', 'Photos', 'Videos', 'Audio'] as type}
-                  <label class="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      class="w-5 h-5 rounded border-nier-gray focus:ring-2 focus:ring-digital-green"
-                    />
-                    <span class="text-sm">{type}</span>
-                  </label>
-                {/each}
-              </div>
+              <fieldset class="mb-2">
+                <legend class="block text-sm font-medium text-nier-gray dark:text-nier-silver">
+                  Evidence Types
+                </legend>
+                <div class="space-y-2 mt-2">
+                  {#each ['Documents', 'Photos', 'Videos', 'Audio'] as type, i}
+                    <!-- keep label wrapping input so each checkbox remains associated -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <input
+                        id={"evidence-" + i}
+                        type="checkbox"
+                        class="w-5 h-5 rounded border-nier-gray focus:ring-2 focus:ring-digital-green"
+                      />
+                      <span class="text-sm">{type}</span>
+                    </label>
+                  {/each}
+                </div>
+              </fieldset>
             </div>
           </div>
         </section>

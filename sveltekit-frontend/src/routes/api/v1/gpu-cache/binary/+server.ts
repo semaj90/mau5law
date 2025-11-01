@@ -6,7 +6,7 @@ import { json } from '@sveltejs/kit';
  */
 import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
 import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js';
-// URL is globally available in SvelteKit; avoid Node 'url' import
+// URL is globally available in SvelteKit; avoid Node: 'url' import
 // GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>
 export const GET: RequestHandler = async ({ url, request }) => {
   try {
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
       optimizationRecommendations = await safeOptimizeForLegalWorkflow(workflowType);
     }
 
-    // Coerce fields to primitives to avoid 'unknown' -> string/number errors in downstream typing
+    // Coerce fields to primitives to avoid: 'unknown' -> string/number errors in downstream typing
     const response = {
       success: true,
       message: 'Shader stored successfully',
@@ -291,7 +291,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -443,7 +443,7 @@ function getMethod(obj: Record<string, unknown> | undefined, candidates: string[
   return null;
 }
 
-// New helpers: safe retrieval wrappers to avoid testing 'void' and support multiple API shapes
+// New helpers: safe retrieval wrappers to avoid testing: 'void' and support multiple API shapes
 async function safeRetrieveShader(cacheKey: string): Promise<ShaderEntry | null> {
   const candidates = [
     'retrieveShader',
@@ -564,7 +564,7 @@ async function safeStoreShader(payload: unknown): Promise<NormalizedEntry> {
     const raw = await fn(payload);
     return normalizeEntry(raw as ShaderRaw);
   }
-  // as a last-ditch attempt, look for a generic "t" or similar property that might be a function
+  // as a last-ditch attempt, look for a generic: "t" or similar property that might be a function
   const tCandidate = cacheObj && cacheObj['t'];
   if (typeof tCandidate === 'function') {
     const raw = await (tCandidate as MethodFn)(payload);

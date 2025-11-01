@@ -11,18 +11,17 @@
   import ProgressIndicator from './ProgressIndicator.svelte';
   import LoadingSpinner from './LoadingSpinner.svelte';
 
-  // exported prop (replace $props() usage)
   export let caseId: string | null = null;
 
-  // Form state management
-  interface FormData {
+  // renamed to avoid collision with browser FormData
+  interface CaseFormData {
     caseInfo: {
       title: string;
       client_name: string;
       case_type: string;
-      jurisdiction string;
+      jurisdiction: string;
       priority: 'low' | 'medium' | 'high' | 'urgent';
-      description string;
+      description: string;
       key_dates: string[];
     };
     documents: {
@@ -47,18 +46,18 @@
       final_review: string;
       quality_score: number;
       completeness_check: boolean;
-      ready_for_submission boolean;
+      ready_for_submission: boolean;
     };
   }
 
-  const formData = writable<FormData>({
+  const formData = writable<CaseFormData>({
     caseInfo: {
       title: '',
       client_name: '',
       case_type: '',
-      jurisdiction '',
+      jurisdiction: '',
       priority: 'medium',
-      description '',
+      description: '',
       key_dates: [],
     },
     documents: {
@@ -83,7 +82,7 @@
       final_review: '',
       quality_score: 0,
       completeness_check: false,
-      ready_for_submission false,
+      ready_for_submission: false,
     },
   });
 
@@ -93,7 +92,6 @@
   const isLoading = writable<boolean>(false);
   const processingMessage = writable<string>('');
 
-  // Form validation state
   const stepValidation = derived([formData, currentStep], ([$formData, $currentStep]) => {
     const validations: Record<number, boolean> = {
       1: Boolean($formData.caseInfo.title && $formData.caseInfo.client_name && $formData.caseInfo.case_type),
@@ -112,7 +110,6 @@
     autoSaveTimer = setTimeout(() => {
       try {
         localStorage.setItem(`legal-case-form-${caseId || 'new'}`, JSON.stringify(value));
-        // console.log('autosaved');
       } catch (err) {
         console.error('autosave failed', err);
       }
@@ -268,10 +265,8 @@
   onMount(() => {
     loadFormData();
 
-    // dynamic import the two problem components to avoid "no default export" TS issues
     (async () => {
       try {
-        // cast module to any to avoid TS errors about missing .default / named exports
         const m1 = (await import('./DocumentUploadForm.svelte')) as any;
         DocumentUploadComp = m1?.default ?? m1?.DocumentUploadForm ?? m1 ?? null;
       } catch (err) {
@@ -291,10 +286,7 @@
     unsubscribeAutoSave();
   });
 
-  // Add a weakly-typed alias to bypass strict component prop/event typing at usage sites
   const AIAnalysisFormAny: any = AIAnalysisForm;
-
-  // dynamic component holders (will be populated onMount)
   let DocumentUploadComp: any = null;
   let EvidenceAnalysisComp: any = null;
 </script>
@@ -309,13 +301,13 @@
       currentStep={$currentStep}
       {totalSteps}
       stepTitles={['Case Information', 'Document Upload', 'Evidence Analysis', 'AI Analysis', 'Review & Submit']}
-      onstepclick={e => goToStep((e as CustomEvent).detail)}
+      on:stepclick={(e) => goToStep((e as CustomEvent<number>).detail)}
     />
   </div>
 
   <!-- Loading Overlay -->
   {#if $isLoading}
-    <div class="loading-overlay" transitionfade={{ duration 300 }}>
+    <div class="loading-overlay" transition:fade={{ duration: 300 }}>
       <LoadingSpinner />
       <p class="loading-message">{$processingMessage}</p>
     </div>
@@ -324,21 +316,21 @@
   <!-- Form Steps -->
   <div class="form-container" class:loading={$isLoading}>
     {#if $currentStep === 1}
-      <div transitionslide={{ duration 300, easing: cubicOut }}>
+      <div transition:slide={{ duration: 300, easing: cubicOut }}>
         <CaseInfoForm
           data={$formData.caseInfo}
-          onupdate={(e: CustomEvent) => formData.update(d => ({ ...d, caseInfo: e.detail }))}
+          on:update={(e) => formData.update(d => ({ ...d, caseInfo: (e as CustomEvent).detail }))}
           next={nextStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 2}
-      <div transitionslide={{ duration 300, easing: cubicOut }}>
+      <div transition:slide={{ duration: 300, easing: cubicOut }}>
         {#if DocumentUploadComp}
           <svelte:component
             this={DocumentUploadComp}
             data={$formData.documents}
-            onprocess={(e: CustomEvent<File[]>) => processDocuments(e.detail)}
+            on:process={(e) => processDocuments((e as CustomEvent<File[]>).detail)}
             next={nextStep}
             prev={prevStep}
             isValid={$stepValidation}
@@ -348,45 +340,44 @@
         {/if}
       </div>
     {:else if $currentStep === 3}
-      <div transitionslide={{ duration 300, easing: cubicOut }}>
+      <div transition:slide={{ duration: 300, easing: cubicOut }}>
         {#if EvidenceAnalysisComp}
           <svelte:component
             this={EvidenceAnalysisComp}
             data={$formData.evidence}
             ocrResults={$formData.documents.ocr_results}
-            onextract={() => extractEvidence()}
+            on:extract={() => extractEvidence()}
             next={nextStep}
             prev={prevStep}
           />
         {:else}
           <div>Loading evidence analysis…</div>
         {/if}
-        <!-- use svelte:component with the any-cast to avoid strict prop/event typing errors -->
+
         <svelte:component
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
           caseData={$formData}
-          onanalyze={() => performAIAnalysis()}
+          on:analyze={() => performAIAnalysis()}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 4}
-      <div transitionslide={{ duration 300, easing: cubicOut }}>
-        <!-- second occurrence replaced similarly -->
+      <div transition:slide={{ duration: 300, easing: cubicOut }}>
         <svelte:component
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
           caseData={$formData}
-          onanalyze={() => performAIAnalysis()}
+          on:analyze={() => performAIAnalysis()}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 5}
-      <div transitionslide={{ duration 300, easing: cubicOut }}>
+      <div transition:slide={{ duration: 300, easing: cubicOut }}>
         <ReviewSubmitForm
           data={$formData.review}
           fullCaseData={$formData}
@@ -414,23 +405,23 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    position relative;
+    position: relative;
   }
   .progress-header {
     margin-bottom: 3rem;
   }
   .loading-overlay {
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1000,
+    z-index: 1000;
   }
   .loading-message {
     color: white;

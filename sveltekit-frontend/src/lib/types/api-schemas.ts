@@ -245,7 +245,7 @@ export interface GraphNode {
   status: 'healthy' | 'degraded' | 'unhealthy';
 }
 export interface GraphEdge {
-  from: string;
+  from string;
   to: string;
   type: 'api' | 'data' | 'grpc';
   traffic: number;

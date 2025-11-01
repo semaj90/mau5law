@@ -646,10 +646,10 @@ export class SelfOrganizingMapRAG {
     });
     // Generate recommendations based on patterns
     if (evidenceTypes.size > 0) {
-      recommendations.push(`Consider searching for more ${Array.from(evidenceTypes).join(' or ')} evidence`);
+      recommendations.push(`Consider searching for more ${Array.from(evidenceTypes).join(' or: ')} evidence`);
     }
     if (caseTypes.size > 0) {
-      recommendations.push(`Explore related ${Array.from(caseTypes).join(' and ')} cases`);
+      recommendations.push(`Explore related ${Array.from(caseTypes).join(' and: ')} cases`);
     }
     // Add general recommendations
     recommendations.push('Review case timeline for context');

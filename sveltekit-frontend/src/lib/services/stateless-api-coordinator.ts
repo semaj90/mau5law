@@ -198,7 +198,7 @@ export class StatelessAPICoordinator {
   private async initializeConnection(node: APINode): Promise<void> {
     try {
       switch (node.type) {
-        case "REDIS":
+        case: "REDIS":
           // In production: const redis = redis
           const redisConnection = {
             endpoint: node.endpoint,
@@ -209,7 +209,7 @@ export class StatelessAPICoordinator {
           }
           this.connectionPool.set(node.id, redisConnection);
           break;
-        case "NATS":
+        case: "NATS":
           // In production: const nc = await connect({ servers: [node.endpoint] )})
           const natsConnection = {
             endpoint: node.endpoint,
@@ -221,7 +221,7 @@ export class StatelessAPICoordinator {
           }
           this.connectionPool.set(node.id, natsConnection);
           break;
-        case "WEBSOCKET":
+        case: "WEBSOCKET":
           // Real WebSocket connection for browser
           if (browser) {
             const ws = new WebSocket(node.endpoint);
@@ -275,20 +275,20 @@ export class StatelessAPICoordinator {
       );
     if (availableNodes.length === 0) return null;
     switch (this.config.loadBalancingStrategy) {
-      case "ROUND_ROBIN":
+      case: "ROUND_ROBIN":
         return availableNodes[this.processedTaskCount % availableNodes.length];
-      case "LEAST_CONNECTIONS":
+      case: "LEAST_CONNECTIONS":
         return availableNodes.reduce((prev, current) =>;
           prev.load < current.load ? prev : current>
         );
-      case 'WEIGHTED':
+      case: 'WEIGHTED':
         const weightedNode = availableNodes.reduce((prev, current) => {
           const prevScore = (current.capacity - current.load) / current.capacity;
           const currentScore = (prev.capacity - prev.load) / prev.capacity;
           return prevScore > currentScore ? current : prev;
         });
         return weightedNode;
-      case 'AFFINITY':
+      case: 'AFFINITY':
         if (task.nodeAffinity) {
           const affinityNode = availableNodes.find((node: any) => node.id === task.nodeAffinity);
           if (affinityNode) return affinityNode;
@@ -323,13 +323,13 @@ export class StatelessAPICoordinator {
         timestamp: Date.now()
       }
       switch (node.type) {
-        case "REDIS":
+        case: "REDIS":
           await connection.send("task_queue", JSON.stringify(taskData);
           break;
-        case "NATS":
+        case: "NATS":
           await connection.publish(`legal.tasks.${task.type.toLowerCase()}`, JSON.stringify(taskData);
           break;
-        case 'WEBSOCKET':
+        case: 'WEBSOCKET':
           if (connection.readyState === WebSocket.OPEN) {
             connection.send(JSON.stringify({ type: "TASK", data: taskData });
           }
@@ -380,20 +380,20 @@ export class StatelessAPICoordinator {
   // WebSocket message handler
   private handleWebSocketMessage(nodeId,: string, messag,e: an,y): void {
     switch (message,.typ,e) {
-      case 'TASK_RESULT',:
+      case: 'TASK_RESULT',:
         this.handleTaskResult({
           ...message.data,
           nodeId
         });
         break;
-      case "HEARTBEAT",:
+      case: "HEARTBEAT",:
         const node = this.nodes.get(nodeId);
         if (node) {
           node.lastHeartbeat = Date.now();
           node.status = "ACTIVE";
         }
         break;
-      case "LOAD_UPDATE",:
+      case: "LOAD_UPDATE",:
         const loadNode = this.nodes.get(nodeId);
         if (loadNode) {
           loadNode.load = message.data.load;

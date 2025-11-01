@@ -182,14 +182,11 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
         [
           '-i',
           inputPath!,
-          '-vn', // No video
-          '-acodec',
+          '-vn', // No video: '-acodec',
           'pcm_s16le', // PCM 16-bit little-endian
           '-ar',
-          '16000', // 16kHz sample rate
-          '-ac',
-          '1', // Mono
-          '-f',
+          '16000', // 16kHz sample rate: '-ac',
+          '1', // Mono: '-f',
           'wav',
           '-y', // Overwrite output
           outputPath!,
@@ -288,10 +285,8 @@ export async function sampleFramesFromVideo(
             '-vcodec',
             'mjpeg',
             '-q:v',
-            '2', // High quality
-            '-s',
-            '1280x720', // Resize to standard size
-            '-y',
+            '2', // High quality: '-s',
+            '1280x720', // Resize to standard size: '-y',
             outputPath,
           ],
           { stdio: 'pipe' }

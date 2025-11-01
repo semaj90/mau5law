@@ -1,6 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Search, X } from 'lucide-svelte';
+  import { Search } from 'lucide-svelte';
+  import X from 'lucide-svelte'; // use default import for X (TS hint suggested this)
   // Convert to Svelte 5 runes pattern
   let { placeholder = 'Search...', value = $bindable(''), debounceTime = 300, onsearch = undefined } = $props();
   let debounceTimer = $state<number | undefined>(undefined);
@@ -43,7 +44,7 @@
   </div>
   <input
     bind:this={inputElement}
-    bind:value
+    bind:value={value}
     {placeholder}
     class="search-input"
     type="text"
@@ -63,7 +64,7 @@
 <style>
   /* @unocss-include */
   .search-input-container {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
     background: var(--bg-primary);
@@ -88,7 +89,7 @@
     pointer-events: none;
   }
   .search-input {
-    flex: 1,
+    flex: 1;
     padding: 8px 0;
     background: transparent;
     border: none;
@@ -112,11 +113,11 @@
     border-radius: 4px;
     transition: all 0.2s ease;
   }
-  .clear-buttonhover {
+  .clear-button:hover {
     color: var(--text-primary);
     background: var(--bg-tertiary);
   }
-  .clear-buttonactive {
+  .clear-button:active {
     transform: scale(0.95);
   }
 </style>

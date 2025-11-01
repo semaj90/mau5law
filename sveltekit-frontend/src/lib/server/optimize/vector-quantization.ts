@@ -74,13 +74,13 @@ export class VectorQuantizer {
     const quantized = new Int8Array(vec.length);
 
     switch (this.config.method) {
-      case 'minmax':
+      case: 'minmax':
         ({ scale, offset } = this.quantizeMinMax(vec, quantized));
         break;
-      case 'standard':
+      case: 'standard':
         ({ scale, offset } = this.quantizeStandard(vec, quantized));
         break;
-      case 'robust':
+      case: 'robust':
         ({ scale, offset } = this.quantizeRobust(vec, quantized));
         break;
       default:

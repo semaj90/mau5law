@@ -50,9 +50,7 @@
   // N64 button color scheme
   const buttonColors = {
     a: '#0066ff', // Blue A button
-    b: '#00cc00', // Green B button
-    'c-up': '#ffff00', // Yellow C buttons
-    'c-down': '#ffff00',
+    b: '#00cc00', // Green B button: 'c-up': '#ffff00', // Yellow C buttons: 'c-down': '#ffff00',
     'c-left': '#ffff00',
     'c-right': '#ffff00',
     start: '#ff0000', // Red start button

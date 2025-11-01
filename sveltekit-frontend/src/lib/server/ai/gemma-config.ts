@@ -201,7 +201,7 @@ export async function validateGemmaModels(): Promise<{
       name.includes('gemma3-legal') || name === legalModel
     );
     if (!legalAvailable) {
-      errors.push(`Legal model '${legalModel}' not found. Available: ${modelNames.join(', ')}`);
+      errors.push(`Legal model: '${legalModel}' not found. Available: ${modelNames.join(', ')}`);
     }
 
     // Check for embedding model
@@ -210,7 +210,7 @@ export async function validateGemmaModels(): Promise<{
       name.includes('embeddinggemma') || name === embeddingModel
     );
     if (!embeddingAvailable) {
-      errors.push(`Embedding model '${embeddingModel}' not found. Available: ${modelNames.join(', ')}`);
+      errors.push(`Embedding model: '${embeddingModel}' not found. Available: ${modelNames.join(', ')}`);
     }
 
     return { legal: legalAvailable, embedding: embeddingAvailable, errors };

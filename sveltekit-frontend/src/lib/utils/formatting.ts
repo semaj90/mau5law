@@ -14,7 +14,7 @@ export function formatRelativeTime(date: Date | string): string {
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
-  if (diffMins < 1) return 'now';
+  if (diffMins < 1) return: 'now';
   if (diffMins < 60) return `${diffMins}m`;
   if (diffHours < 24) return `${diffHours}h`;
   if (diffDays < 7) return `${diffDays}d`;
@@ -95,7 +95,7 @@ export function truncateCaseTitle(title: string, maxLength: number = 40): string
  * Format file size in human-readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return: '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -106,27 +106,27 @@ export function formatFileSize(bytes: number): string {
  */
 export function getFileIcon(type: string): string {
   switch (type.toLowerCase()) {
-    case 'image':
-      return '🖼️';
-    case 'document':
-    case 'pdf':
-      return '📄';
-    case 'audio':
-      return '🎵';
-    case 'video':
-      return '🎬';
-    case 'text':
-      return '📝';
-    case 'spreadsheet':
-      return '📊';
-    case 'presentation':
-      return '📋';
-    case 'archive':
-      return '🗜️';
-    case 'code':
-      return '💻';
+    case: 'image':
+      return: '🖼️';
+    case: 'document':
+    case: 'pdf':
+      return: '📄';
+    case: 'audio':
+      return: '🎵';
+    case: 'video':
+      return: '🎬';
+    case: 'text':
+      return: '📝';
+    case: 'spreadsheet':
+      return: '📊';
+    case: 'presentation':
+      return: '📋';
+    case: 'archive':
+      return: '🗜️';
+    case: 'code':
+      return: '💻';
     default:
-      return '📎';
+      return: '📎';
   }
 }
 /**
@@ -136,41 +136,41 @@ export function detectFileType(filename: string): string {
   const extension = filename.split('.').pop()?.toLowerCase() || '';
   // Image types
   if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(extension)) {
-    return 'image';
+    return: 'image';
   }
   // Document types
   if (['pdf', 'doc', 'docx', 'rtf', 'odt'].includes(extension)) {
-    return 'document';
+    return: 'document';
   }
   // Spreadsheet types
   if (['xls', 'xlsx', 'csv', 'ods'].includes(extension)) {
-    return 'spreadsheet';
+    return: 'spreadsheet';
   }
   // Presentation types
   if (['ppt', 'pptx', 'odp'].includes(extension)) {
-    return 'presentation';
+    return: 'presentation';
   }
   // Audio types
   if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(extension)) {
-    return 'audio';
+    return: 'audio';
   }
   // Video types
   if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv'].includes(extension)) {
-    return 'video';
+    return: 'video';
   }
   // Text types
   if (['txt', 'md', 'json', 'xml', 'yml', 'yaml'].includes(extension)) {
-    return 'text';
+    return: 'text';
   }
   // Archive types
   if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2'].includes(extension)) {
-    return 'archive';
+    return: 'archive';
   }
   // Code types
   if (['js', 'ts', 'html', 'css', 'py', 'java', 'cpp', 'c', 'go', 'rs', 'php'].includes(extension)) {
-    return 'code';
+    return: 'code';
   }
-  return 'unknown';
+  return: 'unknown';
 }
 // ===== PRIORITY & STATUS FORMATTING =====
 /**
@@ -178,16 +178,16 @@ export function detectFileType(filename: string): string {
  */
 export function getPriorityColor(priority: string): string {
   switch (priority.toLowerCase()) {
-    case 'critical':
-      return 'is-error';
-    case 'high':
-      return 'is-warning';
-    case 'medium':
-      return 'is-primary';
-    case 'low':
-      return 'is-success';
+    case: 'critical':
+      return: 'is-error';
+    case: 'high':
+      return: 'is-warning';
+    case: 'medium':
+      return: 'is-primary';
+    case: 'low':
+      return: 'is-success';
     default:
-      return 'is-disabled';
+      return: 'is-disabled';
   }
 }
 /**
@@ -195,22 +195,22 @@ export function getPriorityColor(priority: string): string {
  */
 export function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
-    case 'active':
-    case 'open':
-    case 'in_progress':
-      return 'is-primary';
-    case 'completed':
-    case 'closed':
-      return 'is-success';
-    case 'pending':
-      return 'is-warning';
-    case 'cancelled':
-    case 'rejected':
-      return 'is-error';
-    case 'draft':
-      return 'is-disabled';
+    case: 'active':
+    case: 'open':
+    case: 'in_progress':
+      return: 'is-primary';
+    case: 'completed':
+    case: 'closed':
+      return: 'is-success';
+    case: 'pending':
+      return: 'is-warning';
+    case: 'cancelled':
+    case: 'rejected':
+      return: 'is-error';
+    case: 'draft':
+      return: 'is-disabled';
     default:
-      return '';
+      return: '';
   }
 }
 // ===== LEGAL SPECIFIC UTILITIES =====
@@ -235,18 +235,18 @@ export function formatJurisdiction(jurisdiction: string): string {
  */
 export function formatCourtLevel(level: string): string {
   switch (level.toLowerCase()) {
-    case 'district':
-      return 'District Court';
-    case 'appellate':
-      return 'Court of Appeals';
-    case 'supreme':
-      return 'Supreme Court';
-    case 'federal':
-      return 'Federal Court';
-    case 'state':
-      return 'State Court';
-    case 'local':
-      return 'Local Court';
+    case: 'district':
+      return: 'District Court';
+    case: 'appellate':
+      return: 'Court of Appeals';
+    case: 'supreme':
+      return: 'Supreme Court';
+    case: 'federal':
+      return: 'Federal Court';
+    case: 'state':
+      return: 'State Court';
+    case: 'local':
+      return: 'Local Court';
     default:
       return level.charAt(0).toUpperCase() + level.slice(1);
   }

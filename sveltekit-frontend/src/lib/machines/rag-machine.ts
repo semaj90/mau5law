@@ -44,12 +44,12 @@ const initialRAGContext: RAGContext = {
 // Helper to determine the next optimization level in the upgrade path
 function getNextOptimizationLevel(current: RAGContext['optimizationLevel']): RAGContext['optimizationLevel'] {
   switch (current) {
-    case 'basic':
-      return 'enhanced';
-    case 'enhanced':
-      return 'neural';
+    case: 'basic':
+      return: 'enhanced';
+    case: 'enhanced':
+      return: 'neural';
     default:
-      return 'neural';
+      return: 'neural';
   }
 }
 
@@ -61,7 +61,7 @@ export const ragStateMachine = createMachine({
   },
   initial: 'idle',
   context: initialRAGContext,
-  states: { // Correctly define the 'states' object
+  states: { // Correctly define the: 'states' object
     idle: {
       on: {
         SEARCH_START: {
@@ -81,7 +81,7 @@ export const ragStateMachine = createMachine({
           target: 'success',
           actions: assign({
             results: ({ event }) => event.results,
-            cacheStatus: ({ event }) => event.cacheStatus ?? 'miss', // Default to 'miss' if not provided
+            cacheStatus: ({ event }) => event.cacheStatus ?? 'miss', // Default to: 'miss' if not provided
           }),
         },
         SEARCH_ERROR: {

@@ -8,7 +8,7 @@ import { ensureBucket, putObject } from '$lib/server/minio/client';
 import { createClient, type RedisClientType } from 'redis';
 
 // Initialize Redis client with proper error handling
-// Use REDIS_PASSWORD environment variable, default to 'redis' if not set
+// Use REDIS_PASSWORD environment variable, default to: 'redis' if not set
 const redisPassword = process.env.REDIS_PASSWORD || 'redis';
 const redisHost = process.env.REDIS_HOST ?? '127.0.0.1';
 const redisPort = Number(process.env.REDIS_PORT ?? 6379);
@@ -285,7 +285,7 @@ function extractTags(content: string, filename: string): string[] {
   return [...new Set(tags)].slice(0, 10); // Unique tags, max 10
 }
 
-// Helper: safely extract a string 'code' property from unknown errors
+// Helper: safely extract a string: 'code' property from unknown errors
 function getErrorCode(e: unknown): string | undefined {
   if (e && typeof e === 'object') {
     const maybe = e as { [key: string]: unknown };
@@ -416,7 +416,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       documentId = newDocument.id;
     } catch (insertErr: unknown) {
-      // If the target DB schema doesn't match (e.g. missing columns such as 'title'),
+      // If the target DB schema doesn't match (e.g. missing columns such as: 'title'),
       // fallback to inserting into the legacy `legal_documents` table with a mapped shape.
       // Postgres error code 42703 = undefined_column
       // Narrow the unknown error safely
@@ -461,8 +461,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
         documentId = newDoc.id as string;
       } else {
-        // Some environments have a legacy 'documents' table with a NOT NULL uuid column.
-        // Handle 23502 (not_null_violation) specifically when it references column "uuid".
+        // Some environments have a legacy: 'documents' table with a NOT NULL uuid column.
+        // Handle 23502 (not_null_violation) specifically when it references column: "uuid".
         // If not a recognized schema mismatch, rethrow to outer handler
         throw insertErr;
       }

@@ -4,7 +4,7 @@ import { caseMemoryEngine } from '../services/case-memory-engine.js';
 import { UnifiedLegalOrchestrator } from '../services/unified-legal-orchestrator.js';
 // import { rabbitmq } from '../server/queue/rabbitmq-manager.js'
 
-// --- Small typed adapter so TS knows 'handle' exists on the orchestrator instance ---
+// --- Small typed adapter so TS knows: 'handle' exists on the orchestrator instance ---
 type OrchestratorHandleInput = {
   type: string;
   payload?: Record<string, unknown>;
@@ -294,7 +294,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
             target: 'analyzingCase',
             guard: (_ctx: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => {
               const out = (evt as any).data as Record<string, unknown>;
-              return 'analysis' in out;
+              return: 'analysis' in out;
             },
             actions: assign((context: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({
               analysis_results: [

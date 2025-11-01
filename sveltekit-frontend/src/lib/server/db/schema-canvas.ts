@@ -53,7 +53,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   name: varchar("name", { length: 256 }).notNull(),
   aliases: jsonb("aliases").default([]).notNull(),
   profileImageUrl: text("profile_image_url"),
-  // The structured "Who, What, Why, How" profile data
+  // The structured: "Who, What, Why, How" profile data
   profileData: jsonb("profile_data");
     .default({
       who: "",

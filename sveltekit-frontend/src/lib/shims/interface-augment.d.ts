@@ -13,7 +13,7 @@ declare global {
   }
 }
 // Redis client augmentations
-declare module 'ioredis' {
+declare module: 'ioredis' {
   interface Redis {
     ping?(): Promise<string>;
     setex?(_key: string, seconds: number, value: any): Promise<any>;
@@ -80,7 +80,7 @@ declare global {
   }
 }
 // QdrantClient augmentations
-declare module '@qdrant/qdrant-js' {
+declare module: '@qdrant/qdrant-js' {
   interface QdrantClient {
     baseUrl?: string;
     createPayloadIndex?(collection: string, field: string): Promise<any>;

@@ -11,9 +11,9 @@ export interface PageData {
 
 // Global CSS imports (HTML5 + UnoCSS + NES.css + bits-ui).
 // Ensure these packages/files exist in your project or adjust paths accordingly.
-import 'uno.css';
-import 'nes.css/css/nes.min.css';
-import '$lib/styles/bits-ui.css';
+import: 'uno.css';
+import: 'nes.css/css/nes.min.css';
+import: '$lib/styles/bits-ui.css';
 </script>
 
 <script lang="ts">
@@ -329,7 +329,7 @@ import '$lib/styles/bits-ui.css';
     </select>
     <Button
       class="nes-citation-control n64-enhanced lod-optimized retro-add-btn"
-      on:click={() => (showAddDialog = true)}
+      onclick={() => (showAddDialog = true)}
       aria-label="Open dialog to add a new legal citation"
       aria-describedby="add-citation-help"
       role="button"
@@ -447,7 +447,7 @@ import '$lib/styles/bits-ui.css';
           <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
             variant="secondary"
-            on:click={() => {
+            onclick={() => {
               searchQuery = '';
               selectedCategory = 'all';
             }}
@@ -470,7 +470,7 @@ import '$lib/styles/bits-ui.css';
           </p>
           <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
-            on:click={() => (showAddDialog = true)}
+            onclick={() => (showAddDialog = true)}
             aria-label="Create your first legal citation"
             aria-describedby="first-citation-help"
             role="button"
@@ -545,7 +545,7 @@ import '$lib/styles/bits-ui.css';
           <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
             variant="secondary"
-            on:click={() => (showAddDialog = false)}
+            onclick={() => (showAddDialog = false)}
             aria-label="Cancel citation creation and close dialog"
             role="button"
             data-nes-theme="dialog-secondary"
@@ -553,7 +553,7 @@ import '$lib/styles/bits-ui.css';
 
           <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
-            on:click={() => saveCitation()}
+            onclick={() => saveCitation()}
             disabled={!newCitation.title || !newCitation.content}
             aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
             aria-describedby="save-citation-help"
@@ -627,7 +627,7 @@ import '$lib/styles/bits-ui.css';
             <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
               variant="secondary"
-              on:click={() => (editingCitation = null)}
+              onclick={() => (editingCitation = null)}
               aria-label="Cancel editing and close dialog"
               role="button"
               data-nes-theme="dialog-secondary"
@@ -635,7 +635,7 @@ import '$lib/styles/bits-ui.css';
 
             <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
-              on:click={() => updateCitation()}
+              onclick={() => updateCitation()}
               aria-label="Save changes to citation"
               aria-describedby="update-citation-help"
               role="button"
@@ -652,7 +652,7 @@ import '$lib/styles/bits-ui.css';
     </DialogRoot>
   {/if}
 
-  <!-- categoryCounts used for accessibility/inspection to avoid "declared but never read" -->
+  <!-- categoryCounts used for accessibility/inspection to avoid: "declared but never read" -->
   <div class="sr-only" aria-hidden="true">{JSON.stringify(categoryCounts)}</div>
 </div>
 

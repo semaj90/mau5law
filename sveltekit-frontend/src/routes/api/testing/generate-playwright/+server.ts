@@ -362,7 +362,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
       const somGrid = await page.getByTestId('som-grid-size').textContent()
       expect(somGrid).toMatch(/\\d+x\\d+/)
     })
-    test('should generate meaningful "did you mean" suggestions', async () => {
+    test('should generate meaningful: "did you mean" suggestions', async () => {
       await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 })
       // Verify suggestions are generated
       const suggestions = await page.getByTestId('suggestion-item').count()

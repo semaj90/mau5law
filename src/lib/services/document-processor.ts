@@ -113,10 +113,10 @@ export class DocumentProcessor {
       for (const doc of batch) {
         try {
           const enhanced = await this.enhanceDocument(doc, options);
-          processedDocs.push(enhanced);
+          processedDocs.push(<any><any>enhanced);
 
           const metadata = this.extractDocumentMetadata(enhanced);
-          metadataList.push(metadata);
+          metadataList.push(<any><any>metadata);
 
         } catch (error) {
           console.error(`❌ Error processing document ${doc.id}:`, error);
@@ -274,9 +274,9 @@ export class DocumentProcessor {
     const content = (doc.content + ' ' + doc.title).toLowerCase();
 
     // Add metadata-based tags
-    tags.push(doc.metadata.legal_area);
-    tags.push(doc.metadata.document_type);
-    tags.push(doc.metadata.jurisdiction);
+    tags.push(<any><any>doc.metadata.legal_area);
+    tags.push(<any><any>doc.metadata.document_type);
+    tags.push(<any><any>doc.metadata.jurisdiction);
 
     // Add content-based tags
     const topicTags = {
@@ -289,20 +289,20 @@ export class DocumentProcessor {
 
     for (const [tag, keywords] of Object.entries(topicTags)) {
       if (keywords.some(keyword => content.includes(keyword))) {
-        tags.push(tag);
+        tags.push(<any><any>tag);
       }
     }
 
     // Add complexity-based tags
     const complexity = doc.metadata.confidence_score || 0;
-    if (complexity > 0.8) tags.push('complex');
-    else if (complexity > 0.5) tags.push('intermediate');
-    else tags.push('basic');
+    if (complexity > 0.8) tags.push(<any><any>'complex');
+    else if (complexity > 0.5) tags.push(<any><any>'intermediate');
+    else tags.push(<any><any>'basic');
 
     // Add length-based tags
-    if (doc.metadata.word_count > 5000) tags.push('long-form');
-    else if (doc.metadata.word_count > 1000) tags.push('medium-length');
-    else tags.push('short-form');
+    if (doc.metadata.word_count > 5000) tags.push(<any><any>'long-form');
+    else if (doc.metadata.word_count > 1000) tags.push(<any><any>'medium-length');
+    else tags.push(<any><any>'short-form');
 
     return [...new Set(tags)];
   }
@@ -489,7 +489,7 @@ export class DocumentProcessor {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
+      chunks.push(<any><any>array.slice(i, i + size));
     }
     return chunks;
   }

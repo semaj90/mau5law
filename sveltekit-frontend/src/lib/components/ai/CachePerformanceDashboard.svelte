@@ -1,22 +1,19 @@
 <!-- Cache Performance Dashboard for Legal AI System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { fade, slide, scale } from 'svelte/transition';
-  import {
-    Database,
-    Zap,
-    TrendingUp,
-    DollarSign,
-    Clock,
-    BarChart3,
-    RefreshCw,
-    AlertTriangle,
-    CheckCircle,
-    Target,
-    Cpu,
-    HardDrive,
-  } from 'lucide-svelte';
+  import { onDestroy } from 'svelte';
+  import Database from 'lucide-svelte/dist/icons/database.svelte';
+	import Zap from 'lucide-svelte/dist/icons/zap.svelte';
+	import TrendingUp from 'lucide-svelte/dist/icons/trending-up.svelte';
+	import DollarSign from 'lucide-svelte/dist/icons/dollar-sign.svelte';
+	import Clock from 'lucide-svelte/dist/icons/clock.svelte';
+	import BarChart3 from 'lucide-svelte/dist/icons/bar-chart-3.svelte';
+	import RefreshCw from 'lucide-svelte/dist/icons/refresh-cw.svelte';
+	import AlertTriangle from 'lucide-svelte/dist/icons/alert-triangle.svelte';
+	import CheckCircle from 'lucide-svelte/dist/icons/check-circle.svelte';
+	import Target from 'lucide-svelte/dist/icons/target.svelte';
+	import Cpu from 'lucide-svelte/dist/icons/cpu.svelte';
+	import HardDrive from 'lucide-svelte/dist/icons/hard-drive.svelte';
   // Sample cache metrics - replace with real data
   let cacheMetrics = $state({
     retrieval: {
@@ -270,14 +267,14 @@
   function getHealthIcon() {
     performance.mark('function-start');
     switch (systemHealth) {
-      case 'healthy':
-        return { icon CheckCircle, color: 'text-green-500' };
-      case 'warning':
-        return { icon AlertTriangle, color: 'text-yellow-500' };
-      case 'critical':
-        return { icon AlertTriangle, color: 'text-red-500' };
+      case: 'healthy':
+        return { icon: CheckCircle, color: 'text-green-500' };
+      case: 'warning':
+        return { icon: AlertTriangle, color: 'text-yellow-500' };
+      case: 'critical':
+        return { icon: AlertTriangle, color: 'text-red-500' };
       default:
-        return { icon AlertTriangle, color: 'text-gray-500' };
+        return { icon: AlertTriangle, color: 'text-gray-500' };
     }
   }
 </script>
@@ -297,8 +294,8 @@
         </div>
         <div class="control-buttons">
           <button
-            aria-label="Action button"
-            onclick={(_event: MouseEvent) => refreshMetrics}
+            aria-label="Refresh metrics"
+            onclick={refreshMetrics}
             disabled={isRefreshing}
             class="refresh-btn"
           >
@@ -307,14 +304,14 @@
           </button>
           <button
             aria-expanded="false"
-            aria-label="Action button"
-            onclick={(_event: MouseEvent) => toggleAutoRefresh}
+            aria-label="Toggle auto refresh"
+            onclick={toggleAutoRefresh}
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
-          <button aria-label="Action button" onclick={(_event: MouseEvent) => clearCache} class="clear-cache-btn">
+          <button aria-label="Clear cache" onclick={clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
           </button>
@@ -322,11 +319,12 @@
       </div>
     </div>
   </header>
+
   <!-- Main Dashboard -->
   <main class="dashboard-content">
     <!-- Key Metrics Row -->
     <section class="metrics-overview">
-      <div class="metric-nier-bits-card primary">
+      <div class="metric-card primary">
         <div class="metric-icon">
           <TrendingUp size={24} />
         </div>
@@ -338,7 +336,7 @@
           </div>
         </div>
       </div>
-      <div class="metric-nier-bits-card">
+      <div class="metric-card">
         <div class="metric-icon">
           <Clock size={24} />
         </div>
@@ -349,7 +347,7 @@
           </div>
         </div>
       </div>
-      <div class="metric-nier-bits-card">
+      <div class="metric-card">
         <div class="metric-icon">
           <DollarSign size={24} />
         </div>
@@ -360,7 +358,7 @@
           </div>
         </div>
       </div>
-      <div class="metric-nier-bits-card">
+      <div class="metric-card">
         <div class="metric-icon">
           <BarChart3 size={24} />
         </div>
@@ -372,10 +370,11 @@
         </div>
       </div>
     </section>
+
     <!-- Cache Performance Details -->
     <div class="dashboard-grid">
       <!-- Retrieval Cache Stats -->
-      <div class="dashboard-nier-bits-card">
+      <div class="dashboard-card">
         <h2>🔍 Retrieval Cache</h2>
         <div class="cache-stats">
           <div class="stat-row">
@@ -408,7 +407,7 @@
         </div>
       </div>
       <!-- Embedding Cache Stats -->
-      <div class="dashboard-nier-bits-card">
+      <div class="dashboard-card">
         <h2>🧠 Embedding Cache</h2>
         <div class="cache-stats">
           <div class="stat-row">
@@ -441,7 +440,7 @@
         </div>
       </div>
       <!-- Nintendo Memory Management -->
-      <div class="dashboard-nier-bits-card nintendo">
+      <div class="dashboard-card nintendo">
         <h2>🎮 Nintendo Memory Banks</h2>
         <div class="nintendo-stats">
           <div class="memory-overview">
@@ -474,7 +473,7 @@
         </div>
       </div>
       <!-- Memory Hierarchy -->
-      <div class="dashboard-nier-bits-card">
+      <div class="dashboard-card">
         <h2>🏗️ Memory Hierarchy</h2>
         <div class="memory-hierarchy">
           <div class="memory-layer l1">
@@ -510,11 +509,11 @@
         </div>
       </div>
       <!-- Recent Query Activity -->
-      <div class="dashboard-nier-bits-card recent-queries">
+      <div class="dashboard-card recent-queries">
         <h2>📋 Recent Queries</h2>
         <div class="query-list">
           {#each recentQueries as query, i (i)}
-            <div class="query-item {query.cached ? 'cached' : 'uncached'}" transitionslide>
+            <div class="query-item" class:cached={query.cached} class:uncached={!query.cached} transition:slide>
               <div class="query-content">
                 <div class="query-text">{query.query}</div>
                 <div class="query-meta">
@@ -529,7 +528,7 @@
         </div>
       </div>
       <!-- Performance Timeline -->
-      <div class="dashboard-nier-bits-card performance">
+      <div class="dashboard-card performance">
         <h2>📈 Performance Trends</h2>
         <div class="performance-metrics">
           <div class="perf-item">
@@ -570,7 +569,7 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -635,11 +634,11 @@
     font-size: 0.875rem;
     transition: all 0.2s;
   }
-  .control-buttons buttonhover {
+  .control-buttons button:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
   }
-  .control-buttons buttondisabled {
+  .control-buttons button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -734,13 +733,13 @@
     gap: 1rem;
   }
   .stat-bar {
-    flex: 1,
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   .bar {
-    flex: 1,
+    flex: 1;
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -798,7 +797,7 @@
   }
   .bank-info {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
@@ -810,7 +809,7 @@
   }
   .nintendo-events {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     font-size: 0.8rem;
     opacity: 0.7;
   }
@@ -851,7 +850,7 @@
     opacity: 0.7;
   }
   .usage-bar {
-    flex: 1,
+    flex: 1;
     height: 6px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
@@ -895,7 +894,7 @@
   }
   .query-meta {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     font-size: 0.8rem;
     opacity: 0.8;
   }
@@ -912,7 +911,7 @@
   }
   .perf-item {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
@@ -980,6 +979,9 @@
     color: #ef4444;
   }
   .text-gray-500 {
+    color: #6b7280;
+  }
+</style>
     color: #6b7280;
   }
 </style>

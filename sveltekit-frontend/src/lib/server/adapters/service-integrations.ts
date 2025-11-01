@@ -120,9 +120,9 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		},
 
 		// Development
-		nodeEnv: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
+		nodeEnv: (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development',
 		devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev,
-		logLevel: (process.env.LOG_LEVEL as 'error' | 'warn' | 'info' | 'debug') || 'info'
+		logLevel: (process.env.LOG_LEVEL as: 'error' | 'warn' | 'info' | 'debug') || 'info'
 	};
 }
 

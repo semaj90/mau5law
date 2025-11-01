@@ -103,6 +103,9 @@ export class WebASMLlamaCppEngine {
   private modelLoaded = false;
   private config: LlamaCppConfig;
   private gpuDevice: GPUDevice | null = null;
+  // Added GPU buffer registry to map numeric: "pointers" to GPUBuffer instances
+  private gpuBuffers: Map<number, GPUBuffer> = new Map();
+  private nextGpuPtr = 1;
   private db: IDBDatabase | null = null; // Added for IndexedDB
   // Performance monitoring
   private totalInferences = 0;
@@ -206,15 +209,19 @@ export class WebASMLlamaCppEngine {
     const modelData = await this.downloadModel(this.config.modelPath);
     const modelSize = modelData.byteLength;
 
-    if (!this.wasmModule) throw new Error('WASM module not initialized');
+    // Guard for wasm module
+    if (!this.wasmModule) {
+      throw new Error('WASM module not initialized. Call initialize() before loadModel().');
+    }
+    const wasm = this.wasmModule;
 
-    const modelPtr = this.wasmModule.malloc(modelSize);
+    const modelPtr = wasm.malloc(modelSize);
 
     // Access memory.buffer now that wasmModule.memory is typed as WebAssembly.Memory
-    const wasmMemory = new Uint8Array(this.wasmModule.memory.buffer);
+    const wasmMemory = this.getWasmMemory();
     wasmMemory.set(new Uint8Array(modelData), modelPtr);
 
-    const success = this.wasmModule.llama_init({
+    const success = wasm.llama_init({
       model_ptr: modelPtr,
       model_size: modelSize,
       context_size: this.config.contextSize,
@@ -225,7 +232,7 @@ export class WebASMLlamaCppEngine {
     });
 
     if (!success) {
-      throw new Error('Failed to initialize llama.cpp context');
+      throw new Error('Failed to initialize llama model in WASM.');
     }
     this.modelLoaded = true;
     console.log('✅ Model loaded successfully');
@@ -303,27 +310,28 @@ export class WebASMLlamaCppEngine {
    * Streaming inference with real-time token generation
    */
   private async *streamInference(inputTokens: number[], request: InferenceRequest): AsyncGenerator<number> {
-    if (!this.wasmModule) throw new Error('WASM module not initialized');
-    this.wasmModule.llama_set_params({
+    const wasm = this.getWasm();
+    wasm.llama_set_params({
       temperature: request.temperature,
       top_p: request.topP,
       max_tokens: request.maxTokens,
     });
 
-    this.wasmModule.llama_eval(inputTokens);
+    wasm.llama_eval(inputTokens);
 
     for (let i = 0; i < request.maxTokens; i++) {
-      const token = this.wasmModule.llama_sample();
-      if (token === this.wasmModule.llama_token_eos()) break;
+      const token = wasm.llama_sample();
+      if (token === wasm.llama_token_eos()) break;
       yield token;
-      this.wasmModule.llama_eval([token]);
+      wasm.llama_eval([token]);
     }
   }
   /**
    * Batch inference for non-streaming requests
    */
   private async batchInference(inputTokens: number[], request: InferenceRequest): Promise<number[]> {
-    return this.wasmModule.llama_generate({
+    const wasm = this.getWasm();
+    return wasm.llama_generate({
       input_tokens: inputTokens,
       max_tokens: request.maxTokens,
       temperature: request.temperature,
@@ -335,46 +343,89 @@ export class WebASMLlamaCppEngine {
    * Tokenize text to token IDs
    */
   private async tokenize(text: string): Promise<number[]> {
-    if (!this.wasmModule) throw new Error('WASM module not initialized');
+    const wasm = this.getWasm();
     const encoder = new TextEncoder();
     const textBytes = encoder.encode(text);
-    const textPtr = this.wasmModule.malloc(textBytes.length);
-    const wasmMemory = new Uint8Array(this.wasmModule.memory.buffer);
+    const textPtr = wasm.malloc(textBytes.length);
+    const wasmMemory = this.getWasmMemory();
     wasmMemory.set(textBytes, textPtr);
 
-    const tokensPtr = this.wasmModule.llama_tokenize(textPtr, textBytes.length);
-    const tokenCount = this.wasmModule.llama_token_count(tokensPtr);
+    const tokensPtr = wasm.llama_tokenize(textPtr, textBytes.length);
+    const tokenCount = wasm.llama_token_count(tokensPtr);
 
-    const tokens = new Int32Array(this.wasmModule.memory.buffer, tokensPtr, tokenCount);
-    this.wasmModule.free(textPtr);
+    const tokens = new Int32Array((wasm.memory as WebAssembly.Memory).buffer, tokensPtr, tokenCount);
+    wasm.free(textPtr);
     return Array.from(tokens);
   }
   /**
    * Detokenize token IDs to text
    */
   private async detokenize(tokens: number[]): Promise<string> {
-    if (!this.wasmModule) throw new Error('WASM module not initialized');
-    const textPtr = this.wasmModule.llama_detokenize(tokens);
-    const textLength = this.wasmModule.llama_text_length(textPtr);
-    const textBytes = new Uint8Array(this.wasmModule.memory.buffer, textPtr, textLength);
+    const wasm = this.getWasm();
+    const textPtr = wasm.llama_detokenize(tokens);
+    const textLength = wasm.llama_text_length(textPtr);
+    const textBytes = new Uint8Array((wasm.memory as WebAssembly.Memory).buffer, textPtr, textLength);
     const decoder = new TextDecoder();
     return decoder.decode(textBytes);
   }
   // GPU Memory Management for WebASM
   private gpuMalloc(size: number): number {
-    if (!this.gpuDevice) return 0;
+    if (!this.gpuDevice) {
+      throw new Error('GPU device not initialized. Call initializeGPU() before using GPU APIs.');
+    }
+
     const buffer = this.gpuDevice.createBuffer({
       size,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+      usage:
+        GPUBufferUsage.STORAGE |
+        GPUBufferUsage.COPY_SRC |
+        GPUBufferUsage.COPY_DST |
+        GPUBufferUsage.MAP_READ |
+        GPUBufferUsage.MAP_WRITE,
     });
-    // Return buffer ID (simplified)
-    return buffer.getMapMode ? 1 : 0;
+
+    // Register buffer and return a stable numeric: "pointer" to the WASM side
+    const ptr = this.nextGpuPtr++;
+    this.gpuBuffers.set(ptr, buffer);
+    return ptr;
   }
-  private gpuFree(_ptr: number): void {
-    // GPU buffer cleanup would happen here
+
+  private gpuFree(ptr: number): void {
+    const buffer = this.gpuBuffers.get(ptr);
+    if (!buffer) {
+      // silent no-op if pointer not found
+      return;
+    }
+    // Destroy the GPU buffer if API supports it, and remove from registry
+    try {
+      if (typeof (buffer as unknown as { destroy?: unknown }).destroy === 'function') {
+        (buffer as unknown as { destroy: () => void }).destroy();
+      }
+    } catch {
+      // ignore destroy errors
+    }
+    this.gpuBuffers.delete(ptr);
   }
-  private gpuMemcpy(_dest: number, _src: number, _size: number): void {
-    // GPU memory copy operations
+
+  private gpuMemcpy(destPtr: number, srcPtr: number, size: number): void {
+    // Basic buffer-to-buffer copy between registered GPU buffers.
+    // This assumes the WASM runtime uses the numeric pointers produced by gpuMalloc.
+    if (!this.gpuDevice) {
+      throw new Error('GPU device not initialized.');
+    }
+    const dst = this.gpuBuffers.get(destPtr);
+    const src = this.gpuBuffers.get(srcPtr);
+    if (!dst || !src) {
+      console.warn('gpuMemcpy: source or destination buffer not found', { destPtr, srcPtr });
+      return;
+    }
+
+    // Create a command encoder and copy the requested range
+    const encoder = this.gpuDevice.createCommandEncoder();
+    // offset arguments are set to 0 for simplicity; if WASM expects offsets these would need mapping
+    encoder.copyBufferToBuffer(src, 0, dst, 0, size);
+    const commands = encoder.finish();
+    this.gpuDevice.queue.submit([commands]);
   }
   // Threading support for WebASM
   private pthreadCreate(): number {
@@ -407,7 +458,7 @@ export class WebASMLlamaCppEngine {
       }
       const transaction = this.db.transaction(['models'], 'readonly');
       const store = transaction.objectStore('models');
-      const result = await this.promisifyRequest(store.get(modelPath)); // Fixed missing ')'
+      const result = await this.promisifyRequest(store.get(modelPath)); // Fixed missing: ')'
       return result?.data || null;
     } catch {
       return null;
@@ -421,7 +472,7 @@ export class WebASMLlamaCppEngine {
       }
       const transaction = this.db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
-      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing ')'
+      await this.promisifyRequest(store.put({ path: modelPath, data })); // Fixed missing: ')'
     } catch (error) {
       console.warn('Failed to cache model:', error);
     }
@@ -468,9 +519,20 @@ export class WebASMLlamaCppEngine {
     if (this.wasmModule) {
       this.wasmModule.llama_cleanup?.();
     }
+
+    // Clean up registered GPU buffers
     if (this.gpuDevice) {
+      for (const [ptr, buffer] of this.gpuBuffers.entries()) {
+        try {
+          if (typeof (buffer as unknown as { destroy?: unknown }).destroy === 'function') {
+            (buffer as unknown as { destroy: () => void }).destroy();
+          }
+        } catch {
+          // ignore per-buffer destroy errors
+        }
+        this.gpuBuffers.delete(ptr);
+      }
       // Some implementations may not expose destroy(); guard defensively
-      // call destroy only if it exists and is a function (no TS directive needed)
       const anyDevice = this.gpuDevice as unknown as { destroy?: unknown };
       if (typeof anyDevice.destroy === 'function') {
         (anyDevice.destroy as () => void)();
@@ -478,7 +540,24 @@ export class WebASMLlamaCppEngine {
     }
     console.log('🔥 WebASM llama.cpp engine cleaned up');
   }
+
+  // Add helpers to centralize null checks for WASM and memory
+  private getWasm(): WasmExports {
+    if (!this.wasmModule) {
+      throw new Error('WASM module not initialized. Call initialize() and ensure wasm loaded before using this API.');
+    }
+    return this.wasmModule;
+  }
+
+  private getWasmMemory(): Uint8Array {
+    const wasm = this.getWasm();
+    if (!wasm.memory || !('buffer' in wasm.memory)) {
+      throw new Error('WASM memory not available');
+    }
+    return new Uint8Array((wasm.memory as WebAssembly.Memory).buffer);
+  }
 }
+
 // Export singleton instance
 export const llamaCppEngine = new WebASMLlamaCppEngine({
   modelPath: '/models/gemma-3-270m-q4_0.gguf', // Changed from gemma-2b-q4_0.gguf

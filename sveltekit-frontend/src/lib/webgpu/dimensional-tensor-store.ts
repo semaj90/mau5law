@@ -1,12 +1,12 @@
 /**
  * Dimensional Tensor Store - WebGPU Memory Management
  *
- * Advanced GPU memory architecture for the "tricubic tensor" legal document model:
+ * Advanced GPU memory architecture for the: "tricubic tensor" legal document model:
  * - Axis 1 (Documents): Legal document nodes and metadata
  * - Axis 2 (Chunks): Text chunks, embeddings, and semantic relationships
  * - Axis 3 (Representations): Multiple AI analyses, summaries, and insights
  *
- * Implements "texture streaming" with Level-of-Detail (LOD) for massive datasets
+ * Implements: "texture streaming" with Level-of-Detail (LOD) for massive datasets
  */
 // ============================================================================
 // DIMENSIONAL TENSOR TYPES
@@ -330,14 +330,14 @@ export class DimensionalTensorStore {
       }))
       .sort((a, b) => {
         switch (this.streamingConfig.evictionStrategy) {
-          case 'lru':
+          case: 'lru':
             return a.metadata.lastAccessed - b.metadata.lastAccessed;
-          case 'importance':
+          case: 'importance':
             if (a.metadata.importance !== b.metadata.importance) {
               return a.metadata.importance - b.metadata.importance; // Evict lowest importance
             }
             return a.metadata.lastAccessed - b.metadata.lastAccessed; // Fallback to LRU
-          case 'distance': {
+          case: 'distance': {
             const distA = Math.hypot(...a.metadata.position);
             const distB = Math.hypot(...b.metadata.position);
             if (distA !== distB) {
@@ -345,7 +345,7 @@ export class DimensionalTensorStore {
             }
             return a.metadata.lastAccessed - b.metadata.lastAccessed; // Fallback to LRU
           }
-          case 'hybrid':
+          case: 'hybrid':
           default: {
             const scoreA = (Date.now() - a.metadata.lastAccessed) / (a.memorySize || 1);
             const scoreB = (Date.now() - b.metadata.lastAccessed) / (b.memorySize || 1);
@@ -474,7 +474,7 @@ export class DimensionalTensorStore {
     return mipMemory;
   }
 
-  // Helper: defensively read texture dimensions (avoids using 'any' casts)
+  // Helper: defensively read texture dimensions (avoids using: 'any' casts)
   private getTextureDimensions(texture: GPUTexture): { width: number; height: number } {
     const width =
       (texture as unknown as { width?: number }).width ?? Math.max(1, Math.floor(Math.sqrt(this.dimensions.documents)));

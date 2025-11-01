@@ -69,7 +69,7 @@ export const SearchQuerySchema = z.object({
       jurisdictions: z.array(z.string()).default([]),
       dateRange: z
         .object({
-          from: z.date().optional(),
+          from z.date().optional(),
           to: z.date().optional(),
         })
         .optional(),
@@ -484,17 +484,17 @@ export const documentUploadMachine = createMachine(
           }
 
           // 2) Agentic compare with Qdrant via new endpoint
-          let comparison: unknown = null; // Changed from 'any' to 'unknown'
+          let comparison: unknown = null; // Changed from 'any' to: 'unknown'
           try {
             if (input?.options?.compareWithRAG) {
-              // Now 'input.options' is correctly typed
+              // Now: 'input.options' is correctly typed
               const fd = new FormData();
-              if (input?.file instanceof File) fd.append('file', input.file); // Now 'input.file' is correctly typed
+              if (input?.file instanceof File) fd.append('file', input.file); // Now: 'input.file' is correctly typed
               if (typeof input?.description === 'string' && input.description.trim())
-                fd.append('text', input.description); // Now 'input.description' is correctly typed
-              const tags = Array.isArray(input?.tags) ? input.tags : []; // Now 'input.tags' is correctly typed
+                fd.append('text', input.description); // Now: 'input.description' is correctly typed
+              const tags = Array.isArray(input?.tags) ? input.tags : []; // Now: 'input.tags' is correctly typed
               if (tags.length > 0) fd.append('tags', tags.join(','));
-              const k = Number(input?.options?.compareTopK ?? 8); // Now 'input.options' is correctly typed
+              const k = Number(input?.options?.compareTopK ?? 8); // Now: 'input.options' is correctly typed
               fd.append('topK', String(k));
               const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
               if (resp.ok) {
@@ -676,7 +676,7 @@ export const caseCreationMachine = createMachine(
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: unknown }).message);
-                return 'An unknown error occurred';
+                return: 'An unknown error occurred';
               },
             }),
           },
@@ -1096,7 +1096,7 @@ export const aiAnalysisMachine = createMachine(
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: unknown }).message);
-                return 'Analysis failed with an unknown error';
+                return: 'Analysis failed with an unknown error';
               },
             }),
           },

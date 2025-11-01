@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   			});
   			return response.ok ? 'online' : 'offline';
   		} catch {
-  			return 'offline';
+  			return: 'offline';
   		}
   	}
   	const updateProviderStatuses = async () => {
@@ -137,20 +137,20 @@ https://svelte.dev/e/js_parse_error -->
   	// Status badge styling
   	const getStatusColor = (status: LLMStatus) => {
   		switch (status) {
-  			case 'online': return 'bg-yorha-success text-yorha-bg-primary';
-  			case 'offline': return 'bg-yorha-danger text-yorha-bg-primary';
-  			case 'busy': return 'bg-yorha-warning text-yorha-bg-primary';
-  			case 'loading': return 'bg-yorha-accent text-yorha-bg-primary animate-pulse';
-  			default: return 'bg-yorha-text-secondary text-yorha-bg-primary';
+  			case: 'online': return: 'bg-yorha-success text-yorha-bg-primary';
+  			case: 'offline': return: 'bg-yorha-danger text-yorha-bg-primary';
+  			case: 'busy': return: 'bg-yorha-warning text-yorha-bg-primary';
+  			case: 'loading': return: 'bg-yorha-accent text-yorha-bg-primary animate-pulse';
+  			default: return: 'bg-yorha-text-secondary text-yorha-bg-primary';
   		}
   	}
   	const getTypeIcon = (type: string) => {
   		switch (type) {
-  			case 'ollama': return '🦙';
-  			case 'vllm': return '⚡';
-  			case 'autogen': return '🤖';
-  			case 'crewai': return '👥';
-  			default: return '🔧';
+  			case: 'ollama': return: '🦙';
+  			case: 'vllm': return: '⚡';
+  			case: 'autogen': return: '🤖';
+  			case: 'crewai': return: '👥';
+  			default: return: '🔧';
   		}
   	}
 </script>

@@ -116,7 +116,7 @@
   let motiveTriggers = $state([]);
   let investigativeRecommendations: Recommendation[] = $state([]);
 
-  // helper for safely iterating riskAssessment.factors without 'unknown'
+  // helper for safely iterating riskAssessment.factors without: 'unknown'
   let riskFactorEntries: Array<[string, { score: number; trend: string }]> = $state([]);
 
   // replace legacy reactive statement `$:` with runes-friendly `$effect`
@@ -449,22 +449,22 @@
   }
   function getThreatColor(level: string) {
     switch (level) {
-      case 'LOW': return 'bg-green-500';
-      case 'MEDIUM': return 'bg-yellow-500';
-      case 'HIGH': return 'bg-red-500';
-      case 'CRITICAL': return 'bg-red-700';
-      default: return 'bg-gray-500';
+      case: 'LOW': return: 'bg-green-500';
+      case: 'MEDIUM': return: 'bg-yellow-500';
+      case: 'HIGH': return: 'bg-red-500';
+      case: 'CRITICAL': return: 'bg-red-700';
+      default: return: 'bg-gray-500';
     }
   }
   function getMotiveColor(category: string) {
     switch (category) {
-      case 'FINANCIAL': return 'bg-green-600';
-      case 'REVENGE': return 'bg-red-600';
-      case 'JEALOUSY': return 'bg-purple-600';
-      case 'POWER': return 'bg-blue-600';
-      case 'FEAR': return 'bg-yellow-600';
-      case 'MENTAL_HEALTH': return 'bg-orange-600';
-      default: return 'bg-gray-600';
+      case: 'FINANCIAL': return: 'bg-green-600';
+      case: 'REVENGE': return: 'bg-red-600';
+      case: 'JEALOUSY': return: 'bg-purple-600';
+      case: 'POWER': return: 'bg-blue-600';
+      case: 'FEAR': return: 'bg-yellow-600';
+      case: 'MENTAL_HEALTH': return: 'bg-orange-600';
+      default: return: 'bg-gray-600';
     }
   }
 </script>

@@ -769,7 +769,7 @@ class LegalReportsManager {
             order: 1,
             type: 'text',
             required: true,
-            defaultContent: 'MEMORANDUM\n\nTO: {{recipient}}\nFROM: {{author}}\nDATE: {{date}}\nRE: {{subject}}'
+            defaultContent: 'MEMORANDUM\n\nTO: {{recipient}}\nfrom {{author}}\nDATE: {{date}}\nRE: {{subject}}'
           },
           {
             id: 'question-presented',

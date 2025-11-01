@@ -153,19 +153,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'process';
   try {
     switch (action) {
-      case 'check':
+      case: 'check':
         return json(await handleTypeScriptCheck());
-      case 'process':
+      case: 'process':
         return json(await handleErrorProcessing(request));
-      case 'test':
+      case: 'test':
         return json(await handleSystemTest());
-      case 'stats':
+      case: 'stats':
         return json(await handleStatsRequest());
       default:
         return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('GPU Error Processor API error:', error);
     return json(
       {
@@ -269,7 +269,7 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
       timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     return json({
       success: false,
       results: testResults,
@@ -278,7 +278,7 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
   }
 }
 async function handleStatsRequest(): Promise<Response> {
-  // Changed 'any' to 'Response'
+  // Changed: 'any' to: 'Response'
   // Mock statistics
   const stats: SystemStats = {
     // Added type annotation

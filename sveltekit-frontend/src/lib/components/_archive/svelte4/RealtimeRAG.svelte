@@ -125,7 +125,7 @@
       />
       <button
         type="button"
-        on:click={handleQuerySubmit}
+        onclick={handleQuerySubmit}
         disabled={!query.trim() || machineState.matches('querying')}
         class="absolute bottom-3 right-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
       >
@@ -148,7 +148,7 @@
     <div class="flex items-center justify-between mt-3">
       <button
         type="button"
-        on:click={() => (showAdvancedOptions = !showAdvancedOptions)}
+        onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
         class="text-sm text-blue-600 hover:text-blue-800"
       >
         {showAdvancedOptions ? 'Hide' : 'Show'} Advanced Options
@@ -156,7 +156,7 @@
       {#if machineState.matches('success') || machineState.matches('error')}
         <button
           type="button"
-          on:click={() => ragMachine.send({ type: 'CLEAR' })}
+          onclick={() => ragMachine.send({ type: 'CLEAR' })}
           class="text-sm text-gray-600 hover:text-gray-800"
         >
           Clear Results
@@ -230,7 +230,7 @@
             {#each machineContext.sources as source}
               <div
                 class="source-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
-                on:click={() => onResultSelect?.(source)}
+                onclick={() => onResultSelect?.(source)}
               >
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
@@ -279,7 +279,7 @@
         </p>
         <button
           type="button"
-          on:click={() => ragMachine.send({ type: 'RETRY' })}
+          onclick={() => ragMachine.send({ type: 'RETRY' })}
           class="mt-3 px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"
         >
           Retry Query

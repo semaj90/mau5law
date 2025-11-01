@@ -14,7 +14,7 @@ import { llvmWasmBridge, initializeLLVMIntegration } from '$lib/wasm/llvm-wasm-b
 import { flashAttention2Service, gpuErrorProcessor, type GPUErrorContext } from '$lib/services/flashattention2-rtx3060';
 
 // -----------------------------------------------------------------------------
-// Add missing request body types to fix "Cannot find name 'XBody'." errors
+// Add missing request body types to fix: "Cannot find name: 'XBody'." errors
 // -----------------------------------------------------------------------------
 type ProcessingBody = {
   type: string;
@@ -166,13 +166,13 @@ export const GET: RequestHandler = async ({ url }) => {
     // Ensure services are initialized
     await getInitializationPromise();
     switch (action) {
-      case 'status':
+      case: 'status':
         return json(await getIntegrationStatus());
-      case 'health':
+      case: 'health':
         return json(await getHealthCheck());
-      case 'modules':
+      case: 'modules':
         return json(await getModuleInformation());
-      case 'metrics':
+      case: 'metrics':
         return json(await getPerformanceMetrics());
       default:
         return json({ error: 'Invalid action parameter' }, { status: 400 });
@@ -196,17 +196,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
     await getInitializationPromise();
     const body = await request.json().catch(() => ({}));
     switch (action) {
-      case 'process':
+      case: 'process':
         return await handleProcessing(body as ProcessingBody);
-      case 'legal-analysis':
+      case: 'legal-analysis':
         return await handleLegalAnalysis(body as LegalAnalysisBody);
-      case 'embedding':
+      case: 'embedding':
         return await handleEmbeddingGeneration(body as EmbeddingBody);
-      case 'error-processing':
+      case: 'error-processing':
         return await handleErrorProcessing(body as ErrorProcessingBody);
-      case 'compile-wasm':
+      case: 'compile-wasm':
         return await handleWASMCompilation(body as WASMCompilationBody);
-      case 'test':
+      case: 'test':
         return await handleIntegrationTest(body as IntegrationTestBody);
       default:
         return json({ error: 'Invalid action parameter' }, { status: 400 });
@@ -626,7 +626,7 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
     return json({ error: 'Missing moduleId or sources parameters' }, { status: 400 });
   }
   try {
-    // typed compile options to avoid 'any' casts
+    // typed compile options to avoid: 'any' casts
     type WASMCompileOptions = {
       exports?: string[];
       memoryRequired?: number;

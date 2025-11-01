@@ -52,39 +52,35 @@ https://svelte.dev/e/js_parse_error -->
   }: DialogProps = $props();
 
   // Minimal WebGPU state (graceful fallback)
-  let canvas: HTMLCanvasElement | null = null;
+  // make canvas reactive in Svelte 5 so updates trigger correctly
+  let canvas = $state<HTMLCanvasElement | null>(null);
   let device: GPUDevice | null = null;
-  let animationFrame = 0;
+  let animationFrame = $state<number | null>(null);
 
-  // Lightweight dialog state
-  let dialogState = {
-    animationPhase: 0,
-    backgroundEffectIntensity: 0,
-    collaborationData: new Map(),
-    lastRender: 0,
-    memoryUsed: 0
-  };
+  // Reactive classes (use Svelte 5 runes $derived instead of legacy $:)
+  let dialogClasses = $derived(() => {
+    return [
+      'fixed inset-0 z-50 flex items-center justify-center p-4',
+      size === 'sm' ? 'max-w-sm' :
+      size === 'md' ? 'max-w-md' :
+      size === 'lg' ? 'max-w-2xl' :
+      size === 'xl' ? 'max-w-4xl' :
+      size === 'fullscreen' ? 'max-w-full h-full' : '',
+      className
+    ].filter(Boolean).join(' ');
+  });
 
-  // Reactive classes (clean, no $derived)
-  $: dialogClasses = [
-    'fixed inset-0 z-50 flex items-center justify-center p-4',
-    size === 'sm' ? 'max-w-sm' :
-    size === 'md' ? 'max-w-md' :
-    size === 'lg' ? 'max-w-2xl' :
-    size === 'xl' ? 'max-w-4xl' :
-    size === 'fullscreen' ? 'max-w-full h-full' : '',
-    className
-  ].filter(Boolean).join(' ');
-
-  $: contentClasses = [
-    'relative rounded-lg shadow-xl max-h-[90vh] overflow-hidden',
-    variant === 'legal' ? 'border-l-4 border-green-500' :
-    variant === 'evidence' ? 'border-l-4 border-amber-500' :
-    variant === 'case' ? 'border-l-4 border-indigo-500' : '',
-    glassmorphism ? 'backdrop-blur-md bg-white/80' : 'bg-white',
-    pixelated ? 'image-rendering-pixelated' : '',
-    variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : ''
-  ].filter(Boolean).join(' ');
+  let contentClasses = $derived(() => {
+    return [
+      'relative rounded-lg shadow-xl max-h-[90vh] overflow-hidden',
+      variant === 'legal' ? 'border-l-4 border-green-500' :
+      variant === 'evidence' ? 'border-l-4 border-amber-500' :
+      variant === 'case' ? 'border-l-4 border-indigo-500' : '',
+      glassmorphism ? 'backdrop-blur-md bg-white/80' : 'bg-white',
+      pixelated ? 'image-rendering-pixelated' : '',
+      variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : ''
+    ].filter(Boolean).join(' ');
+  });
 
   function closeDialog() {
     open = false;
@@ -151,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
     <button
       type="button"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm appearance-none border-none p-0 m-0"
-      transitionfade={{ duration 150 }}
+      transition:fade={{ duration: 150 }}
       onclick={() => closeDialog()}
       aria-label="Close dialog"
     ></button>
@@ -161,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Dialog Content -->
       <div
         class={contentClasses}
-        transitionscale={{ duration 200, easing: cubicInOut }}
+        transition:scale={{ duration: 200, easing: cubicInOut }}
         role="dialog"
         aria-modal="true"
       >
@@ -190,7 +186,11 @@ https://svelte.dev/e/js_parse_error -->
         {#if title}
           <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-3">
-              <slot name="title">{title}</slot>
+              {#if typeof title === 'function'}
+                {title()}
+              {:else}
+                {title}
+              {/if}
               {#if legalContext?.aiAnalysis}
                 <span
                   class="px-2 py-1 text-xs rounded-full"
@@ -210,7 +210,11 @@ https://svelte.dev/e/js_parse_error -->
 
         <!-- Content -->
         <div class="px-6 py-4 overflow-y-auto max-h-[60vh]">
-          <slot>{content}</slot>
+          {#if typeof content === 'function'}
+            {content()}
+          {:else}
+            {content}
+          {/if}
 
           {#if legalContext?.aiAnalysis?.suggestions?.length > 0}
             <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -230,7 +234,11 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Footer -->
         {#if footer}
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
-            <slot name="footer">{footer}</slot>
+            {#if typeof footer === 'function'}
+              {footer()}
+            {:else}
+              {footer}
+            {/if}
           </div>
         {:else}
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
@@ -261,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
           <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
-            transitionfade={{ duration 200 }}
+            transition:fade={{ duration: 200 }}
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M7 2L17 12L12 13L13 18L7 2Z"/>

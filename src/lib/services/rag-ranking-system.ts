@@ -115,7 +115,7 @@ export class RAGRankingSystem {
           recommended_action: this.determineRecommendedAction(finalScore, rankingComponents)
         };
 
-        rankedResults.push(rankedResult);
+        rankedResults.push(<any><any>rankedResult);
       } catch (error) {
         console.error(`❌ Error ranking result ${candidate.chunk_id}:`, error);
       }
@@ -361,27 +361,27 @@ export class RAGRankingSystem {
     const explanations: string[] = [];
 
     if (components.cosine_similarity_score > 0.8) {
-      explanations.push('Highly similar content');
+      explanations.push(<any><any>'Highly similar content');
     } else if (components.cosine_similarity_score > 0.6) {
-      explanations.push('Similar content');
+      explanations.push(<any><any>'Similar content');
     }
 
     if (components.legal_domain_score > 0.7) {
-      explanations.push('Strong legal domain match');
+      explanations.push(<any><any>'Strong legal domain match');
     } else if (components.legal_domain_score > 0.4) {
-      explanations.push('Related legal area');
+      explanations.push(<any><any>'Related legal area');
     }
 
     if (components.authority_score > 0.8) {
-      explanations.push('Authoritative source');
+      explanations.push(<any><any>'Authoritative source');
     }
 
     if (components.quality_score > 0.7) {
-      explanations.push('High-quality content');
+      explanations.push(<any><any>'High-quality content');
     }
 
     if (components.recency_score > 0.8) {
-      explanations.push('Recent document');
+      explanations.push(<any><any>'Recent document');
     }
 
     return explanations.length > 0 ? explanations.join(', ') : 'Standard relevance match';

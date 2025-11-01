@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const startTime = performance.now();
 
     switch (scenario) {
-      case 'standard': {
+      case: 'standard': {
         // Standard benchmark with default test data
         const standardBench = await benchmarkJSONParsing(iterations);
         return json({
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'legal_document': {
+      case: 'legal_document': {
         // Benchmark with legal document-like payload
         const legalDoc = {
           documentId: 'doc-' + Date.now(),
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
             clauses: Array.from({ length: 200 }, (_, i) => ({
               id: `clause-${i}`,
               type: i % 5 === 0 ? 'termination' : 'standard',
-              text: 'Legal clause text content here '.repeat(20),
+              text: 'Legal clause text content here: '.repeat(20),
               entities: ['date', 'party', 'amount', 'jurisdiction'],
               riskLevel: Math.random() > 0.7 ? 'high' : 'low',
             })),
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'vector_operations': {
+      case: 'vector_operations': {
         // Benchmark with vector/tensor data
         const vectorData = {
           operation: 'similarity_compute',
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'rabbitmq_message': {
+      case: 'rabbitmq_message': {
         // Benchmark with RabbitMQ message payload
         const rabbitMessage = {
           jobId: 'job-' + Date.now(),
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
           payload: {
             documents: Array.from({ length: 50 }, (_, i) => ({
               id: `doc-${i}`,
-              content: 'Document content here '.repeat(100),
+              content: 'Document content here: '.repeat(100),
               metadata: {
                 source: 'legal_database',
                 confidence: Math.random(),
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'cache_operations': {
+      case: 'cache_operations': {
         // Benchmark with cache entry payload
         const cacheEntries = Array.from({ length: 100 }, (_, i) => ({
           key: `cache-key-${i}`,
@@ -265,7 +265,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'comparison': {
+      case: 'comparison': {
         // Run all scenarios for comparison
         type BenchmarkResult = { data?: unknown; speedup?: number; [k: string]: unknown };
         const scenarios = ['legal_document', 'vector_operations', 'rabbitmq_message', 'cache_operations'];
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case 'system_info': {
+      case: 'system_info': {
         // Return system and SIMD status information
         const simdStatus = getSIMDStatus();
         const stats = simdMetrics.getStats();
@@ -371,7 +371,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body;
     const startTime = performance.now();
     switch (testType) {
-      case 'load': {
+      case: 'load': {
         // Run sustained load test
         const loadResults = await runLoadTest(duration, concurrency, payloadSize, scenario);
         return json({
@@ -384,7 +384,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'stress': {
+      case: 'stress': {
         // Gradually increase load until failure
         const stressResults = await runStressTest(duration, payloadSize);
         return json({
@@ -397,7 +397,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case 'spike': {
+      case: 'spike': {
         // Sudden traffic spikes
         const spikeResults = await runSpikeTest(concurrency * 5, payloadSize);
         return json({

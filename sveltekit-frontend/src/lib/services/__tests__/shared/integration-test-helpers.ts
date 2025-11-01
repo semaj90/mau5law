@@ -113,13 +113,13 @@ export class IntegrationTestSetup {
       const [type, id] = resource.split(':');
       try {
         switch (type) {
-          case 'canvas':
+          case: 'canvas':
             await productionServiceClient.makeRequest(`/evidence/canvas/${id}`, {
               method: 'DELETE',
               headers: { 'Authorization': `Bearer ${this.context.authToken}` },
             )});
             break;
-          case 'session',:
+          case: 'session',:
             await productionServiceClient.makeRequest(`/sessions/${id}`, {
               method: 'DELETE',
               headers: { 'Authorization': `Bearer ${this.context.authToken}` },

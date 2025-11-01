@@ -240,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
     <p>The chat component encountered an error:</p>
     <p class="error-message">{componentError.message}</p>
     <button
-      on:click={() => { componentError = null; }}
+      onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -253,8 +253,8 @@ https://svelte.dev/e/js_parse_error -->
     aria-modal="true"
     aria-labelledby="chat-title"
     tabindex="-1"
-    on:click={(e) => { if (e.currentTarget === e.target) closeChat(); }}
-    on:keydown={(e) => e.key === "Escape" && closeChat()}
+    onclick={(e) => { if (e.currentTarget === e.target) closeChat(); }}
+    onkeydown={(e) => e.key === "Escape" && closeChat()}
   >
     <div class="chat-container" role="document">
       <div class="chat-header">
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="mode-button"
               class:active={showModeSelector}
-              on:click={() => (showModeSelector = !showModeSelector)}
+              onclick={() => (showModeSelector = !showModeSelector)}
               title="Select AI mode"
               aria-label="Select AI mode"
               aria-expanded={showModeSelector}
@@ -290,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
                   <button
                     class="mode-option"
                     class:selected={mode.id === selectedMode}
-                    on:click={() => {
+                    onclick={() => {
                       selectedMode = mode.id;
                       showModeSelector = false;
                     }}
@@ -311,7 +311,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="header-actions">
           <button
             class="header-action"
-            on:click={() => clearConversation()}
+            onclick={() => clearConversation()}
             title="Clear conversation"
             disabled={isGenerating}
             aria-label="Clear conversation"
@@ -321,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             class="header-action"
-            on:click={() => closeChat()}
+            onclick={() => closeChat()}
             title="Close chat"
             aria-label="Close chat"
           >
@@ -378,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#each message.actions as action}
                       <button
                         class="action-button"
-                        on:click={() => handleActionClick(action)}
+                        onclick={() => handleActionClick(action)}
                         title={action.text}
                         aria-label="Action {action.text}"
                       >
@@ -410,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each quickActions as action}
               <button
                 class="quick-action"
-                on:click={() => handleQuickAction(action.text)}
+                onclick={() => handleQuickAction(action.text)}
                 disabled={isGenerating}
                 aria-label="Quick action {action.text}"
               >
@@ -429,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={currentMessage}
             placeholder="Ask about your case, evidence, or legal strategy..."
             disabled={isGenerating}
-            on:keydown={handleKeydown}
+            onkeydown={handleKeydown}
             rows="4"
             class="message-input"
             aria-label="Type your message here"
@@ -439,7 +439,7 @@ https://svelte.dev/e/js_parse_error -->
             class="send-button"
             class:sending={isGenerating}
             disabled={!currentMessage.trim() || isGenerating}
-            on:click={() => sendMessage()}
+            onclick={() => sendMessage()}
             title="Send message"
             aria-label="Send message"
           >

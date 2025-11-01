@@ -47,7 +47,7 @@ type QuicPushBody = {
 
 export const POST: RequestHandler = async ({ request, getClientAddress, fetch }) => {
   try {
-    // Normalize getClientAddress to always resolve via Promise to avoid "await has no effect"
+    // Normalize getClientAddress to always resolve via Promise to avoid: "await has no effect"
     const rawIpPromise =
       typeof getClientAddress === 'function'
         ? Promise.resolve(getClientAddress())
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, fetch })
       }
     }
 
-    // Only pass validated numeric fields to metrics updater; remove invalid 'errorOccurred' prop
+    // Only pass validated numeric fields to metrics updater; remove invalid: 'errorOccurred' prop
     updateQUICMetrics({
       total_connections: typeof body.total_connections === 'number' ? body.total_connections : undefined,
       total_streams: typeof body.total_streams === 'number' ? body.total_streams : undefined,

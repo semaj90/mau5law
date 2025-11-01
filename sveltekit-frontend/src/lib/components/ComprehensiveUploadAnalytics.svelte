@@ -5,7 +5,7 @@
    * Svelte 5 component that integrates with the upload analytics XState machine
    * Features contextual AI prompting, user analytics, and performance monitoring
    */
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { createActor } from 'xstate';
   import {
     comprehensiveUploadAnalyticsMachine,
@@ -68,21 +68,21 @@
   let hasErrors = $derived(
     machineState?.context?.errors?.length > 0 || false
   );
-  let uploadResults = $derived(machineState?.context?.uploadResults || []);
-  let pipelineStatus = $derived(machineState?.context?.pipeline || );
+  let uploadResults: any[] = $derived(machineState?.context?.uploadResults || []);
+  // pipelineStatus typed so Object.entries in template has proper typing
+  let pipelineStatus: Record<string, any> = $derived(machineState?.context?.pipeline || {});
   // Initialize analytics
   $effect(() => {
     initializeUploadAnalytics();
-    // Setup user interaction tracking
     if (enableAnalytics) {
       setupUserTracking();
     }
     return () => {
-      uploadActor?.stop();
-    }
+      uploadActor?.stop?.();
+    };
   });
   function initializeUploadAnalytics() {
-    const userAnalytics: UserAnalytics = {
+    const userAnalytics = {
       userId: userId || 'anonymous',
       sessionId: `session-${Date.now()}`,
       behaviorPattern: 'intermediate',
@@ -102,87 +102,99 @@
       contextualPreferences: {
         preferredAIPromptStyle: 'detailed',
         helpLevel: 'moderate',
-        autoSuggestions: enableAIPrompts
+        autoSuggestions: enableAIPrompts,
         proactiveInsights: enableAIPrompts
       },
       caseContext: {
         activeCases: caseId ? [caseId] : [],
-        currentCaseId: caseId
+        currentCaseId: caseId,
         workflowStage: 'discovery',
-        expertise: expertiseLevel;
+        expertise: expertiseLevel
       }
-    }
+    } as any;
+
     uploadActor = createUploadAnalyticsActor({
       userAnalytics
     });
+
     // Subscribe to state changes
-    uploadActor.subscribe((state) => {
-      machineState = stat;
+    uploadActor.subscribe((state: any) => {
+      machineState = state;
     });
-    uploadActor.start();
+
+    uploadActor.start?.();
   }
   function setupUserTracking() {
     // Track typing patterns
     let typingStartTime = 0;
     let keyStrokes = 0;
-    document.addEventListener('keydown', (e) => {
+    const keydownHandler = (e: KeyboardEvent) => {
       if (typingStartTime === 0) {
         typingStartTime = Date.now();
       }
       keyStrokes++;
       // Calculate WPM every 10 keystrokes
       if (keyStrokes % 10 === 0) {
-        const timeDiff = Date.now() - typingStartTim;
+        const timeDiff = Date.now() - typingStartTime;
         const wpm = Math.round((keyStrokes / 5) / (timeDiff / 60000));
         uploadActor?.send({
           type: 'USER_TYPING',
-          speed: wpm;
-          content: e.key;
+          speed: wpm,
+          content: (e as KeyboardEvent).key
         });
       }
-    });
+    };
+    document.addEventListener('keydown', keydownHandler);
     // Track click patterns
-    document.addEventListener('click', (e) => {
+    const clickHandler = (e: MouseEvent) => {
       uploadActor?.send({
         type: 'USER_CLICK',
         x: e.clientX,
         y: e.clientY,
-        element: (e.target as HTMLElement)?.tagName || 'unknown';
+        element: (e.target as HTMLElement)?.tagName || 'unknown'
       });
-    });
+    };
+    document.addEventListener('click', clickHandler);
     // Track scroll behavior
     let lastScrollTime = 0;
-    document.addEventListener('scroll', () => {
+    const scrollHandler = () => {
       const currentTime = Date.now();
-      const scrollDepth = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      const scrollDepth = window.scrollY / Math.max(1, (document.body.scrollHeight - window.innerHeight));
       if (lastScrollTime > 0) {
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
         uploadActor?.send({
           type: 'USER_SCROLL',
-          depth: scrollDepth;
-          speed: scrollSpeed;
+          depth: scrollDepth,
+          speed: scrollSpeed
         });
       }
-      lastScrollTime = currentTim;
+      lastScrollTime = currentTime;
+    };
+    document.addEventListener('scroll', scrollHandler);
+    // cleanup when component is destroyed
+    onDestroy(() => {
+      document.removeEventListener('keydown', keydownHandler);
+      document.removeEventListener('click', clickHandler);
+      document.removeEventListener('scroll', scrollHandler);
     });
   }
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    if (target.files) {
+  function handleFileSelect(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target?.files) {
       const files = Array.from(target.files);
       selectFiles(files);
     }
   }
-  function handleDrop(_event: DragEvent) {
-    event.preventDefault();
+  function handleDrop(evt: DragEvent) {
+    evt.preventDefault();
     dragOver = false;
-    if (event.dataTransfer?.files) {
-      const files = Array.from(event.dataTransfer.files);
+    if (evt.dataTransfer?.files) {
+      const files = Array.from(evt.dataTransfer.files);
       selectFiles(files);
     }
   }
-  function handleDragOver(_event: DragEvent) {
-    event.preventDefault();
+  function handleDragOver(evt: DragEvent) {
+    evt.preventDefault();
     dragOver = true;
   }
   function handleDragLeave() {
@@ -195,17 +207,17 @@
     );
     // Limit number of files
     const limitedFiles = validFiles.slice(0, maxFiles);
-    selectedFiles = limitedFile;
+    selectedFiles = limitedFiles;
     if (uploadActor) {
       uploadActor.send({
         type: 'SELECT_FILES',
-        files: limitedFiles
-        caseId;
+        files: limitedFiles,
+        caseId: caseId
       });
       // Track file selection
       uploadActor.send({
         type: 'TRACK_USER_ACTION',
-        action 'file_selection',
+        action: 'file_selection',
         data: {
           fileCount: limitedFiles.length,
           totalSize: limitedFiles.reduce((sum, file) => sum + file.size, 0),
@@ -236,12 +248,12 @@
     }
     selectedFiles = [];
   }
-  function handlePromptReaction(promptId: string, reaction 'accepted' | 'dismissed' | 'ignored') {
+  function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {
       uploadActor.send({
         type: 'USER_REACTED_TO_PROMPT',
         promptId,
-        reaction;
+        reaction
       });
     }
   }
@@ -249,12 +261,12 @@
     if (uploadActor) {
       uploadActor.send({
         type: 'REQUEST_AI_SUGGESTIONS',
-        context: 'user_requested',
+        context: 'user_requested'
       });
     }
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -267,6 +279,13 @@
       return `${minutes}m ${seconds % 60}s`;
     }
     return `${seconds}s`;
+  }
+  // add new keyboard activation for drop zone
+  function activateDropZoneKey(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      fileInput?.click();
+    }
   }
 </script>
 <div class="comprehensive-upload-analytics">
@@ -316,6 +335,11 @@
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
+    role="button"
+    tabindex="0"
+    aria-label="File upload drop zone. Press Enter or Space to open file picker, or drop files here."
+    onclick={() => fileInput?.click()}
+    onkeydown={activateDropZoneKey}
   >
     {#if selectedFiles.length === 0}
       <div class="drop-zone-content">
@@ -324,7 +348,7 @@
         <p class="file-constraints">
           Max {maxFiles} files • {allowedTypes.map(type => type.split('/')[1]).join(', ')}
         </p>
-        <input;
+        <input
           bind:this={fileInput}
           type="file"
           multiple
@@ -365,7 +389,7 @@
             <button class="nes-btn is-primary" onclick={startUpload}>
               Start Upload & Analysis
             </button>
-            <button class="nes-btn" onclick={() => { selectedFiles = [], }}>
+            <button class="nes-btn" onclick={() => { selectedFiles = []; }}>
               Clear Files
             </button>
           </div>
@@ -402,14 +426,14 @@
       </div>
       <!-- Pipeline Status -->
       <div class="pipeline-status">
-        {#each Object.entries(pipelineStatus) as [stage, status]}
-          <div class="pipeline-stage" class:active={status.status === 'processing'} class:completed={status.status === 'completed'}>
+        {#each Object.entries(pipelineStatus as Record<string, any>) as [stage, status]}
+          <div class="pipeline-stage" class:active={(status as any).status === 'processing'} class:completed={(status as any).status === 'completed'}>
             <div class="stage-icon">
-              {#if status.status === 'completed'}
+              {#if (status as any).status === 'completed'}
                 ✓
-              {:else if status.status === 'processing'}
+              {:else if (status as any).status === 'processing'}
                 ⏳
-              {:else if status.status === 'failed'}
+              {:else if (status as any).status === 'failed'}
                 ✗
               {:else}
                 ○
@@ -593,11 +617,11 @@
     font-size: 0.875rem;
   }
   .expertise-level {
-    background: #dbeaf;
+    background: #dbeafe; /* fixed invalid hex */
     color: #2563eb;
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
-    text-transform: capitaliz;
+    text-transform: capitalize;
   }
   .engagement-score {
     background: #dcfce7;
@@ -616,7 +640,7 @@
     border-color: #f59e0b;
   }
   .ai-prompts.during-upload {
-    background: #dbeaf;
+    background: #dbeafe; /* fixed invalid hex */
     border-color: #3b82f6;
   }
   .ai-prompts.after-upload {
@@ -655,7 +679,7 @@
     border-radius: 0.75rem;
     padding: 2rem;
     text-align: center;
-    transition: all 0.2;
+    transition: all 0.2s ease;
     margin-bottom: 2rem;
   }
   .file-drop-zone.drag-over {
@@ -759,7 +783,7 @@
     background: #f0fdf4;
   }
   .stage-name {
-    text-transform: capitaliz;
+    text-transform: capitalize;
     font-size: 0.875rem;
   }
   .upload-results {
@@ -794,10 +818,10 @@
     margin-bottom: 1rem;
     border-left: 4px solid #e5e7eb;
   }
-  .result-.success {
+  .result-item.success {
     border-left-color: #10b981;
   }
-  .result-.error {
+  .result-item.error {
     border-left-color: #ef4444;
   }
   .ai-insights {
@@ -840,51 +864,19 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
   }
-  .insight-card {
+  .insight-nier-bits-card {
     background: #f9fafb;
     padding: 1rem;
     border-radius: 0.5rem;
   }
-  .insight-card h4 {
+  .insight-nier-bits-card h4 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-  .behavior-pattern {
-    text-transform: capitaliz;
-    font-weight: 500;
-    color: #3b82f6;
-  }
-  .recommendations-list {
-    margin: 0;
-    padding-left: 1rem;
-  }
+  /* Removed unused .btn-primary / .btn-secondary selectors to avoid unused CSS warnings.
+     Existing buttons use .btn-select-files, .btn-cancel, .btn-retry, .btn-reset or NES classes. */
+
   /* Button Styles */
-  .btn-primary {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2;
-  }
-  .btn-primary:hover {
-    background: #2563eb;
-  }
-  .btn-secondary {
-    background: #6b7280;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2;
-  }
-  .btn-secondary:hover {
-    background: #4b5563;
-  }
   .btn-accept {
     background: #10b981;
     color: white;
@@ -969,6 +961,26 @@
     margin-top: 1rem;
   }
   @media (max-width: 640px) {
+    .comprehensive-upload-analytics {
+      padding: 1rem;
+    }
+    .upload-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .results-summary {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .file-actions, .final-actions, .error-actions {
+      flex-direction: column;
+    }
+    .analytics-content {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
     .comprehensive-upload-analytics {
       padding: 1rem;
     }

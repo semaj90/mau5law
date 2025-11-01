@@ -155,11 +155,11 @@ export class AIServiceWorkerManager {
 
   private getPreferredProvidersForType(type: string): string[] {
     switch (type) {
-      case 'embedding':
+      case: 'embedding':
         return ['ollama-local'];
-      case 'generation':
+      case: 'generation':
         return ['ollama-local', 'vllm-server'];
-      case 'analysis':
+      case: 'analysis':
         return ['autogen-framework', 'crewai-team'];
       default:
         return ['ollama-local'];
@@ -168,11 +168,11 @@ export class AIServiceWorkerManager {
 
   private getCapabilitiesForType(type: string): string[] {
     switch (type) {
-      case 'embedding':
+      case: 'embedding':
         return ['text-embedding', 'similarity-search', 'clustering'];
-      case 'generation':
+      case: 'generation':
         return ['text-generation', 'chat', 'completion'];
-      case 'analysis':
+      case: 'analysis':
         return ['document-analysis', 'sentiment', 'entity-extraction'];
       default:
         return ['general-purpose'];
@@ -307,16 +307,16 @@ export class AIServiceWorkerManager {
     const type = payload.type;
     const data = payload.data;
     switch (type) {
-      case 'TASK_COMPLETE':
+      case: 'TASK_COMPLETE':
         this.handleTaskComplete(workerId, data as AITaskResult);
         break;
-      case 'TASK_ERROR':
+      case: 'TASK_ERROR':
         this.handleTaskError(workerId, data);
         break;
-      case 'WORKER_STATUS':
+      case: 'WORKER_STATUS':
         this.updateWorkerStatus(workerId, data as Partial<WorkerStatus>);
         break;
-      case 'WORKER_READY':
+      case: 'WORKER_READY':
         console.log(`✅ Worker ${workerId} is ready`);
         break;
       default:

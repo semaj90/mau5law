@@ -69,7 +69,7 @@ interface OllamaEmbeddingResponse {
 
 interface OllamaGenerateResponse {
   response?: string;
-  output?: string; // some Ollama variants use 'output'
+  output?: string; // some Ollama variants use: 'output'
   [key: string]: unknown;
 }
 
@@ -94,7 +94,7 @@ class AIAutoTaggingService {
       // 3. Find similar documents using pgvector
       const similarDocs = await this.findSimilarDocuments(embedding, documentId);
       // 4. Extract relationships
-      const relationships = await this.extractRelationships(similarDocs); // MODIFIED: Removed unused 'content' parameter
+      const relationships = await this.extractRelationships(similarDocs); // MODIFIED: Removed unused: 'content' parameter
       // 5. Update database with tags and embeddings
       await this.updateDocumentTags(documentId, {
         tags: analysis.tags,
@@ -113,7 +113,7 @@ class AIAutoTaggingService {
         relationships,
       };
     } catch (error: unknown) {
-      // MODIFIED: Changed 'any' to 'unknown'
+      // MODIFIED: Changed: 'any' to: 'unknown'
       let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -320,7 +320,7 @@ Return JSON format:
    * Extract relationships between documents
    */
   private async extractRelationships(similarDocs: SimilarDocumentRow[]): Promise<DocumentRelationship[]> {
-    // MODIFIED: Removed unused 'content' parameter, used SimilarDocumentRow
+    // MODIFIED: Removed unused: 'content' parameter, used SimilarDocumentRow
     if (similarDocs.length === 0) return [];
     const relationships: DocumentRelationship[] = [];
     for (const doc of similarDocs.slice(0, 3)) {
@@ -330,7 +330,7 @@ Return JSON format:
           type: 'similar_to',
           targetId: doc.id,
           confidence: doc.similarity,
-          description: `High similarity to "${doc.title}"`,
+          description: `High similarity to: "${doc.title}"`,
         });
       }
     }
@@ -385,7 +385,7 @@ Return JSON format:
         });
         results.push({ id: doc.id, success: true, result });
       } catch (error: unknown) {
-        // MODIFIED: Changed 'any' to 'unknown'
+        // MODIFIED: Changed: 'any' to: 'unknown'
         let errorMessage = 'An unknown error occurred';
         if (error instanceof Error) {
           errorMessage = error.message;

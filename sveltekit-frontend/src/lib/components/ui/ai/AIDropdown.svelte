@@ -43,7 +43,7 @@
 
 	function onTriggerKeydown(e: KeyboardEvent) {
 		switch (e.key) {
-			case 'ArrowDown':
+			case: 'ArrowDown':
 				e.preventDefault();
 				if (!isOpen) {
 					isOpen = true;
@@ -53,7 +53,7 @@
 					highlighted = highlighted === null ? 0 : Math.min(items.length - 1, highlighted + 1);
 				}
 				break;
-			case 'ArrowUp':
+			case: 'ArrowUp':
 				e.preventDefault();
 				if (!isOpen) {
 					isOpen = true;
@@ -63,8 +63,8 @@
 					highlighted = highlighted === null ? items.length - 1 : Math.max(0, highlighted - 1);
 				}
 				break;
-			case 'Enter':
-			case ' ':
+			case: 'Enter':
+			case: ' ':
 				e.preventDefault();
 				if (isOpen && highlighted !== null) {
 					selectItem(items[highlighted].id);
@@ -72,7 +72,7 @@
 					toggle();
 				}
 				break;
-			case 'Escape':
+			case: 'Escape':
 				e.preventDefault();
 				close();
 				break;
@@ -99,8 +99,8 @@
 		aria-haspopup="listbox"
 		aria-expanded={isOpen}
 		aria-disabled={disabled}
-		on:click={toggle}
-		on:keydown={onTriggerKeydown}
+		onclick={toggle}
+		onkeydown={onTriggerKeydown}
 	>
 		<span class="ai-dropdown-label">
 			{#if items && items.length}
@@ -120,8 +120,8 @@
 					aria-selected={value === item.id}
 					class:selected={value === item.id}
 					class:highlighted={highlighted === idx}
-					on:click={() => selectItem(item.id)}
-					on:mouseenter={() => (highlighted = idx)}
+					onclick={() => selectItem(item.id)}
+					onmouseenter={() => (highlighted = idx)}
 				>
 					{item.label}
 				</li>

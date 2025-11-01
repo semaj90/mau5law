@@ -157,7 +157,7 @@ export class QdrantHTTPClient {
       const checkResponse = await fetch(`${this.baseUrl}/collections/${this.collectionName}`);
 
       if (checkResponse.ok) {
-        console.log(`Qdrant collection '${this.collectionName}' already exists`);
+        console.log(`Qdrant collection: '${this.collectionName}' already exists`);
         return;
       }
 
@@ -186,7 +186,7 @@ export class QdrantHTTPClient {
         throw new Error(`Failed to create collection: ${createResponse.status}`);
       }
 
-      console.log(`Qdrant collection '${this.collectionName}' created successfully`);
+      console.log(`Qdrant collection: '${this.collectionName}' created successfully`);
     } catch (error) {
       console.error('Qdrant collection creation error:', error);
       throw error;

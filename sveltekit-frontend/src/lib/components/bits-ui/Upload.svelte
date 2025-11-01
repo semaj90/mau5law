@@ -15,9 +15,9 @@
 </script>
 
 <div class="bits-upload">
-  <label class="btn">Choose file<input type="file" on:change={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} hidden /></label>
+  <label class="btn">Choose file<input type="file" onchange={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} hidden /></label>
   <textarea bind:value={text} placeholder="Optional text to embed"></textarea>
-  <button on:click={handleUpload} class="btn primary">Upload</button>
+  <button onclick={handleUpload} class="btn primary">Upload</button>
 </div>
 
 <style>

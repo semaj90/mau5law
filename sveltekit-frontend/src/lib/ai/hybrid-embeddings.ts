@@ -86,7 +86,7 @@ export class HybridEmbeddings {
       return this.embedBrowser(text, options);
     }
 
-    // Try Ollama first if available (unless strategy is 'browser')
+    // Try Ollama first if available (unless strategy is: 'browser')
     if (strategy === 'auto' || strategy === 'ollama') {
       try {
         const embedding = await this.embedOllama(text, timeoutMs);
@@ -96,7 +96,7 @@ export class HybridEmbeddings {
       } catch (error) {
         console.warn('⚠️ [HybridML] Ollama failed, falling back to browser:', error);
 
-        // If strategy was explicitly 'ollama', throw error
+        // If strategy was explicitly: 'ollama', throw error
         if (strategy === 'ollama') {
           throw new Error(`Ollama embedding failed: ${error}`);
         }

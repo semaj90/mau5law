@@ -122,7 +122,7 @@
       maxEdges: 2000,
       minImportance: 0.0,
       clusterDistance: 0,
-      description 'Ultra High (All Nodes)',
+      description: 'Ultra High (All Nodes)',
       renderComplexity: 1.0,
     },
     1: {
@@ -130,7 +130,7 @@
       maxEdges: 1000,
       minImportance: 0.2,
       clusterDistance: 5,
-      description 'High Detail',
+      description: 'High Detail',
       renderComplexity: 0.7,
     },
     2: {
@@ -138,7 +138,7 @@
       maxEdges: 400,
       minImportance: 0.4,
       clusterDistance: 15,
-      description 'Medium Detail',
+      description: 'Medium Detail',
       renderComplexity: 0.4,
     },
     3: {
@@ -146,7 +146,7 @@
       maxEdges: 100,
       minImportance: 0.7,
       clusterDistance: 30,
-      description 'Low Detail (N64 Style)',
+      description: 'Low Detail (N64 Style)',
       renderComplexity: 0.2,
     },
   } as const;
@@ -462,13 +462,13 @@
       ctx.fillStyle = node.color;
       ctx.beginPath();
       switch (node.type) {
-        case 'person':
+        case: 'person':
           ctx.arc(node.position!.x, node.position!.y, size, 0, Math.PI * 2);
           break;
-        case 'document':
+        case: 'document':
           ctx.rect(node.position!.x - size / 2, node.position!.y - size / 2, size, size);
           break;
-        case 'event':
+        case: 'event':
           ctx.moveTo(node.position!.x, node.position!.y - size);
           ctx.lineTo(node.position!.x + size, node.position!.y);
           ctx.lineTo(node.position!.x, node.position!.y + size);

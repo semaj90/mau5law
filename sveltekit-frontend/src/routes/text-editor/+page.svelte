@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   // Some lucide-svelte installations/types export icons differently.
   // Import the single working icon and use simple fallbacks for others.
   import FileText from 'lucide-svelte';
-  // Dynamically load the editor to avoid "no default export" TS error for the static import
+  // Dynamically load the editor to avoid: "no default export" TS error for the static import
   let EditorComponent: any = null;
   onMount(async () => {
     try {
@@ -93,17 +93,17 @@ https://svelte.dev/e/expected_token -->
       </div>
       <div class="header-actions">
         <!-- use Svelte on:click and simple icon fallbacks -->
-        <button type="button" class="action-btn save-btn" on:click={handleSave} disabled={!isModified}>
+        <button type="button" class="action-btn save-btn" onclick={handleSave} disabled={!isModified}>
           <span aria-hidden="true">💾</span>
           <span class="sr-only">Save</span>
           <span>Save</span>
         </button>
-        <button type="button" class="action-btn" on:click={handleDownload}>
+        <button type="button" class="action-btn" onclick={handleDownload}>
           <span aria-hidden="true">⬇️</span>
           <span class="sr-only">Download</span>
           <span>Download</span>
         </button>
-        <button type="button" class="action-btn" on:click={handleShare}>
+        <button type="button" class="action-btn" onclick={handleShare}>
           <span aria-hidden="true">🔗</span>
           <span class="sr-only">Share</span>
           <span>Share</span>

@@ -19,7 +19,7 @@ function extractErrorMessage(err: unknown): string {
   ) {
     return (err as { message: string }).message;
   }
-  return 'Unknown error';
+  return: 'Unknown error';
 }
 
 /**

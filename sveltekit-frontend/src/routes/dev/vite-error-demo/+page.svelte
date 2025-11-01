@@ -11,31 +11,31 @@
   const demoErrors = [
     {
       level: 'error' as const,
-      message: 'Cannot find module "@/components/NonExistentComponent"',
+      message: 'Cannot find module: "@/components/NonExistentComponent"',
       file: 'src/routes/demo/+page.svelte',
       line: 42,
-      suggestion 'Check if the import path is correct and the module exists.',
+      suggestion: 'Check if the import path is correct and the module exists.',
     },
     {
       level: 'warn' as const,
-      message: 'Unused variable "unusedVar" in function scope',
+      message: 'Unused variable: "unusedVar" in function scope',
       file: 'src/lib/utils/demo-utils.ts',
       line: 15,
-      suggestion 'Remove unused variables or prefix with underscore if intentionally unused.',
+      suggestion: 'Remove unused variables or prefix with underscore if intentionally unused.',
     },
     {
       level: 'error' as const,
-      message: 'Type error: Property "nonExistentProp" does not exist on type',
+      message: 'Type error: Property: "nonExistentProp" does not exist on type',
       file: 'src/lib/components/DemoComponent.svelte',
       line: 28,
-      suggestion 'Check TypeScript types and ensure the property exists on the object.',
+      suggestion: 'Check TypeScript types and ensure the property exists on the object.',
     },
     {
       level: 'info' as const,
       message: 'HMR: File changed, hot reloading...',
       file: 'src/app.html',
       line: 1,
-      suggestion 'File change detected. No action needed.',
+      suggestion: 'File change detected. No action needed.',
     }
   ];
   function loadErrorLog() {
@@ -89,18 +89,18 @@
   }
   function getErrorIcon(level: string) {
     switch (level) {
-      case 'error': return '🚨';
-      case 'warn': return '⚠️';
-      case 'info': return 'ℹ️';
-      default: return '📝';
+      case: 'error': return: '🚨';
+      case: 'warn': return: '⚠️';
+      case: 'info': return: 'ℹ️';
+      default: return: '📝';
     }
   }
   function getErrorColor(level: string) {
     switch (level) {
-      case 'error': return 'text-red-600 bg-red-50 border-red-200';
-      case 'warn': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'info': return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case: 'error': return: 'text-red-600 bg-red-50 border-red-200';
+      case: 'warn': return: 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case: 'info': return: 'text-blue-600 bg-blue-50 border-blue-200';
+      default: return: 'text-gray-600 bg-gray-50 border-gray-200';
     }
   }
   function formatTimestamp(timestamp: string) {
@@ -286,7 +286,7 @@
       </div>
       <div class="mt-4 p-4 bg-indigo-100 rounded">
         <p class="text-sm text-indigo-800">
-          <strong>💡 Tip:</strong> Use <code>Ctrl+Shift+P</code> and search for "Tasks: Run Task" to access Vite error logger
+          <strong>💡 Tip:</strong> Use <code>Ctrl+Shift+P</code> and search for: "Tasks: Run Task" to access Vite error logger
           commands. The error logger automatically integrates with VS Code's Problems panel and provides intelligent error
           suggestions.
         </p>

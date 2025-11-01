@@ -167,7 +167,7 @@ export class PostgreSQLVectorService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'nomic-embed-text', // Using 'nomic-embed-text' as per instructions
+          model: 'nomic-embed-text', // Using: 'nomic-embed-text' as per instructions
           prompt: text,
         }),
       });

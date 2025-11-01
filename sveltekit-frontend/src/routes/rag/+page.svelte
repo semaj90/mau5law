@@ -181,7 +181,7 @@
 <h1 class="text-2xl font-bold mb-4">Upload Document to RAG</h1>
 
 <!-- Server action form: use plain POST multipart form (no superForm client-side binding) -->
-<form method="POST" enctype="multipart/form-data" class="space-y-3 border p-4 rounded" on:submit={() => (submitting = true)}>
+<form method="POST" enctype="multipart/form-data" class="space-y-3 border p-4 rounded" onsubmit={() => (submitting = true)}>
   <label class="block">
     <span>Title</span>
     <input name="title" value={data?.form?.data?.title ?? ''} class="border p-2 w-full rounded" />
@@ -247,7 +247,7 @@
       <button
         class="nes-btn"
         class:is-primary={activeTab === 'upload'}
-        on:click={() => activeTab = 'upload'}
+        onclick={() => activeTab = 'upload'}
         style="background: {activeTab === 'upload' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
       >
         📤 Upload
@@ -255,7 +255,7 @@
       <button
         class="nes-btn"
         class:is-primary={activeTab === 'documents'}
-        on:click={() => activeTab = 'documents'}
+        onclick={() => activeTab = 'documents'}
         style="background: {activeTab === 'documents' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
       >
         📚 Documents ({documents.length})
@@ -263,7 +263,7 @@
       <button
         class="nes-btn"
         class:is-primary={activeTab === 'search'}
-        on:click={() => activeTab = 'search'}
+        onclick={() => activeTab = 'search'}
         style="background: {activeTab === 'search' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
       >
         🔍 Search
@@ -291,7 +291,7 @@
           id="file-input"
           type="file"
           accept=".txt,.md,.json,.csv,text/*"
-          on:change={handleFileSelect}
+          onchange={handleFileSelect}
           style="padding: 0.5rem; width: 100%; background: #212529; border: 2px solid #d4af37; color: #d4af37;"
         />
       </div>
@@ -322,7 +322,7 @@
 
       <!-- Upload Button -->
       <Button
-        on:click={uploadFile}
+        onclick={uploadFile}
         disabled={!selectedFile || uploading}
         class="nes-btn is-success"
         style="width: 100%;"
@@ -372,7 +372,7 @@
           class="nes-input is-dark"
           placeholder="What are you looking for?"
           bind:value={searchQuery}
-          on:keydown={e => e.key === 'Enter' && searchDocuments()}
+          onkeydown={e => e.key === 'Enter' && searchDocuments()}
           style="width: 100%;"
         />
       </div>
@@ -417,7 +417,7 @@
 
       <!-- Search Button -->
       <Button
-        on:click={searchDocuments}
+        onclick={searchDocuments}
         disabled={!searchQuery.trim() || searching}
         class="nes-btn is-primary"
         style="width: 100%;"
@@ -498,7 +498,7 @@
                 <button
                   class="nes-btn is-primary"
                   style="flex: 1; font-size: 0.75rem; padding: 0.5rem;"
-                  on:click={() => {
+                  onclick={() => {
                     const url = `/api/rag/documents/${doc?.id}`;
                     fetch(url).then(r => r.json()).then(data => {
                       console.log('Document details:', data);
@@ -512,7 +512,7 @@
                   class="nes-btn is-error"
                   disabled={deletingId === doc?.id}
                   style="flex: 1; font-size: 0.75rem; padding: 0.5rem;"
-                  on:click={() => deleteDocument(doc?.id)}
+                  onclick={() => deleteDocument(doc?.id)}
                 >
                   {deletingId === doc?.id ? '⏳' : '🗑️'} Delete
                 </button>
@@ -543,7 +543,7 @@
             class="nes-input is-dark"
             placeholder="What are you looking for?"
             bind:value={searchQuery}
-            on:keydown={e => e.key === 'Enter' && searchDocuments()}
+            onkeydown={e => e.key === 'Enter' && searchDocuments()}
             style="width: 100%;"
           />
         </div>
@@ -588,7 +588,7 @@
 
         <!-- Search Button -->
         <Button
-          on:click={searchDocuments}
+          onclick={searchDocuments}
           disabled={!searchQuery.trim() || searching}
           class="nes-btn is-primary"
           style="width: 100%;"

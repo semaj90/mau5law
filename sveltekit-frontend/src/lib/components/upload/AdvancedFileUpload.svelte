@@ -486,14 +486,14 @@
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case "success":
-        return "text-green-600";
-      case "error":
-        return "text-red-600";
-      case "uploading":
-        return "text-blue-600";
+      case: "success":
+        return: "text-green-600";
+      case: "error":
+        return: "text-red-600";
+      case: "uploading":
+        return: "text-blue-600";
       default:
-        return "text-gray-600";
+        return: "text-gray-600";
   }}
 </script>
 <div class="container mx-auto px-4" class:disabled>

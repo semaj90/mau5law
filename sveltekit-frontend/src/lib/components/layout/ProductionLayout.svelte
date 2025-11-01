@@ -218,8 +218,8 @@
       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
       role="button"
       tabindex="-1"
-      on:click={toggleMobileMenu}
-      on:keydown={(e) => e.key === 'Escape' && toggleMobileMenu()}
+      onclick={toggleMobileMenu}
+      onkeydown={(e) => e.key === 'Escape' && toggleMobileMenu()}
     ></div>
   {/if}
 
@@ -249,7 +249,7 @@
           {#if isSidebarOpen}
             <button
               class="p-2 text-slate-400 hover:text-amber-400 transition-colors lg:hidden rounded-lg hover:bg-slate-800/50"
-              on:click={toggleMobileMenu}
+              onclick={toggleMobileMenu}
             >
               <X class="w-5 h-5" />
             </button>
@@ -275,7 +275,7 @@
                   : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30',
                 !isSidebarOpen && 'justify-center'
               )}
-              on:click={(e) => handleNavigation(item.href, e)}
+              onclick={(e) => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
               <svelte:component this={item.icon} class="w-6 h-6 flex-shrink-0" />
@@ -306,7 +306,7 @@
                   : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30',
                 !isSidebarOpen && 'justify-center'
               )}
-              on:click={(e) => handleNavigation(item.href, e)}
+              onclick={(e) => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
               <svelte:component this={item.icon} class="w-6 h-6 flex-shrink-0" />
@@ -401,10 +401,10 @@
       <div class="flex items-center justify-between p-6">
         <!-- Professional Header Left -->
         <div class="flex items-center gap-6">
-          <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50" on:click={toggleSidebar}>
+          <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50" onclick={toggleSidebar}>
             <Menu class="w-6 h-6" />
           </button>
-          <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50" on:click={toggleMobileMenu}>
+          <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50" onclick={toggleMobileMenu}>
             <Menu class="w-6 h-6" />
           </button>
 
@@ -417,7 +417,7 @@
                 {/if}
                 <button
                   class={cn('hover:text-yellow-400 transition-colors', index === $breadcrumbs.length - 1 ? 'text-yellow-400 font-medium' : 'text-gray-400')}
-                  on:click={(e) => handleNavigation(crumb.href, e)}
+                  onclick={(e) => handleNavigation(crumb.href, e)}
                 >
                   {crumb.label}
                 </button>
@@ -438,7 +438,7 @@
         <div class="flex items-center gap-3">
           <!-- Professional AI Chat Toggle -->
           <div class="relative">
-            <button class="p-3 text-slate-400 hover:text-green-400 transition-all duration-300 relative group rounded-lg hover:bg-slate-800/50" on:click={() => (showClientChat = !showClientChat)} title="AI Assistant (Gemma 270MB)">
+            <button class="p-3 text-slate-400 hover:text-green-400 transition-all duration-300 relative group rounded-lg hover:bg-slate-800/50" onclick={() => (showClientChat = !showClientChat)} title="AI Assistant (Gemma 270MB)">
               <MessageSquare class="w-6 h-6" />
               <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-green-500 rounded-full group-hover:animate-pulse shadow-lg shadow-green-500/50"></div>
             </button>
@@ -446,7 +446,7 @@
 
           <!-- Professional Notifications -->
           <div class="relative">
-            <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 relative rounded-lg hover:bg-slate-800/50" on:click={() => (showNotifications = !showNotifications)}>
+            <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 relative rounded-lg hover:bg-slate-800/50" onclick={() => (showNotifications = !showNotifications)}>
               <Bell class="w-6 h-6" />
               <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-red-400 to-red-500 rounded-full shadow-lg shadow-red-500/50"></div>
             </button>
@@ -467,16 +467,16 @@
 
               <div class="absolute right-0 top-full mt-2 w-56 bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <div class="p-3 space-y-2">
-                  <button class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left" on:click={(e) => handleNavigation('/profile', e)}>
+                  <button class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left" onclick={(e) => handleNavigation('/profile', e)}>
                     <User class="w-5 h-5" />
                     <span class="font-medium">Profile Settings</span>
                   </button>
-                  <button class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left" on:click={(e) => handleNavigation('/settings', e)}>
+                  <button class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left" onclick={(e) => handleNavigation('/settings', e)}>
                     <Settings class="w-5 h-5" />
                     <span class="font-medium">Platform Settings</span>
                   </button>
                   <hr class="my-2 border-slate-600/50" />
-                  <button class="w-full flex items-center gap-3 p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300 text-left" on:click={handleLogout}>
+                  <button class="w-full flex items-center gap-3 p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300 text-left" onclick={handleLogout}>
                     <LogOut class="w-5 h-5" />
                     <span class="font-medium">Sign Out</span>
                   </button>
@@ -485,10 +485,10 @@
             </div>
           {:else}
             <div class="flex items-center gap-3">
-              <button class="px-6 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-semibold" on:click={(e) => handleNavigation('/auth/login', e)}>
+              <button class="px-6 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-semibold" onclick={(e) => handleNavigation('/auth/login', e)}>
                 Sign In
               </button>
-              <button class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-amber-500/25" on:click={(e) => handleNavigation('/auth/register', e)}>
+              <button class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-amber-500/25" onclick={(e) => handleNavigation('/auth/register', e)}>
                 Get Started
               </button>
             </div>

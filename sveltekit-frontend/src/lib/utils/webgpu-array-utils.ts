@@ -1,9 +1,9 @@
-// @ts-nocheck - Advanced experimental service
 /**
  * WebGPU Array Type Safety & Quantization Utilities
  * Solves Float32Array vs ArrayBuffer mismatches and provides quantization for AI inference
  * Author: Claude Code Integration
  */
+
 export type SupportedArrayTypes =
   | ArrayBuffer
   | Float32Array
@@ -21,7 +21,8 @@ export interface QuantizationConfig {
   maxValue?: number;
 }
 export interface ArrayConversionResult {
-  data: Float32Array | Int8Array | Uint8Array | Uint16Array;
+  // store as ArrayBufferView for simplicity and to cover all typed-array cases
+  data: ArrayBufferView;
   originalSize: number;
   compressedSize: number;
   compressionRatio: number;
@@ -30,7 +31,8 @@ export interface ArrayConversionResult {
 /**
  * Ensures consistent Float32Array format for WebGPU operations
  * Fixes the common ArrayBuffer vs Float32Array mismatch issue
- */ export function ensureFloat32Array(input: SupportedArrayTypes): Float32Array {
+ */
+export function ensureFloat32Array(input: SupportedArrayTypes): Float32Array {
   if (input instanceof Float32Array) {
     return input;
   }
@@ -58,12 +60,14 @@ export interface ArrayConversionResult {
     }
     return result;
   }
-  throw new Error(`Unsupported array type: ${input.constructor.name}`);
+  // Fallback - give a clearer message since constructor might be undefined for ArrayBufferView-like inputs
+  throw new Error(`Unsupported array type: ${Object.prototype.toString.call(input)}`);
 }
 /**
  * Quantizes Float32Array to FP16 (half precision) using Uint16Array storage
  * Reduces memory usage by 50% with minimal accuracy loss for AI models
- */ export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
+ */
+export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
   const fp16Data = new Uint16Array(input.length);
   for (let i = 0; i < input.length; i++) {
     fp16Data[i] = floatToHalf(input[i]);
@@ -142,34 +146,39 @@ export function createWebGPUBuffer(
   usage: GPUBufferUsageFlags,
   quantization?: QuantizationConfig
 ): { buffer: GPUBuffer; conversionResult?: ArrayConversionResult } {
-  let processedData: Float32Array | Int8Array | Uint8Array | Uint16Array;
+  // Use a simple union for the processed payload (either raw ArrayBuffer or a typed-array view)
+  let processedData: ArrayBuffer | ArrayBufferView;
   let conversionResult: ArrayConversionResult | undefined;
   // Ensure proper array format
   const float32Data = ensureFloat32Array(data);
   // Apply quantization if requested
   if (quantization) {
     switch (quantization.precision) {
-      case 'fp16':
+      case: 'fp16':
         conversionResult = quantizeToFP16(float32Data);
         processedData = conversionResult.data as Uint16Array;
         break;
-      case 'int8':
+      case: 'int8':
         conversionResult = quantizeToINT8(float32Data, quantization);
         processedData = conversionResult.data as Int8Array;
         break;
-      case 'uint8':
+      case: 'uint8':
         // Simple 8-bit quantization for [0,1] normalized data
-        processedData = new Uint8Array(float32Data.length);
-        for (let i = 0; i < float32Data.length; i++) {
-          processedData[i] = Math.round(Math.max(0, Math.min(1, float32Data[i])) * 255);
+        {
+          const u8 = new Uint8Array(float32Data.length);
+          for (let i = 0; i < float32Data.length; i++) {
+            u8[i] = Math.round(Math.max(0, Math.min(1, float32Data[i])) * 255);
+          }
+          processedData = u8;
+          conversionResult = {
+            data: processedData,
+            originalSize: float32Data.length * 4,
+            // use byteLength (available on ArrayBufferView) instead of .length on a generic view
+            compressedSize: (processedData as ArrayBufferView).byteLength,
+            compressionRatio: 4.0,
+            quantizationConfig: quantization,
+          };
         }
-        conversionResult = {
-          data: processedData,
-          originalSize: float32Data.length * 4,
-          compressedSize: processedData.length * 1,
-          compressionRatio: 4.0,
-          quantizationConfig: quantization,
-        };
         break;
       default:
         processedData = float32Data;
@@ -179,22 +188,43 @@ export function createWebGPUBuffer(
   }
   // Create GPU buffer
   const buffer = device.createBuffer({
-    size: processedData.byteLength,
+    size: (processedData as ArrayBuffer | ArrayBufferView).byteLength,
     usage,
     mappedAtCreation: true,
   });
-  // Copy data to buffer based on type
-  const mappedRange = buffer.getMappedRange();
-  if (processedData instanceof Float32Array) {
-    new Float32Array(mappedRange).set(processedData);
-  } else if (processedData instanceof Int8Array) {
-    new Int8Array(mappedRange).set(processedData);
-  } else if (processedData instanceof Uint8Array) {
-    new Uint8Array(mappedRange).set(processedData);
-  } else if (processedData instanceof Uint16Array) {
-    new Uint16Array(mappedRange).set(processedData);
+
+  // Guard and obtain mapped range safely
+  if (typeof buffer.getMappedRange !== 'function') {
+    // If getMappedRange isn't available, attempt to unmap and fail early
+    if (typeof buffer.unmap === 'function') buffer.unmap();
+    throw new Error('GPUBuffer.getMappedRange is not available on this platform');
   }
-  buffer.unmap();
+  const mapped = buffer.getMappedRange();
+  if (!mapped) {
+    if (typeof buffer.unmap === 'function') buffer.unmap();
+    throw new Error('GPUBuffer.getMappedRange returned undefined');
+  }
+  const mappedRange = mapped as ArrayBuffer;
+
+  // Robust copy: always create a Uint8Array source view that accounts for ArrayBufferView.byteOffset/byteLength
+  let srcUint8: Uint8Array;
+  if (processedData instanceof ArrayBuffer) {
+    srcUint8 = new Uint8Array(processedData);
+  } else {
+    // processedData is ArrayBufferView; respect byteOffset and byteLength (no 'any' cast)
+    const view = processedData as ArrayBufferView;
+    srcUint8 = new Uint8Array(view.buffer, view.byteOffset ?? 0, view.byteLength);
+  }
+
+  // Destination view and copy
+  const dst = new Uint8Array(mappedRange);
+  dst.set(srcUint8.subarray(0, dst.length)); // guard in case sizes differ
+
+  // Unmap if available
+  if (typeof buffer.unmap === 'function') {
+    buffer.unmap();
+  }
+
   return { buffer, conversionResult };
 }
 /**
@@ -206,7 +236,7 @@ export function batchProcessArrays(
   arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
   quantization?: QuantizationConfig
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
-  const results = new Map();
+  const results = new Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }>();
   for (const { name, data, usage } of arrays) {
     const result = createWebGPUBuffer(device, data, usage, quantization);
     results.set(name, result);
@@ -271,22 +301,25 @@ export function analyzeMemoryUsage(
     let sizeBytes: number;
     let estimatedAccuracyLoss: number;
     switch (config.precision) {
-      case 'fp32':
+      case: 'fp32':
         sizeBytes = originalSize;
         estimatedAccuracyLoss = 0;
         break;
-      case 'fp16':
+      case: 'fp16':
         sizeBytes = float32Data.length * 2;
         estimatedAccuracyLoss = 0.01; // ~1% typical accuracy loss
         break;
-      case 'int8':
+      case: 'int8':
         sizeBytes = float32Data.length * 1;
         estimatedAccuracyLoss = 0.05; // ~5% typical accuracy loss
         break;
-      case 'uint8':
+      case: 'uint8':
         sizeBytes = float32Data.length * 1;
         estimatedAccuracyLoss = 0.08; // ~8% typical accuracy loss for signed data
         break;
+      default:
+        sizeBytes = originalSize;
+        estimatedAccuracyLoss = 0;
     }
     return {
       precision: config.precision,

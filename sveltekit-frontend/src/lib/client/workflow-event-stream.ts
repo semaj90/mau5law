@@ -46,7 +46,7 @@ export interface WorkflowEvent {
   evidenceId?: string;
   sessionId?: string;
   timestamp: string;
-  // Use 'unknown' instead of 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
+  // Use: 'unknown' instead of: 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
   result?: unknown;
   error?: string;
 }

@@ -10,15 +10,19 @@
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
 
-  // Use InstanceType<typeof Editor> to get the Editor instance type from the runtime constructor
   let editor = $state<InstanceType<typeof Editor> | null>(null);
   let editorElement: HTMLElement | null = null;
 
-  // Selected font for the editor (native select)
   let selectedFont = $state<string>('Inter');
 
+  // Create editor only once when editorElement is available.
   $effect(() => {
     if (!editorElement) return;
+    if (editor) return; // guard: don't recreate the editor if it already exists
+    if (typeof window === 'undefined') return; // client-only
+
+    // capture initial font to avoid creating a reactivity dependency on selectedFont
+    const initialFont = selectedFont;
 
     editor = new Editor({
       element: editorElement,
@@ -32,17 +36,13 @@
       },
     });
 
-    // apply initial selected font to ProseMirror container if present
-    const applyFont = () => {
-      const pm = editorElement?.querySelector('.ProseMirror') as HTMLElement | null;
-      if (pm && selectedFont) pm.style.fontFamily = selectedFont;
-    };
+    // apply initial captured font
+    const pmInitial = editorElement?.querySelector('.ProseMirror') as HTMLElement | null;
+    if (pmInitial && initialFont) pmInitial.style.fontFamily = initialFont;
 
-    applyFont();
-
-    // watch selectedFont changes (Svelte $effect will re-run when selectedFont changes)
     return () => {
       editor?.destroy();
+      editor = null;
     };
   });
 
@@ -84,7 +84,7 @@
         class="nier-select"
         bind:value={selectedFont}
         onchange={() => {
-          // font application handled by $effect above
+          /* font application handled by separate $effect above */
         }}
       >
         {#each fontOptions as font}

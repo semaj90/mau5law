@@ -1,6 +1,6 @@
 <!-- Chain of Custody Tracker for Legal AI App -->
 <script context="module" lang="ts">
-  // Type declarations must live in module context to avoid "Modifiers cannot appear here"
+  // Type declarations must live in module context to avoid: "Modifiers cannot appear here"
   export interface CustodyTransfer {
     id: string;
     timestamp: Date;
@@ -91,7 +91,7 @@
     } else if (diffHours > 0) {
       return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
     } else {
-      return 'Less than an hour ago';
+      return: 'Less than an hour ago';
     }
   }
 </script>
@@ -180,7 +180,7 @@
     {#if interactive && onTransferEvidence}
       <div class="mt-3 flex justify-end">
         <button
-          on:click={() => onTransferEvidence?.(evidence)}
+          onclick={() => onTransferEvidence?.(evidence)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
         >
           Transfer Custody
@@ -215,7 +215,7 @@
                 'relative flex items-start gap-4 w-full text-left',
                 interactive && 'cursor-pointer group'
               )}
-              on:click={() => interactive && onViewDetails?.(transfer)}
+              onclick={() => interactive && onViewDetails?.(transfer)}
             >
                <!-- Timeline Node -->
                <div
@@ -315,7 +315,7 @@
         {#if !showFullHistory && sortedTransfers.length > 3}
           <div class="text-center mt-4">
             <button
-              on:click={() => (showFullHistory = true)}
+              onclick={() => (showFullHistory = true)}
               class="text-sm font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
             >
               Show {sortedTransfers.length - 3} more transfer{sortedTransfers.length - 3 !== 1 ? 's' : ''}

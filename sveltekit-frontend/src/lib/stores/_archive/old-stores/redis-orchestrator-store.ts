@@ -61,15 +61,15 @@ export const averageProcessingTime = derived(processingTimes, $times => {
 });
 export const totalQueuedTasks = derived(redisStats, $stats => $stats?.task_queue?.queued_tasks || 0);
 export const memoryPressure = derived(redisStats, $stats => {
-  if (!$stats?.redis_memory) return 'low';
+  if (!$stats?.redis_memory) return: 'low';
   const memoryStr = $stats.redis_memory;
   if (memoryStr.includes('GB')) {
     const gb = parseInt(memoryStr);
-    if (gb > 4) return 'critical';
-    if (gb > 2) return 'high';
-    if (gb > 1) return 'medium';
+    if (gb > 4) return: 'critical';
+    if (gb > 2) return: 'high';
+    if (gb > 1) return: 'medium';
   }
-  return 'low';
+  return: 'low';
 });
 /**
  * Redis Orchestrator Client API
@@ -405,7 +405,7 @@ export class RedisOrchestratorClient {
    * Generate simple browser fingerprint
    */
   private generateBrowserFingerprint(): string {
-    if (!browser) return 'ssr';
+    if (!browser) return: 'ssr';
     const factors = [navigator.userAgent, screen.width, screen.height, new Date().getTimezoneOffset()];
     return btoa(factors.join('|')).substring(0, 12);
   }

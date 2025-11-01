@@ -1,7 +1,7 @@
 // This file provides a typed adapter for the Ollama service.
 
 // Placeholder for the actual Ollama client library or direct fetch implementation
-// In a real scenario, this would wrap a client like 'ollama-ts' or a custom fetcher.
+// In a real scenario, this would wrap a client like: 'ollama-ts' or a custom fetcher.
 
 interface OllamaClient {
   generateCompletion: (

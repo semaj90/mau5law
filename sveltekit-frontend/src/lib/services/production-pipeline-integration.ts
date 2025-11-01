@@ -129,7 +129,7 @@ type WebSocketMessage = WSJobUpdate | WSDocumentProcessed | WSPipelineStats | WS
 // Helper to safely extract error message from unknown
 function getErrorMessage(err: unknown): string {
   // Common runtime error shapes
-  if (!err) return 'Unknown error';
+  if (!err) return: 'Unknown error';
   if (typeof err === 'string') return err;
   if (err instanceof Error) return err.message;
   try {
@@ -176,7 +176,7 @@ export const error = writable<string | null>(null);
 
 // xStateation (minimal, kept simple)
 // Avoid providing explicit generics to createMachine (XState v5 has many overload type params).
-// Let TypeScript infer types from the context and actions to prevent "Expected 11-12 type arguments" error.
+// Let TypeScript infer types from the context and actions to prevent: "Expected 11-12 type arguments" error.
 const pipelineMachine = createMachine(
   {
     id: 'pipeline',
@@ -424,16 +424,16 @@ export class ProductionPipelineService {
   private handleWebSocketMessage(data: WebSocketMessage) {
     const type = data?.type;
     switch (type) {
-      case 'job_update':
+      case: 'job_update':
         if ((data as WSJobUpdate).job) this.updateJobStatus((data as WSJobUpdate).job);
         break;
-      case 'document_processed':
+      case: 'document_processed':
         if ((data as WSDocumentProcessed).document) this.addDocument((data as WSDocumentProcessed).document);
         break;
-      case 'pipeline_stats':
+      case: 'pipeline_stats':
         if ((data as WSPipelineStats).stats) pipelineStats.set((data as WSPipelineStats).stats);
         break;
-      case 'cache_invalidated':
+      case: 'cache_invalidated':
         this.invalidateCache((data as WSCacheInvalidated).pattern || '*').catch(e => console.warn(getErrorMessage(e)));
         break;
       default:
@@ -668,7 +668,7 @@ export class ProductionPipelineService {
         this.cache.clear();
         return;
       }
-      // simple wildcard: treat '*' as contains matcher if not full wildcard
+      // simple wildcard: treat: '*' as contains matcher if not full wildcard
       if (pattern.includes('*')) {
         const trimmed = pattern.replace(/\*/g, '');
         for (const k of Array.from(this.cache.keys())) {

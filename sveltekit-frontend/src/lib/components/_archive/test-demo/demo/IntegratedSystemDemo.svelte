@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
     sessionManagement: false
     aiAssistant: false
     productionServices: false
-    overallHealth: 'unknown' as 'healthy' | 'partial' | 'down' | 'unknown';
+    overallHealth: 'unknown' as: 'healthy' | 'partial' | 'down' | 'unknown';
   });
   let serviceMetrics = $state({
     lastUpdate: new Date());
@@ -187,10 +187,10 @@ https://svelte.dev/e/js_parse_error -->
       return status ? 'bg-green-500' : 'bg-red-500';
     }
     switch (status) {
-      case 'healthy': return 'bg-green-500';
-      case 'partial': return 'bg-yellow-500';
-      case 'down': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case: 'healthy': return: 'bg-green-500';
+      case: 'partial': return: 'bg-yellow-500';
+      case: 'down': return: 'bg-red-500';
+      default: return: 'bg-gray-500';
     }
   }
   // Handle authentication success
@@ -335,11 +335,11 @@ https://svelte.dev/e/js_parse_error -->
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button class="bits-btn" on:click={demoLogin} disabled={authenticatedUser !== null}>
+                <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
-                <Button class="bits-btn" on:click={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
-                <Button class="bits-btn" on:click={demoLogout} disabled={!authenticatedUser} variant="ghost">
+                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
 Demo Logout
               </div>
             </div>
@@ -359,7 +359,7 @@ Demo Logout
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 showAuthDialog = true}>
                 Open Authentication Dialog
             </div>
@@ -373,7 +373,7 @@ showAuthDialog = true}>
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn" on:click={demoLogout} variant="ghost">
+              <Button class="bits-btn" onclick={demoLogout} variant="ghost">
 Logout
             </div>
           {/if}
@@ -410,13 +410,13 @@ Logout
               </div>
               <div class="flex gap-2">
                 <Button class="bits-btn"
-                  on:click={() =>
+                  onclick={() =>
 sessionManager.performSecurityCheck()}
                   size="sm"
                 >
                   Security Check
                 <Button class="bits-btn"
-                  on:click={() =>
+                  onclick={() =>
 sessionManager.refreshSession()}
                   size="sm"
                   variant="ghost"
@@ -479,7 +479,7 @@ sessionManager.refreshSession()}
                 </div>
               </div>
             </div>
-            <Button class="bits-btn" on:click={checkSystemHealth}>
+            <Button class="bits-btn" onclick={checkSystemHealth}>
 Refresh System Health
           </div>
         </div>

@@ -119,7 +119,7 @@ Showcases the service worker-based AI orchestration system
       });
 
       await Promise.all(taskPromises);
-      console.log(`Demo scenario "${scenario.name}" completed`);
+      console.log(`Demo scenario: "${scenario.name}" completed`);
     } catch (error) {
       console.error('Demo scenario failed:', error);
     } finally {
@@ -166,13 +166,13 @@ Showcases the service worker-based AI orchestration system
 
   function getProviderIcon(providerId: string) {
     switch (providerId) {
-      case 'ollama':
+      case: 'ollama':
         return Cpu;
-      case 'vllm':
+      case: 'vllm':
         return Zap;
-      case 'autogen':
+      case: 'autogen':
         return Brain;
-      case 'crewai':
+      case: 'crewai':
         return Database;
       default:
         return Activity;

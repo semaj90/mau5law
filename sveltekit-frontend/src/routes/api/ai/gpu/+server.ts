@@ -321,7 +321,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const { operation, data, options = {} } = body
 		let response: GPUApiResponse
 		switch (operation) {
-			case 'llama_generate':
+			case: 'llama_generate':
 				try {
 					const result = await nvidiaLlamaService.generateText({
 						prompt: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).prompt,
@@ -355,8 +355,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           };
 				}
 				break
-			case 'wasm_compile':
-			case 'wasm_execute':
+			case: 'wasm_compile':
+			case: 'wasm_execute':
 				try {
 					// Route to external WASM-LLVM service
 					const endpoint = operation === 'wasm_compile' ? 'compile' : 'execute'
@@ -393,7 +393,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           };
 				}
 				break
-			case 'gpu_compute':
+			case: 'gpu_compute':
 				try {
 					const task = await gpuServiceIntegration.processTask({
 						id: `gpu_${Date.now()}`,
@@ -425,10 +425,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           };
 				}
 				break
-			case 'hybrid':
+			case: 'hybrid':
 				response = await performHybridOperation(data, options)
 				break
-			case 'health':
+			case: 'health':
 				const health = await checkGPUHealth()
 				response = {
 					success: true,

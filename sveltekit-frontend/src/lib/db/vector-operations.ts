@@ -486,7 +486,7 @@ export class LegalVectorService {
       throw new ServiceError(ERR.INVALID_INPUT, 'tokenCount must be a number');
     }
 
-    const expiresAt = analysis.expiresInHours ? sql`NOW() + INTERVAL '${analysis.expiresInHours} hours'` : null;
+    const expiresAt = analysis.expiresInHours ? sql`NOW() + INTERVAL: '${analysis.expiresInHours} hours'` : null;
 
     return await this.database.insert(legalAnalysisCache).values({
       inputHash: analysis.inputHash,
@@ -513,7 +513,7 @@ export class LegalVectorService {
         practiceAreas: sql<Record<string, number>>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`,
         avgProcessingTime: sql<number>`AVG(${legalDocuments.processingTimeMs})`,
         totalFileSize: sql<number>`SUM(${legalDocuments.fileSize})`,
-        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL '24 hours')`,
+        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL: '24 hours')`,
       })
       .from(legalDocuments)
       .where(eq(legalDocuments.documentStatus, 'active'));

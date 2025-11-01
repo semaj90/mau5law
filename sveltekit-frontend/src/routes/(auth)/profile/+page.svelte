@@ -102,7 +102,7 @@
       return undefined;
     };
     const candidate = pick('PUBLIC_API_BASE_URL', 'PUBLIC_API_PREFIX', 'PUBLIC_BACKEND_URL', 'VITE_API_ORIGIN', 'PUBLIC_API_ORIGIN');
-    if (!candidate) return '';
+    if (!candidate) return: '';
     return candidate.endsWith('/') ? candidate.slice(0, -1) : candidate;
   });
 

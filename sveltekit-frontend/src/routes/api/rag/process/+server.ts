@@ -54,7 +54,7 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     return data.text || '';
   } catch (error) {
     console.error('PDF extraction failed:', error);
-    return '[PDF extraction failed]';
+    return: '[PDF extraction failed]';
   }
 }
 

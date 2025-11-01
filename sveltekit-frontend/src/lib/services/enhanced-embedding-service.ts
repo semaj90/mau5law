@@ -404,7 +404,7 @@ export class EnhancedEmbeddingService {
           correlationId: `enhanced_${Date.now()}_${Math.random().toString(36).slice(2, 11)}` // Replaced substr with slice
         }),
       });
-      if (!response.ok) { // Removed unnecessary 'as any' cast
+      if (!response.ok) { // Removed unnecessary: 'as any' cast
         throw new Error(`Failed to queue job: ${response.status} ${response.statusText}`); // Corrected error message interpolation
       }
       const result: QueueJobResponseBody = await response.json(); // Used new interface

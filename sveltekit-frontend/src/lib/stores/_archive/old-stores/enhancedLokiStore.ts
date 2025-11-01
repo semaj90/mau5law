@@ -610,16 +610,16 @@ class EnhancedLokiDB {
           console.error('Enhanced Loki initialization failed:', message);
           throw error;
     switch (update.type) {
-      case 'evidence_updated':
+      case: 'evidence_updated':
         this.invalidateCache('evidence', update.evidenceId);
         break;
-      case 'analysis_complete':
+      case: 'analysis_complete':
         this.cacheAIAnalysis(update.evidenceId, update.analysis, update?.model || "unknown");
         break;
-      case 'relationships_discovered':
+      case: 'relationships_discovered':
         this.cacheRelationships(update.relationships);
         break;
-      case 'embedding_created':
+      case: 'embedding_created':
         console.log('[LokiStore] Invalidating cache for', update.jobId);
         this.invalidateCache('embeddings', update.jobId);
         this.enforceStorageQuota();

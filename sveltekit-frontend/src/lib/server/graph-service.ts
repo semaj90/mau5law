@@ -9,9 +9,9 @@ export async function mergePromptCluster(promptText: string, clusterId: string, 
   };
 }
 
-export async function mergeTransition(clusterFrom: string, clusterTo: string) {
+export async function mergeTransition(clusterfrom string, clusterTo: string) {
   // stub: return simple ok
-  return { ok: true, from: clusterFrom, to: clusterTo };
+  return { ok: true, from clusterFrom, to: clusterTo };
 }
 
 // Consolidate a single default export exposing the functions

@@ -22,7 +22,7 @@ import { aiService } from '$lib/server/services/ai-service.js';
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// Define a type for the AI query result to avoid using 'any'
+// Define a type for the AI query result to avoid using: 'any'
 type ProcessQueryResult = {
   response?: unknown;
   confidence?: number;

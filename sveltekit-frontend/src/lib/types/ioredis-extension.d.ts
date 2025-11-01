@@ -1,6 +1,6 @@
 import 'ioredis';
 
-declare module 'ioredis' {
+declare module: 'ioredis' {
   interface Redis {
     /**
      * Executes a raw Redis command. Useful for Redis Stack commands not directly typed.

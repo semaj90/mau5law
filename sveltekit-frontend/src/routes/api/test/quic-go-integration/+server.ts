@@ -71,7 +71,7 @@ interface EnhancedRagSemanticSearchPayload {
   options: { collection: string; limit: number };
 }
 
-// Generic payload for other services, using unknown for values for better type safety than 'any'
+// Generic payload for other services, using unknown for values for better type safety than: 'any'
 interface GenericClientPayload extends Record<string, unknown> {}
 
 // Union type for the payload in the POST request
@@ -367,7 +367,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let testResult: PostTestResult;
     switch (service) {
-      case 'enhancedRag': {
+      case: 'enhancedRag': {
         const enhancedRagClient = goServiceManager.getEnhancedRAG();
         if (endpoint === 'ragQuery') {
           // Type assertion to narrow down the payload for ragQuery
@@ -385,7 +385,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         break;
       }
-      case 'uploadService': {
+      case: 'uploadService': {
         const uploadClient = goServiceManager.getUploadService();
         if (endpoint === 'health') {
           // Health endpoint typically doesn't require a specific payload, or it's ignored

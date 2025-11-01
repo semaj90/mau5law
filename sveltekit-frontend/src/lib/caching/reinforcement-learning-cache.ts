@@ -137,7 +137,7 @@ export class ReinforcementLearningCache {
     // Search cached patterns first (instant results)
     const cachedResults = this.searchCachedAssets(queryVector);
     if (cachedResults.length > 0) {
-      console.log(`⚡ Found ${cachedResults.length} cached 3D assets for "${query}"`);
+      console.log(`⚡ Found ${cachedResults.length} cached 3D assets for: "${query}"`);
       return cachedResults;
     }
     // Predict likely asset needs based on context
@@ -146,7 +146,7 @@ export class ReinforcementLearningCache {
     predictedAssets.forEach(asset => {
       this.assetSearchPatterns.set(asset.searchTerm, asset);
     });
-    console.log(`🔍 Predicted ${predictedAssets.length} relevant 3D assets for "${query}"`);
+    console.log(`🔍 Predicted ${predictedAssets.length} relevant 3D assets for: "${query}"`);
     return predictedAssets;
   }
   /**
@@ -172,7 +172,7 @@ export class ReinforcementLearningCache {
   // ===============================
   // PRIVATE HELPER METHODS
   // ===============================
-  private updateTransitionMatrix(from: string, to: string): void {
+  private updateTransitionMatrix(from string, to: string): void {
     if (!this.componentTransitionMatrix.has(from)) {
       this.componentTransitionMatrix.set(from, new Map<string, number>());
     }
@@ -187,7 +187,7 @@ export class ReinforcementLearningCache {
     // Generate predictions based on learned patterns
     for (const [componentType, transitions] of this.componentTransitionMatrix) {
       if (recentActions.includes(componentType)) {
-        // Use transition counts to weight predicted usage so 'transitions' is read
+        // Use transition counts to weight predicted usage so: 'transitions' is read
         const transitionCount = Array.from(transitions.values()).reduce((s, v) => s + v, 0);
         const baseUsage = this.calculateUsageProbability(componentType, context);
         // small boost from transition frequency (normalized)
@@ -272,7 +272,7 @@ export class ReinforcementLearningCache {
   }
   private searchCachedAssets(queryVector: number[]): AssetSearchPattern[] {
     const results: AssetSearchPattern[] = [];
-    // iterate values to avoid unused 'term' variable
+    // iterate values to avoid unused: 'term' variable
     for (const pattern of this.assetSearchPatterns.values()) {
       const similarity = this.calculateCosineSimilarity(queryVector, pattern.contextVector);
       if (similarity > 0.7) {
@@ -285,7 +285,7 @@ export class ReinforcementLearningCache {
   }
   private predictAssetNeeds(query: string, context: unknown, queryVector: number[]): AssetSearchPattern[] {
     const predictions: AssetSearchPattern[] = [];
-    // Normalize context to a string for simple matching without using 'any'
+    // Normalize context to a string for simple matching without using: 'any'
     const ctxStr = typeof context === 'string' ? context : JSON.stringify(context || {});
     // Legal document context suggests certain 3D visualizations
     if (

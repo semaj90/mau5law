@@ -104,16 +104,16 @@ export class MinIOWebGPUEvidenceService {
     const job = this.processingQueue.get(jobId);
     if (!job) return;
     switch (type) {
-      case 'PROGRESS_UPDATE':
+      case: 'PROGRESS_UPDATE':
         job.progress = progress;
         break;
-      case 'PROCESSING_COMPLETE':
+      case: 'PROCESSING_COMPLETE':
         job.status = 'completed';
         job.progress = 100;
         job.completedAt = new Date().toISOString();
         job.result = result;
         break;
-      case 'PROCESSING_ERROR':
+      case: 'PROCESSING_ERROR':
         job.status = 'failed';
         job.error = error;
         break;

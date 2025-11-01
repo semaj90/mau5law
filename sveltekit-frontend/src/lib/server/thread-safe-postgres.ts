@@ -308,7 +308,7 @@ export class ThreadSafePostgres {
         }
 
         if (conditions.length > 0) {
-          query += ` WHERE ${conditions.join(' AND ')}`;
+          query += ` WHERE ${conditions.join(' AND: ')}`;
         }
 
         // Add ordering - handle relevance only when we have a text search param
@@ -522,7 +522,7 @@ export class ThreadSafePostgres {
           const params: unknown[] = [];
 
           switch (op.type) {
-            case 'insert':
+            case: 'insert':
               query = `
                 INSERT INTO ${op.table} (id, content, metadata, created_at, updated_at)
                 VALUES ($1, $2, $3, NOW(), NOW())
@@ -530,7 +530,7 @@ export class ThreadSafePostgres {
               params.push(op.id, JSON.stringify(op.data || {}), JSON.stringify({}));
               break;
 
-            case 'update':
+            case: 'update':
               query = `
                 UPDATE ${op.table}
                 SET content = $2, updated_at = NOW()
@@ -539,7 +539,7 @@ export class ThreadSafePostgres {
               params.push(op.id, JSON.stringify(op.data || {}));
               break;
 
-            case 'delete':
+            case: 'delete':
               query = `DELETE FROM ${op.table} WHERE id = $1`;
               params.push(op.id);
               break;
@@ -582,9 +582,9 @@ export class ThreadSafePostgres {
       const client = await pool.connect();
 
       try {
-        await client.query('SELECT NOW() as timestamp'); // removed unused 'result' variable
+        await client.query('SELECT NOW() as timestamp'); // removed unused: 'result' variable
 
-        // Avoid using 'any' by asserting pool to a narrow shape via unknown
+        // Avoid using: 'any' by asserting pool to a narrow shape via unknown
         const poolLike = pool as unknown as { totalCount?: number };
 
         return {
@@ -704,7 +704,7 @@ export interface LegalQueryParams {
   caseId?: string;
   jurisdiction?: string;
   court?: string;
-  dateRange?: { from: Date; to: Date };
+  dateRange?: { from Date; to: Date };
   practiceArea?: string;
   documentType?: string;
 }

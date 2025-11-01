@@ -396,7 +396,7 @@ export class AutoGenGGUFOrchestra {
         repeatPenalty: 1.1,
         stopTokens: ['END_RESPONSE', '\n\n---'],
         // map our agent priority (uppercase) into the lowercase request-level field expected by runtimes
-        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown as 'low' | 'medium' | 'high' | 'critical',
+        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown as: 'low' | 'medium' | 'high' | 'critical',
       };
       // Execute with GGUF runtime (GPU accelerated) - safe call with fallback
       const stepStartTime = Date.now();

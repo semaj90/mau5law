@@ -2,7 +2,6 @@
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   interface Props {
     caseId: string;
     documents: CaseDocument[];
@@ -13,25 +12,11 @@ https: //svelte.dev/e/js_parse_error -->
     documents = [],
     evidenceReports = []
   }: Props = $props();
-  import { useMachine } from '@xstate/svelte';
-  import { createMachine, assign } from 'xstate';
-  import AISummaryReader from './AISummaryReader.svelte';
-  import EvidenceReportSummary from './EvidenceReportSummary.svelte';
-  import {
-    FileText,
-    Brain,
-    GitMerge,
-    Scale,
-    Target,
-    CheckCircle,
-    AlertTriangle,
-    Clock,
-    Users,
-    Download,
-    Play,
-    Pause
-  } from 'lucide-svelte';
-  import { fly, fade } from 'svelte/transition';
+
+  import { createMachine, assign, interpret } from 'xstate';
+  import { readable, writable, derived } from 'svelte/store';
+  import { fly } from 'svelte/transition'; // <-- added missing import
+
   interface CaseDocument {
     id: string;
     title: string;
@@ -202,7 +187,7 @@ https: //svelte.dev/e/js_parse_error -->
     }
   }, {
     services: {
-      performSynthesis: async (context) => {
+      performSynthesis: async (context: SynthesisContext) => {
         // Mock comprehensive synthesis
         return new Promise<CaseSynthesis>((resolve) => {
           setTimeout(() => {
@@ -345,53 +330,79 @@ https: //svelte.dev/e/js_parse_error -->
       }
     }
   });
-  const { state, send } = useMachine(synthesisMachine);
-  let selectedDocuments = new Set<string>();
-  let selectedReports = new Set<string>();
-  let allItems = $derived([ // Added opening square bracket
-    ...documents.map(d => ({ id: d.id, type: 'document', title: d.title, data: d })),
-    ...evidenceReports.map(r => ({ id: r.id, type: 'report', title: r.title, data: r }))
-  ]);
-  let selectedCount = $derived(selectedDocuments.size + selectedReports.size);
+
+  // Run machine via xstate interpret and expose as a Svelte readable store
+  const service = interpret(synthesisMachine).start();
+  const state = readable(service.state, (set) => {
+    const listener = (s: any) => set(s);
+    service.onTransition(listener);
+    return () => service.stop();
+  });
+  const send = (event: any) => service.send(event);
+
+  // Use Svelte stores for selection sets so updates are reactive
+  const selectedDocuments = writable<Set<string>>(new Set());
+  const selectedReports = writable<Set<string>>(new Set());
+
+  // add local state for aggregated items (Svelte 5 runes)
+  let allItems = $state<any[]>([]); // <-- added
+
+  // replace legacy reactive statement with $effect
+  $effect(() => {
+    allItems = [
+      ...documents.map(d => ({ id: d.id, type: 'document', title: d.title, data: d })),
+      ...evidenceReports.map(r => ({ id: r.id, type: 'report', title: r.title, data: r }))
+    ];
+  });
+
+  // derived selected count
+  const selectedCount = derived([selectedDocuments, selectedReports], ([$docs, $reps]) => $docs.size + $reps.size);
+
   function toggleSelection(id: string, type: 'document' | 'report') {
     if (type === 'document') {
-      if (selectedDocuments.has(id)) {
-        selectedDocuments.delete(id);
-      } else {
-        selectedDocuments.add(id);
-      }
-      selectedDocuments = new Set(selectedDocuments);
+      selectedDocuments.update(prev => {
+        const s = new Set(prev);
+        if (s.has(id)) s.delete(id); else s.add(id);
+        return s;
+      });
     } else {
-      if (selectedReports.has(id)) {
-        selectedReports.delete(id);
-      } else {
-        selectedReports.add(id);
-      }
-      selectedReports = new Set(selectedReports);
+      selectedReports.update(prev => {
+        const s = new Set(prev);
+        if (s.has(id)) s.delete(id); else s.add(id);
+        return s;
+      });
     }
   }
+
   function startSynthesis() {
-    const items = [...selectedDocuments, ...selectedReports];
+    // read current sets, convert to arrays
+    let items: string[] = [];
+    selectedDocuments.subscribe(s => items = [...s])();
+    selectedReports.subscribe(s => items = [...items, ...s])();
     send({ type: 'SELECT_ITEMS', items });
     send({ type: 'START_SYNTHESIS' });
   }
+
   function getScoreColor(score: number): string {
-    if (score >= 0.8) return 'text-green-600';
-    if (score >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 0.8) return: 'text-green-600';
+    if (score >= 0.6) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
+
   function getPriorityColor(priority: string): string {
     switch (priority) {
-      case 'immediate': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-gray-100 text-gray-800 border-gray-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case: 'immediate': return: 'bg-red-100 text-red-800 border-red-200';
+      case: 'high': return: 'bg-orange-100 text-orange-800 border-orange-200';
+      case: 'medium': return: 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case: 'low': return: 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return: 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
+
   function exportSynthesis() {
-    if (!$state.context.synthesisResult) return;
-    const synthesis = $state.context.synthesisResult;
+    const s = $state.context?.synthesisResult;
+    if (!s) return;
+    const synthesis = s as CaseSynthesis;
     const content = `# Case Synthesis Report - ${caseId}
   ## Executive Summary
   ${synthesis.executiveSummary}
@@ -413,7 +424,7 @@ https: //svelte.dev/e/js_parse_error -->
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `case-synthesis-${caseId}-${new Date().toISOString().split('T')[0]}.md`; // Added parentheses to toISOString()
+    a.download = `case-synthesis-${caseId}-${new Date().toISOString().split('T')[0]}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -432,14 +443,14 @@ https: //svelte.dev/e/js_parse_error -->
       <div class="flex items-center gap-4">
         <div class="text-right text-sm text-gray-600">
           <div>{allItems.length} items available</div>
-          <div>{selectedCount} items selected</div>
+          <div>{$selectedCount} items selected</div>
         </div>
         {#if $state.context.synthesisResult}
           <button
             onclick={exportSynthesis}
             class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
-            <Download class="w-4 h-4" />
+            <span class="w-4 h-4 inline-block">⬇️</span>
             Export
           </button>
         {/if}
@@ -467,6 +478,7 @@ https: //svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
+
   {#if $state.matches('idle') || $state.context.progressStage === 'selecting'}
     <!-- Item Selection -->
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -481,7 +493,7 @@ https: //svelte.dev/e/js_parse_error -->
                 <input
                   type="checkbox"
                   class="mt-1"
-                  checked={selectedDocuments.has(doc.id)}
+                  checked={$selectedDocuments.has(doc.id)}
                   onchange={() => toggleSelection(doc.id, 'document')}
                 />
                 <div class="flex-1">
@@ -506,7 +518,7 @@ https: //svelte.dev/e/js_parse_error -->
                 <input
                   type="checkbox"
                   class="mt-1"
-                  checked={selectedReports.has(report.id)}
+                  checked={$selectedReports.has(report.id)}
                   onchange={() => toggleSelection(report.id, 'report')}
                 />
                 <div class="flex-1">
@@ -525,14 +537,14 @@ https: //svelte.dev/e/js_parse_error -->
       </div>
       <div class="mt-6 flex items-center justify-between">
         <div class="text-sm text-gray-600">
-          {selectedCount} items selected for synthesis
+          {$selectedCount} items selected for synthesis
         </div>
         <button
           onclick={startSynthesis}
-          disabled={selectedCount === 0}
+          disabled={$selectedCount === 0}
           class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <GitMerge class="w-4 h-4" />
+          <span class="w-4 h-4 inline-block">🔀</span>
           Start Synthesis
         </button>
       </div>
@@ -546,7 +558,7 @@ https: //svelte.dev/e/js_parse_error -->
           <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
         </div>
         <h3 class="text-lg font-semibold text-gray-900 mb-2">Synthesizing Case Analysis</h3>
-        <p class="text-gray-600">Processing {selectedCount} items for comprehensive analysis...</p>
+        <p class="text-gray-600">Processing {$selectedCount} items for comprehensive analysis...</p>
         <div class="mt-4 text-sm text-gray-500">
           This may take a few minutes depending on the complexity of your case.
         </div>
@@ -556,7 +568,7 @@ https: //svelte.dev/e/js_parse_error -->
     <!-- Error State -->
     <div class="bg-red-50 border border-red-200 rounded-lg p-6">
       <div class="flex items-center gap-3">
-        <AlertTriangle class="w-6 h-6 text-red-600" />
+        <span class="w-6 h-6">⚠️</span>
         <div>
           <h3 class="font-semibold text-red-800">Synthesis Failed</h3>
           <p class="text-red-700">{$state.context.error}</p>
@@ -583,7 +595,7 @@ https: //svelte.dev/e/js_parse_error -->
       <!-- Executive Summary -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
-          <Brain class="w-6 h-6" />
+          <span class="w-6 h-6">🧠</span>
           Executive Summary
         </h2>
         <p class="text-blue-800 leading-relaxed">{$state.context.synthesisResult.executiveSummary}</p>
@@ -591,7 +603,7 @@ https: //svelte.dev/e/js_parse_error -->
       <!-- Strength Assessment -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <Target class="w-6 h-6" />
+          <span class="w-6 h-6">🎯</span>
           Strength Assessment
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
@@ -657,7 +669,7 @@ https: //svelte.dev/e/js_parse_error -->
       <!-- Legal Strategy -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <Scale class="w-6 h-6" />
+          <span class="w-6 h-6">⚖️</span>
           Legal Strategy
         </h2>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -666,7 +678,7 @@ https: //svelte.dev/e/js_parse_error -->
             <ul class="space-y-2">
               {#each $state.context.synthesisResult.legalStrategy.primaryCharges as charge}
                 <li class="flex items-start gap-2">
-                  <CheckCircle class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                  <span class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0">✅</span>
                   <span class="text-gray-700">{charge}</span>
                 </li>
               {/each}
@@ -675,7 +687,7 @@ https: //svelte.dev/e/js_parse_error -->
             <ul class="space-y-2">
               {#each $state.context.synthesisResult.legalStrategy.supportingEvidence as evidence}
                 <li class="flex items-start gap-2">
-                  <FileText class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0">📎</span>
                   <span class="text-gray-700">{evidence}</span>
                 </li>
               {/each}
@@ -688,7 +700,7 @@ https: //svelte.dev/e/js_parse_error -->
             <ul class="space-y-2">
               {#each $state.context.synthesisResult.legalStrategy.potentialDefenses as defense}
                 <li class="flex items-start gap-2">
-                  <AlertTriangle class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                  <span class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0">⚠️</span>
                   <span class="text-gray-700">{defense}</span>
                 </li>
               {/each}
@@ -699,7 +711,7 @@ https: //svelte.dev/e/js_parse_error -->
       <!-- Timeline -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <Clock class="w-6 h-6" />
+          <span class="w-6 h-6">⏰</span>
           Case Timeline
         </h2>
         <div class="space-y-4">
@@ -730,7 +742,7 @@ https: //svelte.dev/e/js_parse_error -->
       <!-- Recommendations -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <Users class="w-6 h-6" />
+          <span class="w-6 h-6">👥</span>
           Recommendations
         </h2>
         <div class="space-y-4">
@@ -779,13 +791,10 @@ https: //svelte.dev/e/js_parse_error -->
           onclick={exportSynthesis}
           class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
-          <Download class="w-4 h-4" />
+          <span class="w-4 h-4 inline-block">⬇️</span>
           Export Report
         </button>
       </div>
     </div>
   {/if}
 </div>
-;
-</div>
-;

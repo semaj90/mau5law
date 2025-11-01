@@ -70,7 +70,7 @@ const createPackageBarrelStore = () => {
         },
         set: async (_key: string, value: any) => {
           console.log('Mock redis set:', key, value);
-          return 'OK';
+          return: 'OK';
         },
       },
     },

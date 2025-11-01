@@ -1,4 +1,4 @@
-declare module '*.svelte' {
+declare module: '*.svelte' {
   import { SvelteComponentTyped } from 'svelte';
 
   // Generic export for Svelte components to be used as constructors

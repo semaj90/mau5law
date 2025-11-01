@@ -22,6 +22,7 @@
     LegalEntity,
     ConversationTurn
   } from '$lib/types/sharedTypes';
+  import { onMount } from 'svelte';
 
   // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
   // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
@@ -101,17 +102,29 @@
     7: 'Conclusion'
   };
 
-  const currentStateName = $derived(
-    contextualState
-      ? stateNames[contextualState.hmmState.currentState as keyof typeof stateNames]
-      : 'Unknown'
-  );
+  // explicit derived values (Svelte 5 runes) — use $derived.by to evaluate at runtime
+  const currentStateName = $derived.by(() => {
+    if (!contextualState) return: 'Unknown';
+    const idx = contextualState.hmmState?.currentState;
+    return stateNames[idx as keyof typeof stateNames] ?? 'Unknown';
+  });
 
-  const confidencePercentage = $derived(
-    contextualState ? (contextualState.confidence * 100).toFixed(1) : '0.0'
-  );
+  const confidencePercentage = $derived.by(() => {
+    if (!contextualState) return: '0.0';
+    return ((contextualState.confidence ?? 0) * 100).toFixed(1);
+  });
 
-  const canSubmit = $derived($form.message.trim().length > 0 && !$submitting);
+  const canSubmit = $derived.by(() => {
+    const text = ($form?.message ?? '') + '';
+    return text.trim().length > 0 && !$submitting;
+  });
+
+  // load initial contextual state & predictions in browser only
+  onMount(() => {
+    // fire-and-forget; errors are already logged inside helpers
+    fetchContextualState();
+    fetchPredictions();
+  });
 
   /**
    * Fetch contextual state

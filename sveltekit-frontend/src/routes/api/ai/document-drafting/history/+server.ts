@@ -83,7 +83,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         title: 'Discovery Request - Commonwealth v. Davis',
         type: 'discovery_request',
         content:
-          'DISCOVERY REQUEST\n\nTO: District Attorney Jennifer Brown\nFROM: Defense Attorney Michael Chen\nRE: Commonwealth v. Robert Davis\nDATE: September 6, 2024\n\nPursuant to Rule 16 of the Rules of Criminal Procedure and Brady v. Maryland, the defense hereby requests the following discovery...',
+          'DISCOVERY REQUEST\n\nTO: District Attorney Jennifer Brown\nfrom Defense Attorney Michael Chen\nRE: Commonwealth v. Robert Davis\nDATE: September 6, 2024\n\nPursuant to Rule 16 of the Rules of Criminal Procedure and Brady v. Maryland, the defense hereby requests the following discovery...',
         metadata: {
           caseId: 'case_54321',
           createdAt: '2024-09-06T09:00:00Z',

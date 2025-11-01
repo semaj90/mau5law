@@ -3,8 +3,8 @@
  * Integrates with TensorFlow.js and GPU acceleration for legal graph analysis
  */
 import * as tf from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-backend-webgl';
-import '@tensorflow/tfjs-backend-webgpu';
+import: '@tensorflow/tfjs-backend-webgl';
+import: '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 
 export interface SOMConfig {
@@ -522,16 +522,16 @@ export class SOMNeuralNetwork {
     const terms: string[] = [];
     // Infer terms based on legal context and weights (simplified)
     switch (node.legalContext.conceptType) {
-      case 'case':
+      case: 'case':
         terms.push('case law', 'judicial decision', 'legal precedent');
         break;
-      case 'statute':
+      case: 'statute':
         terms.push('statutory law', 'legislation', 'code section');
         break;
-      case 'regulation':
+      case: 'regulation':
         terms.push('administrative law', 'regulatory provision', 'agency rule');
         break;
-      case 'precedent':
+      case: 'precedent':
         terms.push('binding precedent', 'stare decisis', 'authoritative ruling');
         break;
       default:

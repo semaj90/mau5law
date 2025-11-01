@@ -93,7 +93,7 @@ export class SessionManager {
         try {
           await this.redisClient.connect();
         } catch (err) {
-          // ignore "already connected" style errors
+          // ignore: "already connected" style errors
         }
       }
       // Setup error handling

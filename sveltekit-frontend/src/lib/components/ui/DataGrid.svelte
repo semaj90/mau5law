@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class';
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Props } from '$lib/types/global';
@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Fixed $state generics and initializers
   let selectedRows = $state<Set<string | number>>(new Set());
-  let sortConfig = $state<{ column: string; direction 'asc' | 'desc' } | null>(null);
+  let sortConfig = $state<{ column: string; direction: 'asc' | 'desc' } | null>(null);
   let searchQuery = $state('');
   let columnFilters = $state<Map<string, string>>(new Map());
 
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
         direction sortConfig.direction === 'asc' ? 'desc' : 'asc',
       };
     } else {
-      sortConfig = { column, direction 'asc' };
+      sortConfig = { column, direction: 'asc' };
     }
   }
 

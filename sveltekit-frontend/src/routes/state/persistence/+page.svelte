@@ -129,7 +129,7 @@ https://svelte.dev/e/expected_token -->
   }
 
   function formatBytes(bytes: number) {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -137,10 +137,10 @@ https://svelte.dev/e/expected_token -->
   }
 
   function getStateColor(state: string) {
-    if (state.includes('error')) return 'bg-red-100 text-red-800';
-    if (state.includes('processing') || state.includes('reviewing')) return 'bg-yellow-100 text-yellow-800';
-    if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800';
-    return 'bg-blue-100 text-blue-800';
+    if (state.includes('error')) return: 'bg-red-100 text-red-800';
+    if (state.includes('processing') || state.includes('reviewing')) return: 'bg-yellow-100 text-yellow-800';
+    if (state.includes('authenticated') || state.includes('completed')) return: 'bg-green-100 text-green-800';
+    return: 'bg-blue-100 text-blue-800';
   }
 
   function getMachineDisplayName(machineId: string) {

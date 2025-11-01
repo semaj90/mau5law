@@ -9,22 +9,62 @@
   import { unifiedServiceRegistry } from '$lib/services/unified-service-registry';
   import { CardBits } from '$lib/enhanced-bits';
   import { AlertCircle } from 'lucide-svelte';
-  let errorMessage = $state<string | null>('');
-  // Additional imports
   import { ButtonBits, InputBits } from '$lib/enhanced-bits';
-  import { Search, Loader2, CheckCircle } from 'lucide-svelte';
-  let searchQuery = $state('');
-  let searchResults = $state(null);
-  let ragResponse = $state(null);
-  let isSearching = $state(false);
-  let searchHistory = $state([]);
-  let systemStatus = $state(null);
+  import { Search } from 'lucide-svelte';
+  // Some lucide-svelte builds expose individual icon Svelte components as default exports.
+  // Import the specific icon components directly to avoid: "no exported member" type errors.
+  import Loader2 from 'lucide-svelte/dist/icons/loader-2.svelte';
+  import CheckCircle from 'lucide-svelte/dist/icons/check-circle.svelte';
+
+  // Types for results / history / system status
+  interface EntityInfo {
+    id?: string;
+    name?: string;
+    type?: string;
+    // allow other fields returned by backend
+    [k: string]: unknown;
+  }
+
+  interface SearchResult {
+    similarity?: number;
+    entityInfo?: EntityInfo;
+    chunk_sequence?: number;
+    chunk_text?: string;
+    // other optional fields
+    [k: string]: unknown;
+  }
+
+  interface SearchHistoryItem {
+    query: string;
+    resultCount: number;
+    timestamp: Date;
+    hasRAGResponse: boolean;
+    processingTime: number;
+  }
+
+  interface SystemStatus {
+    healthScore: number;
+    services: string[]; // or more complex objects if backend returns objects
+    // additional diagnostics
+    [k: string]: unknown;
+  }
+
+  // typed state
+  let errorMessage = $state<string | null>(null);
+  let searchQuery = $state<string>('');
+  let searchResults = $state<SearchResult[] | null>(null);
+  let ragResponse = $state<string | null>(null);
+  let isSearching = $state<boolean>(false);
+  let searchHistory = $state<SearchHistoryItem[]>([]);
+  let systemStatus = $state<SystemStatus | null>(null);
+
   // Search configuration
   let searchConfig = $state({
     limit: 5,
     threshold: 0.7,
     includeRAGResponse: true,
   });
+
   $effect(() => {
     (async () => {
       await loadSystemStatus();
@@ -33,6 +73,7 @@
     const interval = setInterval(loadSystemStatus, 10000);
     return () => clearInterval(interval);
   });
+
   async function loadSystemStatus() {
     try {
       systemStatus = await unifiedServiceRegistry.getSystemStatus();
@@ -40,12 +81,12 @@
       console.error('Failed to load system status:', error);
     }
   }
+
   async function performSearch() {
     if (!searchQuery.trim() || isSearching) return;
     isSearching = true;
     errorMessage = null;
     try {
-      // Use the new enhanced semantic search API for better performance
       const response = await fetch('/api/rag/semantic-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -53,7 +94,6 @@
           query: searchQuery,
           limit: searchConfig.limit,
           threshold: searchConfig.threshold,
-          // Optional filters can be added her;
           filters: {},
         }),
       });
@@ -62,8 +102,7 @@
       }
       const data = await response.json();
       if (data.success) {
-        searchResults = data.results || [];
-        // If includeRAGResponse is enabled, generate a response using the retrieved documents
+        searchResults = (data.results || []) as SearchResult[];
         if (searchConfig.includeRAGResponse && Array.isArray(data.results) && data.results.length > 0) {
           try {
             const ragResponseFetch = await fetch('/api/rag/enhanced', {
@@ -71,32 +110,36 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 query: searchQuery,
-                mode: 'semantic_search', // Use our enhanced semantic search mode
+                mode: 'semantic_search',
                 limit: searchConfig.limit,
                 threshold: searchConfig.threshold,
               }),
             });
             if (ragResponseFetch.ok) {
               const ragData = await ragResponseFetch.json();
-              ragResponse = ragData.success ? ragData.answer : null;
+              ragResponse = ragData.success ? (ragData.answer as string) : null;
             }
           } catch (ragError) {
             console.warn('RAG response generation failed:', ragError);
             ragResponse = null;
           }
         }
-        // Add to search history
-        searchHistory.unshift({
+
+        // Add to search history (typed)
+        const historyItem: SearchHistoryItem = {
           query: searchQuery,
           resultCount: Array.isArray(data.results) ? data.results.length : 0,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
-          processingTime: data.processingTime || 0,
-        });
+          processingTime: (data.processingTime as number) || 0,
+        };
+        searchHistory.unshift(historyItem);
+
         // Keep only last 5 searches
         if (searchHistory.length > 5) {
           searchHistory = searchHistory.slice(0, 5);
         }
+
         // Cache the query using unified service registry
         if (Array.isArray(data.results) && data.results.length > 0) {
           await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
@@ -111,11 +154,12 @@
       isSearching = false;
     }
   }
+
   async function ingestDocument() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
-    fileInput.onchange = async event => {
+    fileInput.onchange = async (event: Event) => {
       const input = event.currentTarget as HTMLInputElement | null;
       const file = input?.files?.[0];
       if (!file) return;
@@ -147,14 +191,18 @@
     };
     fileInput.click();
   }
-  function formatTimestamp(date: Date) {
-    return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
+
+  function formatTimestamp(date: Date | string) {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleTimeString() + ' ' + d.toLocaleDateString();
   }
+
   function highlightMatch(text: string, query: string) {
     if (!query) return text;
     const regex = new RegExp(`(${query})`, 'gi');
     return text.replace(regex, '<mark class="bg-yellow-300 px-1">$1</mark>');
   }
+
   // Suggestions based on system components
   const searchSuggestions = [
     'evidence analysis',
@@ -198,7 +246,7 @@
       <div class="flex gap-4">
         <InputBits
           bind:value={searchQuery}
-          onkeydown={e => e.key === 'Enter' && performSearch()}
+          onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && performSearch()}
           placeholder="Search legal documents and cases..."
           label="Legal Document Search"
           variant="outlined"
@@ -306,7 +354,7 @@
     </CardBits>
   {/if}
   <!-- Search Results -->
-  {#if searchResults?.length > 0}
+  {#if searchResults && searchResults.length > 0}
     <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
       <h3 class="font-bold text-nier-accent-warm mb-4">
         Search Results ({searchResults.length})
@@ -340,7 +388,7 @@
         {/each}
       </div>
     </CardBits>
-  {:else if searchResults?.length === 0}
+  {:else if searchResults && searchResults.length === 0}
     <CardBits variant="outlined" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
       <div class="text-center text-nier-text-muted">
         <div class="text-4xl mb-2">🔍</div>

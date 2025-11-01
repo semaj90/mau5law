@@ -131,7 +131,7 @@ export class QLoRANetworkCacheKey {
     const data = encoder.encode(input);
 
     // Prefer SubtleCrypto if available (browser / Node 20+)
-    // Use a narrow, explicit type instead of 'any' for globalThis crypto checks
+    // Use a narrow, explicit type instead of: 'any' for globalThis crypto checks
     type GlobalWithOptionalCrypto = typeof globalThis & {
       crypto?: Crypto & { subtle?: SubtleCrypto };
     };

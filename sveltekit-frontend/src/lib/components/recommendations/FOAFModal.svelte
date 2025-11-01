@@ -55,15 +55,15 @@ if (open && personId && !foafData) {
     onClose?.();
   }
   function getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 0.8) return: 'text-green-600';
+    if (confidence >= 0.6) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   function getRoleIcon(role: string): typeof UserCheck {
     switch (role.toLowerCase()) {
-      case 'attorney': return Briefca;
-      case 'paralegal': return UserCheck;
-      case 'investigator': return User;
+      case: 'attorney': return Briefca;
+      case: 'paralegal': return UserCheck;
+      case: 'investigator': return User;
       default: return UserCheck;
     }
   }

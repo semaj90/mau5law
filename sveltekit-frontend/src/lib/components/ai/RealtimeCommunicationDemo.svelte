@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared;
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'Card' has already been declared;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared -->
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -190,16 +190,16 @@ https://svelte.dev/e/js_parse_error -->
    */
   function getConnectionStatusColor(connectionStatus: string): string {
     switch (connectionStatus) {
-      case 'connected':
-        return 'text-green-600';
-      case 'connecting':
-        return 'text-yellow-600';
-      case 'disconnected':
-        return 'text-gray-500';
-      case 'error':
-        return 'text-red-600';
+      case: 'connected':
+        return: 'text-green-600';
+      case: 'connecting':
+        return: 'text-yellow-600';
+      case: 'disconnected':
+        return: 'text-gray-500';
+      case: 'error':
+        return: 'text-red-600';
       default:
-        return 'text-gray-500';
+        return: 'text-gray-500';
     }
   }
   /**
@@ -207,16 +207,16 @@ https://svelte.dev/e/js_parse_error -->
    */
   function getConnectionStatusIcon(connectionStatus: string): string {
     switch (connectionStatus) {
-      case 'connected':
-        return '●';
-      case 'connecting':
-        return '◐';
-      case 'disconnected':
-        return '○';
-      case 'error':
-        return '⚠';
+      case: 'connected':
+        return: '●';
+      case: 'connecting':
+        return: '◐';
+      case: 'disconnected':
+        return: '○';
+      case: 'error':
+        return: '⚠';
       default:
-        return '?';
+        return: '?';
     }
   }
   /**
@@ -232,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
     const colors = {
       ai_response: 'bg-blue-100 text-blue-800',
       document_analysis: 'bg-green-100 text-green-800',
-      system_notification 'bg-gray-100 text-gray-800',
+      system_notification: 'bg-gray-100 text-gray-800',
       user_activity: 'bg-purple-100 text-purple-800',
       rag_result: 'bg-yellow-100 text-yellow-800',
       gpu_compute: 'bg-red-100 text-red-800',

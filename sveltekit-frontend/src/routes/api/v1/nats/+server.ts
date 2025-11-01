@@ -31,19 +31,19 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (bodyRaw as Record<string, unknown>) || {};
     const nats = getNATSService();
     switch (body.action as string) {
-      case 'publish':
+      case: 'publish':
         return await handlePublish(nats, body);
-      case 'publish_batch':
+      case: 'publish_batch':
         return await handlePublishBatch(nats, body);
-      case 'request':
+      case: 'request':
         return await handleRequest(nats, body);
-      case 'subscribe':
+      case: 'subscribe':
         return await handleSubscribe(nats, body);
-      case 'unsubscribe':
+      case: 'unsubscribe':
         return await handleUnsubscribe(nats, body);
-      case 'create_stream':
+      case: 'create_stream':
         return await handleCreateStream(nats, body);
-      case 'create_consumer':
+      case: 'create_consumer':
         return await handleCreateConsumer(nats, body);
       default:
         return json(

@@ -11,7 +11,7 @@ interface JobItem {
 
 // Define an interface for the jobStore to provide type safety
 interface JobStore {
-  listJobs: () => Promise<JobItem[]>; // Removed '?' to make it a required method
+  listJobs: () => Promise<JobItem[]>; // Removed: '?' to make it a required method
   on: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
   off: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
 }
@@ -36,10 +36,10 @@ export const GET: RequestHandler = async ({ request }) => {
       const onUpdate = (rec: JobItem) => send({ type: 'update', item: rec });
       const onRemove = (id: string) => send({ type: 'remove', id });
       jobStore.on('update', onUpdate);
-      jobStore.on('remove', onRemove); // Removed 'as any'
+      jobStore.on('remove', onRemove); // Removed: 'as any'
       request.signal.addEventListener('abort', () => {
         jobStore.off('update', onUpdate);
-        jobStore.off('remove', onRemove); // Removed 'as any'
+        jobStore.off('remove', onRemove); // Removed: 'as any'
         controller.close();
       });
     },

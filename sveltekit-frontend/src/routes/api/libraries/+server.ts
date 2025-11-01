@@ -9,7 +9,7 @@ import { librarySyncService } from '$lib/services/library-sync-service';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || '';
-    const source = url.searchParams.get('source') as 'github' | 'context7' | 'npm' | undefined;
+    const source = url.searchParams.get('source') as: 'github' | 'context7' | 'npm' | undefined;
     const libraries = await librarySyncService.searchLibraries(query, source);
     return json({
       success: true,
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as { source?: string };
-    const source = body.source as 'github' | 'context7' | 'npm' | undefined;
+    const source = body.source as: 'github' | 'context7' | 'npm' | undefined;
     if (source === 'github') {
       await librarySyncService.syncGitHubLibraries();
     } else if (source === 'context7') {

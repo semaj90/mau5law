@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared;
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been declared;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already been declared -->
 <script lang="ts">
   import { SvelteComponent } from 'svelte';
   import { goto } from '$app/navigation';
@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
   <p>{description}</p>
   <div class="yorha-nav-footer">
     <span>{path}</span>
-    <!-- named slot "trailing" - consumers can provide content via <slot name="trailing"> -->
+    <!-- named slot: "trailing" - consumers can provide content via <slot name="trailing"> -->
     <slot name="trailing" />
   </div>
 </div>

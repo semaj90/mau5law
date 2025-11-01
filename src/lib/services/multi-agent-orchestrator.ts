@@ -204,7 +204,7 @@ class MultiAgentOrchestrator {
 
     workflow.status = "running";
     workflow.startTime = new Date();
-    workflow.logs.push(
+    workflow.logs.push(<any><any>
       `Workflow execution started at ${workflow.startTime.toISOString()}`
     );
 
@@ -220,7 +220,7 @@ class MultiAgentOrchestrator {
         const phasePromises = phase.map(async (agent) => {
           try {
             agent.status = "running";
-            workflow.logs.push(`Starting agent: ${agent.name}`);
+            workflow.logs.push(<any><any>`Starting agent: ${agent.name}`);
 
             const agentResult = await this.executeAgent(
               agent,
@@ -232,13 +232,13 @@ class MultiAgentOrchestrator {
             agent.status = "completed";
             results[agent.id] = agentResult;
 
-            workflow.logs.push(`Completed agent: ${agent.name}`);
+            workflow.logs.push(<any><any>`Completed agent: ${agent.name}`);
 
             return agentResult;
           } catch (error) {
             agent.error = error.message;
             agent.status = "failed";
-            workflow.logs.push(
+            workflow.logs.push(<any><any>
               `Failed agent: ${agent.name} - ${error.message}`
             );
             throw error;
@@ -251,7 +251,7 @@ class MultiAgentOrchestrator {
       workflow.status = "completed";
       workflow.endTime = new Date();
       workflow.result = results;
-      workflow.logs.push(
+      workflow.logs.push(<any><any>
         `Workflow completed at ${workflow.endTime.toISOString()}`
       );
 
@@ -273,7 +273,7 @@ class MultiAgentOrchestrator {
     } catch (error) {
       workflow.status = "failed";
       workflow.endTime = new Date();
-      workflow.logs.push(`Workflow failed: ${error.message}`);
+      workflow.logs.push(<any><any>`Workflow failed: ${error.message}`);
 
       const duration = Date.now() - startTime;
 
@@ -611,7 +611,7 @@ print(json.dumps(result))
     for (const capability of capabilities) {
       for (const [id, agent] of this.agentDefinitions) {
         if (agent.capabilities.includes(capability) && !addedAgents.has(id)) {
-          selectedAgents.push({ ...agent });
+          selectedAgents.push(<any><any>{ ...agent });
           addedAgents.add(id);
         }
       }
@@ -643,13 +643,13 @@ print(json.dumps(result))
         );
 
         if (canExecute) {
-          phase.push(agent);
+          phase.push(<any><any>agent);
         }
       }
 
       if (phase.length === 0) {
         // Circular dependency or unresolvable dependencies
-        phase.push(...Array.from(remaining.values()));
+        phase.push(<any><any>...Array.from(remaining.values()));
       }
 
       for (const agent of phase) {
@@ -657,7 +657,7 @@ print(json.dumps(result))
         completed.add(agent.id);
       }
 
-      plan.push(phase);
+      plan.push(<any><any>phase);
     }
 
     return plan;
@@ -685,7 +685,7 @@ print(json.dumps(result))
     if (workflow) {
       workflow.status = "failed";
       workflow.endTime = new Date();
-      workflow.logs.push(
+      workflow.logs.push(<any><any>
         `Workflow cancelled at ${workflow.endTime.toISOString()}`
       );
 

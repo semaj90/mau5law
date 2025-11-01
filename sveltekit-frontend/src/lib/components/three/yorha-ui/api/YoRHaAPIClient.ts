@@ -232,10 +232,10 @@ export class YoRHaAPIClient {
     this.stopDataStreams();
     for (const ds of this.layout.dataSources) {
       switch (ds.type) {
-        case 'rest': {
+        case: 'rest': {
           // Ensure endpoint is defined for REST data sources
           if (!ds.endpoint) {
-            console.warn(`Data source '${ds.name}' of type 'rest' is missing an endpoint. Skipping.`);
+            console.warn(`Data source: '${ds.name}' of type: 'rest' is missing an endpoint. Skipping.`);
             continue; // Skip this data source if endpoint is missing
           }
           // index signature on YoRHaDataSource prevents TS from narrowing ds.endpoint,
@@ -250,13 +250,13 @@ export class YoRHaAPIClient {
               }
             } catch (err: unknown) {
               // Changed any to unknown
-              console.warn(`Data source '${ds.name}' fetch failed`, err);
+              console.warn(`Data source: '${ds.name}' fetch failed`, err);
             }
           }, ds.intervalMs ?? 5000);
           this.dataSourceIntervals.set(ds.name, interval);
           break;
         }
-        case 'mock': {
+        case: 'mock': {
           const interval = setInterval(() => {
             const data = {
               value: Math.random(),

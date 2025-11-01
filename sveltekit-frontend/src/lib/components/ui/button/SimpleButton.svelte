@@ -2,8 +2,8 @@
   // Simple, typed button component - Svelte 5
   import type { Snippet } from 'svelte';
   let {
-    type = 'button' as 'button' | 'submit' | 'reset',
-    variant = 'primary' as 'primary' | 'secondary',
+    type = 'button' as: 'button' | 'submit' | 'reset',
+    variant = 'primary' as: 'primary' | 'secondary',
     disabled = false,
     ariaLabel = undefined as string | undefined,
     // children included here to avoid calling $props() twice

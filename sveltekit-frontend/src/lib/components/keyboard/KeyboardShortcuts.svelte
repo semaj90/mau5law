@@ -3,25 +3,67 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { User } from '$lib/types/user';
+  // removed unused: 'User' import
+
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import Button from "$lib/components/ui/button/Button.svelte";
   import { notifications } from '$lib/stores/unified';
   import { FocusManager } from "$lib/utils/accessibility";
+  // Keep named imports that are exported by the package, and import problematic icons
+  // from their component files as default exports. Adjust subpath if your package layout differs.
   import {
     Command,
     FileText,
-    HelpCircle,
     Plus,
     Search,
     Settings,
     Users,
-    X,
   } from "lucide-svelte";
+  // These imports reference the individual Svelte icon components.
+  // If your installation has icons under a different path (e.g. src/icons or dist/icons),
+  // update the paths accordingly.
+  import HelpCircle from "lucide-svelte/dist/icons/HelpCircle.svelte";
+  import X from "lucide-svelte/dist/icons/X.svelte";
 
   // Svelte 5 $props destructuring
   let { open = $bindable(false), shortcutsHelp } = $props();
+
+  // Define interfaces for better type safety
+  interface ShortcutItem {
+    key: string;
+    description: string;
+    action: () => void;
+    aiScore?: number;
+    aiSummary?: string;
+  }
+
+  interface CommandItem {
+    title: string;
+    description: string;
+    icon: any; // Lucide icon component
+    action: () => Promise<void> | void;
+    keywords: string[];
+  }
+
+  type NotificationPayload = {
+    type: 'success' | 'error' | 'info' | 'warning';
+    title?: string;
+    message?: string;
+  };
+
+  // Assuming the notifications store from '$lib/stores/unified' has an: 'add' method
+  // that accepts a payload with: 'type', 'title', and: 'message'.
+  // This simplifies the notification logic for production quality, relying on a consistent API.
+  interface NotificationStoreWithAdd {
+    subscribe: (run: (value: any) => void, invalidate?: () => void) => () => void;
+    add: (payload: NotificationPayload) => void;
+    // Add other methods if they are used and cause type errors, e.g.,
+    // toggleDesktopNotification () => void;
+  }
+
+  // Lightweight cast to avoid TS errors about unknown props on the Button component
+  const ButtonComponent: any = Button as unknown as any;
 
   // Keyboard shortcuts configuration (fixed punctuation)
   const shortcuts = [
@@ -77,18 +119,19 @@ https://svelte.dev/e/js_parse_error -->
     }
   ];
 
-  import { keyboardShortcuts, loadShortcutsFromAI } from '$lib/stores';
+  import { keyboardShortcuts, loadShortcutsFromAI } from '$lib/stores/keyboardShortcutsStore'; // Updated import path
   import { get } from 'svelte/store';
 
   let searchQuery = $state("");
   let selectedIndex = $state(0);
-  let filteredShortcuts = $state([]);
-  let filteredCommands = $state([]);
-  let commandInput: HTMLInputElement | null = null;
+  let filteredShortcuts: ShortcutItem[] = $state([]); // Typed and initialized
+  let filteredCommands: CommandItem[] = $state([]); // Typed and initialized
+  let commandInput: HTMLInputElement | null = $state(null); // Reactive state
 
   // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts
-  let allShortcuts = $state(get(keyboardShortcuts));
-  const unsubscribeShortcuts = keyboardShortcuts.subscribe((s) => {
+  let allShortcuts: ShortcutItem[] = $state(get(keyboardShortcuts)); // Typed and initialized
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const unsubscribeShortcuts = keyboardShortcuts.subscribe((s: ShortcutItem[]) => { // Typed parameter: 's'
     allShortcuts = s;
     filterShortcuts();
   });
@@ -96,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
   function filterShortcuts() {
     if (searchQuery.trim()) {
       filteredShortcuts = allShortcuts.filter(
-        (s: any) =>
+        (s: ShortcutItem) => // Explicitly type: 's'
           String(s.key).toLowerCase().includes(searchQuery.toLowerCase()) ||
           String(s.description || "").toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -119,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Command palette items (fixed punctuation)
-  const commands = [
+  const commands: CommandItem[] = [ // Typed array
     { title: "Persons of interest", description: "Persons of interest", icon: Users, action: () => goto("/criminals"), keywords: ["people", "suspects"] },
     { title: "Search", description: "Global search", icon: Search, action: () => goto("/search"), keywords: ["find", "lookup"] },
     { title: "Reports", description: "Generate reports", icon: FileText, action: () => goto("/reports"), keywords: ["export", "print"] },
@@ -137,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     if (searchQuery.trim()) {
       filteredCommands = commands.filter(
-        (cmd) =>
+        (cmd: CommandItem) => // Explicitly type: 'cmd'
           cmd.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           cmd.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           cmd.keywords.some((keyword: string) => keyword.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -162,19 +205,19 @@ https://svelte.dev/e/js_parse_error -->
       // Handle command palette navigation
       if (open) {
         switch (event.key) {
-          case "Escape":
+          case: "Escape":
             event.preventDefault();
             open = false;
             break;
-          case "ArrowDown":
+          case: "ArrowDown":
             event.preventDefault();
             selectedIndex = Math.min(selectedIndex + 1, (filteredCommands?.length ?? 1) - 1);
             break;
-          case "ArrowUp":
+          case: "ArrowUp":
             event.preventDefault();
             selectedIndex = Math.max(selectedIndex - 1, 0);
             break;
-          case "Enter":
+          case: "Enter":
             event.preventDefault();
             executeCommand(filteredCommands[selectedIndex]);
             break;
@@ -219,19 +262,19 @@ https://svelte.dev/e/js_parse_error -->
     return parts.join("+");
   }
 
-  function executeCommand(command: any) {
+  function executeCommand(command: CommandItem) { // Typed parameter: 'command'
     if (!command) return;
     open = false;
     searchQuery = "";
     try {
       command.action && command.action();
-      notifications.add({
+      (notifications as unknown as NotificationStoreWithAdd).add({ // Cast notifications
         type: "info",
         title: "Command Executed",
         message: command.title
       });
     } catch (error) {
-      notifications.add({
+      (notifications as unknown as NotificationStoreWithAdd).add({ // Cast notifications
         type: "error",
         title: "Command Failed",
         message: `Failed to execute: ${command.title}`
@@ -276,7 +319,7 @@ https://svelte.dev/e/js_parse_error -->
       html.classList.add("dark");
       localStorage.setItem("theme", "dark");
     }
-    notifications.add({
+    (notifications as unknown as NotificationStoreWithAdd).add({ // Cast notifications
       type: "info",
       title: "Theme Changed",
       message: `Switched to ${isDark ? "light" : "dark"} mode`
@@ -284,7 +327,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function toggleLayout() {
-    notifications.add({
+    (notifications as unknown as NotificationStoreWithAdd).add({ // Cast notifications
       type: "info",
       title: "Layout Toggle",
       message: "Layout toggled (feature to be implemented)"
@@ -312,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
     style.id = "focus-indicators";
     if (style.textContent) {
       style.textContent = "";
-      notifications.add({ type: "info", title: "Focus Indicators", message: "Enhanced focus indicators disabled" });
+      (notifications as unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators", message: "Enhanced focus indicators disabled" }); // Cast notifications
     } else {
       style.textContent = `
         *:focus {
@@ -320,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
           outline-offset: 2px !important;
         }
       `;
-      notifications.add({ type: "info", title: "Focus Indicators", message: "Enhanced focus indicators enabled" });
+      (notifications as unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators", message: "Enhanced focus indicators enabled" }); // Cast notifications
     }
     if (!style.parentNode) {
       document.head.appendChild(style);
@@ -344,8 +387,8 @@ https://svelte.dev/e/js_parse_error -->
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    on:click={(e) => { if (e.target === e.currentTarget) open = false; }}
-    on:keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
+    onclick={(e) => { if (e.target === e.currentTarget) open = false; }}
+    onkeydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
       <div class="command-palette-header">
@@ -362,15 +405,15 @@ https://svelte.dev/e/js_parse_error -->
             spellcheck="false"
             aria-label="Command search"
           />
-          <button
+          <ButtonComponent
             class="nes-btn close-button"
             variant="ghost"
             size="sm"
-            on:click={() => (open = false)}
+            onclick={() => (open = false)}
             aria-label="Close command palette"
           >
             <X class="w-4 h-4" />
-          </button>
+          </ButtonComponent>
         </div>
       </div>
 
@@ -384,14 +427,14 @@ https://svelte.dev/e/js_parse_error -->
                 role="option"
                 aria-selected={index === selectedIndex}
                 tabindex={0}
-                on:click={() => shortcut.action && shortcut.action()}
-                on:keydown={(e) => {
+                onclick={() => shortcut.action && shortcut.action()}
+                onkeydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     shortcut.action && shortcut.action();
                   }
                 }}
-                on:mouseenter={() => (selectedIndex = index)}
+                onmouseenter={() => (selectedIndex = index)}
               >
                 <div class="command-content">
                   <div class="command-title flex items-center gap-2">
@@ -411,7 +454,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <div class="empty-state">
             <Search class="w-8 h-8" />
-            <p>No shortcuts found for "{searchQuery}"</p>
+            <p>No shortcuts found for: "{searchQuery}"</p>
           </div>
         {/if}
       </div>
@@ -497,7 +540,10 @@ https://svelte.dev/e/js_parse_error -->
 
 .search-input::placeholder { color: #9ca3af; }
 
-.close-button { position: absolute; right: 0.5rem; }
+.search-container :global(.close-button) {
+  position: absolute;
+  right: 0.5rem;
+}
 
 .command-palette-body {
   flex: 1;
@@ -522,17 +568,7 @@ https://svelte.dev/e/js_parse_error -->
 
 .command-item:hover, .command-item.selected { background: #f3f4f6; }
 
-.command-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: #f9fafb;
-  border-radius: 6px;
-  color: #6b7280;
-  flex-shrink: 0;
-}
+/* Removed unused .command-icon selector */
 
 .command-content { flex: 1; min-width: 0; }
 
@@ -544,7 +580,10 @@ https://svelte.dev/e/js_parse_error -->
 
 .command-description { font-size: 0.875rem; color: #6b7280; }
 
-.no-results {
+/* Removed unused .no-results selector */
+/* Removed unused .no-results p selector */
+
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -554,7 +593,8 @@ https://svelte.dev/e/js_parse_error -->
   color: #6b7280;
 }
 
-.no-results p { margin: 1rem 0 0 0; font-size: 0.875rem; }
+.empty-state p { margin: 1rem 0 0 0; font-size: 0.875rem; }
+
 
 .command-palette-footer {
   padding: 0.75rem 1rem;
@@ -563,9 +603,13 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0 0 12px 12px;
 }
 
-.shortcuts-hint { display: flex; gap: 1rem; font-size: 0.75rem; color: #6b7280; align-items: center; }
+/* Removed unused .shortcuts-hint selector */
+/* Removed unused .shortcuts-hint kbd selector */
+/* Removed unused .shortcuts-help.hidden selector */
 
-.shortcuts-hint kbd {
+.footer-hint { display: flex; gap: 1rem; font-size: 0.75rem; color: #6b7280; align-items: center; }
+
+.footer-hint kbd {
   background: #e5e7eb;
   color: #374151;
   padding: 0.125rem 0.375rem;
@@ -574,8 +618,6 @@ https://svelte.dev/e/js_parse_error -->
   font-size: 0.75rem;
   font-weight: 500;
 }
-
-.shortcuts-help.hidden { display: none; }
 
 /* Screen reader only content */
 .sr-only {
@@ -597,11 +639,11 @@ https://svelte.dev/e/js_parse_error -->
   .search-input { color: #f9fafb; }
   .search-input::placeholder { color: #9ca3af; }
   .command-item:hover, .command-item.selected { background: #374151; }
-  .command-icon { background: #374151; color: #d1d5db; }
+  /* Removed unused .command-icon selector */
   .command-title { color: #f9fafb; }
   .command-description { color: #d1d5db; }
   .command-palette-footer { background: #374151; border-top-color: #4b5563; }
-  .shortcuts-hint kbd { background: #4b5563; color: #f9fafb; }
+  .footer-hint kbd { background: #4b5563; color: #f9fafb; }
 }
 
 /* Responsive design */
@@ -609,7 +651,7 @@ https://svelte.dev/e/js_parse_error -->
   .command-palette-overlay { padding: 1rem; padding-top: 5vh; }
   .command-palette { max-height: 80vh; }
   .command-item { padding: 1rem; }
-  .shortcuts-hint { flex-wrap: wrap; gap: 0.5rem; }
+  .footer-hint { flex-wrap: wrap; gap: 0.5rem; }
 }
 
 /* High contrast mode */

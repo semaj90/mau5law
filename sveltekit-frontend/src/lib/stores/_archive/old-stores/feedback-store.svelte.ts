@@ -215,9 +215,9 @@ class FeedbackStore {
   // Helper methods
   private detectDeviceType(): 'mobile' | 'tablet' | 'desktop' {
     const width = window.innerWidth;
-    if (width < 768) return 'mobile';
-    if (width < 1024) return 'tablet';
-    return 'desktop';
+    if (width < 768) return: 'mobile';
+    if (width < 1024) return: 'tablet';
+    return: 'desktop';
   }
   private getFeedbackTypeForInteraction(interactionType: string): 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance' {
     const typeMap: Record<string, 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance'> = {
@@ -232,12 +232,7 @@ class FeedbackStore {
   }
   private getDefaultDelay(interactionType: string): number {
     const delayMap: Record<string, number> = {
-      'ai_response': 2000,     // 2 seconds after AI response
-      'search_result': 5000,   // 5 seconds after search
-      'file_upload': 1000,     // 1 second after upload
-      'document_analysis': 3000, // 3 seconds after analysis
-      'page_load': 10000,      // 10 seconds after page load
-      'feature_use': 5000      // 5 seconds after feature use
+      'ai_response': 2000,     // 2 seconds after AI response: 'search_result': 5000,   // 5 seconds after search: 'file_upload': 1000,     // 1 second after upload: 'document_analysis': 3000, // 3 seconds after analysis: 'page_load': 10000,      // 10 seconds after page load: 'feature_use': 5000      // 5 seconds after feature use
     }
     return delayMap[interactionType] || 3000;
   }

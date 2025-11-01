@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       benchmark, // Destructure new fields for conditional handling
       iterations,
       compressionTargets,
-      texts: batchTexts, // Rename to avoid conflict with 'text'
+      texts: batchTexts, // Rename to avoid conflict with: 'text'
     } = requestData;
 
     // Handle benchmark request
@@ -137,8 +137,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       ...simd_config,
     };
     // Pass simdConfig into the engine options so the computed config is actually used
-    // narrow and default the incoming 'type' to the exact union the engine expects
-    const engineType: 'ocr' | 'legal' | 'ui' | 'general' = (type ?? 'ocr') as 'ocr' | 'legal' | 'ui' | 'general';
+    // narrow and default the incoming: 'type' to the exact union the engine expects
+    const engineType: 'ocr' | 'legal' | 'ui' | 'general' = (type ?? 'ocr') as: 'ocr' | 'legal' | 'ui' | 'general';
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: engineType,
       context: `${model} embedding`,
@@ -281,13 +281,13 @@ export const GET: RequestHandler = async () => {
     );
   }
 };
-// Modified PUT handler: avoid 'any' by using a narrow engine type and safe instantiation
+// Modified PUT handler: avoid: 'any' by using a narrow engine type and safe instantiation
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config: Partial<TextTileConfig> = await request.json();
     const mod = await import('$lib/ai/simd-text-tiling-engine.js');
 
-    // Narrow runtime shape for the engine instead of using 'any'
+    // Narrow runtime shape for the engine instead of using: 'any'
     type SIMDEngine = { updateConfig?: (c: Partial<TextTileConfig>) => void };
     const engine = simdTextTilingEngine as unknown as SIMDEngine;
 
@@ -333,7 +333,7 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
       });
       if (resp.ok) {
         const data = (await resp.json()) as FastApiEmbeddingResp;
-        // runtime guard ensures TypeScript knows 'embedding' exists here
+        // runtime guard ensures TypeScript knows: 'embedding' exists here
         if (Array.isArray(data.embedding)) {
           return data.embedding;
         }

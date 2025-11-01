@@ -1,21 +1,30 @@
 /// <reference types="vite/client" />
-import * as fs from 'fs/promises';
-/**
- * Copilot Orchestration Wrapper
- * Self-prompts after using MCP memory/codebase tools
- */
+// Removed unused fs import to satisfy lint/tsc.
+
+// Define minimal interfaces for services we call so we avoid `any`.
+interface AutoGenService {
+	executeLegalWorkflow?: (workflow: string, prompt: string, context?: unknown) => Promise<unknown>;
+}
+interface LegalTeam {
+	analyzeCase?: (opts: { query: string; analysisType?: string; priority?: string }) => Promise<unknown>;
+}
+
 // Service imports with fallbacks
-let autoGenService: any = null;
-let legalTeam: any = null;
+let autoGenService: AutoGenService | null = null;
+let legalTeam: LegalTeam | null = null;
 // Initialize services with fallbacks
 try {
-  const mod = await import('$lib/services/autogen-service').catch(() => ({ autoGenService: null }));
+  const mod = (await import('$lib/services/autogen-service').catch(() => ({ autoGenService: null }))) as {
+    autoGenService?: AutoGenService | null;
+  };
   autoGenService = mod?.autoGenService ?? null;
 } catch {
   // Service not available
 }
 try {
-  const mod2 = await import('$lib/ai/autogen-legal-agents').catch(() => ({ AutogenLegalTeam: null }));
+  const mod2 = (await import('$lib/ai/autogen-legal-agents').catch(() => ({ AutogenLegalTeam: null }))) as {
+    AutogenLegalTeam?: { new (): LegalTeam } | null;
+  };
   const AutogenLegalTeam = mod2?.AutogenLegalTeam ?? null;
   legalTeam = AutogenLegalTeam ? new AutogenLegalTeam() : null;
 } catch {
@@ -57,7 +66,8 @@ export type OrchestratorResults = Record<string, unknown> & {
 const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promise<AgentResult>> = {
   autogen: async (prompt, context) => {
     try {
-      if (autoGenService) {
+      // guard the service before invoking to avoid: "possibly undefined" errors
+      if (typeof autoGenService?.executeLegalWorkflow === 'function') {
         return {
           agent: 'autogen',
           result: await autoGenService.executeLegalWorkflow('legal_research', prompt, context ?? {}),
@@ -65,7 +75,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
       } else {
         return {
           agent: 'autogen',
-          result: `AutoGen agent (mock): Analyzed "${prompt}" - would provide legal research workflow results`,
+          result: `AutoGen agent (mock): Analyzed: "${prompt}" - would provide legal research workflow results`,
         };
       }
     } catch (err: unknown) {
@@ -76,9 +86,10 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
       };
     }
   },
-  crewai: async prompt => {
+  crewai: async (prompt, _context) => {
     try {
-      if (legalTeam) {
+      // guard legalTeam before invoking
+      if (typeof legalTeam?.analyzeCase === 'function') {
         return {
           agent: 'crewai',
           result: await legalTeam.analyzeCase({
@@ -98,13 +109,11 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
       };
     }
   },
-  copilot: async (prompt, context) => {
+  copilot: async (prompt, _context) => {
     try {
-      const ollamaUrl =
-        typeof window !== 'undefined'
-          ? 'http://localhost:11434'
-          : import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
-      const response = await fetch(`${ollamaUrl}/api/generate`, {
+      // use centralized endpoint helper
+      const ollamaBase = getOllamaEndpoint();
+      const response = await fetch(`${ollamaBase}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -122,17 +131,14 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
     } catch (_err: unknown) {
       return {
         agent: 'copilot',
-        result: `Copilot agent (mock): Code analysis for "${prompt}" - would provide coding suggestions and optimizations`,
+        result: `Copilot agent (mock): Code analysis for: "${prompt}" - would provide coding suggestions and optimizations`,
       };
     }
   },
-  claude: async (prompt, context) => {
+  claude: async (prompt, _context) => {
     try {
-      const ollamaUrl =
-        typeof window !== 'undefined'
-          ? 'http://localhost:11434'
-          : import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
-      const response = await fetch(`${ollamaUrl}/api/generate`, {
+      const ollamaBase = getOllamaEndpoint();
+      const response = await fetch(`${ollamaBase}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -150,12 +156,13 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
     } catch (_err: unknown) {
       return {
         agent: 'claude',
-        result: `Claude agent (mock): Legal analysis for "${prompt}" - would provide detailed legal insights and case analysis`,
+        result: `Claude agent (mock): Legal analysis for: "${prompt}" - would provide detailed legal insights and case analysis`,
       };
     }
   },
-  rag: async (prompt, context) => {
+  rag: async (prompt, _context) => {
     try {
+      // leave RAG URL resolution as-is for now (could be centralized similarly)
       const ragUrl = typeof window !== 'undefined' ? 'http://localhost:5173' : 'http://localhost:5173';
       const response = await fetch(`${ragUrl}/api/rag`, {
         method: 'POST',
@@ -163,7 +170,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
         body: JSON.stringify({
           action: 'query',
           query: prompt,
-          context: context,
+          context: _context,
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -175,7 +182,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
     } catch (_err: unknown) {
       return {
         agent: 'rag',
-        result: `RAG agent (mock): Enhanced retrieval for "${prompt}" - would provide context-aware document analysis`,
+        result: `RAG agent (mock): Enhanced retrieval for: "${prompt}" - would provide context-aware document analysis`,
       };
     }
   },
@@ -290,6 +297,62 @@ export interface MCPResponse {
   error?: string;
 }
 /**
+ * Orchestration options used by copilotOrchestrator
+ */
+export interface OrchestrationOptions {
+  useSemanticSearch?: boolean;
+  useMemory?: boolean;
+  useCodebase?: boolean;
+  useChangedFiles?: boolean;
+  directoryPath?: string;
+  useMultiAgent?: boolean;
+  agents?: string[];
+  context?: unknown;
+  logErrors?: boolean;
+  synthesizeOutputs?: boolean;
+}
+
+// centralized endpoint helper for Ollama (respects Vite and Node envs, falls back to localhost)
+export function getOllamaEndpoint(): string {
+  /**
+   * Resolve Ollama endpoint with the following precedence:
+   * 1. Vite dev config: import.meta.env.VITE_OLLAMA_URL
+   * 2. Node env: process.env.OLLAMA_URL
+   * 3. Optional docker-specific env: process.env.DOCKER_OLLAMA_URL
+   * 4. Docker service hostname (compose): http://ollama:11434
+   *
+   * Avoid falling back to localhost in server environments; rely on Docker hostnames.
+   */
+  type ViteEnvShape = ImportMetaEnv & { VITE_OLLAMA_URL?: string };
+
+  const viteUrl =
+    typeof import.meta !== 'undefined'
+      ? ((import.meta as ImportMeta & { env?: ViteEnvShape }).env ?? {}).VITE_OLLAMA_URL
+      : undefined;
+
+  const nodeUrl =
+    typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? (process.env as NodeJS.ProcessEnv).OLLAMA_URL
+      : undefined;
+
+  const dockerEnvUrl =
+    typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? (process.env as NodeJS.ProcessEnv).DOCKER_OLLAMA_URL
+      : undefined;
+
+  const dockerDefault = 'http://ollama:11434';
+
+  // prefer explicit config first
+  if (viteUrl) return viteUrl;
+  if (nodeUrl) return nodeUrl;
+  if (dockerEnvUrl) return dockerEnvUrl;
+
+  // prefer docker service hostname for compose-based deployments
+  // Avoid returning a localhost literal here to keep server code docker-friendly.
+  return dockerDefault;
+}
+
+/**
  * Generate a natural language prompt for MCP tools
  */
 export function generateMCPPrompt(request: MCPToolRequest): string {
@@ -309,39 +372,36 @@ export function generateMCPPrompt(request: MCPToolRequest): string {
     documentType,
     documentId,
     integrationType,
-    // Intentionally unused — prefixed with $ to satisfy lint rule for allowed unused vars
-    confidenceThreshold: $confidenceThreshold,
-    documentTypes: $documentTypes,
-    title: $title,
   } = request;
+
   switch (tool) {
-    case 'analyze-stack':
+    case: 'analyze-stack':
       if (!component) throw new Error('Component is required for analyze-stack');
       return `analyze ${component}${context ? ` with context ${context}` : ''}`;
-    case 'generate-best-practices':
+    case: 'generate-best-practices':
       if (!area) throw new Error('Area is required for generate-best-practices');
       return `generate best practices for ${area}`;
-    case 'suggest-integration':
+    case: 'suggest-integration':
       if (!feature) throw new Error('Feature is required for suggest-integration');
       return `suggest integration for ${feature}${requirements ? ` with requirements ${requirements}` : ''}`;
-    case 'resolve-library-id':
+    case: 'resolve-library-id':
       if (!library) throw new Error('Library is required for resolve-library-id');
       return `resolve library id for ${library}`;
-    case 'get-library-docs':
+    case: 'get-library-docs':
       if (!library) throw new Error('Library is required for get-library-docs');
       return `get library docs for ${library}${topic ? ` topic ${topic}` : ''}`;
-    case 'rag-query':
+    case: 'rag-query':
       if (!query) throw new Error('Query is required for rag-query');
-      return `rag query "${query}"${caseId ? ` for case ${caseId}` : ''}${maxResults ? ` max results ${maxResults}` : ''}`;
-    case 'rag-upload-document':
+      return `rag query: "${query}"${caseId ? ` for case ${caseId}` : ''}${maxResults ? ` max results ${maxResults}` : ''}`;
+    case: 'rag-upload-document':
       if (!filePath) throw new Error('File path is required for rag-upload-document');
-      return `upload document "${filePath}"${caseId ? ` to case ${caseId}` : ''}${documentType ? ` as ${documentType}` : ''}`;
-    case 'rag-get-stats':
-      return 'get rag system statistics';
-    case 'rag-analyze-relevance':
+      return `upload document: "${filePath}"${caseId ? ` to case ${caseId}` : ''}${documentType ? ` as ${documentType}` : ''}`;
+    case: 'rag-get-stats':
+      return: 'get rag system statistics';
+    case: 'rag-analyze-relevance':
       if (!query || !documentId) throw new Error('Query and document ID are required for rag-analyze-relevance');
-      return `analyze relevance of document ${documentId} for query "${query}"`;
-    case 'rag-integration-guide':
+      return `analyze relevance of document ${documentId} for query: "${query}"`;
+    case: 'rag-integration-guide':
       if (!integrationType) throw new Error('Integration type is required for rag-integration-guide');
       return `get rag integration guide for ${integrationType}`;
     default:
@@ -360,45 +420,45 @@ export function validateMCPRequest(request: MCPToolRequest): {
     errors.push('Tool is required');
   }
   switch (request.tool) {
-    case 'analyze-stack':
+    case: 'analyze-stack':
       if (!request.component) errors.push('Component is required for analyze-stack');
       if (request.context && !['legal-ai', 'gaming-ui', 'performance'].includes(request.context)) {
         errors.push('Context must be one of: legal-ai, gaming-ui, performance');
       }
       break;
-    case 'generate-best-practices':
+    case: 'generate-best-practices':
       if (!request.area) errors.push('Area is required for generate-best-practices');
       if (request.area && !['performance', 'security', 'ui-ux'].includes(request.area)) {
         errors.push('Area must be one of: performance, security, ui-ux');
       }
       break;
-    case 'suggest-integration':
+    case: 'suggest-integration':
       if (!request.feature) errors.push('Feature is required for suggest-integration');
       break;
-    case 'resolve-library-id':
+    case: 'resolve-library-id':
       if (!request.library) errors.push('Library is required for resolve-library-id');
       break;
-    case 'get-library-docs':
+    case: 'get-library-docs':
       if (!request.library) errors.push('Library is required for get-library-docs');
       break;
-    case 'rag-query':
+    case: 'rag-query':
       if (!request.query) errors.push('Query is required for rag-query');
       if (request.maxResults && (request.maxResults < 1 || request.maxResults > 50))
         errors.push('Max results must be between 1 and 50');
       if (request.confidenceThreshold && (request.confidenceThreshold < 0 || request.confidenceThreshold > 1))
         errors.push('Confidence threshold must be between 0 and 1');
       break;
-    case 'rag-upload-document':
+    case: 'rag-upload-document':
       if (!request.filePath) errors.push('File path is required for rag-upload-document');
       break;
-    case 'rag-get-stats':
+    case: 'rag-get-stats':
       // No validation needed
       break;
-    case 'rag-analyze-relevance':
+    case: 'rag-analyze-relevance':
       if (!request.query) errors.push('Query is required for rag-analyze-relevance');
       if (!request.documentId) errors.push('Document ID is required for rag-analyze-relevance');
       break;
-    case 'rag-integration-guide':
+    case: 'rag-integration-guide':
       if (!request.integrationType) errors.push('Integration type is required for rag-integration-guide');
       if (
         request.integrationType &&

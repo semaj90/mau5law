@@ -1,13 +1,14 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   type Theme = 'light' | 'dark' | 'system';
   const THEME_KEY = 'theme';
   let theme: Theme = $state('system');
   function applyTheme(t: Theme) {
     if (t === 'system') {
+      // only use matchMedia in browser
       const prefersDark =
-        typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matche;
+        typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          : false;
       document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
     } else {
       document.documentElement.setAttribute('data-theme', t);
@@ -32,26 +33,26 @@
       // ignore
     }
     applyTheme(theme);
-    // react to system preference changes when using 'system'
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const listener = () => {
-      if (theme === 'system') applyTheme('system');
-    };
-    if (mq.addEventListener) {
-      mq.addEventListener('change', listener);
-    } else {
-      // fallback for older browsers
-      // @ts-ignore - legacy API
-      mq.addListener(listener);
-    }
-    return () => {
-      if (mq.removeEventListener) {
-        mq.removeEventListener('change', listener);
+    // react to system preference changes when using: 'system'
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => {
+        if (theme === 'system') applyTheme('system');
+      };
+      if (typeof mq.addEventListener === 'function') {
+        mq.addEventListener('change', listener);
+        return () => mq.removeEventListener('change', listener);
       } else {
+        // legacy API fallback; keep ts-ignore to avoid deprecated-signature errors
         // @ts-ignore - legacy API
-        mq.removeListener(listener);
+        mq.addListener(listener);
+        return () => {
+          // @ts-ignore - legacy API
+          mq.removeListener(listener);
+        };
       }
-    };
+    }
+    return;
   });
 </script>
 

@@ -6,7 +6,7 @@ import * as databaseConnection from '$lib/database/connection';
 // Minimal DB shape used in this module to avoid `any`
 // Lightweight query builder shape used by this module to allow method chaining
 interface QueryBuilder<T = unknown> {
-  from: (table: unknown) => QueryBuilder<T>;
+  from (table: unknown) => QueryBuilder<T>;
   where: (cond?: unknown) => QueryBuilder<T>;
   orderBy: (o: unknown) => QueryBuilder<T>;
   limit: (n: number) => QueryBuilder<T>;

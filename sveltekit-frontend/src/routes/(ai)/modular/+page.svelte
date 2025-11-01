@@ -214,10 +214,10 @@ https://svelte.dev/e/js_parse_error -->
         <div>✓ State machine for user idle → 3D computations</div>
         <div>✓ RabbitMQ async loading (offline/online transitions)</div>
         <div>✓ TypeScript superset with low-level computations</div>
-        <div>✓ Vector "kernel splicing attention" for recommendations</div>
+        <div>✓ Vector: "kernel splicing attention" for recommendations</div>
         <div>✓ Modular experiences with hot-swapping</div>
         <div>✓ Self-prompting: "pick up where you left off"</div>
-        <div>✓ "Did you mean" and "others searched for" features</div>
+        <div>✓ "Did you mean" and: "others searched for" features</div>
         <div>✓ T5 transformer architecture implementation</div>
         <div>✓ CUDA wrapped in Go service with proto binaries</div>
         <div>✓ WebGPU extension for browser-based processing</div>

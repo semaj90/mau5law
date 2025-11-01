@@ -12,7 +12,7 @@ interface SearchResult { // Renamed from SearchResultItem
   id: string; // Changed to string, assuming it's always needed as a string
   score: number;
   snippet: string;
-  source: string; // Added 'source' property
+  source: string; // Added: 'source' property
 }
 
 // Dynamically import the embedding module once to ensure all related GPU inference functions are available.
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
   });
 
-  // synthesizeNextSteps now receives SearchResult[] which includes the 'source' property
+  // synthesizeNextSteps now receives SearchResult[] which includes the: 'source' property
   const llmOutput = await synthesizeNextSteps(query, mappedResults);
   // recommendNextSteps now receives string[] because mappedResults.map(r => r.id) will produce string[]
   const recs = await recommendNextSteps(mappedResults.map(r => r.id));

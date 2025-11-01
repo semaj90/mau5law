@@ -419,12 +419,10 @@ export const legacyRouteMapping: Record<string, string> = {
   '/gpu-chat': '/(ai)/assistant',
   '/cuda-streaming': '/(ai)/cuda-streaming',
   // '/cases': Already at correct path (route groups don't affect URLs)
-  // '/evidence': Keep standalone route outside (legal) group
-  '/evidence-analysis': '/evidence',
+  // '/evidence': Keep standalone route outside (legal) group: '/evidence-analysis': '/evidence',
   '/evidence-workspace': '/evidence',
   '/documents': '/(legal)/documents',
-  // '/legal': Redirect removed - route groups don't create URL paths
-  '/detective': '/(legal)/detective',
+  // '/legal': Redirect removed - route groups don't create URL paths: '/detective': '/(legal)/detective',
   '/detectivemode': '/(legal)/detective',
   '/investigation': '/(legal)/detective',
   '/citations': '/(legal)/citations',
@@ -446,19 +444,16 @@ export const legacyRouteMapping: Record<string, string> = {
   '/showcase': '/(dev)/showcase',
   '/test-simple': '/(dev)/tests',
   '/simple-test': '/(dev)/tests',
-  // Core functionality preserved
-  '/login': '/auth/login',
+  // Core functionality preserved: '/login': '/auth/login',
   '/register': '/auth/register',
   // '/profile': '/profile', // REMOVED: Self-referential mapping causes infinite redirect loop
   // '/reports': '/reports', // REMOVED: Self-referential mapping causes infinite redirect loop
   // '/settings': '/settings', // REMOVED: Self-referential mapping causes infinite redirect loop
   // Demo and development routes preserved
-  // '/cuda-streaming': '/cuda-streaming', // Removed duplicate of earlier mapping to avoid duplicate key warning
-  '/shader-cache': '/shader-cache',
+  // '/cuda-streaming': '/cuda-streaming', // Removed duplicate of earlier mapping to avoid duplicate key warning: '/shader-cache': '/shader-cache',
   '/webasm': '/webasm-demos',
   '/nes-bits': '/demo/enhanced-bits-showcase',
-  // '/ai-chat': '/(ai)/assistant', // Removed duplicate of earlier mapping
-  '/chat': '/(ai)/assistant',
+  // '/ai-chat': '/(ai)/assistant', // Removed duplicate of earlier mapping: '/chat': '/(ai)/assistant',
 };
 
 // Get route group by theme

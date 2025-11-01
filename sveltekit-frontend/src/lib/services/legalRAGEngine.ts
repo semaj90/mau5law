@@ -91,13 +91,13 @@ export class LegalRAGEngine {
     private ollama: OllamaService
   ) {
     // Production Readiness Note:
-    // The 'qdrant' client and 'ollama' service should be instantiated elsewhere
+    // The: 'qdrant' client and: 'ollama' service should be instantiated elsewhere
     // (e.g., in a central client factory or dependency injection setup)
     // and configured to respect environment variables for their endpoints.
     // For example, QdrantClient should use process.env.QDRANT_URL || 'http://localhost:6333',
     // and OllamaService should use process.env.OLLAMA_URL || 'http://localhost:11434'.
-    // The OllamaService implementation should also specify models like 'gemma3-legal:latest'
-    // for completions and 'embeddinggemma:latest' for embeddings, as per instructions.
+    // The OllamaService implementation should also specify models like: 'gemma3-legal:latest'
+    // for completions and: 'embeddinggemma:latest' for embeddings, as per instructions.
   }
   /**
    * Process and store a legal document with embeddings and analysis
@@ -202,7 +202,7 @@ export class LegalRAGEngine {
       console.error('Error in legal RAG search:', error);
       // Provide a more informative error message for production debugging
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      throw new Error(`Legal RAG search failed for query "${query.substring(0, 20)}...": ${errorMessage}`);
+      throw new Error(`Legal RAG search failed for query: "${query.substring(0, 20)}...": ${errorMessage}`);
     }
   }
 
@@ -216,7 +216,7 @@ export class LegalRAGEngine {
   ): Promise<RawSearchResult> {
     // Use the new shared type
     try {
-      // The '<=>' operator returns cosine distance. Similarity = 1 - distance.
+      // The: '<=>' operator returns cosine distance. Similarity = 1 - distance.
       const resultsWithDistance = await db
         .select({
           doc: legalDocuments,
@@ -268,7 +268,7 @@ export class LegalRAGEngine {
       // to prevent runtime errors if the payload schema drifts.
       return qdrantResults.map(result => {
         const payload = (result.payload || {}) as Partial<LegalDocument>;
-        // Destructure to explicitly omit 'id' from the payload before spreading
+        // Destructure to explicitly omit: 'id' from the payload before spreading
         const { id: $_payloadId, ...payloadWithoutId } = payload;
 
         return {
@@ -414,8 +414,7 @@ export class LegalRAGEngine {
         'dates',
         'monetary',
         'clauses',
-        'jurisdictions', // Ensure these are requested if Context7 supports them
-        'caseTypes', // Ensure these are requested if Context7 supports them
+        'jurisdictions', // Ensure these are requested if Context7 supports them: 'caseTypes', // Ensure these are requested if Context7 supports them
       ]);
       // Ensure the returned object conforms to LegalEntities, providing defaults for missing properties
       return {
@@ -458,7 +457,7 @@ export class LegalRAGEngine {
         `Analyze the legal risk level of this ${caseType || 'legal'} document on a scale of 0-100.
         Consider liability, compliance issues, and potential legal exposure.
         Document: ${content.substring(0, 2000)}
-        Return only a JSON object with 'score' (0-100) and 'confidence' (0-1) properties.`
+        Return only a JSON object with: 'score' (0-100) and: 'confidence' (0-1) properties.`
       );
       const parsed = JSON.parse(riskAnalysis);
       return {
@@ -475,7 +474,7 @@ export class LegalRAGEngine {
    * Store document in PostgreSQL using Drizzle ORM
    */
   private async storeInDatabase(data: Omit<LegalDocument, 'id'> & Partial<Pick<LegalDocument, 'id'>>): Promise<string> {
-    // Drizzle's defaultFn for 'id' (assuming it's a UUID generator) will handle generation if data.id is undefined.
+    // Drizzle's defaultFn for: 'id' (assuming it's a UUID generator) will handle generation if data.id is undefined.
     // All other fields are expected to be present based on the type definition and preparation in processDocument.
     const [insertedDocument] = await db.insert(legalDocuments).values(data).returning({ id: legalDocuments.id });
 
@@ -517,7 +516,7 @@ export class LegalRAGEngine {
     } catch (error: unknown) {
       // Changed from any
       console.error('Error generating summary:', error);
-      return 'Summary generation failed';
+      return: 'Summary generation failed';
     }
   }
   /**

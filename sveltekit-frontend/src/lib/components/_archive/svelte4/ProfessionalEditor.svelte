@@ -162,19 +162,19 @@ https://svelte.dev/e/js_parse_error -->
     <div class="header-actions">
       <button
         class="action-btn yorha-btn yorha-nes-btn"
-        on:click={() => (showShortcuts = !showShortcuts)}
+        onclick={() => (showShortcuts = !showShortcuts)}
         title="Keyboard shortcuts (Ctrl+/)"
       >
         <Keyboard class="h-4 w-4" />
       </button>
-      <button class="action-btn yorha-btn yorha-nes-btn" on:click={toggleFocusMode} title="Focus mode (F10)">
+      <button class="action-btn yorha-btn yorha-nes-btn" onclick={toggleFocusMode} title="Focus mode (F10)">
         {#if isFocusMode}
           <EyeOff class="h-4 w-4" />
         {:else}
           <Eye class="h-4 w-4" />
         {/if}
       </button>
-      <button class="action-btn yorha-btn yorha-nes-btn" on:click={toggleFullscreen} title="Fullscreen (F11)">
+      <button class="action-btn yorha-btn yorha-nes-btn" onclick={toggleFullscreen} title="Fullscreen (F11)">
         {#if isFullscreen}
           <Minimize class="h-4 w-4" />
         {:else}
@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="action-btn yorha-btn yorha-nes-btn is-primary"
-        on:click={saveDocument}
+        onclick={saveDocument}
         title="Save document (Ctrl+S)"
       >
         <Save class="h-4 w-4" />
@@ -194,38 +194,38 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Toolbar -->
   <div class="editor-toolbar" class:dimmed={isFocusMode}>
     <div class="format-group">
-      <button class="format-btn yorha-btn yorha-nes-btn" on:click={() => formatText('bold')} title="Bold (Ctrl+B)">
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('bold')} title="Bold (Ctrl+B)">
         <strong>B</strong>
       </button>
-      <button class="format-btn yorha-btn yorha-nes-btn" on:click={() => formatText('italic')} title="Italic (Ctrl+I)">
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('italic')} title="Italic (Ctrl+I)">
         <em>I</em>
       </button>
-      <button class="format-btn yorha-btn yorha-nes-btn" on:click={() => formatText('underline')} title="Underline">
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('underline')} title="Underline">
         <u>U</u>
       </button>
     </div>
     <div class="format-group">
-      <button class="format-btn yorha-btn yorha-nes-btn" on:click={() => formatText('justifyLeft')} title="Align left">
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('justifyLeft')} title="Align left">
         ⟸
       </button>
-      <button class="format-btn yorha-btn yorha-nes-btn" on:click={() => formatText('justifyCenter')} title="Center">
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('justifyCenter')} title="Center">
         ▤
       </button>
-      <button class="format-btn yorha-btn yorha-nes-btn" on:click={() => formatText('justifyRight')} title="Align right">
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('justifyRight')} title="Align right">
         ⟹
       </button>
     </div>
     <div class="format-group">
       <button
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('insertUnorderedList')}
+        onclick={() => formatText('insertUnorderedList')}
         title="Bullet list"
       >
         ⋯
       </button>
       <button
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('insertOrderedList')}
+        onclick={() => formatText('insertOrderedList')}
         title="Numbered list"
       >
         ①
@@ -267,8 +267,8 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
-  <div class="shortcuts-overlay" on:click={() => (showShortcuts = false)}>
-    <div class="shortcuts-modal yorha-nier-bits-card" on:click={e => e.stopPropagation()}>
+  <div class="shortcuts-overlay" onclick={() => (showShortcuts = false)}>
+    <div class="shortcuts-modal yorha-nier-bits-card" onclick={e => e.stopPropagation()}>
       <h3 class="shortcuts-title gradient-text-primary">Keyboard Shortcuts</h3>
       <div class="shortcuts-grid">
         {#each shortcuts as shortcut}
@@ -278,7 +278,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-      <button class="close-shortcuts yorha-btn yorha-nes-btn is-primary" on:click={() => (showShortcuts = false)}>
+      <button class="close-shortcuts yorha-btn yorha-nes-btn is-primary" onclick={() => (showShortcuts = false)}>
         Close
       </button>
     </div>

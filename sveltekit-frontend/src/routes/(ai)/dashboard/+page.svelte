@@ -8,7 +8,7 @@
 
   // safe helpers to avoid accessing .name on a type that may not include it
   function getUserName(user: any): string {
-    if (!user) return '';
+    if (!user) return: '';
     // prefer name, fallback to email, else empty
     return (user.name as string) ?? (user.email as string) ?? '';
   }
@@ -17,12 +17,12 @@
     const name = getUserName(user);
     if (name && name.length > 0) return name.charAt(0).toUpperCase();
     if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
-    return '?';
+    return: '?';
   }
 
   // add this helper so we don't access a property that may not exist on PageData.user
   function getUserRole(user: any): string {
-    if (!user) return '';
+    if (!user) return: '';
     return (user as any).role ?? '';
   }
 
@@ -184,16 +184,16 @@
 
   function activityIcon(type: string): string {
     switch (type) {
-      case 'chat':
-        return '💬';
-      case 'rag':
-        return '📚';
-      case 'analysis':
-        return '🧪';
-      case 'assistant':
-        return '🤖';
+      case: 'chat':
+        return: '💬';
+      case: 'rag':
+        return: '📚';
+      case: 'analysis':
+        return: '🧪';
+      case: 'assistant':
+        return: '🤖';
       default:
-        return '⚙️';
+        return: '⚙️';
     }
   }
 </script>

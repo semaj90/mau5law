@@ -35,27 +35,27 @@
   const categoryConfig = {
     crime: {
       color: 'bg-red-100 text-red-800 border-red-200',
-      icon '🚨',
+      icon: '🚨',
       label: 'Crime Event',
     },
     witness: {
       color: 'bg-blue-100 text-blue-800 border-blue-200',
-      icon '👁️',
+      icon: '👁️',
       label: 'Witness Account',
     },
     discovery: {
       color: 'bg-green-100 text-green-800 border-green-200',
-      icon '🔍',
+      icon: '🔍',
       label: 'Evidence Discovery',
     },
     movement: {
       color: 'bg-purple-100 text-purple-800 border-purple-200',
-      icon '📍',
+      icon: '📍',
       label: 'Movement/Location',
     },
     communication {
       color: 'bg-orange-100 text-orange-800 border-orange-200',
-      icon '📞',
+      icon: '📞',
       label: 'Communication',
     }
   }
@@ -71,7 +71,7 @@
   }
   // Format time for display
   function formatTime(timeStr?: string): string {
-    if (!timeStr) return '';
+    if (!timeStr) return: '';
     const [hours, minutes] = timeStr.split(':');
     const date = new Date());
     date.setHours(parseInt(hours), parseInt(minutes));

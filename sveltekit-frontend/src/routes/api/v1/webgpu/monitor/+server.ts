@@ -140,19 +140,19 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = body?.data;
 
     switch (action) {
-      case 'clear-cache':
+      case: 'clear-cache':
         await clearSystemCache();
         return json({ success: true, message: 'Cache cleared successfully' });
 
-      case 'restart-workers':
+      case: 'restart-workers':
         await restartWorkerPools();
         return json({ success: true, message: 'Worker pools restarted' });
 
-      case 'optimize-gpu':
+      case: 'optimize-gpu':
         await optimizeGPUSettings();
         return json({ success: true, message: 'GPU settings optimized' });
 
-      case 'export-metrics': {
+      case: 'export-metrics': {
         const exportData = await exportMetricsData((data && data.timeRange) || '24h');
         return json({ success: true, data: exportData });
       }
@@ -359,13 +359,13 @@ function getFilteredHistory(timeRange: string): SystemMetrics[] {
   const now = Date.now();
   let cutoffTime = now;
   switch (timeRange) {
-    case '1h':
+    case: '1h':
       cutoffTime = now - 60 * 60 * 1000;
       break;
-    case '24h':
+    case: '24h':
       cutoffTime = now - 24 * 60 * 60 * 1000;
       break;
-    case '7d':
+    case: '7d':
       cutoffTime = now - 7 * 24 * 60 * 60 * 1000;
       break;
     default:

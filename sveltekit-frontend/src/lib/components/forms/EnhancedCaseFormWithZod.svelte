@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'high', label: 'High Priority', color: 'text-red-600' },
   ];
 
-  // Status options (fixed: added missing ':' for description)
+  // Status options (fixed: added missing: ':' for description)
   const statusOptions = [
     { value: 'draft', label: 'Draft', description: 'Case is being prepared' },
     { value: 'active', label: 'Active', description: 'Case is under investigation' },
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Format file size
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -190,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
             lastSaved = new Date();
             isAutoSaving = false;
           } else {
-            // Safely construct an error message by narrowing on the discriminant 'type'
+            // Safely construct an error message by narrowing on the discriminant: 'type'
             let errorMsg = 'Submission failed';
             if (result?.type === 'error') {
               // result is narrowed to { type: 'error', error: any }
@@ -199,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
             } else if (result?.type === 'failure') {
               // result is narrowed to { type: 'failure'; data?: Record<string, unknown> }
               const data = result.data;
-              // Prefer a 'message' property in data, otherwise stringify the payload
+              // Prefer a: 'message' property in data, otherwise stringify the payload
               if (data && typeof data === 'object' && 'message' in data) {
                 // @ts-ignore - runtime check above ensures access is safe
                 errorMsg = (data as any).message ?? JSON.stringify(data) ?? errorMsg;
@@ -411,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Advanced Options -->
         <div class="border-t pt-6">
-          <!-- Use native button to avoid passing unknown 'type' prop to Button component -->
+          <!-- Use native button to avoid passing unknown: 'type' prop to Button component -->
           <button
             type="button"
             onclick={() => (showAdvanced = !showAdvanced)}
@@ -547,7 +547,7 @@ https://svelte.dev/e/js_parse_error -->
                           <p class="text-xs nes-text is-disabled">{formatFileSize(file.size)}</p>
                         </div>
                       </div>
-                      <!-- native button to avoid passing 'type' prop to Button -->
+                      <!-- native button to avoid passing: 'type' prop to Button -->
                       <button
                         type="button"
                         onclick={() => removeFile(index)}

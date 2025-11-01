@@ -519,13 +519,13 @@
   		const startTime = performance.now();
   		// Simple CPU implementations
   		switch (operation.type) {
-  			case 'embedding':
+  			case: 'embedding':
   				operation.output = operation.input.map(x => Math.tanh(x * 0.1));
   				break;
-  			case 'attention':
+  			case: 'attention':
   				operation.output = normalizeAttention(operation.input);
   				break;
-  			case 'som_update':
+  			case: 'som_update':
   				operation.output = new Float32Array(operation.input);
   				break;
   			default:

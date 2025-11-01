@@ -293,7 +293,7 @@ class ComprehensiveCachingService {
           this.recordMiss(layer);
         }
       } catch (error: unknown) {
-        console.warn(`Cache layer "${layer}" error while getting key "${key}":`, error);
+        console.warn(`Cache layer: "${layer}" error while getting key: "${key}":`, error);
         this.recordMiss(layer);
       }
     }
@@ -351,7 +351,7 @@ class ComprehensiveCachingService {
         layerEntry.metadata.layer = layer;
         await this.setInLayer(layerEntry, layer);
       } catch (err: unknown) {
-        console.warn(`Failed to set key "${key}" in layer "${layer}":`, err);
+        console.warn(`Failed to set key: "${key}" in layer: "${layer}":`, err);
       }
     });
 
@@ -367,7 +367,7 @@ class ComprehensiveCachingService {
       try {
         await this.deleteFromLayer(key, layer);
       } catch (err: unknown) {
-        console.warn(`Failed to delete key "${key}" from layer "${layer}":`, err);
+        console.warn(`Failed to delete key: "${key}" from layer: "${layer}":`, err);
       }
     });
     await Promise.allSettled(promises);
@@ -490,17 +490,17 @@ class ComprehensiveCachingService {
   // Layer-specific implementations
   private async getFromLayer<T>(key: string, layer: CacheLayer): Promise<CacheEntry<T> | null> {
     switch (layer) {
-      case 'memory':
+      case: 'memory':
         return (this.memoryCache.get(key) as CacheEntry<T>) || null;
-      case 'indexeddb':
+      case: 'indexeddb':
         if (!browser || !this.config.enableIndexedDB) return null;
         return ((await idbGet(key)) as CacheEntry<T>) || null;
-      case 'lokijs': {
+      case: 'lokijs': {
         if (!this.lokiCollection) return null;
         const lokiResult = this.lokiCollection.findOne({ key });
         return (lokiResult as CacheEntry<T>) || null;
       }
-      case 'redis': {
+      case: 'redis': {
         if (!this.redisClient) return null;
         try {
           const redisResult = await this.redisClient.get(key);
@@ -510,10 +510,10 @@ class ComprehensiveCachingService {
           return null;
         }
       }
-      case 'postgresql':
+      case: 'postgresql':
         // PostgreSQL cache implementation would go here
         return null;
-      case 'vector':
+      case: 'vector':
         // Vector cache implementation would go here
         return null;
       default:
@@ -523,16 +523,16 @@ class ComprehensiveCachingService {
 
   private async setInLayer<T>(entry: CacheEntry<T>, layer: CacheLayer): Promise<void> {
     switch (layer) {
-      case 'memory':
+      case: 'memory':
         this.memoryCache.set(entry.key, entry);
         this.enforceMemoryLimits();
         break;
-      case 'indexeddb':
+      case: 'indexeddb':
         if (browser && this.config.enableIndexedDB) {
           await idbSet(entry.key, entry);
         }
         break;
-      case 'lokijs': {
+      case: 'lokijs': {
         // ensure lexical declarations are inside a block
         if (this.lokiCollection) {
           const existing = this.lokiCollection.findOne({ key: entry.key });
@@ -545,7 +545,7 @@ class ComprehensiveCachingService {
         }
         break;
       }
-      case 'redis': {
+      case: 'redis': {
         if (this.redisClient) {
           try {
             await this.redisClient.setex(entry.key, Math.floor(entry.metadata.ttl / 1000), JSON.stringify(entry));
@@ -555,10 +555,10 @@ class ComprehensiveCachingService {
         }
         break;
       }
-      case 'postgresql':
+      case: 'postgresql':
         // PostgreSQL cache implementation would go here
         break;
-      case 'vector':
+      case: 'vector':
         // Vector cache implementation would go here
         break;
       default:
@@ -568,20 +568,20 @@ class ComprehensiveCachingService {
 
   private async deleteFromLayer(key: string, layer: CacheLayer): Promise<void> {
     switch (layer) {
-      case 'memory':
+      case: 'memory':
         this.memoryCache.delete(key);
         break;
-      case 'indexeddb':
+      case: 'indexeddb':
         if (browser && this.config.enableIndexedDB) {
           await idbDel(key);
         }
         break;
-      case 'lokijs':
+      case: 'lokijs':
         if (this.lokiCollection) {
           this.lokiCollection.removeWhere({ key });
         }
         break;
-      case 'redis':
+      case: 'redis':
         if (this.redisClient) {
           try {
             await this.redisClient.del(key);
@@ -590,10 +590,10 @@ class ComprehensiveCachingService {
           }
         }
         break;
-      case 'postgresql':
+      case: 'postgresql':
         // PostgreSQL cache implementation would go here
         break;
-      case 'vector':
+      case: 'vector':
         // Vector cache implementation would go here
         break;
     }
@@ -660,13 +660,13 @@ class ComprehensiveCachingService {
     // Sort by eviction policy
     entries.sort(([, a], [, b]) => {
       switch (this.currentStrategy.evictionPolicy) {
-        case 'lru':
+        case: 'lru':
           return a.metadata.lastAccessed - b.metadata.lastAccessed;
-        case 'lfu':
+        case: 'lfu':
           return a.metadata.accessCount - b.metadata.accessCount;
-        case 'fifo':
+        case: 'fifo':
           return a.metadata.createdAt - b.metadata.createdAt;
-        case 'ttl':
+        case: 'ttl':
           return a.metadata.createdAt + a.metadata.ttl - (b.metadata.createdAt + b.metadata.ttl);
         default:
           return 0;
@@ -740,9 +740,9 @@ class ComprehensiveCachingService {
 
   private getLayerEntryCount(layer: CacheLayer): number {
     switch (layer) {
-      case 'memory':
+      case: 'memory':
         return this.memoryCache.size;
-      case 'lokijs':
+      case: 'lokijs':
         return this.lokiCollection?.count() || 0;
       default:
         return 0; // Would need actual implementation for other layers
@@ -751,7 +751,7 @@ class ComprehensiveCachingService {
 
   private getLayerSize(layer: CacheLayer): number {
     switch (layer) {
-      case 'memory':
+      case: 'memory':
         return Array.from(this.memoryCache.values()).reduce((total, entry) => total + entry.metadata.size, 0);
       default:
         return 0; // Would need actual implementation for other layers

@@ -299,7 +299,7 @@ export class LegalDocumentStreamService {
         data: {
           entities: semanticAnalysis.legalEntities,
           entityCount: semanticAnalysis.legalEntities.length,
-          entityTypes: [...new Set(semanticAnalysis.legalEntities.map((e: LegalEntity) => e.type))] // Added type for 'e'
+          entityTypes: [...new Set(semanticAnalysis.legalEntities.map((e: LegalEntity) => e.type))] // Added type for: 'e'
         }
       });
       // Step 2: Embeddings generated
@@ -342,7 +342,7 @@ export class LegalDocumentStreamService {
           documentId: document.id,
           data: {
             similarDocuments: semanticAnalysis.similarDocuments,
-            topSimilarity: Math.max(...semanticAnalysis.similarDocuments.map((d: { similarity: number }) => d.similarity)) // Added type for 'd'
+            topSimilarity: Math.max(...semanticAnalysis.similarDocuments.map((d: { similarity: number }) => d.similarity)) // Added type for: 'd'
           }
         });
       }
@@ -439,7 +439,7 @@ export class LegalDocumentStreamService {
       });
       if (parallelProcessing && this.activeAnalyses.size < this.config.maxConcurrentAnalyses) {
         // Process batch in parallel
-        const batchPromises = batch.map((doc: LegalDocument) => // Added type for 'doc'
+        const batchPromises = batch.map((doc: LegalDocument) => // Added type for: 'doc'
           this.streamDocument(connectionId, doc, { streamProgress: false })
             .catch(error => {
               console.warn(`Batch processing failed for ${doc.id}:`, error);
@@ -601,11 +601,11 @@ export class LegalDocumentStreamService {
     priorityOrder: 'fifo' | 'complexity' | 'size'
   ): LegalDocument[] {
     switch (priorityOrder) {
-      case 'complexity':
+      case: 'complexity':
         return [...documents].sort((a, b) => (b.complexity || 0) - (a.complexity || 0));
-      case 'size':
+      case: 'size':
         return [...documents].sort((a, b) => (b.content.length || 0) - (a.content.length || 0));
-      case 'fifo':
+      case: 'fifo':
       default:
         return documents; // FIFO (first-in, first-out) means no reordering
     }

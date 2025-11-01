@@ -103,7 +103,7 @@
             assistantResponse += `---\n\n`;
           }
           assistantResponse += `**🎯 Analysis Response:**\n\n`;
-          assistantResponse += `Based on semantic similarity analysis of your query "${userMessage}", I've identified the most relevant context from ${ragResult.metadata.totalDocuments} available documents.\n\n`;
+          assistantResponse += `Based on semantic similarity analysis of your query: "${userMessage}", I've identified the most relevant context from ${ragResult.metadata.totalDocuments} available documents.\n\n`;
           if (ragResult.similarDocuments.length > 0) {
             assistantResponse += `The highest similarity score was ${(Math.max(...ragResult.similarDocuments.map(r => r.similarity)) * 100).toFixed(1)}%, indicating strong semantic relevance. `;
           }

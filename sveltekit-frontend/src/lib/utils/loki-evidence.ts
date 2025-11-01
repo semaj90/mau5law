@@ -310,21 +310,21 @@ export class LokiEvidenceService {
   private async syncOperation(operation: SyncOperation): Promise<void> {
     const { type, recordId, data } = operation;
     switch (type) {
-      case 'CREATE':
+      case: 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
         break;
-      case 'UPDATE':
+      case: 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
         break;
-      case 'DELETE':
+      case: 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'DELETE',
         });
@@ -398,7 +398,7 @@ export class LokiEvidenceService {
 // LokiIndexedAdapter for better browser persistence
 class LokiIndexedAdapter {
   constructor(private dbname: string) {}
-  loadDatabase(dbname: string, callback: (data: string | null) => void): void {
+  loadDatabase(_dbname: string, callback: (data: string | null) => void): void {
     // Load from IndexedDB
     const request = indexedDB.open(this.dbname, 1);
     request.onerror = () => callback(null);
@@ -406,7 +406,8 @@ class LokiIndexedAdapter {
       const db = request.result;
       const transaction = db.transaction(['data'], 'readonly');
       const store = transaction.objectStore('data');
-      const getRequest = store.get(dbname);
+      // use instance dbname (this.dbname) instead of missing `dbname`
+      const getRequest = store.get(this.dbname);
       getRequest.onsuccess = () => {
         callback(getRequest.result ? getRequest.result.data : null);
       };
@@ -419,20 +420,21 @@ class LokiIndexedAdapter {
       }
     };
   }
-  saveDatabase(dbname: string, dbstring: string, callback: () => void): void {
+  saveDatabase(_dbname: string, dbstring: string, callback: () => void): void {
     // Save to IndexedDB
     const request = indexedDB.open(this.dbname, 1);
     request.onsuccess = () => {
       const db = request.result;
       const transaction = db.transaction(['data'], 'readwrite');
       const store = transaction.objectStore('data');
-      store.put({ id: dbname, data: dbstring });
+      // use instance dbname (this.dbname) instead of missing `dbname`
+      store.put({ id: this.dbname, data: dbstring });
       transaction.oncomplete = () => callback();
       transaction.onerror = () => callback();
     };
     request.onerror = () => callback();
   }
-  deleteDatabase(dbname: string, callback: () => void): void {
+  deleteDatabase(_dbname: string, callback: () => void): void {
     const deleteRequest = indexedDB.deleteDatabase(this.dbname);
     deleteRequest.onsuccess = () => callback();
     deleteRequest.onerror = () => callback();

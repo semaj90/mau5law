@@ -53,7 +53,7 @@ https://svelte.dev/e/props_duplicate -->
     setTimeout(() => {
       const aiResponse = {
         role: 'assistant',
-        content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":
+        content: `Based on the case information provided, here are my findings regarding: "${userMessage.content}":
   This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
   Key considerations:
   1. Applicable statutory framework
@@ -104,10 +104,10 @@ https://svelte.dev/e/props_duplicate -->
         {/if}
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button class="btn-icon" on:click={() => (showSettings = !showSettings)} title="Settings">
+        <button class="btn-icon" onclick={() => (showSettings = !showSettings)} title="Settings">
           <Settings />
         </button>
-        <button class="btn-icon" on:click={() => clearMessages()} title="Clear conversation">
+        <button class="btn-icon" onclick={() => clearMessages()} title="Clear conversation">
           <Trash2 />
         </button>
       </div>
@@ -123,7 +123,7 @@ https://svelte.dev/e/props_duplicate -->
             <div class="references">
               <h4 class="references-title">References:</h4>
               {#each message.references as reference}
-                <button class="reference-item" on:click={() => handleReferenceClick(reference)}>
+                <button class="reference-item" onclick={() => handleReferenceClick(reference)}>
                   <Quote />
                   <span class="reference-title">{reference.title}</span>
                   <span class="reference-citation">{reference.citation}</span>
@@ -157,7 +157,7 @@ https://svelte.dev/e/props_duplicate -->
     <div class="settings-panel">
       <div class="settings-header">
         <h4 class="settings-title">AI Assistant Settings</h4>
-        <button class="btn-close" on:click={() => (showSettings = false)}>×</button>
+        <button class="btn-close" onclick={() => (showSettings = false)}>×</button>
       </div>
       <div class="settings-content">
         <div class="setting-group">
@@ -203,8 +203,8 @@ https://svelte.dev/e/props_duplicate -->
             <p>{selectedCitation}</p>
           </div>
           <div class="dialog-actions">
-            <button class="btn-primary" on:click={() => insertCitation()}>Insert Citation</button>
-            <button class="btn-secondary" on:click={() => navigator.clipboard.writeText(selectedCitation)}>
+            <button class="btn-primary" onclick={() => insertCitation()}>Insert Citation</button>
+            <button class="btn-secondary" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy to Clipboard
             </button>
           </div>

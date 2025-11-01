@@ -142,7 +142,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
   private getIconGeometry(icon: string): THREE.BufferGeometry {
     const size = 0.2;
     switch (icon) {
-      case 'play': {
+      case: 'play': {
         // Triangle for play button
         const playShape = new THREE.Shape();
         playShape.moveTo(size * 0.8, 0);
@@ -151,7 +151,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         playShape.closePath();
         return new THREE.ShapeGeometry(playShape);
       }
-      case 'pause': {
+      case: 'pause': {
         // Two rectangles for pause
         const pauseShape = new THREE.Shape();
         const w = size * 0.35;
@@ -173,10 +173,10 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         pauseShape.add(rect2);
         return new THREE.ShapeGeometry(pauseShape);
       }
-      case 'stop':
+      case: 'stop':
         // Square for stop
         return new THREE.PlaneGeometry(size, size);
-      case 'arrow-right': {
+      case: 'arrow-right': {
         // Arrow pointing right
         const arrowShape = new THREE.Shape();
         const w = size * 1.2;
@@ -193,7 +193,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         arrowShape.closePath();
         return new THREE.ShapeGeometry(arrowShape);
       }
-      case 'plus': {
+      case: 'plus': {
         // Plus sign
         const shape = new THREE.Shape();
         const s = size / 2;
@@ -222,25 +222,25 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     if (!this.iconMesh || !this.options.iconPosition) return;
     const spacing = 0.3;
     switch (this.options.iconPosition) {
-      case 'left':
+      case: 'left':
         this.iconMesh.position.x = -spacing;
         if (this.textMesh) {
           this.textMesh.position.x = spacing * 0.5;
         }
         break;
-      case 'right':
+      case: 'right':
         this.iconMesh.position.x = spacing;
         if (this.textMesh) {
           this.textMesh.position.x = -spacing * 0.5;
         }
         break;
-      case 'top':
+      case: 'top':
         this.iconMesh.position.y = spacing;
         if (this.textMesh) {
           this.textMesh.position.y = -spacing * 0.5;
         }
         break;
-      case 'bottom':
+      case: 'bottom':
         this.iconMesh.position.y = -spacing;
         if (this.textMesh) {
           this.textMesh.position.y = spacing * 0.5;

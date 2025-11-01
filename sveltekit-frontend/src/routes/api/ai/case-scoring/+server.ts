@@ -40,16 +40,16 @@ interface CaseScore {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 function derivePriority(score: number): 'critical' | 'high' | 'medium' | 'low' {
-  if (score >= 85) return 'critical';
-  if (score >= 70) return 'high';
-  if (score >= 50) return 'medium';
-  return 'low';
+  if (score >= 85) return: 'critical';
+  if (score >= 70) return: 'high';
+  if (score >= 50) return: 'medium';
+  return: 'low';
 }
 function deriveRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
-  if (score >= 85) return 'critical';
-  if (score >= 70) return 'high';
-  if (score >= 50) return 'medium';
-  return 'low';
+  if (score >= 85) return: 'critical';
+  if (score >= 70) return: 'high';
+  if (score >= 50) return: 'medium';
+  return: 'low';
 }
 function sampleCase(id: number, title: string, base: number): CaseScore {
   const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5))));

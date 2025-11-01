@@ -735,9 +735,9 @@ class AdvancedCacheManager {
 
   private getDefaultTTL(confidentiality_level?: string): number {
     switch (confidentiality_level) {
-      case 'privileged':
+      case: 'privileged':
         return this.securityConfig.maxPrivilegedCacheTime;
-      case 'confidential':
+      case: 'confidential':
         return 60 * 60 * 1000;
       default:
         return 5 * 60 * 1000;

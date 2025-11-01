@@ -37,11 +37,11 @@ export interface OptimizedSearchRequest {
   offset?: number;
   threshold?: number;
   useCache?: boolean;
-  filter?: Record<string, unknown>; // Replaced 'any' with 'unknown' for better type safety
+  filter?: Record<string, unknown>; // Replaced: 'any' with: 'unknown' for better type safety
 }
 export interface BatchUpsertRequest {
   collection: string;
-  points: QdrantPointStruct[]; // Replaced 'Array<any>' with 'QdrantPointStruct[]'
+  points: QdrantPointStruct[]; // Replaced: 'Array<any>' with: 'QdrantPointStruct[]'
 }
 export interface CacheManagementRequest {
   action: 'clear_cache' | 'get_stats' | 'optimize_memory';
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       );
     }
     switch (action) {
-      case 'health': {
+      case: 'health': {
         const startTime = Date.now();
         const isHealthy = await qdrantOptimized.isHealthy();
         const memoryUsage = qdrantOptimized.getMemoryUsage();
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      case 'metrics': {
+      case: 'metrics': {
         const memoryUsage = qdrantOptimized.getMemoryUsage();
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         const queryHistory = qdrantOptimized.getQueryHistory();
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      case 'search': {
+      case: 'search': {
         const collection = url.searchParams.get('collection') || 'legal_documents';
         const query = url.searchParams.get('query');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           throw searchError;
         }
       }
-      case 'cache_stats': {
+      case: 'cache_stats': {
         const memoryUsage = qdrantOptimized.getMemoryUsage();
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         return json({
@@ -383,7 +383,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       );
     }
     switch (action) {
-      case 'batch_upsert': {
+      case: 'batch_upsert': {
         // Admin only for batch operations
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -395,8 +395,8 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           );
         }
         // --- FIX START ---
-        // Explicitly assert the type of 'body' to 'BatchUpsertRequest' to ensure
-        // 'collection' and 'points' are correctly typed as per the interface.
+        // Explicitly assert the type of: 'body' to: 'BatchUpsertRequest' to ensure
+        // 'collection' and: 'points' are correctly typed as per the interface.
         const { collection, points } = body as BatchUpsertRequest;
         // --- FIX END ---
         if (!collection || !points || !Array.isArray(points)) {
@@ -411,7 +411,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         const startTime = Date.now();
         try {
           // Transform points to strictly conform to the expected type for qdrantOptimized.upsertBatch.
-          // This involves ensuring 'id' is a string and 'vector' is a number array.
+          // This involves ensuring: 'id' is a string and: 'vector' is a number array.
           const pointsForUpsert = points.map(point => {
             let id: string;
             if (typeof point.id === 'string') {
@@ -420,7 +420,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
               id = String(point.id);
             } else {
               // If id is undefined, generate a UUID. This assumes qdrantOptimized.upsertBatch requires a string ID.
-              // If Qdrant itself can generate IDs when 'id' is omitted, then the type definition for upsertBatch
+              // If Qdrant itself can generate IDs when: 'id' is omitted, then the type definition for upsertBatch
               // in qdrantOptimized might be overly strict. For this fix, we conform to the strict type.
               id = crypto.randomUUID(); // crypto.randomUUID() is available in Node.js environments.
             }
@@ -487,7 +487,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           throw upsertError;
         }
       }
-      case 'clear_cache': {
+      case: 'clear_cache': {
         // Admin only for cache management
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -522,7 +522,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           },
         });
       }
-      case 'optimize_memory': {
+      case: 'optimize_memory': {
         // Admin only for memory optimization
         if (!locals.user || locals.user.role !== 'admin') {
           return json(

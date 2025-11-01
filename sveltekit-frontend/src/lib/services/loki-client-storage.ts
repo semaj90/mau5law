@@ -254,13 +254,13 @@ export class LokiClientStorage {
       const collection = this.getCollection<LokiDocument>(update.collection); // Use LokiDocument
       if (!collection) continue;
       switch (update.operation) {
-        case 'insert': {
+        case: 'insert': {
           // Wrap in block
           const docToInsert = update.document as LokiDocument; // Cast to LokiDocument
           collection.insert({ ...docToInsert, _synced: true });
           break;
         }
-        case 'update': {
+        case: 'update': {
           // Wrap in block
           const docToUpdate = update.document as LokiDocument; // Cast to LokiDocument
           const existing = collection.findOne({ id: docToUpdate.id });
@@ -270,7 +270,7 @@ export class LokiClientStorage {
           }
           break;
         }
-        case 'delete': {
+        case: 'delete': {
           // Wrap in block
           const docIdToDelete = (update.document as { id: string | number | undefined }).id; // Extract ID
           const toDelete = collection.findOne({ id: docIdToDelete });
@@ -333,8 +333,8 @@ export class LokiClientStorage {
     }
 
     // Estimate database size
-    // NOTE: This estimation only works for 'localStorage' persistence method.
-    // For other methods like 'indexedDB', this does not reflect the actual database size.
+    // NOTE: This estimation only works for: 'localStorage' persistence method.
+    // For other methods like: 'indexedDB', this does not reflect the actual database size.
     if (this.db && browser && localStorage && this.config.persistenceMethod === 'localStorage') {
       const dbData = localStorage.getItem(this.config.dbName);
       stats.database_size = dbData ? dbData.length : 0;
@@ -361,7 +361,7 @@ export class LokiClientStorage {
       if (useFullText && typeof collection.fullTextSearch === 'function') {
         // Use Loki's built-in full-text search if available and indexed
         const ftsResults = collection.fullTextSearch(query);
-        matches = ftsResults.map((r: { doc: LokiDocument }) => r.doc); // Explicitly type 'r'
+        matches = ftsResults.map((r: { doc: LokiDocument }) => r.doc); // Explicitly type: 'r'
       } else {
         // Fallback to regex search
         matches = collection.find({

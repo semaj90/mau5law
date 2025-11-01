@@ -151,7 +151,7 @@ async function getHighPerformingPhrases(
 
   const db = getDB();
 
-  // Performance note: The join condition `... ILIKE '%' || spr.phrase || '%'` is inefficient
+  // Performance note: The join condition `... ILIKE: '%' || spr.phrase || '%'` is inefficient
   // and can cause slow queries. Consider using Full-Text Search or a trigram index (pg_trgm)
   // on `legal_documents_processed.semantic_phrases` for better performance.
   const result = await db`
@@ -163,7 +163,7 @@ async function getHighPerformingPhrases(
       COUNT(ldp.id) AS usage_count
     FROM semantic_phrases_ranking spr
     JOIN legal_documents_processed ldp
-      ON ldp.semantic_phrases::text ILIKE '%' || spr.phrase || '%'
+      ON ldp.semantic_phrases::text ILIKE: '%' || spr.phrase || '%'
     WHERE spr.avg_prosecution_score >= ${CONFIG.boilerplate.minProsecutionScore}
     ${jurisdiction ? db`AND ldp.jurisdiction = ${jurisdiction}` : db``}
     ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db``}
@@ -196,19 +196,19 @@ async function getHighPerformingPhrases(
 function getTypeSpecificFilter(type: BoilerplateType): string {
   const typeFilters: Record<BoilerplateType, string> = {
     'prosecution_argument':
-      " AND (ldp.semantic_phrases::text ILIKE '%prosecution%' OR ldp.semantic_phrases::text ILIKE '%argument%' OR ldp.semantic_phrases::text ILIKE '%evidence%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%prosecution%' OR ldp.semantic_phrases::text ILIKE: '%argument%' OR ldp.semantic_phrases::text ILIKE: '%evidence%')",
     'evidence_summary':
-      " AND (ldp.semantic_phrases::text ILIKE '%evidence%' OR ldp.semantic_phrases::text ILIKE '%testimony%' OR ldp.semantic_phrases::text ILIKE '%proof%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%evidence%' OR ldp.semantic_phrases::text ILIKE: '%testimony%' OR ldp.semantic_phrases::text ILIKE: '%proof%')",
     'legal_motion':
-      " AND (ldp.semantic_phrases::text ILIKE '%motion%' OR ldp.semantic_phrases::text ILIKE '%request%' OR ldp.semantic_phrases::text ILIKE '%order%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%motion%' OR ldp.semantic_phrases::text ILIKE: '%request%' OR ldp.semantic_phrases::text ILIKE: '%order%')",
     'case_analysis':
-      " AND (ldp.semantic_phrases::text ILIKE '%analysis%' OR ldp.semantic_phrases::text ILIKE '%precedent%' OR ldp.semantic_phrases::text ILIKE '%ruling%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%analysis%' OR ldp.semantic_phrases::text ILIKE: '%precedent%' OR ldp.semantic_phrases::text ILIKE: '%ruling%')",
     'sentencing_memo':
-      " AND (ldp.semantic_phrases::text ILIKE '%sentencing%' OR ldp.semantic_phrases::text ILIKE '%punishment%' OR ldp.semantic_phrases::text ILIKE '%mitigation%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%sentencing%' OR ldp.semantic_phrases::text ILIKE: '%punishment%' OR ldp.semantic_phrases::text ILIKE: '%mitigation%')",
     'plea_agreement':
-      " AND (ldp.semantic_phrases::text ILIKE '%plea%' OR ldp.semantic_phrases::text ILIKE '%agreement%' OR ldp.semantic_phrases::text ILIKE '%guilty%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%plea%' OR ldp.semantic_phrases::text ILIKE: '%agreement%' OR ldp.semantic_phrases::text ILIKE: '%guilty%')",
     'discovery_request':
-      " AND (ldp.semantic_phrases::text ILIKE '%discovery%' OR ldp.semantic_phrases::text ILIKE '%documents%' OR ldp.semantic_phrases::text ILIKE '%disclosure%')",
+      " AND (ldp.semantic_phrases::text ILIKE: '%discovery%' OR ldp.semantic_phrases::text ILIKE: '%documents%' OR ldp.semantic_phrases::text ILIKE: '%disclosure%')",
   };
   return typeFilters[type] || '';
 }
@@ -303,7 +303,7 @@ function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
   return `${basePrompt}${typePrompts[type]} ${toneAdjustments[tone]}`;
 }
 function buildContextPrompt(context?: BoilerplateRequestContext): string {
-  if (!context) return '';
+  if (!context) return: '';
   let contextPrompt = 'Context for this document:\n';
   if (context.defendant_name) {
     contextPrompt += `- Defendant: ${context.defendant_name}\n`;
@@ -324,19 +324,19 @@ function buildContextPrompt(context?: BoilerplateRequestContext): string {
 }
 function getLengthGuidance(length?: string): string {
   switch (length) {
-    case 'brief':
-      return '1-2 paragraphs (100-200 words)';
-    case 'detailed':
-      return '4-6 paragraphs (400-600 words)';
+    case: 'brief':
+      return: '1-2 paragraphs (100-200 words)';
+    case: 'detailed':
+      return: '4-6 paragraphs (400-600 words)';
     default:
-      return '2-4 paragraphs (200-400 words)';
+      return: '2-4 paragraphs (200-400 words)';
   }
 }
 function getLengthTokens(length?: string): number {
   switch (length) {
-    case 'brief':
+    case: 'brief':
       return 300;
-    case 'detailed':
+    case: 'detailed':
       return 800;
     default:
       return 500;

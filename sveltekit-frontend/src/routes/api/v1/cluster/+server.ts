@@ -7,7 +7,7 @@ import { productionServiceClient } from '$lib/services/productionServiceClient';
 import { json, error } from '@sveltejs/kit';
 
 // Add a minimal local interface for the methods we call and cast the imported client.
-// This fixes the "property does not exist on type 'ProductionServiceClient'" errors.
+// This fixes the: "property does not exist on type: 'ProductionServiceClient'" errors.
 type MinimalProductionClient = {
   checkAllServicesHealth(): Promise<Record<string, boolean>>;
   getPerformanceMetrics(): Promise<Array<{ avgLatency?: number; successRate?: number }>>;
@@ -22,11 +22,11 @@ export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.pathname.split('/').pop();
   try {
     switch (endpoint) {
-      case 'health':
+      case: 'health':
         return await handleHealthCheck();
-      case 'services':
+      case: 'services':
         return await handleServicesStatus();
-      case 'metrics':
+      case: 'metrics':
         return await handleMetrics();
       default:
         return await handleClusterOverview();
@@ -42,11 +42,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = await request.json();
     const action = data.action as string | undefined;
     switch (action) {
-      case 'restart_service':
+      case: 'restart_service':
         return await handleServiceRestart(data.serviceName);
-      case 'scale_service':
+      case: 'scale_service':
         return await handleServiceScaling(data.serviceName, data.instances);
-      case 'deploy_service':
+      case: 'deploy_service':
         return await handleServiceDeployment(data.serviceConfig);
       default:
         throw error(400, 'Invalid cluster action');

@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '5');
 
     if (!query) {
-      return json({ error: 'Query parameter "q" is required' }, { status: 400 });
+      return json({ error: 'Query parameter: "q" is required' }, { status: 400 });
     }
 
     const results = await searchSimilarDocuments(query, limit);

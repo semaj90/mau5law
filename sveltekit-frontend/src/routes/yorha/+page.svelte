@@ -306,7 +306,7 @@
   // Add a reactive ref for the child component so updates trigger effects
   let commandInterfaceRef = $state<any>(null);
 
-  // Imperative listener to capture dispatched "command" events from the component
+  // Imperative listener to capture dispatched: "command" events from the component
   $effect(() => {
     if (!commandInterfaceRef) return;
     const handler = (e: CustomEvent) => {
@@ -316,7 +316,7 @@
     commandInterfaceRef.addEventListener('command', handler as EventListener);
     return () => commandInterfaceRef?.removeEventListener('command', handler as EventListener);
   });
-  // Strongly-typed search result to avoid 'unknown' property errors in template
+  // Strongly-typed search result to avoid: 'unknown' property errors in template
   type SearchResult = {
     id: number | string;
     title: string;
@@ -453,7 +453,7 @@
   <!-- YoRHa Command Interface (Toggle) -->
   {#if showCommandInterface}
     <section class="yorha-command-interface">
-      <!-- bind:this used instead of on:command to avoid TS 'never' error -->
+      <!-- bind:this used instead of on:command to avoid TS: 'never' error -->
       <YoRHaCommandInterface
         bind:this={commandInterfaceRef}
         systemData={systemData}

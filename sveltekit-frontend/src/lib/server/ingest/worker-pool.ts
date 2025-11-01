@@ -9,11 +9,11 @@ export type JobType = 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'js
 export type Job = {
   id: string;
   type: JobType;
-  payload?: unknown; // Changed from 'any' to 'unknown'
-  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: unknown }; // Changed from 'any' to 'unknown'
+  payload?: unknown; // Changed from 'any' to: 'unknown'
+  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: unknown }; // Changed from 'any' to: 'unknown'
 };
 
-export type JobResult = { success: boolean; data?: unknown; error?: string; processingTimeMs?: number }; // Changed from 'any' to 'unknown'
+export type JobResult = { success: boolean; data?: unknown; error?: string; processingTimeMs?: number }; // Changed from 'any' to: 'unknown'
 
 // Interface for embedding job payload
 export interface EmbeddingJobPayload {
@@ -130,13 +130,13 @@ export class ServerIngestWorkerPool extends EventEmitter {
         this.totalProcessed++; // Increment for embedding jobs too
         return { success: true, data: res, processingTimeMs };
       } catch (err: unknown) {
-        // Changed 'any' to 'unknown'
+        // Changed: 'any' to: 'unknown'
         const errorMessage = err instanceof Error ? err.message : String(err);
         return { success: false, error: errorMessage, processingTimeMs: Date.now() - start };
       }
     }
 
-    let slot = this.slots.find(s => !s.busy); // Use 'let'
+    let slot = this.slots.find(s => !s.busy); // Use: 'let'
     if (!slot && this.slots.length < this.options.maxWorkers) {
       // Use this.options.maxWorkers
       this.addWorker();
@@ -219,7 +219,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
     }
   }
 
-  // Merged with the "rewritten" getStats
+  // Merged with the: "rewritten" getStats
   getStats() {
     return {
       totalWorkers: this.slots.length,
@@ -231,7 +231,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
     };
   }
 
-  // Merged with the "rewritten" shutdown
+  // Merged with the: "rewritten" shutdown
   async shutdown(graceful = true, timeout = 30000): Promise<void> {
     this.isShuttingDown = true;
     if (this.cleanupInterval) {

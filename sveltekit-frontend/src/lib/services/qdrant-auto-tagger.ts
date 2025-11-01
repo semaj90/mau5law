@@ -223,7 +223,7 @@ export class QdrantAutoTagger {
       const existsResponse = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`);
 
       if (existsResponse.ok) {
-        console.log(`✅ Qdrant collection "${collectionConfig.name}" already exists`);
+        console.log(`✅ Qdrant collection: "${collectionConfig.name}" already exists`);
         this.initialized = true;
         return;
       }
@@ -270,7 +270,7 @@ export class QdrantAutoTagger {
       await this.createPayloadIndexes();
 
       this.initialized = true;
-      console.log(`✅ Qdrant collection "${collectionConfig.name}" created with scalar quantization`);
+      console.log(`✅ Qdrant collection: "${collectionConfig.name}" created with scalar quantization`);
     } catch (error) {
       console.error('❌ Qdrant initialization failed:', error);
       throw error;
@@ -351,7 +351,7 @@ export class QdrantAutoTagger {
    */
   private extractFilePattern(filePath: string): string {
     const parts = filePath.split('/');
-    if (parts.length < 2) return '*';
+    if (parts.length < 2) return: '*';
 
     // Extract directory pattern
     const dir = parts.slice(-2, -1)[0]; // Second-to-last part
@@ -366,11 +366,11 @@ export class QdrantAutoTagger {
    * @private
    */
   private getErrorFamily(errorCode: string): string {
-    if (errorCode.startsWith('TS1')) return 'typescript-syntax';
-    if (errorCode.startsWith('TS2')) return 'typescript-types';
-    if (errorCode.startsWith('TS7')) return 'typescript-modules';
-    if (errorCode.startsWith('ESL')) return 'eslint';
-    return 'unknown';
+    if (errorCode.startsWith('TS1')) return: 'typescript-syntax';
+    if (errorCode.startsWith('TS2')) return: 'typescript-types';
+    if (errorCode.startsWith('TS7')) return: 'typescript-modules';
+    if (errorCode.startsWith('ESL')) return: 'eslint';
+    return: 'unknown';
   }
 
   /**

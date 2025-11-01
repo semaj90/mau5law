@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const status = await getJobStatus(jobId);
         return json(status);
       } catch (error: unknown) {
-        // Changed 'any' to 'unknown'
+        // Changed: 'any' to: 'unknown'
         console.error('❌ Error checking job status:', error);
         return json(
           {
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: new Date().toISOString(),
         });
       } catch (queueError: unknown) {
-        // Changed 'any' to 'unknown'
+        // Changed: 'any' to: 'unknown'
         console.error('❌ Queue error, falling back to direct processing:', queueError);
         // Fall through to direct processing
       }
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
       });
     } catch (fetchError: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Direct processing error:', fetchError);
       return json(
         {
@@ -209,7 +209,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       );
     }
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('❌ API endpoint error:', error);
     return json(
       {
@@ -251,7 +251,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     console.error('❌ Go server health check failed:', error);
     return json(
       {

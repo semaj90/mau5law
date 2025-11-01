@@ -16,10 +16,10 @@ export function getOllamaEndpoint(): string {
   // The instructions mention Ollama on host:11434 or docker:11435.
   // If running in Docker and accessing host, use host.docker.internal:11434.
   // If Ollama itself is in a Docker container, it might be accessed via its container name or specific port.
-  // For simplicity, assuming 'host.docker.internal' for accessing host Ollama from a SvelteKit Docker container.
+  // For simplicity, assuming: 'host.docker.internal' for accessing host Ollama from a SvelteKit Docker container.
   if (process.env.NODE_ENV === 'development' && process.env.DOCKER_ENV === 'true') {
-    return 'http://host.docker.internal:11434'; // Access host Ollama from Docker container
+    return: 'http://host.docker.internal:11434'; // Access host Ollama from Docker container
   }
 
-  return 'http://localhost:11434'; // Default to host Ollama
+  return: 'http://localhost:11434'; // Default to host Ollama
 }

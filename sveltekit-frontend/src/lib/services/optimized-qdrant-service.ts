@@ -5,7 +5,7 @@
  */
 import { QdrantClient, type Filter } from '@qdrant/js-client-rest';
 // Attempt dynamic import of optional SOM implementation, fallback to a lightweight stub.
-// This prevents startup/import-time crashes if './som-clustering.js' is not present.
+// This prevents startup/import-time crashes if: './som-clustering.js' is not present.
 type LegalDocumentSOM = {
   cluster(vector: number[]): Promise<{ x: number; y: number; confidence: number }>;
 };
@@ -47,7 +47,7 @@ interface QdrantSearchParams {
   score_threshold?: number;
   with_payload?: boolean;
   with_vector?: boolean;
-  filter?: Filter; // Using 'any' as a pragmatic workaround for Filter type import issues
+  filter?: Filter; // Using: 'any' as a pragmatic workaround for Filter type import issues
 }
 
 // Corrected dimensions for nomic-embed-text and embeddinggemma:latest (768, not 384)
@@ -184,7 +184,7 @@ export class OptimizedQdrantService {
         console.log(`✅ Created optimized Qdrant collection: ${this.config.collectionName}`);
       }
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Failed to ensure Qdrant collection:', error);
       throw error;
     }
@@ -196,7 +196,7 @@ export class OptimizedQdrantService {
     queryVector: number[],
     options: {
       limit?: number;
-      filter?: Filter; // Using 'any' as a pragmatic workaround for Filter type import issues
+      filter?: Filter; // Using: 'any' as a pragmatic workaround for Filter type import issues
       threshold?: number;
       useCache?: boolean;
       enableSOM?: boolean;
@@ -264,7 +264,7 @@ export class OptimizedQdrantService {
       }
       return { results, stats };
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Qdrant search error:', error);
       if (error instanceof Error) {
         // Type guard for accessing error.message
@@ -325,7 +325,7 @@ export class OptimizedQdrantService {
       console.log(`✅ PostgreSQL sync completed: ${synced} synced, ${errors} errors in ${duration}ms`);
       return { synced, errors, duration };
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ PostgreSQL sync failed:', error);
       throw error;
     }
@@ -335,7 +335,7 @@ export class OptimizedQdrantService {
     queryVector: number[],
     clusterResult: { x: number; y: number; confidence: number },
     limit: number,
-    filter?: Filter // Using 'any' as a pragmatic workaround for Filter type import issues
+    filter?: Filter // Using: 'any' as a pragmatic workaround for Filter type import issues
   ): Promise<QdrantScoredPoint[]> {
     // Implementation for cluster-based search
     // This would search within the identified SOM cluster
@@ -357,7 +357,7 @@ export class OptimizedQdrantService {
     try {
       return await this.client.search(this.config.collectionName, searchParams);
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.warn('⚠️ Cluster search failed, falling back to standard search');
       return [];
     }
@@ -390,7 +390,7 @@ export class OptimizedQdrantService {
     for (const result of searchResults) {
       const payload = result.payload || {};
       const type = payload.type;
-      let document: VectorSearchResult['document'] = undefined; // Explicitly type 'document'
+      let document: VectorSearchResult['document'] = undefined; // Explicitly type: 'document'
       if (type === 'evidence') {
         const evidenceDoc = evidenceMap.get(String(result.id));
         if (evidenceDoc) {
@@ -432,7 +432,7 @@ export class OptimizedQdrantService {
     return results;
   }
   private async streamEvidenceVectors(batchSize: number, sinceTimestamp?: Date): Promise<AsyncIterable<unknown[]>> {
-    // Changed 'any[]' to 'unknown[]'
+    // Changed: 'any[]' to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
@@ -447,7 +447,7 @@ export class OptimizedQdrantService {
     return this.createBatchStream(query, batchSize);
   }
   private async streamCaseVectors(batchSize: number, sinceTimestamp?: Date): Promise<AsyncIterable<unknown[]>> {
-    // Changed 'any[]' to 'unknown[]'
+    // Changed: 'any[]' to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
@@ -465,7 +465,7 @@ export class OptimizedQdrantService {
     batchSize: number,
     sinceTimestamp?: Date
   ): Promise<AsyncIterable<unknown[]>> {
-    // Changed 'any[]' to 'unknown[]'
+    // Changed: 'any[]' to: 'unknown[]'
     const query = sinceTimestamp
       ? db
           .select()
@@ -494,7 +494,7 @@ export class OptimizedQdrantService {
     } while (batch.length === batchSize);
   }
   private async processVectorStream(
-    stream: AsyncIterable<unknown[]>, // Changed 'any[]' to 'unknown[]'
+    stream: AsyncIterable<unknown[]>, // Changed: 'any[]' to: 'unknown[]'
     type: 'evidence' | 'case' | 'legal_document'
   ): Promise<{ synced: number; errors: number }> {
     let synced = 0;
@@ -566,7 +566,7 @@ export class OptimizedQdrantService {
       });
       return { success: vectors.length, errors: 0 };
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       console.error('❌ Batch upsert error:', error);
       return { success: 0, errors: vectors.length };
     }
@@ -625,7 +625,7 @@ export class OptimizedQdrantService {
    * Health check method
    */
   async healthCheck(): Promise<unknown> {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     try {
       const collections = await this.getRawCollections();
       const collectionExists = collections.collections?.some(
@@ -639,7 +639,7 @@ export class OptimizedQdrantService {
         lastSync: new Date().toISOString(),
       };
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed: 'any' to: 'unknown'
       return {
         status: 'unhealthy',
         collections: 0,

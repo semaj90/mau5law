@@ -56,19 +56,19 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     let result: any = null;
     switch (body.action) {
-      case 'contract_terms':
+      case: 'contract_terms':
         // @ts-ignore - Model property access
         result = await langExtractService.extractContractTerms(body.text, body?.model || 'unknown');
         break;
-      case 'case_citations':
+      case: 'case_citations':
         // @ts-ignore - Model property access
         result = await langExtractService.extractCaseLawCitations(body.text, body?.model || 'unknown');
         break;
-      case 'dates':
+      case: 'dates':
         // @ts-ignore - Model property access
         result = await langExtractService.extractLegalDates(body.text, body.documentType, body?.model || 'unknown');
         break;
-      case 'summary':
+      case: 'summary':
         // @ts-ignore - Model property access
         result = await langExtractService.generateLegalSummary(
           body.text,
@@ -76,11 +76,11 @@ export const POST: RequestHandler = async ({ request }) => {
           body?.model || 'unknown'
         );
         break;
-      case 'risks':
+      case: 'risks':
         // @ts-ignore - Model property access
         result = await langExtractService.extractRiskFactors(body.text, body.documentType, body?.model || 'unknown');
         break;
-      case 'batch':
+      case: 'batch':
         if (!body.requests || !Array.isArray(body.requests)) {
           return json(
             {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         result = await langExtractService.batchExtract(body.requests);
         break;
-      case 'extract':
+      case: 'extract':
       default:
         // Ensure we have text for single extraction and call with a typed object instead of `any`
         if (!body.text) {

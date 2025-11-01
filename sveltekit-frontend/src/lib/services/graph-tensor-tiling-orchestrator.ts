@@ -21,7 +21,7 @@ import { sql } from 'drizzle-orm'; // Drizzle SQL utilities
 import * as schema from '$lib/server/db/schema'; // Main Drizzle schema
 import { redis } from '$lib/server/cache/redis'; // Redis client for caching
 
-// NOTE: This service assumes a 'graphNodes' table exists in your Drizzle schema
+// NOTE: This service assumes a: 'graphNodes' table exists in your Drizzle schema
 // (e.g., src/lib/server/db/schema.ts) with columns like:
 // id: text('id').primaryKey().notNull(),
 // content: text('content').notNull(),
@@ -76,7 +76,7 @@ export class GraphTensorTilingOrchestrator {
 
   /**
    * Generates an embedding for a given text using Ollama.
-   * Caches the result in Redis using the 'langcache' pattern.
+   * Caches the result in Redis using the: 'langcache' pattern.
    */
   private async getCachedEmbedding(text: string): Promise<number[]> {
     const cacheKey = `langcache:embeddinggemma:latest:${this.hashString(text)}`;
@@ -108,7 +108,7 @@ export class GraphTensorTilingOrchestrator {
   /**
    * Ingests a graph node or edge, generates its embedding, and stores it
    * in both PostgreSQL (pgvector) and Qdrant.
-   * @param nodeData The data for the graph node/edge. Must include 'id' and 'content'.
+   * @param nodeData The data for the graph node/edge. Must include: 'id' and: 'content'.
    */
   async ingestGraphElement(nodeData: Omit<GraphNode, 'embedding'>): Promise<void> {
     try {
@@ -225,7 +225,7 @@ export class GraphTensorTilingOrchestrator {
 
       return Array.from(uniqueResultsMap.values()).slice(0, limit);
     } catch (error) {
-      console.error(`❌ Error searching graph elements for query "${query}":`, error);
+      console.error(`❌ Error searching graph elements for query: "${query}":`, error);
       throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -242,11 +242,11 @@ export class GraphTensorTilingOrchestrator {
     console.log(`⚙️ Orchestrating tiling for graph ${graphId} with strategy: ${config.strategy}`);
     // In a real scenario, this would involve:
     // 1. Fetching graph data (nodes, edges) from a graph database (e.g., Neo4j) or PostgreSQL.
-    // 2. Applying a tiling algorithm based on 'config.strategy'.
+    // 2. Applying a tiling algorithm based on: 'config.strategy'.
     //    - Spatial: Grouping nodes by proximity in a conceptual space.
     //    - Semantic: Grouping nodes by similarity of their embeddings.
     //    - Random: Simple partitioning.
-    // 3. Generating a 'tileEmbedding' for each tile (e.g., average of node embeddings in the tile).
+    // 3. Generating a: 'tileEmbedding' for each tile (e.g., average of node embeddings in the tile).
     // 4. Potentially preparing data for WebGPU/WASM processing.
 
     // Placeholder implementation:

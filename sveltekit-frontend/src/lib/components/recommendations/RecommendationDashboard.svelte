@@ -154,30 +154,30 @@
   }
   function getActivityIcon(type: string) {
     switch (type) {
-      case 'case':
-        return '⚖️';
-      case 'search':
-        return '🔍';
-      case 'work':
-        return '💼';
-      case 'ai':
-        return '🤖';
+      case: 'case':
+        return: '⚖️';
+      case: 'search':
+        return: '🔍';
+      case: 'work':
+        return: '💼';
+      case: 'ai':
+        return: '🤖';
       default:
-        return '📋';
+        return: '📋';
     }
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'critical':
-        return 'text-red-400';
-      case 'high':
-        return 'text-orange-400';
-      case 'medium':
-        return 'text-yellow-400';
-      case 'low':
-        return 'text-green-400';
+      case: 'critical':
+        return: 'text-red-400';
+      case: 'high':
+        return: 'text-orange-400';
+      case: 'medium':
+        return: 'text-yellow-400';
+      case: 'low':
+        return: 'text-green-400';
       default:
-        return 'text-gray-400';
+        return: 'text-gray-400';
     }
   }
   function formatTimeAgo(timestamp: string) {
@@ -188,7 +188,7 @@
     if (days > 0) return `${days}d ago`;
     if (hours > 0) return `${hours}h ago`;
     if (minutes > 0) return `${minutes}m ago`;
-    return 'Just now';
+    return: 'Just now';
   }
   // add helper to build tab classes
   function getTabClass(tab: 'overview' | 'search' | 'work' | 'ai') {

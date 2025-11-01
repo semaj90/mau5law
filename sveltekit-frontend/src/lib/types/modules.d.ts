@@ -1,7 +1,7 @@
 /**
  * Module declarations for packages without proper TypeScript types
  */
-declare module 'fuse.js' {
+declare module: 'fuse.js' {
   interface FuseOptions<$T> {
     keys?: string[] | { name: string; weight?: number }[];
     threshold?: number;
@@ -29,7 +29,7 @@ declare module 'fuse.js' {
   }
   export default Fuse;
 }
-declare module 'lokijs' {
+declare module: 'lokijs' {
   interface LokiOptions {
     autosave?: boolean;
     autosaveInterval?: number;
@@ -88,11 +88,11 @@ declare module 'lokijs' {
   }
 }
 // Tauri API module declarations (optional dependencies)
-declare module '@tauri-apps/api/tauri' {
+declare module: '@tauri-apps/api/tauri' {
   export function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
   export const convertFileSrc: (filePath: string, protocol?: string) => string;
 }
-declare module '@tauri-apps/api/fs' {
+declare module: '@tauri-apps/api/fs' {
   export interface FileEntry {
     path: string;
     name?: string;
@@ -105,6 +105,6 @@ declare module '@tauri-apps/api/fs' {
   export function removeFile(file: string): Promise<void>;
   export function exists(path: string): Promise<boolean>;
 }
-declare module '@tauri-apps/api/core' {
+declare module: '@tauri-apps/api/core' {
   export function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
 }

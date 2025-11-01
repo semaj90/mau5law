@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  // Move interfaces here so 'export' modifiers are allowed
+  // Move interfaces here so: 'export' modifiers are allowed
   export interface ContractClause {
     id: string;
     type: 'termination' | 'compensation' | 'confidentiality' | 'liability' | 'governing_law';
@@ -170,7 +170,7 @@
             <!-- use a native button for the analyze action to avoid component event typing issues -->
             <button
               class="ai-analyze-btn"
-              on:click={() => void analyzeContract()}
+              onclick={() => void analyzeContract()}
               aria-label="Analyze contract"
               disabled={isAnalyzing}
               aria-disabled={isAnalyzing}
@@ -182,9 +182,9 @@
             <div class="export-dropdown">
               <Button class="export-btn">📤 Export</Button>
               <div class="export-menu">
-                <button on:click={() => exportContract('pdf')}>📄 PDF</button>
-                <button on:click={() => exportContract('docx')}>📝 DOCX</button>
-                <button on:click={() => exportContract('json')}>🔧 JSON</button>
+                <button onclick={() => exportContract('pdf')}>📄 PDF</button>
+                <button onclick={() => exportContract('docx')}>📝 DOCX</button>
+                <button onclick={() => exportContract('json')}>🔧 JSON</button>
               </div>
             </div>
           </div>
@@ -199,7 +199,7 @@
             class="clause-search"
             placeholder="Search clauses, terms, or clause types..."
             value={searchTerm}
-            on:input={(e) => (searchTerm = (e.target as HTMLInputElement).value)}
+            oninput={(e) => (searchTerm = (e.target as HTMLInputElement).value)}
           />
           <div class="clause-stats">
             <span class="stat-item">📄 {filteredClauses.length} clauses</span>
@@ -237,8 +237,8 @@
                 role="button"
                 tabindex="0"
                 aria-pressed={selectedClause === clause.id}
-                on:click={() => selectClause(clause.id)}
-                on:keydown={(e) => {
+                onclick={() => selectClause(clause.id)}
+                onkeydown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     selectClause(clause.id);

@@ -5,8 +5,7 @@ import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
 
 // MCP Tool Registry
 const MCP_TOOLS = {
-  // Cases management tools
-  'cases.loadCase': casesMCP.loadCase,
+  // Cases management tools: 'cases.loadCase': casesMCP.loadCase,
   'cases.createCase': casesMCP.createCase,
   'cases.updateCase': casesMCP.updateCase,
   'cases.addEvidence': casesMCP.addEvidence,

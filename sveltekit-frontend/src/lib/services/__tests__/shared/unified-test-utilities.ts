@@ -119,7 +119,7 @@ interface MockDatabase {
 
 interface MockApiClientOptions extends Omit<RequestInit, 'body'> {
   // Add any specific options your mock API client might handle
-  // For example, if it expects a 'body' to be an object, you can refine it:
+  // For example, if it expects a: 'body' to be an object, you can refine it:
   body?: BodyInit | Record<string, unknown> | null | undefined;
 }
 

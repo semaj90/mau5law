@@ -642,10 +642,10 @@ export class OptimizedRabbitMQOrchestrator {
   private log(message: string, type: 'info' | 'success' | 'error' = 'info'): void {
     const prefix = this.enableN64Logging ? '🎮 [Orchestrator]' : '[Orchestrator]';
     switch (type) {
-      case 'success':
+      case: 'success':
         console.log(`${prefix} ✅ ${message}`);
         break;
-      case 'error':
+      case: 'error':
         console.error(`${prefix} ❌ ${message}`);
         break;
       default:

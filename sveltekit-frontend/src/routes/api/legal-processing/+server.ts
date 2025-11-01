@@ -96,14 +96,14 @@ export const GET: RequestHandler = async ({ url }) => {
           lastProcessed: legalDocuments.createdAt,
         })
         .from(legalDocuments)
-        .orderBy(desc(legalDocuments.createdAt)) // Added missing ')'
+        .orderBy(desc(legalDocuments.createdAt)) // Added missing: ')'
         .limit(limit);
       return json({ sessions: recentSessions });
     }
   } catch (error) {
     console.error('Failed to fetch legal processing data:', error);
     return json(
-      { error: 'Failed to fetch processing data' }, // Removed ')'
+      { error: 'Failed to fetch processing data' }, // Removed: ')'
       { status: 500 }
     );
   }
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { text, documentType, practiceArea, sessionId } = body;
     if (!text?.trim()) {
       return json(
-        { error: 'Document text is required' }, // Removed ')'
+        { error: 'Document text is required' }, // Removed: ')'
         { status: 400 }
       );
     }
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isAvailable = await langExtractService.isOllamaAvailable();
     if (!isAvailable) {
       return json(
-        { error: 'LangChain service not available' }, // Removed ')'
+        { error: 'LangChain service not available' }, // Removed: ')'
         { status: 503 }
       );
     }
@@ -248,13 +248,13 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     return json(response);
   } catch (error) {
-    // Corrected '}, catch' to '}, catch'
+    // Corrected: '}, catch' to: '}, catch'
     console.error('Document processing failed:', error);
     return json(
       {
         error: 'Document processing failed',
         details: error instanceof Error ? error.message : 'Unknown error',
-      }, // Removed ')'
+      }, // Removed: ')'
       { status: 500 }
     );
   }
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 export const PUT: RequestHandler = async ({ request, params }) => {
   try {
-    // Cast params to a known string-keyed record so TS knows 'id' exists
+    // Cast params to a known string-keyed record so TS knows: 'id' exists
     const typedParams = params as Record<string, string | undefined>;
     const documentId = typedParams.id;
     if (!documentId) {
@@ -295,7 +295,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
  */
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
-    // Cast params to a known string-keyed record so TS knows 'id' exists
+    // Cast params to a known string-keyed record so TS knows: 'id' exists
     const typedParams = params as Record<string, string | undefined>;
     const documentId = typedParams.id;
     if (!documentId) {

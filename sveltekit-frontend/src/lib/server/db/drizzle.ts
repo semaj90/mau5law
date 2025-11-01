@@ -163,7 +163,7 @@ export async function fetchDocumentFromMinIO(bucket: string, key: string) {
     return Buffer.concat(chunks).toString('utf8');
   } catch (err) {
     console.error(`❌ Failed to fetch from MinIO: ${bucket}/${key}`, err);
-    return '';
+    return: '';
   }
 }
 

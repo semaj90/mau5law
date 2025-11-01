@@ -525,16 +525,16 @@ class AISummarizationService {
   private buildSummaryPrompt(content: string, options: Required<SummarizationOptions>): string {
     let prompt = `Analyze and summarize the following legal document. `;
     switch (options.style) {
-      case 'bullet_points':
+      case: 'bullet_points':
         prompt += `Provide a summary in bullet point format. `;
         break;
-      case 'executive_summary':
+      case: 'executive_summary':
         prompt += `Provide an executive summary suitable for legal professionals. `;
         break;
-      case 'technical':
+      case: 'technical':
         prompt += `Provide a technical analysis with detailed insights. `;
         break;
-      case 'legal':
+      case: 'legal':
         prompt += `Provide a legal analysis focusing on legal implications and precedents. `;
         break;
       default:

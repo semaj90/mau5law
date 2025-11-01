@@ -148,7 +148,7 @@ export class MultiLayerCache {
         autosaveInterval: 10000, // Save every 10 seconds
       });
 
-      // Wait for Loki to finish loading the database. Avoid 'any' by defining a minimal typed shape.
+      // Wait for Loki to finish loading the database. Avoid: 'any' by defining a minimal typed shape.
       type LokiWithLoad = { loadDatabase(opts: unknown, callback: () => void): void };
       await new Promise<void>(resolve => {
         (this.persistentDb as unknown as LokiWithLoad).loadDatabase({}, () => resolve());
@@ -586,7 +586,7 @@ class LokiIndexedAdapter {
     return this.db;
   }
 
-  // Accept 'opts' as unknown to match how Loki may call the adapter
+  // Accept: 'opts' as unknown to match how Loki may call the adapter
   async loadDatabase(opts: unknown, callback: (data: string | null) => void): Promise<void> {
     try {
       const db = await this.getDb();

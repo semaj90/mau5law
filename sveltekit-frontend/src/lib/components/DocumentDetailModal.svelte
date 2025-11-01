@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Document Detail Modal - Cache-First Hybrid Architecture
-  Implements the complete "Graph on a Texture" concept with:
+  Implements the complete: "Graph on a Texture" concept with:
   1. Cache-first strategy using IndexedDB
   2. Server-side processing for complex analysis
   3. Real-time graph updates and interactions
@@ -12,25 +12,121 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount  } from "svelte";
-  import { fade, fly } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
+  import { onMount, createEventDispatcher } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { db } from '$lib/db/dexie-integration.js';
   import { logger } from '$lib/logging/structured-logger.js';
-  import { unifiedStore } from '$lib/storage/unified-dimensional-store.js';
-  // Component props
-  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string
-  let { isOpen = $bindable()  }: { isOpen = $bindable() : any } = $props(); // false
-  let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // (() => void) | null = null
+
+  // Resolve unifiedStore robustly to support named export, default export, or alternative shapes.
+  import * as _unifiedStoreModule from '$lib/storage/unified-dimensional-store.js';
+  const unifiedStore: any =
+    (_unifiedStoreModule as any).unifiedStore ??
+    (_unifiedStoreModule as any).default ??
+    _unifiedStoreModule ??
+    // fallback stub so UI code calling updateDocumentCache won't throw
+    {
+      updateDocumentCache: async (_docId: string, _payload: any) => Promise.resolve(),
+    };
+
+  // Component props (Svelte standard)
+  export let documentId: string | null = null;
+  export let isOpen: boolean = false;
+  export let onClose: (() => void) | null = null;
+
+  const dispatch = createEventDispatcher();
+
+  // --- New: safe logger wrapper for user actions ---
+  async function logUserAction(payload: Record<string, any>): Promise<void> {
+    try {
+      const anyLogger = logger as any;
+      if (typeof anyLogger.logUserAction === 'function') {
+        await anyLogger.logUserAction(payload);
+        return;
+      }
+      if (typeof anyLogger.logEvent === 'function') {
+        await anyLogger.logEvent({ type: 'user_action', ...payload });
+        return;
+      }
+      if (typeof anyLogger.info === 'function') {
+        anyLogger.info?.('user_action', payload);
+        return;
+      }
+      // no-op if no suitable method
+    } catch (err) {
+      // swallow logging errors to avoid breaking UI
+    }
+  }
+
+  // --- New: general safe logging helpers to replace direct logger.* calls ---
+  async function logPerformance(payload: Record<string, any>): Promise<void> {
+    try {
+      const anyLogger = logger as any;
+      if (typeof anyLogger.logPerformance === 'function') {
+        await anyLogger.logPerformance(payload);
+      } else if (typeof anyLogger.performance === 'function') {
+        await anyLogger.performance(payload);
+      } else if (typeof anyLogger.debug === 'function') {
+        anyLogger.debug?.('performance', payload);
+      }
+    } catch {
+      // silent
+    }
+  }
+
+  async function logErrorSafe(payload: Record<string, any>): Promise<void> {
+    try {
+      const anyLogger = logger as any;
+      if (typeof anyLogger.logError === 'function') {
+        await anyLogger.logError(payload);
+      } else if (typeof anyLogger.error === 'function') {
+        anyLogger.error?.(payload);
+      } else if (typeof anyLogger.warn === 'function') {
+        anyLogger.warn?.('error', payload);
+      }
+    } catch {
+      // silent
+    }
+  }
+
+  async function logAPIRequestSafe(payload: Record<string, any>): Promise<void> {
+    try {
+      const anyLogger = logger as any;
+      if (typeof anyLogger.logAPIRequest === 'function') {
+        await anyLogger.logAPIRequest(payload);
+      } else if (typeof anyLogger.apiRequest === 'function') {
+        await anyLogger.apiRequest(payload);
+      } else if (typeof anyLogger.info === 'function') {
+        anyLogger.info?.('api_request', payload);
+      }
+    } catch {
+      // silent
+    }
+  }
+
+  async function logAPIResponseSafe(payload: Record<string, any>): Promise<void> {
+    try {
+      const anyLogger = logger as any;
+      if (typeof anyLogger.logAPIResponse === 'function') {
+        await anyLogger.logAPIResponse(payload);
+      } else if (typeof anyLogger.apiResponse === 'function') {
+        await anyLogger.apiResponse(payload);
+      } else if (typeof anyLogger.info === 'function') {
+        anyLogger.info?.('api_response', payload);
+      }
+    } catch {
+      // silent
+    }
+  }
+
   // ========================================================================
-  // STATE MANAGEMENT
+  // STATE MANAGEMENT - use plain let variables
   // ========================================================================
   interface DocumentDetail {
     id: string;
     title: string;
     content: string;
     document_type: string;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
     created_at: string;
     updated_at: string;
     has_embedding: boolean;
@@ -42,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
     content: string;
     documentType: string;
     similarity: number;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
   interface GraphConnection {
     type: string;
@@ -51,19 +147,20 @@ https://svelte.dev/e/js_parse_error -->
     relationship_strength: number;
     connection_type: string;
   }
-  // Component state
-  let document = $state<DocumentDetail | null >(null);
-  let relatedDocuments = $state<RelatedDocument[] >([]);
-  let graphConnections = $state<GraphConnection[] >([]);
-  let caseAssociations = $state<any[] >([]);
-  let gpuAnalysis = $state<any >(null);
-  let metadata = $state<any >(null);
-  let loading = $state(false);
-  let error = $state<string | null >(null);
-  let cacheHit = $state(false);
-  let serverResponseTime = $state(0);
-  let activeTab = $state('document');
-  let enableGPUAnalysis = $state(false);
+
+  let document: DocumentDetail | null = null;
+  let relatedDocuments: RelatedDocument[] = [];
+  let graphConnections: GraphConnection[] = [];
+  let caseAssociations: any[] = [];
+  let gpuAnalysis: any = null;
+  let metadata: any = null;
+  let loading = false;
+  let error: string | null = null;
+  let cacheHit = false;
+  let serverResponseTime = 0;
+  let activeTab: string = 'document';
+  let enableGPUAnalysis = false;
+
   // ========================================================================
   // CACHE-FIRST DATA LOADING STRATEGY
   // ========================================================================
@@ -80,39 +177,39 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Step 1: Check IndexedDB cache first (Fast Path)
       if (!forceRefresh) {
-        await logger.logPerformance({
-          operation 'cache_lookup_start',
-          documentId: docId
-          startTime: Date.now();
+        await logPerformance({
+          operation: 'cache_lookup_start',
+          documentId: docId,
+          startTime: Date.now(),
         });
         const cachedData = await db.getCache(`document_detail_${docId}`);
         if (cachedData) {
           // Cache hit - populate UI immediately
           populateUIFromCache(cachedData);
           cacheHit = true;
-          await logger.logPerformance({
-            operation 'cache_hit',
-            documentId: docId
+          await logPerformance({
+            operation: 'cache_hit',
+            documentId: docId,
             processingTime: performance.now() - startTime,
-            cacheSize: JSON.stringify(length);
+            cacheSize: cachedData ? JSON.stringify(cachedData).length : 0,
           });
           // Still fetch fresh data in background for next time
-          loadFromServerInBackground(docId);
+          loadFromServerInBackground(docId).catch(() => {});
           return;
         }
       }
       // Step 2: Fetch from server (Slow Path)
       await loadFromServer(docId, forceRefresh);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message: 'Unknown error';
-      error = errorMessag;
-      await logger.logError({
-        error: errorMessage
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      error = errorMessage;
+      await logErrorSafe({
+        error: errorMessage,
         context: 'document_detail_load',
-        documentId: docId;
+        documentId: docId,
         severity: 'medium',
         category: 'ui',
-      });
+      }).catch(() => {});
     } finally {
       loading = false;
       serverResponseTime = performance.now() - startTime;
@@ -123,16 +220,17 @@ https://svelte.dev/e/js_parse_error -->
    */
   async function loadFromServer(docId: string, forceRefresh = false): Promise<void> {
     const serverStartTime = performance.now();
-    await logger.logAPIRequest({
+    await logAPIRequestSafe({
       requestId: crypto.randomUUID(),
       method: 'GET',
       endpoint: `/api/document/${docId}`,
-      userAgent: navigator.userAgent,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server',
       ipAddress: 'client',
       headers: { 'Cache-Control': forceRefresh ? 'no-cache' : 'max-age=300' }
-    });
+    }).catch(() => {});
+
     const url = `/api/document/${docId}${enableGPUAnalysis ? '?gpu=true' : ''}`;
-    // removed unused response assignment
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
@@ -140,21 +238,22 @@ https://svelte.dev/e/js_parse_error -->
     if (!data.success) {
       throw new Error(data.error || 'Server returned error');
     }
-    // Populate UI from server response
+
+    // Populate UI
     document = data.document;
     relatedDocuments = data.related_documents || [];
     graphConnections = data.graph_connections || [];
     caseAssociations = data.case_associations || [];
-    gpuAnalysis = data.gpu_analysi;
-    metadata = data.enhanced_metadata;
-    // Update unified store for cross-component sync
+    gpuAnalysis = data.gpu_analysis || null;
+    metadata = data.enhanced_metadata || null;
+
     await unifiedStore.updateDocumentCache(docId, {
-      document: document
+      document,
       relatedDocuments,
       graphConnections,
-      timestamp: Date.now();
-    });
-    // Cache for next time with intelligent TTL
+      timestamp: Date.now(),
+    }).catch(() => {});
+
     const cacheData = {
       document,
       relatedDocuments,
@@ -164,21 +263,24 @@ https://svelte.dev/e/js_parse_error -->
       metadata,
       cached_at: Date.now(),
       cache_source: 'server'
-    }
-    const ttl = data.cache_instructions?.cache_duration || 5 * 60 * 1000; // 5 minutes
-    await db.setCache(`document_detail_${docId}`, cacheData, ttl);
-    const serverTime = performance.now() - serverStartTim;
-    await logger.logAPIResponse({
+    };
+
+    const ttl = data.cache_instructions?.cache_duration || 5 * 60 * 1000;
+    await db.setCache(`document_detail_${docId}`, cacheData, ttl).catch(() => {});
+
+    const serverTime = performance.now() - serverStartTime;
+    await logAPIResponseSafe({
       requestId: crypto.randomUUID(),
       statusCode: 200,
-      responseSize: JSON.stringify(length),
-      processingTime: serverTime
+      responseSize: JSON.stringify(cacheData).length,
+      processingTime: serverTime,
       success: true,
-    });
+    }).catch(() => {});
+
     // Emit events for graph updates
-    ondispatch?.({ documentId: docId, data: cacheData });
+    dispatch('document_update', { documentId: docId, data: cacheData });
     if (graphConnections.length > 0) {
-      ondispatch?.({ connections: graphConnections });
+      dispatch('connections', { connections: graphConnections });
     }
   }
   /**
@@ -208,8 +310,8 @@ https://svelte.dev/e/js_parse_error -->
             metadata: data.enhanced_metadata,
             cached_at: Date.now(),
             cache_source: 'background_refresh',
-          }
-          await db.setCache(`document_detail_${docId}`, cacheData, 5 * 60 * 1000);
+          };
+          await db.setCache(`document_detail_${docId}`, cacheData, 5 * 60 * 1000).catch(() => {});
         }
       }
     } catch (err) {
@@ -221,12 +323,12 @@ https://svelte.dev/e/js_parse_error -->
    * Populate UI from cached data
    */
   function populateUIFromCache(cachedData: any): void {
-    document = cachedData.document;
+    document = cachedData.document || null;
     relatedDocuments = cachedData.relatedDocuments || [];
     graphConnections = cachedData.graphConnections || [];
     caseAssociations = cachedData.caseAssociations || [];
-    gpuAnalysis = cachedData.gpuAnalysi;
-    metadata = cachedData.metadata;
+    gpuAnalysis = cachedData.gpuAnalysis || null;
+    metadata = cachedData.metadata || null;
   }
   // ========================================================================
   // INTERACTION HANDLERS
@@ -235,44 +337,38 @@ https://svelte.dev/e/js_parse_error -->
    * Handle related document click with cache-first strategy
    */
   async function handleRelatedDocumentClick(relatedDoc: RelatedDocument): Promise<void> {
-    await logger.logUserAction({
-      action 'click',
+    await logUserAction({
+      action: 'click',
       target: 'related_document',
       documentId: relatedDoc.id,
       metadata: { similarity: relatedDoc.similarity, source_document: documentId }
     });
-    // Emit node selection event for graph updates
-    ondispatch?.({
-      nodeId: relatedDoc.id,
-      documentId: relatedDoc.id
-    });
-    // Load the clicked document
+    dispatch('node_select', { nodeId: relatedDoc.id, documentId: relatedDoc.id });
     await loadDocumentData(relatedDoc.id);
   }
   /**
    * Handle graph connection click
    */
-  async function handleGraphConnectionClick(connection GraphConnection): Promise<void> {
-    await logger.logUserAction({
-      action 'click',
+  async function handleGraphConnectionClick(connection: GraphConnection): Promise<void> {
+    await logUserAction({
+      action: 'click',
       target: 'graph_connection',
       documentId: connection.targetId,
       metadata: {
         connection_type: connection.connection_type,
         strength: connection.relationship_strength,
-        source_document: documentId ;
+        source_document: documentId,
       }
     });
-    // For now, show connection details (in production, might navigate to target)
     alert(`Graph Connection ${connection.type}\nTarget: ${connection.targetTitle}\nStrength: ${connection.relationship_strength}`);
   }
   /**
    * Toggle GPU analysis and refresh
    */
   async function toggleGPUAnalysis(): Promise<void> {
-    enableGPUAnalysis = !enableGPUAnalysi;
-    if (enableGPUAnalysis && !gpuAnalysis) {
-      await loadDocumentData(documentId, true); // Force refresh with GPU
+    enableGPUAnalysis = !enableGPUAnalysis;
+    if (enableGPUAnalysis && !gpuAnalysis && documentId) {
+      await loadDocumentData(documentId, true);
     }
   }
   /**
@@ -281,7 +377,6 @@ https://svelte.dev/e/js_parse_error -->
   function handleClose(): void {
     isOpen = false;
     if (onClose) onClose();
-    // Reset state
     document = null;
     relatedDocuments = [];
     graphConnections = [];
@@ -292,20 +387,22 @@ https://svelte.dev/e/js_parse_error -->
     activeTab = 'document';
   }
   // ========================================================================
-  // LIFECYCLE
+  // LIFECYCLE / REACTIVE LOADING
   // ========================================================================
-  $effect(() => {
-    if (documentId) {
-      loadDocumentData(documentId);
+  onMount(() => {
+    if (isOpen && documentId) {
+      loadDocumentData(documentId).catch(() => {});
     }
   });
-  // Reactive loading when documentId changes
-  // TODO: Convert to $derived: if (documentId && isOpen) {
-    loadDocumentData(documentId)
+
+  $: if (isOpen && documentId) {
+    // reactive: reload when modal opens or documentId changes
+    loadDocumentData(documentId).catch(() => {});
   }
+
   // Helper functions
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return: '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -315,33 +412,33 @@ https://svelte.dev/e/js_parse_error -->
     return new Date(timestamp).toLocaleString();
   }
   function getSimilarityColor(similarity: number): string {
-    if (similarity >= 0.9) return 'text-green-600 bg-green-50';
-    if (similarity >= 0.7) return 'text-blue-600 bg-blue-50';
-    if (similarity >= 0.5) return 'text-yellow-600 bg-yellow-50';
-    return 'text-gray-600 bg-gray-50';
+    if (similarity >= 0.9) return: 'text-green-600 bg-green-50';
+    if (similarity >= 0.7) return: 'text-blue-600 bg-blue-50';
+    if (similarity >= 0.5) return: 'text-yellow-600 bg-yellow-50';
+    return: 'text-gray-600 bg-gray-50';
   }
   function getStrengthColor(strength: number): string {
-    if (strength >= 0.8) return 'border-green-500 bg-green-50';
-    if (strength >= 0.6) return 'border-blue-500 bg-blue-50';
-    if (strength >= 0.4) return 'border-yellow-500 bg-yellow-50';
-    return 'border-gray-500 bg-gray-50';
+    if (strength >= 0.8) return: 'border-green-500 bg-green-50';
+    if (strength >= 0.6) return: 'border-blue-500 bg-blue-50';
+    if (strength >= 0.4) return: 'border-yellow-500 bg-yellow-50';
+    return: 'border-gray-500 bg-gray-50';
   }
 </script>
+
 <!-- Modal Overlay -->
 {#if isOpen}
   <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-    transitifade={{ duration 200 }}
-    onclick|self={handleClose}
+    transition:fade={{ duration: 200 }}
+    onclick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
+    onkeydown={(e) => { if (e.key === 'Escape') handleClose(); }}
+    tabindex="0"
     role="dialog"
     aria-modal="true"
     aria-labelledby="document-detail-title"
   >
     <!-- Modal Content -->
-    <div
-      class="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden"
-      /* transition: removed */}
-    >
+    <div class="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div class="flex-1">
@@ -373,7 +470,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             type="button"
             onclick={toggleGPUAnalysis}
-            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover: bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
+            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             class:bg-blue-50={enableGPUAnalysis}
             class:text-blue-700={enableGPUAnalysis}
             class:border-blue-300={enableGPUAnalysis}
@@ -382,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             type="button"
-            onclick={() => loadDocumentData(documentId, true)}
+            onclick={() => documentId && loadDocumentData(documentId, true)}
             class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
           >
@@ -391,6 +488,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             type="button"
             onclick={handleClose}
+            aria-label="Close"
             class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -423,7 +521,7 @@ https://svelte.dev/e/js_parse_error -->
             <p class="mt-2 text-sm text-red-700">{error}</p>
             <button
               type="button"
-              onclick={() => loadDocumentData(documentId, true)}
+              onclick={() => documentId && loadDocumentData(documentId, true)}
               class="mt-3 text-sm text-red-800 underline hover:text-red-900"
             >
               Try again
@@ -447,7 +545,7 @@ https://svelte.dev/e/js_parse_error -->
                 <button
                   type="button"
                   onclick={() => activeTab = tab.id}
-                  class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus: outline-none focus:ring-2 focus:ring-blue-500";
+                  class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500"
                   class:border-blue-500={activeTab === tab.id}
                   class:text-blue-600={activeTab === tab.id}
                   class:border-transparent={activeTab !== tab.id}
@@ -509,7 +607,7 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
                 <!-- Metadata -->
-                {#if document.metadata && Object.keys(errors).length > 0}
+                {#if document.metadata && Object.keys(document.metadata).length > 0}
                   <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-3">Metadata</h3>
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -552,7 +650,7 @@ https://svelte.dev/e/js_parse_error -->
                             </div>
                           </div>
                           <div class="ml-4">
-                            <span class="px-2 py-1 text-xs font-medium rounded-full {getSimilarityColor(relatedDoc.similarity)}">
+                            <span class={"px-2 py-1 text-xs font-medium rounded-full " + getSimilarityColor(relatedDoc.similarity)}>
                               {(relatedDoc.similarity * 100).toFixed(1)}% similar
                             </span>
                           </div>
@@ -580,7 +678,7 @@ https://svelte.dev/e/js_parse_error -->
                       <button
                         type="button"
                         onclick={() => handleGraphConnectionClick(connection)}
-                        class="p-4 border-l-4 rounded-r-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors {getStrengthColor(connection.relationship_strength)}"
+                        class={ "p-4 border-l-4 rounded-r-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors " + getStrengthColor(connection.relationship_strength) }
                       >
                         <div class="flex items-start justify-between">
                           <div class="flex-1">
@@ -589,7 +687,7 @@ https://svelte.dev/e/js_parse_error -->
                                 {connection.type}
                               </span>
                               <span class="text-xs text-gray-500">
-                                {connection.connection_type.replace.toUpperCase()}
+                                {connection.connection_type?.toUpperCase()}
                               </span>
                             </div>
                             <h4 class="mt-2 font-semibold text-gray-900">{connection.targetTitle}</h4>
@@ -721,11 +819,14 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+
 <style>
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    /* also include standard property for modern browsers */
+    line-clamp: 2;
   }
 </style>

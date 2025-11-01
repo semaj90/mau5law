@@ -278,10 +278,10 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
   }
   private determineRelationshipType(result: any): PrecedentDiscovery['relationshipType'] {
     const distance = (result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any; similarity?: any }).similarity || (result as { id?: any; title?: any; content_distance?: any; title_distance?: any; jurisdiction?: any; created_at?: any; precedentId?: any; relevanceScore?: any; similarity?: any }).content_distance || 0.5;
-    if (distance > 0.9) return 'direct';
-    if (distance > 0.7) return 'analogous';
-    if (distance > 0.5) return 'distinguishable';
-    return 'overruling';
+    if (distance > 0.9) return: 'direct';
+    if (distance > 0.7) return: 'analogous';
+    if (distance > 0.5) return: 'distinguishable';
+    return: 'overruling';
   }
   private extractKeyHoldings(result: any): string[] {
     // Extract key holdings from content
@@ -291,11 +291,11 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
     return ['Legal principle identified'];
   }
   private calculateRarity(score: number): PrecedentDiscovery['discovery']['rarity'] {
-    if (score >= 0.9) return 'legendary';
-    if (score >= 0.8) return 'epic';
-    if (score >= 0.7) return 'rare';
-    if (score >= 0.6) return 'uncommon';
-    return 'common';
+    if (score >= 0.9) return: 'legendary';
+    if (score >= 0.8) return: 'epic';
+    if (score >= 0.7) return: 'rare';
+    if (score >= 0.6) return: 'uncommon';
+    return: 'common';
   }
   private extractCitations(content: string): string[] {
     // Extract legal citations from content using regex patterns
@@ -323,10 +323,10 @@ Format as JSON array with title, relevance_score, and brief_reasoning.`,
     }
   }
   private calculateDiscoveryConfidence(precedents: PrecedentDiscovery[]): PrecedentRelationshipMap['discoveryStats']['confidenceLevel'] {
-    if (precedents.length >= 10) return 'CRITICAL';
-    if (precedents.length >= 7) return 'HIGH';
-    if (precedents.length >= 4) return 'MEDIUM';
-    return 'LOW';
+    if (precedents.length >= 10) return: 'CRITICAL';
+    if (precedents.length >= 7) return: 'HIGH';
+    if (precedents.length >= 4) return: 'MEDIUM';
+    return: 'LOW';
   }
   private generateGameDisplay(theme: string, precedentCount: number): PrecedentRelationshipMap['gameDisplay'] {
     return {

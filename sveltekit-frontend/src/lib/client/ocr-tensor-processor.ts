@@ -114,7 +114,7 @@ export class OCRTensorProcessor {
     // Monitor memory pressure using gaming era specs
     this.updateMemoryPressure();
     // Set initial LOD level based on device capabilities
-    const memoryInfo = performance.memory; // Removed 'as any' cast
+    const memoryInfo = performance.memory; // Removed: 'as any' cast
     if (memoryInfo) {
       // const usedMemoryMB = memoryInfo.usedJSHeapSize / (1024 * 1024); // Removed unused variable
       const totalMemoryMB = memoryInfo.totalJSHeapSize / (1024 * 1024);
@@ -129,7 +129,7 @@ export class OCRTensorProcessor {
     console.log(`🎮 LOD Level set to: ${this.currentLODLevel}`);
   }
   private updateMemoryPressure(): void {
-    const memoryInfo = performance.memory; // Removed 'as any' cast
+    const memoryInfo = performance.memory; // Removed: 'as any' cast
     if (memoryInfo) {
       this.memoryPressure = memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize;
       // Adapt LOD based on memory pressure using gaming thresholds
@@ -267,7 +267,7 @@ export class OCRTensorProcessor {
   private getOCROptionsForLOD(): OCRProcessOptions {
     // Use gaming memory architecture to optimize OCR based on current LOD level
     switch (this.currentLODLevel) {
-      case 'low':
+      case: 'low':
         // 8-bit NES level optimization
         return {
           psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
@@ -276,7 +276,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: false,
           tessjs_create_tsv: false,
         };
-      case 'medium':
+      case: 'medium':
         // 16-bit SNES level optimization
         return {
           psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
@@ -285,7 +285,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: true,
           tessjs_create_tsv: false,
         };
-      case 'high':
+      case: 'high':
         // N64 level optimization with DNN LOD system
         return {
           psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
@@ -400,7 +400,7 @@ export class OCRTensorProcessor {
         }),
       });
       if (!response.ok) {
-        throw new Error(`Embedding API failed: ${response.status}`); // No need for 'as { ok?: any; ... }'
+        throw new Error(`Embedding API failed: ${response.status}`); // No need for: 'as { ok?: any; ... }'
       }
       const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
@@ -651,11 +651,11 @@ export class OCRTensorProcessor {
   private getOptimalChunkSize(): number {
     // Adaptive chunk size based on gaming memory architecture
     switch (this.currentLODLevel) {
-      case 'low':
+      case: 'low':
         return GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 1 : 2;
-      case 'medium':
+      case: 'medium':
         return GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 3 : 4;
-      case 'high':
+      case: 'high':
         return GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 6 : 8;
       default:
         return 3;

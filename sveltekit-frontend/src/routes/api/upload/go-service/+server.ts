@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(result);
   } catch (fetchError: any) {
     console.error('❌ Failed to connect to Go upload service:', fetchError);
-    // AbortSignal.timeout typically triggers an 'AbortError'
+    // AbortSignal.timeout typically triggers an: 'AbortError'
     if (fetchError?.name === 'AbortError') {
       throw error(504, 'Upload service timeout - please try again');
     }

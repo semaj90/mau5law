@@ -1,36 +1,58 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount} from "svelte";
-  import { writable, derived } from 'svelte/store';
-  import {
-    Button,
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  // Props
-  interface Props {
-    currentModel?: string;
-    initialLimit?: number;
-    class?: string;
-  }
-  let {
+  import { createEventDispatcher } from 'svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+
+  // Props (Svelte 5 runes) - use $props() instead of `export let`
+  const {
     currentModel = 'gemma3-legal',
     initialLimit = 8000,
-    class: className = '',
-  }: Props = $props();
+    className = '',
+    ondispatch = undefined
+  } = $props() as {
+    currentModel?: string;
+    initialLimit?: number;
+    className?: string;
+    ondispatch?: ((payload: any) => void) | undefined;
+  };
+
+  const dispatch = createEventDispatcher();
+
+  // Types
+  type UsageEntry = {
+    id: string;
+    timestamp: Date;
+    totalTokens: number;
+    promptTokens: number;
+    responseTokens: number;
+    model: string;
+    prompt: string;
+    response: string;
+    processingTime: number;
+  };
+
+  interface Session {
+    promptTokens: number;
+    responseTokens: number;
+    totalTokens: number;
+    messageCount: number;
+    averageTokensPerMessage: number;
+    peakUsage: number;
+    efficiency: number;
+  }
+
   // Reactive state using Svelte 5 runes
-  let tokenLimit = $state(initialLimit);
-  let tokensUsed = $state(0);
+  let tokenLimit = $state<number>(initialLimit);
+  let tokensUsed = $state<number>(0);
   let showHistory = $state(false);
   let showOptimization = $state(true);
   let autoOptimize = $state(true);
+
   // Token usage history
-  let usageHistory = $state<any[]>([]) => []);
+  let usageHistory = $state<UsageEntry[]>([]);
+
   // Token usage breakdown
-  let currentSession = $state({
+  let currentSession = $state<Session>({
     promptTokens: 0,
     responseTokens: 0,
     totalTokens: 0,
@@ -39,32 +61,24 @@
     peakUsage: 0,
     efficiency: 100,
   });
+
   // Model token limits
-  const modelLimits = {
+  const modelLimits: Record<string, number> = {
     'gemma3:2b': 2048,
     'gemma3:7b': 4096,
     'gemma3-legal': 8000,
-  }
-  // Reactive calculations
-  let tokensRemaining = $derived(tokenLimit - tokensUsed);
-  let usagePercentage = $derived((tokensUsed / tokenLimit) * 100);
-  let isNearLimit = $derived(usagePercentage > 80);
-  let isAtLimit = $derived(tokensUsed >= tokenLimit);
-  let warningLevel = $derived(
-    usagePercentage > 95 ? 'critical' :
-    usagePercentage > 80 ? 'warning' :
-    usagePercentage > 60 ? 'caution' : 'normal'
-  );
-  let progressColor = $derived(
-    warningLevel === 'critical' ? 'bg-red-500' :
-    warningLevel === 'warning' ? 'bg-orange-500' :
-    warningLevel === 'caution' ? 'bg-yellow-500' : 'bg-green-500'
-  );
-  let estimatedMessagesRemaining = $derived(
-    currentSession.averageTokensPerMessage > 0
-      ? Math.floor(tokensRemaining / currentSession.averageTokensPerMessage)
-      : 0
-  );
+  };
+
+  // Derived / computed state (kept in sync via $effect)
+  let tokensRemaining = $state<number>(0);
+  let usagePercentage = $state<number>(0);
+  let isNearLimit = $state<boolean>(false);
+  let isAtLimit = $state<boolean>(false);
+  let warningLevel = $state<string>('normal');
+  let progressColor = $state<string>('bg-green-500');
+  let badgeClass = $state<string>('bits-badge-default');
+  let estimatedMessagesRemaining = $state<number>(0);
+
   // Functions
   function updateTokenLimit(newLimit: number) {
     tokenLimit = newLimit;
@@ -72,8 +86,11 @@
     if (tokensUsed > tokenLimit) {
       optimizeTokenUsage();
     }
-    ondispatch?.({ newLimit, tokensUsed });
+    const payload = { type: 'limit_update', newLimit, tokensUsed };
+    ondispatch?.(payload);
+    dispatch('update', payload);
   }
+
   function recordTokenUsage(usage: {
     promptTokens: number;
     responseTokens: number;
@@ -82,7 +99,8 @@
     response: string;
     processingTime: number;
   }) {
-    const totalTokens = usage.promptTokens + usage.responseToken;
+    const totalTokens = usage.promptTokens + usage.responseTokens;
+
     // Add to history
     usageHistory = [
       {
@@ -93,29 +111,38 @@
       },
       ...usageHistory.slice(0, 99) // Keep last 100 entries
     ];
+
     // Update current session
-    tokensUsed += totalToken;
-    currentSession.promptTokens += usage.promptToken;
-    currentSession.responseTokens += usage.responseToken;
-    currentSession.totalTokens += totalToken;
+    tokensUsed += totalTokens;
+    currentSession.promptTokens += usage.promptTokens;
+    currentSession.responseTokens += usage.responseTokens;
+    currentSession.totalTokens += totalTokens;
     currentSession.messageCount += 1;
+
     if (totalTokens > currentSession.peakUsage) {
-      currentSession.peakUsage = totalToken;
+      currentSession.peakUsage = totalTokens;
     }
+
     currentSession.averageTokensPerMessage =
       currentSession.totalTokens / currentSession.messageCount;
+
     // Calculate efficiency
     const expectedTokens = currentSession.messageCount * 150; // Baseline
     currentSession.efficiency = Math.max(0,
       100 - ((currentSession.totalTokens - expectedTokens) / expectedTokens * 100)
     );
-    ondispatch?.({
+
+    const payload = {
+      type: 'usage_recorded',
       tokensUsed,
       tokensRemaining,
       usagePercentage,
-      session currentSession,
-    });
+      session: currentSession,
+    };
+    ondispatch?.(payload);
+    dispatch('update', payload);
   }
+
   function optimizeTokenUsage() {
     if (!autoOptimize) return;
     // Compress history if needed
@@ -123,28 +150,32 @@
       const compressed = compressHistory(usageHistory);
       usageHistory = compressed;
       // Recalculate token usage
-      const totalFromHistory = compressed.reduce(
-        (sum, entry) => sum + entry.totalTokens, 0
-      );
+      const totalFromHistory = compressed.reduce((sum: number, entry: UsageEntry) => sum + entry.totalTokens, 0);
       tokensUsed = totalFromHistory;
     }
-    ondispatch?.({
+    const payload = {
+      type: 'history_compression',
       method: 'history_compression',
       tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8),
-    });
+    };
+    ondispatch?.(payload);
+    dispatch('update', payload);
   }
-  function compressHistory(history: typeof usageHistory) {
+
+  function compressHistory(history: UsageEntry[]) {
     // Keep recent important entries, summarize older ones
     const recent = history.slice(0, 20);
     const older = history.slice(20);
     if (older.length === 0) return recent;
+
     // Create summary entry for older messages
     const totalOlder = older.reduce((sum, entry) => ({
       promptTokens: sum.promptTokens + entry.promptTokens,
       responseTokens: sum.responseTokens + entry.responseTokens,
       totalTokens: sum.totalTokens + entry.totalTokens
     }), { promptTokens: 0, responseTokens: 0, totalTokens: 0 });
-    const summaryEntry = {
+
+    const summaryEntry: UsageEntry = {
       id: 'summary-' + Date.now(),
       timestamp: older[0].timestamp,
       prompt: `[Summary of ${older.length} messages]`,
@@ -154,9 +185,10 @@
       totalTokens: totalOlder.totalTokens,
       model: 'system',
       processingTime: 0,
-    }
+    };
     return [...recent, summaryEntry];
   }
+
   function resetSession() {
     tokensUsed = 0;
     usageHistory = [];
@@ -168,12 +200,15 @@
       averageTokensPerMessage: 0,
       peakUsage: 0,
       efficiency: 100,
-    }
-    // ondispatch removed;
+    };
+    const payload = { type: 'reset' };
+    ondispatch?.(payload);
+    dispatch('reset', payload);
   }
+
   function exportUsageData() {
     const data = {
-      session currentSession,
+      session: currentSession,
       history: usageHistory,
       settings: {
         tokenLimit,
@@ -181,7 +216,7 @@
         autoOptimize,
       },
       timestamp: new Date(),
-    }
+    };
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json',
     });
@@ -192,6 +227,7 @@
     a.click();
     URL.revokeObjectURL(url);
   }
+
   // Note: recordTokenUsage function is available for calling from parent components
   $effect(() => {
     // Auto-set limit based on current model
@@ -199,6 +235,24 @@
     if (modelLimit && tokenLimit === initialLimit) {
       tokenLimit = modelLimit;
     }
+  });
+
+  // Keep derived/computed values in sync
+  $effect(() => {
+    tokensRemaining = Math.max(0, tokenLimit - tokensUsed);
+    usagePercentage = tokenLimit > 0 ? (tokensUsed / tokenLimit) * 100 : 0;
+    isNearLimit = usagePercentage > 80;
+    isAtLimit = tokensUsed >= tokenLimit;
+    warningLevel = usagePercentage > 95 ? 'critical'
+      : usagePercentage > 80 ? 'warning'
+      : usagePercentage > 60 ? 'caution' : 'normal';
+    progressColor = warningLevel === 'critical' ? 'bg-red-500'
+      : warningLevel === 'warning' ? 'bg-orange-500'
+      : warningLevel === 'caution' ? 'bg-yellow-500' : 'bg-green-500';
+    badgeClass = warningLevel === 'normal' ? 'bits-badge-default' : 'bits-badge-destructive';
+    estimatedMessagesRemaining = currentSession.averageTokensPerMessage > 0
+      ? Math.floor(tokensRemaining / currentSession.averageTokensPerMessage)
+      : 0;
   });
 </script>
 
@@ -218,11 +272,7 @@
         </svg>
         Token Usage Manager
       </div>
-      <div
-        class="bits-badge bits-badge-{warningLevel === 'normal'
-          ? 'default'
-          : 'destructive'} px-2 py-1 rounded text-xs font-bold"
-      >
+      <div class={`bits-badge ${badgeClass} px-2 py-1 rounded text-xs font-bold`}>
         {Math.round(usagePercentage)}%
       </div>
     </h3>
@@ -255,7 +305,7 @@
         <span>Used: <span data-testid="tokens-used">{tokensUsed.toLocaleString()}</span></span>
         <span>Remaining: <span data-testid="tokens-remaining">{tokensRemaining.toLocaleString()}</span></span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-3 {progressColor}" data-testid="usage-progress">
+      <div class={"w-full bg-gray-200 rounded-full h-3 " + progressColor} data-testid="usage-progress">
         <div
           class="bg-blue-600 h-3 rounded-full transition-all duration-300"
           style="width: {Math.min(usagePercentage, 100)}%"
@@ -374,7 +424,7 @@
     <!-- Optimization Toggle -->
     <div class="flex items-center justify-between">
       <label for="auto-optimize" class="text-sm">Auto-optimize conversation</label>
-      <input id="auto-optimize" class="toggle" />
+      <input id="auto-optimize" type="checkbox" class="toggle" bind:checked={autoOptimize} aria-label="Auto optimize conversation" />
     </div>
     <!-- History Modal/Panel -->
     {#if showHistory}
@@ -453,26 +503,25 @@
     height: 20px;
     background: #e5e7eb;
     border-radius: 20px;
-    position relative;
+    position: relative;
     cursor: pointer;
-    transition: background 0.2;
+    transition: background 0.2s;
   }
   .toggle:checked {
     background: #3b82f6;
   }
   .toggle::before {
     content: '';
-    position absolute;
+    position: absolute;
     width: 18px;
     height: 18px;
     background: white;
     border-radius: 50%;
     top: 1px;
     left: 1px;
-    transition: transform 0.2;
+    transition: transform 0.2s;
   }
   .toggle:checked::before {
     transform: translateX(20px);
   }
 </style>
-

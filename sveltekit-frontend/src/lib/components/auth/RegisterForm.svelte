@@ -107,7 +107,7 @@
               badgeNumber: formData.get('badgeNumber'),
             },
             context: {
-              action 'registration_attempt',
+              action: 'registration_attempt',
               enhancedValidation true,
               legalProfessionalCheck: true,
               clientTimestamp: new Date().toISOString(),

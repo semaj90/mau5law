@@ -15,7 +15,7 @@ import { gpuVectorProcessor } from '$lib/gpu/gpu-vector-processor';
 import { telemetryBus } from '$lib/telemetry/telemetry-bus';
 import { GPU_CONFIG, CLIENT_ENV } from '../config/env';
 // ================= Additional Explicit Types =================
-// Narrow previously 'any' usages into explicit interfaces
+// Narrow previously: 'any' usages into explicit interfaces
 interface LODProcessingContext {
   session_id?: string;
   query_context?: string;
@@ -608,11 +608,11 @@ class LODCacheEngine {
     return Math.abs(hash).toString(36);
   }
   private determinePrimaryLODLevel(text: string): LODLevel {
-    if (text.length <= 10) return 'glyph';
-    if (text.length <= 50) return 'tile';
-    if (text.length <= 250) return 'block';
-    if (text.length <= 1500) return 'section';
-    return 'document';
+    if (text.length <= 10) return: 'glyph';
+    if (text.length <= 50) return: 'tile';
+    if (text.length <= 250) return: 'block';
+    if (text.length <= 1500) return: 'section';
+    return: 'document';
   }
   private async calculatePredictionConfidence(text: string, context: LODProcessingContext): Promise<number> {
     // Simple confidence calculation - would be more sophisticated in production
@@ -751,13 +751,13 @@ class LODCacheEngine {
     return entry.svg_summaries[lodPreference || 'tile'];
   }
   private determineBestLODForQuery(entry: LODCacheEntry, query: string): LODLevel {
-    if (query.length <= 20) return 'glyph';
-    if (query.length <= 100) return 'tile';
-    return 'block';
+    if (query.length <= 20) return: 'glyph';
+    if (query.length <= 100) return: 'tile';
+    return: 'block';
   }
   private async synthesizeEnhancedContext(results: EnhancedRAGResultItem[], query: string): Promise<string> {
     const contexts = results.map(r => r.contextual_prompt).join('\n\n');
-    return `Enhanced RAG Context for "${query}":\n${contexts}`;
+    return `Enhanced RAG Context for: "${query}":\n${contexts}`;
   }
   private async generatePredictiveQueries(results: EnhancedRAGResultItem[], _query: string): Promise<string[]> {
     const commonAnchors = results.flatMap(r => r.entry.vector_metadata.context_anchors);
@@ -807,7 +807,7 @@ class LODCacheEngine {
 class SVGSummarizationProcessor {
   constructor(private quality: 'fast' | 'balanced' | 'high') {}
   async generateGlyphSVG(compressed: Uint8Array): Promise<string> {
-    // reference this.quality to avoid "declared but never read" lint error
+    // reference this.quality to avoid: "declared but never read" lint error
     const opacity = this.quality === 'high' ? 1 : this.quality === 'fast' ? 0.75 : 0.9;
     const char = String.fromCharCode(compressed[0]);
     const complexity = compressed[2];

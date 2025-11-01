@@ -21,7 +21,10 @@
     documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
     audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'],
   }
-  const allAllowedTypes = Object.values.flat();
+
+  // Flatten safely for TypeScript
+  const allAllowedTypes: string[] = Object.values(allowedTypes).reduce((acc, arr) => acc.concat(arr), [] as string[]);
+
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
@@ -33,16 +36,18 @@
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-    const droppedFiles = e.dataTransfer?.file;
-    if (droppedFiles) {
-      files = droppedFile;
+    // use .files (DataTransfer.files) not .file
+    const droppedFiles = e.dataTransfer?.files;
+    if (droppedFiles && droppedFiles.length > 0) {
+      files = droppedFiles;
       handleFileUpload();
     }
   }
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
-    files = input.file;
-    if (files) {
+    // use .files (HTMLInputElement.files) not .file
+    files = input.files;
+    if (files && files.length > 0) {
       handleFileUpload();
     }
   }
@@ -70,12 +75,12 @@
         formData.append('caseId', caseId);
         formData.append('title', file.name);
         formData.append('evidenceType', getEvidenceType(file.type));
-        const response = await fetch('/api/upload', {
+        const response: Response = await fetch('/api/upload', {
           method: 'POST',
           body: formData
         });
-        if ((response as { ok?: unknown; json?: unknown }).ok) {
-          const result = await (response as { ok?: unknown; json?: unknown }).json();
+        if (response.ok) {
+          const result = await response.json();
           uploadProgress = ((i + 1) / files.length) * 100;
           // Dispatch success event
           if (onuploaded) {
@@ -85,8 +90,8 @@
             });
           }
         } else {
-          const error = await (response as { ok?: unknown; json?: unknown }).json();
-          uploadStatus = `Upload failed: ${error.error}`;
+          const error = await response.json();
+          uploadStatus = `Upload failed: ${(error as any)?.error ?? 'unknown'}`;
         }
       }
       uploadStatus = 'Upload complete';
@@ -104,27 +109,28 @@
     }
   }
   function getEvidenceType(mimeType: string): string {
-    if (allowedTypes.images.includes(mimeType)) return 'photograph';
-    if (allowedTypes.videos.includes(mimeType)) return 'video';
-    if (allowedTypes.documents.includes(mimeType)) return 'document';
-    if (allowedTypes.audio.includes(mimeType)) return 'audio';
-    return 'physical';
+    if (allowedTypes.images.includes(mimeType)) return: 'photograph';
+    if (allowedTypes.videos.includes(mimeType)) return: 'video';
+    if (allowedTypes.documents.includes(mimeType)) return: 'document';
+    if (allowedTypes.audio.includes(mimeType)) return: 'audio';
+    return: 'physical';
   }
   function getFileIcon(mimeType: string): string {
-    if (allowedTypes.images.includes(mimeType)) return '🖼️';
-    if (allowedTypes.videos.includes(mimeType)) return '🎥';
-    if (allowedTypes.documents.includes(mimeType)) return '📄';
-    if (allowedTypes.audio.includes(mimeType)) return '🎵';
-    return '📁';
+    if (allowedTypes.images.includes(mimeType)) return: '🖼️';
+    if (allowedTypes.videos.includes(mimeType)) return: '🎥';
+    if (allowedTypes.documents.includes(mimeType)) return: '📄';
+    if (allowedTypes.audio.includes(mimeType)) return: '🎵';
+    return: '📁';
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
+
 {#if componentError}
   <div class="error-boundary bg-red-900 border border-red-500 rounded-lg p-6 m-4">
     <h2 class="text-xl font-bold text-red-300 mb-2">Upload Error</h2>
@@ -132,7 +138,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      onclick={() => { componentError = null, }}
+      onclick={() => (componentError = null)}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -143,7 +149,7 @@
   <div
     class="upload-zone"
     class:drag-active={dragActive}
-    class:uploading
+    class:uploading={uploading}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
@@ -209,6 +215,7 @@
   {/if}
 </div>
 {/if}
+
 <style>
   .evidence-uploader {
     width: 100%;
@@ -276,8 +283,8 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg), }
-    to { transform: rotate(360deg), }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   .upload-message {
     font-weight: 500;
@@ -321,7 +328,7 @@
     font-size: 1.5rem;
   }
   .file-info {
-    flex: 1,
+    flex: 1;
   }
   .file-name {
     font-weight: 500;

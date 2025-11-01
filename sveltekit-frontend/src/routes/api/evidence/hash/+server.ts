@@ -25,12 +25,12 @@ function extractUserId(u: unknown): string | number | null {
 
 // new helper to avoid `any` in catch blocks
 function extractErrorMessage(err: unknown): string {
-  if (!err) return 'Unknown error';
+  if (!err) return: 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 

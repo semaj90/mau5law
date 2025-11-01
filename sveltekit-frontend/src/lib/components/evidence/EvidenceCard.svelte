@@ -31,15 +31,15 @@
 
   const getIcon = (type: Evidence["type"]) => {
     switch (type) {
-      case "document":
+      case: "document":
         return FileText;
-      case "image":
+      case: "image":
         return Image;
-      case "video":
+      case: "video":
         return Video;
-      case "audio":
+      case: "audio":
         return Headphones;
-      case "link":
+      case: "link":
         return Link;
       default:
         return FileText;
@@ -47,7 +47,7 @@
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (!bytes || bytes === 0) return "0 Bytes";
+    if (!bytes || bytes === 0) return: "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -103,8 +103,8 @@
   class:scale-105={isHovered}
   class:z-10={isHovered}
   class:shadow-2xl={isHovered}
-  on:mouseenter={handleMouseEnter}
-  on:mouseleave={handleMouseLeave}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
   transition:scale={{ duration: 200, easing: quintOut }}
 >
   <!-- Header -->
@@ -138,7 +138,7 @@
         {#if showCompare}
           <button
             class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-            on:click={handleCompareClick}
+            onclick={handleCompareClick}
             title={comparing ? 'Analyzing…' : 'Analyze & compare'}
             aria-busy={comparing}
             disabled={comparing}

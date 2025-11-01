@@ -40,8 +40,7 @@ const DOCKER_FRIENDLY_DEFAULTS = {
   redisUrlCandidates: [
     process.env.REDIS_URL,
     process.env.DOCKER_REDIS_URL,
-    // common docker-compose service name
-    'redis://redis:6379',
+    // common docker-compose service name: 'redis://redis:6379',
     'redis://localhost:6379',
   ].filter(Boolean) as string[],
   ollamaCandidates: [
@@ -179,7 +178,7 @@ class RedisGPUChatOptimizationService {
     }
     if (!this.redis) return; // If connectToRedis failed to create a client, exit.
     try {
-      // Only call connect if the method exists and status is not 'ready'
+      // Only call connect if the method exists and status is not: 'ready'
       if (this.redis.connect && this.redis.status !== 'ready') {
         await this.redis.connect();
       }

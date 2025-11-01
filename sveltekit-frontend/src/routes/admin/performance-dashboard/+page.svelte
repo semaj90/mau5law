@@ -26,30 +26,30 @@
   });
   function getHealthColor(health: string): string {
     switch (health) {
-      case 'optimal':
-        return 'text-green-500';
-      case 'degraded':
-        return 'text-yellow-500';
-      case 'critical':
-        return 'text-red-500';
+      case: 'optimal':
+        return: 'text-green-500';
+      case: 'degraded':
+        return: 'text-yellow-500';
+      case: 'critical':
+        return: 'text-red-500';
       default:
-        return 'text-gray-500';
+        return: 'text-gray-500';
     }
   }
   function getCacheColor(efficiency: number): string {
-    if (efficiency >= 0.8) return 'text-green-500';
-    if (efficiency >= 0.6) return 'text-yellow-500';
-    return 'text-red-500';
+    if (efficiency >= 0.8) return: 'text-green-500';
+    if (efficiency >= 0.6) return: 'text-yellow-500';
+    return: 'text-red-500';
   }
   function getLatencyColor(latency: number): string {
-    if (latency <= 500) return 'text-green-500';
-    if (latency <= 1000) return 'text-yellow-500';
-    return 'text-red-500';
+    if (latency <= 500) return: 'text-green-500';
+    if (latency <= 1000) return: 'text-yellow-500';
+    return: 'text-red-500';
   }
   function getGPUColor(utilization: number): string {
-    if (utilization <= 70) return 'text-green-500';
-    if (utilization <= 90) return 'text-yellow-500';
-    return 'text-red-500';
+    if (utilization <= 70) return: 'text-green-500';
+    if (utilization <= 90) return: 'text-yellow-500';
+    return: 'text-red-500';
   }
 </script>
 

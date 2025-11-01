@@ -3,7 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 &lt;script&gt;
   import { onMount } from 'svelte';
-  import './PS1CRTEffects.stories.svelte';
+  import: './PS1CRTEffects.stories.svelte';
   let containerRef;
   let curvatureIntensity = $state(0.6);
   let vignette = $state(0.8);

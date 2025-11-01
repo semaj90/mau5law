@@ -69,7 +69,7 @@ export interface MemoryRetrievalResult {
 }
 export class VisualMemoryPalaceManager {
   private palaces: Map<string, MemoryPalace> = new Map();
-  private activeRooms: Set<string> = new Set(); // Currently "loaded" rooms
+  private activeRooms: Set<string> = new Set(); // Currently: "loaded" rooms
   private compressionDictionary: Map<string, number> = new Map();
   private readonly MAX_7BIT = 127; // Maximum 7-bit value
   private readonly COMPRESSION_THRESHOLD = 50; // Minimum bytes to compress
@@ -574,7 +574,7 @@ export class VisualMemoryPalaceManager {
     id: string,
     name: string,
     description: string,
-    rooms: Array<any> // Assuming 'any' for now, as the original was incomplete
+    rooms: Array<any> // Assuming: 'any' for now, as the original was incomplete
   ): Promise<void> {
     const palace: MemoryPalace = {
       id,

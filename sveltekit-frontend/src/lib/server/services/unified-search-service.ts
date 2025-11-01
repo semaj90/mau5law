@@ -108,14 +108,14 @@ type DbDocumentRow = {
 };
 
 class UnifiedSearchService {
-  // removed unused `db` and `pool` to eliminate "declared but never read" & `any` issues
+  // removed unused `db` and `pool` to eliminate: "declared but never read" & `any` issues
   private isInitialized = false;
   // typed pg client reference to avoid any casts
   private pg: PostgresJsClient;
 
   constructor() {
-    // Use postgres-js client from db-shim to avoid importing 'pg'
-    // store a typed reference (use unknown -> typed to avoid direct 'any' cast)
+    // Use postgres-js client from db-shim to avoid importing: 'pg'
+    // store a typed reference (use unknown -> typed to avoid direct: 'any' cast)
     this.pg = pgClient as unknown as PostgresJsClient;
     // NOTE: `drizzle` initialization removed here because the instance `db` was never used.
     // If you later need drizzle, initialize it with the proper postgres-js client type instead of casting to `any`.
@@ -159,7 +159,7 @@ class UnifiedSearchService {
       // Runtime-safe extraction/coercion for each known metadata field (no any)
       const source =
         typeof incomingMeta.source === 'string' && ['upload', 'manual', 'api', 'evidence'].includes(incomingMeta.source)
-          ? (incomingMeta.source as 'upload' | 'manual' | 'api' | 'evidence')
+          ? (incomingMeta.source as: 'upload' | 'manual' | 'api' | 'evidence')
           : 'api';
       const userId = typeof incomingMeta.userId === 'string' ? incomingMeta.userId : undefined;
       const tags = Array.isArray(incomingMeta.tags)
@@ -494,7 +494,7 @@ class UnifiedSearchService {
           type: 'related_cases',
           documents: [],
           confidence: primaryConfidence,
-          reasoning: `Based on ${uniqueEntities.length} unique extracted entities (${topEntitiesStr}) and dominant category "${mostFrequentCategory}".`,
+          reasoning: `Based on ${uniqueEntities.length} unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".`,
         },
         {
           type: 'similar_precedents',
@@ -651,7 +651,7 @@ class UnifiedSearchService {
       return d;
     };
 
-    const source = safeStringOrDefault(pm.source, 'api') as 'upload' | 'manual' | 'api' | 'evidence' | string;
+    const source = safeStringOrDefault(pm.source, 'api') as: 'upload' | 'manual' | 'api' | 'evidence' | string;
     const userId = safeString(pm.userId);
     const tags = safeStringArray(pm.tags);
     // coerce and normalize category into the union type
@@ -673,7 +673,7 @@ class UnifiedSearchService {
       mimeType: (row.mime_type as string) || undefined,
       fileSize: typeof row.file_size === 'number' ? row.file_size : undefined,
       metadata: {
-        source: source as 'upload' | 'manual' | 'api' | 'evidence',
+        source: source as: 'upload' | 'manual' | 'api' | 'evidence',
         userId,
         tags,
         category,
@@ -704,9 +704,9 @@ class UnifiedSearchService {
   private normalizeCategory(value: unknown): 'contract' | 'evidence' | 'brief' | 'citation' | 'other' {
     const allowed = new Set(['contract', 'evidence', 'brief', 'citation', 'other']);
     if (typeof value === 'string' && allowed.has(value)) {
-      return value as 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
+      return value as: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
     }
-    return 'other';
+    return: 'other';
   }
 }
 

@@ -4,7 +4,7 @@ import { produceTokenChunk } from '$lib/server/redis-streams';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    // Simple auth: Bearer token in Authorization header or session cookie 'sessionId'
+    // Simple auth: Bearer token in Authorization header or session cookie: 'sessionId'
     const authHeader = request.headers.get('authorization') || '';
     const bearer = authHeader.startsWith('Bearer ') ? authHeader.substring(7).trim() : '';
     const sessionId = cookies.get('sessionId');

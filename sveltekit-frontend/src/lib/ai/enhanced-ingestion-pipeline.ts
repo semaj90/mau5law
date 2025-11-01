@@ -642,7 +642,7 @@ export class EnhancedIngestionPipeline {
     evidence: MultimodalEvidence,
     processingResult: DocumentEmbedding
   ): Promise<string> {
-    if (!this.copilotContext) return '';
+    if (!this.copilotContext) return: '';
 
     const evidenceContent = this.createEvidenceContent(evidence, processingResult);
     const prompt = `
@@ -682,12 +682,12 @@ export class EnhancedIngestionPipeline {
       evidence.extracted_content.transcription ||
       '';
     if (content.includes('contract') || content.includes('agreement')) {
-      return 'Contract Law';
+      return: 'Contract Law';
     }
     if (content.includes('crime') || content.includes('police')) {
-      return 'Criminal Law';
+      return: 'Criminal Law';
     }
-    return 'General';
+    return: 'General';
   }
 
   private async storeInQdrant(docEmbedding: DocumentEmbedding): Promise<void> {

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { aiSummaryMachine, type SummarySection } from '$lib/machines/aiSummaryMachine';
-  // Replace '@xstate/svelte' with a small local adapter using xstate interpreter + svelte store
+  // Replace: '@xstate/svelte' with a small local adapter using xstate interpreter + svelte store
   import interpret from 'xstate';
   import { readable } from 'svelte/store';
   // Import lucide icons as individual Svelte components (path-based default exports)
@@ -158,23 +158,23 @@
 
   function getImportanceColor(importance: string) {
     switch (importance) {
-      case 'critical':
-        return 'text-red-600 border-red-200 bg-red-50';
-      case 'high':
-        return 'text-orange-600 border-orange-200 bg-orange-50';
-      case 'medium':
-        return 'text-yellow-600 border-yellow-200 bg-yellow-50';
-      case 'low':
-        return 'text-gray-600 border-gray-200 bg-gray-50';
+      case: 'critical':
+        return: 'text-red-600 border-red-200 bg-red-50';
+      case: 'high':
+        return: 'text-orange-600 border-orange-200 bg-orange-50';
+      case: 'medium':
+        return: 'text-yellow-600 border-yellow-200 bg-yellow-50';
+      case: 'low':
+        return: 'text-gray-600 border-gray-200 bg-gray-50';
       default:
-        return 'text-gray-600 border-gray-200 bg-gray-50';
+        return: 'text-gray-600 border-gray-200 bg-gray-50';
     }
   }
 
   function getAnalysisScoreColor(score: number) {
-    if (score >= 0.9) return 'text-green-600 bg-green-100';
-    if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    if (score >= 0.9) return: 'text-green-600 bg-green-100';
+    if (score >= 0.7) return: 'text-yellow-600 bg-yellow-100';
+    return: 'text-red-600 bg-red-100';
   }
 </script>
 
@@ -200,7 +200,7 @@
       <div class="flex items-center gap-2">
         <!-- Voice Toggle -->
         <button
-          on:click={toggleVoice}
+          onclick={toggleVoice}
           class="p-2 rounded-md hover:bg-gray-100 transition-colors"
           class:text-blue-600={$state.context?.voiceEnabled}
           class:text-gray-400={!$state.context?.voiceEnabled}
@@ -246,7 +246,7 @@
             </div>
           </div>
           <button
-            on:click={() => send({ type: 'RETRY' })}
+            onclick={() => send({ type: 'RETRY' })}
             class="mt-3 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
           >
             Retry
@@ -284,7 +284,7 @@
           <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
             <div class="flex items-center gap-3">
               <button
-                on:click={toggleReading}
+                onclick={toggleReading}
                 class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 disabled={!currentSection}
               >
@@ -297,7 +297,7 @@
                 {/if}
               </button>
               <button
-                on:click={stopReading}
+                onclick={stopReading}
                 class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                 disabled={!isReading}
               >
@@ -305,14 +305,14 @@
               </button>
               <div class="flex items-center gap-1">
                 <button
-                  on:click={previousSection}
+                  onclick={previousSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                   disabled={$state.context?.currentSection === 0}
                 >
                   <SkipBack class="w-4 h-4" />
                 </button>
                 <button
-                  on:click={nextSection}
+                  onclick={nextSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                   disabled={$state.context?.currentSection >= ($state.context?.sections?.length ?? 1) - 1}
                 >
@@ -339,7 +339,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {#each $state.context?.sections ?? [] as section, index}
               <button
-                on:click={() => jumpToSection(index)}
+                onclick={() => jumpToSection(index)}
                 class="text-left p-3 border rounded-lg transition-all hover:shadow-md"
                 class:border-blue-500={index === ($state.context?.currentSection ?? 0)}
                 class:bg-blue-50={index === ($state.context?.currentSection ?? 0)}
@@ -413,7 +413,7 @@
           <!-- Analysis Actions -->
           <div class="flex flex-wrap gap-3">
             <button
-              on:click={analyzeDocument}
+              onclick={analyzeDocument}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               disabled={isLoading}
             >
@@ -421,7 +421,7 @@
               Analyze Document
             </button>
             <button
-              on:click={synthesizeInsights}
+              onclick={synthesizeInsights}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               disabled={isLoading}
             >

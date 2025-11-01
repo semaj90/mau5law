@@ -97,42 +97,42 @@
 
   function getStatusColor(status: string): string {
     switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800 border-green-300";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case "closed":
-        return "bg-gray-100 text-gray-800 border-gray-300";
+      case: "active":
+        return: "bg-green-100 text-green-800 border-green-300";
+      case: "pending":
+        return: "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case: "closed":
+        return: "bg-gray-100 text-gray-800 border-gray-300";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
+        return: "bg-gray-100 text-gray-800 border-gray-300";
     }
   }
 
   function getPriorityColor(priority: string): string {
     switch (priority) {
-      case "critical":
-        return "bg-red-100 text-red-800 border-red-300";
-      case "high":
-        return "bg-orange-100 text-orange-800 border-orange-300";
-      case "medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case "low":
-        return "bg-green-100 text-green-800 border-green-300";
+      case: "critical":
+        return: "bg-red-100 text-red-800 border-red-300";
+      case: "high":
+        return: "bg-orange-100 text-orange-800 border-orange-300";
+      case: "medium":
+        return: "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case: "low":
+        return: "bg-green-100 text-green-800 border-green-300";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
+        return: "bg-gray-100 text-gray-800 border-gray-300";
     }
   }
 
   function getRiskColor(level: string): string {
     switch (level) {
-      case "high":
-        return "text-red-600";
-      case "medium":
-        return "text-yellow-600";
-      case "low":
-        return "text-green-600";
+      case: "high":
+        return: "text-red-600";
+      case: "medium":
+        return: "text-yellow-600";
+      case: "low":
+        return: "text-green-600";
       default:
-        return "text-gray-600";
+        return: "text-gray-600";
     }
   }
 
@@ -159,7 +159,7 @@
     {/snippet}
   </Drawer>
 {:else}
-  <Dialog.Root bind:open> <!-- Bind to the 'open' prop -->
+  <Dialog.Root bind:open> <!-- Bind to the: 'open' prop -->
     <Dialog.Content size="lg">
       <Dialog.Header>
         <Dialog.Title>Case Summary</Dialog.Title>
@@ -178,7 +178,7 @@
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button class="bits-btn" on:click={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
+              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
                 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
               </Button>
             </div>
@@ -230,7 +230,7 @@
           <div class="flex flex-col items-center justify-center h-48 nes-text is-disabled">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
-            <Button on:click={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn">
+            <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn">
               <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
             </Button>
           </div>

@@ -21,7 +21,7 @@
       lastModified: '2024-01-15',
       tags: ['employment', 'contract', 'tech'],
       confidentialityLevel: 'confidential' as const,
-      description 'Standard employment agreement with non-compete clauses and intellectual property assignments.',
+      description: 'Standard employment agreement with non-compete clauses and intellectual property assignments.',
     },
     {
       title: 'Evidence Bundle - Email Chain',
@@ -30,7 +30,7 @@
       lastModified: '2024-01-12',
       tags: ['email', 'correspondence', 'discovery'],
       confidentialityLevel: 'restricted' as const,
-      description 'Email correspondence between parties regarding contract negotiations.',
+      description: 'Email correspondence between parties regarding contract negotiations.',
     },
     {
       title: 'Motion for Summary Judgment',
@@ -39,7 +39,7 @@
       lastModified: '2024-01-10',
       tags: ['motion', 'summary judgment', 'litigation'],
       confidentialityLevel: 'public' as const,
-      description 'Legal brief arguing for summary judgment based on lack of material facts.',
+      description: 'Legal brief arguing for summary judgment based on lack of material facts.',
     },
     {
       title: 'Case Citations and Precedents',
@@ -48,7 +48,7 @@
       lastModified: '2024-01-08',
       tags: ['citations', 'precedent', 'research'],
       confidentialityLevel: 'internal' as const,
-      description 'Compilation of relevant case law and legal precedents for the current matter.',
+      description: 'Compilation of relevant case law and legal precedents for the current matter.',
     }
   ];
   const selectItems = [
@@ -59,10 +59,10 @@
     { value: 'citations', label: 'Citations' }
   ];
   const tabItems = [
-    { value: 'documents', label: 'Documents', icon '📄' },
-    { value: 'recent', label: 'Recent', icon '🕒', badge: '4' },
-    { value: 'shared', label: 'Shared', icon '👥' },
-    { value: 'archived', label: 'Archived', icon '📦' }
+    { value: 'documents', label: 'Documents', icon: '📄' },
+    { value: 'recent', label: 'Recent', icon: '🕒', badge: '4' },
+    { value: 'shared', label: 'Shared', icon: '👥' },
+    { value: 'archived', label: 'Archived', icon: '📦' }
   ];
   let selectedFilter = $state('all');
   let currentTab = $state('documents');

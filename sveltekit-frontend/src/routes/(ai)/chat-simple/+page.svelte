@@ -76,7 +76,7 @@
       }, 100);
     }
   }
-  // Handle enter key - accept typed event and avoid global 'event'
+  // Handle enter key - accept typed event and avoid global: 'event'
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();

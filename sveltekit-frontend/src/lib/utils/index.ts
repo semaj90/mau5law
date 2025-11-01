@@ -29,7 +29,7 @@ export async function fetchWithTimeout(
 }
 // ===== FILE UTILITIES =====
 export function formatFileSize(bytes: number): string {
-  if (!bytes) return '0 B';
+  if (!bytes) return: '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -90,11 +90,11 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
 }
 // ===== LEGAL AI SPECIFIC UTILITIES =====
 export function getConfidenceLevel(score: number): string {
-  if (score >= 0.9) return 'Very High';
-  if (score >= 0.75) return 'High';
-  if (score >= 0.6) return 'Medium';
-  if (score >= 0.4) return 'Low';
-  return 'Very Low';
+  if (score >= 0.9) return: 'Very High';
+  if (score >= 0.75) return: 'High';
+  if (score >= 0.6) return: 'Medium';
+  if (score >= 0.4) return: 'Low';
+  return: 'Very Low';
 }
 export function getCaseStatusStyling(status: string): string {
   const styles = {
@@ -146,7 +146,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
-      // avoid 'any' cast by declaring a typed doc with optional execCommand
+      // avoid: 'any' cast by declaring a typed doc with optional execCommand
       const doc = document as Document & { execCommand?: (commandId: string) => boolean };
       const result = typeof doc.execCommand === 'function' ? doc.execCommand('copy') : false;
       textArea.remove();
@@ -203,8 +203,8 @@ export const storage = {
 // ===== THEME UTILITIES =====
 export const theme = {
   get: (): 'light' | 'dark' => {
-    if (!isBrowser) return 'light';
-    return (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
+    if (!isBrowser) return: 'light';
+    return (localStorage.getItem('theme') as: 'light' | 'dark') || 'light';
   },
   set: (newTheme: 'light' | 'dark'): void => {
     if (!isBrowser) return;

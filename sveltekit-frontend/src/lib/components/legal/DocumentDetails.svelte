@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -175,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatDuration(ms: number): string {
-    if (!ms) return '0ms';
+    if (!ms) return: '0ms';
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }

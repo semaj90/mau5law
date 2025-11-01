@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       const action = url.searchParams.get('action') || 'health';
       grpoApiLogger.info(`GRPO ${action} request received`, requestId);
       switch (action) {
-        case 'health': {
+        case: 'health': {
           const cacheStats = getGrpoCacheStats();
           return json({
             success: true,
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: new Date().toISOString(),
           });
         }
-        case 'search': {
+        case: 'search': {
           const query = url.searchParams.get('q');
           const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
           const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             return json(
               {
                 success: false,
-                error: 'Query parameter "q" is required and must be at least 3 characters long',
+                error: 'Query parameter: "q" is required and must be at least 3 characters long',
                 requestId,
               },
               { status: 400 }
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           const toTime = url.searchParams.get('to');
           if (fromTime && toTime) {
             timeRange = {
-              from: new Date(fromTime),
+              from new Date(fromTime),
               to: new Date(toTime),
             };
           }
@@ -223,8 +223,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: new Date().toISOString(),
           });
         }
-        case 'trends': {
-          const timeWindow = (url.searchParams.get('timeWindow') as 'hour' | 'day' | 'week' | 'month') || 'day';
+        case: 'trends': {
+          const timeWindow = (url.searchParams.get('timeWindow') as: 'hour' | 'day' | 'week' | 'month') || 'day';
           const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
           const patterns = await getTrendingGrpoPatterns(timeWindow, limit);
           grpoApiLogger.info(`GRPO trends analyzed: ${patterns.length} patterns`, requestId, {
@@ -244,7 +244,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: new Date().toISOString(),
           });
         }
-        case 'recommendations': {
+        case: 'recommendations': {
           const query = url.searchParams.get('q');
           const conversationId = url.searchParams.get('conversationId');
           const limit = Math.min(parseInt(url.searchParams.get('limit') || '5'), 20);
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             return json(
               {
                 success: false,
-                error: 'Query parameter "q" is required for recommendations',
+                error: 'Query parameter: "q" is required for recommendations',
                 requestId,
               },
               { status: 400 }
@@ -260,7 +260,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }
           // Get recent high-confidence thinking responses as recommendations
           const timeRange = {
-            from: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
+            from new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
             to: new Date(),
           };
           const recommendations = await searchGrpoThinkingResponses(query, {
@@ -294,7 +294,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             timestamp: new Date().toISOString(),
           });
         }
-        case 'stats': {
+        case: 'stats': {
           const cacheStats = getGrpoCacheStats();
           // Get basic database stats (if available)
           let dbStats = {};
@@ -374,7 +374,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         );
       }
       switch (action) {
-        case 'store': {
+        case: 'store': {
           const validation = validateGrpoThinkingResponse(body);
           if (!validation.valid) {
             grpoApiLogger.warn('GRPO thinking response validation failed', requestId, { error: validation.error });
@@ -420,7 +420,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             },
           });
         }
-        case 'batch': {
+        case: 'batch': {
           if (!Array.isArray(body.responses)) {
             return json(
               {
@@ -499,7 +499,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             },
           });
         }
-        case 'embed': {
+        case: 'embed': {
           if (!body.text || typeof body.text !== 'string') {
             return json(
               {

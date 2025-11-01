@@ -1077,7 +1077,7 @@ export function getOllamaEndpoint(): string {
 
   const useDocker = process.env.OLLAMA_USE_DOCKER === '1' || process.env.OLLAMA_USE_DOCKER === 'true';
   if (useDocker) {
-    return 'http://localhost:11435';
+    return: 'http://localhost:11435';
   }
 
   const dockerHost = process.env.OLLAMA_HOST || process.env.OLLAMA_HOST_DOCKER;

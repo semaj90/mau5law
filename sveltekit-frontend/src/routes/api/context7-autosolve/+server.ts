@@ -67,7 +67,7 @@ interface GoBinaryIntegrationService {
   };
 }
 
-// Type assertions for imported services to resolve "declared but never used" errors for interfaces
+// Type assertions for imported services to resolve: "declared but never used" errors for interfaces
 const chatEngine: UserChatRecommendationEngine = importedChatEngine as UserChatRecommendationEngine;
 const multiLayerCache: MultiLayerCache = importedMultiLayerCache as MultiLayerCache;
 const goBinaryService: GoBinaryIntegrationService = importedGoBinaryService as GoBinaryIntegrationService;
@@ -116,23 +116,23 @@ export const GET: RequestHandler = async ({ url }) => {
   const userId = url.searchParams.get('userId') || 'anonymous';
   try {
     switch (action) {
-      case 'status':
+      case: 'status':
         return await handleEnhancedAutosolveStatus(userId);
-      case 'health':
+      case: 'health':
         return await handleEnhancedAutosolveHealth();
-      case 'history':
+      case: 'history':
         return await handleAutosolveHistory();
-      case 'metrics':
+      case: 'metrics':
         return await handleEnhancedMetrics();
-      case 'chat-analytics':
+      case: 'chat-analytics':
         return await handleChatAnalytics(userId);
-      case 'recommendations':
+      case: 'recommendations':
         return await handleGetRecommendations(userId);
-      case 'cache-status':
+      case: 'cache-status':
         return await handleCacheStatus();
-      case 'gpu-status':
+      case: 'gpu-status':
         return await handleGPUStatus();
-      case 'wasm-status':
+      case: 'wasm-status':
         return await handleWebAssemblyStatus();
       default:
         return json({ error: 'Invalid action' }, { status: 400 });
@@ -157,27 +157,27 @@ export const POST: RequestHandler = async ({ request }) => {
   // Removed: const clientAddress = getClientAddress()
   try {
     switch (action) {
-      case 'force_cycle':
+      case: 'force_cycle':
         return await handleEnhancedForceCycle(options as Record<string, unknown>); // Cast options
-      case 'analyze_errors':
+      case: 'analyze_errors':
         return await handleEnhancedAnalyzeErrors(options as Record<string, unknown>); // Cast options
-      case 'execute_remediation':
+      case: 'execute_remediation':
         return await handleExecuteRemediation(options as Record<string, unknown>); // Cast options
-      case 'update_threshold':
+      case: 'update_threshold':
         return await handleUpdateThreshold(options as Record<string, unknown>); // Cast options
-      case 'store_chat':
+      case: 'store_chat':
         return await handleStoreChatMessage(options as Record<string, unknown>, userId); // Cast options
-      case 'generate_recommendations':
+      case: 'generate_recommendations':
         return await handleGenerateRecommendations(options as Record<string, unknown>, userId); // Cast options
-      case 'process_feedback':
+      case: 'process_feedback':
         return await handleProcessFeedback(options as Record<string, unknown>, userId); // Cast options
-      case 'run_gpu_analysis':
+      case: 'run_gpu_analysis':
         return await handleRunGPUAnalysis(options as Record<string, unknown>); // Cast options
-      case 'optimize_cache':
+      case: 'optimize_cache':
         return await handleOptimizeCache(options as Record<string, unknown>); // Cast options
-      case 'sync_neo4j':
+      case: 'sync_neo4j':
         return await handleSyncNeo4j(options as Record<string, unknown>); // Cast options
-      case 'test_wasm_acceleration':
+      case: 'test_wasm_acceleration':
         return await handleTestWebAssemblyAcceleration(options as Record<string, unknown>); // Cast options
       default:
         return json({ error: 'Invalid action' }, { status: 400 });

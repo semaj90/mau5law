@@ -24,8 +24,7 @@ const DEFAULT_ABBREVIATIONS = [
   'No.',
   'Fig.',
   'Eq.',
-  'v.', // legal case format
-  'U.S.'
+  'v.', // legal case format: 'U.S.'
 ];
 export function splitSentencesEnhanced(text: string, options: SplitterOptions = {}): string[] {
   if (!text || !text.trim()) return [];

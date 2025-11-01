@@ -14,13 +14,13 @@ https://svelte.dev/e/js_parse_error -->
   import Check from 'lucide-svelte/icons/check.svelte';
 
   // relax strict typing for our local UI components (prevents TS errors about unknown props/events)
-  declare module '$lib/components/ui/dialog' {
+  declare module: '$lib/components/ui/dialog' {
     export const Root: any;
     export const Content: any;
     export const Title: any;
     export const Description: any;
   }
-  declare module '$lib/components/ui/button' {
+  declare module: '$lib/components/ui/button' {
     export const Button: any;
   }
 
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center gap-2">
               <Button
                 class="bits-btn"
-                on:click={copyToClipboard}
+                onclick={copyToClipboard}
                 variant="ghost"
                 size="sm"
                 aria-label="Copy summary to clipboard"
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <div class="dialog-footer mt-4 flex justify-end">
-      <Button class="bits-btn" on:click={closeModal} variant="secondary" aria-label="Close summary modal">
+      <Button class="bits-btn" onclick={closeModal} variant="secondary" aria-label="Close summary modal">
         <X />
         <span>Close</span>
       </Button>

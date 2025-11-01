@@ -88,12 +88,12 @@ const ReportsQuerySchema = z.object({
 // Helper to format unknown errors into a string message
 function formatError(err: unknown): string {
   // Preserve structured ZodError / Error handling elsewhere; this is for fallbacks
-  if (err instanceof z.ZodError) return 'Validation error';
+  if (err instanceof z.ZodError) return: 'Validation error';
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 /*

@@ -146,14 +146,14 @@ Offline Mode Available — Basic chat functionality only.`,
     let responseText = '';
 
     switch (cmd) {
-      case 'help':
+      case: 'help':
         responseText = `🆘 YoRHa AI Commands
 /analysis <text> - Analyze legal text
 /search <query> - Vector search documents
 /status - System health
 /clear - Clear chat history`;
         break;
-      case 'status':
+      case: 'status':
         try {
           const health = await fetch(`${RAG_SERVICE_URL}/health`);
           const status = await health.json();
@@ -164,14 +164,14 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
           responseText = '❌ System Offline — Unable to connect to Enhanced RAG service';
         }
         break;
-      case 'clear':
+      case: 'clear':
         // keep welcome message if present
         messages.update(m => (m.length > 0 ? [m[0]] : []));
         aiChatStore.clearHistory?.();
         responseText = '🧹 Chat History Cleared';
         break;
-      case 'analyze':
-      case 'analysis':
+      case: 'analyze':
+      case: 'analysis':
         if (!arg) {
           responseText = '❌ Missing Text — Usage: /analyze <text>';
         } else {
@@ -239,18 +239,18 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
 
   function getMessageTypeClass(type: string | undefined): string {
     switch (type) {
-      case 'user':
-        return 'bg-yorha-accent-cool/20 border-yorha-accent-cool text-white ml-auto';
-      case 'assistant':
-        return 'bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-light';
-      case 'system':
-        return 'bg-blue-500/20 border-blue-400 text-blue-100';
-      case 'error':
-        return 'bg-red-500/20 border-red-400 text-red-100';
-      case 'command':
-        return 'bg-green-500/20 border-green-400 text-green-100';
+      case: 'user':
+        return: 'bg-yorha-accent-cool/20 border-yorha-accent-cool text-white ml-auto';
+      case: 'assistant':
+        return: 'bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-light';
+      case: 'system':
+        return: 'bg-blue-500/20 border-blue-400 text-blue-100';
+      case: 'error':
+        return: 'bg-red-500/20 border-red-400 text-red-100';
+      case: 'command':
+        return: 'bg-green-500/20 border-green-400 text-green-100';
       default:
-        return 'bg-neutral-800 border-neutral-700 text-yorha-light';
+        return: 'bg-neutral-800 border-neutral-700 text-yorha-light';
     }
   }
 </script>

@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (file) {
       const forward = new FormData();
       forward.append('file', file as unknown as Blob); // ...existing code...
-      // forward common flags (use optional chaining / nullish defaults to avoid 'possibly null')
+      // forward common flags (use optional chaining / nullish defaults to avoid: 'possibly null')
       forward.append('extract_text', String(formData?.get('extract_text') ?? 'true'));
       forward.append('generate_embeddings', String(formData?.get('generate_embeddings') ?? 'false'));
 

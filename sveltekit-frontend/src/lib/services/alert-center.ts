@@ -459,7 +459,7 @@ export class AlertCenter {
    */
   private async sendNotificationToChannel(alert: RuntimeAlert, channel: NotificationChannel): Promise<void> {
     switch (channel.type) {
-      case 'nats':
+      case: 'nats':
         if (this.natsService) {
           await this.natsService.publish(channel.endpoint, {
             alert: {
@@ -474,13 +474,13 @@ export class AlertCenter {
           });
         }
         break;
-      case 'dashboard':
+      case: 'dashboard':
         // Dashboard notifications handled by WebSocket or SSE in browser
         if (typeof window !== 'undefined' && window.alertDashboard?.addAlert) {
           window.alertDashboard.addAlert(alert);
         }
         break;
-      case 'webhook':
+      case: 'webhook':
         await fetch(channel.endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -520,36 +520,31 @@ export class AlertCenter {
    */
   private determineSeverity(type: AlertType): AlertSeverity {
     const severityMap: Record<AlertType, AlertSeverity> = {
-      // System Performance
-      'p99_latency_exceeded': 'warning',
+      // System Performance: 'p99_latency_exceeded': 'warning',
       'error_spike': 'critical',
       'pipeline_anomaly_spike': 'critical',
       'service_unavailable': 'critical',
       'memory_threshold_exceeded': 'warning',
       'cpu_threshold_exceeded': 'warning',
       'disk_space_low': 'warning',
-      // Legal Compliance - High severity due to legal implications
-      'privilege_breach_detected': 'emergency',
+      // Legal Compliance - High severity due to legal implications: 'privilege_breach_detected': 'emergency',
       'unauthorized_access_attempt': 'critical',
       'chain_of_custody_break': 'emergency',
       'retention_policy_violation': 'critical',
       'confidentiality_breach': 'emergency',
       'document_tampering_detected': 'emergency',
       'illegal_discovery_access': 'emergency',
-      // Security & Authentication
-      'failed_authentication': 'warning',
+      // Security & Authentication: 'failed_authentication': 'warning',
       'suspicious_activity': 'critical',
       'data_exfiltration_attempt': 'emergency',
       'unauthorized_privilege_escalation': 'emergency',
       'concurrent_session_anomaly': 'warning',
-      // Client Management
-      'client_data_anomaly': 'warning',
+      // Client Management: 'client_data_anomaly': 'warning',
       'billing_discrepancy': 'warning',
       'deadline_approaching': 'warning',
       'court_filing_deadline': 'critical',
       'statute_of_limitations_warning': 'critical',
-      // AI/ML Specific
-      'model_prediction_anomaly': 'warning',
+      // AI/ML Specific: 'model_prediction_anomaly': 'warning',
       'embedding_quality_degradation': 'warning',
       'rag_accuracy_decline': 'warning',
       'gpu_memory_overflow': 'critical',

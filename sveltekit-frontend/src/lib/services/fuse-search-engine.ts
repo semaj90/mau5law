@@ -173,7 +173,7 @@ export class FuseSearchEngine {
     // has top-level browser-specific code.
 
     if (typeof window === 'undefined') {
-      this.logger('debug', `Skipping Loki collection access on server for "${name}"`);
+      this.logger('debug', `Skipping Loki collection access on server for: "${name}"`);
       return null; // Do not attempt to load client-side storage on the server
     }
 
@@ -219,7 +219,7 @@ export class FuseSearchEngine {
     const lokiCollection = await this.safeGetCollection(collection); // Await the async call
     // guard
     if (!lokiCollection) {
-      this.logger('warn', `Loki collection "${collection}" not found or does not have a 'find' method.`);
+      this.logger('warn', `Loki collection: "${collection}" not found or does not have a: 'find' method.`);
       return [];
     }
     // call find (Loki wrappers may return array)
@@ -355,7 +355,7 @@ export class FuseSearchEngine {
     const historySuggestions = this.searchHistory
       .filter(h => h.toLowerCase().includes(input.toLowerCase()))
       .slice(0, 3);
-    historySuggestions.forEach((s: string) => suggestions.add(s)); // Explicitly type 's'
+    historySuggestions.forEach((s: string) => suggestions.add(s)); // Explicitly type: 's'
     // Get suggestions from indexed content
     const contentSuggestions = await this.getContentBasedSuggestions(input, limit - suggestions.size);
     contentSuggestions.forEach(s => suggestions.add(s));
@@ -419,16 +419,16 @@ export class FuseSearchEngine {
   }
   private inferItemType(collection: string, _item: unknown): SearchableItem['type'] {
     switch (collection) {
-      case 'cases':
-        return 'case';
-      case 'documents':
-        return 'document';
-      case 'evidence':
-        return 'evidence';
-      case 'chat_messages':
-        return 'chat';
+      case: 'cases':
+        return: 'case';
+      case: 'documents':
+        return: 'document';
+      case: 'evidence':
+        return: 'evidence';
+      case: 'chat_messages':
+        return: 'chat';
       default:
-        return 'document';
+        return: 'document';
     }
   }
   private extractTags(item: unknown): string[] {
@@ -483,7 +483,7 @@ export class FuseSearchEngine {
       }
       // Tags filter
       if (filters.tags && filters.tags.length > 0) {
-        const itemTags = (res.item.tags ?? []).map((t: string) => t.toLowerCase()); // Explicitly type 't'
+        const itemTags = (res.item.tags ?? []).map((t: string) => t.toLowerCase()); // Explicitly type: 't'
         const has = filters.tags.some(t => itemTags.includes(t.toLowerCase()));
         if (!has) return false;
       }
@@ -494,15 +494,15 @@ export class FuseSearchEngine {
   }
   private sortResults(results: SearchResult[], sortBy: 'relevance' | 'date' | 'importance'): SearchResult[] {
     switch (sortBy) {
-      case 'date':
+      case: 'date':
         return results.sort((a, b) => {
           const dateA = new Date(a.item.updated_at ?? a.item.created_at ?? 0).getTime();
           const dateB = new Date(b.item.updated_at ?? b.item.created_at ?? 0).getTime();
           return dateB - dateA;
         });
-      case 'importance':
+      case: 'importance':
         return results.sort((a, b) => this.calculateImportanceScore(b.item) - this.calculateImportanceScore(a.item));
-      case 'relevance':
+      case: 'relevance':
       default:
         return results.sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
     }
@@ -514,13 +514,13 @@ export class FuseSearchEngine {
     // Add importance based on metadata priority if available
     if (item.metadata?.priority) {
       switch (item.metadata.priority.toLowerCase()) {
-        case 'critical':
+        case: 'critical':
           score += 5;
           break;
-        case 'high':
+        case: 'high':
           score += 3;
           break;
-        case 'medium':
+        case: 'medium':
           score += 1;
           break;
         default:
@@ -618,10 +618,10 @@ export class FuseSearchEngine {
           if (suggestions.size >= limit) return Array.from(suggestions);
         }
         // Check tags
-        if (item.tags?.some((tag: string) => tag.toLowerCase().includes(lowerInput))) { // Explicitly type 'tag'
+        if (item.tags?.some((tag: string) => tag.toLowerCase().includes(lowerInput))) { // Explicitly type: 'tag'
           item.tags
-            .filter((tag: string) => tag.toLowerCase().includes(lowerInput)) // Explicitly type 'tag'
-            .forEach((tag: string) => { // Explicitly type 'tag'
+            .filter((tag: string) => tag.toLowerCase().includes(lowerInput)) // Explicitly type: 'tag'
+            .forEach((tag: string) => { // Explicitly type: 'tag'
               suggestions.add(tag);
               if (suggestions.size >= limit) return Array.from(suggestions);
             });

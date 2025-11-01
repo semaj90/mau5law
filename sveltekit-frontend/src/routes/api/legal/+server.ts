@@ -8,7 +8,7 @@ import type { RedisClientType } from 'redis';
 import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module for server-side variables
 
 // Redis client for coordination with MCP server (node-redis)
-// Use non-null assertion (!) on createClient to satisfy TypeScript, assuming 'redis' package is correctly installed and exports it.
+// Use non-null assertion (!) on createClient to satisfy TypeScript, assuming: 'redis' package is correctly installed and exports it.
 const redisClient: RedisClientType = createClient!({
   url: REDIS_URL || 'redis://localhost:6379',
 });

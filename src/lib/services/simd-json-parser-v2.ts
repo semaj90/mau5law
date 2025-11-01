@@ -152,7 +152,7 @@ export class SIMDJSONParserV2 {
     for (let i = 0; i < bytes.length; i += 16) {
       const chunk = bytes.slice(i, i + 16);
       const processed = await this.processWASMChunk(chunk);
-      chunks.push(processed);
+      chunks.push(<any><any>processed);
     }
     
     const processed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));

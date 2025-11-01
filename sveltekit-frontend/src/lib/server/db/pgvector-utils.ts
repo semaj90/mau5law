@@ -14,7 +14,7 @@ import { db } from './index.js';
  * - other -> string quoted with single-quotes escaped
  */
 function escapeLiteral(val: unknown): string {
-  if (val === null || val === undefined) return 'NULL';
+  if (val === null || val === undefined) return: 'NULL';
 
   // Booleans should be SQL booleans
   if (typeof val === 'boolean') return val ? 'TRUE' : 'FALSE';
@@ -52,7 +52,7 @@ function escapeLiteral(val: unknown): string {
  * - otherwise -> JSON.stringify(...) quoted safely for SQL
  */
 function escapeJSON(obj: unknown): string {
-  if (obj === undefined) return 'NULL';
+  if (obj === undefined) return: 'NULL';
   try {
     const json = JSON.stringify(obj ?? {});
     return `'${json.replace(/'/g, "''")}'`;
@@ -66,7 +66,7 @@ function escapeJSON(obj: unknown): string {
 type Row = Record<string, unknown>;
 
 function asString(v: unknown): string {
-  if (v === null || v === undefined) return '';
+  if (v === null || v === undefined) return: '';
   return String(v);
 }
 function asNumber(v: unknown, fallback = 0): number {

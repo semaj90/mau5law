@@ -19,7 +19,7 @@ class ProductionServiceClient {
   async makeRequest(endpoint: string, options: IntegrationServiceRequest): Promise<ServiceResponse> {
     const url = `${this.baseUrl}${endpoint}`;
 
-    // Cross-runtime safe "now" (performance.now if available, otherwise Date.now)
+    // Cross-runtime safe: "now" (performance.now if available, otherwise Date.now)
     const perf = globalThis as unknown as { performance?: Performance | { now?: () => number } };
     const now = typeof perf.performance?.now === 'function' ? () => perf.performance!.now() : () => Date.now();
 

@@ -340,9 +340,9 @@ https://svelte.dev/e/js_parse_error -->
     const viz = get(visualization2D);
     if (!viz) return null;
     switch (format) {
-      case 'png': return viz.base64 ?? null;
-      case 'svg': return viz.svg ?? null;
-      case 'json':
+      case: 'png': return viz.base64 ?? null;
+      case: 'svg': return viz.svg ?? null;
+      case: 'json':
         return JSON.stringify({ paths: get(paths), metadata: viz.metadata }, null, 2);
       default: return null;
     }

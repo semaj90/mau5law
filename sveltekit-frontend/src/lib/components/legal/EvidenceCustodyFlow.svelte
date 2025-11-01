@@ -186,13 +186,13 @@ and AI-powered verification features.
   function handleCollaborationUpdate(data: any) {
     // Handle different types of collaboration updates
     switch (data.action) {
-      case 'user-joined':
+      case: 'user-joined':
         toast.info(`${data.userName} joined the collaboration`);
         break;
-      case 'user-left':
+      case: 'user-left':
         toast.info(`${data.userName} left the collaboration`);
         break;
-      case 'annotation-added':
+      case: 'annotation-added':
         toast.info('New annotation added');
         break;
       default:
@@ -202,12 +202,12 @@ and AI-powered verification features.
 
   function getStatusIcon(status: string) {
     switch (status) {
-      case 'verified':
+      case: 'verified':
         return CheckCircle;
-      case 'compromised':
+      case: 'compromised':
         return AlertTriangle;
-      case 'pending':
-      case 'requires-attention':
+      case: 'pending':
+      case: 'requires-attention':
         return Clock;
       default:
         return Clock;
@@ -216,16 +216,16 @@ and AI-powered verification features.
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'verified':
-        return 'text-green-600';
-      case 'compromised':
-        return 'text-red-600';
-      case 'requires-attention':
-        return 'text-yellow-600';
-      case 'pending':
-        return 'text-blue-600';
+      case: 'verified':
+        return: 'text-green-600';
+      case: 'compromised':
+        return: 'text-red-600';
+      case: 'requires-attention':
+        return: 'text-yellow-600';
+      case: 'pending':
+        return: 'text-blue-600';
       default:
-        return 'text-gray-600';
+        return: 'text-gray-600';
     }
   }
 
@@ -311,7 +311,7 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button on:click={startWorkflow} class="w-full bits-btn bits-btn">
+            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
               Start Custody Workflow
             </Button>
           </div>
@@ -329,7 +329,7 @@ and AI-powered verification features.
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 showIntegrityDetails = !showIntegrityDetails}
               >
                 {showIntegrityDetails ? 'Hide' : 'Show'} Details
@@ -373,26 +373,26 @@ showIntegrityDetails = !showIntegrityDetails}
           <div class="yorha-panel-content space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={approveWorkflow} variant="success">
+                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
                   Approve Custody
                 </Button>
-                <Button class="bits-btn" on:click={rejectWorkflow} variant="error">
+                <Button class="bits-btn" onclick={rejectWorkflow} variant="error">
                   Reject Custody
                 </Button>
               </div>
             {/if}
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={() =>
+                <Button class="bits-btn" onclick={() =>
 showTransferDialog = true} variant="ghost">
                   Transfer Custody
                 </Button>
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn" on:click={joinCollaboration} variant="ghost">
+                  <Button class="bits-btn" onclick={joinCollaboration} variant="ghost">
                     Join Collaboration
                   </Button>
                 {:else}
-                  <Button class="bits-btn" on:click={leaveCollaboration} variant="ghost">
+                  <Button class="bits-btn" onclick={leaveCollaboration} variant="ghost">
                     Leave Collaboration
                   </Button>
                 {/if}
@@ -400,10 +400,10 @@ showTransferDialog = true} variant="ghost">
             {/if}
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={retryWorkflow}>
+                <Button class="bits-btn" onclick={retryWorkflow}>
                   Retry Workflow
                 </Button>
-                <Button class="bits-btn" on:click={cancelWorkflow} variant="error">
+                <Button class="bits-btn" onclick={cancelWorkflow} variant="error">
                   Cancel Workflow
                 </Button>
               </div>
@@ -448,14 +448,14 @@ showTransferDialog = true} variant="ghost">
         ></textarea>
         <div class="flex space-x-3">
           <Button
-            on:click={startCustodyTransfer}
+            onclick={startCustodyTransfer}
             disabled={!transferReason.trim()}
             class="flex-1 bits-btn bits-btn"
           >
             Transfer
           </Button>
           <Button class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 showTransferDialog = false}
             variant="ghost"
             class="flex-1"

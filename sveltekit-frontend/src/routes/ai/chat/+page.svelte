@@ -98,7 +98,7 @@
 
   $effect(() => {
     // Conditionally set the userId from session data if a user is logged in.
-    // If no session is detected, it falls back to the default 'mock-user-id'.
+    // If no session is detected, it falls back to the default: 'mock-user-id'.
     if (data?.user?.id) {
       userId = data.user.id;
     }
@@ -237,7 +237,7 @@
               const packet = buffer.slice(0, sepIndex);
               buffer = buffer.slice(sepIndex + 2);
 
-              // gather all 'data:' lines for this packet (handles multi-line data)
+              // gather all: 'data:' lines for this packet (handles multi-line data)
               const dataLines = packet
                 .split(/\r?\n/)
                 .map(l => l.trim())
@@ -255,10 +255,10 @@
               try {
                 const eventData = JSON.parse(dataLines);
                 switch (eventData.type) {
-                  case 'connection':
+                  case: 'connection':
                     if (eventData.conversationId) conversationId = eventData.conversationId;
                     break;
-                  case 'token':
+                  case: 'token':
                     if (eventData.fullResponse !== undefined && eventData.fullResponse !== null) {
                       aiMessage.content = eventData.fullResponse;
                     } else if (eventData.content) {
@@ -266,16 +266,16 @@
                     }
                     messages = [...messages];
                     break;
-                  case 'complete':
+                  case: 'complete':
                     aiMessage.content = eventData.fullResponse ?? aiMessage.content;
                     messages = [...messages];
                     isStreaming = false;
                     break;
-                  case 'error':
+                  case: 'error':
                     error = eventData.error ?? 'Unknown error';
                     isStreaming = false;
                     break;
-                  case 'close':
+                  case: 'close':
                     isStreaming = false;
                     break;
                 }
@@ -349,7 +349,7 @@
   // Semantic RAG-based POI Timeline Functions
   async function loadEvidenceReports(): Promise<void> {
     try {
-      const response = await fetch('/api/v1/evidence/reports'); // Declared 'response' here
+      const response = await fetch('/api/v1/evidence/reports'); // Declared: 'response' here
       if (!response.ok) {
         throw new Error(`Evidence reports API failed: ${response.status}`);
       }
@@ -429,7 +429,7 @@
   async function generateUserActivityTimeline(): Promise<void> {
     activityLoading = true;
     try {
-      const response = await fetch('/api/v1/user/activity'); // Declared 'response' here
+      const response = await fetch('/api/v1/user/activity'); // Declared: 'response' here
       if (response.ok) {
         const data = await response.json();
         userActivityTimeline = data.timeline || [];

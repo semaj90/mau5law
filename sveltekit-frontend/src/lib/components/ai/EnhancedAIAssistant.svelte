@@ -8,6 +8,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment'; // added
   import { aiAssistant  } from '$lib/stores/unified';
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
   import type { ChatMessage, Backend } from '$lib/types/ai-assistant';
@@ -40,43 +41,56 @@ https://svelte.dev/e/effect_invalid_placement -->
   let searchResults = $state<any[]>([]);
   let messagesContainer: HTMLDivElement;
   let showCitationDialog = $state(false);
-  let selectedCitation = $state("");
+  let selectedCitation = $state('');
+
   // Derived state from store
   const messages = $derived(aiAssistant.messages);
   const isProcessing = $derived(aiAssistant.isProcessing);
   const currentBackend = $derived(aiAssistant.currentBackend);
   const backendLatency = $derived(aiAssistant.backendLatency);
   const config = $derived(aiAssistant.config);
+
   // Voice input support
   let isListening = $state(false);
-  let recognition SpeechRecognition | null = null;
+  let recognition: SpeechRecognition | null = null; // fixed type syntax
+
+  // Initialize SpeechRecognition only in browser
   $effect(() => {
-    // Initialize speech recognition if available
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognitio;
-      recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
+    if (!browser) return;
+    // feature detection
+    const Win = window as any;
+    const SR = Win.SpeechRecognition || Win.webkitSpeechRecognition;
+    if (!SR) return;
+    recognition = new SR() as SpeechRecognition;
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+    recognition.onresult = (event: any) => {
+      const transcript = event.results?.[0]?.[0]?.transcript;
+      if (transcript) {
         messageInput = transcript;
-        isListening = false;
       }
-      recognition.onerror = () => {
-        isListening = false;
+      isListening = false;
+    };
+    recognition.onerror = () => { isListening = false; };
+    recognition.onend = () => { isListening = false; };
+    // teardown
+    return () => {
+      if (recognition) {
+        try { recognition.onresult = null; recognition.onend = null; recognition.onerror = null; } catch {}
+        recognition = null;
       }
-      recognition.onend = () => {
-        isListening = false;
-      }
-    }
+    };
   });
-  // Auto-scroll to bottom when new messages arrive
+
+  // Auto-scroll to bottom when new messages arrive (runs in browser only)
   $effect(() => {
+    if (!browser) return;
     if (messagesContainer && messages.length > 0) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   });
+
   // Send message function
   async function sendMessage() {
     if (!messageInput.trim() || isProcessing) return;
@@ -109,8 +123,8 @@ https://svelte.dev/e/effect_invalid_placement -->
       });
     }
   }
-  // Handle Enter key
-  function handleKeyDown(_event: KeyboardEvent) {
+  // Handle Enter key - use the event param
+  function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -126,17 +140,17 @@ https://svelte.dev/e/effect_invalid_placement -->
       recognition.start();
     }
   }
-  // Search conversation history
+  // Search conversation history - fixed call syntax and assignment
   async function searchHistory() {
     if (!messageInput.trim()) return;
     try {
       const results = await pgVectorSearch.searchChatHistory({
-        query: messageInput
+        query: messageInput, // fixed missing comma
         limit: 10,
         threshold: 0.7,
         filters: { legalDomain: legalContext }
       });
-      searchResults = result;
+      searchResults = results; // fixed variable name
       showSearchResults = true;
     } catch (error) {
       console.error('Search failed:', error);
@@ -144,7 +158,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   // Insert search result
   function insertSearchResult(result: any) {
-    messageInput = (result as { content?: any; similarity?: any; timestamp?: any }).content;
+    messageInput = (result as { content?: any }).content || '';
     showSearchResults = false;
   }
   // Backend selection
@@ -173,26 +187,27 @@ https://svelte.dev/e/effect_invalid_placement -->
   // Get backend status color
   function getBackendStatusColor(backend: Backend): string {
     const latency = backendLatency[backend];
-    if (latency === 0) return 'text-gray-500';
-    if (latency < 1000) return 'text-green-500';
-    if (latency < 3000) return 'text-yellow-500';
-    return 'text-red-500';
+    if (latency === 0) return: 'text-gray-500';
+    if (latency < 1000) return: 'text-green-500';
+    if (latency < 3000) return: 'text-yellow-500';
+    return: 'text-red-500';
   }
   // Format timestamp
   function formatTime(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString();
   }
-  // Show citation
-  function showCitation(citation string) {
-    selectedCitation = citatio;
+  // Show citation (fixed signature + assignment)
+  function showCitation(citation: string) {
+    selectedCitation = citation;
     showCitationDialog = true;
   }
-  // Insert citation
+
   function insertCitation() {
     oncitation?.();
     showCitationDialog = false;
   }
 </script>
+
 <!-- Main AI Assistant Interface -->
 <div class="enhanced-ai-assistant">
   <!-- Header with Controls -->
@@ -377,19 +392,15 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="search-results-panel">
       <div class="search-header">
         <h4>🔍 Related Conversations</h4>
-  <button type="button" onclick={() => showSearchResults = false} aria-label="Close search results">✕</button>
+        <button type="button" onclick={() => (showSearchResults = false)} aria-label="Close search results">✕</button>
       </div>
       <div class="search-results">
         {#each searchResults as result}
-          <div
-            class="search-result"
-            role="button" tabindex="0"
-                onclick={() => insertSearchResult(result)}
-          >
-            <div class="result-content">{(result as { content?: any; similarity?: any; timestamp?: any }).content}</div>
+          <div class="search-result" role="button" tabindex="0" onclick={() => insertSearchResult(result)}>
+            <div class="result-content">{(result as { content?: any }).content}</div>
             <div class="result-meta">
-              Similarity: {Math.round.similarity * 100)}% |
-              {formatTime((result as { content?: any; similarity?: any; timestamp?: any }).timestamp)}
+              Similarity: {Math.round(((result as any).similarity ?? 0) * 100)}% |
+              {formatTime((result as { timestamp?: number }).timestamp ?? Date.now())}
             </div>
           </div>
         {/each}
@@ -427,7 +438,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       <textarea
         bind:value={messageInput}
         onkeydown={handleKeyDown}
-        {placeholder}
+        placeholder={placeholder}
         rows="3"
         disabled={isProcessing}
       ></textarea>
@@ -442,12 +453,13 @@ https://svelte.dev/e/effect_invalid_placement -->
         {:else}
           <Search size={16} />
         {/if}
-                  <button type="button"
-                    class="reference-link"
-                    onclick={() => showCitation(ref.citation)}
-                  >
+      </button>
+    </div>
+  </div>
+
+  <!-- Citation modal moved outside of submit button and template cleaned up -->
   {#if showCitationDialog}
-    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false, }}>
+    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
       <div class="modal" role="document">
         <div class="modal-header">
           <Quote size={20} />
@@ -457,7 +469,7 @@ https://svelte.dev/e/effect_invalid_placement -->
           <div class="citation-box">
             <p>{selectedCitation}</p>
           </div>
-            <div class="modal-actions">
+          <div class="modal-actions">
             <button type="button" class="nes-btn is-primary" onclick={() => insertCitation()}>
               Insert Citation
             </button>
@@ -488,7 +500,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .ai-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     padding: 1rem;
     background: #f9fafb;
@@ -535,7 +547,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     transition: background-color 0.2;
     border: 1px solid #d1d5db;
   }
-  .action-btn:hover:not(:disabled) {,
+  .action-btn:hover:not(:disabled) {
     background: #f3f4f6;
   }
   .action-btn:disabled {
@@ -706,7 +718,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .reference-link {
     color: #3b82f6;
-    text-decoration underli;
+    text-decoration: underline; /* fixed typo */
     background: none;
     border: none;
     cursor: pointer;
@@ -817,7 +829,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     cursor: pointer;
     transition: all 0.2;
   }
-  .submit-btn:hover:not(:disabled) {,
+  .submit-btn:hover:not(:disabled) {
     background: #2563eb;
   }
   .submit-btn:disabled {
@@ -827,7 +839,6 @@ https://svelte.dev/e/effect_invalid_placement -->
   /* Modal styles */
   .modal-overlay {
     position fixed;
-d;
     top: 0,
     left: 0;
     right: 0,
@@ -922,10 +933,11 @@ d;
     background: #e5e7eb;
   }
   /* Color utilities */
-  .text-gray-500 { color: #6b7280, }
-  .text-green-500 { color: #10b981, }
-  .text-yellow-500 { color: #f59e0b, }
-  .text-red-500 { color: #ef4444, }
+  .text-gray-500 { color: #6b7280; }
+  .text-green-500 { color: #10b981; }
+  .text-yellow-500 { color: #f59e0b; }
+  .text-red-500 { color: #ef4444; }
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .enhanced-ai-assistant {

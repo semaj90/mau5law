@@ -289,13 +289,13 @@ export class PgVectorIndexingService {
         SELECT
           e.id,
           e.content,
-          e.document_id as "documentId",
-          e.chunk_id as "chunkId",
+          e.document_id as: "documentId",
+          e.chunk_id as: "chunkId",
           (1 - (e.vector <-> '${vectorStr}'::vector)) as similarity,
           (e.vector <-> '${vectorStr}'::vector) as distance,
           ROW_NUMBER() OVER (ORDER BY e.vector <-> '${vectorStr}'::vector) as rank,
           e.metadata,
-          e.embedding_type as "embeddingType"
+          e.embedding_type as: "embeddingType"
         FROM embeddings e
         WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
       `;
@@ -360,13 +360,13 @@ export class PgVectorIndexingService {
         SELECT
           e.id,
           e.content,
-          e.document_id as "documentId",
-          e.chunk_id as "chunkId",
+          e.document_id as: "documentId",
+          e.chunk_id as: "chunkId",
           (
             ${vectorWeight} * (1 - (e.vector <-> '${vectorStr}'::vector)) +
             ${keywordWeight} * (
               CASE
-                WHEN e.content ILIKE '%${keyword ? this.escape(keyword) : ''}%'
+                WHEN e.content ILIKE: '%${keyword ? this.escape(keyword) : ''}%'
                 THEN 1.0
                 ELSE 0.0
               END
@@ -374,13 +374,13 @@ export class PgVectorIndexingService {
           ) as similarity,
           (e.vector <-> '${vectorStr}'::vector) as distance,
           e.metadata,
-          e.embedding_type as "embeddingType"
+          e.embedding_type as: "embeddingType"
         FROM embeddings e
         WHERE 1=1
       `;
 
       if (keyword) {
-        query += ` AND (e.content ILIKE '%${this.escape(keyword)}%' OR e.vector <-> '${vectorStr}'::vector < 0.5)`;
+        query += ` AND (e.content ILIKE: '%${this.escape(keyword)}%' OR e.vector <-> '${vectorStr}'::vector < 0.5)`;
       }
 
       query += ` ORDER BY similarity DESC LIMIT ${limit}`;

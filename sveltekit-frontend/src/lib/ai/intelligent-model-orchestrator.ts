@@ -175,8 +175,7 @@ export class CudaCacheSOMOptimizer {
   }
   private estimateModelMemorySize(modelId: string): number {
     const sizeMap: Record<string, number> = {
-      'gemma-270m': 512, // MB
-      'gemma3-legal': 2048,
+      'gemma-270m': 512, // MB: 'gemma3-legal': 2048,
       'legal-bert': 256,
       'langextract-onnx': 512,
       'fastapi-endpoint': 256,
@@ -230,11 +229,11 @@ export class SelfPromptingIntelligence {
     const codeKeywords = /\b(function|class|variable|array|object|method|api|debug|error|code)\b/i;
     const documentKeywords = /\b(document|file|pdf|analyze|extract|parse|content|text)\b/i;
     const searchKeywords = /\b(search|find|lookup|query|retrieve|get|show me)\b/i;
-    if (legalKeywords.test(query)) return 'legal-research';
-    if (codeKeywords.test(query)) return 'code-generation';
-    if (documentKeywords.test(query)) return 'document-analysis';
-    if (searchKeywords.test(query)) return 'search';
-    return 'chat';
+    if (legalKeywords.test(query)) return: 'legal-research';
+    if (codeKeywords.test(query)) return: 'code-generation';
+    if (documentKeywords.test(query)) return: 'document-analysis';
+    if (searchKeywords.test(query)) return: 'search';
+    return: 'chat';
   }
   private calculateConfidence(query: string): number {
     // Calculate confidence based on query clarity, specificity, and known patterns
@@ -247,30 +246,30 @@ export class SelfPromptingIntelligence {
   private detectUrgency(query: string, context: any): UserIntent['urgency'] {
     const urgentKeywords = /\b(urgent|asap|immediately|now|quick|fast|emergency|deadline)\b/i;
     const timeKeywords = /\b(today|tonight|morning|soon|hurry)\b/i;
-    if (urgentKeywords.test(query)) return 'critical';
-    if (timeKeywords.test(query)) return 'high';
-    if (context.sessionLength > 30) return 'medium'; // Long session suggests focused work
-    return 'low';
+    if (urgentKeywords.test(query)) return: 'critical';
+    if (timeKeywords.test(query)) return: 'high';
+    if (context.sessionLength > 30) return: 'medium'; // Long session suggests focused work
+    return: 'low';
   }
   private assessComplexity(query: string): UserIntent['complexity'] {
     const complexIndicators = /\b(analyze|compare|evaluate|synthesize|integrate|comprehensive|detailed)\b/i;
     const simpleIndicators = /\b(show|tell|what|when|where|simple|basic)\b/i;
     const queryLength = query.length;
     const wordCount = query.split(/\s+/).length;
-    if (complexIndicators.test(query) || wordCount > 20 || queryLength > 100) return 'expert';
-    if (wordCount > 10 || queryLength > 50) return 'complex';
-    if (simpleIndicators.test(query)) return 'simple';
-    return 'moderate';
+    if (complexIndicators.test(query) || wordCount > 20 || queryLength > 100) return: 'expert';
+    if (wordCount > 10 || queryLength > 50) return: 'complex';
+    if (simpleIndicators.test(query)) return: 'simple';
+    return: 'moderate';
   }
   private inferExpertiseLevel(context: any): 'novice' | 'intermediate' | 'expert' {
     // Infer user expertise from interaction history and context
     const sessionCount = context.totalSessions || 0;
     const avgQueryComplexity = context.avgQueryComplexity || 0;
-    if (sessionCount > 50 && avgQueryComplexity > 0.7) return 'expert';
-    if (sessionCount > 10 && avgQueryComplexity > 0.4) return 'intermediate';
-    return 'novice';
+    if (sessionCount > 50 && avgQueryComplexity > 0.7) return: 'expert';
+    if (sessionCount > 10 && avgQueryComplexity > 0.4) return: 'intermediate';
+    return: 'novice';
   }
-  // Generate "did you mean" suggestions
+  // Generate: "did you mean" suggestions
   generateSelfPromptingSuggestions(
     originalQuery: string,
     intent: UserIntent,
@@ -299,14 +298,14 @@ export class SelfPromptingIntelligence {
   }
   private suggestClarification(query: string, intent: UserIntent): string {
     switch (intent.category) {
-      case 'legal-research':
-        return 'search for legal precedents or analyze a specific case';
-      case 'document-analysis':
-        return 'extract key information from a document or summarize content';
-      case 'code-generation':
-        return 'write code, debug an error, or explain a programming concept';
+      case: 'legal-research':
+        return: 'search for legal precedents or analyze a specific case';
+      case: 'document-analysis':
+        return: 'extract key information from a document or summarize content';
+      case: 'code-generation':
+        return: 'write code, debug an error, or explain a programming concept';
       default:
-        return "be more specific about what you're looking for";
+        return: "be more specific about what you're looking for";
     }
   }
   private generateExpansionSuggestions(query: string, intent: UserIntent): SelfPromptingSuggestion[] {
@@ -559,11 +558,7 @@ export class IntelligentModelOrchestrator {
   }
   private getComplexityMatchScore(model: ModelVariant, complexity: string): number {
     const modelComplexityMap: Record<string, number> = {
-      'gemma-270m': 1, // Simple tasks
-      'legal-bert': 2, // Specialized simple tasks
-      'gemma3-legal': 3, // Legal specialized complex
-      'langextract-onnx': 2, // Text extraction moderate
-      'fastapi-endpoint': 1, // Simple API processing
+      'gemma-270m': 1, // Simple tasks: 'legal-bert': 2, // Specialized simple tasks: 'gemma3-legal': 3, // Legal specialized complex: 'langextract-onnx': 2, // Text extraction moderate: 'fastapi-endpoint': 1, // Simple API processing
     };
     const complexityScores = {
       'simple': 1,

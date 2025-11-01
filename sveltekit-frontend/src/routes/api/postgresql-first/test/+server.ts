@@ -71,7 +71,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -303,17 +303,17 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'health': {
+      case: 'health': {
         // Check health of all services
         const health = await checkSystemHealth();
         return json({ success: true, message: 'System health check completed', data: health });
       }
-      case 'stats': {
+      case: 'stats': {
         // Get PostgreSQL statistics
         const stats = await getPostgreSQLStats();
         return json({ success: true, message: 'PostgreSQL statistics retrieved', data: stats });
       }
-      case 'sync-stats': {
+      case: 'sync-stats': {
         // Get Qdrant sync statistics (guard optional method)
         const statsFn = (postgresqlQdrantSync as unknown as { getStats?: () => Promise<unknown> }).getStats;
         const syncStats = statsFn ? await statsFn() : { message: 'getStats not available on postgresqlQdrantSync' };

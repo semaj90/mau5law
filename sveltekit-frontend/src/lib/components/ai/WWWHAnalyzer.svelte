@@ -16,9 +16,10 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: inputText }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        result = data.analysi;
+        // fixed typo and provide defensive fallback in case backend property differs
+        result = data.analysis ?? data.result ?? JSON.stringify(data);
       } else {
         error = data.error || 'Unknown error';
       }
@@ -44,7 +45,7 @@
   <button
     onclick={analyzeWWWH}
     disabled={loading || !inputText.trim()}
-    class="uno-bg-primary uno-text-white uno-px-4 uno-py-2 uno-rounded uno-font-semibold uno-shadow-sm uno-transition: hover:uno-bg-primary-600 focus-visible:uno-outline focus-visible:uno-outline-2 focus-visible:uno-outline-primary"
+    class="uno-bg-primary uno-text-white uno-px-4 uno-py-2 uno-rounded uno-font-semibold uno-shadow-sm uno-transition hover:uno-bg-primary-600 focus-visible:uno-outline focus-visible:uno-outline-2 focus-visible:uno-outline-primary"
     aria-busy={loading}
     aria-label="Analyze text"
   >
@@ -63,7 +64,6 @@
     </div>
   {/if}
 </div>
-;
 
 <style>
   /* @unocss-include */

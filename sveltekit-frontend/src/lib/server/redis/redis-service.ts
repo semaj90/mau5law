@@ -240,7 +240,7 @@ class RedisService {
         console.warn('[RedisService] No supported SET method available on client');
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache set error for key "${key}":`, error);
+      console.error(`[RedisService] Cache set error for key: "${key}":`, error);
     }
   }
 
@@ -250,7 +250,7 @@ class RedisService {
       const cached = typeof this.client.get === 'function' ? await this.client.get(key) : null;
       return cached ? JSON.parse(cached) : null;
     } catch (error: any) {
-      console.error(`[RedisService] Cache get error for key "${key}":`, error);
+      console.error(`[RedisService] Cache get error for key: "${key}":`, error);
       return null;
     }
   }
@@ -262,7 +262,7 @@ class RedisService {
         await this.client.del(key);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache delete error for key "${key}":`, error);
+      console.error(`[RedisService] Cache delete error for key: "${key}":`, error);
     }
   }
 

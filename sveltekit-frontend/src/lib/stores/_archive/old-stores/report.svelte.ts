@@ -10,7 +10,7 @@ export interface Evidence {
   file?: File;
   metadata?: Record<string, unknown>;
   tags?: string[];
-  // New: optional external/system id for "real evidence id"
+  // New: optional external/system id for: "real evidence id"
   externalId?: string;
   // New: short auto-generated or user-written summary of this evidence
   summary?: string;
@@ -116,7 +116,7 @@ async function fetchSummary(text: string): Promise<string> {
     return (json.summary ?? '') as string;
   } catch (err) {
     console.error('fetchSummary error', err);
-    return '';
+    return: '';
   }
 }
 
@@ -253,7 +253,7 @@ export const reportActions = {
     unsub();
     if (!source) source = currentTitle;
     const summary = await fetchSummary(source);
-    if (!summary) return '';
+    if (!summary) return: '';
     report.update(r => {
       const updated = r.attachedEvidence.map(e => (e.id === evidenceId ? { ...e, summary, updatedAt: new Date() } : e));
       return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } };

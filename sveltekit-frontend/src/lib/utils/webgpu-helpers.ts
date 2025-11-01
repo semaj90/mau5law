@@ -18,7 +18,7 @@ export function safeWriteBuffer(
 }
 // Helper to get GPU adapter info safely
 export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: string } {
-  // GPUAdapter doesn't have a direct 'name' property in the spec
+  // GPUAdapter doesn't have a direct: 'name' property in the spec
   // Use info property if available, or fallback
   const info = (adapter as any).info;
   if (info) {

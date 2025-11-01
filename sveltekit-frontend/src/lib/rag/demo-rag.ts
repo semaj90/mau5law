@@ -285,7 +285,7 @@ These patterns suggest organized, premeditated activity rather than opportunisti
 }
 function generateGeneralResponse(query: string, caseData: any, sources: any[]): string {
   const relevantSources = sources.slice(0, 2);
-  return `Regarding your question about "${query}", I've analyzed ${sources.length} relevant pieces of evidence.
+  return `Regarding your question about: "${query}", I've analyzed ${sources.length} relevant pieces of evidence.
 ${relevantSources.map(source => {
     const evidence = caseData.evidence.find((e: any) => e.id === source.id);
     return `**${evidence?.filename}**: ${source.excerpt}`;
@@ -300,7 +300,7 @@ ${sources.length > 0
  */
 export async function demoGenerateCaseSummary(caseId: string): Promise<string> {
   const caseData = mockCaseData[caseId as keyof typeof mockCaseData];
-  if (!caseData) return 'Case not found in demo data.';
+  if (!caseData) return: 'Case not found in demo data.';
   await new Promise(resolve => setTimeout(resolve, 1000));
   return `# Case Summary: ${caseData.title}
 ## Overview

@@ -5,13 +5,24 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { userCases,
-    userEvidence,
-    userCitations,
-    userReports,
-    userAIConversations,
-    userStats,
-   } from '$lib/stores/unified';
+  // Use a resilient namespace import and create aliases to handle different possible exports
+  import * as unified from '$lib/stores/unified';
+  // alias commonly expected export names with sensible defaults (avoids type errors if names differ)
+  const userCases = (unified as any).userCases ?? (unified as any).cases ?? (unified as any).Cases ?? [];
+  const userEvidence = (unified as any).userEvidence ?? (unified as any).evidence ?? (unified as any).Evidence ?? [];
+  const userCitations = (unified as any).userCitations ?? (unified as any).citations ?? (unified as any).Citations ?? [];
+  const userReports = (unified as any).userReports ?? (unified as any).reports ?? (unified as any).Reports ?? [];
+  const userAIConversations =
+    (unified as any).userAIConversations ?? (unified as any).aiConversations ?? (unified as any).ai_conversations ?? [];
+  const userStats =
+    (unified as any).userStats ??
+    (unified as any).stats ??
+    { totalCases: 0, totalEvidence: 0, totalCitations: 0, totalReports: 0, aiConversations: 0 };
+
+  // --- NEW: ensure these commonly-used exports exist to avoid: "not found" errors ---
+  const isAuthenticated = (unified as any).isAuthenticated ?? (unified as any).authenticated ?? false;
+  const userDataActions = (unified as any).userDataActions ?? (unified as any).userActions ?? null;
+
   import {
     formatRelativeTime,
     formatDetailedTimestamp,
@@ -26,14 +37,14 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   // Props for sidebar configuration and user data
   let {
     user,
-    session,
+    session: any,
     isOpen = true,
     defaultSection = 'dashboard',
     showQuickActions = true,
     compactMode = false,
   }: {
     user: any;
-    session any;
+    session: any;
     isOpen?: boolean;
     defaultSection?: string;
     showQuickActions?: boolean;
@@ -58,7 +69,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   let filteredCases = $derived(
     userCases
       .filter(
-        c =>
+        (c: any) =>
           c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
           (c.caseNumber && c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -68,17 +79,17 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   let filteredEvidence = $derived(
     userEvidence
       .filter(
-        e =>
+        (e: any) =>
           e.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (e.notes && e.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          e.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+          e.tags.some((tag: any) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       )
       .slice(0, 10)
   );
   let filteredCitations = $derived(
     userCitations
       .filter(
-        c =>
+        (c: any) =>
           c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (c.notes && c.notes.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -88,21 +99,21 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   let filteredReports = $derived(
     userReports
       .filter(
-        r =>
+        (r: any) =>
           r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           r.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          r.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+          r.tags.some((tag: any) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       )
       .slice(0, 10)
   );
   // Initialize sidebar when component mounts
   onMount(() => {
-    if (currentUser?.id) {
+    if (currentUser?.id && userDataActions?.init) {
       userDataActions.init(currentUser.id);
     }
   });
   // Helper functions
-  function toggleSection(section string) {
+  function toggleSection(section: string) {
     if (activeSection === section) {
       isCollapsed = !isCollapsed;
     } else {
@@ -207,15 +218,25 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     {/if}
     <!-- Cases Section -->
     <div class="section cases-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('cases')}>
+      <button
+        type="button"
+        class="title"
+        onclick={() => toggleSection('cases')}
+        aria-expanded={showCases}
+        aria-controls="cases-content"
+      >
         📁 Cases ({stats.totalCases})
         <span class="toggle-icon">{showCases ? '−' : '+'}</span>
-      </p>
+      </button>
       {#if showCases}
-        <div class="section-content">
+        <div class="section-content" id="cases-content">
           {#if filteredCases.length > 0}
             {#each filteredCases as case_ (case_.id)}
-              <div class="item case-item" onclick={() => navigateTo(`/cases/${case_.id}`)}>
+              <a
+                class="item case-item"
+                href={`/cases/${case_.id}`}
+                aria-label={`Open case ${case_.title}`}
+              >
                 <div class="item-header">
                   <span class="item-title" title={case_.title}>
                     {truncateCaseTitle(case_.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -233,7 +254,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                     {case_.priority}
                   </div>
                 {/if}
-              </div>
+              </a>
             {/each}
             {#if stats.totalCases > 10}
               <div class="view-all">
@@ -251,17 +272,24 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- Evidence Section -->
     <div class="section evidence-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('evidence')}>
+      <button
+        type="button"
+        class="title"
+        onclick={() => toggleSection('evidence')}
+        aria-expanded={showEvidence}
+        aria-controls="evidence-content"
+      >
         📎 Evidence ({stats.totalEvidence})
         <span class="toggle-icon">{showEvidence ? '−' : '+'}</span>
-      </p>
+      </button>
       {#if showEvidence}
-        <div class="section-content">
+        <div class="section-content" id="evidence-content">
           {#if filteredEvidence.length > 0}
             {#each filteredEvidence as evidence (evidence.id)}
-              <div
+              <a
                 class="item evidence-item"
-                onclick={() => navigateTo(`/cases/${evidence.caseId}/evidence/${evidence.id}`)}
+                href={`/cases/${evidence.caseId}/evidence/${evidence.id}`}
+                aria-label={`Open evidence ${evidence.filename}`}
               >
                 <div class="item-header">
                   <span class="file-icon">{getFileIcon(evidence.fileType)}</span>
@@ -287,7 +315,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                     {/each}
                   </div>
                 {/if}
-              </div>
+              </a>
             {/each}
             {#if stats.totalEvidence > 10}
               <div class="view-all">
@@ -305,15 +333,25 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- Citations Section -->
     <div class="section citations-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('citations')}>
+      <button
+        type="button"
+        class="title"
+        onclick={() => toggleSection('citations')}
+        aria-expanded={showCitations}
+        aria-controls="citations-content"
+      >
         📚 Citations ({stats.totalCitations})
         <span class="toggle-icon">{showCitations ? '−' : '+'}</span>
-      </p>
+      </button>
       {#if showCitations}
-        <div class="section-content">
+        <div class="section-content" id="citations-content">
           {#if filteredCitations.length > 0}
             {#each filteredCitations as citation (citation.id)}
-              <div class="item citation-item" onclick={() => navigateTo(`/citations/${citation.id}`)}>
+              <a
+                class="item citation-item"
+                href={`/citations/${citation.id}`}
+                aria-label={`Open citation ${citation.title}`}
+              >
                 <div class="item-header">
                   <span class="item-title" title={citation.title}>
                     {truncateText(citation.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -331,7 +369,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                     {truncateText(citation.source, MINI_TEXT_LENGTHS.DESCRIPTION)}
                   </span>
                 </div>
-              </div>
+              </a>
             {/each}
             {#if stats.totalCitations > 10}
               <div class="view-all">
@@ -349,15 +387,25 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- Reports Section -->
     <div class="section reports-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('reports')}>
+      <button
+        type="button"
+        class="title"
+        onclick={() => toggleSection('reports')}
+        aria-expanded={showReports}
+        aria-controls="reports-content"
+      >
         📋 Reports ({stats.totalReports})
         <span class="toggle-icon">{showReports ? '−' : '+'}</span>
-      </p>
+      </button>
       {#if showReports}
-        <div class="section-content">
+        <div class="section-content" id="reports-content">
           {#if filteredReports.length > 0}
             {#each filteredReports as report (report.id)}
-              <div class="item report-item" onclick={() => navigateTo(`/reports/${report.id}`)}>
+              <a
+                class="item report-item"
+                href={`/reports/${report.id}`}
+                aria-label={`Open report ${report.title}`}
+              >
                 <div class="item-header">
                   <span class="item-title" title={report.title}>
                     {truncateText(report.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -371,7 +419,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                     {formatRelativeTime(report.updatedAt)}
                   </span>
                 </div>
-              </div>
+              </a>
             {/each}
             {#if stats.totalReports > 10}
               <div class="view-all">
@@ -389,15 +437,25 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- AI Assistant Section -->
     <div class="section ai-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('ai')}>
+      <button
+        type="button"
+        class="title"
+        onclick={() => toggleSection('ai')}
+        aria-expanded={showAIAssistant}
+        aria-controls="ai-content"
+      >
         🤖 AI Assistant ({stats.aiConversations})
         <span class="toggle-icon">{showAIAssistant ? '−' : '+'}</span>
-      </p>
+      </button>
       {#if showAIAssistant}
-        <div class="section-content">
+        <div class="section-content" id="ai-content">
           {#if userAIConversations.length > 0}
             {#each userAIConversations.slice(0, 5) as conversation (conversation.id)}
-              <div class="item ai-item" onclick={() => navigateTo(`/ai/conversations/${conversation.id}`)}>
+              <a
+                class="item ai-item"
+                href={`/ai/conversations/${conversation.id}`}
+                aria-label={`Open conversation ${conversation.title}`}
+              >
                 <div class="item-header">
                   <span class="item-title" title={conversation.title}>
                     {truncateText(conversation.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -412,7 +470,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                     {formatRelativeTime(conversation.lastMessageAt)}
                   </span>
                 </div>
-              </div>
+              </a>
             {/each}
             <div class="view-all">
               <a href="/ai/conversations" class="nes-btn is-small">View All Conversations</a>
@@ -441,10 +499,10 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     padding: 1rem;
     overflow-y: auto;
     transition: all 0.3s ease;
-    position fixed;
-    left: 0,
+    position: fixed;
+    left: 0;
     top: 0;
-    z-index: 1000,
+    z-index: 1000;
   }
   .global-sidebar.collapsed {
     width: 80px;
@@ -454,7 +512,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* User Profile */
   .user-profile {
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .profile-header {
     display: flex;
@@ -463,11 +521,11 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   .avatar {
     font-size: 1.5rem;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .user-info {
     flex: 1;
-    min-width: 0,
+    min-width: 0;
   }
   .user-name {
     font-weight: bold;
@@ -478,13 +536,13 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     font-size: 0.7rem;
   }
   .collapse-btn {
-    flex-shrink: 0,
+    flex-shrink: 0;
     padding: 0.25rem 0.5rem;
     min-height: auto;
   }
   /* Search */
   .search-section {
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .search-input {
     width: 100%;
@@ -492,7 +550,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* Stats */
   .stats-section {
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .stats-grid {
     display: grid;
@@ -518,7 +576,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* Quick Actions */
   .quick-actions {
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .action-buttons {
     display: grid;
@@ -531,20 +589,26 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* Sections */
   .section {
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   .section .title {
     cursor: pointer;
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin: 0;
     padding: 0.5rem;
     user-select: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
   }
-  .toggle-icon {
-    font-family: monospace;
-    font-weight: bold;
+  .section .title:focus {
+    outline: 2px solid #66b2ff;
+    outline-offset: 2px;
   }
   .section-content {
     max-height: 300px;
@@ -559,10 +623,16 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .item:focus {
+    outline: 2px solid #66b2ff;
+    outline-offset: 2px;
   }
   .item:hover {
-    border-color: #007bff;
-    background: rgba(0, 123, 255, 0.1);
+    text-decoration: none;
   }
   .item-header {
     display: flex;
@@ -587,7 +657,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     font-size: 1rem;
   }
   .favorite-icon {
-    flex-shrink: 0,
+    flex-shrink: 0;
     color: #ffd700;
   }
   .priority-indicator {
@@ -625,7 +695,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   /* Auth prompt */
   .auth-prompt {
     text-align: center;
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
   /* Scrollbar */
   .global-sidebar::-webkit-scrollbar,

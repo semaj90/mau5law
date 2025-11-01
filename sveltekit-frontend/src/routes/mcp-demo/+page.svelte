@@ -78,7 +78,7 @@
         <select
           class="mt-1 rounded border border-gray-300 px-3 py-2 text-sm"
           bind:value={serverName}
-          on:change={fetchMcp}
+          onchange={fetchMcp}
         >
           {#each servers as server}
             <option value={server.name}>{server.name}</option>

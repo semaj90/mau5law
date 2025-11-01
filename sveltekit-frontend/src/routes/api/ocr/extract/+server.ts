@@ -1,7 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import { createWorker } from 'tesseract.js';
 import type { RequestHandler } from './$types.js';
-import { error, json } from '@sveltejs/kit'; // Import 'json' and 'error' from '@sveltejs/kit'
+import { error, json } from '@sveltejs/kit'; // Import: 'json' and: 'error' from '@sveltejs/kit'
 
 // Define an interface for the Tesseract.js recognition result data
 interface OCRResultData {
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }).promise;
         // Initialize Tesseract worker
         const worker = await createWorker({
-          // Removed 'eng', 1 arguments
+          // Removed: 'eng', 1 arguments
           workerPath: '/tesseract-worker.js',
           corePath: '/tesseract-core.js',
         });

@@ -9,7 +9,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   // Props for AI analysis configuration
   let {
     // Analysis data and config
-    analysisType = 'legal' as 'legal' | 'evidence' | 'document' | 'case',
+    analysisType = 'legal' as: 'legal' | 'evidence' | 'document' | 'case',
     analysisData = as { [key: string]: any },
     // AI model configuration
     model = 'gemma3-legal',
@@ -46,16 +46,16 @@ https://svelte.dev/e/bindable_invalid_location -->
       // Dynamic import based on analysis type
       let componentModul;
       switch (analysisType) {
-        case 'legal':
+        case: 'legal':
           // Example: componentModule = await import('$lib/components/ai/LegalAnalysis.svelte')
           break;
-        case 'evidence':
+        case: 'evidence':
           // Example: componentModule = await import('$lib/components/ai/EvidenceAnalysis.svelte')
           break;
-        case 'document':
+        case: 'document':
           // Example: componentModule = await import('$lib/components/ai/DocumentAnalysis.svelte')
           break;
-        case 'case':
+        case: 'case':
           // Example: componentModule = await import('$lib/components/ai/CaseAnalysis.svelte')
           break;
         default:
@@ -108,10 +108,10 @@ https://svelte.dev/e/bindable_invalid_location -->
       processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 second;
     }
     switch (analysisType) {
-      case 'legal':
+      case: 'legal':
         return {
           ...baseResult,
-          legalOpinion 'Based on the provided information, there are several key legal considerations...',
+          legalOpinion: 'Based on the provided information, there are several key legal considerations...',
           precedents: [
             { name: 'Doe v. Smith', relevance: 0.85, year: 2019 },
             { name: 'Johnson v. State', relevance: 0.72, year: 2020 }
@@ -124,7 +124,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Strong evidence for damages claim'
           ];
         }
-      case 'evidence':
+      case: 'evidence':
         return {
           ...baseResult,
           evidenceQuality: 'High',
@@ -142,7 +142,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Document chain of custody thoroughly'
           ];
         }
-      case 'document':
+      case: 'document':
         return {
           ...baseResult,
           documentType: 'Contract',
@@ -159,7 +159,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             { text: 'New York', type: 'Location', confidence: 0.88 }
           ]
         }
-      case 'case':
+      case: 'case':
         return {
           ...baseResult,
           caseStrength: 0.76,
@@ -184,10 +184,10 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   // Analysis type icons and colors
   const analysisConfig = {
-    legal: { icon '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' },
-    evidence: { icon '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
-    document: { icon '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
-    caseItem: { icon '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
+    legal: { icon: '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' },
+    evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
+    document: { icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
+    caseItem: { icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
   }
   const config = analysisConfig[analysisType];
 </script>

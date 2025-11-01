@@ -16,7 +16,7 @@ export class WebFetchMissingImplementations {
   private rateLimiters: Map<string, number> = new Map();
 
   constructor(config: Partial<WebFetchConfig> = {}) {
-    // Provide safe defaults so '{}' is valid and required fields exist
+    // Provide safe defaults so: '{}' is valid and required fields exist
     const defaults: WebFetchConfig = {
       sources: this.initializeSources(),
       cacheEnabled: true,

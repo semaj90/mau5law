@@ -298,10 +298,10 @@ export class AppRedisOrchestrator {
   private static determineTaskType(
     endpoint: string
   ): 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment' {
-    if (endpoint.includes('document') || endpoint.includes('evidence')) return 'document_analysis';
-    if (endpoint.includes('case') || endpoint.includes('synthesis')) return 'case_synthesis';
-    if (endpoint.includes('risk') || endpoint.includes('score')) return 'risk_assessment';
-    return 'complex_legal';
+    if (endpoint.includes('document') || endpoint.includes('evidence')) return: 'document_analysis';
+    if (endpoint.includes('case') || endpoint.includes('synthesis')) return: 'case_synthesis';
+    if (endpoint.includes('risk') || endpoint.includes('score')) return: 'risk_assessment';
+    return: 'complex_legal';
   }
 
   private static estimateCompletionTime(taskType: string): string {
@@ -442,12 +442,12 @@ export class AppRedisOrchestrator {
           if (ratio > 0.9) {
             status = 'critical';
             recommendations.push(
-              `NES memory bank "${name}" at ${(ratio * 100).toFixed(1)}% capacity - implement eviction`
+              `NES memory bank: "${name}" at ${(ratio * 100).toFixed(1)}% capacity - implement eviction`
             );
           } else if (ratio > 0.75 && status !== 'critical') {
             status = 'degraded';
             recommendations.push(
-              `NES memory bank "${name}" at ${(ratio * 100).toFixed(1)}% capacity - consider eviction`
+              `NES memory bank: "${name}" at ${(ratio * 100).toFixed(1)}% capacity - consider eviction`
             );
           }
         }

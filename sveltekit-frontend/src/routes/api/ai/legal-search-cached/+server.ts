@@ -148,7 +148,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     } else {
       // Generate legal-specific embedding
       embedding = await generateLegalEmbedding(query, searchType, practiceArea);
-      // store embedding cache under 'ollama' provider
+      // store embedding cache under: 'ollama' provider
       await setEmbeddingCache(embeddingCacheKey, embedding, 'ollama');
     }
 
@@ -203,7 +203,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'stats';
   switch (action) {
-    case 'stats': {
+    case: 'stats': {
       // Wrap in block
       // Temporarily mock these as redisService does not expose them directly
       // Note: redisService needs to be updated to expose getStats() and getRedisInfo()
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'REALTIME'
       );
     } // End block
-    case 'health': {
+    case: 'health': {
       // Wrap in block
       // Temporarily mock as redisService does not expose isHealthy() directly
       // Note: redisService needs to be updated to expose isHealthy()
@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
       });
     } // End block
-    case 'clear-cache': {
+    case: 'clear-cache': {
       // Wrap in block
       try {
         const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
@@ -434,11 +434,7 @@ async function performLegalSearch(params: {
  */
 function getLegalCacheTTL(searchType: string): number {
   const ttlMap = {
-    'case-law': 3600,      // 1 hour - case law changes slowly
-    'contracts': 1800,     // 30 minutes - contract templates may update
-    'regulations': 7200,   // 2 hours - regulations change infrequently
-    'precedents': 3600,    // 1 hour - precedents are stable
-    'general': 1800        // 30 minutes - general searches vary more
+    'case-law': 3600,      // 1 hour - case law changes slowly: 'contracts': 1800,     // 30 minutes - contract templates may update: 'regulations': 7200,   // 2 hours - regulations change infrequently: 'precedents': 3600,    // 1 hour - precedents are stable: 'general': 1800        // 30 minutes - general searches vary more
   }
   return ttlMap[searchType as keyof typeof ttlMap] || 1800
 }

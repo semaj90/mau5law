@@ -75,7 +75,7 @@ export interface EmbeddingResponse {
 
 const getConfig = () => ({
   // Vector backend selection
-  vectorBackend: (process.env.VECTOR_BACKEND || 'pgvector') as 'pgvector' | 'pinecone' | 'qdrant' | 'faiss',
+  vectorBackend: (process.env.VECTOR_BACKEND || 'pgvector') as: 'pgvector' | 'pinecone' | 'qdrant' | 'faiss',
 
   // Database
   databaseUrl: process.env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai_db',
@@ -99,7 +99,7 @@ const getConfig = () => ({
   },
 
   // Embedding model configuration
-  embeddingModel: (process.env.EMBEDDING_MODEL || 'gemma') as 'gemma' | 'openai' | 'nomic',
+  embeddingModel: (process.env.EMBEDDING_MODEL || 'gemma') as: 'gemma' | 'openai' | 'nomic',
   embeddingDimension: parseInt(process.env.EMBEDDING_DIMENSION || '768', 10),
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
 });

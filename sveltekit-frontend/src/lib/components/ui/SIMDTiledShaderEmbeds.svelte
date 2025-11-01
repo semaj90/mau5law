@@ -190,19 +190,19 @@ async function convertSourceDataToFloat32Array(source: unknown): Promise<Float32
     const x = i % dimensions.width;
     const y = Math.floor(i / dimensions.width);
     switch (componentType) {
-      case 'widget':
+      case: 'widget':
         data[i] = (Math.sin(x * 0.1) + Math.cos(y * 0.1)) * 0.5 + 0.5;
         break;
-      case 'chart':
+      case: 'chart':
         data[i] = (x / dimensions.width + y / dimensions.height) * 0.5;
         break;
-      case 'form':
+      case: 'form':
         data[i] = ((x + y) % 50 < 25) ? 0.8 : 0.2;
         break;
-      case 'visualization':
+      case: 'visualization':
         data[i] = Math.random() * 0.8 + 0.1;
         break;
-      case 'glyph':
+      case: 'glyph':
         const centerX = dimensions.width / 2;
         const centerY = dimensions.height / 2;
         const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);

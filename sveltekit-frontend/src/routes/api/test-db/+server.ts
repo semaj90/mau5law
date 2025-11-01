@@ -38,9 +38,9 @@ interface TestResults {
 }
 
 export const GET: RequestHandler = async () => {
-  // Changed 'url' to '_url' was incorrect, now destructuring nothing as it's unused.
+  // Changed: 'url' to: '_url' was incorrect, now destructuring nothing as it's unused.
   const results: TestResults = {
-    // Changed type from 'any' to 'TestResults'
+    // Changed type from 'any' to: 'TestResults'
     timestamp: new Date().toISOString(),
     tests: {}, // Corrected initialization
   };
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
     console.log('Testing PostgreSQL connection...');
     try {
       // Use a simple query to test the connection, similar to test-database-persistence
-      await db.select().from(users).limit(1); // Assuming 'users' table exists and is accessible
+      await db.select().from(users).limit(1); // Assuming: 'users' table exists and is accessible
       results.tests.postgresql = {
         success: true,
         message: 'PostgreSQL connection successful',

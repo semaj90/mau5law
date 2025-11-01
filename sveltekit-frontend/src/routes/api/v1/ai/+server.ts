@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let serviceData: Record<string, unknown> | undefined;
 
     switch (data.type) {
-      case 'summary':
+      case: 'summary':
         if (!data.content) {
           return json({ error: ensureError({ message: 'Content is required for summary' }) }, { status: 400 });
         }
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
 
-      case 'legal':
+      case: 'legal':
         if (!data.document) {
           return json({ error: ensureError({ message: 'Document is required for legal analysis' }) }, { status: 400 });
         }
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
 
-      case 'live':
+      case: 'live':
         if (!data.sessionId) {
           return json({ error: ensureError({ message: 'Session ID is required for live AI' }) }, { status: 400 });
         }
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
 
-      case 'analysis':
+      case: 'analysis':
         operation = 'ai.analysis';
         serviceData = {
           content: data.content || data.document,
@@ -196,15 +196,15 @@ export const GET: RequestHandler = async ({ url }) => {
 
 function getServiceName(type: string): string {
   switch (type) {
-    case 'summary':
-      return 'ai-enhanced';
-    case 'legal':
-      return 'enhanced-legal-ai';
-    case 'live':
-      return 'live-agent-enhanced';
-    case 'analysis':
-      return 'ai-enhanced';
+    case: 'summary':
+      return: 'ai-enhanced';
+    case: 'legal':
+      return: 'enhanced-legal-ai';
+    case: 'live':
+      return: 'live-agent-enhanced';
+    case: 'analysis':
+      return: 'ai-enhanced';
     default:
-      return 'unknown';
+      return: 'unknown';
   }
 }

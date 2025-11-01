@@ -67,8 +67,8 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case 'status':
-      case 'health': {
+      case: 'status':
+      case: 'health': {
         const healthCheck = await syncOrchestrator.performHealthCheck();
         return json({
           status: 'ok',
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'full': {
+      case: 'full': {
         const fullSync = await syncOrchestrator.performFullSync();
         return json({
           action: 'full_sync',
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'legal-docs': {
+      case: 'legal-docs': {
         const docSync = await databaseSync.syncMockLegalDocuments();
         return json({
           action: 'legal_documents_sync',
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'qlora': {
+      case: 'qlora': {
         const qloraSync = await databaseSync.syncQLoRATrainingData();
         return json({
           action: 'qlora_sync',
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'cache': {
+      case: 'cache': {
         const cacheSync = await databaseSync.syncPredictiveAssetCache();
         return json({
           action: 'predictive_cache_sync',
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // use unknown-based params and guard when reading values
     const paramsObj = params as Record<string, unknown>;
     switch (action) {
-      case 'vector_search': {
+      case: 'vector_search': {
         const rawEmbedding = paramsObj.queryEmbedding;
         const rawLimit = paramsObj.limit;
         const rawThreshold = paramsObj.threshold;
@@ -171,25 +171,25 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'generate_mock_data': {
+      case: 'generate_mock_data': {
         const type = typeof paramsObj.type === 'string' ? paramsObj.type : undefined;
         const count = typeof paramsObj.count === 'number' ? paramsObj.count : 10;
         let mockData: unknown[] | Promise<unknown[]> = [];
 
         switch (type) {
-          case 'legal_documents':
+          case: 'legal_documents':
             mockData = mockDataGenerators.generateMockLegalDocuments(count);
             break;
-          case 'qlora_states':
+          case: 'qlora_states':
             mockData = mockDataGenerators.generateMockQLoRAStates(count);
             break;
-          case 'asset_predictions':
+          case: 'asset_predictions':
             mockData = mockDataGenerators.generateMockAssetPredictions(count);
             break;
-          case 'embedding_shards':
+          case: 'embedding_shards':
             mockData = mockDataGenerators.generateMockEmbeddingShards(count);
             break;
-          case 'chr_manifests':
+          case: 'chr_manifests':
             mockData = mockDataGenerators.generateMockCHRManifests(count);
             break;
           default:
@@ -205,7 +205,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case 'bulk_sync': {
+      case: 'bulk_sync': {
         const typesArr: string[] = Array.isArray(paramsObj.types)
           ? paramsObj.types
           : ['legal_documents', 'qlora', 'cache'];
@@ -213,13 +213,13 @@ export const POST: RequestHandler = async ({ request }) => {
         const bulkResults: Record<string, unknown> = {};
         for (const syncType of typesArr) {
           switch (syncType) {
-            case 'legal_documents':
+            case: 'legal_documents':
               bulkResults[syncType] = await databaseSync.syncMockLegalDocuments();
               break;
-            case 'qlora':
+            case: 'qlora':
               bulkResults[syncType] = await databaseSync.syncQLoRATrainingData();
               break;
-            case 'cache':
+            case: 'cache':
               bulkResults[syncType] = await databaseSync.syncPredictiveAssetCache();
               break;
             default:

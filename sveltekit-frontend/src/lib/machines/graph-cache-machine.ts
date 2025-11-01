@@ -249,10 +249,10 @@ export const graphCacheMachine = createMachine(
               // cast via unknown -> union to avoid `any` and keep strict typing
               const payload = (event.data ?? {}) as unknown as WorkerToMainMessage;
               switch (payload.type) {
-                case 'worker_ready':
+                case: 'worker_ready':
                   // Handle in machine (post WORKER_READY to parent machine if desired)
                   break;
-                case 'query_result': {
+                case: 'query_result': {
                   const $data = (payload as { type: 'query_result'; data: WorkerQueryResultData }).data;
                   // Example: if worker indicates a cache hit, you might post CACHE_HIT
                   if ($data?.cache_hit) {
@@ -263,17 +263,17 @@ export const graphCacheMachine = createMachine(
                   }
                   break;
                 }
-                case 'query_result_authoritative': {
+                case: 'query_result_authoritative': {
                   const $data = (payload as { type: 'query_result_authoritative'; data: WorkerQueryResultData }).data;
                   // send AUTHORITATIVE_RESULT handling here
                   break;
                 }
-                case 'refresh_complete': {
+                case: 'refresh_complete': {
                   const $data = (payload as { type: 'refresh_complete'; data?: WorkerQueryResultData }).data;
                   // handle refresh complete
                   break;
                 }
-                case 'worker_error': {
+                case: 'worker_error': {
                   const err = (payload as { type: 'worker_error'; error: string }).error;
                   console.error('Worker error:', err);
                   break;

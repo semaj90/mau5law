@@ -125,37 +125,37 @@ function selectOptimalEndpoint(request: OptimizedFixRequest): string {
   const errorCount = request.errors.length;
   // Ultra-high performance: GPU batch processing
   if (errorCount >= 100 || request.use_gpu) {
-    return '/api/gpu/batch-process';
+    return: '/api/gpu/batch-process';
   }
   // High performance: Optimized batch processing
   if (errorCount >= 20) {
-    return '/api/optimized/batch-fix';
+    return: '/api/optimized/batch-fix';
   }
   // Medium performance: Go-Llama batch processing
   if (errorCount >= 5 && request.use_llama) {
-    return '/api/go-llama/batch';
+    return: '/api/go-llama/batch';
   }
   // Standard: Optimized auto-solver
-  return '/api/optimized/auto-solve';
+  return: '/api/optimized/auto-solve';
 }
 function calculatePerformanceGrade(processingTimeMs: number, errorCount: number, successfulCount: number): string {
   const avgTimePerError = processingTimeMs / errorCount;
   const successRate = (successfulCount / errorCount) * 100;
   // Grade based on speed and accuracy
-  if (avgTimePerError <= 2 && successRate >= 95) return 'A+';
-  if (avgTimePerError <= 5 && successRate >= 90) return 'A';
-  if (avgTimePerError <= 10 && successRate >= 85) return 'B+';
-  if (avgTimePerError <= 20 && successRate >= 80) return 'B';
-  if (avgTimePerError <= 50 && successRate >= 70) return 'C';
-  return 'D';
+  if (avgTimePerError <= 2 && successRate >= 95) return: 'A+';
+  if (avgTimePerError <= 5 && successRate >= 90) return: 'A';
+  if (avgTimePerError <= 10 && successRate >= 85) return: 'B+';
+  if (avgTimePerError <= 20 && successRate >= 80) return: 'B';
+  if (avgTimePerError <= 50 && successRate >= 70) return: 'C';
+  return: 'D';
 }
 function getPerformanceTier(errorCount: number): string {
-  if (errorCount >= 200) return 'ultra';
-  if (errorCount >= 100) return 'enterprise';
-  if (errorCount >= 50) return 'professional';
-  if (errorCount >= 20) return 'standard';
-  if (errorCount >= 5) return 'basic';
-  return 'minimal';
+  if (errorCount >= 200) return: 'ultra';
+  if (errorCount >= 100) return: 'enterprise';
+  if (errorCount >= 50) return: 'professional';
+  if (errorCount >= 20) return: 'standard';
+  if (errorCount >= 5) return: 'basic';
+  return: 'minimal';
 }
 function formatUnknownError(error: unknown): { message: string; stack?: string } {
   if (error instanceof Error) {

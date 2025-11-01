@@ -5,6 +5,7 @@
     onFileSelected?: (files: File[]) => void;
     accept?: string;
     multiple?: boolean;
+    maxFiles?: number;
   }
 
   let { onFileSelected = (files: File[]) => {}, accept = '*', multiple = false }: Props = $props();
@@ -56,14 +57,14 @@
   on:dragenter|preventDefault={handleDragEnter}
   on:dragover|preventDefault={() => (dragActive = true)}
   on:dragleave={() => (dragActive = false)}
-  on:click={() => fileInput?.click()}
-  on:keydown={handleKeyDown}
+  onclick={() => fileInput?.click()}
+  onkeydown={handleKeyDown}
   tabindex="0"
   role="region"
   aria-label="File upload drop zone"
   aria-describedby="upload-help"
 >
-  <input bind:this={fileInput} type="file" {accept} {multiple} on:change={handleFileSelect} class="hidden" />
+  <input bind:this={fileInput} type="file" {accept} {multiple} onchange={handleFileSelect} class="hidden" />
   <div class="space-y-4">
     <div class="text-4xl">📁</div>
     <div>
@@ -71,7 +72,7 @@
       <p class="text-sm text-gray-500">Supports all file types</p>
     </div>
     <button
-      on:click={() => fileInput?.click()}
+      onclick={() => fileInput?.click()}
       type="button"
       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors nes-btn"
       aria-label="Select files"

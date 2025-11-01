@@ -202,7 +202,7 @@ export class DocumentIngestionService {
 
         try {
           const doc = await this.crawlWebPage(url, options);
-          results.push(doc);
+          results.push(<any><any>doc);
 
           // Find additional links if followLinks is enabled
           if (followLinks && results.length < maxPages) {
@@ -221,7 +221,7 @@ export class DocumentIngestionService {
             // Add new links to visit
             links.forEach((link) => {
               if (!visited.has(link) && !toVisit.includes(link)) {
-                toVisit.push(link);
+                toVisit.push(<any><any>link);
               }
             });
 
@@ -255,7 +255,7 @@ export class DocumentIngestionService {
       try {
         const embedding = await embeddingFunction(chunk.content);
 
-        vectorDocs.push({
+        vectorDocs.push(<any><any>{
           id: chunk.id,
           embedding,
           metadata: chunk.metadata,
@@ -294,7 +294,7 @@ export class DocumentIngestionService {
     let chunkIndex = 0;
 
     for (let i = 0; i < words.length; i++) {
-      currentWords.push(words[i]);
+      currentWords.push(<any><any>words[i]);
       currentChunk = currentWords.join(" ");
 
       // Check if chunk is large enough
@@ -302,7 +302,7 @@ export class DocumentIngestionService {
         if (currentChunk.trim()) {
           const chunkId = `${baseMetadata.source}_chunk_${chunkIndex}`;
 
-          chunks.push({
+          chunks.push(<any><any>{
             id: this.generateDocumentId(chunkId),
             content: currentChunk.trim(),
             metadata: {

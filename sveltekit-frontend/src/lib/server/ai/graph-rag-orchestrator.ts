@@ -58,7 +58,7 @@ const enhancedCachingOptimizerRankingHook = async (results: RagResult[]): Promis
   return results;
 };
 
-// --- replace the loose "any"-based adapter with explicit minimal Qdrant shapes ---
+// --- replace the loose: "any"-based adapter with explicit minimal Qdrant shapes ---
 // Minimal, focused types aligned to common Qdrant REST client shapes used in this repo.
 type CollectionsListResponse = {
   collections?: Array<{ name: string }>;

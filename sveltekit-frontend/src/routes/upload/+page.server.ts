@@ -69,7 +69,7 @@ const getRedisClient = async () => {
 
     // Create a concrete client instance and attach safe event handlers
     const clientInstance = redis;
-    // ioredis may emit 'error' events like ReplyError NOAUTH which, if unhandled,
+    // ioredis may emit: 'error' events like ReplyError NOAUTH which, if unhandled,
     // will crash or propagate. Handle them here and degrade gracefully.
     clientInstance.on?.('error', (e: unknown) => {
       try {
@@ -109,7 +109,7 @@ const logError = async (context: string, error: unknown, details?: Record<string
   try {
     const client = await getRedisClient();
     if (client) {
-      // store as JSON string, LIFO list 'error_logs'
+      // store as JSON string, LIFO list: 'error_logs'
       await client.lpush('error_logs', JSON.stringify(payload));
       // Optionally trim to keep list bounded
       await client.ltrim('error_logs', 0, 999); // keep last 1000 entries
@@ -174,8 +174,8 @@ export const actions: Actions = {
     }
 
     try {
-      // Get user from XState session for 'uploadedBy' metadata
-      // Provide a narrow typed view of xstateIntegration to avoid 'any' usage
+      // Get user from XState session for: 'uploadedBy' metadata
+      // Provide a narrow typed view of xstateIntegration to avoid: 'any' usage
       type User = { id?: string };
       type SessionMachineSnapshot = { context?: { user?: User } } | undefined;
       type ChildActor = { getSnapshot?: () => SessionMachineSnapshot } | undefined;
@@ -191,7 +191,7 @@ export const actions: Actions = {
       const globalActor =
         xsi.globalState ?? (typeof xsi.getGlobalState === 'function' ? xsi.getGlobalState() : undefined);
 
-      // Assuming 'sessionMachine' is a child actor of the global state machine
+      // Assuming: 'sessionMachine' is a child actor of the global state machine
       const currentUser = globalActor?.getSnapshot?.()?.children?.get?.('sessionMachine')?.getSnapshot?.()
         ?.context?.user;
       const uploadedBy = currentUser?.id || 'anonymous'; // Fallback for unauthenticated uploads

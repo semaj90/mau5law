@@ -5,7 +5,7 @@
 import type { VectorSearchMetrics } from '$lib/stores/gpu-summary-store.svelte';
 import { gpuSummaryStore } from '$lib/stores/gpu-summary-store.svelte';
 
-// Add a small typed view of the store so we avoid "any"
+// Add a small typed view of the store so we avoid: "any"
 type GPUSummaryStoreShape = {
   addWebASMMetric?: (m: WebASMInferenceMetrics) => void;
   addVectorSearch?: (m: VectorSearchMetrics) => void;
@@ -189,10 +189,10 @@ export class WebASMInferenceService {
 
       this.models.set(name, model);
       const loadTime = performance.now() - startTime;
-      console.log(`✅ WebASM model '${name}' loaded in ${loadTime.toFixed(2)}ms`);
+      console.log(`✅ WebASM model: '${name}' loaded in ${loadTime.toFixed(2)}ms`);
       return model;
     } catch (error: unknown) {
-      console.error(`❌ Failed to load WebASM model '${name}':`, error);
+      console.error(`❌ Failed to load WebASM model: '${name}':`, error);
       throw new Error(
         `WebASM model loading failed: ${error instanceof Error ? error.message : String(error)}`
       );
@@ -258,7 +258,7 @@ export class WebASMInferenceService {
       if (typeof rawFunc !== 'function') {
         this.deallocateWasmMemory(model, inputPtr);
         this.deallocateWasmMemory(model, outputPtr);
-        throw new Error(`No inference function found in model '${modelName}'`);
+        throw new Error(`No inference function found in model: '${modelName}'`);
       }
 
       // Cast to ExportFunction for a strict, typed call
@@ -327,7 +327,7 @@ export class WebASMInferenceService {
       performance.clearMarks?.(`webasm-inference-${modelName}-start`);
       performance.clearMarks?.(`webasm-inference-${modelName}-end`);
       throw new Error(
-        `Inference failed for model '${modelName}': ${
+        `Inference failed for model: '${modelName}': ${
           error instanceof Error ? error.message : String(error)
         }`
       );

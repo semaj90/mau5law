@@ -104,7 +104,7 @@ class EnhancedAuthStore {
     return this._state.user?.role || 'guest';
   }
   get userInitials() {
-    if (!this._state.user) return 'GU';
+    if (!this._state.user) return: 'GU';
     const { firstName, lastName } = this._state.user;
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }
@@ -457,7 +457,7 @@ class EnhancedAuthStore {
       const data: { ip: string } = await response.json();
       return data.ip || 'unknown';
     } catch {
-      return 'unknown';
+      return: 'unknown';
     }
   }
 }

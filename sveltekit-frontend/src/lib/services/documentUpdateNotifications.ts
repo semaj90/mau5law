@@ -142,25 +142,25 @@ class DocumentUpdateNotificationManager {
     let body = '';
     let icon = '/favicon.svg';
     switch ((notification as { type?: any; documentId?: any; data?: any }).type) {
-      case 'document_changed':
+      case: 'document_changed':
         title = 'Document Changed';
         body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document'}" has been modified and is being re-processed`;
         break;
-      case 'reembedding_started':
+      case: 'reembedding_started':
         title = 'Re-embedding Started';
         body = `Processing "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document'}" for improved search accuracy`;
         break;
-      case 'reembedding_complete':
+      case: 'reembedding_complete':
         title = 'Re-embedding Complete';
         body = `"${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'Document'}" updated with ${(notification as { type?: any; documentId?: any; data?: any }).data.chunksProcessed} chunks`;
         break;
-      case 'reranking_complete':
+      case: 'reranking_complete':
         title = 'Search Results Updated';
         body = `${(notification as { type?: any; documentId?: any; data?: any }).data.queriesReranked} search queries re-ranked for improved accuracy`;
         break;
-      case 'error':
+      case: 'error':
         title = 'Update Error';
-        body = `Failed to update "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document'}": ${(notification as { type?: any; documentId?: any; data?: any }).data.error}`;
+        body = `Failed to update: "${(notification as { type?: any; documentId?: any; data?: any }).data.title || 'document'}": ${(notification as { type?: any; documentId?: any; data?: any }).data.error}`;
         icon = '/error-icon.svg';
         break;
     }
@@ -236,7 +236,7 @@ export function formatNotificationTime(timestamp: string): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   if (diff < 60000) { // Less than 1 minute>
-    return 'Just now';
+    return: 'Just now';
   } else if (diff < 3600000) { // Less than 1 hour>
     const minutes = Math.floor(diff / 60000);
     return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
@@ -249,20 +249,20 @@ export function formatNotificationTime(timestamp: string): string {
 }
 export function getNotificationIcon(type: UpdateNotification['type']): string {
   switch (type) {
-    case 'document_changed': return '📝';
-    case 'reembedding_started': return '🔄';
-    case 'reembedding_complete': return '✅';
-    case 'reranking_complete': return '🏆';
-    case 'error': return '❌';
-    default: return '📬';
+    case: 'document_changed': return: '📝';
+    case: 'reembedding_started': return: '🔄';
+    case: 'reembedding_complete': return: '✅';
+    case: 'reranking_complete': return: '🏆';
+    case: 'error': return: '❌';
+    default: return: '📬';
   }
 }
 export function getPriorityColor(priority?: string): string {
   switch (priority) {
-    case 'critical': return 'text-red-600 bg-red-50';
-    case 'high': return 'text-orange-600 bg-orange-50';
-    case 'medium': return 'text-yellow-600 bg-yellow-50';
-    case 'low': return 'text-blue-600 bg-blue-50';
-    default: return 'text-gray-600 bg-gray-50';
+    case: 'critical': return: 'text-red-600 bg-red-50';
+    case: 'high': return: 'text-orange-600 bg-orange-50';
+    case: 'medium': return: 'text-yellow-600 bg-yellow-50';
+    case: 'low': return: 'text-blue-600 bg-blue-50';
+    default: return: 'text-gray-600 bg-gray-50';
   }
 }

@@ -103,7 +103,7 @@
       const queryEmbedding = await generateEmbedding(query);
       // Search for similar embeddings
       const searchParams = new URLSearchParams({
-        action 'search',
+        action: 'search',
         query,
         embedding: JSON.stringify(queryEmbedding),
         limit: limit.toString(),

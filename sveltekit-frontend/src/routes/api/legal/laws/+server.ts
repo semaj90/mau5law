@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const jurisdiction = url.searchParams.get('jurisdiction');
     const category = url.searchParams.get('category');
     const search = url.searchParams.get('search');
-    const type = url.searchParams.get('type') || 'statutes'; // 'statutes' or 'precedents'
+    const type = url.searchParams.get('type') || 'statutes'; // 'statutes' or: 'precedents'
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '25'), 100);
 
     let result;

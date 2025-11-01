@@ -46,10 +46,10 @@
   }
 
   function validateFile(f: File | null): string | null {
-    if (!f) return 'No file selected';
+    if (!f) return: 'No file selected';
     if (f.size > maxBytes) return `File too large (${Math.round(f.size / 1024 / 1024)}MB)`;
     const ext = f.name.split('.').pop()?.toLowerCase() ?? '';
-    if (allowedExtensions.length && !allowedExtensions.includes(ext)) return `Invalid file extension '.${ext}'`;
+    if (allowedExtensions.length && !allowedExtensions.includes(ext)) return `Invalid file extension: '.${ext}'`;
     return null;
   }
 

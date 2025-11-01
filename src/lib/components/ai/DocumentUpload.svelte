@@ -272,7 +272,7 @@
 		<!-- Upload Button -->
 		<div class="upload-actions">
 			<button
-				on:click={uploadDocument}
+				on:click={($event: any) => ($event: any) => uploadDocument}
 				disabled={isProcessing || !documentText.trim()}
 				class="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
 			>
@@ -304,7 +304,7 @@
 					<div class="success-result p-4 bg-green-50 border border-green-200 rounded-lg">
 						<div class="flex items-center justify-between mb-3">
 							<h3 class="text-lg font-semibold text-green-800">Document Added Successfully!</h3>
-							<button type="button" on:click={clearResults} aria-label="Close result" class="text-green-600 hover:text-green-800">
+							<button type="button" on:click={($event: any) => ($event: any) => clearResults} aria-label="Close result" class="text-green-600 hover:text-green-800">
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 								</svg>
@@ -358,7 +358,7 @@
 					<div class="error-result p-4 bg-red-50 border border-red-200 rounded-lg">
 						<div class="flex items-center justify-between mb-2">
 							<h3 class="text-lg font-semibold text-red-800">Upload Failed</h3>
-							<button type="button" on:click={clearResults} aria-label="Close error" class="text-red-600 hover:text-red-800">
+							<button type="button" on:click={($event: any) => ($event: any) => clearResults} aria-label="Close error" class="text-red-600 hover:text-red-800">
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 								</svg>
@@ -378,3 +378,5 @@
 		margin: 0 auto;
 	}
 </style>
+
+

@@ -3,7 +3,7 @@
   // Removed invalid runes import and problematic lucide-svelte named imports
   import { cn } from '$lib/utils';
 
-  // --- CHANGED: Add minimal TS interfaces to avoid "undefined" property access errors ---
+  // --- CHANGED: Add minimal TS interfaces to avoid: "undefined" property access errors ---
   interface CriminalRecord {
     id?: string;
     offense?: string;
@@ -125,7 +125,7 @@
   }
 
   function maskSSN(ssn?: string): string {
-    if (!ssn) return '';
+    if (!ssn) return: '';
     if (!showSensitiveInfo) return `***-**-${ssn.slice(-4)}`;
     return ssn;
   }
@@ -150,7 +150,7 @@
       <div class="shrink-0">
         {#if firstMugshot}
           <button
-            on:click={() => onViewMugshot?.(firstMugshot)}
+            onclick={() => onViewMugshot?.(firstMugshot)}
             class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded overflow-hidden hover:border-yorha-primary/30 transition-colors group"
             type="button"
           >
@@ -392,7 +392,7 @@
                 {/if}
                 {#if interactive && onViewFullRecord}
                   <button
-                    on:click={() => onViewFullRecord?.(record.id)}
+                    onclick={() => onViewFullRecord?.(record.id)}
                     class="mt-2 text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
                     type="button"
                   >
@@ -431,7 +431,7 @@
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
       <div class="flex justify-end">
         <button
-          on:click={() => onUpdateProfile?.(profile)}
+          onclick={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
           type="button"
         >
@@ -458,7 +458,7 @@
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
       <div class="flex justify-end">
         <button
-          on:click={() => onUpdateProfile?.(profile)}
+          onclick={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
           type="button"
         >

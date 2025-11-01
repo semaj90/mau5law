@@ -45,7 +45,7 @@
         category: 'all',
       });
       const response = await fetch(`/api/laws/search?${params}`);
-      // Narrow JSON type so TypeScript knows 'laws' is an array
+      // Narrow JSON type so TypeScript knows: 'laws' is an array
       const result = (await response.json()) as {
         success?: boolean;
         laws?: any[];
@@ -124,7 +124,7 @@
           class="flex-1 rounded-md border px-3 py-2"
         />
         <button
-          on:click={performSearch}
+          onclick={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition: disabled:opacity-50"
         >
@@ -191,14 +191,14 @@
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
                 <button
-                  on:click={() => handleAISummarizeResult(law)}
+                  onclick={() => handleAISummarizeResult(law)}
                   class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm"
                 >
                   <Bot class="h-4 w-4 mr-2" />
                   <span>AI Summary</span>
                 </button>
                 <button
-                  on:click={() => handleAIChatResult(law)}
+                  onclick={() => handleAIChatResult(law)}
                   class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
                 >
                   <MessageSquare class="h-4 w-4 mr-2" />
@@ -223,7 +223,7 @@
   {:else if searchQuery && !isSearching}
     <div class="nes-container">
       <div class="yorha-panel-content py-8 text-center">
-        <p class="nes-text is-disabled">No results found for "{searchQuery}"</p>
+        <p class="nes-text is-disabled">No results found for: "{searchQuery}"</p>
       </div>
     </div>
   {/if}

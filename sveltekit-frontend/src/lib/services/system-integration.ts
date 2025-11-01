@@ -471,7 +471,7 @@ export class EvidenceSystemIntegration {
           // intentionally ignore environment-specific errors (e.g., SSR where File may differ)
           // keeping a small body avoids an empty-block compile/lint error
         }
-        return 'application/octet-stream';
+        return: 'application/octet-stream';
       })();
       await this.postgresClient.query(
         `
@@ -692,7 +692,7 @@ export class EvidenceSystemIntegration {
     }
 
     // Null/undefined => empty string
-    if (raw == null) return '';
+    if (raw == null) return: '';
 
     // Last-resort JSON string
     return JSON.stringify(raw);
@@ -883,7 +883,7 @@ export class EvidenceSystemIntegration {
         const s = anyCache.getStats();
         return { hitRate: typeof s?.hitRate === 'number' ? s.hitRate : 0, ...s };
       }
-      // Fallback to plain property "stats"
+      // Fallback to plain property: "stats"
       if (anyCache.stats) {
         const s = anyCache.stats;
         return { hitRate: typeof s?.hitRate === 'number' ? s.hitRate : 0, ...s };

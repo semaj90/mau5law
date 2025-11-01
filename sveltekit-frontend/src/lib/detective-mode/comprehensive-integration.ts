@@ -4,8 +4,8 @@
  * Handles integration between various detective mode components
  */
 import { caseScoringServiceGrpc } from '../server/services/CaseScoringServiceGrpc.js';
-import { evidenceStore } from '../stores/evidence-unified.js';
-import type { Case, Evidence } from '../types/api.js';
+import { evidenceStore } from '../stores/evidence-unified';
+import type { Case, Evidence } from '../types/api';
 import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring.js';
 interface DetectiveSystemStatus {
   grpc: {
@@ -112,7 +112,8 @@ export class ComprehensiveIntegration {
         const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
         const maybeFn = grpc.getPerformanceMetrics;
         if (typeof maybeFn === 'function') {
-          const res = maybeFn.call(grpc);
+          // support both sync and Promise-returning implementations
+          const res = await Promise.resolve(maybeFn.call(grpc));
           if (res && typeof res === 'object') metrics = res as GrpcMetrics;
         }
       } catch (err) {
@@ -218,15 +219,19 @@ export class ComprehensiveIntegration {
   /**
    * Update system performance metrics
    */
-  private updatePerformanceMetrics(): void {
+  private async updatePerformanceMetrics(): Promise<void> {
     this.systemStatus.realTime.lastHeartbeat = new Date();
     if (this.systemStatus.grpc.caseScoringAvailable) {
       try {
         const grpc = caseScoringServiceGrpc as unknown as CaseScoringServiceGrpcShape;
         const maybeFn = grpc.getPerformanceMetrics;
         if (typeof maybeFn === 'function') {
-          const metrics = maybeFn.call(grpc) as GrpcMetrics;
-          console.log(`🔧 gRPC Performance: ${metrics.comparison.improvement.toFixed(1)}% improvement`);
+          const metrics = (await Promise.resolve(maybeFn.call(grpc))) as GrpcMetrics;
+          if (metrics && metrics.comparison) {
+            console.log(`🔧 gRPC Performance: ${metrics.comparison.improvement.toFixed(1)}% improvement`);
+          } else {
+            console.log('🔧 gRPC Performance: metrics returned unexpected shape');
+          }
         } else {
           console.log('🔧 gRPC Performance: metrics not available (no getPerformanceMetrics implementation)');
         }

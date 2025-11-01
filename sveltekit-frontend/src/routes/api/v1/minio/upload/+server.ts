@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { minioService } from '$lib/server/storage/minio-service';
 // Lightweight MinIO direct upload endpoint
-// Accepts multipart/form-data with field name "file". Optional ?bucket= override.
+// Accepts multipart/form-data with field name: "file". Optional ?bucket= override.
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const form = await request.formData();

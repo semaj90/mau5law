@@ -23,14 +23,14 @@
   let showNESModal = $state(false);
   let showEvidenceBoard = $state(false);
   const demoSections = [
-    { id: 'overview', title: 'Overview', icon '🏠' },
-    { id: 'buttons', title: 'Buttons', icon '🔘' },
-    { id: 'cards', title: 'Cards', icon '🎴' },
-    { id: 'search', title: 'Search', icon '🔍' },
-    { id: 'nes-gaming', title: 'NES Gaming', icon '🎮' },
-    { id: 'yorha', title: 'YoRHa Theme', icon '🤖' },
-    { id: 'evidence', title: 'Evidence Board', icon '📋' },
-    { id: 'integration', title: 'Integration', icon '🔧' },
+    { id: 'overview', title: 'Overview', icon: '🏠' },
+    { id: 'buttons', title: 'Buttons', icon: '🔘' },
+    { id: 'cards', title: 'Cards', icon: '🎴' },
+    { id: 'search', title: 'Search', icon: '🔍' },
+    { id: 'nes-gaming', title: 'NES Gaming', icon: '🎮' },
+    { id: 'yorha', title: 'YoRHa Theme', icon: '🤖' },
+    { id: 'evidence', title: 'Evidence Board', icon: '📋' },
+    { id: 'integration', title: 'Integration', icon: '🔧' },
   ];
   function handleSearchDemo(_event: CustomEvent) {
     const { query } = e(vent as CustomEvent).detail;
@@ -265,9 +265,9 @@
               <h4>Toolbar Integration</h4>
               <Toolbar
                 tools={[
-                  { id: 'search', icon '🔍', label: 'Search' },
-                  { id: 'filter', icon '🔽', label: 'Filter' },
-                  { id: 'export', icon '📤', label: 'Export' },
+                  { id: 'search', icon: '🔍', label: 'Search' },
+                  { id: 'filter', icon: '🔽', label: 'Filter' },
+                  { id: 'export', icon: '📤', label: 'Export' },
                 ]}
               />
             </div>

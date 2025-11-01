@@ -299,7 +299,7 @@ export const lokiCollectionMethods = {
       l.LokiMemoryAdapter = class LokiMemoryAdapter {
         constructor() {}
         loadDatabase(_dbname: string, callback: (data: unknown | null) => void) {
-          // pass `null` to signal "no data"
+          // pass `null` to signal: "no data"
           callback(null);
         }
         saveDatabase(_dbname: string, _dbstring: string, callback: (err?: unknown) => void) {

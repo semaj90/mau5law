@@ -753,9 +753,9 @@ export class MoogleGraphSynthesizer {
     config: MoogleVisualizationConfig
   ): Promise<Map<string, { x: number; y: number }>> {
     switch (config.layout) {
-      case 'force-directed':
+      case: 'force-directed':
         return this.forceDirectedLayout(nodes, edges, config);
-      case 'legal-context':
+      case: 'legal-context':
         return this.legalContextLayout(nodes, edges, config);
       default:
         return this.forceDirectedLayout(nodes, edges, config);

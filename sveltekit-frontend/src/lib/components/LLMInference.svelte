@@ -1,6 +1,4 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
   let selectedModel = $state('');
@@ -33,11 +31,11 @@
   }
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4 llm-inference-container">
   <h2>Local LLM Inference (Tauri Desktop)</h2>
   <div class="space-y-4">
     <label for="model">Model:</label>
-    <select id="model" bind:value={selectedModel}>
+    <select id="model" class="model-select" bind:value={selectedModel}>
       {#each models as model}
         <option value={model}>{model}</option>
       {/each}
@@ -45,16 +43,16 @@
   </div>
   <div class="space-y-4">
     <label for="prompt">Prompt:</label>
-    <textarea id="prompt" rows="4" bind:value={prompt} placeholder="Enter your prompt..."></textarea>
+    <textarea id="prompt" class="prompt-input" rows="4" bind:value={prompt} placeholder="Enter your prompt..."></textarea>
   </div>
-  <button class="space-y-4" onclick={() => handleInference()} disabled={loading || !selectedModel || !prompt.trim()}>
+  <button class="space-y-4 run-btn" onclick={() => handleInference()} disabled={loading || !selectedModel || !prompt.trim()}>
     {loading ? 'Running...' : 'Run Inference'}
   </button>
   {#if error}
-    <div class="space-y-4">{error}</div>
+    <div class="space-y-4 error">{error}</div>
   {/if}
   {#if result}
-    <div class="space-y-4">
+    <div class="space-y-4 result">
       <h3>Result:</h3>
       <pre>{result}</pre>
     </div>
@@ -99,10 +97,10 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2;
+    transition: background 0.2s;
   }
   .run-btn:disabled {
-    background: #b0c4d;
+    background: #b0c4de;
     cursor: not-allowed;
   }
   .run-btn:not(:disabled):hover {

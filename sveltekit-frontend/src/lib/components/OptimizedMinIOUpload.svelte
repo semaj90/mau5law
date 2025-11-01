@@ -7,7 +7,13 @@
 
 	let file: File | null = null;
 	let status: 'idle' | 'uploading' | 'done' | 'error' = 'idle';
-	let gpu = { webgpu: false, webgl2: false, cssHardwareAcceleration false };
+
+	// fixed: proper TypeScript type + valid object literal
+	let gpu: { webgpu: boolean; webgl2: boolean; cssHardwareAcceleration: boolean } = {
+		webgpu: false,
+		webgl2: false,
+		cssHardwareAcceleration: false
+	};
 
 	onMount(() => {
 		try {
@@ -30,10 +36,16 @@
 
 <div class="optimized-minio-upload">
 	<label>
-		<input type="file" accept={accept} onchange={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
+		<input
+			type="file"
+			accept={accept}
+			onchange={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)}
+		/>
 	</label>
 
-	<button onclick={upload} disabled={!file || status === 'uploading'}>{status === 'uploading' ? 'Uploading…' : 'Upload'}</button>
+	<button onclick={upload} disabled={!file || status === 'uploading'}>
+		{status === 'uploading' ? 'Uploading…' : 'Upload'}
+	</button>
 
 	<div class="status">Status: {status}</div>
 	<div class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>

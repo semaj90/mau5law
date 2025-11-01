@@ -114,21 +114,21 @@ class EvidenceWebSocketServer {
     if (!client) return;
 
     switch (message.type) {
-      case 'SUBSCRIBE_FILE':
+      case: 'SUBSCRIBE_FILE':
         if (typeof message.fileId === 'string') {
           client.subscribedFileIds.add(message.fileId);
           console.log(`[WS] 📂 Client subscribed to fileId: ${message.fileId}`);
         }
         break;
 
-      case 'UNSUBSCRIBE_FILE':
+      case: 'UNSUBSCRIBE_FILE':
         if (typeof message.fileId === 'string') {
           client.subscribedFileIds.delete(message.fileId);
           console.log(`[WS] 📂 Client unsubscribed from fileId: ${message.fileId}`);
         }
         break;
 
-      case 'PING':
+      case: 'PING':
         ws.send(JSON.stringify({ type: 'PONG', timestamp: Date.now() }));
         break;
     }

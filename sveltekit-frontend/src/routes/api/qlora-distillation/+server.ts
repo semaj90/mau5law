@@ -442,7 +442,7 @@ async function runValidationTests(
       // Simple validation (in production would use more sophisticated metrics)
       const score = calculateResponseQuality(result.text, prompt.expectedKeywords);
       totalScore += score;
-      console.log(`   • Test "${prompt.name}": ${score.toFixed(2)}`);
+      console.log(`   • Test: "${prompt.name}": ${score.toFixed(2)}`);
     }
     const avgAccuracy = totalScore / testPrompts.length;
     const passed = avgAccuracy >= qualityThreshold;

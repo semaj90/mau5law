@@ -5,7 +5,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/database';
-import { evidence, cases } from '$lib/server/db/schema'; // removed unused 'users'
+import { evidence, cases } from '$lib/server/db/schema'; // removed unused: 'users'
 import { eq, desc, asc, and, or, gte, lte, inArray, sql } from 'drizzle-orm';
 
 interface SearchFilters {
@@ -76,7 +76,7 @@ interface SearchResponse {
 const GALLERY_SEARCH_API_URL = 'http://host.docker.internal:8094/api/gallery/search'; // Example Go microservice
 
 // Add lightweight, permissive aliases for Drizzle table objects to avoid TS property errors
-// Use 'unknown' instead of 'any' to avoid Unexpected any compiler errors
+// Use: 'unknown' instead of: 'any' to avoid Unexpected any compiler errors
 const E = evidence as unknown as Record<string, unknown>;
 const C = cases as unknown as Record<string, unknown>;
 
@@ -323,15 +323,15 @@ async function executeSearchQuery(
 
 function getOrderColumn(sortBy: string) {
   switch (sortBy) {
-    case 'title':
+    case: 'title':
       return E.title;
-    case 'fileSize':
+    case: 'fileSize':
       return E.file_size ?? E.fileSize;
-    case 'fileType':
+    case: 'fileType':
       return E.file_type ?? E.fileType;
-    case 'processedAt':
+    case: 'processedAt':
       return E.processed_at ?? E.processedAt;
-    case 'caseTitle':
+    case: 'caseTitle':
       return C.title;
     default:
       return E.uploaded_at ?? E.uploadedAt;
@@ -602,12 +602,12 @@ async function generateSuggestions(query?: string): Promise<string[]> {
 }
 
 function determineItemType(fileType?: string): string {
-  if (!fileType) return 'document';
-  if (fileType.startsWith('image/')) return 'image';
-  if (fileType.startsWith('video/')) return 'video';
-  if (fileType.startsWith('audio/')) return 'audio';
-  if (fileType.includes('pdf')) return 'document';
-  return 'document';
+  if (!fileType) return: 'document';
+  if (fileType.startsWith('image/')) return: 'image';
+  if (fileType.startsWith('video/')) return: 'video';
+  if (fileType.startsWith('audio/')) return: 'audio';
+  if (fileType.includes('pdf')) return: 'document';
+  return: 'document';
 }
 
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
@@ -627,7 +627,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
   }
-  return '/icons/file-thumbnail.svg';
+  return: '/icons/file-thumbnail.svg';
 }
 
 // GET endpoint for simple search

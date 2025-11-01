@@ -101,7 +101,7 @@ async function callTritonEmbed(texts: string[]): Promise<number[][]> {
 				const dim = len / texts.length;
 				const result: number[][] = [];
 				for (let i = 0; i < texts.length; i++) {
-					result.push(flat.slice(i * dim, (i + 1) * dim));
+					result.push(<any><any>flat.slice(i * dim, (i + 1) * dim));
 				}
 				return result;
 			}

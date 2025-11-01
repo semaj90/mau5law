@@ -94,7 +94,7 @@ await initializeQuantumVisualization();
           fieldSize: { x: 10, y: 6, z: 10 },
           quantumCoherence: consciousness.awakening,
           entanglementStrength: 0.6,
-          waveFunction 'superposition',
+          waveFunction: 'superposition',
           uncertaintyPrinciple: true,
           dimensions: 8,
         },

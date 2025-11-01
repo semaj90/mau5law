@@ -1,22 +1,31 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Evidence } from "$lib/data/types";
-  import { onMount } from "svelte";
+  import type { Evidence } from "$lib/types";
+
+  // add a local view type to include optional UI properties
+  interface LocalEvidence extends Evidence {
+    id: string; // ensure an id for keyed each block
+    title?: string;
+    description?: string;
+    fileType?: string;
+    tags?: string[];
+  }
+
+  // Props definition to satisfy TypeScript
   interface Props {
     caseId: string;
-    onEvidenceDrop?: (evidence: Evidence) => void;
+    onEvidenceDrop?: (evidence: LocalEvidence) => void;
   }
-  let {
-    caseId,
-    onEvidenceDrop = () => }: Props = $props();
+
+  let { caseId, onEvidenceDrop = () => {} }: Props = $props();
   // State using Svelte 5 runes
-  let evidenceList = $state<Evidence[]>([]);
+  let evidenceList = $state<LocalEvidence[]>([]);
   let isUploading = $state(false);
   async function fetchEvidence() {
     try {
       const res = await fetch(`/api/evidence?caseId=${caseId}`);
       if (res.ok) {
-        evidenceList = await res.json();
+        // cast response to the known Evidence shape
+        evidenceList = (await res.json()) as LocalEvidence[];
       } else {
         console.error('Failed to fetch evidence:', res.status);
       }
@@ -54,7 +63,8 @@
     ev.dataTransfer?.setData("application/json", JSON.stringify(evd));
     ev.dataTransfer!.effectAllowed = "copy";
   }
-  $effect(fetchEvidence);
+  // $effect must get a synchronous callback — call the async function from inside
+  $effect(() => { fetchEvidence(); });
 </script>
 
 <section class="evidence-panel">
@@ -74,17 +84,18 @@
         class="evidence-nier-bits-card"
         draggable={true}
         ondragstart={e => handleDragStart(e, evd)}
+        onclick={() => onEvidenceDrop?.(evd)}
         role="button"
         tabindex={0}
-        aria-label="Drag evidence item: {evd.title}"
+        aria-label={"Drag evidence item: " + (evd.title ?? 'Untitled')}
       >
         <div class="evidence-meta">
-          <span class="file-type">{evd.fileType}</span>
+          <span class="file-type">{evd.fileType ?? 'file'}</span>
           {#if Array.isArray(evd.tags) && evd.tags.length > 0}
             <span class="evidence-tags">{evd.tags.join(', ')}</span>
           {/if}
         </div>
-        <div class="evidence-item-title">{evd.title}</div>
+        <div class="evidence-item-title">{evd.title ?? 'Untitled'}</div>
         {#if evd.description}
           <div class="evidence-desc">{evd.description}</div>
         {/if}
@@ -143,7 +154,7 @@
     flex-wrap: wrap;
     gap: 1rem;
   }
-  .evidence-card {
+  .evidence-nier-bits-card {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -155,11 +166,11 @@
     max-width: 220px;
     user-select: none;
   }
-  .evidence-card:hover {
+  .evidence-nier-bits-card:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
   }
-  .evidence-card:active {
+  .evidence-nier-bits-card:active {
     cursor: grabbing;
   }
   .evidence-meta {

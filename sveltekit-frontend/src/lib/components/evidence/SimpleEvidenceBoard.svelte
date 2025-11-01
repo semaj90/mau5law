@@ -52,7 +52,7 @@
           body: JSON.stringify({
             caseId,
             name: 'Evidence Board',
-            description 'Evidence board for case',
+            description: 'Evidence board for case',
           }),
         });
         const result = await response.json();
@@ -171,7 +171,7 @@
       evidence: 'bg-blue-50 border-blue-200',
       poi: 'bg-yellow-50 border-yellow-200',
       note: 'bg-gray-50 border-gray-200',
-      connection 'bg-purple-50 border-purple-200',
+      connection: 'bg-purple-50 border-purple-200',
       image: 'bg-pink-50 border-pink-200',
     };
     return colors[type] || 'bg-gray-50 border-gray-200';

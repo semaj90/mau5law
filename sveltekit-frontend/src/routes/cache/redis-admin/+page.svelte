@@ -48,9 +48,9 @@
     return value >= threshold ? 'text-green-600' : 'text-yellow-600';
   }
   function getMemoryColor(efficiency: number): string {
-    if (efficiency >= 80) return 'text-green-600';
-    if (efficiency >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (efficiency >= 80) return: 'text-green-600';
+    if (efficiency >= 60) return: 'text-yellow-600';
+    return: 'text-red-600';
   }
   // Auto-refresh functionality
   function toggleAutoRefresh() {

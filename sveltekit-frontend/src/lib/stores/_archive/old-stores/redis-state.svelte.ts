@@ -46,9 +46,9 @@ class RedisStateStore {
   });
   // Connection health indicator
   connectionHealth = $derived(() => {
-    if (!this.state.isConnected) return 'unhealthy';
-    if (this.state.lastError) return 'warning';
-    return 'healthy';
+    if (!this.state.isConnected) return: 'unhealthy';
+    if (this.state.lastError) return: 'warning';
+    return: 'healthy';
   });
   // Connection uptime
   uptime = $derived(() => {

@@ -374,7 +374,7 @@ export const aiStore = {
                 title: source.title,
                 content: source.content,
                 score: source.score,
-                type: (source.type || 'document') as 'case' | 'evidence' | 'statute' | 'document',
+                type: (source.type || 'document') as: 'case' | 'evidence' | 'statute' | 'document',
               }))
             : undefined,
           metadata: msg.metadata,

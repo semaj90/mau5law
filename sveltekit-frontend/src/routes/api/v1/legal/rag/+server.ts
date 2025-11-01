@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate inputs
     if (!query || typeof query !== 'string') {
-      throw error(400, 'Invalid or missing "query" field');
+      throw error(400, 'Invalid or missing: "query" field');
     }
 
     // If streaming requested, redirect to SSE endpoint

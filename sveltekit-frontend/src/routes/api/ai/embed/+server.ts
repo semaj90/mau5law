@@ -101,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     let result: EmbedResponse
     switch (model) {
-      case 'openai': {
+      case: 'openai': {
         const { embedding, tokens } = await getOpenAIEmbedding(text)
         result = {
           embedding,
@@ -111,7 +111,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
         break
       }
-      case 'nomic': {
+      case: 'nomic': {
         const { embedding } = await getNomicEmbedding(text)
         result = {
           embedding,
@@ -120,7 +120,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
         break
       }
-      case 'mock': {
+      case: 'mock': {
         // Mock embedding for testing - generate deterministic vector based on text
         const targetDim = dimensions || 768
         const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
@@ -135,7 +135,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
       default:
         return json(
-          { error: `Unsupported model: ${model}. Use 'openai', 'nomic', or 'mock'` },)
+          { error: `Unsupported model: ${model}. Use: 'openai', 'nomic', or: 'mock'` },)
           { status: 400 }
         )
     }

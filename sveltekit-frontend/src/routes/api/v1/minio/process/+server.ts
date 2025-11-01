@@ -205,15 +205,15 @@ export const GET: RequestHandler = async ({ url }) => {
 function determineDocumentType(fileName: string, content: string): string {
   const ext = fileName.split('.').pop()?.toLowerCase() || '';
   // Basic document type detection
-  if (['pdf', 'doc', 'docx'].includes(ext)) return 'legal-document';
-  if (['txt', 'md'].includes(ext)) return 'text-document';
-  if (['json'].includes(ext)) return 'structured-data';
-  if (['jpg', 'png', 'gif'].includes(ext)) return 'image-evidence';
+  if (['pdf', 'doc', 'docx'].includes(ext)) return: 'legal-document';
+  if (['txt', 'md'].includes(ext)) return: 'text-document';
+  if (['json'].includes(ext)) return: 'structured-data';
+  if (['jpg', 'png', 'gif'].includes(ext)) return: 'image-evidence';
   // Content-based detection
-  if (content.toLowerCase().includes('contract')) return 'contract';
-  if (content.toLowerCase().includes('evidence')) return 'evidence';
-  if (content.toLowerCase().includes('case')) return 'case-file';
-  return 'unknown';
+  if (content.toLowerCase().includes('contract')) return: 'contract';
+  if (content.toLowerCase().includes('evidence')) return: 'evidence';
+  if (content.toLowerCase().includes('case')) return: 'case-file';
+  return: 'unknown';
 }
 function extractKeyTerms(content: string): string[] {
   // Basic keyword extraction - in production this would use NLP
@@ -236,17 +236,17 @@ function extractKeyTerms(content: string): string[] {
 }
 function assessComplexity(content: string): 'low' | 'medium' | 'high' {
   const wordCount = content.split(/\s+/).length;
-  if (wordCount < 500) return 'low';
-  if (wordCount < 2000) return 'medium';
-  return 'high';
+  if (wordCount < 500) return: 'low';
+  if (wordCount < 2000) return: 'medium';
+  return: 'high';
 }
 function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical' {
   const riskKeywords = ['criminal', 'felony', 'urgent', 'emergency', 'critical'];
   const foundRiskTerms = riskKeywords.filter(k => content.toLowerCase().includes(k));
-  if (foundRiskTerms.length >= 2) return 'critical';
-  if (foundRiskTerms.length >= 1) return 'high';
-  if (content.split(/\s+/).length > 1000) return 'medium';
-  return 'low';
+  if (foundRiskTerms.length >= 2) return: 'critical';
+  if (foundRiskTerms.length >= 1) return: 'high';
+  if (content.split(/\s+/).length > 1000) return: 'medium';
+  return: 'low';
 }
 function generateSummary(content: string): string {
   // Basic summary generation - first few sentences

@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { defineConfig, presetUno, presetAttributify, presetIcons } from 'unocss';
+import { defineConfig, presetUno, presetAttributify, presetIcons, transformerDirectives, transformerVariantGroup } from 'unocss';
+import extractorSvelte from '@unocss/extractor-svelte';
 
 export default defineConfig({
   presets: [
@@ -7,61 +8,11 @@ export default defineConfig({
     presetAttributify(),
     presetIcons(),
   ],
-  rules: [
-    ['no-scrollbar', { 'scrollbar-width': 'none', '-ms-overflow-style': 'none' }],
-    [/^no-scrollbar-(.+)$/, ([, c]) => ({ 'scrollbar-width': 'none', '-ms-overflow-style': 'none', 'overflow': c })],
-  ],
-  shortcuts: {
-    'btn': 'py-2 px-4 font-semibold rounded-lg shadow-md',
-    'btn-green': 'text-white bg-green-500 hover:bg-green-700',
-  },
-  theme: {
-    colors: {
-      'primary': '#007bff',
-      'secondary': '#6c757d',
-    },
-    breakpoints: {
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
-    },
-  },
-});
-        },
-        pre: {
-          'background-color': 'var(--color-nier-bg-secondary)',
-          border: '1px solid var(--color-nier-border)',
-          'border-radius': '0.5rem',
-        },
-      },
-    }),
-    // presetWebFonts removed — fonts will be self-hosted via /public/fonts and src/app.css
-    presetForms(),
-    presetRadix({
-      palette: ['mauve', 'blue', 'green', 'red', 'yellow'],
-      aliases: {
-        primary: 'blue',
-        accent: 'green',
-        danger: 'red',
-        warning: 'yellow',
-      },
-    }),
-  ],
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),
-    transformerCompileClass({
-      classPrefix: 'nier-',
-    }),
   ],
   extractors: [extractorSvelte()],
-  content: {
-    pipeline: {
-      include: ['src/**/*.{svelte,js,ts}', 'src/**/*.{html,vue,tsx,jsx}'],
-      exclude: ['node_modules/**/*', '.git/**/*', 'dist/**/*', 'build/**/*'],
-    },
-  },
   theme: {
     colors: {
       // Shadcn/UI CSS Variables - mapped to UnoCSS
@@ -924,7 +875,6 @@ export default defineConfig({
     'animate-bounce',
 
     // Bits UI and Shadcn-Svelte Integration Classes
-    // Button variants and states
     'btn-default',
     'btn-primary',
     'btn-secondary',
@@ -1138,221 +1088,5 @@ export default defineConfig({
     'border-nes-gray',
     'border-nes-black',
     'border-nes-white',
-  ],
-});
-    'border-nes-blue',
-    'border-nes-purple',
-    'border-nes-pink',
-    'border-nes-gray',
-    'border-nes-black',
-    'border-nes-white',
-  ],
-});
-    'btn-warning',
-    'btn-info',
-    'btn-nier',
-    'btn-crimson',
-    'btn-gold',
-    'btn-xs',
-    'btn-sm',
-    'btn-md',
-    'btn-lg',
-    'btn-xl',
-    'btn-loading',
-    'nier-btn',
-
-    // Card and Panel Components
-    'bg-card',
-    'text-card-foreground',
-    'border-card',
-    'shadow-card',
-    'bg-muted',
-    'text-muted-foreground',
-    'bg-popover',
-    'text-popover-foreground',
-    'border-popover',
-    'bg-background',
-    'text-foreground',
-    'border-border',
-    'border-input',
-    'bg-input',
-    'bg-primary',
-    'text-primary-foreground',
-    'bg-secondary',
-    'text-secondary-foreground',
-    'bg-accent',
-    'text-accent-foreground',
-    'ring-ring',
-    'text-destructive',
-    'border-destructive',
-    'bg-destructive',
-    'text-destructive-foreground',
-
-    // Dialog and Modal States
-    'data-[state=open]:animate-in',
-    'data-[state=closed]:animate-out',
-    'data-[state=closed]:fade-out-0',
-    'data-[state=open]:fade-in-0',
-    'data-[state=closed]:zoom-out-95',
-    'data-[state=open]:zoom-in-95',
-    'data-[side=bottom]:slide-in-from-top-2',
-    'data-[side=left]:slide-in-from-right-2',
-    'data-[side=right]:slide-in-from-left-2',
-    'data-[side=top]:slide-in-from-bottom-2',
-
-    // Dropdown and Context Menu States
-    'data-[highlighted]:bg-accent',
-    'data-[highlighted]:text-accent-foreground',
-    'data-[disabled]:pointer-events-none',
-    'data-[disabled]:opacity-50',
-
-    // Select Component States
-    'data-[placeholder]:text-muted-foreground',
-    'data-[state=open]:border-ring',
-    'focus:border-ring',
-    'focus:ring-2',
-    'focus:ring-ring',
-    'focus:ring-offset-2',
-
-    // Tooltip and Hover States
-    'hover:bg-accent',
-    'hover:text-accent-foreground',
-    'hover:border-accent',
-    'focus-visible:outline-none',
-    'focus-visible:ring-2',
-    'focus-visible:ring-ring',
-    'focus-visible:ring-offset-2',
-
-    // Accessibility and Screen Reader
-    'sr-only',
-    'not-sr-only',
-    'focus:not-sr-only',
-
-    // Grid and Layout
-    'grid-cols-1',
-    'grid-cols-2',
-    'grid-cols-3',
-    'grid-cols-4',
-    'grid-cols-5',
-    'grid-cols-6',
-    'grid-cols-12',
-    'md:grid-cols-2',
-    'md:grid-cols-3',
-    'md:grid-cols-4',
-    'lg:grid-cols-3',
-    'lg:grid-cols-4',
-    'lg:grid-cols-5',
-    'xl:grid-cols-4',
-    'xl:grid-cols-5',
-    'xl:grid-cols-6',
-
-    // Responsive Design
-    'sm:text-sm',
-    'md:text-base',
-    'lg:text-lg',
-    'xl:text-xl',
-    'sm:p-4',
-    'md:p-6',
-    'lg:p-8',
-    'xl:p-10',
-    'sm:m-2',
-    'md:m-4',
-    'lg:m-6',
-    'xl:m-8',
-
-    // Dark Mode Support
-    'dark:bg-card',
-    'dark:text-card-foreground',
-    'dark:border-card',
-    'dark:bg-background',
-    'dark:text-foreground',
-    'dark:border-border',
-    'dark:bg-muted',
-    'dark:text-muted-foreground',
-    'dark:bg-accent',
-    'dark:text-accent-foreground',
-    'dark:bg-destructive',
-    'dark:text-destructive-foreground',
-    'dark:ring-ring',
-
-    // Vector Intelligence Components
-    'vector-search-container',
-    'vector-result-card',
-    'vector-confidence-indicator',
-    'vector-metadata-panel',
-    'recommendation-confidence-high',
-    'recommendation-confidence-medium',
-    'recommendation-confidence-low',
-    'semantic-highlight',
-    'entity-tag',
-    'relationship-connector',
-    'theme-weight-indicator',
-
-    // Enhanced NES Gaming Components
-    'nes-button',
-    'nes-button-primary',
-    'nes-button-success',
-    'nes-button-warning',
-    'nes-button-danger',
-    'nes-card',
-    'nes-card-dark',
-    'nes-input',
-    'nes-input-dark',
-    'nes-panel',
-    'nes-panel-header',
-    'nes-panel-content',
-    'nes-badge',
-    'nes-badge-success',
-    'nes-badge-warning',
-    'nes-badge-info',
-    'nes-container',
-    'nes-container-dark',
-    'nes-modal',
-    'nes-modal-overlay',
-    'nes-select',
-    'nes-checkbox',
-    'nes-radio',
-    'nes-blink',
-    'nes-pulse',
-    'nes-bounce',
-    'nes-grid',
-    'nes-flex',
-    'enhanced-nes-button',
-    'enhanced-nes-card',
-    'enhanced-nes-input',
-    'enhanced-nes-modal',
-
-    // NES Color Classes
-    'bg-nes-red',
-    'bg-nes-orange',
-    'bg-nes-yellow',
-    'bg-nes-green',
-    'bg-nes-blue',
-    'bg-nes-purple',
-    'bg-nes-pink',
-    'bg-nes-gray',
-    'bg-nes-black',
-    'bg-nes-white',
-    'text-nes-red',
-    'text-nes-orange',
-    'text-nes-yellow',
-    'text-nes-green',
-    'text-nes-blue',
-    'text-nes-purple',
-    'text-nes-pink',
-    'text-nes-gray',
-    'text-nes-black',
-    'text-nes-white',
-    'border-nes-red',
-    'border-nes-orange',
-    'border-nes-yellow',
-    'border-nes-green',
-    'border-nes-blue',
-    'border-nes-purple',
-    'border-nes-pink',
-    'border-nes-gray',
-    'border-nes-black',
-    'border-nes-white',
-});
-
-
+  ], // end of safelist
+}); // close defineConfig and export default

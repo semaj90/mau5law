@@ -4,10 +4,10 @@
 
   let {
     className = '',
-    variant = 'default' as 'default' | 'evidence' | 'legal' | 'nes' | 'yorha',
+    variant = 'default' as: 'default' | 'evidence' | 'legal' | 'nes' | 'yorha',
     interactive = false,
     children,
-    priority = undefined as 'critical' | 'high' | 'medium' | 'low' | undefined,
+    priority = undefined as: 'critical' | 'high' | 'medium' | 'low' | undefined,
     loading = false,
     ...restProps
   }: {

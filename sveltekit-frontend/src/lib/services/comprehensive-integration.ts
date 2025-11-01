@@ -166,7 +166,7 @@ export interface DatabaseOperations {
   neo4j: {
     query: (cypher: string, params?: unknown) => Promise<Neo4jResultRow[]>;
     createNode: (label: string, properties: KeyValue) => Promise<string>;
-    createRelationship: (from: string, to: string, type: string, properties?: KeyValue) => Promise<string>;
+    createRelationship: (from string, to: string, type: string, properties?: KeyValue) => Promise<string>;
   };
 }
 
@@ -689,7 +689,7 @@ class ComprehensiveIntegrationService {
   }
 
   private async createNeo4jRelationship(
-    from: string,
+    from string,
     to: string,
     type: string,
     properties?: KeyValue
@@ -701,7 +701,7 @@ class ComprehensiveIntegrationService {
       RETURN id(r) as relationshipId
     `;
     const result = await this.queryNeo4j(cypher, {
-      from: Number.isFinite(Number(from)) ? Number(from) : from,
+      from Number.isFinite(Number(from)) ? Number(from) : from,
       to: Number.isFinite(Number(to)) ? Number(to) : to,
       props: properties || {},
     });

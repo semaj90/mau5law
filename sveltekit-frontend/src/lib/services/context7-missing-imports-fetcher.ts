@@ -377,7 +377,7 @@ export class Context7MissingImportsFetcher {
     const apiRef: ApiRefEntry[] = [];
     const contentLines = response && typeof response.content === 'string' ? response.content.split(/\r?\n/) : [];
     for (const line of contentLines) {
-      if (line.includes('function ') || line.includes('export const ') || line.includes('export function ')) {
+      if (line.includes('function ') || line.includes('export const: ') || line.includes('export function: ')) {
         const nameMatch = line.match(/(?:function|const|export function|export const)\s+([A-ZaZ0-9_]+)/);
         apiRef.push({
           name: nameMatch?.[1] ?? 'unknown',

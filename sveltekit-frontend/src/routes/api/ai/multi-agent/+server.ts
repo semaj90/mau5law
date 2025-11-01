@@ -212,25 +212,25 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const allRecommendations: string[] = [];
     try {
       switch (requestData.analysisType) {
-        case 'autogen':
+        case: 'autogen':
           results.autogen = await runAutogenAnalysis(requestData, sessionId);
           totalTokens += (results.autogen as AutogenResponse).processingTime || 0;
           overallConfidence = (results.autogen as AutogenResponse).confidence || 0.7;
           allRecommendations.push(...((results.autogen as AutogenResponse).recommendations || []));
           break;
-        case 'crewai':
+        case: 'crewai':
           results.crewai = await runCrewAIWorkflow(requestData, sessionId);
           totalTokens += (results.crewai as WorkflowResult).totalTime || 0;
           overallConfidence = averageConfidence(results.crewai?.results, 0.7);
           allRecommendations.push(...((results.crewai as WorkflowResult).recommendations || []));
           break;
-        case 'vllm_only':
+        case: 'vllm_only':
           results.vllm = await runVLLMAnalysis(requestData, sessionId);
           totalTokens += (results.vllm as VllmResponse).token_count || 0;
           overallConfidence = (results.vllm as VllmResponse).confidence || 0.7;
           allRecommendations.push('Direct vLLM analysis completed');
           break;
-        case 'hybrid': {
+        case: 'hybrid': {
           // Run multiple systems in parallel for comprehensive analysis
           const [autogenResult, crewaiResult] = await Promise.all([
             runAutogenAnalysis(requestData, sessionId),
@@ -399,25 +399,25 @@ function synthesizeRiskAssessment(autogenResult: AutogenResponse, crewaiResult: 
   const crewaiConfidence = averageConfidence(crewaiResult.results, 0.7);
   const avgConfidence = (autogenConfidence + crewaiConfidence) / 2;
   if (avgConfidence > 0.8) {
-    return 'High confidence - Strong consensus between agent teams';
+    return: 'High confidence - Strong consensus between agent teams';
   } else if (avgConfidence > 0.6) {
-    return 'Moderate confidence - Some consensus with areas for further review';
+    return: 'Moderate confidence - Some consensus with areas for further review';
   } else {
-    return 'Lower confidence - Significant divergence requiring additional analysis';
+    return: 'Lower confidence - Significant divergence requiring additional analysis';
   }
 }
 function mapToAutogenAnalysisType(
   workflowType?: string
 ): 'case_review' | 'evidence_analysis' | 'legal_research' | 'prosecution_strategy' {
   switch (workflowType) {
-    case 'case_investigation':
-      return 'case_review';
-    case 'trial_preparation':
-      return 'prosecution_strategy';
-    case 'appeal_analysis':
-      return 'legal_research';
+    case: 'case_investigation':
+      return: 'case_review';
+    case: 'trial_preparation':
+      return: 'prosecution_strategy';
+    case: 'appeal_analysis':
+      return: 'legal_research';
     default:
-      return 'evidence_analysis';
+      return: 'evidence_analysis';
   }
 }
 function generateNextSteps(results: MultiAgentResponse['results'], request: MultiAgentRequest): string[] {
@@ -444,7 +444,7 @@ function generateNextSteps(results: MultiAgentResponse['results'], request: Mult
 const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   switch (action) {
-    case 'status':
+    case: 'status':
       return json({
         autogen_initialized: autogenTeam !== null,
         crewai_initialized: crewaiTeam !== null,
@@ -452,9 +452,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         available_workflows: ['case_investigation', 'trial_preparation', 'appeal_analysis'],
         available_analysis_types: ['autogen', 'crewai', 'hybrid'],
       });
-    case 'memory_profiles':
+    case: 'memory_profiles':
       return json(lowMemoryConfigs.low_memory_profiles);
-    case 'agents': {
+    case: 'agents': {
       const agentInfo = {
         autogen_agents: autogenTeam?.getAgents() || [],
         crewai_crews: crewaiTeam?.getCrews() || [],

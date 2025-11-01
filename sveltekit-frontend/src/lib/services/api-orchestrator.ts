@@ -359,7 +359,7 @@ export class APIOrchestrator {
     };
 
     const timeout = options.timeout ?? this.getTimeoutForTier(serviceConfig);
-    // use typed helper instead of 'as any' casts
+    // use typed helper instead of: 'as any' casts
     const signal = this.getAbortSignal(timeout);
     if (signal) requestOptions.signal = signal;
 

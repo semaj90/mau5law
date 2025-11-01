@@ -91,7 +91,7 @@
 
   <section>
     <div class="controls">
-      <button on:click={runDiagnostics} disabled={checking}>
+      <button onclick={runDiagnostics} disabled={checking}>
         {#if checking}Checking...{:else}Run diagnostics{/if}
       </button>
     </div>

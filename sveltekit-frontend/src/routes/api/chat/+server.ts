@@ -40,7 +40,7 @@ type NewChatMessage = {
   timestamp?: Date;
 };
 
-// Minimal user shape to avoid 'any' casts
+// Minimal user shape to avoid: 'any' casts
 type MaybeUser = { id?: string } | null;
 
 // Local ID helper
@@ -650,7 +650,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
  * Used to normalize results from generateChatResponse which may return string | Iterable | AsyncIterable.
  */
 function isAsyncIterable<T>(obj: unknown): obj is AsyncIterable<T> {
-  // avoid 'any' by checking a structural shape containing Symbol.asyncIterator
+  // avoid: 'any' by checking a structural shape containing Symbol.asyncIterator
   return !!obj && typeof (obj as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function';
 }
 

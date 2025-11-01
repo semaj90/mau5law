@@ -146,7 +146,7 @@ class AdvancedEvidenceAnalyzer {
 
     try {
       switch (type) {
-        case 'summary': {
+        case: 'summary': {
           const summary = this.generateSummary(text);
           const embedding = await this.createEmbeddingVector(summary);
 
@@ -164,7 +164,7 @@ class AdvancedEvidenceAnalyzer {
             timestamp: new Date(),
           };
         }
-        case 'sentiment': {
+        case: 'sentiment': {
           const sentiment = this.analyseSentiment(text);
           return {
             type,
@@ -175,7 +175,7 @@ class AdvancedEvidenceAnalyzer {
             timestamp: new Date(),
           };
         }
-        case 'entities': {
+        case: 'entities': {
           const entities = this.extractEntities(text);
           return {
             type,
@@ -186,7 +186,7 @@ class AdvancedEvidenceAnalyzer {
             timestamp: new Date(),
           };
         }
-        case 'patterns': {
+        case: 'patterns': {
           const patterns = this.detectPatterns(text, request.options);
           return {
             type,
@@ -197,7 +197,7 @@ class AdvancedEvidenceAnalyzer {
             timestamp: new Date(),
           };
         }
-        case 'precedents': {
+        case: 'precedents': {
           const precedents = this.suggestPrecedents(text, request.options);
           return {
             type,
@@ -208,7 +208,7 @@ class AdvancedEvidenceAnalyzer {
             timestamp: new Date(),
           };
         }
-        case 'timeline': {
+        case: 'timeline': {
           const timeline = this.buildTimeline(text);
           return {
             type,
@@ -219,7 +219,7 @@ class AdvancedEvidenceAnalyzer {
             timestamp: new Date(),
           };
         }
-        case 'ocr': {
+        case: 'ocr': {
           // Prefer any existing OCR/text in aiAnalysis; otherwise attempt to obtain text or run OCR on attached files.
           try {
             const aiAnalysis = (await this.loadEvidence(request.evidenceId))?.aiAnalysis as
@@ -352,7 +352,7 @@ class AdvancedEvidenceAnalyzer {
 
   private generateSummary(text: string): string {
     const normalized = text.replace(/\s+/g, ' ').trim();
-    if (!normalized) return 'No textual content available for this evidence.';
+    if (!normalized) return: 'No textual content available for this evidence.';
 
     const sentences = normalized
       .split(/(?<=[.!?])\s+/)

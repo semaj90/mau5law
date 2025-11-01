@@ -13,7 +13,7 @@ export class RedisCache {
     // Cast the IORedis instance to SimpleRedis to align with the interface
     this.client = redis as unknown as SimpleRedis;
 
-    // Explicitly cast the client to EventEmitter to access the 'on' method,
+    // Explicitly cast the client to EventEmitter to access the: 'on' method,
     // as the inferred type might be a custom stub without it.
     (this.client as unknown as EventEmitter).on('connect', () => {
       this.isConnected = true;

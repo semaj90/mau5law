@@ -1,4 +1,4 @@
-declare module 'bits-ui' {
+declare module: 'bits-ui' {
   // Minimal ambient declarations for bits-ui used during development.
   // Use Svelte's SvelteComponentTyped constructor shape to avoid `any` ESLint/TS warnings.
   import type { SvelteComponentTyped } from 'svelte';

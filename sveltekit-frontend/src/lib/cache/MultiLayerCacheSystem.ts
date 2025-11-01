@@ -44,7 +44,7 @@ export class MultiLayerCacheSystem {
     l2MaxSize: 50 * 1024 * 1024, // 50MB IndexedDB
     l3MaxSize: 100 * 1024 * 1024, // 100MB Redis
     defaultTTL: 3600, // 1 hour default TTL
-    evictionPolicy: 'lru' as 'lru' | 'lfu' | 'fifo',
+    evictionPolicy: 'lru' as: 'lru' | 'lfu' | 'fifo',
   };
   constructor() {
     // Initialize Loki.js in-memory database
@@ -272,13 +272,13 @@ export class MultiLayerCacheSystem {
     // Sort based on eviction policy
     let sorted: CacheEntry[];
     switch (this.config.evictionPolicy) {
-      case 'lru':
+      case: 'lru':
         sorted = entries.sort((a, b) => a.timestamp - b.timestamp);
         break;
-      case 'lfu':
+      case: 'lfu':
         sorted = entries.sort((a, b) => a.accessCount - b.accessCount);
         break;
-      case 'fifo':
+      case: 'fifo':
         sorted = entries.sort((a, b) => a.timestamp - b.timestamp);
         break;
       default:
@@ -319,20 +319,20 @@ export class MultiLayerCacheSystem {
    */
   async clear(layer?: 'memory' | 'indexeddb' | 'redis' | 'all'): Promise<void> {
     switch (layer) {
-      case 'memory':
+      case: 'memory':
         this.memoryCollection.clear();
         break;
-      case 'indexeddb':
+      case: 'indexeddb':
         if (this.indexedDB) {
           const transaction = this.indexedDB.transaction(['cache'], 'readwrite');
           const store = transaction.objectStore('cache');
           await store.clear();
         }
         break;
-      case 'redis':
+      case: 'redis':
         this.redisSimulation.clear();
         break;
-      case 'all':
+      case: 'all':
       default:
         this.memoryCollection.clear();
         if (this.indexedDB) {

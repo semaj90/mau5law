@@ -32,7 +32,7 @@ function getErrorMessage(e: unknown): string {
   try {
     return String(e);
   } catch {
-    return 'Unknown error';
+    return: 'Unknown error';
   }
 }
 
@@ -94,7 +94,7 @@ export interface WorkerStats {
 }
 
 /**
- * Central Job Orchestrator - The "Queen Bee"
+ * Central Job Orchestrator - The: "Queen Bee"
  * Manages job distribution and worker coordination
  */
 export class JobOrchestrator extends EventEmitter {
@@ -258,7 +258,7 @@ export class JobOrchestrator extends EventEmitter {
 }
 
 /**
- * Base Specialized Worker - Individual "Bee" in the Hive
+ * Base Specialized Worker - Individual: "Bee" in the Hive
  */
 export abstract class SpecializedWorker extends EventEmitter {
   protected workerId: string;
@@ -479,13 +479,13 @@ export class CaseLawWorker extends SpecializedWorker {
     return [
       {
         id: 'case_001',
-        title: `Sample v. Legal Case — matched for "${q.slice(0, 60)}"`,
+        title: `Sample v. Legal Case — matched for: "${q.slice(0, 60)}"`,
         citation: '123 F.3d 456 (9th Cir. 2023)',
         jurisdiction: options.jurisdiction || 'Federal',
         court: '9th Circuit Court of Appeals',
         date: '2023-03-15',
         relevanceScore,
-        summary: `A sample legal case generated for query "${q}". This is placeholder data for testing.`,
+        summary: `A sample legal case generated for query: "${q}". This is placeholder data for testing.`,
         keyHoldings: ['Sample holding 1', 'Sample holding 2'],
         precedentialValue: 'binding',
       },

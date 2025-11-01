@@ -2,6 +2,44 @@
 
 use mcp-server tools get-library-docs: use context7, sveltekit 2, typescript, drizzle-orm, bits-ui, svelte 5, qdrant, pg vector, postgresql, redis, xstate, webgpu, cuda, uno.css
 
+svelte 5: fix Using on:click to listen to the click event is deprecated. Use the event attribute onclick instead
+https://svelte.dev/e/event_directive_deprecated
+
+svelte 5: Real-World Example Before/After
+Before (Deprecated)
+<script lang="ts">
+	import CardA from '$lib/components/ui/CardA.svelte';
+	import CardB from '$lib/components/ui/CardB.svelte';
+	let active = 'A';
+	let component = active === 'A' ? CardA : CardB;
+</script>
+
+<svelte:component this={component} />
+
+✅ After (Runes Mode)
+<script lang="ts">
+	import CardA from '$lib/components/ui/CardA.svelte';
+	import CardB from '$lib/components/ui/CardB.svelte';
+	let active = $state('A');
+	let Component = $derived(active === 'A' ? CardA : CardB);
+</script>
+
+<Component />
+
+⚙️ If You Need to Loop Over Components
+Old
+{#each cards as card}
+  <svelte:component this={card.component} {...card.props} />
+{/each}
+
+✅ New
+{#each cards as card}
+  <card.component {...card.props} />
+{/each}
+
+
+Svelte 5 now supports dynamic tag names even in loops.
+
 ## Project Overview
 This is a sophisticated legal AI platform with microservices architecture featuring SvelteKit 5 frontend, 37+ Go microservices, XState v5 state management, and WebAssembly/GPU acceleration.
 
@@ -27,6 +65,55 @@ If you only have Card.svelte (a single component), change its export to:
 <!-- src/lib/components/ui/card/index.ts -->
 export { default as Card } from './Card.svelte';
 
+ur database client (Node-Postgres / postgres-js)
+
+From your recent code, you have this:
+
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+
+
+That means you’re using the postgres package — a modern, fast, pure JavaScript PostgreSQL client — not the older pg driver.
+
+So your stack looks like:
+
+Layer	Library	Purpose
+Database	postgres (postgres-js)	Node Postgres adapter
+ORM	drizzle-orm/postgres-js	Type-safe ORM for the postgres-js driver
+SvelteKit runtime	@sveltejs/adapter-node	Runs your app in Node for SSR
+Optional vector search	pgvector	Adds vector support for embeddings
+⚙️ 3. Confirming the driver in src/lib/server/db/client.ts
+
+You’ll probably see something like:
+
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from './schema-postgres';
+
+const connection = postgres(process.env.DATABASE_URL!);
+export const db = drizzle(connection, { schema });
+
+
+That’s the Node Postgres adapter (postgres-js).
+
+If you were using the traditional pg driver, it would look like:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+
+But you’re not — you’re using postgres-js (the better async version).
+
+✅ Summary
+
+Adapter: @sveltejs/adapter-node → Node.js runtime.
+
+DB driver: postgres (from postgres-js).
+
+ORM: drizzle-orm/postgres-js.
+
+Result: Yes, you are using the Node Postgres adapter (via postgres-js), not the older pg library
 
 That way, you can always use named imports consistently.
 
@@ -398,3 +485,85 @@ export const xstateIntegration = {
   - REDIS_URL=redis://:redis@redis:6379/0
   - QDRANT_URL=http://qdrant:6333
 - Centralize endpoint helpers (getOllamaEndpoint(), getDatabaseUrl()) that read process.env and provide safe defaults for local dev only.
+
+## Svelte 5 — Migration notes and best practices
+
+- Event directive deprecation
+  - Summary: Using `on:click` (and other `on:` directives) is deprecated in Svelte 5. Use the event attribute form (`onclick`, `oninput`, etc.).
+  - Before (deprecated):
+    ```svelte
+    <button on:click={() => doSomething()}>Click</button>
+    ```
+  - After:
+    ```svelte
+    <button onclick={() => doSomething()}>Click</button>
+    ```
+
+- Runes mode / reactive stores
+  - Svelte 5 encourages "runes" patterns for local reactive state in components:
+    - Use `$state(...)` to create reactive values.
+    - Use `$derived(...)` to derive component values.
+  - Example:
+    ```svelte
+    <script lang="ts">
+      // $state and $derived are provided by runes-mode types
+      let query = $state('');
+      let results = $derived(() => search(query));
+    </script>
+    ```
+
+- Dynamic components & looping
+  - `svelte:component` usage is replaced by derived/dynamic tag names and direct dynamic tags.
+  - If you must pick one of several components:
+    - Before:
+      ```svelte
+      <script>
+        import CardA from '$lib/components/ui/CardA.svelte';
+        import CardB from '$lib/components/ui/CardB.svelte';
+        let active = 'A';
+        let component = active === 'A' ? CardA : CardB;
+      </script>
+      <svelte:component this={component} />
+      ```
+    - After (runes-style):
+      ```svelte
+      <script lang="ts">
+        import CardA from '$lib/components/ui/CardA.svelte';
+        import CardB from '$lib/components/ui/CardB.svelte';
+        let active = $state('A');
+        let Component = $derived(active === 'A' ? CardA : CardB);
+      </script>
+      <Component />
+      ```
+  - Looping over components (fixes "Unknown tool or toolset 'each' when using dynamic svelte:component"):
+    - Before (problematic pattern):
+      ```svelte
+      {#each cards as card}
+        <svelte:component this={card.component} {...card.props} />
+      {/each}
+      ```
+    - After (Svelte 5 supports dynamic tags in loops):
+      ```svelte
+      {#each cards as card}
+        <card.component {...card.props} />
+      {/each}
+      ```
+
+- UI kit named exports
+  - Most modern UI kits export named components. Prefer named imports:
+    ```ts
+    // ❌ avoid default import if library exports named symbols
+    import Card from '$lib/components/ui/card';
+    // ✅ correct
+    import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
+    ```
+  - If you have a single Svelte file and want a named export, add an index file:
+    ```ts
+    // src/lib/components/ui/card/index.ts
+    export { default as Card } from './Card.svelte';
+    ```
+
+- Small tips
+  - Replace `on:...` handlers with `on...` attributes across projects to avoid Svelte 5 deprecation warnings.
+  - When addressing compile errors about unknown directives or template constructs, check if the template was intended for runes-mode and convert store usage accordingly (`let foo = $state(...)`).
+  - Keep dynamic service and endpoint helpers centralized (see Docker/env guidelines already in this file).

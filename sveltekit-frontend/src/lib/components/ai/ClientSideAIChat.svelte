@@ -41,27 +41,30 @@
       console.log('🤖 Initializing client-side AI...');
       const initialized = await webAssemblyAIAdapter.initialize();
       if (initialized) {
-        const health = webAssemblyAIAdapter.getHealthStatus();
+        // await health in case adapter exposes async status
+        const health = await webAssemblyAIAdapter.getHealthStatus();
         systemStatus = {
           webgpu: health.webgpuEnabled || false,
           webasm: health.wasmSupported || false,
           model: health.modelLoaded || false,
-          adapter: health.initialized || false;
-        }
+          adapter: health.initialized || false,
+        };
         isInitialized = true;
         console.log('✅ Client-side AI ready:', health);
         // Add welcome message
         messages.push({
           id: 'welcome',
           role: 'assistant',
-          content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',
-          timestamp: Date.now();
+          content:
+            "Hello! I'm running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.",
+          timestamp: Date.now(),
         });
+        messages = [...messages];
       } else {
         throw new Error('Failed to initialize AI adapter');
       }
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Unknown initialization error';
+      error = err instanceof Error ? err.message : 'Unknown initialization error';
       console.error('❌ AI initialization failed:', err);
     }
   }
@@ -72,8 +75,8 @@
       id: `user_${Date.now()}`,
       role: 'user' as const,
       content: message,
-      timestamp: Date.now();
-    }
+      timestamp: Date.now(),
+    };
     messages.push(userMessage);
     messages = [...messages]; // Trigger reactivity
     isProcessing = true;
@@ -83,42 +86,45 @@
     try {
       console.log('🚀 Processing:', message);
       const response = await webAssemblyAIAdapter.sendMessage(message, {
-        conversationHistory: messages.map(msg => ({
+        conversationHistory: messages.map((msg) => ({
           type: msg.role,
           content: msg.content,
-          timestamp: msg.timestamp;
-        }))
+          timestamp: msg.timestamp,
+        })),
       });
       const assistantMessage = {
         id: `assistant_${Date.now()}`,
         role: 'assistant' as const,
         content: response.content,
-        timestamp: Date.now();
-      }
+        timestamp: Date.now(),
+      };
       messages.push(assistantMessage);
       messages = [...messages]; // Trigger reactivity
       console.log('✅ Response generated:', {
         method: response.metadata?.method,
-        processingTime: response.metadata?.processingTime;
+        processingTime: response.metadata?.processingTime,
       });
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Failed to process message';
+      error = err instanceof Error ? err.message : 'Failed to process message';
       console.error('❌ Message processing failed:', err);
     } finally {
       isProcessing = false;
     }
   }
   function clearChat() {
-    messages = [{
-      id: 'welcome',
-      role: 'assistant',
-      content: 'Chat cleared. How can I help you with legal AI questions?',
-      timestamp: Date.now();
-    }];
+    messages = [
+      {
+        id: 'welcome',
+        role: 'assistant',
+        content: 'Chat cleared. How can I help you with legal AI questions?',
+        timestamp: Date.now(),
+      },
+    ];
     error = null;
   }
-  function handleKeyPress(_event: KeyboardEvent) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+  function handleKeyPress(event: KeyboardEvent) {
+    // use the passed event, not the global
+    if ((event.key === 'Enter' || event.key === 'NumpadEnter') && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
@@ -232,8 +238,8 @@
           <div class="flex gap-2">
             <textarea
               bind:value={chatInput}
-              onkeypress={handleKeyPress}
-              placeholder={isInitialized ? "Ask about legal AI, compliance, contracts..." : "Initializing AI..."}
+              onkeydown={handleKeyPress}
+              placeholder={isInitialized ? 'Ask about legal AI, compliance, contracts...' : 'Initializing AI...'}
               disabled={isProcessing || !isInitialized}
               rows="2"
               class="flex-1 text-xs bg-gray-800 border border-gray-600 rounded px-2 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-yellow-500 resize-none disabled:opacity-50"
@@ -332,7 +338,7 @@
   }
   .content {
     flex: 1;
-    min-width: 0,
+    min-width: 0;
   }
   .typing-indicator {
     display: flex;
@@ -347,10 +353,10 @@
     animation: typing 1.4s ease-in-out infinite;
   }
   .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2,
+    animation-delay: 0.2s;
   }
   .typing-indicator span:nth-child(3) {
-    animation-delay: 0.4,
+    animation-delay: 0.4s;
   }
   @keyframes typing {
     0%, 60%, 100% {
@@ -366,7 +372,7 @@
     font-size: 10px;
     transition: all 0.2s ease;
   }
-  .quick-prompts buttonhover:not(:disabled) {
+  .quick-prompts button:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
@@ -374,8 +380,8 @@
     animation: shake 0.5s ease-in-out;
   }
   @keyframes shake {
-    0%, 100% { transform: translateX(0), }
-    25% { transform: translateX(-2px), }
-    75% { transform: translateX(2px), }
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
   }
 </style>

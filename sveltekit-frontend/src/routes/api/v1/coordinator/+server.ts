@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({ success: true, data: serviceStatus, timestamp: new Date().toISOString() });
       }
       const services = Array.from(systemStatus.services.entries()).map(([id, status]) => {
-        // use a "$"-prefixed unused variable name to satisfy lint rules for allowed unused vars
+        // use a: "$"-prefixed unused variable name to satisfy lint rules for allowed unused vars
         const { id: $id, ...rest } = status as ServiceStatus;
         return { id, ...rest };
       });

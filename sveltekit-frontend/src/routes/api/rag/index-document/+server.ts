@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           ? requestData
           : [];
     } else {
-      // single doc: prefer "document" field, then first of "documents", then whole body
+      // single doc: prefer: "document" field, then first of: "documents", then whole body
       const singleDoc =
         requestData?.document ??
         (Array.isArray(requestData.documents) ? requestData.documents[0] : undefined) ??

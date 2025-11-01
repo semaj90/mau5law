@@ -305,13 +305,13 @@ class CrewAILegalTeam {
     try {
       // Execute tasks based on crew process type
       switch (crew.process) {
-        case 'sequential':
+        case: 'sequential':
           await this.executeSequentialTasks(crew, context, results);
           break;
-        case 'hierarchical':
+        case: 'hierarchical':
           await this.executeHierarchicalTasks(crew, context, results);
           break;
-        case 'consensus':
+        case: 'consensus':
           await this.executeConsensusTasks(crew, context, results);
           break;
       }

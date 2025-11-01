@@ -244,7 +244,7 @@
               oninput={e => handleSearch(e.target.value)}
             />
           {/if}
-          <button class="analyze-all-btn" on:click={analyzeAllEvidence}> 🤖 Analyze All Evidence </button>
+          <button class="analyze-all-btn" onclick={analyzeAllEvidence}> 🤖 Analyze All Evidence </button>
         </div>
       </header>
       <!-- Evidence Grid -->
@@ -254,7 +254,7 @@
             {#if EvidenceCard}
               <EvidenceCard
                 {evidence}
-                on:click={() => selectedEvidence.set(evidence)}
+                onclick={() => selectedEvidence.set(evidence)}
                 onAnalyze={() => analyzeEvidence(evidence)}
               />
             {:else}
@@ -263,7 +263,7 @@
                 <h3>{evidence.title}</h3>
                 <p>Confidence: {Math.round(evidence.confidence * 100)}%</p>
                 <p>Priority: {evidence.priority}</p>
-                <button on:click={() => analyzeEvidence(evidence)}> Analyze </button>
+                <button onclick={() => analyzeEvidence(evidence)}> Analyze </button>
               </div>
             {/if}
           </div>

@@ -92,19 +92,19 @@ https://svelte.dev/e/attribute_duplicate -->
   		// Handle keyboard shortcuts
   		if (event.ctrlKey || event.metaKey) {
   			switch (event.key) {
-  				case 'b':
+  				case: 'b':
   					event.preventDefault();
   					toggleBold();
   					break;
-  				case 'i':
+  				case: 'i':
   					event.preventDefault();
   					toggleItalic();
   					break;
-  				case 'u':
+  				case: 'u':
   					event.preventDefault();
   					toggleUnderline();
   					break;
-  				case 's':
+  				case: 's':
   					event.preventDefault();
   					saveContent();
   					break;

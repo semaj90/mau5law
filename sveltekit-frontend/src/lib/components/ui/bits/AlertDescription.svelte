@@ -16,8 +16,7 @@ Description content for alerts with NES styling
   // NES-style alert description classes
   const descriptionClasses = $derived(
     cn(
-      // Base styles
-      'bits-alert-description',
+      // Base styles: 'bits-alert-description',
       'text-sm leading-relaxed',
       'font-mono',
       className

@@ -176,7 +176,7 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
       }
     }
     // Convert embedding to pgvector format
-    // At this point, 'embedding' is guaranteed to be 'number[]' due to the check above.
+    // At this point, 'embedding' is guaranteed to be: 'number[]' due to the check above.
     const vectorString = `[${embedding.join(',')}]`;
     // Store in specialized GRPO table
     await db.execute(
@@ -239,7 +239,7 @@ export async function searchGrpoThinkingResponses(
     limit?: number;
     threshold?: number;
     thinkingType?: string;
-    timeRange?: { from: Date; to: Date };
+    timeRange?: { from Date; to: Date };
     includeRecentBias?: boolean;
     confidenceThreshold?: number;
     practiceArea?: string[];
@@ -281,7 +281,7 @@ export async function searchGrpoThinkingResponses(
     }
     let practiceAreaCondition = sql``;
     if (practiceArea && practiceArea.length > 0) {
-      // Correctly format array for PostgreSQL '?' operator
+      // Correctly format array for PostgreSQL: '?' operator
       const practiceAreaArray = sql`ARRAY[${sql.join(
         practiceArea.map(pa => sql`${pa}`),
         sql`, `
@@ -435,10 +435,10 @@ export async function getTrendingGrpoPatterns(
   try {
     grpoLogger.info('Analyzing GRPO thinking trends', { timeWindow, limit });
     const timeCondition = {
-      hour: sql`created_at >= NOW() - INTERVAL '1 hour'`,
-      day: sql`created_at >= NOW() - INTERVAL '1 day'`,
-      week: sql`created_at >= NOW() - INTERVAL '1 week'`,
-      month: sql`created_at >= NOW() - INTERVAL '1 month'`,
+      hour: sql`created_at >= NOW() - INTERVAL: '1 hour'`,
+      day: sql`created_at >= NOW() - INTERVAL: '1 day'`,
+      week: sql`created_at >= NOW() - INTERVAL: '1 week'`,
+      month: sql`created_at >= NOW() - INTERVAL: '1 month'`,
     }[timeWindow];
     const results = await db.execute(sql`WITH thinking_patterns AS (
         SELECT
@@ -470,13 +470,13 @@ export async function getTrendingGrpoPatterns(
           ARRAY_AGG(DISTINCT thinking_chain LIMIT 3) as recent_examples,
           -- Calculate trend by comparing first and second half of time period
           CASE
-            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) >
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) * 1.2
-            THEN 'increasing'
-            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) <
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) * 0.8
-            THEN 'decreasing'
-            ELSE 'stable'
+            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) >
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) * 1.2
+            THEN: 'increasing'
+            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) <
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) * 0.8
+            THEN: 'decreasing'
+            ELSE: 'stable'
           END as trend
         FROM pattern_analysis
         WHERE LENGTH(pattern) > 20  -- Filter out short fragments
@@ -493,7 +493,7 @@ export async function getTrendingGrpoPatterns(
       frequency: parseInt(row.frequency),
       avgConfidence: parseFloat(row.avg_confidence),
       recentExamples: row.recent_examples,
-      trend: row.trend as 'increasing' | 'stable' | 'decreasing',
+      trend: row.trend as: 'increasing' | 'stable' | 'decreasing',
     }));
     grpoLogger.info('GRPO trend analysis completed', {
       patternsFound: patterns.length,
@@ -521,12 +521,12 @@ export async function initializeGrpoThinkingTable(): Promise<void> {
         thinking_chain TEXT NOT NULL,
         conclusion TEXT NOT NULL,
         confidence_level DECIMAL(3,2) NOT NULL DEFAULT 0.5,
-        reasoning_steps JSONB NOT NULL DEFAULT '[]',
-        evidence_cited JSONB NOT NULL DEFAULT '[]',
-        legal_principles JSONB NOT NULL DEFAULT '[]',
+        reasoning_steps JSONB NOT NULL DEFAULT: '[]',
+        evidence_cited JSONB NOT NULL DEFAULT: '[]',
+        legal_principles JSONB NOT NULL DEFAULT: '[]',
         embedding vector(768), -- nomic-embed-text dimensions
-        thinking_type VARCHAR(50) NOT NULL DEFAULT 'analysis',
-        metadata JSONB DEFAULT '{}',
+        thinking_type VARCHAR(50) NOT NULL DEFAULT: 'analysis',
+        metadata JSONB DEFAULT: '{}',
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       )`

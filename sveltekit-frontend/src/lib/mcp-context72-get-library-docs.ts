@@ -280,31 +280,31 @@ export async function getTechStackDocs(
   const allDocs = { ...frontendDocs, ...backendDocs, ...databaseDocs, ...aiDocs };
 
   switch (component) {
-    case 'frontend': {
+    case: 'frontend': {
       const results = await Promise.all(
         Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const)
       );
       return Object.fromEntries(results);
     }
-    case 'backend': {
+    case: 'backend': {
       const results = await Promise.all(
         Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const)
       );
       return Object.fromEntries(results);
     }
-    case 'database': {
+    case: 'database': {
       const results = await Promise.all(
         Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const)
       );
       return Object.fromEntries(results);
     }
-    case 'ai': {
+    case: 'ai': {
       const results = await Promise.all(
         Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const)
       );
       return Object.fromEntries(results);
     }
-    case 'full': {
+    case: 'full': {
       const results = await Promise.all(
         Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const)
       );

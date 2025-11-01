@@ -118,8 +118,8 @@
         <!-- use $machineState to access machine context -->
         <p class="text-red-600 mb-4">{$machineState.context.error}</p>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleRetry}>Retry</Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleDismissError}>Dismiss</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>Dismiss</Button>
         </div>
       </div>
     </div>
@@ -190,7 +190,7 @@
             <div class="flex items-center gap-2">
               <select
                 value={$workflowStage}
-                on:change={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as any)}
+                onchange={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as any)}
                 class="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option value="investigation">Investigation</option>
@@ -234,7 +234,7 @@
                 ? 'py-2 px-1 border-b-2 font-medium text-sm border-blue-500 text-blue-600'
                 : 'py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }
-              on:click={() => handleTabSwitch(tab)}
+              onclick={() => handleTabSwitch(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -272,10 +272,10 @@
                   type="file"
                   multiple
                   bind:this={$fileInput}
-                  on:change={onFileChange}
+                  onchange={onFileChange}
                   class="hidden"
                 />
-                <Button class="bits-btn" on:click={triggerFileUpload}>Choose Files</Button>
+                <Button class="bits-btn" onclick={triggerFileUpload}>Choose Files</Button>
               </div>
             </div>
 
@@ -332,8 +332,8 @@
               <div class="p-6">
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
-                  <Button class="bits-btn" on:click={handleStartAIAnalysis} disabled={!$canStartAIAnalysis}>Start AI Analysis</Button>
-                  <Button class="bits-btn" variant="ghost" on:click={handleFindSimilarCases}>Find Similar Cases</Button>
+                  <Button class="bits-btn" onclick={handleStartAIAnalysis} disabled={!$canStartAIAnalysis}>Start AI Analysis</Button>
+                  <Button class="bits-btn" variant="ghost" onclick={handleFindSimilarCases}>Find Similar Cases</Button>
                 </div>
 
                 {#if $aiSummary}

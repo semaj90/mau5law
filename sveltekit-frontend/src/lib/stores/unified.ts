@@ -64,7 +64,7 @@ export type POINetwork = Record<string, unknown>;
 export type POIAnalysis = Record<string, unknown>;
 
 // Svelte store utilities
-import { writable, type Readable } from 'svelte/store';
+import { writable, type Readable, get } from 'svelte/store';
 
 // xstate integration (used by helper functions below)
 import xstateIntegration from '$lib/services/xstate-integration';
@@ -72,7 +72,7 @@ import xstateIntegration from '$lib/services/xstate-integration';
 // --- User Store Types and Store ---
 export interface UserStoreState {
   isLoggedIn: boolean;
-  id: string | null; // Added 'id' property to resolve compilation error
+  id: string | null; // Added: 'id' property to resolve compilation error
   name: string | null;
   email: string | null;
   // ... other user-related properties
@@ -101,9 +101,9 @@ export interface AIMessage {
 
 export interface AIAssistantStoreState {
   isOpen: boolean;
-  currentMessages: AIMessage[]; // Added 'currentMessages' to resolve compilation error
-  isProcessing: boolean; // Added 'isProcessing' to resolve compilation error
-  error: string | null; // Added 'error' to resolve compilation error
+  currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error
+  isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error
+  error: string | null; // Added: 'error' to resolve compilation error
   currentCaseId: string | null; // To store the caseId for context
   // ... other AI assistant related properties
 }
@@ -140,6 +140,73 @@ export type AIAssistantEvent =
 export function sendToAIAssistant(event: AIAssistantEvent) {
   console.log(`[unified.ts] Sending event to AI Assistant machine:`, event);
   xstateIntegration.sendEvent(AI_ASSISTANT_MACHINE_ID, event);
+}
+
+// --- Websocket Store and Helpers ---
+type WebsocketState = {
+  connected: boolean;
+  connecting: boolean;
+  dashboardData: {
+    cases: any[];
+    evidence: any[];
+    stats: Record<string, any>;
+  };
+  processingJobs: any[];
+  recentActivity: any[];
+  systemHealth: {
+    api: string;
+    database: string;
+    aiServices: string;
+    jobQueue: string;
+  };
+  activeEditors: Record<string, string[]>;
+};
+
+const initialState: WebsocketState = {
+  connected: false,
+  connecting: false,
+  dashboardData: { cases: [], evidence: [], stats: {} },
+  processingJobs: [],
+  recentActivity: [],
+  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },
+  activeEditors: {},
+};
+
+export const websocketStore = writable<WebsocketState>(initialState);
+
+// Minimal: "connect" helpers the UI expects. Replace with real WS logic later.
+export async function subscribeToDashboard(): Promise<void> {
+  websocketStore.update(s => ({ ...s, connecting: true }));
+  // simulate connection delay — in real code open websocket and populate updates
+  await new Promise(r => setTimeout(r, 150));
+  websocketStore.update(s => ({ ...s, connecting: false, connected: true }));
+}
+
+export function subscribeToCase(caseId: number | string): void {
+  // placeholder: real implementation would open a per-case channel
+  websocketStore.update(s => {
+    // no-op aside from keeping store reference up-to-date so components re-render if needed
+    return { ...s };
+  });
+}
+
+export function isEvidenceBeingEdited(evidenceId: number | string): boolean {
+  const s = get(websocketStore);
+  const editors = s.activeEditors[String(evidenceId)];
+  return Array.isArray(editors) && editors.length > 0;
+}
+
+export function getActiveEditorsForEvidence(evidenceId: number | string): string[] {
+  const s = get(websocketStore);
+  return s.activeEditors[String(evidenceId)] || [];
+}
+
+export function formatRecentActivity(activity: any): string {
+  if (!activity) return: '';
+  const ts = activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'unknown time';
+  const who = activity.user ?? activity.actor ?? 'System';
+  const msg = activity.action ?? activity.message ?? activity.detail ?? '';
+  return `${ts} — ${who}: ${msg}`;
 }
 
 // Note: In a full implementation, you would subscribe to the XState machine's

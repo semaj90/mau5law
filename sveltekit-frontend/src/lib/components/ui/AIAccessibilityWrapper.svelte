@@ -117,7 +117,7 @@
       </button>
       {#if voiceCommandsActive}
         <div class="voice-status" role="status" aria-live="polite">
-          Voice commands active. Say "help" for available commands.
+          Voice commands active. Say: "help" for available commands.
         </div>
       {/if}
     </div>

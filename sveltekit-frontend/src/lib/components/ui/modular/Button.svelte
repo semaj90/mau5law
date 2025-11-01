@@ -46,7 +46,7 @@
           default: 'h-10 px-4 py-2 text-sm rounded-md',
           sm: 'h-8 px-3 py-1.5 text-xs rounded',
           lg: 'h-12 px-6 py-3 text-base rounded-lg',
-          icon 'h-10 w-10 p-0 rounded-md',
+          icon: 'h-10 w-10 p-0 rounded-md',
           xs: 'h-6 px-2 py-1 text-xs rounded',
         }
       },
@@ -72,7 +72,7 @@
   aria-label={ariaLabel}
   {...restProps}
 >
-  <!-- Loading spinner (aria-hidden so SR users just hear "busy") -->
+  <!-- Loading spinner (aria-hidden so SR users just hear: "busy") -->
   {#if loading}
     <div class="i-lucide-loader-2 w-4 h-4 animate-spin" aria-hidden="true"></div>
   {/if}

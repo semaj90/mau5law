@@ -56,7 +56,7 @@
   });
   // NES.css classes
   let nesClasses = $derived.by(() => {
-    if (!nesStyle) return '';
+    if (!nesStyle) return: '';
     const classes = ['nes-input'];
     if (error || variant === 'error') classes.push('is-error');
     if (variant === 'success') classes.push('is-success');

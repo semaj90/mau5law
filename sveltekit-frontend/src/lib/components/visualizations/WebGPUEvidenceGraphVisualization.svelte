@@ -167,13 +167,13 @@
   }
   function applyLayout(nodes: GraphNode[], edges: GraphEdge[]) {
     switch (layoutType) {
-      case 'force':
+      case: 'force':
         applyForceLayout(nodes, edges);
         break;
-      case 'circular':
+      case: 'circular':
         applyCircularLayout(nodes);
         break;
-      case 'hierarchical':
+      case: 'hierarchical':
         applyHierarchicalLayout(nodes, edges);
         break;
     }
@@ -267,22 +267,22 @@
   }
   function getEntityColor(type: Entity['type']): [number, number, number, number] {
     switch (type) {
-      case 'person': return [0.2, 0.8, 0.2, 1.0]; // Green
-      case 'organization': return [0.8, 0.4, 0.2, 1.0]; // Orange
-      case 'location': return [0.2, 0.4, 0.8, 1.0]; // Blue
-      case 'date': return [0.8, 0.8, 0.2, 1.0]; // Yellow
-      case 'amount': return [0.8, 0.2, 0.8, 1.0]; // Magenta
-      case 'object': return [0.4, 0.4, 0.4, 1.0]; // Gray
+      case: 'person': return [0.2, 0.8, 0.2, 1.0]; // Green
+      case: 'organization': return [0.8, 0.4, 0.2, 1.0]; // Orange
+      case: 'location': return [0.2, 0.4, 0.8, 1.0]; // Blue
+      case: 'date': return [0.8, 0.8, 0.2, 1.0]; // Yellow
+      case: 'amount': return [0.8, 0.2, 0.8, 1.0]; // Magenta
+      case: 'object': return [0.4, 0.4, 0.4, 1.0]; // Gray
       default: return [0.5, 0.5, 0.5, 1.0];
     }
   }
   function getCorrelationColor(type: Correlation['correlationType']): [number, number, number, number] {
     switch (type) {
-      case 'temporal': return [0.2, 0.8, 0.8, 0.8]; // Cyan
-      case 'spatial': return [0.8, 0.2, 0.8, 0.8]; // Magenta
-      case 'causal': return [0.8, 0.8, 0.2, 0.8]; // Yellow
-      case 'semantic': return [0.2, 0.8, 0.2, 0.8]; // Green
-      case 'entity': return [0.8, 0.4, 0.2, 0.8]; // Orange
+      case: 'temporal': return [0.2, 0.8, 0.8, 0.8]; // Cyan
+      case: 'spatial': return [0.8, 0.2, 0.8, 0.8]; // Magenta
+      case: 'causal': return [0.8, 0.8, 0.2, 0.8]; // Yellow
+      case: 'semantic': return [0.2, 0.8, 0.2, 0.8]; // Green
+      case: 'entity': return [0.8, 0.4, 0.2, 0.8]; // Orange
       default: return [0.5, 0.5, 0.5, 0.8];
     }
   }

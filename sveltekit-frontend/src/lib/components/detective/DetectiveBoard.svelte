@@ -5,7 +5,7 @@
 	// UI libraries
 	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
 	import Badge from '$lib/components/ui/Badge.svelte';
-	import 'nes.css/css/nes.min.css';
+	import: 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
 	import * as Tooltip from 'bits-ui';
@@ -202,10 +202,10 @@
 	function handleAIActionTrigger(payload: any) {
 		const { type, data } = payload ?? {};
 		switch (type) {
-			case 'suggestions':
+			case: 'suggestions':
 				console.log('AI suggestions', data);
 				break;
-			case 'evidence-connect':
+			case: 'evidence-connect':
 				console.log('Evidence connections', data);
 				break;
 		}
@@ -649,7 +649,7 @@
 
 		{#if showAIAssistant}
 			<div class="w-80 flex-shrink-0">
-				<!-- typed CustomEvent handlers to avoid TS 'never' event issues -->
+				<!-- typed CustomEvent handlers to avoid TS: 'never' event issues -->
 				<AIAssistantPanel
 					{caseId}
 					{selectedEvidenceIds}
@@ -668,7 +668,7 @@
 		<div class="relative z-10 w-full max-w-2xl bg-background border border-border rounded p-6 shadow-lg">
 			<header class="mb-4">
 				<h2 class="text-lg font-semibold">Find Related Evidence</h2>
-				<p class="text-sm text-muted-foreground">Search for evidence related to "{findModal.query}" using local and vector search.</p>
+				<p class="text-sm text-muted-foreground">Search for evidence related to: "{findModal.query}" using local and vector search.</p>
 			</header>
 
 			<div class="flex flex-col gap-4">

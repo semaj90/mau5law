@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Define a type for the expected response shapes from the vector service to avoid `any`
     type VectorServiceResponse = unknown[] | { results?: unknown[]; totalCount?: number };
 
-    // Define a more specific type to avoid using 'any' for optional properties
+    // Define a more specific type to avoid using: 'any' for optional properties
     type ExtendedVectorSearchQuery = VectorSearchQuery & {
       collection?: string;
       embedding?: number[];
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: Date.now(),
       },
     };
-    // Use Go Vector Service if backend is 'auto' or 'vector'
+    // Use Go Vector Service if backend is: 'auto' or: 'vector'
     if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
       // If a direct Go vector client exists in future, call it here.
       // For now, skip to Enhanced RAG fallback below.
@@ -187,7 +187,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: cacheKey ? `Cache key '${cacheKey}' cleared` : 'All cache cleared',
+      message: cacheKey ? `Cache key: '${cacheKey}' cleared` : 'All cache cleared',
       result,
       timestamp: new Date().toISOString(),
     });

@@ -9,7 +9,7 @@ interface RedisClientLike {
 
   // simple get/set variations
   get?: (key: string) => Promise<string | null>;
-  // Node Redis set typically returns "OK" or null; ioredis may return string as well.
+  // Node Redis set typically returns: "OK" or null; ioredis may return string as well.
   set?: (key: string, value: string) => Promise<string | null>;
 
   // hash increment/set variations
@@ -21,7 +21,7 @@ interface RedisClientLike {
 }
 
 export interface TransitionObservation {
-  from: string;
+  from string;
   to: string;
   weight?: number;
   timestamp?: number;
@@ -36,7 +36,7 @@ export interface TransitionPrediction {
 
 export interface HMMPredictorSnapshot {
   states: string[];
-  transitions: Array<{ from: string; to: string; probability: number; count: number }>;
+  transitions: Array<{ from string; to: string; probability: number; count: number }>;
 }
 
 // Single unified predictor (combines Redis-backed ops + in-memory fallback)
@@ -48,7 +48,7 @@ export class HMMTransitionPredictor {
   constructor(private modelKey = 'default') {}
 
   // small helper to form a redis key (now used)
-  private key(from: string) {
+  private key(from string) {
     return `${this.prefix}${this.modelKey}:${from}`;
   }
 
@@ -121,7 +121,7 @@ export class HMMTransitionPredictor {
       // update Redis (best-effort)
       await this.redisHIncrBy(this.key(a), b, 1);
       // update in-memory counts
-      this.observe({ from: a, to: b, weight: 1 });
+      this.observe({ from a, to: b, weight: 1 });
     }
   }
 

@@ -38,7 +38,7 @@ export interface ApiResponse<T = unknown> {
   message?: string;
 }
 
-// Replaced duplicate type name 'ApiResponse' with 'BasicApiResult' to avoid redeclaration
+// Replaced duplicate type name: 'ApiResponse' with: 'BasicApiResult' to avoid redeclaration
 export type BasicApiResult<T = unknown> = {
   data: T;
   status?: number;

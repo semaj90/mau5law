@@ -74,16 +74,16 @@ Displays all media: evidence, generated images, documents, uploads
 		items.sort((a: GalleryItem, b: GalleryItem) => {
 			let comparison = 0;
 			switch (sortBy) {
-				case 'date':
+				case: 'date':
 					comparison = new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime();
 					break;
-				case 'name':
+				case: 'name':
 					comparison = (a.title || '').localeCompare(b.title || '');
 					break;
-				case 'type':
+				case: 'type':
 					comparison = (a.type || '').localeCompare(b.type || '');
 					break;
-				case 'case':
+				case: 'case':
 					comparison = (a.caseTitle || '').localeCompare(b.caseTitle || '');
 					break;
 			}
@@ -145,27 +145,27 @@ Displays all media: evidence, generated images, documents, uploads
 
 	function getItemIcon(item: GalleryItem): string {
 		const it = item as GalleryItem;
-		if (it?.metadata?.aiGenerated) return '🎨';
+		if (it?.metadata?.aiGenerated) return: '🎨';
 		switch (it?.category) {
-			case 'evidence':
+			case: 'evidence':
 				switch (it?.type) {
-					case 'image':
-						return '🖼️';
-					case 'video':
-						return '🎥';
-					case 'audio':
-						return '🎵';
-					case 'document':
-						return '📄';
+					case: 'image':
+						return: '🖼️';
+					case: 'video':
+						return: '🎥';
+					case: 'audio':
+						return: '🎵';
+					case: 'document':
+						return: '📄';
 					default:
-						return '📁';
+						return: '📁';
 				}
-			case 'images':
-				return '🖼️';
-			case 'documents':
-				return '📄';
+			case: 'images':
+				return: '🖼️';
+			case: 'documents':
+				return: '📄';
 			default:
-				return '📎';
+				return: '📎';
 		}
 	}
 
@@ -300,13 +300,13 @@ Displays all media: evidence, generated images, documents, uploads
 			<div class="header-actions">
 				<button
 					class="nes-btn is-success"
-					on:click={() => showUploadModal = true}
+					onclick={() => showUploadModal = true}
 				>
 					📤 Upload Files
 				</button>
 				<button
 					class="nes-btn is-normal"
-					on:click={() => loadGalleryData()}
+					onclick={() => loadGalleryData()}
 					disabled={isLoading}
 				>
 					{isLoading ? '🔄' : '↻'} Refresh
@@ -368,7 +368,7 @@ Displays all media: evidence, generated images, documents, uploads
 			<div class="control-group">
 				<button
 					class={ `nes-btn ${sortOrder === 'desc' ? 'is-primary' : 'is-normal'}` }
-					on:click={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
+					onclick={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
 				>
 					{sortOrder === 'desc' ? '↓' : '↑'}
 				</button>
@@ -377,19 +377,19 @@ Displays all media: evidence, generated images, documents, uploads
 			<div class="control-group view-modes">
 				<button
 					class={ `nes-btn ${viewMode === 'grid' ? 'is-primary' : 'is-normal'}` }
-					on:click={() => viewMode = 'grid'}
+					onclick={() => viewMode = 'grid'}
 				>
 					⊞
 				</button>
 				<button
 					class={ `nes-btn ${viewMode === 'list' ? 'is-primary' : 'is-normal'}` }
-					on:click={() => viewMode = 'list'}
+					onclick={() => viewMode = 'list'}
 				>
 					☰
 				</button>
 				<button
 					class={ `nes-btn ${viewMode === 'masonry' ? 'is-primary' : 'is-normal'}` }
-					on:click={() => viewMode = 'masonry'}
+					onclick={() => viewMode = 'masonry'}
 				>
 					⊡
 				</button>
@@ -398,7 +398,7 @@ Displays all media: evidence, generated images, documents, uploads
 			<div class="control-group">
 				<button
 					class="nes-btn is-error"
-					on:click={clearFilters}
+					onclick={clearFilters}
 				>
 					🗑️ Clear
 				</button>
@@ -418,7 +418,7 @@ Displays all media: evidence, generated images, documents, uploads
 	{#if error}
 		<div class="error-state nes-container is-error">
 			<p>❌ {error}</p>
-			<button class="nes-btn is-normal" on:click={() => loadGalleryData()}>
+			<button class="nes-btn is-normal" onclick={() => loadGalleryData()}>
 				Retry
 			</button>
 		</div>
@@ -436,14 +436,14 @@ Displays all media: evidence, generated images, documents, uploads
 				<div class="empty-actions">
 					<button
 						class="nes-btn is-success"
-						on:click={() => showUploadModal = true}
+						onclick={() => showUploadModal = true}
 					>
 						📤 Upload Files
 					</button>
 					{#if searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all'}
 						<button
 							class="nes-btn is-normal"
-							on:click={clearFilters}
+							onclick={clearFilters}
 						>
 							Clear Filters
 						</button>
@@ -455,7 +455,7 @@ Displays all media: evidence, generated images, documents, uploads
 				{#each filteredItems as item}
 					<div class="gallery-item nes-container is-rounded">
 						<div class="item-preview" role="button" tabindex="0"
-								on:click={() => openItem(item)}>
+								onclick={() => openItem(item)}>
 							{#if isImageItem(item)}
 								<img
 									src={getItemPreview(item)}
@@ -530,12 +530,12 @@ Displays all media: evidence, generated images, documents, uploads
 	<!-- Upload Modal -->
 	{#if showUploadModal}
 	<div class="modal-overlay" role="button" tabindex="0"
-					on:click={() => showUploadModal = false}>
+					onclick={() => showUploadModal = false}>
 		<div class="modal-content nes-container is-rounded" role="button" tabindex="0"
 					on:click|stopPropagation={() => {}}>
 				<div class="modal-header">
 					<h3>Upload Files</h3>
-					<button class="nes-btn is-error" on:click={() => showUploadModal = false}>×</button>
+					<button class="nes-btn is-error" onclick={() => showUploadModal = false}>×</button>
 				</div>
 				<div class="modal-body">
 					<div class="upload-area nes-container is-dark">
@@ -544,7 +544,7 @@ Displays all media: evidence, generated images, documents, uploads
 							id="file-upload"
 							multiple
 							accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
-							on:change={handleFileUpload}
+							onchange={handleFileUpload}
 							style="display: none;"
 						>
 						<label for="file-upload" class="upload-label">
@@ -576,12 +576,12 @@ Displays all media: evidence, generated images, documents, uploads
 	<!-- Item Detail Modal -->
 	{#if selectedItem}
 	<div class="modal-overlay" role="button" tabindex="0"
-					on:click={closeModal}>
+					onclick={closeModal}>
 		<div class="modal-content detail-modal nes-container is-rounded" role="button" tabindex="0"
 					on:click|stopPropagation={() => {}}>
 				<div class="modal-header">
 					<h3>{selectedItem.title || 'Gallery Item'}</h3>
-					<button class="nes-btn is-error" on:click={closeModal}>×</button>
+					<button class="nes-btn is-error" onclick={closeModal}>×</button>
 				</div>
 				<div class="modal-body">
 					<div class="detail-content">
@@ -654,10 +654,10 @@ Displays all media: evidence, generated images, documents, uploads
 						{/if}
 					</div>
 					<div class="detail-actions">
-						<button class="nes-btn is-success" on:click={() => downloadItem(selectedItem)}>
+						<button class="nes-btn is-success" onclick={() => downloadItem(selectedItem)}>
 							⬇️ Download
 						</button>
-						<button class="nes-btn is-primary" on:click={() => shareItem(selectedItem)}>
+						<button class="nes-btn is-primary" onclick={() => shareItem(selectedItem)}>
 							📤 Share
 						</button>
 						{#if selectedItem.caseId}
@@ -665,7 +665,7 @@ Displays all media: evidence, generated images, documents, uploads
 								🔗 View Case
 							</a>
 						{/if}
-						<button class="nes-btn is-error" on:click={() => deleteItem(selectedItem)}>
+						<button class="nes-btn is-error" onclick={() => deleteItem(selectedItem)}>
 							🗑️ Delete
 						</button>
 					</div>

@@ -72,7 +72,7 @@ async function initializeDynamicPorts(): Promise<Map<string, number>> {
 
 // Prefer environment overrides for per-service ports, fallback to provided default.
 function getServicePortWithFallback(serviceName: string, fallbackPort: number): number {
-  // map service name like "enhanced-rag" -> ENV key ENHANCED_RAG_PORT
+  // map service name like: "enhanced-rag" -> ENV key ENHANCED_RAG_PORT
   const envKey = `${serviceName.replace(/-/g, '_').toUpperCase()}_PORT`;
   const envVal = process.env[envKey];
   if (envVal) {

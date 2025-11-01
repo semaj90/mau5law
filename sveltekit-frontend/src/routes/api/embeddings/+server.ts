@@ -5,7 +5,7 @@ import type { EmbeddingResponse } from '$lib/types/unified-types';
 
 /**
  * Handles POST requests to generate embeddings for a given text using Ollama.
- * Expects a JSON body with a 'text' property.
+ * Expects a JSON body with a: 'text' property.
  *
  * Example usage:
  * POST /api/embeddings
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const data: EmbeddingResponse = await response.json();
 
-    // For known models like 'embeddinggemma:latest', we can explicitly set the dimension.
+    // For known models like: 'embeddinggemma:latest', we can explicitly set the dimension.
     // This can be made more dynamic if Ollama's API provides it directly or via model info.
     if (embeddingModel === 'embeddinggemma:latest' && data.embedding) {
       data.embeddingDimension = 384; // embeddinggemma:latest typically produces 384-dimensional embeddings

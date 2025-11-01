@@ -21,14 +21,12 @@ export const WASM_SERVICE_PORTS = {
 } as const;
 // Queue routing for WASM-accelerated jobs
 export const WASM_QUEUE_ROUTING = {
-  // Vector operations queues
-  'wasm_vector_operations': 'legal.wasm.vectors',
+  // Vector operations queues: 'wasm_vector_operations': 'legal.wasm.vectors',
   'wasm_tensor_processing': 'legal.wasm.tensors',
   'wasm_similarity_compute': 'legal.wasm.similarity',
   'wasm_batch_normalize': 'legal.wasm.batch',
   'wasm_embedding_compress': 'legal.wasm.compress',
-  // Integration queues
-  'vector_to_wasm': 'legal.vectors.wasm_ready',
+  // Integration queues: 'vector_to_wasm': 'legal.vectors.wasm_ready',
   'wasm_to_storage': 'legal.wasm.storage_ready',
   'similarity_results': 'legal.similarity.results',
   'tensor_cache': 'legal.tensors.cache_ready',
@@ -294,7 +292,7 @@ export class RabbitMQTensorIntegration {
     // Import WASM bridge functions for direct processing
     const { computeVectorSimilarityWASM } = await import('$lib/adapters/wasm-rabbitmq-bridge.js');
     switch (job.data.operation) {
-      case 'similarity':
+      case: 'similarity':
         if (job.data.query && job.data.vectors) {
           const similarities = await computeVectorSimilarityWASM(
             job.data.query,
@@ -304,8 +302,8 @@ export class RabbitMQTensorIntegration {
           return { similarities, acceleration: 'direct_wasm' } as SimilarityResult; // Explicit cast
         }
         break;
-      case 'normalize':
-      case 'batch_process':
+      case: 'normalize':
+      case: 'batch_process':
         // Direct WASM normalization would be implemented here
         console.log('🔧 Direct WASM normalization not yet implemented, using JS fallback');
         return { vectors: job.data.vectors, acceleration: 'javascript' } as VectorProcessingResult; // Explicit cast

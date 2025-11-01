@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/bitsbutton.svelte';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   interface AnalysisResults {
@@ -8,11 +7,11 @@
     predicted_outcome: string;
     risk_factors: string[];
     recommendations: string[];
-    similar_cases: Array;
-    extracted_entities: Array;
+    similar_cases: Array<{ id: string; title: string; similarity: number }>;
+    extracted_entities: Array<{ type: string; value: string; confidence: number }>;
     key_facts: string[];
     legal_issues: string[];
-    precedents: Array;
+    precedents: Array<{ case_name: string; relevance: number; summary: string }>;
   }
   interface FormData {
     caseType?: string;
@@ -25,8 +24,10 @@
   interface Props {
     formData?: FormData;
     evidenceData?: EvidenceData;
+    // optional callback the parent can provide
+    ondispatch?: (results: AnalysisResults) => void;
   }
-  let { formData = {}, evidenceData = {} }: Props = $props();
+  let { formData = {}, evidenceData = {}, ondispatch } : Props = $props();
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
@@ -78,6 +79,7 @@
         precedents: [{ case_name: 'Smith v. Company', relevance: 0.88, summary: 'Similar liability case' }],
       };
       analysisResults.set(mockResults);
+      // call optional callback if provided
       ondispatch?.(mockResults);
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -91,16 +93,17 @@
 <div class="ai-analysis-form p-6 bg-white rounded-lg shadow-lg">
   <h3 class="text-xl font-bold mb-4">AI Legal Analysis</h3>
   <div class="mb-6">
-    <Button
+    <!-- Use native button to avoid prop typing mismatch on the custom BitsButton -->
+    <button
       onclick={startAnalysis}
       disabled={isAnalyzing}
       class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg disabled:opacity-50 bits-btn bits-btn"
     >
       {isAnalyzing ? 'Analyzing...' : 'Start AI Analysis'}
-    </Button>
+    </button>
   </div>
   {#if isAnalyzing}
-    <div class="analysis-progress mb-6" transitionslide>
+    <div class="analysis-progress mb-6" transition:slide>
       <div class="progress-bar bg-gray-200 rounded-full h-3 mb-2">
         <div
           class="bg-blue-600 h-full rounded-full transition-all duration-300"
@@ -111,7 +114,7 @@
     </div>
   {/if}
   {#if $analysisResults}
-    <div class="analysis-results mt-6" transitionfade>
+    <div class="analysis-results mt-6" transition:fade>
       <h4 class="text-lg font-semibold mb-4">Analysis Results</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="result-nier-bits-card p-4 bg-gray-50 rounded-lg">
@@ -154,10 +157,11 @@
   .progress-bar {
     overflow: hidden;
   }
-  .result-card {
+  /* target the actual card class used in the template */
+  .result-nier-bits-card {
     transition: all 0.2s ease;
   }
-  .result-card:hover {
+  .result-nier-bits-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }

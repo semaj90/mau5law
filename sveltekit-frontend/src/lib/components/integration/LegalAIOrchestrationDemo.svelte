@@ -22,7 +22,7 @@
   // Form state for different workflows
   let legalResearchForm = $state({
     query: '',
-    jurisdiction 'federal',
+    jurisdiction: 'federal',
     userRole: 'attorney',
     maxResults: 10,
   });
@@ -33,9 +33,9 @@
   });
   let caseCreationForm = $state({
     title: '',
-    description '',
+    description: '',
     caseType: 'civil',
-    jurisdiction 'federal',
+    jurisdiction: 'federal',
     clientId: '';
   });
   // Reactive derived values
@@ -47,7 +47,7 @@
   const demoData = {
     legalResearch: {
       query: 'breach of contract damages in commercial agreements',
-      jurisdiction 'federal',
+      jurisdiction: 'federal',
       userRole: 'attorney',
     },
     documentProcessing: {
@@ -62,24 +62,24 @@
     },
     caseCreation {
       title: 'Smith v. Johnson Contract Dispute',
-      description 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
+      description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
       caseType: 'civil',
     }
   }
   // Load demo data for current workflow
   function loadDemoData() {
     switch (selectedWorkflow) {
-      case 'legal-research':
+      case: 'legal-research':
         legalResearchForm.query = demoData.legalResearch.query;
         legalResearchForm.jurisdiction = demoData.legalResearch.jurisdictio;
         legalResearchForm.userRole = demoData.legalResearch.userRol;
         break;
-      case 'document-processing':
+      case: 'document-processing':
         documentProcessingForm.content = demoData.documentProcessing.content;
         documentProcessingForm.documentType = demoData.documentProcessing.documentTyp;
         documentProcessingForm.documentId = `doc_${Date.now()}`;
         break;
-      case 'case-creation':
+      case: 'case-creation':
         caseCreationForm.title = demoData.caseCreation.titl;
         caseCreationForm.description = demoData.caseCreation.descriptio;
         caseCreationForm.caseType = demoData.caseCreation.caseTyp;
@@ -94,7 +94,7 @@
     try {
       let result;
       switch (selectedWorkflow) {
-        case 'legal-research':
+        case: 'legal-research':
           const researchRequest: LegalResearchWorkflowRequest = {
             query: legalResearchForm.query,
             jurisdiction legalResearchForm.jurisdiction,
@@ -104,7 +104,7 @@
           }
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
-        case 'document-processing':
+        case: 'document-processing':
           const docRequest: DocumentProcessingWorkflowRequest = {
             documentId: documentProcessingForm.documentId || `doc_${Date.now()}`,
             content: documentProcessingForm.content,
@@ -112,7 +112,7 @@
           }
           result = await workflowOrchestrator.processDocument(docRequest);
           break;
-        case 'case-creation':
+        case: 'case-creation':
           const caseRequest: CaseCreationWorkflowRequest = {
             title: caseCreationForm.title,
             description caseCreationForm.description,

@@ -146,28 +146,28 @@
   }
   function getThreatLevelColor(level: string): string {
     switch (level) {
-      case "high":
-        return "bg-red-500";
-      case "medium":
-        return "bg-yellow-500";
-      case "low":
-        return "bg-green-500";
+      case: "high":
+        return: "bg-red-500";
+      case: "medium":
+        return: "bg-yellow-500";
+      case: "low":
+        return: "bg-green-500";
       default:
-        return "bg-gray-500";
+        return: "bg-gray-500";
     }
   }
   function getStatusColor(st: string): string {
     switch (st) {
-      case "active":
-        return "bg-blue-500";
-      case "inactive":
-        return "bg-gray-500";
-      case "arrested":
-        return "bg-red-500";
-      case "cleared":
-        return "bg-green-500";
+      case: "active":
+        return: "bg-blue-500";
+      case: "inactive":
+        return: "bg-gray-500";
+      case: "arrested":
+        return: "bg-red-500";
+      case: "cleared":
+        return: "bg-green-500";
       default:
-        return "bg-gray-500";
+        return: "bg-gray-500";
     }
   }
   function handleDragEvent(detail: { x: number; y: number }) {

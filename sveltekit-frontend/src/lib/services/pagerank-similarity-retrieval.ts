@@ -611,19 +611,19 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       weights[key] = weights[key] / totalWeight;
     });
     switch (ranking.combinationStrategy) {
-      case 'weighted':
+      case: 'weighted':
         return (
           scores.pageRank * weights.pageRank +
           scores.semanticSimilarity * weights.semanticSimilarity +
           scores.recencyScore * weights.recencyScore +
           scores.authorityScore * weights.authorityScore
         );
-      case 'product':
+      case: 'product':
         return Math.pow(
           Math.max(0, scores.pageRank * scores.semanticSimilarity * scores.recencyScore * scores.authorityScore),
           1 / 4
         );
-      case 'harmonic': {
+      case: 'harmonic': {
         const reciprocalSum =
           1 / (scores.pageRank + 0.001) +
           1 / (scores.semanticSimilarity + 0.001) +
@@ -631,7 +631,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           1 / (scores.authorityScore + 0.001);
         return 4 / reciprocalSum;
       }
-      case 'adaptive': {
+      case: 'adaptive': {
         const maxScore = Math.max(
           scores.pageRank,
           scores.semanticSimilarity,

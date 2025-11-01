@@ -242,9 +242,9 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
           { isArchived: true, status: 'archived' },
           userId
         );
-        results.push({ caseId, success: true, case: archivedCase });
+        results.push(<any><any>{ caseId, success: true, case: archivedCase });
       } catch (error) {
-        results.push({
+        results.push(<any><any>{
           caseId,
           success: false,
           error: error instanceof Error ? error.message : 'Failed to archive case'

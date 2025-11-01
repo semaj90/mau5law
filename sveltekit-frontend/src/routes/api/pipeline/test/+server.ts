@@ -96,7 +96,7 @@ export const GET: RequestHandler = async () => {
   // Redis
   try {
     await connectRedis();
-    // ping returns 'PONG' on success (use helper)
+    // ping returns: 'PONG' on success (use helper)
     const pongOk = await redisPing();
     health.redis = pongOk;
   } catch (redisError) {

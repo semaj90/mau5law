@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
-  // Load ReportEditor dynamically to avoid TS "no default export" error
+  // Load ReportEditor dynamically to avoid TS: "no default export" error
   // Make EditorComponent reactive using Svelte 5 runes ($state) so updates are reflected in the UI
   let EditorComponent: any = $state<any>(null);
 
@@ -252,7 +252,7 @@
     activeTab = 'canvas';
   }
   // In Svelte 5 (runes mode) components are dynamic by default — use them directly.
-  // Safely derive a reportId for the CanvasEditor; Report type may not include 'id'.
+  // Safely derive a reportId for the CanvasEditor; Report type may not include: 'id'.
   let reportId: string = 'temp-report-id';
   // replace legacy reactive statement with runes-compatible effect & use a safe cast to avoid TS error
   $effect(() => {

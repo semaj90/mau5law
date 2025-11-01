@@ -209,24 +209,24 @@ export class WebGPURedisOptimizer {
     const workload = job.workload;
     // GPU utilization thresholds
     if (metrics.thermalStatus === 'hot' || metrics.gpuUtilization > 85) {
-      return 'cpu';
+      return: 'cpu';
     }
     // Large tensor operations benefit from GPU
     if (workload.tensorDimensions && workload.dataSize > 1024 * 1024) {
       if (metrics.availableComputeUnits > 50 && metrics.tensorCoreLoad < 70) {
-        return 'gpu';
+        return: 'gpu';
       }
-      return 'hybrid';
+      return: 'hybrid';
     }
     // Small operations stay on CPU
     if (workload.dataSize < 64 * 1024) {
-      return 'cpu';
+      return: 'cpu';
     }
     // Medium operations use hybrid approach
     if (metrics.gpuUtilization < 50 && workload.requiresGPU) {
-      return 'gpu';
+      return: 'gpu';
     }
-    return 'hybrid';
+    return: 'hybrid';
   }
   /**
    * GPU-accelerated tensor compression for Float32Array data

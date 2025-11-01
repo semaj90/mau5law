@@ -116,10 +116,10 @@ export const POST: RequestHandler = async ({ request }) => {
         .map(vectorType => {
           let vectorColumn;
           switch (vectorType) {
-            case 'title':
+            case: 'title':
               vectorColumn = documents.title_embedding;
               break;
-            case 'summary':
+            case: 'summary':
               vectorColumn = documents.summary_embedding;
               break;
             default:
@@ -304,7 +304,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query');
     if (!query) {
-      return json({ error: 'Query parameter "q" or "query" is required' }, { status: 400 });
+      return json({ error: 'Query parameter: "q" or: "query" is required' }, { status: 400 });
     }
     // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {

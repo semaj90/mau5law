@@ -1,9 +1,21 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { notifications  } from '$lib/stores/unified';
-  import { Activity, Camera, CheckCircle, Clock, FileText, Plus, RefreshCw, Search, TrendingUp } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import { notifications } from '$lib/stores/unified';
+  // Replace named imports (which triggered TS errors) with a namespace import
+  import * as Lucide from 'lucide-svelte';
+
+  // Create safe local references to icons (handles different export shapes)
+  const Activity = (Lucide as any).Activity ?? (Lucide as any).activity ?? (Lucide as any).default ?? null;
+  const Camera = (Lucide as any).Camera ?? (Lucide as any).camera ?? (Lucide as any).default ?? null;
+  const CheckCircle = (Lucide as any).CheckCircle ?? (Lucide as any).checkCircle ?? (Lucide as any).default ?? null;
+  const Clock = (Lucide as any).Clock ?? (Lucide as any).clock ?? (Lucide as any).default ?? null;
+  const FileText = (Lucide as any).FileText ?? (Lucide as any).fileText ?? (Lucide as any).default ?? null;
+  const Plus = (Lucide as any).Plus ?? (Lucide as any).plus ?? (Lucide as any).default ?? null;
+  const RefreshCw = (Lucide as any).RefreshCw ?? (Lucide as any).refreshCw ?? (Lucide as any).default ?? null;
+  const Search = (Lucide as any).Search ?? (Lucide as any).search ?? (Lucide as any).default ?? null;
+  const TrendingUp = (Lucide as any).TrendingUp ?? (Lucide as any).trendingUp ?? (Lucide as any).default ?? null;
+
   // Data stores for all entities
   let cases: any[] = $state([]);
   let evidence: any[] = $state([]);
@@ -36,7 +48,7 @@
     reports: '',
     criminals: '',
     activities: '',
-    users: '', // <-- added missing 'users' property so searchTerms.users is valid
+    users: '', // <-- added missing: 'users' property so searchTerms.users is valid
   });
   let refreshing = $state(false);
   // Fetch all data
@@ -53,18 +65,20 @@
         fetchUsers(),
       ]);
       calculateStats();
-      notifications.add({
+      // use safe helper instead of assuming `.add` exists
+      notifyNotification({
         type: 'success',
         title: 'Data Refreshed',
         message: 'All data has been successfully updated',
       });
     } catch (error) {
       console.error('Error refreshing data:', error);
-      notifications.add({
+      notifyNotification({
         type: 'error',
         title: 'Refresh Failed',
         message:
-          'Failed to refresh some (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }). Please try again.',
+          'Failed to refresh some data. Please try again.',
+        details: String(error),
       });
     } finally {
       refreshing = false;
@@ -222,32 +236,73 @@
   // Search handlers
   function handleSearch(entity: string) {
     switch (entity) {
-      case 'cases':
+      case: 'cases':
         fetchCases();
         break;
-      case 'evidence':
+      case: 'evidence':
         fetchEvidence();
         break;
-      case 'reports':
+      case: 'reports':
         fetchReports();
         break;
-      case 'criminals':
+      case: 'criminals':
         fetchCriminals();
         break;
-      case 'activities':
+      case: 'activities':
         fetchActivities();
         break;
     }
   }
   // Format date helper
   function formatDate(dateString: string) {
-    if (!dateString) return 'N/A';
+    if (!dateString) return: 'N/A';
     return new Date(dateString).toLocaleDateString();
   }
   // Initialize
   $effect(() => {
     fetchAllData();
   });
+  // --- new: safe notification helper (tries several APIs, falls back to update) ---
+  function notifyNotification(payload: Record<string, any>) {
+    const anyNotifications = notifications as any;
+
+    // try common named APIs
+    if (typeof anyNotifications.add === 'function') {
+      return anyNotifications.add(payload);
+    }
+    if (typeof anyNotifications.notify === 'function') {
+      return anyNotifications.notify(payload);
+    }
+    if (typeof anyNotifications.push === 'function') {
+      return anyNotifications.push(payload);
+    }
+    if (typeof anyNotifications.addNotification === 'function') {
+      return anyNotifications.addNotification(payload);
+    }
+    if (typeof anyNotifications.create === 'function') {
+      return anyNotifications.create(payload);
+    }
+
+    // fallback: if the store exposes an update function (writable store), mutate safely
+    if (typeof anyNotifications.update === 'function') {
+      return anyNotifications.update((state: any) => {
+        // support two shapes: array store or object with items array
+        const newItem = { id: (globalThis as any).crypto?.randomUUID?.() ?? Date.now(), ...payload };
+        if (Array.isArray(state)) {
+          return [newItem, ...state];
+        }
+        if (state && Array.isArray(state.items)) {
+          return { ...state, items: [newItem, ...state.items] };
+        }
+        // generic fallback: create items array
+        return { ...(state || {}), items: [newItem] };
+      });
+    }
+
+    // last resort: log so developer sees a hint
+    // eslint-disable-next-line no-console
+    console.warn('Unable to deliver notification; unknown notifications API', payload);
+  }
 </script>
 
 <div class="crud-dashboard container mx-auto px-4">

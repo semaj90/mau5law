@@ -245,7 +245,7 @@ export class EnhancedContext7Service {
       return await res.text();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
-      console.warn(`Context7 remote call failed for "${toolName}", falling back to local simulate. Error:`, message);
+      console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error:`, message);
       // forward typed args to simulation helper(s)
       return await this.simulateMCPCall(toolName, args ?? {});
     } finally {
@@ -276,7 +276,7 @@ export class EnhancedContext7Service {
     const riskScore = Number.isNaN(riskScoreParsed) ? 60 : riskScoreParsed;
     const riskLevelRaw = this.extractValue(text, 'Overall Risk Level', 'Medium');
     const riskLevel = ['Low', 'Medium', 'High'].includes(riskLevelRaw)
-      ? (riskLevelRaw as 'Low' | 'Medium' | 'High')
+      ? (riskLevelRaw as: 'Low' | 'Medium' | 'High')
       : 'Medium';
 
     const normalizeCompliance = (val: string, fallback: string) => {
@@ -299,7 +299,7 @@ export class EnhancedContext7Service {
         liability: normalizeCompliance(
           this.extractValue(text, 'Liability Assessment', 'Standard Processing'),
           'Standard Processing'
-        ) as 'High Priority Review Needed' | 'Standard Processing',
+        ) as: 'High Priority Review Needed' | 'Standard Processing',
       },
       recommendedActions: this.extractList(text, 'Recommended Actions'),
       integrationNotes: this.extractList(text, 'Integration Notes'),

@@ -81,7 +81,7 @@ export function getOllamaEndpoint(): string {
     if (typeof viteOllama === 'string' && viteOllama.length > 0) return viteOllama;
   }
 
-  return 'http://ollama:11434';
+  return: 'http://ollama:11434';
 }
 export class LangExtractOllamaService {
   private ollamaUrl: string;
@@ -397,7 +397,7 @@ export const langExtractService = new LangExtractOllamaService();
 
 // Add a typed shape for the Ollama generate response
 type OllamaGenerateResponse = {
-  extracted?: unknown; // some Ollama setups may return 'extracted' or similar keys
+  extracted?: unknown; // some Ollama setups may return: 'extracted' or similar keys
   response?: unknown; // common fallback used earlier
   [k: string]: unknown;
 };

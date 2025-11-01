@@ -183,16 +183,16 @@
     filtered.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case 'relevance':
+        case: 'relevance':
           comparison = b.relevanceScore - a.relevanceScore;
           break;
-        case 'date':
+        case: 'date':
           comparison = new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
           break;
-        case 'usage':
+        case: 'usage':
           comparison = b.usageCount - a.usageCount;
           break;
-        case 'accuracy':
+        case: 'accuracy':
           comparison = b.accuracy - a.accuracy;
           break;
         default:
@@ -316,9 +316,9 @@
   }
 
   function getAccuracyColor(accuracy: number) {
-    if (accuracy >= 0.9) return '#10b981';
-    if (accuracy >= 0.7) return '#f59e0b';
-    return '#ef4444';
+    if (accuracy >= 0.9) return: '#10b981';
+    if (accuracy >= 0.7) return: '#f59e0b';
+    return: '#ef4444';
   }
 
   // Allow using events on these UI components without TS complaining.
@@ -353,41 +353,41 @@
            </div>
            <div class="citation-actions">
 -            <Button
--              on:click={() => (showAddForm = !showAddForm)}
+-              onclick={() => (showAddForm = !showAddForm)}
 -              style="background: {citationBuilder.styling.colors.evidence}"
 -            >
 -              ➕ Add Citation
 -            </Button>
 -            <Button
--              on:click={() => (bulkOperations = !bulkOperations)}
+-              onclick={() => (bulkOperations = !bulkOperations)}
 -              variant="outline"
 -            >
 -              🔧 Bulk Operations
 -            </Button>
 +            <svelte:component this={UIButton}
-+              on:click={() => (showAddForm = !showAddForm)}
++              onclick={() => (showAddForm = !showAddForm)}
 +              style="background: {citationBuilder.styling.colors.evidence}"
 +            >
 +              ➕ Add Citation
 +            </svelte:component>
 +            <svelte:component this={UIButton}
-+              on:click={() => (bulkOperations = !bulkOperations)}
++              onclick={() => (bulkOperations = !bulkOperations)}
 +              variant="outline"
 +            >
 +              🔧 Bulk Operations
 +            </svelte:component>
              {#if selectedCitations.size > 0}
                <div class="bulk-actions" transition:fade>
--                <Button on:click={() => exportCitations('bluebook')} size="sm">
+-                <Button onclick={() => exportCitations('bluebook')} size="sm">
 -                  📄 Bluebook ({selectedCitations.size})
 -                </Button>
--                <Button on:click={() => exportCitations('json')} size="sm" variant="outline">
+-                <Button onclick={() => exportCitations('json')} size="sm" variant="outline">
 -                  🔧 JSON
 -                </Button>
-+                <svelte:component this={UIButton} on:click={() => exportCitations('bluebook')} size="sm">
++                <svelte:component this={UIButton} onclick={() => exportCitations('bluebook')} size="sm">
 +                  📄 Bluebook ({selectedCitations.size})
 +                </svelte:component>
-+                <svelte:component this={UIButton} on:click={() => exportCitations('json')} size="sm" variant="outline">
++                <svelte:component this={UIButton} onclick={() => exportCitations('json')} size="sm" variant="outline">
 +                  🔧 JSON
 +                </svelte:component>
                </div>
@@ -402,18 +402,18 @@
           <div class="add-form" transition:fly={{ y: -20, duration: 300 }}>
             <div class="form-header">
               <h3>Add New Citation</h3>
--              <Button on:click={() => (showAddForm = false)} size="sm">✕</Button>
-+              <svelte:component this={UIButton} on:click={() => (showAddForm = false)} size="sm">✕</svelte:component>
+-              <Button onclick={() => (showAddForm = false)} size="sm">✕</Button>
++              <svelte:component this={UIButton} onclick={() => (showAddForm = false)} size="sm">✕</svelte:component>
             </div>
             <div class="form-content">
--              <Button on:click={addNewCitation}>
+-              <Button onclick={addNewCitation}>
 -                📝 Create New Citation
 -              </Button>
--              <Button on:click={searchCitations} disabled={!searchTerm}>
+-              <Button onclick={searchCitations} disabled={!searchTerm}>
 -                🔍 Search Legal Databases
 -              </Button>
-+              <svelte:component this={UIButton} on:click={addNewCitation}>📝 Create New Citation</svelte:component>
-+              <svelte:component this={UIButton} on:click={searchCitations} disabled={!searchTerm}>🔍 Search Legal Databases</svelte:component>
++              <svelte:component this={UIButton} onclick={addNewCitation}>📝 Create New Citation</svelte:component>
++              <svelte:component this={UIButton} onclick={searchCitations} disabled={!searchTerm}>🔍 Search Legal Databases</svelte:component>
             </div>
           </div>
         {/if}
@@ -423,18 +423,18 @@
           <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
             <div class="panel-header">
               <h3>Bulk Operations</h3>
--              <Button on:click={() => (bulkOperations = false)} size="sm">✕</Button>
-+              <svelte:component this={UIButton} on:click={() => (bulkOperations = false)} size="sm">✕</svelte:component>
+-              <Button onclick={() => (bulkOperations = false)} size="sm">✕</Button>
++              <svelte:component this={UIButton} onclick={() => (bulkOperations = false)} size="sm">✕</svelte:component>
             </div>
             <div class="bulk-controls">
--              <Button on:click={selectAll}>Select All ({filteredCitations.length})</Button>
--              <Button on:click={clearSelection}>Clear Selection</Button>
--              <Button on:click={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
+-              <Button onclick={selectAll}>Select All ({filteredCitations.length})</Button>
+-              <Button onclick={clearSelection}>Clear Selection</Button>
+-              <Button onclick={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
 -                Export Selected ({selectedCitations.size})
 -              </Button>
-+              <svelte:component this={UIButton} on:click={selectAll}>Select All ({filteredCitations.length})</svelte:component>
-+              <svelte:component this={UIButton} on:click={clearSelection}>Clear Selection</svelte:component>
-+              <svelte:component this={UIButton} on:click={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
++              <svelte:component this={UIButton} onclick={selectAll}>Select All ({filteredCitations.length})</svelte:component>
++              <svelte:component this={UIButton} onclick={clearSelection}>Clear Selection</svelte:component>
++              <svelte:component this={UIButton} onclick={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
 +                Export Selected ({selectedCitations.size})
 +              </svelte:component>
             </div>
@@ -446,22 +446,22 @@
           <div class="search-controls">
 -            <Input
 -              value={searchTerm}
--              on:input={(e) => (searchTerm = (e.target as HTMLInputElement).value)}
+-              oninput={(e) => (searchTerm = (e.target as HTMLInputElement).value)}
 -              placeholder="Search citations by title, content, tags, or notes..."
 -              class="citation-search"
 -            />
--            <Button on:click={searchCitations} disabled={!searchTerm}>
+-            <Button onclick={searchCitations} disabled={!searchTerm}>
 -              🔍 Search
 -            </Button>
 +            <div class="citation-search">
 +              <svelte:component
 +                this={UIInput}
 +                value={searchTerm}
-+                on:input={(e: any) => (searchTerm = (e.target as HTMLInputElement).value)}
++                oninput={(e: any) => (searchTerm = (e.target as HTMLInputElement).value)}
 +                placeholder="Search citations by title, content, tags, or notes..."
 +              />
 +            </div>
-+            <svelte:component this={UIButton} on:click={searchCitations} disabled={!searchTerm}>🔍 Search</svelte:component>
++            <svelte:component this={UIButton} onclick={searchCitations} disabled={!searchTerm}>🔍 Search</svelte:component>
           </div>
           <div class="filter-controls">
             <select bind:value={filterType} class="filter-select">
@@ -566,13 +566,13 @@
                 </div>
                 <div class="citation-actions">
                   <svelte:component this={UIButton}
-                    on:click={() => verifyCitation(citation.id)}
+                    onclick={() => verifyCitation(citation.id)}
                     disabled={isVerifying || citation.verified}
                     size="sm"
                   >
                     {isVerifying ? '🔄' : citation.verified ? '✅' : '🔍'} Verify
                   </svelte:component>
-                  <svelte:component this={UIButton} on:click={() => deleteCitation(citation.id)} size="sm" variant="outline">🗑️</svelte:component>
+                  <svelte:component this={UIButton} onclick={() => deleteCitation(citation.id)} size="sm" variant="outline">🗑️</svelte:component>
                  </div>
               </div>
               <div class="citation-content">
@@ -689,10 +689,10 @@
               <span class="no-citations-icon">📚</span>
               <h3>No Citations Found</h3>
               <p>No citations match your current search and filter criteria.</p>
--              <Button on:click={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
+-              <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
 -                Clear Filters
 -              </Button>
-+              <svelte:component this={UIButton} on:click={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
++              <svelte:component this={UIButton} onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
 +                Clear Filters
 +              </svelte:component>
             </div>

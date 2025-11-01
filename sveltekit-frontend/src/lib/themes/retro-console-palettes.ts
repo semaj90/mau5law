@@ -53,14 +53,7 @@ export const NES_PALETTE: ConsolePalette = {
     confidence: '#32CD32', // Lime green
     priority: '#FF6347', // Tomato
     accent: [
-      '#7C7C7C', // Gray
-      '#0000FC', // Blue
-      '#BC0000', // Dark Red
-      '#BC00BC', // Purple
-      '#00BC00', // Green
-      '#00BCBC', // Cyan
-      '#BCBC00', // Yellow
-      '#BCBCBC', // Light Gray
+      '#7C7C7C', // Gray: '#0000FC', // Blue: '#BC0000', // Dark Red: '#BC00BC', // Purple: '#00BC00', // Green: '#00BCBC', // Cyan: '#BCBC00', // Yellow: '#BCBCBC', // Light Gray
     ],
   },
   gradients: {
@@ -108,14 +101,7 @@ export const SNES_PALETTE: ConsolePalette = {
     confidence: '#00D2D3', // Cyan
     priority: '#FF5252', // Red
     accent: [
-      '#FF6B9D', // Pink
-      '#C44569', // Rose
-      '#524A7B', // Dark Purple
-      '#2D3561', // Navy
-      '#0E7490', // Teal
-      '#FFC857', // Amber
-      '#119DA4', // Ocean
-      '#6A0572', // Violet
+      '#FF6B9D', // Pink: '#C44569', // Rose: '#524A7B', // Dark Purple: '#2D3561', // Navy: '#0E7490', // Teal: '#FFC857', // Amber: '#119DA4', // Ocean: '#6A0572', // Violet
     ],
   },
   gradients: {
@@ -163,14 +149,7 @@ export const PS1_PALETTE: ConsolePalette = {
     confidence: '#10B981', // Emerald
     priority: '#F59E0B', // Amber
     accent: [
-      '#2196F3', // Light Blue
-      '#00BCD4', // Cyan
-      '#009688', // Teal
-      '#4CAF50', // Green
-      '#8BC34A', // Light Green
-      '#CDDC39', // Lime
-      '#FFC107', // Amber
-      '#FF5722', // Deep Orange
+      '#2196F3', // Light Blue: '#00BCD4', // Cyan: '#009688', // Teal: '#4CAF50', // Green: '#8BC34A', // Light Green: '#CDDC39', // Lime: '#FFC107', // Amber: '#FF5722', // Deep Orange
     ],
   },
   gradients: {
@@ -218,14 +197,7 @@ export const N64_PALETTE: ConsolePalette = {
     confidence: '#32CD32', // Lime green
     priority: '#FF6347', // Tomato
     accent: [
-      '#AA00FF', // Purple
-      '#FF00AA', // Magenta
-      '#00AAFF', // Sky Blue
-      '#FFAA00', // Orange
-      '#AA5500', // Brown
-      '#5500AA', // Indigo
-      '#00AA55', // Sea Green
-      '#FF55AA', // Pink
+      '#AA00FF', // Purple: '#FF00AA', // Magenta: '#00AAFF', // Sky Blue: '#FFAA00', // Orange: '#AA5500', // Brown: '#5500AA', // Indigo: '#00AA55', // Sea Green: '#FF55AA', // Pink
     ],
   },
   gradients: {
@@ -273,14 +245,7 @@ export const PS2_PALETTE: ConsolePalette = {
     confidence: '#0FB9B1', // Turquoise
     priority: '#FC5C65', // Red
     accent: [
-      '#A55EEA', // Purple
-      '#8854D0', // Deep Purple
-      '#3867D6', // Royal Blue
-      '#2D98DA', // Sky Blue
-      '#0FB9B1', // Turquoise
-      '#20BF6B', // Emerald
-      '#FED330', // Yellow
-      '#FC5C65', // Red
+      '#A55EEA', // Purple: '#8854D0', // Deep Purple: '#3867D6', // Royal Blue: '#2D98DA', // Sky Blue: '#0FB9B1', // Turquoise: '#20BF6B', // Emerald: '#FED330', // Yellow: '#FC5C65', // Red
     ],
   },
   gradients: {
@@ -328,14 +293,7 @@ export const CYBERPUNK_PALETTE: ConsolePalette = {
     confidence: '#00CED1', // Dark Turquoise
     priority: '#FF4500', // Orange Red
     accent: [
-      '#00FFFF', // Electric Cyan
-      '#FF00FF', // Hot Pink
-      '#FFFF00', // Neon Yellow
-      '#00FF00', // Bright Green
-      '#FFA500', // Orange
-      '#FF0000', // Red
-      '#9400D3', // Dark Violet
-      '#FF69B4', // Hot Pink
+      '#00FFFF', // Electric Cyan: '#FF00FF', // Hot Pink: '#FFFF00', // Neon Yellow: '#00FF00', // Bright Green: '#FFA500', // Orange: '#FF0000', // Red: '#9400D3', // Dark Violet: '#FF69B4', // Hot Pink
     ],
   },
   gradients: {
@@ -383,14 +341,7 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
     confidence: '#10B981', // Emerald 500
     priority: '#F59E0B', // Amber 500
     accent: [
-      '#06B6D4', // Cyan 500
-      '#8B5CF6', // Violet 500
-      '#EC4899', // Pink 500
-      '#10B981', // Emerald 500
-      '#F59E0B', // Amber 500
-      '#EF4444', // Red 500
-      '#6366F1', // Indigo 500
-      '#84CC16', // Lime 500
+      '#06B6D4', // Cyan 500: '#8B5CF6', // Violet 500: '#EC4899', // Pink 500: '#10B981', // Emerald 500: '#F59E0B', // Amber 500: '#EF4444', // Red 500: '#6366F1', // Indigo 500: '#84CC16', // Lime 500
     ],
   },
   gradients: {

@@ -49,35 +49,35 @@
   });
   function getOperationIcon(op: string) {
     switch (op) {
-      case 'ai': return Brai;
-      case 'gpu': return Zap;
-      case 'cpu': return Cpu;
-      case 'upload': return CheckCircl;
+      case: 'ai': return Brai;
+      case: 'gpu': return Zap;
+      case: 'cpu': return Cpu;
+      case: 'upload': return CheckCircl;
       default: return Brai;
     }
   }
   function getStatusIcon(st: string) {
     switch (st) {
-      case 'success': return CheckCircl;
-      case 'error': return XCircl;
-      case 'warning': return AlertCircl;
+      case: 'success': return CheckCircl;
+      case: 'error': return XCircl;
+      case: 'warning': return AlertCircl;
       default: return getOperationIcon(operation);
     }
   }
   function getStatusColor(st: string) {
     switch (st) {
-      case 'success': return 'text-green-400';
-      case 'error': return 'text-red-400';
-      case 'warning': return 'text-yellow-400';
-      case 'loading':
+      case: 'success': return: 'text-green-400';
+      case: 'error': return: 'text-red-400';
+      case: 'warning': return: 'text-yellow-400';
+      case: 'loading':
         switch (operation) {
-          case 'ai': return 'text-blue-400';
-          case 'gpu': return 'text-purple-400';
-          case 'cpu': return 'text-orange-400';
-          case 'upload': return 'text-green-400';
-          default: return 'text-blue-400';
+          case: 'ai': return: 'text-blue-400';
+          case: 'gpu': return: 'text-purple-400';
+          case: 'cpu': return: 'text-orange-400';
+          case: 'upload': return: 'text-green-400';
+          default: return: 'text-blue-400';
         }
-      default: return 'text-gray-400';
+      default: return: 'text-gray-400';
     }
   }
   function formatTime(seconds: number) {

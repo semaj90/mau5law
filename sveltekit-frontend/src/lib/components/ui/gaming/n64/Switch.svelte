@@ -11,266 +11,255 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from "svelte";
-  import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
+  import { onMount, onDestroy } from 'svelte';
+  import type { N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
-  interface Props extends GamingComponentProps {
-    // Switch specific props
-    checked?: boolean;
-    name?: string;
-    id?: string;
-    value?: string;
-    required?: boolean;
-    readonly?: boolean;
-    label?: string;
-    description?: string;
-    // N64-specific styling
-    meshComplexity?: 'low' | 'medium' | 'high' | 'ultra';
-    materialType?: 'basic' | 'phong' | 'pbr';
-    enableTextureFiltering?: boolean;
-    enableMipMapping?: boolean;
-    enableFog?: boolean;
-    enableLighting?: boolean;
-    enableReflections?: boolean;
-    enableMechanicalAnimation?: boolean;
-    // 3D transformations
-    depth?: number;
-    perspective?: number;
-    switchWidth?: number;
-    switchHeight?: number;
-    // Advanced effects
-    enableParticles?: boolean;
-    // Event handler
-    ondispatch?: (_event: { checked: boolean; value?: string }) => void;
-    glowIntensity?: number;
-    enableSpatialAudio?: boolean;
-    enableToggleGlow?: boolean;
-    enableSpringPhysics?: boolean;
-    // Animation settings
-    animationDuration?: number;
-    springTension?: number;
-    class?: string;
-  }
-  let {
-    era = 'n64',
-    variant = 'primary',
-    size = 'md',
-    disabled = false,
-    loading = false,
-    animationStyle = 'smooth',
-    renderOptions,
-    checked = $bindable(false),
-    name,
-    id,
-    value,
-    required = false,
-    readonly = false,
-    label,
-    description,
-    meshComplexity = 'medium',
-    materialType = 'phong',
-    enableTextureFiltering = true,
-    enableMipMapping = false,
-    enableFog = true,
-    enableLighting = true,
-    enableReflections = false,
-    enableMechanicalAnimation = true,
-    depth = 6,
-    perspective = 1000,
-    switchWidth = 56,
-    switchHeight = 32,
-    enableParticles = false,
-    glowIntensity = 0.4,
-    enableSpatialAudio = true,
-    enableToggleGlow = true,
-    enableSpringPhysics = true,
-    animationDuration = 300,
-    springTension = 0.8,
-    ondispatch,
-    class: className = '';
-  }: Props = $props();
-  let isFocused = $state(false);
-  let isHovered = $state(false);
-  let isPressed = $state(false);
-  let isAnimating = $state(false);
-  let switchElement = $state<HTMLElement | null>(null);
-  let audioContext = $state<AudioContext | null>(null);
-  let animationFrameId = $state<number | null>(null);
-  // Default to balanced N64 rendering options
+
+  // Exported props (clean, explicit)
+  export let era: string = 'n64';
+  export let variant: string = 'primary';
+  export let size: string = 'medium'; // normalized to: 'small'|'medium'|'large'|'xl'
+  export let disabled: boolean = false;
+  export let loading: boolean = false;
+  export let animationStyle: string = 'smooth';
+  export let renderOptions: Partial<N64RenderingOptions> = {};
+  export let checked: boolean = false;
+  export let name: string | undefined = undefined;
+  export let id: string | undefined = undefined;
+  export let value: string | undefined = undefined;
+  export let required: boolean = false;
+  export let readonly: boolean = false;
+  export let label: string | undefined = undefined;
+  export let description: string | undefined = undefined;
+  export let meshComplexity: 'low' | 'medium' | 'high' | 'ultra' = 'medium';
+  export let materialType: 'basic' | 'phong' | 'pbr' = 'phong';
+  export let enableTextureFiltering: boolean = true;
+  export let enableMipMapping: boolean = false;
+  export let enableFog: boolean = true;
+  export let enableLighting: boolean = true;
+  export let enableReflections: boolean = false;
+  export let enableMechanicalAnimation: boolean = true;
+  export let depth: number = 6;
+  export let perspective: number = 1000;
+  export let switchWidth: number = 56;
+  export let switchHeight: number = 32;
+  export let enableParticles: boolean = false;
+  export let glowIntensity: number = 0.4;
+  export let enableSpatialAudio: boolean = true;
+  export let enableToggleGlow: boolean = true;
+  export let enableSpringPhysics: boolean = true;
+  export let animationDuration: number = 300;
+  export let springTension: number = 0.8;
+  export let ondispatch: ((_event: { checked: boolean; value?: string }) => void) | undefined;
+  // avoid using the reserved word `class` as an exported identifier
+  export let className: string = '';
+
+  // Local state
+  let isFocused = false;
+  let isHovered = false;
+  let isPressed = false;
+  let isAnimating = false;
+  let switchElement: HTMLElement | null = null;
+  let audioContext: AudioContext | null = null;
+  let animationFrameId: number | null = null;
+  let particleStyleElement: HTMLStyleElement | null = null;
+
+  // Effective render options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
     enableTextureFiltering,
     enableMipMapping,
     enableFog,
     ...renderOptions
-  }
-  // Create spatial audio for switch actions
-  const playSwitchSound = async (ison boolean) => {
+  } as N64RenderingOptions;
+
+  // Play spatial/mechanical switch sound (best-effort, guarded)
+  async function playSwitchSound(isOn: boolean) {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const Ctor = (window as any).AudioContext || (window as any).webkitAudioContext;
+        if (!Ctor) return;
+        audioContext = new Ctor();
       }
-      const oscillator1 = audioContext.createOscillator();
-      const oscillator2 = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      const pannerNode = audioContext.createPanner();
-      const reverbNode = audioContext.createConvolver();
-      const filterNode = audioContext.createBiquadFilter();
-      // Configure 3D spatial audio
-      pannerNode.panningModel = 'HRTF';
-      pannerNode.positionX.setValueAtTime(isOn ? 0.3 : -0.3, audioContext.currentTime);
-      pannerNode.positionY.setValueAtTime(0, audioContext.currentTime);
-      pannerNode.positionZ.setValueAtTime(-depth / 100, audioContext.currentTime);
-      // Create mechanical click reverb
-      const impulseLength = audioContext.sampleRate * 0.1;
-      const impulse = audioContext.createBuffer(2, impulseLength, audioContext.sampleRate);
-      const impulseL = impulse.getChannelData(0);
-      const impulseR = impulse.getChannelData(1);
-      for (let i = 0; i < impulseLength; i++) {
-        const decay = Math.pow(1 - i / impulseLength, 3);
-        impulseL[i] = (Math.random() * 2 - 1) * decay * 0.2;
-        impulseR[i] = (Math.random() * 2 - 1) * decay * 0.2;
+      const ctx = audioContext;
+      if (!ctx) return; // guard against null
+      const oscillator1 = ctx.createOscillator();
+      const oscillator2 = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      const pannerNode = ctx.createPanner();
+      const reverbNode = ctx.createConvolver();
+      const filterNode = ctx.createBiquadFilter();
+
+      // Configure 3D spatial audio (best-effort)
+      try {
+        pannerNode.panningModel = 'HRTF';
+        // positionX/Y/Z may not exist on all browsers; guard with setPosition fallback
+        if ('positionX' in pannerNode) {
+          // @ts-ignore
+          pannerNode.positionX.setValueAtTime(isOn ? 0.3 : -0.3, ctx.currentTime);
+          // @ts-ignore
+          pannerNode.positionY.setValueAtTime(0, ctx.currentTime);
+          // @ts-ignore
+          pannerNode.positionZ.setValueAtTime(-depth / 100, ctx.currentTime);
+        } else if (typeof (pannerNode as any).setPosition === 'function') {
+          (pannerNode as any).setPosition(isOn ? 0.3 : -0.3, 0, -depth / 100);
+        }
+      } catch {
+        /* ignore panner setup errors */
       }
-      reverbNode.buffer = impul;
-      // Configure filter for mechanical sound
+
+      // Create simple impulse buffer for mild reverb
+      try {
+        const sampleRate = (ctx.sampleRate || 44100);
+        const impulseLength = Math.floor(sampleRate * 0.05);
+        const impulse = ctx.createBuffer(2, impulseLength, sampleRate);
+        const impulseL = impulse.getChannelData(0);
+        const impulseR = impulse.getChannelData(1);
+        for (let i = 0; i < impulseLength; i++) {
+          const decay = Math.pow(1 - i / impulseLength, 2);
+          impulseL[i] = (Math.random() * 2 - 1) * decay * 0.2;
+          impulseR[i] = (Math.random() * 2 - 1) * decay * 0.2;
+        }
+        reverbNode.buffer = impulse;
+      } catch {
+        /* ignore reverb creation errors */
+      }
+
       filterNode.type = 'highpass';
-      filterNode.frequency.setValueAtTime(isOn ? 800 : 600, audioContext.currentTime);
-      filterNode.Q.setValueAtTime(2, audioContext.currentTime);
-      // Connect audio chain
-      oscillator1.connect(filterNode);
-      oscillator2.connect(filterNode);
-      filterNode.connect(pannerNode);
-      pannerNode.connect(reverbNode);
-      reverbNode.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      // Configure dual-tone mechanical sound
+      filterNode.frequency.setValueAtTime(isOn ? 800 : 600, ctx.currentTime);
+      filterNode.Q.setValueAtTime(2, ctx.currentTime);
+
       if (isOn) {
-        // ON sound: ascending click
         oscillator1.type = 'square';
-        oscillator1.frequency.setValueAtTime(220, audioContext.currentTime);
-        oscillator1.frequency.exponentialRampToValueAtTime(330, audioContext.currentTime + 0.05);
+        oscillator1.frequency.setValueAtTime(220, ctx.currentTime);
+        oscillator1.frequency.exponentialRampToValueAtTime(330, ctx.currentTime + 0.05);
         oscillator2.type = 'sawtooth';
-        oscillator2.frequency.setValueAtTime(660, audioContext.currentTime);
-        oscillator2.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.08);
+        oscillator2.frequency.setValueAtTime(660, ctx.currentTime);
+        oscillator2.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
       } else {
-        // OFF sound: descending click
         oscillator1.type = 'square';
-        oscillator1.frequency.setValueAtTime(330, audioContext.currentTime);
-        oscillator1.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 0.05);
+        oscillator1.frequency.setValueAtTime(330, ctx.currentTime);
+        oscillator1.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.05);
         oscillator2.type = 'sawtooth';
-        oscillator2.frequency.setValueAtTime(880, audioContext.currentTime);
-        oscillator2.frequency.exponentialRampToValueAtTime(550, audioContext.currentTime + 0.08);
+        oscillator2.frequency.setValueAtTime(880, ctx.currentTime);
+        oscillator2.frequency.exponentialRampToValueAtTime(550, ctx.currentTime + 0.08);
       }
-      gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+
+      gainNode.gain.setValueAtTime(0.15, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+
       oscillator1.start();
       oscillator2.start();
-      oscillator1.stop(audioContext.currentTime + 0.12);
-      oscillator2.stop(audioContext.currentTime + 0.12);
+      oscillator1.stop(ctx.currentTime + 0.12);
+      oscillator2.stop(ctx.currentTime + 0.12);
     } catch (error) {
       console.warn('Could not play switch sound:', error);
     }
   }
-  const handleToggle = async () => {
+
+  // Toggle handler
+  async function handleToggle() {
     if (disabled || readonly || loading) return;
     isPressed = true;
     isAnimating = true;
     const newValue = !checked;
-    checked = newValu;
+    checked = newValue;
     await playSwitchSound(newValue);
-    // Create particle effect
-    if (enableParticles) {
-      createSwitchParticles();
-    }
+    if (enableParticles) createSwitchParticles();
     setTimeout(() => {
       isPressed = false;
       isAnimating = false;
     }, animationDuration);
     ondispatch?.({ checked: newValue, value });
   }
-  const handleFocus = () => {
+
+  function handleFocus() {
     if (disabled) return;
     isFocused = true;
   }
-  const handleBlur = () => {
+  function handleBlur() {
     isFocused = false;
   }
-  const handleHover = () => {
+  function handleHover() {
     if (disabled) return;
     isHovered = true;
   }
-  const handleUnhover = () => {
+  function handleUnhover() {
     isHovered = false;
   }
-  const handleKeyDown = (_event: KeyboardEvent) => {
+  function handleKeyDown(e: KeyboardEvent) {
     if (disabled || readonly) return;
-    if (event.key === ' ' || event.key === 'Enter') {
-      event.preventDefault();
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
       handleToggle();
     }
   }
-  const createSwitchParticles = () => {
+
+  function createSwitchParticles() {
     const particles = 6;
     const container = switchElement?.parentElement;
     if (!container) return;
     for (let i = 0; i < particles; i++) {
       const particle = document.createElement('div');
       particle.className = 'n64-switch-particle';
+      const angle = (360 / particles) * i;
+      const distance = 20 + Math.random() * 15;
       particle.style.cssText = `
-        position absolute;
-        width: 3px;
-        height: 3px;
-        background: ${checked ? '#4a90e2' : '#6c757d'}
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: ${checked ? '#4a90e2' : '#6c757d'};
         border-radius: 50%;
         pointer-events: none;
-        animation: switchParticleExplosion 0.6s ease-out forward;
-        --angle: ${(360 / particles) * i}deg;
-        --distance: ${20 + Math.random() * 15}px;
+        animation: switchParticleExplosion 0.6s ease-out forwards;
+        --angle: ${angle}deg;
+        --distance: ${distance}px;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
       `;
       container.appendChild(particle);
-      setTimeout(() => {
-        particle.remove();
-      }, 600);
+      setTimeout(() => particle.remove(), 700);
     }
   }
-  // Get material styles based on state and variant
-  const getMaterialStyles = (variant: string, material: string, ison boolean) => {
+
+  // Material / size helpers
+  function getMaterialStyles(variantKey: string, material: string, isOn: boolean) {
     const baseColors = {
       primary: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
+        on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
       },
       secondary: {
         off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-        on { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
+        on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
       },
       success: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
+        on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
       },
       warning: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
+        on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
       },
       error: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
+        on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
       info: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
+        on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
-    }
-    const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-    const stateColors = isOn ? colors.on colors.off;
-    const materialMap = {
+    } as const;
+
+    const colors = (baseColors as any)[variantKey] || baseColors.primary;
+    const stateColors = isOn ? colors.on : colors.off;
+
+    const materialMap: Record<string, any> = {
       basic: {
-        trackBackground: isOn ? stateColors.base: '#2d3748',
+        trackBackground: isOn ? stateColors.base : '#2d3748',
         knobBackground: stateColors.base,
         knobShadow: `0 ${depth}px 0 ${stateColors.shadow}`
       },
@@ -301,102 +290,85 @@
           0 0 0 1px rgba(255,255,255,0.1)
         `
       }
-    }
-    return materialMap[material as keyof typeof materialMap] || materialMap.phong;
+    };
+
+    return materialMap[material] || materialMap.phong;
   }
-  const getSizeStyles = (size: string) => {
-    const sizeMap = {
+
+  function getSizeStyles(sz: string) {
+    const normalized = sz === 'md' ? 'medium' : sz;
+    const sizeMap: Record<string, any> = {
       small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
       medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
       large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
       xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
-    }
-    return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
+    };
+    return sizeMap[normalized] || sizeMap.medium;
   }
-  // Generate texture filtering CSS classes
-  const getTextureFilteringClasses = (): string => {
-    const classes: string[] = [];
-    if (effectiveRenderOptions.textureQuality === 'ultra') {
-      classes.push('texture-ultra');
-    }
-    if (effectiveRenderOptions.enableBilinearFiltering) {
-      classes.push('filtering-bilinear');
-    }
-    if (effectiveRenderOptions.enableTrilinearFiltering) {
-      classes.push('filtering-trilinear');
-    }
-    const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1;
-    if (anisotropicLevel >= 16) {
-      classes.push('anisotropic-16x');
-    } else if (anisotropicLevel >= 8) {
-      classes.push('anisotropic-8x');
-    } else if (anisotropicLevel >= 4) {
-      classes.push('anisotropic-4x');
-    }
-    return classes.join(' ');
-  }
-  let sizeStyles = $derived(getSizeStyles(size));
-  let materialStyles = $derived(getMaterialStyles(variant, materialType, checked));
-  let knobTranslateX = $derived(checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2);
-  let dynamicScale = $derived(isPressed ? 0.95 : isHovered ? 1.02 : 1);
-  let knobScale = $derived(isPressed ? 0.9 : isAnimating ? (checked ? 1.1 : 0.95) : 1);
-  let transform3D = $derived(`
-    perspective(${perspective}px)
-    scale(${dynamicScale})
-  `);
-  let knobTransform = $derived(`
-    translateX(${knobTranslateX}px)
-    scale(${knobScale})
-    ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}
-  `);
-  $effect(() => {
-    // Add particle explosion keyframe
-    const style = document.createElement('style');
-    style.textContent = `
+
+  // Reactive derived values
+  $: sizeStyles = getSizeStyles(size);
+  $: materialStyles = getMaterialStyles(variant, materialType, checked);
+  $: knobTranslateX = checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2;
+  $: dynamicScale = isPressed ? 0.95 : isHovered ? 1.02 : 1;
+  $: knobScale = isPressed ? 0.9 : isAnimating ? (checked ? 1.1 : 0.95) : 1;
+  $: transform3D = `perspective(${perspective}px) scale(${dynamicScale})`;
+  $: knobTransform = `translateX(${knobTranslateX}px) scale(${knobScale}) ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}`;
+
+  // Inject particle keyframes and cleanup
+  onMount(() => {
+    particleStyleElement = document.createElement('style');
+    particleStyleElement.textContent = `
       @keyframes switchParticleExplosion {
         to {
-          transform: translate(-50%, -50%)
-                     rotate(var(--angle))
-                     translateY(calc(-1 * var(--distance)))
-                     scale(0);
+          transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0);
           opacity: 0;
         }
       }
     `;
-    document.head.appendChild(style);
-    return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      style.remove();
-    }
+    document.head.appendChild(particleStyleElement);
+  });
+
+  onDestroy(() => {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    if (particleStyleElement && particleStyleElement.parentNode) particleStyleElement.remove();
+    // do not close audioContext aggressively (leave to browser)
   });
 </script>
 
-<div class="n64-switch-container {className}">
+<div class={"n64-switch-container " + className}>
   <div
     bind:this={switchElement}
-    class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-    class:checked
+    class={
+      "n64-switch " +
+      materialType +
+      " mesh-" +
+      meshComplexity +
+      ( (effectiveRenderOptions as any).textureQuality === 'ultra' ? ' texture-ultra' : '' ) +
+      ( enableTextureFiltering ? ' filtering-bilinear' : '' )
+    }
+    class:checked={checked}
     class:focused={isFocused}
     class:hovered={isHovered}
     class:pressed={isPressed}
     class:animating={isAnimating}
-    class:disabled
-    class:readonly
-    style="
-      --track-bg: {materialStyles.trackBackground};
-      --knob-bg: {materialStyles.knobBackground};
-      --knob-shadow: {materialStyles.knobShadow};
-      --switch-width: {sizeStyles.width}px;
-      --switch-height: {sizeStyles.height}px;
-      --knob-size: {sizeStyles.knobSize}px;
-      --switch-font-size: {sizeStyles.fontSize};
-      --transform-3d: {transform3D};
-      --knob-transform: {knobTransform};
-      --fog-color: {effectiveRenderOptions.fogColor};
-      --glow-intensity: {glowIntensity};
-      --animation-duration {animationDuration}ms;
-      --spring-tension {springTension};
-    "
+    class:disabled={disabled}
+    class:readonly={readonly}
+    style={`
+      --track-bg: ${materialStyles.trackBackground};
+      --knob-bg: ${materialStyles.knobBackground};
+      --knob-shadow: ${materialStyles.knobShadow};
+      --switch-width: ${sizeStyles.width}px;
+      --switch-height: ${sizeStyles.height}px;
+      --knob-size: ${sizeStyles.knobSize}px;
+      --switch-font-size: ${sizeStyles.fontSize};
+      --transform-3d: ${transform3D};
+      --knob-transform: ${knobTransform};
+      --fog-color: ${(effectiveRenderOptions as any).fogColor || '#404040'};
+      --glow-intensity: ${glowIntensity};
+      --animation-duration: ${animationDuration}ms;
+      --spring-tension: ${springTension};
+    `}
     role="switch"
     tabindex={disabled ? -1 : 0}
     aria-checked={checked}
@@ -412,8 +384,8 @@
     onmouseleave={handleUnhover}
     onkeydown={handleKeyDown}
   >
-    <div class="switch-track">
-      <div class="switch-knob">
+    <div class="switch-track" style={`width: ${sizeStyles.width}px; height: ${sizeStyles.height}px;`}>
+      <div class="switch-knob" style={`width: ${sizeStyles.knobSize}px; height: ${sizeStyles.knobSize}px;`}>
         {#if enableLighting}
           <div class="knob-lighting"></div>
         {/if}
@@ -433,30 +405,28 @@
         <div class="toggle-glow"></div>
       {/if}
     </div>
+
     <!-- Hidden input for form handling -->
     <input
       type="checkbox"
-      {name}
-      {id}
-      {value}
-      {required}
-      {readonly}
-      {disabled}
-      bind:checked
-      style="position absolute; opacity: 0; pointer-events: none;"
+      name={name}
+      id={id}
+      value={value}
+      required={required}
+      readonly={readonly}
+      disabled={disabled}
+      bind:checked={checked}
+      style="position: absolute; opacity: 0; pointer-events: none;"
     />
   </div>
+
   {#if label || description}
     <div class="switch-content">
       {#if label}
-        <label id="switch-label" class="switch-label" for={id}>
-          {label}
-        </label>
+        <label id="switch-label" class="switch-label" for={id}>{label}</label>
       {/if}
       {#if description}
-        <div id="switch-description" class="switch-description">
-          {description}
-        </div>
+        <div id="switch-description" class="switch-description">{description}</div>
       {/if}
     </div>
   {/if}
@@ -471,7 +441,7 @@
   }
   .n64-switch {
     /* Base N64 switch styling */
-    position relative;
+    position: relative;
     width: var(--switch-width);
     height: var(--switch-height);
     cursor: pointer;
@@ -493,7 +463,7 @@
     will-change: transform;
   }
   .switch-track {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
     background: var(--track-bg);
@@ -507,8 +477,9 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .switch-knob {
-    position absolute;
+    position: absolute;
     top: 2px;
+    left: 2px;
     width: var(--knob-size);
     height: var(--knob-size);
     background: var(--knob-bg);
@@ -525,10 +496,10 @@
   }
   /* Knob lighting overlay */
   .knob-lighting {
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: radial-gradient(
       circle at 30% 30%,
@@ -541,7 +512,7 @@
   }
   /* Knob reflection */
   .knob-reflection {
-    position absolute;
+    position: absolute;
     top: 15%;
     left: 15%;
     right: 60%;
@@ -553,11 +524,11 @@
   }
   /* Knob loading indicator */
   .knob-loading {
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 10,
+    z-index: 10;
   }
   .n64-spinner {
     width: calc(var(--knob-size) * 0.5);
@@ -574,10 +545,10 @@
   }
   /* Track fog effect */
   .track-fog {
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
     opacity: 0.15;
@@ -586,7 +557,7 @@
   }
   /* Toggle glow effect */
   .toggle-glow {
-    position absolute;
+    position: absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -618,7 +589,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1,
+    flex: 1;
   }
   .switch-label {
     color: #ffffff;
@@ -713,7 +684,7 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion reduce) {
+  @media (prefers-reduced-motion: reduce) {
     .n64-switch {
       transform: none !important;
       transition: opacity 150ms ease;
@@ -731,7 +702,7 @@
     }
   }
   /* High contrast mode */
-  @media (prefers-contrast: high) {
+  @media (prefers-contrast: more) {
     .n64-switch {
       border: 2px solid currentColor;
     }
@@ -773,4 +744,3 @@
     }
   }
 </style>
-

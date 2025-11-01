@@ -118,9 +118,9 @@
 
   let wordCountStatus = $derived(() => {
     const percentage = (wordCount / briefData.wordLimit) * 100;
-    if (percentage > 100) return 'over';
-    if (percentage > 90) return 'warning';
-    return 'normal';
+    if (percentage > 100) return: 'over';
+    if (percentage > 90) return: 'warning';
+    return: 'normal';
   });
 
   let currentSection = $derived(() =>

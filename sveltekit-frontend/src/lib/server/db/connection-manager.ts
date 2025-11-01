@@ -8,7 +8,7 @@ import { getDatabaseConfig, validateDatabaseConfig } from '$lib/config/database.
 import * as schema from './schema-postgres.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
-// Minimal pool/client shapes to avoid importing 'pg' types broadly
+// Minimal pool/client shapes to avoid importing: 'pg' types broadly
 type LocalClientLike = {
   query: (
     textOrConfig: string | { text: string; values?: unknown[] },
@@ -27,7 +27,7 @@ type LocalPoolLike = {
 };
 
 // NOTE: the shim exports runtime shapes and not necessarily TypeScript types/namespaces.
-// Define a minimal local row shape to avoid "Cannot use namespace 'QueryResultRow' as a type."
+// Define a minimal local row shape to avoid: "Cannot use namespace: 'QueryResultRow' as a type."
 type RowLike = Record<string, unknown>;
 
 // Global connection instances
@@ -55,7 +55,7 @@ export function getAppPool(): LocalPoolLike {
     if (!validation.valid) {
       throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown'}`);
     }
-    const environment = (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development';
+    const environment = (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development';
     appPool = resolvePool();
     if (!appPool) {
       throw new Error('No database pool implementation available (poolShim and pgClient.pool missing).');

@@ -270,12 +270,12 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action = 'analyze', key, context = {}, options = {} } = body;
 
-    // Ensure 'options' is used so TypeScript doesn't flag it as unused.
+    // Ensure: 'options' is used so TypeScript doesn't flag it as unused.
     // We'll echo it back in responses and optionally use it to tweak mock results.
     const receivedOptions = { ...options };
 
     switch (action) {
-      case 'analyze': {
+      case: 'analyze': {
         if (!key) {
           return json({ error: 'Key required for analysis' }, { status: 400 });
         }
@@ -304,7 +304,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         };
         return json({ success: true, analysis, timestamp: Date.now() }, { status: 200 });
       }
-      case 'optimize': {
+      case: 'optimize': {
         // Trigger cognitive optimization
         const optimizationResult = {
           optimizedEntries: Math.floor(Math.random() * 100) + 50,
@@ -324,7 +324,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           { status: 200 }
         );
       }
-      case 'predict': {
+      case: 'predict': {
         if (!context.workflowStep) {
           return json({ error: 'Workflow step required for prediction' }, { status: 400 });
         }

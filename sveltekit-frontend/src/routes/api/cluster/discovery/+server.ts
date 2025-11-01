@@ -50,7 +50,7 @@ interface FailoverEvent {
   timestamp: string;
   serviceId: string;
   reason: string;
-  from: string;
+  from string;
   to: string;
   duration: number;
   success: boolean;
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'discover';
     const body = await request.json();
     switch (action) {
-      case 'register': {
+      case: 'register': {
         const { service } = body;
         if (!service || !service.name || !service.port) {
           return json({
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'deregister': {
+      case: 'deregister': {
         const { serviceId } = body;
         const deregistered = await deregisterService(serviceId);
         return json({
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'health-check': {
+      case: 'health-check': {
         const { serviceId, force = false } = body;
         const health = serviceId ? await checkServiceHealth(serviceId, force) : await performFullHealthCheck(force);
         return json({
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'failover': {
+      case: 'failover': {
         const { serviceId, reason = 'manual', targetInstance } = body;
         const failoverResult = await executeFailover(serviceId, reason, targetInstance);
         return json({
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'update-config': {
+      case: 'update-config': {
         const { config } = body;
         const updated = await updateDiscoveryConfig(config);
         return json({
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case 'discover': {
+      case: 'discover': {
         const { force = false } = body;
         const discovered = await discoverServices(force);
         return json({
@@ -282,7 +282,7 @@ function formatError(err: unknown): string {
 // Helper functions
 async function getServiceRegistry(): Promise<DiscoveryRegistry> {
   const allServices = Array.from(serviceRegistry.values()).flat();
-  // Count services whose status explicitly equals 'healthy'
+  // Count services whose status explicitly equals: 'healthy'
   const healthyCount = allServices.filter(s => s && s.status === 'healthy').length;
   const services: Record<string, ServiceInstance[]> = {};
   serviceRegistry.forEach((instances, name) => {
@@ -469,7 +469,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       timestamp: new Date().toISOString(),
       serviceId: service.id,
       reason,
-      from: service.id,
+      from service.id,
       to: target.id,
       duration: Date.now() - startTime,
       success: true,
@@ -480,7 +480,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
     }
     return {
       success: true,
-      from: service.id,
+      from service.id,
       to: target.id,
       reason,
       duration: failoverEvent.duration,
@@ -492,7 +492,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       timestamp: new Date().toISOString(),
       serviceId: service.id,
       reason,
-      from: service.id,
+      from service.id,
       to: 'none',
       duration: Date.now() - startTime,
       success: false,

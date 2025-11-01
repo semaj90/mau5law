@@ -16,7 +16,7 @@ export interface CaseManagementContext {
   filters: {
     status?: string;
     priority?: string;
-    dateRange?: { from: Date; to: Date }
+    dateRange?: { from Date; to: Date }
   }
   // UI state
   selectedCaseId: string | null;

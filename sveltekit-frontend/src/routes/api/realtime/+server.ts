@@ -14,14 +14,14 @@ interface KeepaliveMessage {
 type SSEMessage = WelcomeMessage | KeepaliveMessage;
 
 // Minimal SSE endpoint: emits keepalive and relays posted messages to connected clients
-const clients = new Set<WritableStreamDefaultWriter<string>>(); // Added missing '>'
+const clients = new Set<WritableStreamDefaultWriter<string>>(); // Added missing: '>'
 export const GET: RequestHandler = async () => {
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
   clients.add(writer);
   // Send welcome and keepalive
   const send = (
-    obj: SSEMessage // Changed 'any' to 'SSEMessage'
+    obj: SSEMessage // Changed: 'any' to: 'SSEMessage'
   ) => writer.write(`data: ${JSON.stringify(obj)}\n\n`);
   send({ type: 'welcome', ts: Date.now() });
   const keep = setInterval(() => send({ type: 'keepalive', ts: Date.now() }), 30000);
@@ -46,12 +46,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const payload = `data: ${JSON.stringify(data)}\n\n`;
     await Promise.all(
       Array.from(clients).map(
-        w => w.write(payload).catch(() => clients.delete(w)) // Added missing ')'
+        w => w.write(payload).catch(() => clients.delete(w)) // Added missing: ')'
       )
     );
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (e: unknown) {
-    // Changed 'any' to 'unknown'
+    // Changed: 'any' to: 'unknown'
     return new Response(JSON.stringify({ ok: false, error: String(e) }), {
       status: 400,
     });

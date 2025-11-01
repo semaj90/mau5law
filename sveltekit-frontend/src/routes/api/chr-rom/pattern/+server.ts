@@ -62,13 +62,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await readBodyFastWithMetrics(request)
     const { operation, data } = body
     switch (operation) {
-      case 'get_pattern':
+      case: 'get_pattern':
         return await handleSinglePattern(data, startTime)
-      case 'get_batch':
+      case: 'get_batch':
         return await handleBatchPatterns(data, startTime)
-      case 'prefetch':
+      case: 'prefetch':
         return await handlePrefetch(data, startTime)
-      case 'get_stats':
+      case: 'get_stats':
         return await handleGetStats(startTime)
       default:
         return json(

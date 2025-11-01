@@ -9,13 +9,13 @@ import Redis, { type RedisOptions } from 'ioredis'; // Changed to type-only impo
 // import { EventEmitter } from 'events'; // No longer needed with module augmentation
 
 // Declare module augmentation for ioredis to include missing methods if types are incomplete
-declare module 'ioredis' {
+declare module: 'ioredis' {
   interface Redis {
-    // Add 'call' for Redis Stack commands (as hinted by ioredis-extension.d.ts)
+    // Add: 'call' for Redis Stack commands (as hinted by ioredis-extension.d.ts)
     call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed any to unknown
-    // Add 'info' if it's missing from the default types
+    // Add: 'info' if it's missing from the default types
     info(section?: string): Promise<string>;
-    // Add 'quit' if it's missing from the default types
+    // Add: 'quit' if it's missing from the default types
     quit(): Promise<'OK'>;
     // removeListener and once are inherited from EventEmitter and should not need augmentation
   }
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const retrievedValue = await connectedRedis.get(testKey);
 
     if (retrievedValue !== testValue) {
-      throw new Error(`Redis SET/GET test failed. Expected "${testValue}", got "${retrievedValue}"`);
+      throw new Error(`Redis SET/GET test failed. Expected: "${testValue}", got: "${retrievedValue}"`);
     }
 
     // Test RedisJSON support (if available)
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get Redis server info
     const info = await connectedRedis.info('server');
 
-    await connectedRedis.quit(); // The module augmentation above provides the 'quit' method type.
+    await connectedRedis.quit(); // The module augmentation above provides the: 'quit' method type.
     return json({
       success: true,
       message: 'Redis connection successful',
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: unknown) {
     // Use unknown for catch clause
     if (redis) {
-      // Use the initial 'redis' variable for cleanup
+      // Use the initial: 'redis' variable for cleanup
       try {
         await redis.quit();
       } catch (quitError) {

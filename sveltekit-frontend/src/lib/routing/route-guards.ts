@@ -66,7 +66,7 @@ export class RouteGuards {
     for (const guardName of guardNames) {
       const guard = this.guards.get(guardName);
       if (!guard) {
-        console.warn(`Route guard '${guardName}' not found`);
+        console.warn(`Route guard: '${guardName}' not found`);
         continue;
       }
       const result = await guard(context);

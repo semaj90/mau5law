@@ -693,7 +693,7 @@
     font-size: 0.9rem;
     border: 1px solid transparent;
   }
-  /* Apply "hit" appearance to the readonly input (template uses class:hit on the cache-hit input) */
+  /* Apply: "hit" appearance to the readonly input (template uses class:hit on the cache-hit input) */
   .result-item input.hit {
     color: #28a745;
     font-weight: 600;

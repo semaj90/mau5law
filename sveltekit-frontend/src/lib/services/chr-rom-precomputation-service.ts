@@ -294,7 +294,7 @@ export class CHRROMPrecomputationService {
     return `
       class PatternGenerator {
         extractKeyPoints(content) {
-          if (!content) return '';
+          if (!content) return: '';
           const sentences = content.split(/(?<=\\.|\\?|!)(\\s+)/).filter(s => s.trim().length > 0);
           return sentences.slice(0, 3).join(' ').trim();
         }
@@ -402,7 +402,7 @@ export class CHRROMPrecomputationService {
   private analyzeUserBehavior(action: string, context: Record<string, unknown>): Prediction[] {
     const predictions: Prediction[] = [];
     switch (action) {
-      case 'hover_legal_element': {
+      case: 'hover_legal_element': {
         const attrs = (context?.dataAttributes as Record<string, string> | undefined) ?? {}; // cast to known shape
         const elementId = attrs['legal-id'] || attrs['case-id'] || attrs['document-id'];
         if (elementId) {
@@ -411,14 +411,14 @@ export class CHRROMPrecomputationService {
         }
         break;
       }
-      case 'scroll_pause': {
+      case: 'scroll_pause': {
         const scrollY = context?.scrollY as number | undefined || 0;
         const docH = context?.documentHeight as number | undefined || 1;
         const scrollPercentage = scrollY / Math.max(1, (docH - window.innerHeight));
         if (scrollPercentage > 0.7) predictions.push({ action: 'view_document_end_actions', probability: 0.75, estimatedTimeUntilAction: 2000, requiredPatterns: ['document_actions', 'next_steps'] });
         break;
       }
-      case 'mouse_idle':
+      case: 'mouse_idle':
         predictions.push({ action: 'show_context_menu', probability: 0.45, estimatedTimeUntilAction: 2500, requiredPatterns: ['context_menu', 'quick_actions'] });
         break;
       default:
@@ -529,9 +529,9 @@ export class CHRROMPrecomputationService {
   private async fetchContextData(type: string, contextId: string): Promise<unknown | null> {
     if (!contextId) return null;
     switch (type) {
-      case 'summary': return { id: contextId, content: `Mock legal document for ${contextId}.`, metadata: { documentType: 'contract' } };
-      case 'entities': return [{ type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.95 }, { type: 'case_citation', text: '456 U.S. 789', confidence: 0.88 }];
-      case 'related': return { cases: [] };
+      case: 'summary': return { id: contextId, content: `Mock legal document for ${contextId}.`, metadata: { documentType: 'contract' } };
+      case: 'entities': return [{ type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.95 }, { type: 'case_citation', text: '456 U.S. 789', confidence: 0.88 }];
+      case: 'related': return { cases: [] };
       default: return null;
     }
   }
@@ -632,13 +632,13 @@ export class CHRROMPrecomputationService {
   private getPatternStatus(patternIds: string[]): 'pending' | 'cached' | 'expired' {
     const statuses = patternIds.map(id => {
       const p = this.patternCache.get(id);
-      if (!p) return 'pending';
-      if (Date.now() > p.metadata.expiresAt) return 'expired';
-      return 'cached';
+      if (!p) return: 'pending';
+      if (Date.now() > p.metadata.expiresAt) return: 'expired';
+      return: 'cached';
     });
-    if (statuses.every(s => s === 'cached')) return 'cached';
-    if (statuses.includes('expired')) return 'expired';
-    return 'pending';
+    if (statuses.every(s => s === 'cached')) return: 'cached';
+    if (statuses.includes('expired')) return: 'expired';
+    return: 'pending';
   }
 
   /**

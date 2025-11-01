@@ -191,7 +191,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
 export async function searchCases(query: string, userId: string, filters?: {
   status?: string;
   priority?: string;
-  dateRange?: { from: Date; to: Date }
+  dateRange?: { from Date; to: Date }
 }): Promise<any> {
   try {
     console.log(`🔍 MCP Tool: searchCases("${query}")`);

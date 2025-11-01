@@ -14,29 +14,29 @@
   // Reactive computed values using Svelte 5 runes
   let riskColor = $derived(() => {
     switch (poi.metadata.riskLevel) {
-      case 'critical': return 'var(--enhanced-bits-error)';
-      case 'high': return 'var(--enhanced-bits-warning)';
-      case 'medium': return 'var(--enhanced-bits-secondary)';
-      default: return 'var(--enhanced-bits-success)';
+      case: 'critical': return: 'var(--enhanced-bits-error)';
+      case: 'high': return: 'var(--enhanced-bits-warning)';
+      case: 'medium': return: 'var(--enhanced-bits-secondary)';
+      default: return: 'var(--enhanced-bits-success)';
     }
   });
   let roleColor = $derived(() => {
     switch (poi.role) {
-      case 'suspect': return 'var(--enhanced-bits-error)';
-      case 'fugitive': return 'var(--enhanced-bits-critical)';
-      case 'attorney': return 'var(--enhanced-bits-primary)';
-      case 'judge': return 'var(--enhanced-bits-secondary)';
-      case 'expert': return 'var(--enhanced-bits-ai)';
-      case 'victim': return 'var(--enhanced-bits-evidence)';
-      default: return 'var(--enhanced-bits-text)';
+      case: 'suspect': return: 'var(--enhanced-bits-error)';
+      case: 'fugitive': return: 'var(--enhanced-bits-critical)';
+      case: 'attorney': return: 'var(--enhanced-bits-primary)';
+      case: 'judge': return: 'var(--enhanced-bits-secondary)';
+      case: 'expert': return: 'var(--enhanced-bits-ai)';
+      case: 'victim': return: 'var(--enhanced-bits-evidence)';
+      default: return: 'var(--enhanced-bits-text)';
     }
   });
   let statusBadge = $derived(() => {
     switch (poi.status) {
-      case 'wanted': return { text: '🔍 WANTED', color: 'var(--enhanced-bits-error)' }
-      case 'in_custody': return { text: '🔒 IN CUSTODY', color: 'var(--enhanced-bits-warning)' }
-      case 'deceased': return { text: '💀 DECEASED', color: 'var(--enhanced-bits-text)' }
-      case 'flagged': return { text: '⚠️ FLAGGED', color: 'var(--enhanced-bits-warning)' }
+      case: 'wanted': return { text: '🔍 WANTED', color: 'var(--enhanced-bits-error)' }
+      case: 'in_custody': return { text: '🔒 IN CUSTODY', color: 'var(--enhanced-bits-warning)' }
+      case: 'deceased': return { text: '💀 DECEASED', color: 'var(--enhanced-bits-text)' }
+      case: 'flagged': return { text: '⚠️ FLAGGED', color: 'var(--enhanced-bits-warning)' }
       default: return { text: '✅ ACTIVE', color: 'var(--enhanced-bits-success)' }
     }
   });
@@ -75,9 +75,9 @@
     // This would typically open a dialog for sighting details
     try {
       await recordSighting(poi.id, {
-        location 'Manual entry required',
+        location: 'Manual entry required',
         date: new Date().toISOString(),
-        description 'Sighting reported via POI card',
+        description: 'Sighting reported via POI card',
         reportedBy: 'System User',
         reliability: 0.5,
         verified: false,

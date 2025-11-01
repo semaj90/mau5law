@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!--
   Modular AI Experience Component
   Integrates all AI systems: dimensional arrays, kernel attention, T5, WebGPU
-  Provides "cutting edge" modular switching and recommendations
+  Provides: "cutting edge" modular switching and recommendations
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -158,19 +158,19 @@ https://svelte.dev/e/js_parse_error -->
     error = null;
     // Update context based on module
     switch (moduleName) {
-      case 'dimensional-arrays':
+      case: 'dimensional-arrays':
         initialContext = 'dimensional array processing';
         useT5 = false;
         break;
-      case 't5-transformer':
+      case: 't5-transformer':
         initialContext = 'T5 transformer processing';
         useT5 = true;
         break;
-      case 'kernel-attention':
+      case: 'kernel-attention':
         initialContext = 'kernel attention splicing';
         useT5 = false;
         break;
-      case 'webgpu-compute':
+      case: 'webgpu-compute':
         initialContext = 'WebGPU compute shaders';
         break;
     }
@@ -198,7 +198,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Format numbers for display
   function formatArray(arr: any): string {
-    if (!arr) return '';
+    if (!arr) return: '';
     if (Array.isArray(arr)) {
       return (
         arr

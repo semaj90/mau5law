@@ -88,23 +88,23 @@ https://svelte.dev/e/props_duplicate -->
     // Handle keyboard shortcuts
     if (event.ctrlKey || event.metaKey) {
       switch (event.key) {
-        case "s":
+        case: "s":
           event.preventDefault();
           saveReport();
           break;
-        case "b":
+        case: "b":
           event.preventDefault();
           formatText("bold");
           break;
-        case "i":
+        case: "i":
           event.preventDefault();
           formatText("italic");
           break;
-        case "u":
+        case: "u":
           event.preventDefault();
           formatText("underline");
           break;
-        case "k":
+        case: "k":
           event.preventDefault();
           insertCitationPrompt();
           break;
@@ -330,13 +330,13 @@ https://svelte.dev/e/props_duplicate -->
       <div class="container mx-auto px-4">
         <button
           class="container mx-auto px-4"
-          on:click={() => (showAiPanel = !showAiPanel)}
+          onclick={() => (showAiPanel = !showAiPanel)}
         >
           AI Assist
         </button>
         <button
           class="container mx-auto px-4"
-          on:click={() => saveReport()}
+          onclick={() => saveReport()}
           disabled={!isDirty || isLoading}
         >
           Save
@@ -351,21 +351,21 @@ https://svelte.dev/e/props_duplicate -->
       <div class="container mx-auto px-4">
         <button
           type="button"
-          on:click={() => formatText("bold")}
+          onclick={() => formatText("bold")}
           title="Bold (Ctrl+B)"
         >
           <strong>B</strong>
         </button>
         <button
           type="button"
-          on:click={() => formatText("italic")}
+          onclick={() => formatText("italic")}
           title="Italic (Ctrl+I)"
         >
           <em>I</em>
         </button>
         <button
           type="button"
-          on:click={() => formatText("underline")}
+          onclick={() => formatText("underline")}
           title="Underline (Ctrl+U)"
         >
           <u>U</u>
@@ -373,7 +373,7 @@ https://svelte.dev/e/props_duplicate -->
         <div class="container mx-auto px-4"></div>
         <button
           type="button"
-          on:click={() => insertCitationPrompt()}
+          onclick={() => insertCitationPrompt()}
           title="Insert Citation (Ctrl+K)"
         >
           📎 Citation
@@ -400,7 +400,7 @@ https://svelte.dev/e/props_duplicate -->
       <h3>Citations</h3>
       <button
         class="container mx-auto px-4"
-        on:click={() => (citationSidebar.style.display = "none")}>×</button
+        onclick={() => (citationSidebar.style.display = "none")}>×</button
       >
     </div>
     <div class="container mx-auto px-4">
@@ -414,7 +414,7 @@ https://svelte.dev/e/props_duplicate -->
             <div class="container mx-auto px-4">{citation.source}</div>
             <button
               class="container mx-auto px-4"
-              on:click={() => insertCitation(citation)}
+              onclick={() => insertCitation(citation)}
             >
               Add
             </button>
@@ -428,7 +428,7 @@ https://svelte.dev/e/props_duplicate -->
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h3>AI Suggestions</h3>
-        <button class="container mx-auto px-4" on:click={() => (showAiPanel = false)}
+        <button class="container mx-auto px-4" onclick={() => (showAiPanel = false)}
           >×</button
         >
       </div>
@@ -441,7 +441,7 @@ https://svelte.dev/e/props_duplicate -->
               <p>{suggestion}</p>
               <button
                 class="container mx-auto px-4"
-                on:click={() => insertAiSuggestion(suggestion)}
+                onclick={() => insertAiSuggestion(suggestion)}
               >
                 Use This
               </button>
@@ -462,7 +462,7 @@ https://svelte.dev/e/props_duplicate -->
           <span class="container mx-auto px-4">[{citation.source}]</span>
           <button
             class="container mx-auto px-4"
-            on:click={() => removeCitation(citation.id)}>×</button
+            onclick={() => removeCitation(citation.id)}>×</button
           >
         </div>
       {/each}

@@ -102,21 +102,21 @@ https: //svelte.dev/e/js_parse_error -->
 
   function getAdmissibilityColor(admissibility: string): string {
     switch (admissibility) {
-      case 'admissible':
-        return 'bg-green-100 text-green-800 border-green-300';
-      case 'questionable':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'inadmissible':
-        return 'bg-red-100 text-red-800 border-red-300';
+      case: 'admissible':
+        return: 'bg-green-100 text-green-800 border-green-300';
+      case: 'questionable':
+        return: 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case: 'inadmissible':
+        return: 'bg-red-100 text-red-800 border-red-300';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300';
+        return: 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function getRelevanceColor(relevance: number): string {
-    if (relevance >= 8) return 'text-green-600';
-    if (relevance >= 6) return 'text-yellow-600';
-    if (relevance < 4) return 'text-red-600';
-    return 'text-gray-600';
+    if (relevance >= 8) return: 'text-green-600';
+    if (relevance >= 6) return: 'text-yellow-600';
+    if (relevance < 4) return: 'text-red-600';
+    return: 'text-gray-600';
   }
 </script>
 
@@ -145,7 +145,7 @@ https: //svelte.dev/e/js_parse_error -->
             <Button
               variant="outline"
               size="sm"
-              on:click={() => {
+              onclick={() => {
                 /* export handler placeholder */
               }}
             >
@@ -156,7 +156,7 @@ https: //svelte.dev/e/js_parse_error -->
             <Button
               variant="default"
               size="sm"
-              on:click={analyzeEvidence}
+              onclick={analyzeEvidence}
               disabled={isAnalyzing}
             >
               {#if isAnalyzing}
@@ -237,9 +237,9 @@ https: //svelte.dev/e/js_parse_error -->
                   bind:value={newTags}
                   placeholder="Add tags (comma-separated)"
                   class="flex-grow"
-                  on:keydown={(e) => e.key === 'Enter' && updateTags()}
+                  onkeydown={(e) => e.key === 'Enter' && updateTags()}
                 />
-                <Button size="sm" on:click={updateTags} disabled={!newTags.trim()}>Add Tags</Button>
+                <Button size="sm" onclick={updateTags} disabled={!newTags.trim()}>Add Tags</Button>
               </div>
             </div>
           </div>
@@ -309,8 +309,8 @@ https: //svelte.dev/e/js_parse_error -->
     {/if}
 
     <Dialog.Footer>
-      <Button variant="outline" on:click={() => (open = false)}>Close</Button>
-      <Button on:click={() => onSaveAnalysis?.()}>Save Analysis</Button>
+      <Button variant="outline" onclick={() => (open = false)}>Close</Button>
+      <Button onclick={() => onSaveAnalysis?.()}>Save Analysis</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

@@ -1,7 +1,7 @@
 /**
  * 🎯 Pipeline Manager - Orchestrates All Pipeline Services
  */
-// Old static imports removed (they caused "no exported member" errors)
+// Old static imports removed (they caused: "no exported member" errors)
 // import { optimizedPipeline } from './optimized-redis-pipeline.js';
 // import { advancedPipeline } from './advanced-simd-pipeline.js';
 // import { pipeline } from './end-to-end-pipeline.js';
@@ -171,7 +171,7 @@ export class PipelineManager {
       let results: unknown[] = [];
 
       switch (finalConfig.type) {
-        case 'optimized':
+        case: 'optimized':
           console.log('🚀 Executing Optimized Pipeline with XState + Workers');
           {
             const optimized = await loadOptimizedPipeline();
@@ -185,7 +185,7 @@ export class PipelineManager {
             }
           }
           break;
-        case 'advanced':
+        case: 'advanced':
           console.log('⚡ Executing Advanced SIMD + GPU Pipeline');
           {
             const advanced = await loadAdvancedPipeline();
@@ -198,7 +198,7 @@ export class PipelineManager {
             }
           }
           break;
-        case 'end-to-end': {
+        case: 'end-to-end': {
           console.log('🔄 Executing End-to-End Pipeline');
           const queries = ['legal document analysis', 'contract review'];
           const endToEnd = await loadEndToEndPipeline();

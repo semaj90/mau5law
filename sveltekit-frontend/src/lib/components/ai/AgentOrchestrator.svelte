@@ -82,7 +82,7 @@ Manages AutoGen and CrewAI multi-agent workflows
     {
       id: 'case_analysis',
       name: 'Legal Case Analysis',
-      description 'Comprehensive case analysis with multiple legal experts',
+      description: 'Comprehensive case analysis with multiple legal experts',
       icon Gavel;
       providers: ['autogen', 'crewai'],
       estimatedTime: '2-3 minutes',
@@ -90,7 +90,7 @@ Manages AutoGen and CrewAI multi-agent workflows
     {
       id: 'evidence_review',
       name: 'Evidence Review',
-      description 'Forensic evidence analysis and admissibility assessment',
+      description: 'Forensic evidence analysis and admissibility assessment',
       icon Shield;
       providers: ['autogen', 'crewai'],
       estimatedTime: '1-2 minutes',
@@ -98,7 +98,7 @@ Manages AutoGen and CrewAI multi-agent workflows
     {
       id: 'legal_research',
       name: 'Legal Research',
-      description 'Precedent research and statute analysis',
+      description: 'Precedent research and statute analysis',
       icon Search;
       providers: ['autogen'],
       estimatedTime: '2-4 minutes',
@@ -106,7 +106,7 @@ Manages AutoGen and CrewAI multi-agent workflows
     {
       id: 'contract_analysis',
       name: 'Contract Analysis',
-      description 'Contract review, risk assessment, and negotiation strategy',
+      description: 'Contract review, risk assessment, and negotiation strategy',
       icon FileText;
       providers: ['crewai'],
       estimatedTime: '1-2 minutes',
@@ -167,7 +167,7 @@ if (autoStartServices) {
     lastUpdate = 'Initializing AutoGen agents...';
     executionProgress = 10;
     switch (selectedWorkflow) {
-      case 'case_analysis':
+      case: 'case_analysis':
         activeConversation = null;
         conversationMessages = [];
         lastUpdate = 'Analyzing case with legal experts...';
@@ -202,7 +202,7 @@ if (autoStartServices) {
         lastUpdate = 'Case analysis completed';
         executionProgress = 100;
         break;
-      case 'evidence_review':
+      case: 'evidence_review':
         lastUpdate = 'Reviewing evidence with forensic experts...';
         executionProgress = 30;
         const evidenceResult = await reviewEvidenceWithAgents(inputText, 'digital', []);
@@ -218,7 +218,7 @@ if (autoStartServices) {
         ];
         lastUpdate = 'Evidence review completed';
         break;
-      case 'legal_research':
+      case: 'legal_research':
         lastUpdate = 'Researching legal precedents...';
         executionProgress = 40;
         const researchResult = await researchLegalPrecedents(inputText, 'federal', 'criminal');
@@ -240,7 +240,7 @@ if (autoStartServices) {
     lastUpdate = 'Assembling CrewAI team...';
     executionProgress = 10;
     switch (selectedWorkflow) {
-      case 'case_analysis':
+      case: 'case_analysis':
         activeExecution = null;
         executionResults = [];
         lastUpdate = 'Legal investigation crew analyzing case...';
@@ -279,7 +279,7 @@ if (autoStartServices) {
         lastUpdate = 'Legal investigation completed';
         executionProgress = 100;
         break;
-      case 'contract_analysis':
+      case: 'contract_analysis':
         lastUpdate = 'Contract analysis crew reviewing document...';
         executionProgress = 30;
         const contractResult = await analyzeContractWithCrew(inputText, 'commercial', 'general');

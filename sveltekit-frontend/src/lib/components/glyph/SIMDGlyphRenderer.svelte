@@ -47,13 +47,13 @@ https://svelte.dev/e/expected_token -->
       isRendering = true;
       renderError = '';
       switch (renderMode) {
-        case 'webgpu':
+        case: 'webgpu':
           await initWebGPU();
           break;
-        case 'webgl':
+        case: 'webgl':
           await initWebGL();
           break;
-        case 'canvas2d':
+        case: 'canvas2d':
           await initCanvas2D();
           break;
       }

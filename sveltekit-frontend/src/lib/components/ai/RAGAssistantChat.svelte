@@ -39,38 +39,38 @@
   const workflowSteps = [
     {
       key: 'what',
-      question 'What happened? Please describe the incident or situation in detail.',
-      icon '🔍',
+      question: 'What happened? Please describe the incident or situation in detail.',
+      icon: '🔍',
       placeholder: 'Describe what occurred, the nature of the incident, key events...',
     },
     {
       key: 'who',
-      question 'Who was involved? Identify all parties, witnesses, and key individuals.',
-      icon '👥',
+      question: 'Who was involved? Identify all parties, witnesses, and key individuals.',
+      icon: '👥',
       placeholder: 'List suspects, victims, witnesses, law enforcement, experts...',
     },
     {
       key: 'when',
-      question 'When did this occur? Provide timeline details and chronology.',
-      icon '⏰',
+      question: 'When did this occur? Provide timeline details and chronology.',
+      icon: '⏰',
       placeholder: 'Dates, times, sequence of events, duration...',
     },
     {
       key: 'where',
-      question 'Where did it happen? Specify all relevant locations.',
-      icon '📍',
+      question: 'Where did it happen? Specify all relevant locations.',
+      icon: '📍',
       placeholder: 'Crime scene, addresses, jurisdictions, related locations...',
     },
     {
       key: 'why',
-      question 'Why did this happen? What was the motive or underlying cause?',
-      icon '💭',
+      question: 'Why did this happen? What was the motive or underlying cause?',
+      icon: '💭',
       placeholder: 'Motive, intent, circumstances, contributing factors...',
     },
     {
       key: 'how',
-      question 'How was it carried out? Describe the method and execution.',
-      icon '⚙️',
+      question: 'How was it carried out? Describe the method and execution.',
+      icon: '⚙️',
       placeholder: 'Method of operation, tools used, sequence of actions...',
     },
   ];
@@ -82,7 +82,7 @@
       'What legal challenge can I help you with today?',
     ],
     workflow_start: [
-      "I'll guide you through our systematic 'Who, What, Why, How' prosecution methodology.",
+      "I'll guide you through our systematic: 'Who, What, Why, How' prosecution methodology.",
       'This approach ensures we capture all critical case elements for optimal prosecution strategy.',
       "Let's start with the first question",
     ],
@@ -259,7 +259,7 @@
     const low = userMessage.toLowerCase();
     if (low.includes('case') || low.includes('investigation') || low.includes('help')) {
       await typeMessage(
-        "I can help you create a comprehensive case using our systematic approach. Would you like to start the 'Who, What, Why, How' workflow?"
+        "I can help you create a comprehensive case using our systematic approach. Would you like to start the: 'Who, What, Why, How' workflow?"
       );
       // Auto-start workflow after brief pause
       setTimeout(() => startWorkflow(), 2000);
@@ -417,7 +417,7 @@
         <textarea
           bind:this={messageInput}
           bind:value={currentMessage}
-          placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
+          placeholder="Ask me anything about legal cases, or say: 'help' to start a new case..."
           rows="2"
           class="chat-input"
           onkeydown={e => {

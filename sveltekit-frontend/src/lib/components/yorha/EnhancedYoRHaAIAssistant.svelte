@@ -112,14 +112,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getIntentForRole(role: string): string {
     switch (role) {
-      case 'prosecutor':
-        return 'prosecution-analysis';
-      case 'detective':
-        return 'investigation-support';
-      case 'admin':
-        return 'administrative-review';
+      case: 'prosecutor':
+        return: 'prosecution-analysis';
+      case: 'detective':
+        return: 'investigation-support';
+      case: 'admin':
+        return: 'administrative-review';
       default:
-        return 'legal-analysis';
+        return: 'legal-analysis';
     }
   }
   function switchMode(mode: 'chat' | 'evidence' | 'analysis') {

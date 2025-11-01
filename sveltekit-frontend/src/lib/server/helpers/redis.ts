@@ -19,7 +19,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
     // Guard against createClient being undefined in some typings/environments
     if (typeof createClient !== 'function') {
       throw new Error(
-        'redis.createClient is not available. Ensure the "redis" package is installed and the runtime export is present.'
+        'redis.createClient is not available. Ensure the: "redis" package is installed and the runtime export is present.'
       );
     }
 

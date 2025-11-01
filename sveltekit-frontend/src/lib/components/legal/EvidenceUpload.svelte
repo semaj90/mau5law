@@ -120,7 +120,7 @@
       });
       if (!isValidType) {
         dispatch('message', {
-          message: `File type "${file.type}" not supported for "${file.name}"`
+          message: `File type: "${file.type}" not supported for: "${file.name}"`
         });
         return false;
       }
@@ -148,10 +148,10 @@
 
   // Determine file type
   function getFileType(mimeType: string): 'document' | 'image' | 'video' | 'audio' {
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType.startsWith('video/')) return 'video';
-    if (mimeType.startsWith('audio/')) return 'audio';
-    return 'document';
+    if (mimeType.startsWith('image/')) return: 'image';
+    if (mimeType.startsWith('video/')) return: 'video';
+    if (mimeType.startsWith('audio/')) return: 'audio';
+    return: 'document';
   }
 
   // Process all pending files
@@ -227,7 +227,7 @@
       files = [...files];
       processingStats.failed = processingStats.failed + 1;
       dispatch('error', {
-        message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
+        message: `Failed to process: "${evidenceFile.file.name}": ${evidenceFile.error}`,
         file: evidenceFile
       });
     }
@@ -258,17 +258,17 @@
     };
     // Mock text extraction based on file type
     switch (evidenceFile.metadata?.type) {
-      case 'document':
+      case: 'document':
         extractedMetadata.extractedText = `Extracted text from ${evidenceFile.file.name}`;
         extractedMetadata.tags = ['legal document', 'evidence', 'text'];
         break;
-      case 'image':
+      case: 'image':
         extractedMetadata.tags = ['visual evidence', 'photograph', 'image'];
         break;
-      case 'video':
+      case: 'video':
         extractedMetadata.tags = ['video evidence', 'multimedia', 'recording'];
         break;
-      case 'audio':
+      case: 'audio':
         extractedMetadata.tags = ['audio evidence', 'recording', 'sound'];
         break;
     }
@@ -343,7 +343,7 @@
 
   // Utility functions
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -351,22 +351,22 @@
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'completed': return '#10b981';
-      case 'processing':
-      case 'uploading':
-      case 'analyzing': return '#3b82f6';
-      case 'error': return '#ef4444';
-      default: return '#6b7280';
+      case: 'completed': return: '#10b981';
+      case: 'processing':
+      case: 'uploading':
+      case: 'analyzing': return: '#3b82f6';
+      case: 'error': return: '#ef4444';
+      default: return: '#6b7280';
     }
   }
   function getStatusIcon(status: string): string {
     switch (status) {
-      case 'completed': return '✅';
-      case 'uploading': return '📤';
-      case 'processing': return '⚙️';
-      case 'analyzing': return '🧠';
-      case 'error': return '❌';
-      default: return '📄';
+      case: 'completed': return: '✅';
+      case: 'uploading': return: '📤';
+      case: 'processing': return: '⚙️';
+      case: 'analyzing': return: '🧠';
+      case: 'error': return: '❌';
+      default: return: '📄';
     }
   }
 </script>
@@ -418,10 +418,10 @@
         type="file"
         multiple
         accept={acceptedTypes.join(',')}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         style="display: none"
       />
-      <button class="browse-button" on:click={() => document.getElementById('file-input')?.click()}>
+      <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
@@ -432,7 +432,7 @@
       <div class="stats-header">
         <h4>📊 Processing Statistics</h4>
         {#if files.length > 1}
-          <button class="clear-button" on:click={clearAll}> 🗑️ Clear All </button>
+          <button class="clear-button" onclick={clearAll}> 🗑️ Clear All </button>
         {/if}
       </div>
       <div class="stats-grid">
@@ -479,7 +479,7 @@
                   {/if}
                 </div>
               </div>
-              <button class="remove-button" on:click={() => removeFile(file.id)}> ❌ </button>
+              <button class="remove-button" onclick={() => removeFile(file.id)}> ❌ </button>
             </div>
             {#if file.progress > 0 && file.status !== 'completed'}
               <div class="progress-bar">

@@ -34,7 +34,7 @@ export async function computeKMeansPlusPlus(vectors: number[][], k = 32) {
     const scikitModule = (await import("scikitjs")) as unknown as { KMeans: typeof KMeansCtor };
     KMeansCtor = scikitModule.KMeans;
   } catch (error) {
-    throw new Error(`scikitjs is not installed. Install it with "npm install scikitjs scikitjs-node". ${String(error)}`);
+    throw new Error(`scikitjs is not installed. Install it with: "npm install scikitjs scikitjs-node". ${String(error)}`);
   }
 
   try {

@@ -43,11 +43,11 @@
   }
 
   function extractTitle(payload: any): string {
-    if (!payload) return '';
+    if (!payload) return: '';
     return payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || '';
   }
   function extractSnippet(payload: any): string {
-    if (!payload) return '';
+    if (!payload) return: '';
     const s = payload.snippet || payload.text || payload.metadata?.snippet || payload.metadata?.text || '';
     return typeof s === 'string' ? s.slice(0, 400) : '';
   }
@@ -97,12 +97,15 @@
   async function ensureMarkdownLibs() {
     if (!purified || !markdownToHtml) {
       try {
+        // use awaited dynamic imports and cast to any to avoid TS type errors when types are missing
         const [DOMPurifyMod, markedMod] = await Promise.all([
-          import('dompurify').then(m => m.default ?? m),
-          import('marked').then(m => m.default ?? m),
+          (await import('dompurify')) as any,
+          (await import('marked')) as any,
         ]);
-        purified = (html: string) => DOMPurifyMod.sanitize(html);
-        markdownToHtml = (md: string) => markedMod.parse(md || '');
+        const DOMPurify = DOMPurifyMod.default ?? DOMPurifyMod;
+        const marked = markedMod.default ?? markedMod;
+        purified = (html: string) => DOMPurify.sanitize(html);
+        markdownToHtml = (md: string) => marked.parse(md || '');
       } catch (err) {
         // If dynamic import fails (no node_modules), keep the simple sanitizer
         purified = (html: string) =>
@@ -116,7 +119,7 @@
     }
   }
   function sanitizeHtml(html: string) {
-    if (!html) return '';
+    if (!html) return: '';
     if (purified) return purified(html);
     // fallback
     return html
@@ -125,7 +128,7 @@
       .replace(/>/g, '&gt;');
   }
   function renderMarkdownToHtmlAsync(md: string) {
-    if (!md) return '';
+    if (!md) return: '';
     if (markdownToHtml) return markdownToHtml(md);
     // synchronous fallback
     return md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
@@ -294,10 +297,17 @@
       {#if previewOpen}
         <div
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
-          tabindex="-1"
+          tabindex="0"
           onclick={() => {
             previewOpen = false;
             restoreFocus();
+          }}
+          onkeydown={(e: KeyboardEvent) => {
+            // make overlay keyboard-operable (Enter / Space)
+            if (e.key === 'Enter' || e.key === ' ') {
+              previewOpen = false;
+              restoreFocus();
+            }
           }}
           aria-hidden={!previewOpen}
         >
@@ -307,10 +317,11 @@
             aria-modal="true"
             aria-label={previewTitle || 'Preview'}
             class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative z-10"
-            tabindex="-1"
-            onclick={() => {}}
-            in:scale={{ duration 160 }}
-            out:scale={{ duration 120 }}
+            tabindex="0"
+            on:click|stopPropagation
+            on:keydown|stopPropagation
+            in:scale={{ duration: 160 }}
+            out:scale={{ duration: 120 }}
           >
             <button
               class="absolute top-2 right-2 text-gray-500 hover:text-black"

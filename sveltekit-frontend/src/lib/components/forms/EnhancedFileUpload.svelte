@@ -87,13 +87,13 @@ export default ;
   // Local form state (no $form store)
   let formState = $state({
     title: '',
-    description '',
+    description: '',
     tags: [] as string[],
     caseId: caseId || '',
     evidenceType: '',
     confidentialityLevel: '',
     collectedBy: '',
-    location '',
+    location: '',
     enableAiAnalysis: false
     enableOcr: false
     enableEmbeddings: false
@@ -121,7 +121,7 @@ export default ;
   ];
   // Helpers
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return: '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -184,7 +184,7 @@ export default ;
       return file.type === typ;
     });
     if (!isValidType) {
-      alert(`File type "${file.type}" is not supported.`);
+      alert(`File type: "${file.type}" is not supported.`);
       return false;
     }
     return true;

@@ -13,7 +13,7 @@ export const QdrantVectorService: IQdrantVectorService = {
   },
   async searchVector(query, topK) {
     const res = await client.search(COLLECTION, { vector: query, limit: topK });
-    // add explicit type for the mapped point to avoid implicit 'any'
+    // add explicit type for the mapped point to avoid implicit: 'any'
     return (res || []).map((p: { id: string | number; score?: number }) => ({ id: String(p.id), score: p.score ?? 0 }));
   },
 };

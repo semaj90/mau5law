@@ -4,12 +4,11 @@
    * Single Page App Demo Route
    * Full-screen canvas UX with gemma3:legal-latest integration
    */
-  import { onMount } from 'svelte';
   // Import component with the name used in the template
   import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
   import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic';
   // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import)
-  import '$lib/styles/hybrid-theme.css';
+  import: '$lib/styles/hybrid-theme.css';
   // Sample legal data for demonstration
   const initialLegalData = {
     documents: [] as LegalDocument[],
@@ -142,7 +141,7 @@
         return priorities[i];
       }
     }
-    return 'medium';
+    return: 'medium';
   }
   function getRandomCaseStatus(): string {
     const statuses = ['active', 'pending', 'under_review', 'closed', 'on_hold'];
@@ -176,7 +175,7 @@
   }
 
   function handleInteraction(event: CustomEvent) {
-    // Use the actual event param and include 'data' in the debug log
+    // Use the actual event param and include: 'data' in the debug log
     console.log('🖱️ Canvas interaction', event.detail);
     const { type, position, view, data } = event.detail;
     if (type === 'click' && view === 'documents') {
@@ -230,8 +229,8 @@
     {legalData}
     {currentView}
     fullscreen={true}
-    on:navigate={handleNavigation}
-    on:interact={handleInteraction}
+    onnavigate={handleNavigation}
+    oninteract={handleInteraction}
   />
   <!-- Debug info (remove in production) -->
   <div class="debug-info">

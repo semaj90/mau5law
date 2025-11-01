@@ -7,7 +7,7 @@
   import DropdownMenuSeparator from './dropdown-menu/DropdownMenuSeparator.svelte';
   import type { SvelteComponent } from 'svelte';
 
-  // typed item shape to avoid 'unknown' issues
+  // typed item shape to avoid: 'unknown' issues
   type DropdownItem = {
     separator?: boolean;
     value?: any;

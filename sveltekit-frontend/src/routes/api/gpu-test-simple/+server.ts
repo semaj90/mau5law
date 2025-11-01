@@ -14,9 +14,9 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const mockErrors = [
       'src/test1.ts(10,1): error TS1434: Unexpected keyword or identifier.',
-      'src/test2.ts(15,5): error TS2304: Cannot find name "React".',
-      'src/test3.ts(20,1): error TS2307: Cannot find module "./missing".',
-      'src/test4.ts(25,1): error TS2457: Type alias name cannot be "type".',
+      'src/test2.ts(15,5): error TS2304: Cannot find name: "React".',
+      'src/test3.ts(20,1): error TS2307: Cannot find module: "./missing".',
+      'src/test4.ts(25,1): error TS2457: Type alias name cannot be: "type".',
       'src/test5.ts(30,1): error TS1005: ";" expected.',
     ];
     const processedErrors = mockErrors

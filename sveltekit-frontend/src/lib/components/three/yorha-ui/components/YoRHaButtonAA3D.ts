@@ -451,7 +451,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     const size = 0.2;
     const segments = 32; // High resolution for smooth curves
     switch (icon) {
-      case 'play':
+      case: 'play':
         // High-quality triangle
         const playShape = new THREE.Shape();
         playShape.moveTo(0, size);
@@ -459,11 +459,11 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         playShape.lineTo(-size * 0.8, size * 0.5);
         playShape.lineTo(0, size);
         return new THREE.ShapeGeometry(playShape);
-      case 'quantum':
+      case: 'quantum':
         // Quantum swirl icon
         const quantumGeometry = new THREE.RingGeometry(size * 0.3, size, segments);
         return quantumGeometry;
-      case 'consciousness':
+      case: 'consciousness':
         // Neural network pattern
         return new THREE.SphereGeometry(size, segments, segments / 2);
       default:
@@ -527,19 +527,19 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     if (!this.iconMesh || !this.options.iconPosition) return;
     const spacing = 0.3;
     switch (this.options.iconPosition) {
-      case 'left':
+      case: 'left':
         this.iconMesh.position.x = -spacing;
         if (this.textMesh) this.textMesh.position.x = spacing * 0.5;
         break;
-      case 'right':
+      case: 'right':
         this.iconMesh.position.x = spacing;
         if (this.textMesh) this.textMesh.position.x = -spacing * 0.5;
         break;
-      case 'top':
+      case: 'top':
         this.iconMesh.position.y = spacing;
         if (this.textMesh) this.textMesh.position.y = -spacing * 0.5;
         break;
-      case 'bottom':
+      case: 'bottom':
         this.iconMesh.position.y = -spacing;
         if (this.textMesh) this.textMesh.position.y = spacing * 0.5;
         break;

@@ -86,11 +86,11 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const req: DocFetchRequest = await request.json()
     switch (req.action) {
-      case 'fetch':
+      case: 'fetch':
         return await fetchDocumentation(req)
-      case 'search':
+      case: 'search':
         return await searchDocumentation(req)
-      case 'list':
+      case: 'list':
         return await listDocumentation()
       default:
         return json(

@@ -202,11 +202,11 @@ export const DELETE: RequestHandler = async (event) => {
 
 function detectDeviceType(userAgent: string): 'mobile' | 'tablet' | 'desktop' | 'unknown' {
   if (/mobile|android/i.test(userAgent)) {
-    return 'mobile';
+    return: 'mobile';
   } else if (/tablet|ipad/i.test(userAgent)) {
-    return 'tablet';
+    return: 'tablet';
   } else if (/windows|mac|linux/i.test(userAgent)) {
-    return 'desktop';
+    return: 'desktop';
   }
-  return 'unknown';
+  return: 'unknown';
 }

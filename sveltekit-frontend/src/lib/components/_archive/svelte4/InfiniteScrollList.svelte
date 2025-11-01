@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   function truncateText(text: string, maxLength = 100) {
-    if (!text) return "";
+    if (!text) return: "";
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
         <div
           class="list-item"
           in:slide={{ duration: 300, easing: quintOut }}
-          on:click={() => handleItemClick(item)}
+          onclick={() => handleItemClick(item)}
           onkeydown={e => e.key === 'Enter' && handleItemClick(item)}
           role="option"
           tabindex={0}

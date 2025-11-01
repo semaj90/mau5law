@@ -22,7 +22,7 @@ export type WebGPUDiagResult = {
   recommendedActions: string[];
 }
 async function tryRequestAdapter(powerPreference: 'high-performance' | 'low-power' | 'default') {
-  // Some implementations don't accept 'default'; handle separately
+  // Some implementations don't accept: 'default'; handle separately
   const opts = powerPreference === 'default' ? {} : { powerPreference }
   // @ts-ignore - types allow this in modern libs; safe to pass
   return navigator.gpu.requestAdapter(opts as any);

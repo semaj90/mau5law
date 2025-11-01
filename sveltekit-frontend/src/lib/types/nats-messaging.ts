@@ -411,7 +411,7 @@ export interface SearchFilters {
   case_ids?: string[];
   document_types?: string[];
   date_range?: {
-    from: string;
+    from string;
     to: string;
   };
   priority?: string[];

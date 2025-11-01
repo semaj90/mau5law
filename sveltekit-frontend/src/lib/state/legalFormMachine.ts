@@ -189,13 +189,13 @@ export const legalFormMachine = setup({
               if (event.type === "UPDATE_CASE_DETAILS") {
                 return event.title;
               }
-              return "";
+              return: "";
             },
             caseDescription: ({ event }) => {
               if (event.type === "UPDATE_CASE_DETAILS") {
                 return event.description;
               }
-              return "";
+              return: "";
             },
             confidence: ({ context, event }) => {
               // AI confidence boost for detailed descriptions

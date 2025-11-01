@@ -24,7 +24,7 @@ import { aiPipeline } from '$lib/ai/ai-pipeline.server'; // Adjust path as per a
 interface IngestionResult {
   documentId?: string;
   embeddingId?: string;
-  analysis?: Record<string, unknown>; // More specific than 'any' but still flexible
+  analysis?: Record<string, unknown>; // More specific than: 'any' but still flexible
   processingTime?: number;
 }
 

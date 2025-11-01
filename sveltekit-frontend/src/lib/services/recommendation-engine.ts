@@ -96,16 +96,16 @@ export class LegalRecommendationEngine {
       // Execute recommendation algorithm
       let results: RecommendationResult[] = [];
       switch (request.algorithmPreference || 'hybrid') {
-        case 'semantic':
+        case: 'semantic':
           results = await this.semanticRecommendations(queryEmbedding, request);
           break;
-        case 'collaborative':
+        case: 'collaborative':
           results = await this.collaborativeRecommendations(request, userProfile);
           break;
-        case 'temporal':
+        case: 'temporal':
           results = await this.temporalRecommendations(queryEmbedding, request);
           break;
-        case 'hybrid':
+        case: 'hybrid':
         default:
           results = await this.hybridRecommendations(queryEmbedding, request, userProfile);
           break;
@@ -141,7 +141,7 @@ export class LegalRecommendationEngine {
         r.usage_count, r.created_at, r.last_accessed, r.metadata
       FROM ai_responses r
       WHERE r.query_embedding IS NOT NULL
-        AND r.created_at >= NOW() - INTERVAL '${temporalWindow} days'
+        AND r.created_at >= NOW() - INTERVAL: '${temporalWindow} days'
       ORDER BY r.created_at DESC
       LIMIT ${max * 2}
     `;
@@ -176,7 +176,7 @@ export class LegalRecommendationEngine {
              AVG(f.user_rating) AS avg_rating, COUNT(f.user_rating) AS rating_count
       FROM ai_responses r
       LEFT JOIN grpo_feedback f ON f.response_id = r.id
-      WHERE r.created_at >= NOW() - INTERVAL '${request.temporalWindow ?? 60} days'
+      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 60} days'
         AND r.legal_domain = ANY(${domains})
       GROUP BY r.id, r.query, r.response, r.confidence, r.legal_domain, r.created_at
       ORDER BY avg_rating DESC NULLS LAST, rating_count DESC
@@ -205,7 +205,7 @@ export class LegalRecommendationEngine {
       SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction,
              r.usage_count, r.created_at, r.last_accessed, r.metadata
       FROM ai_responses r
-      WHERE r.created_at >= NOW() - INTERVAL '${request.temporalWindow ?? 30} days'
+      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30} days'
       ORDER BY r.created_at DESC
       LIMIT ${max}
     `;
@@ -316,7 +316,7 @@ export class LegalRecommendationEngine {
              AVG(f.user_rating) as avg_rating, COUNT(f.user_rating) as rating_count
       FROM ai_responses r
       LEFT JOIN grpo_feedback f ON r.id = f.response_id
-      WHERE r.created_at >= NOW() - INTERVAL '${request.temporalWindow ?? 30} days'
+      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30} days'
         AND r.usage_count > 0
       GROUP BY r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction, r.usage_count, r.created_at, r.last_accessed, r.metadata
       HAVING COUNT(f.user_rating) >= 1

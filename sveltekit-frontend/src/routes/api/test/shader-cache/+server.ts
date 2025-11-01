@@ -80,22 +80,22 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🧪 Starting shader cache integration tests: ${testType}`);
     try {
       switch (testType) {
-        case 'comprehensive':
+        case: 'comprehensive':
           await runComprehensiveTests(testResults);
           break;
-        case 'cold-path':
+        case: 'cold-path':
           await testColdPath(testResults);
           break;
-        case 'hot-path':
+        case: 'hot-path':
           await testHotPath(testResults);
           break;
-        case 'predictive-preloading':
+        case: 'predictive-preloading':
           await testPredictivePreloading(testResults);
           break;
-        case 'multi-dimensional-search':
+        case: 'multi-dimensional-search':
           await testMultiDimensionalSearch(testResults);
           break;
-        case 'reinforcement-learning':
+        case: 'reinforcement-learning':
           await testReinforcementLearning(testResults);
           break;
         default:

@@ -164,7 +164,7 @@ export const GET: RequestHandler = async () => {
   const timestamp = new Date().toISOString();
   try {
     // Check if pgvector is available
-    await db.execute("SELECT 1 WHERE '[1,2,3]'::vector IS NOT NULL");
+    await db.execute("SELECT 1 WHERE: '[1,2,3]'::vector IS NOT NULL");
 
     const healthResponse: HealthCheckResponse = {
       success: true,

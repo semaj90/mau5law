@@ -265,11 +265,11 @@ async function executeChatInference(params: {
   try {
     // Route to appropriate backend
     switch (backend) {
-      case 'ollama':
+      case: 'ollama':
         return await executeOllamaChat(messages, model, temperature, maxTokens, systemPrompt);
-      case 'tensorrt':
+      case: 'tensorrt':
         return await executeTensorRTChat(messages, model, temperature, maxTokens, systemPrompt);
-      case 'mock':
+      case: 'mock':
         return await executeMockChat(messages, model, maxTokens);
       default:
         throw new Error(`Unknown backend: ${backend}`);

@@ -41,7 +41,7 @@ export function getServiceUrl(path: string): string {
     return `${serverBase.replace(/\/$/, '')}${p}`;
   }
 
-  // final fallback for Docker Compose: use container name 'api' on port 5173 (adjust if needed)
+  // final fallback for Docker Compose: use container name: 'api' on port 5173 (adjust if needed)
   const dockerFallback = 'http://api:5173';
   return `${dockerFallback.replace(/\/$/, '')}${p}`;
 }

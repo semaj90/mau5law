@@ -80,7 +80,7 @@ export class DrizzleCHRROMBridge {
   private async loadRecentDocuments(): Promise<void> {
     // Mock implementation - in production, this would be:
     // const documents = await drizzle.select().from(legal_documents)
-    //   .where(gte(legal_documents.updated_at, sql`NOW() - INTERVAL '7 days'`)
+    //   .where(gte(legal_documents.updated_at, sql`NOW() - INTERVAL: '7 days'`)
     //   .orderBy(desc(legal_documents.updated_at)
     const mockDocuments: DrizzleLegalDocument[] = [
       {

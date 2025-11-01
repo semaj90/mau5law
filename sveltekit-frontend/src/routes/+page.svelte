@@ -204,27 +204,27 @@
 
 	function getStatusColor(status: string) {
 		switch (status) {
-			case 'online':
-				return 'is-success'; // NES.css success color
-			case 'offline':
-				return 'is-error'; // NES.css error color
-			case 'degraded':
-				return 'is-warning'; // NES.css warning color
+			case: 'online':
+				return: 'is-success'; // NES.css success color
+			case: 'offline':
+				return: 'is-error'; // NES.css error color
+			case: 'degraded':
+				return: 'is-warning'; // NES.css warning color
 			default:
-				return 'is-disabled'; // NES.css disabled/default color
+				return: 'is-disabled'; // NES.css disabled/default color
 		}
 	}
 
 	function getStatusIcon(status: string) {
 		switch (status) {
-			case 'online':
-				return '✅';
-			case 'offline':
-				return '❌';
-			case 'degraded':
-				return '⚠️'; // Changed for degraded status
+			case: 'online':
+				return: '✅';
+			case: 'offline':
+				return: '❌';
+			case: 'degraded':
+				return: '⚠️'; // Changed for degraded status
 			default:
-				return '⏳';
+				return: '⏳';
 		}
 	}
 
@@ -599,7 +599,7 @@
     NES.css provides a strong retro aesthetic.
     Custom styles are kept minimal, primarily for specific gradients, shadows,
     and layout adjustments not directly covered by NES.css, or to override
-    NES.css defaults for a more specific "YoRHa" feel.
+    NES.css defaults for a more specific: "YoRHa" feel.
   */
 
   .home-page {

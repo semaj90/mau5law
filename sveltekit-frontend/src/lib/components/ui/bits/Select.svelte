@@ -94,13 +94,7 @@
       'h-8 px-3 text-xs': size === 'sm',
       'h-10 px-3 text-sm': size === 'md',
       'h-12 px-4 text-base': size === 'lg',
-      'w-full': fullWidth
-      'nier-bits-select': legal
-      'yorha-input': evidenceCategory || caseType
-      'border-red-500 bg-red-50': error
-      'border-green-500 bg-green-50': aiRecommendations && value
-      'font-gothic tracking-wide': legal
-      'cursor-not-allowed opacity-50':disabled
+      'w-full': fullWidth: 'nier-bits-select': legal: 'yorha-input': evidenceCategory || caseType: 'border-red-500 bg-red-50': error: 'border-green-500 bg-green-50': aiRecommendations && value: 'font-gothic tracking-wide': legal: 'cursor-not-allowed opacity-50':disabled
     },
     triggerClass
   ));
@@ -108,10 +102,7 @@
   let selectContentClasses = $derived(cn(
     'bits-select-content',
     {
-      'nier-panel-elevated shadow-xl': legal
-      'border-2 border-nier-border-primary': evidenceCategory
-      'yorha-card': caseType
-      'bg-gradient-to-b from-nier-bg-primary to-nier-bg-secondary': legal
+      'nier-panel-elevated shadow-xl': legal: 'border-2 border-nier-border-primary': evidenceCategory: 'yorha-card': caseType: 'bg-gradient-to-b from-nier-bg-primary to-nier-bg-secondary': legal
     },
     contentClass
   ));

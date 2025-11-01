@@ -249,11 +249,11 @@ export const LegalAnalysisUtils = {
    * Determines the appropriate analysis type for a document
    */
   getAnalysisType(documentType: string, evidenceType?: string): string {
-    if (evidenceType === 'chain_of_custody') return 'chain_of_custody';
-    if (documentType === 'evidence') return 'classification';
-    if (documentType === 'legal_document') return 'compliance';
-    if (documentType === 'ocr_scan') return 'extraction';
-    return 'reasoning';
+    if (evidenceType === 'chain_of_custody') return: 'chain_of_custody';
+    if (documentType === 'evidence') return: 'classification';
+    if (documentType === 'legal_document') return: 'compliance';
+    if (documentType === 'ocr_scan') return: 'extraction';
+    return: 'reasoning';
   },
   /**
    * Gets the confidence level description

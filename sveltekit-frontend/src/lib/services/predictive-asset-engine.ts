@@ -519,39 +519,39 @@ export class PredictiveAssetEngine {
   private initializeTransitionMatrix(): void {
     const transitions = [
       // From idle
-      { from: 'idle', to: 'document_loading', prob: 0.4, triggers: ['file_click', 'search_start'] },
-      { from: 'idle', to: 'legal_research', prob: 0.3, triggers: ['research_button', 'precedent_search'] },
-      { from: 'idle', to: 'contract_drafting', prob: 0.2, triggers: ['new_contract', 'template_select'] },
+      { from 'idle', to: 'document_loading', prob: 0.4, triggers: ['file_click', 'search_start'] },
+      { from 'idle', to: 'legal_research', prob: 0.3, triggers: ['research_button', 'precedent_search'] },
+      { from 'idle', to: 'contract_drafting', prob: 0.2, triggers: ['new_contract', 'template_select'] },
       // From document_loading
-      { from: 'document_loading', to: 'document_analysis', prob: 0.6, triggers: ['document_open', 'content_visible'] },
-      { from: 'document_loading', to: 'evidence_review', prob: 0.2, triggers: ['evidence_tag', 'case_context'] },
-      { from: 'document_loading', to: 'idle', prob: 0.1, triggers: ['cancel', 'back_button'] },
+      { from 'document_loading', to: 'document_analysis', prob: 0.6, triggers: ['document_open', 'content_visible'] },
+      { from 'document_loading', to: 'evidence_review', prob: 0.2, triggers: ['evidence_tag', 'case_context'] },
+      { from 'document_loading', to: 'idle', prob: 0.1, triggers: ['cancel', 'back_button'] },
       // From document_analysis
-      { from: 'document_analysis', to: 'legal_research', prob: 0.3, triggers: ['cite_lookup', 'precedent_needed'] },
-      { from: 'document_analysis', to: 'compliance_check', prob: 0.2, triggers: ['compliance_flag', 'audit_trigger'] },
-      { from: 'document_analysis', to: 'contract_drafting', prob: 0.15, triggers: ['edit_mode', 'clause_edit'] },
-      { from: 'document_analysis', to: 'evidence_review', prob: 0.1, triggers: ['evidence_link', 'case_reference'] },
-      { from: 'document_analysis', to: 'idle', prob: 0.05, triggers: ['session_timeout', 'navigate_away'] },
+      { from 'document_analysis', to: 'legal_research', prob: 0.3, triggers: ['cite_lookup', 'precedent_needed'] },
+      { from 'document_analysis', to: 'compliance_check', prob: 0.2, triggers: ['compliance_flag', 'audit_trigger'] },
+      { from 'document_analysis', to: 'contract_drafting', prob: 0.15, triggers: ['edit_mode', 'clause_edit'] },
+      { from 'document_analysis', to: 'evidence_review', prob: 0.1, triggers: ['evidence_link', 'case_reference'] },
+      { from 'document_analysis', to: 'idle', prob: 0.05, triggers: ['session_timeout', 'navigate_away'] },
       // From evidence_review
-      { from: 'evidence_review', to: 'document_analysis', prob: 0.4, triggers: ['evidence_select', 'detail_view'] },
-      { from: 'evidence_review', to: 'legal_research', prob: 0.3, triggers: ['case_law_needed', 'precedent_search'] },
-      { from: 'evidence_review', to: 'compliance_check', prob: 0.1, triggers: ['regulatory_concern', 'audit_flag'] },
-      { from: 'evidence_review', to: 'idle', prob: 0.1, triggers: ['review_complete', 'session_end'] },
+      { from 'evidence_review', to: 'document_analysis', prob: 0.4, triggers: ['evidence_select', 'detail_view'] },
+      { from 'evidence_review', to: 'legal_research', prob: 0.3, triggers: ['case_law_needed', 'precedent_search'] },
+      { from 'evidence_review', to: 'compliance_check', prob: 0.1, triggers: ['regulatory_concern', 'audit_flag'] },
+      { from 'evidence_review', to: 'idle', prob: 0.1, triggers: ['review_complete', 'session_end'] },
       // From contract_drafting
-      { from: 'contract_drafting', to: 'compliance_check', prob: 0.3, triggers: ['compliance_review', 'legal_check'] },
-      { from: 'contract_drafting', to: 'legal_research', prob: 0.2, triggers: ['clause_research', 'term_lookup'] },
-      { from: 'contract_drafting', to: 'document_analysis', prob: 0.1, triggers: ['reference_document', 'template_review'] },
-      { from: 'contract_drafting', to: 'idle', prob: 0.1, triggers: ['save_draft', 'session_pause'] },
+      { from 'contract_drafting', to: 'compliance_check', prob: 0.3, triggers: ['compliance_review', 'legal_check'] },
+      { from 'contract_drafting', to: 'legal_research', prob: 0.2, triggers: ['clause_research', 'term_lookup'] },
+      { from 'contract_drafting', to: 'document_analysis', prob: 0.1, triggers: ['reference_document', 'template_review'] },
+      { from 'contract_drafting', to: 'idle', prob: 0.1, triggers: ['save_draft', 'session_pause'] },
       // From legal_research
-      { from: 'legal_research', to: 'document_analysis', prob: 0.4, triggers: ['case_found', 'precedent_select'] },
-      { from: 'legal_research', to: 'contract_drafting', prob: 0.2, triggers: ['clause_inspiration', 'term_adoption'] },
-      { from: 'legal_research', to: 'evidence_review', prob: 0.1, triggers: ['evidence_discovery', 'case_connection'] },
-      { from: 'legal_research', to: 'idle', prob: 0.1, triggers: ['research_complete', 'bookmark_save'] },
+      { from 'legal_research', to: 'document_analysis', prob: 0.4, triggers: ['case_found', 'precedent_select'] },
+      { from 'legal_research', to: 'contract_drafting', prob: 0.2, triggers: ['clause_inspiration', 'term_adoption'] },
+      { from 'legal_research', to: 'evidence_review', prob: 0.1, triggers: ['evidence_discovery', 'case_connection'] },
+      { from 'legal_research', to: 'idle', prob: 0.1, triggers: ['research_complete', 'bookmark_save'] },
       // From compliance_check
-      { from: 'compliance_check', to: 'document_analysis', prob: 0.5, triggers: ['issue_found', 'detail_review'] },
-      { from: 'compliance_check', to: 'contract_drafting', prob: 0.2, triggers: ['fix_needed', 'clause_update'] },
-      { from: 'compliance_check', to: 'legal_research', prob: 0.1, triggers: ['regulation_lookup', 'standard_check'] },
-      { from: 'compliance_check', to: 'idle', prob: 0.1, triggers: ['compliance_passed', 'report_generated'] }
+      { from 'compliance_check', to: 'document_analysis', prob: 0.5, triggers: ['issue_found', 'detail_review'] },
+      { from 'compliance_check', to: 'contract_drafting', prob: 0.2, triggers: ['fix_needed', 'clause_update'] },
+      { from 'compliance_check', to: 'legal_research', prob: 0.1, triggers: ['regulation_lookup', 'standard_check'] },
+      { from 'compliance_check', to: 'idle', prob: 0.1, triggers: ['compliance_passed', 'report_generated'] }
     ];
     transitions.forEach(trans => {
       if (!this.transition_matrix.has(trans.from)) {
@@ -859,16 +859,16 @@ export class PredictiveAssetEngine {
         // Generate asset based on type
         let generated_asset;
         switch (prediction.asset_type) {
-          case 'chr_rom_pattern':
+          case: 'chr_rom_pattern':
             generated_asset = await this.generateCHRROMPattern(prediction);
             break;
-          case 'vector_texture':
+          case: 'vector_texture':
             generated_asset = await this.generateVectorTexture(prediction);
             break;
-          case 'webgpu_shader':
+          case: 'webgpu_shader':
             generated_asset = await this.generateWebGPUShader(prediction);
             break;
-          case 'som_cluster':
+          case: 'som_cluster':
             generated_asset = await this.generateSOMCluster(prediction);
             break;
           default:
@@ -949,11 +949,11 @@ export class PredictiveAssetEngine {
   // PRIVATE HELPER METHODS
   // ===============================
   private determineAssetType(asset_id,: string): AssetPrediction['asset_type',] {
-    if (asset_id.includes('chr_rom')) return 'chr_rom_pattern';
-    if (asset_id.includes('texture')) return 'vector_texture';
-    if (asset_id.includes('shader')) return 'webgpu_shader';
-    if (asset_id.includes('cluster')) return 'som_cluster';
-    return 'chr_rom_pattern';
+    if (asset_id.includes('chr_rom')) return: 'chr_rom_pattern';
+    if (asset_id.includes('texture')) return: 'vector_texture';
+    if (asset_id.includes('shader')) return: 'webgpu_shader';
+    if (asset_id.includes('cluster')) return: 'som_cluster';
+    return: 'chr_rom_pattern';
   }
   private calculateAssetPriority(asset_id,: string, user_bitma,p: UserStateBitma,p): number {
     let priority = 5; // Base priority
@@ -966,10 +966,7 @@ export class PredictiveAssetEngine {
   }
   private estimateGenerationCost(asset_id,: string): number {
     const cost_map: Record<string, number> = {
-      'chr_rom_pattern': 100,     // milliseconds
-      'vector_texture': 500,      // milliseconds
-      'webgpu_shader': 1000,      // milliseconds
-      'som_cluster': 2000         // milliseconds
+      'chr_rom_pattern': 100,     // milliseconds: 'vector_texture': 500,      // milliseconds: 'webgpu_shader': 1000,      // milliseconds: 'som_cluster': 2000         // milliseconds
     }
     for (const [type, cost] of Object.entries(cost_map)) {
       if (asset_id.includes(type)) return cost;
@@ -978,25 +975,25 @@ export class PredictiveAssetEngine {
   }
   private determineCacheStrategy(asset_id,: string, user_bitma,p: UserStateBitma,p): AssetPrediction['cache_strategy,'] {
     if (user_bitmap.context.performance_metrics.cache_hit_rate < 0.7) {>
-      return 'precompute'; // Aggressive caching for poor performance
+      return: 'precompute'; // Aggressive caching for poor performance
     }
     if (asset_id.includes('critical') || asset_id.includes('priority')) {
-      return 'precompute';
+      return: 'precompute';
     }
-    return 'lazy';
+    return: 'lazy';
   }
   private identifyUserPattern(user_bitmap,: UserStateBitmap): string {
     const actions = user_bitmap.context.recent_actions;
     if (actions.includes('document_analysis') && actions.includes('legal_research')) {
-      return 'research_intensive';
+      return: 'research_intensive';
     }
     if (actions.includes('contract_drafting') && actions.includes('compliance_check')) {
-      return 'drafting_focused';
+      return: 'drafting_focused';
     }
     if (actions.includes('evidence_review') && actions.includes('case_analysis')) {
-      return 'litigation_focused';
+      return: 'litigation_focused';
     }
-    return 'general_usage';
+    return: 'general_usage';
   }
   private calculateTriggerProbability(user_bitmap,: UserStateBitmap, asset_i,d: strin,g): number {
     const base_prob = 0.5;

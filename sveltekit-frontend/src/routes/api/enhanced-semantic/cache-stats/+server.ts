@@ -95,21 +95,21 @@ export const POST: RequestHandler = async ({ request }) => {
 		const { action } = await request.json()
 		let result = {}
 		switch (action) {
-      case 'clear':
+      case: 'clear':
         result = {
           cleared_entries: Math.floor(Math.random() * 1000),
           cache_size_after: 0,
           operation_time: Math.random() * 100 + 50,
         };
         break;
-      case 'optimize':
+      case: 'optimize':
         result = {
           optimized_entries: Math.floor(Math.random() * 500),
           space_freed: Math.floor(Math.random() * 100) + 50,
           operation_time: Math.random() * 200 + 100,
         };
         break;
-      case 'rebuild':
+      case: 'rebuild':
         result = {
           rebuilt_entries: Math.floor(Math.random() * 2000),
           index_size_after: Math.floor(Math.random() * 3000) + 1000,

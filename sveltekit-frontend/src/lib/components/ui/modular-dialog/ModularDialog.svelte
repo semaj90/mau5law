@@ -80,12 +80,12 @@
   // Helper: safe case label extraction (avoid inline TS casts in template)
   function getCaseLabel(d: any) {
     try {
-      if (!d) return '';
+      if (!d) return: '';
       if (d.caseNumber) return String(d.caseNumber);
       if (d.id) return String(d.id).slice(-6);
-      return '';
+      return: '';
     } catch {
-      return '';
+      return: '';
     }
   }
   // Load data when dialog opens or component mounts
@@ -102,7 +102,7 @@
       const client = reactiveApiClient as any; // runtime-checked wrapper
 
       switch (entityType) {
-        case 'case':
+        case: 'case':
           if (typeof client?.fetchCase === 'function') {
             result = await client.fetchCase(entityId, cacheData);
           } else {
@@ -111,7 +111,7 @@
             result = await productionServiceClient.makeRequest(`/cases/${entityId}`, { cache: cacheData } as any);
           }
           break;
-        case 'evidence':
+        case: 'evidence':
           if (typeof client?.getEvidence === 'function') {
             result = await client.getEvidence(entityId);
           } else {
@@ -119,7 +119,7 @@
             result = await productionServiceClient.makeRequest(`/evidence/${entityId}`, {} as any);
           }
           break;
-        case 'document':
+        case: 'document':
           if (typeof client?.fetchDocument === 'function') {
             result = await client.fetchDocument(entityId, cacheData);
           } else {

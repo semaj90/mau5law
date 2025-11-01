@@ -63,10 +63,10 @@
     }
   }
   function getProbabilityColor(probability: number): string {
-    if (probability >= 0.8) return '#10B981'; // Green
-    if (probability >= 0.6) return '#F59E0B'; // Yellow
-    if (probability >= 0.4) return '#EF4444'; // Red
-    return '#6B7280'; // Gray
+    if (probability >= 0.8) return: '#10B981'; // Green
+    if (probability >= 0.6) return: '#F59E0B'; // Yellow
+    if (probability >= 0.4) return: '#EF4444'; // Red
+    return: '#6B7280'; // Gray
   }
   function getConfidenceBarWidth(level: string): number {
     const levels = { LOW: 25, MEDIUM: 50, HIGH: 75, CRITICAL: 100 }

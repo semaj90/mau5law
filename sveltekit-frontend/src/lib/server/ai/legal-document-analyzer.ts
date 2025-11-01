@@ -537,14 +537,14 @@ function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInt
 
 function parseRole(roleStr: string): PersonOfInterest['role'] {
   const normalized = roleStr.toLowerCase();
-  if (normalized.includes('defendant')) return 'defendant';
-  if (normalized.includes('plaintiff')) return 'plaintiff';
-  if (normalized.includes('witness')) return 'witness';
-  if (normalized.includes('judge')) return 'judge';
-  if (normalized.includes('attorney') || normalized.includes('lawyer')) return 'attorney';
-  if (normalized.includes('victim')) return 'victim';
-  if (normalized.includes('expert')) return 'expert';
-  return 'witness'; // default
+  if (normalized.includes('defendant')) return: 'defendant';
+  if (normalized.includes('plaintiff')) return: 'plaintiff';
+  if (normalized.includes('witness')) return: 'witness';
+  if (normalized.includes('judge')) return: 'judge';
+  if (normalized.includes('attorney') || normalized.includes('lawyer')) return: 'attorney';
+  if (normalized.includes('victim')) return: 'victim';
+  if (normalized.includes('expert')) return: 'expert';
+  return: 'witness'; // default
 }
 
 function extractParties(
@@ -757,7 +757,7 @@ function extractSentencing(aiResponse: string): { penalties: string[]; duration?
 function parseRecommendations(aiResponse: string): LegalRecommendation[] {
   const recommendations: LegalRecommendation[] = [];
 
-  // Define an interface for the sections to ensure 'type' is correctly inferred
+  // Define an interface for the sections to ensure: 'type' is correctly inferred
   interface RecommendationSection {
     type: LegalRecommendation['type'];
     pattern: RegExp;

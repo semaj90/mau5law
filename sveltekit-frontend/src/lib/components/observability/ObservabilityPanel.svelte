@@ -131,16 +131,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getBadgeClass(status: string): string {
     switch (status) {
-      case 'critical': return 'badge-critical';
-      case 'warning': return 'badge-warning';
-      default: return 'badge-normal';
+      case: 'critical': return: 'badge-critical';
+      case: 'warning': return: 'badge-warning';
+      default: return: 'badge-normal';
     }
   }
   function getAlertClass(severity: string): string {
     switch (severity) {
-      case 'critical': return 'alert-critical';
-      case 'warning': return 'alert-warning';
-      default: return 'alert-info';
+      case: 'critical': return: 'alert-critical';
+      case: 'warning': return: 'alert-warning';
+      default: return: 'alert-info';
     }
   }
   $effect(() => {

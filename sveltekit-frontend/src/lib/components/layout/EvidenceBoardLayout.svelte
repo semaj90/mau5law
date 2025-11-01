@@ -22,7 +22,7 @@
   $effect(() => {
     // Simulate connection status
     setTimeout(() => {
-      isConnected = false; // Keep as "Demo Mode - Server Not Connected" to match screenshot
+      isConnected = false; // Keep as: "Demo Mode - Server Not Connected" to match screenshot
     }, 1000);
   });
 </script>
